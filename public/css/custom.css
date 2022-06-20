@@ -1,0 +1,129 @@
+.center{ text-align: center; }
+.forget-password{ font-weight: 600; font-size: 0.8571em; text-transform: uppercase; }
+.card-footer a { text-decoration: none; }
+.select2 { width: 100% !important; }
+.upper {text-transform: uppercase !important; }
+.font-25 {font-size: 25px;}
+.font-12 {font-size: 12px !important;}
+.nounderline, .violet{
+    color: #7c4dff !important;
+}
+.btn-dark {
+    background-color: #68B3C8 !important;
+    border-color: #68B3C8 !important;
+}
+.btn-dark .file-upload {
+    width: 100%;
+    padding: 10px 0px;
+    position: absolute;
+    left: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+.profile-img img{
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+}  
+.box-password{
+    display: none;
+}
+.text-pink{ color: #e91ea1; }
+.troca_cliente:hover{ cursor: pointer; }
+
+.cloud-word{ cursor: pointer; }
+.text-facebook{ color: #3f51b5; }
+.swal2-html-container {
+    text-align: center;
+}
+.total_reactions{
+    width: 14%;
+    float: left;
+}
+.display_regra{
+    background: #f7f7f7;
+    border: 1px solid #f7f7f7;
+    padding: 8px 8px;
+    border-radius: 4px !important;
+}
+.op-2{
+    opacity: 0.3;
+}
+.link-relatorio:hover{
+    text-decoration: none !important;
+}
+.box-relatorio:hover h4{
+    color: #51cbce !important;
+}
+.badge-warning a {
+    color: white;
+}
+.count-relation{
+    background: #9e9e9e;
+}
+.img-perfil{
+    width: 100px;
+}
+.view-eye{
+    position: absolute;
+    top: 10px;
+    right: 8px;
+    z-index: 1000;
+}
+.view-eye:hover{
+    cursor: pointer;
+}
+.view-eye-p{
+    position: absolute;
+    top: 10px;
+    right: 28px;
+    z-index: 1000;
+}
+.view-eye-p:hover{
+    cursor: pointer;
+}
+.notification-descricao{ 
+    padding: 5px 8px;
+    border-radius: 5px;
+}
+.error{
+    color: #dd0808 !important;
+    margin-top: 5px;
+}
+.box_hashtags{ display: none;}
+.msg { padding: 0 !important;}
+.msg > p{    
+    background: #f9f9f9;
+    padding: 5px 10px;
+}
+.txt-black{
+    color: black !important;
+}
+.icone-disabled{ color: gray; opacity: 0.6;}
+.custom-cloud{ height: 400px; margin-bottom: 15px; }
+
+.ui-autocomplete{
+    z-index: 1050 !important;
+ }
+ .box-paginas{
+     min-height: 600px;
+ }
+ .listagem_paginas{
+    border: 1px solid #9e9e9e54;
+ }
+ .moveall, .remove{
+    background: #51bcda;
+    border-bottom-left-radius: 8px !important;
+    border-top-left-radius: 8px !important;
+ }
+ .move, .removeall{
+    background: #51bcda;
+    border-bottom-right-radius: 8px !important;
+    border-top-right-radius: 8px !important;
+}
+.text-black{
+    color: #66615b;
+}
+.flag_regras:hover{
+    cursor: pointer;
+}

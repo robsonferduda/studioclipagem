@@ -1,0 +1,19 @@
+version: "3.7"
+services:
+  apache:
+    image: rafael01costa/php:7.3-apache-studiosocial
+    container_name: studiosocial
+    restart: always
+    expose:
+      - "443"
+    volumes:
+      - ./:/var/www/html
+    environment:
+      - VIRTUAL_HOST=studiosocial.localhost
+    networks:
+      - network
+networks:
+  network:
+    driver: bridge
+
+
