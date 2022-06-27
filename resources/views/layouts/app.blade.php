@@ -7,7 +7,7 @@
   <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
   <link href="images/favicon.png" rel="shortcut icon">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-  <title>{{ config('app.name', 'Studio K Sistema de Gerenciamento de Eventos') }}</title>
+  <title>{{ config('app.name', 'Studioclipagem') }}</title>
   <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
   <!--     Fonts and icons     -->
   <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
@@ -44,14 +44,30 @@
                 <li class="{{ (Session::has('url') and Session::get('url') == 'home') ? 'active' : '' }}">
                     <a href="{{ url('/') }}">
                     <i class="nc-icon nc-chart-pie-36"></i>
-                    <p>DASHBOARD</p>
+                    <p>Dashboard</p>
                     </a>
                 </li>
                 @role('administradores')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'clientes') ? 'active' : '' }}">
                     <a href="{{ url('clientes') }}">
                     <i class="nc-icon nc-briefcase-24"></i>
-                    <p>CLIENTES</p>
+                    <p>Clientes</p>
+                    </a>
+                  </li>
+                @endrole
+                @role('administradores')
+                <li class="{{ (Session::has('url') and Session::get('url') == 'areas') ? 'active' : '' }}">
+                  <a href="{{ url('areas') }}">
+                  <i class="fa fa-tags"></i>
+                  <p>Áreas</p>
+                  </a>
+                </li>
+              @endrole
+                @role('administradores')
+                  <li class="{{ (Session::has('url') and Session::get('url') == 'veiculos') ? 'active' : '' }}">
+                    <a href="{{ url('veiculos') }}">
+                    <i class="fa fa-comments"></i>
+                    <p>Veículos</p>
                     </a>
                   </li>
                 @endrole
@@ -64,30 +80,6 @@
                   </li>
                 @endrole
                 <hr/>
-                @role('administradores')
-                  <li class="{{ (Session::has('url') and Session::get('url') == 'auditoria') ? 'active' : '' }}">
-                      <a href="{{ url('auditoria') }}">
-                        <i class="fa fa-shield"></i>
-                      <p>Autidoria</p>
-                      </a>
-                  </li>
-                @endrole
-                @role('administradores')
-                  <li class="{{ (Session::has('url') and Session::get('url') == 'perfis') ? 'active' : '' }}">
-                      <a href="{{ url('perfis') }}">
-                      <i class="fa fa-group"></i>
-                      <p>Perfis</p>
-                      </a>
-                  </li>
-                @endrole
-                @role('administradores')
-                  <li class="{{ (Session::has('url') and Session::get('url') == 'permissoes') ? 'active' : '' }}">
-                      <a href="{{ url('permissoes') }}">
-                      <i class="nc-icon nc-lock-circle-open"></i>
-                      <p>Permissões</p>
-                      </a>
-                  </li>
-                @endrole
                 @role('administradores')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'usuarios') ? 'active' : '' }}">
                       <a href="{{ url('usuarios') }}">
@@ -120,29 +112,7 @@
                 <span class="navbar-toggler-bar bar3"></span>
               </button>
             </div>
-            <a class="navbar-brand upper" href="{{ url('dashboard') }}">Studio Social</a>
-            @role('administradores')
-            <div><span class="flag_regras" data-value="{{ Session::get('flag_regras') }}">
-              @if(Session::get('flag_regras'))
-                  <span class="badge badge-pill badge-info">POSTAGENS FILTRADAS POR REGRAS</span>
-              @else
-                  <span class="badge badge-pill badge-danger">POSTAGENS NÃO FILTRADAS</span>
-              @endif
-            </span>
-
-            </div>
-              <div class="mb-1 ml-2">
-                
-
-                @if(Session::get('cliente'))
-                  <p>{{ Session::get('cliente')['nome'] }}</p>
-                @else
-                  <p>Nenhum cliente selecionado</p>
-                @endif
-                <span class="troca_cliente"><i class="fa fa-refresh ml-1"></i></span>
-
-              </div>
-            @endrole
+            <a class="navbar-brand upper" href="{{ url('dashboard') }}">Studioclipagem</a>
           </div>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-bar navbar-kebab"></span>
@@ -171,9 +141,10 @@
             
             <div class="credits ml-auto">
               <span class="copyright">
-                © <script>
+                © 2021 - 
+                <script>
                   document.write(new Date().getFullYear())
-                </script> - Studio Social
+                </script> - Studioclipagem
               </span>
             </div>
           </div>
