@@ -27,9 +27,9 @@ class HomeController extends Controller
     {
         $this->middleware('auth');
 
-        $cliente = Client::where('id',Configs::where('key', 'cliente_padrao')->first()->value)->first();
+        $cliente = null;
 
-        $clienteSession = ['id' => $cliente->id, 'nome' => $cliente->name];
+        $clienteSession = ['id' => 1, 'nome' => 'Teste'];
 
         Session::put('cliente', session('cliente') ? session('cliente') : $clienteSession);
 
