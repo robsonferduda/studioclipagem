@@ -2,14 +2,14 @@ version: "3.7"
 services:
   apache:
     image: rafael01costa/php:7.3-apache-studiosocial
-    container_name: studiosocial
+    container_name: studioclipagem
     restart: always
     expose:
       - "443"
     volumes:
       - ./:/var/www/html
     environment:
-      - VIRTUAL_HOST=studiosocial.localhost
+      - VIRTUAL_HOST=studioclipagem.localhost
     networks:
       - network
 networks:

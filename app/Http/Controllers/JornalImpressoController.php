@@ -7,7 +7,6 @@ use Auth;
 use App\User;
 use App\Term;
 use App\Client;
-use App\Noticia;
 use App\Configs;
 use App\Hashtag;
 use App\Media;
@@ -19,7 +18,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
-class HomeController extends Controller
+class JornalImpressoController extends Controller
 {
     private $client_id;
     private $periodo_padrao;
@@ -43,6 +42,16 @@ class HomeController extends Controller
 
     public function index()
     {
-        return view('index');
+        return view('jornal-impresso/index');
+    }
+
+    public function upload()
+    {
+        return view('jornal-impresso/upload');
+    }
+
+    public function processamento()
+    {
+        return view('jornal-impresso/processamento');
     }
 }

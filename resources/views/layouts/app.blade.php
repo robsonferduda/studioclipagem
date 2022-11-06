@@ -56,19 +56,51 @@
                   </li>
                 @endrole
                 @role('administradores')
-                <li class="{{ (Session::has('url') and Session::get('url') == 'areas') ? 'active' : '' }}">
-                  <a href="{{ url('areas') }}">
-                  <i class="fa fa-tags"></i>
-                  <p>Áreas</p>
-                  </a>
-                </li>
-              @endrole
-                @role('administradores')
-                  <li class="{{ (Session::has('url') and Session::get('url') == 'veiculos') ? 'active' : '' }}">
-                    <a href="{{ url('veiculos') }}">
-                    <i class="fa fa-comments"></i>
-                    <p>Veículos</p>
+                  <li class="{{ (Session::has('url') and Session::get('url') == 'areas') ? 'active' : '' }}">
+                    <a href="{{ url('areas') }}">
+                    <i class="fa fa-tags"></i>
+                    <p>Áreas</p>
                     </a>
+                  </li>
+                @endrole
+                @role('administradores')
+                  <li class="{{ (Session::has('url') and Session::get('url') == 'fontes') ? 'active' : '' }}">
+                      <a href="{{ url('fontes') }}">
+                        <i class="fa fa-database"></i>
+                        <p>Fontes</p>
+                      </a>
+                  </li>
+                @endrole
+                @role('administradores')
+                  <li class="{{ (Session::has('url') and Session::get('url') == 'jornal-impresso') ? 'active' : '' }}">
+                      <a href="{{ url('jornal-impresso') }}">
+                        <i class="fa fa-newspaper-o"></i>
+                        <p>Jornal Impresso</p>
+                      </a>
+                  </li>
+                @endrole
+                @role('administradores')
+                  <li class="{{ (Session::has('url') and Session::get('url') == 'jornal-web') ? 'active' : '' }}">
+                      <a href="{{ url('jornal-web') }}">
+                        <i class="fa fa-globe"></i>
+                        <p>Jornal Web</p>
+                      </a>
+                  </li>
+                @endrole
+                @role('administradores')
+                  <li class="{{ (Session::has('url') and Session::get('url') == 'radio') ? 'active' : '' }}">
+                      <a href="{{ url('radio') }}">
+                        <i class="fa fa-volume-up"></i>
+                        <p>Rádio</p>
+                      </a>
+                  </li>
+                @endrole
+                @role('administradores')
+                  <li class="{{ (Session::has('url') and Session::get('url') == 'tv') ? 'active' : '' }}">
+                      <a href="{{ url('tv') }}">
+                        <i class="fa fa-tv"></i>
+                        <p>Televisão</p>
+                      </a>
                   </li>
                 @endrole
                 @role('administradores')
