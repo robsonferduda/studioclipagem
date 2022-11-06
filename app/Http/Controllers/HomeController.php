@@ -7,6 +7,7 @@ use Auth;
 use App\User;
 use App\Term;
 use App\Client;
+use App\Noticia;
 use App\Configs;
 use App\Hashtag;
 use App\Media;
@@ -49,6 +50,8 @@ class HomeController extends Controller
         $periodo_padrao = $this->periodo_padrao;
         $data_inicial = Carbon::now()->subDays($this->periodo_padrao - 1)->format('Y-m-d');
         $data_final = Carbon::now()->format('Y-m-d');
+
+        $noticias = Noticia::where('data_cadastro', Carbon::now()->format('Y-m-d'))->get();
 
         $ig_comments_total = DB::table('ig_comments')
                                 ->join('medias','medias.id','=','ig_comments.media_id')
@@ -107,7 +110,7 @@ class HomeController extends Controller
             $hashtags = Hashtag::where('client_id', $this->client_id)->where('is_active',true)->orderBy('hashtag')->get();
             $terms = Term::with('mediasTwitter')->with('medias')->where('client_id', $this->client_id)->where('is_active',true)->orderBy('term')->get();
 
-            return view('index', compact('users','clientes','totais','hashtags','terms','periodo_relatorio','media_twitter','media_instagram','media_facebook'));
+            return view('index', compact('users','clientes','totais','hashtags','terms','periodo_relatorio','media_twitter','media_instagram','media_facebook','noticias'));
 
         }else{
             

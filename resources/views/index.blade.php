@@ -1,9 +1,38 @@
 @extends('layouts.app')
 @section('content')
-    <div class="row">    
+    <div class="row">   
+        <div class="col-md-6">
+            <div class="card ">
+                <div class="card-header">
+                   <h5 class="p-0 m-0">Notícias do Dia</h5>
+                   <p>Listagem de todas as notícias de 26/07/2022</p>
+                </div>
+                <div class="card-content px-2">
+                    <ul class="list-group">
+                        @foreach($noticias as $noticia)
+                            <li class="list-group-item" data-toggle="modal" data-target="#issue">
+                            <div class="media">
+                                <div class="media-body">
+                                    <p><strong>{{ $noticia->titulo }}</strong> <span class="number pull-right"># {{ $noticia->id }}</span></p>
+                                    <h6>
+                                        <span class="badge badge-pill badge-danger">VEÍCULOS</span>
+                                        <span class="badge badge-pill badge-success ml-2">CLIENTE</span>
+                                    </h6>
+                                    <p>{{ $noticia->sinopse }}</p>
+                                </div>
+                            </div>
+                            </li>         
+                        @endforeach          
+                     </ul>
+                </div>
+                <div class="card-footer">
+                   
+                </div>
+            </div>
+        </div> 
         <div class="col-md-6">
             <div class="card card-timeline card-plain">
-                <h6>{{ date('d/m/Y') }}</h6>
+                <h6>{{ date('d/m/Y') }} <a href=""><i class="fa fa-refresh"></i></a></h6>
                 <div class="card-content">
                   <ul class="timeline timeline-simple">
                      <li class="timeline-inverted">
@@ -15,7 +44,7 @@
                                 <h6>Veículos Não Identificados <span class="badge badge-pill badge-danger pull-right">3 VEÍCULOS</span></h6>
                             </div>
                             <div class="timeline-body">
-                                <p></p>
+                                <p>Identifique os veículos antes de continuar para incluir todas as notícias</p>
                             </div>
                         </div>
                      </li>
@@ -29,7 +58,6 @@
                             </div>
                             <div class="timeline-body">
                                 <p>Existem xx notícias sem identificação das áreas.</p>
-                                <p>Todos os clientes possuem áreas cadastradas.</p>
                             </div>
                         </div>
                      </li>
@@ -70,8 +98,8 @@
                   </ul>
                </div>
             </div>
-         </div>
-    </div> 
+        </div>
+    </div>
 @endsection
 @section('script')
 <script>
