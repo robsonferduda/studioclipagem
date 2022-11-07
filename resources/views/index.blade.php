@@ -9,20 +9,7 @@
                 </div>
                 <div class="card-content px-2">
                     <ul class="list-group">
-                        @foreach($noticias as $noticia)
-                            <li class="list-group-item" data-toggle="modal" data-target="#issue">
-                            <div class="media">
-                                <div class="media-body">
-                                    <p><strong>{{ $noticia->titulo }}</strong> <span class="number pull-right"># {{ $noticia->id }}</span></p>
-                                    <h6>
-                                        <span class="badge badge-pill badge-danger">VEÍCULOS</span>
-                                        <span class="badge badge-pill badge-success ml-2">CLIENTE</span>
-                                    </h6>
-                                    <p>{{ $noticia->sinopse }}</p>
-                                </div>
-                            </div>
-                            </li>         
-                        @endforeach          
+                                 
                      </ul>
                 </div>
                 <div class="card-footer">

@@ -23,6 +23,7 @@ class HomeController extends Controller
 {
     private $client_id;
     private $periodo_padrao;
+    private $noticias = array();
 
     public function __construct()
     {
