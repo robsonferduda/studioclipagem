@@ -74,7 +74,7 @@
                 @endrole
                 @role('administradores')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'jornal-impresso') ? 'active' : '' }}">
-                      <a href="{{ url('jornal-impresso') }}">
+                      <a href="{{ url('impresso') }}">
                         <i class="fa fa-newspaper-o"></i>
                         <p>Jornal Impresso</p>
                       </a>

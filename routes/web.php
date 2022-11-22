@@ -23,7 +23,7 @@ Route::resource('role', 'RoleController');
 Route::resource('term', 'TermController');
 Route::resource('email', 'EmailController');
 
-Route::get('jornal-impresso','JornalImpressoController@index');
+Route::get('impresso','JornalImpressoController@index');
 Route::get('jornal-impresso/processamento','JornalImpressoController@processamento');
 Route::get('jornal-impresso/upload','JornalImpressoController@upload');
 

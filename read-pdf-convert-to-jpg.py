@@ -30,7 +30,7 @@ for diretorio, subpastas, arquivos in os.walk(pasta_pendentes):
             file_name_img = path_img+"pagina_{0}.png".format(i)
             file_name_txt = path_txt+"pagina_{0}.txt".format(i)
             img.save(file_name_img, "PNG")
-            texto = ocr.image_to_string(Image.open("/home/robson/repositorios/studioclipagem/public/jornal-impresso/1716/20221115/img/pagina_0.png"), lang='por')
+            texto = ocr.image_to_string(Image.open(file_name_img), lang='por')
             file_object = open(file_name_txt, 'w')
             file_object.write(texto)
             file_object.close()

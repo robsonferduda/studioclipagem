@@ -11,7 +11,7 @@
                     </h4>
                 </div>
                 <div class="col-md-4">
-                    <a href="{{ url('jornal-impresso') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-newspaper-o"></i> Dashboard</a>
+                    <a href="{{ url('impresso') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-newspaper-o"></i> Dashboard</a>
                 </div>
             </div>
         </div>
@@ -23,7 +23,7 @@
                 <div class="form-group" style="position: relative;">
                     <div class='content'>
                         <span>Busque ou arraste os arquivos</span>
-                        {{ Form::open(array('url' => 'imageUpload', 'method' => 'PUT', 'name'=>'product_images', 'id'=>'myImageDropzone', 'class'=>'dropzone', 'files' => true)) }}
+                        {{ Form::open(array('url' => 'imageUpload', 'method' => 'POST', 'name'=>'product_images', 'id'=>'myImageDropzone', 'class'=>'dropzone', 'files' => true)) }}
 
                         {{ Form::close() }}
                     </div>
