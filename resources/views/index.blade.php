@@ -2,19 +2,83 @@
 @section('content')
     <div class="row">   
         <div class="col-md-6">
-            <div class="card ">
-                <div class="card-header">
-                   <h5 class="p-0 m-0">Notícias do Dia</h5>
-                   <p>Listagem de todas as notícias de 26/07/2022</p>
-                </div>
-                <div class="card-content px-2">
-                    <ul class="list-group">
-                                 
-                     </ul>
-                </div>
-                <div class="card-footer">
-                   
-                </div>
+            <div class="row">
+                <div class="col-lg-3 col-md-3 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-body ">
+                            <div class="row">
+                                <div class="col-3 col-md-3">
+                                    <div class="icon-big text-center icon-warning">
+                                        <i class="fa fa-newspaper-o text-info"></i>
+                                    </div>
+                                </div>
+                                <div class="col-9 col-md-9">
+                                    <div class="numbers">
+                                        <p class="card-category">IMPRESSO</p>
+                                        <p class="card-title"><a href="{{ url('clientes') }}">80</a></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>  
+                <div class="col-lg-3 col-md-3 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-body ">
+                            <div class="row">
+                                <div class="col-3 col-md-3">
+                                    <div class="icon-big text-center icon-warning">
+                                        <i class="fa fa-globe text-danger"></i>
+                                    </div>
+                                </div>
+                                <div class="col-9 col-md-9">
+                                    <div class="numbers">
+                                        <p class="card-category">WEB</p>
+                                        <p class="card-title"><a href="{{ url('clientes') }}">80</a></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>  
+                <div class="col-lg-3 col-md-3 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-body ">
+                            <div class="row">
+                                <div class="col-3 col-md-3">
+                                    <div class="icon-big text-center icon-warning">
+                                        <i class="fa fa-volume-up text-success"></i>
+                                    </div>
+                                </div>
+                                <div class="col-9 col-md-9">
+                                    <div class="numbers">
+                                        <p class="card-category">RÁDIO</p>
+                                        <p class="card-title"><a href="{{ url('clientes') }}">80</a></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>  
+                <div class="col-lg-3 col-md-3 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-body ">
+                            <div class="row">
+                                <div class="col-3 col-md-3">
+                                    <div class="icon-big text-center icon-warning">
+                                        <i class="fa fa-tv text-warning"></i>
+                                    </div>
+                                </div>
+                                <div class="col-9 col-md-9">
+                                    <div class="numbers">
+                                        <p class="card-category">TV</p>
+                                        <p class="card-title"><a href="{{ url('clientes') }}">80</a></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>  
             </div>
         </div> 
         <div class="col-md-6">
@@ -22,19 +86,6 @@
                 <h6>{{ date('d/m/Y') }} <a href=""><i class="fa fa-refresh"></i></a></h6>
                 <div class="card-content">
                   <ul class="timeline timeline-simple">
-                     <li class="timeline-inverted">
-                        <div class="timeline-badge danger">
-                           <i class="fa fa-comments fa-2x"></i>
-                        </div>
-                        <div class="timeline-panel">
-                            <div class="timeline-heading">
-                                <h6>Veículos Não Identificados <span class="badge badge-pill badge-danger pull-right">3 VEÍCULOS</span></h6>
-                            </div>
-                            <div class="timeline-body">
-                                <p>Identifique os veículos antes de continuar para incluir todas as notícias</p>
-                            </div>
-                        </div>
-                     </li>
                      <li class="timeline-inverted">
                         <div class="timeline-badge success">
                            <i class="fa fa-tags fa-2x mt-1"></i>
