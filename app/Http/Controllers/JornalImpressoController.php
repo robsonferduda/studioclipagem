@@ -4,16 +4,7 @@ namespace App\Http\Controllers;
 
 use DB;
 use Auth;
-use App\User;
-use App\Term;
-use App\Client;
-use App\Configs;
-use App\Hashtag;
-use App\Media;
-use App\FbPost;
-use App\MediaFilteredVw;
-use App\MediaRuleFilteredVw;
-use App\MediaTwitter;
+use App\Models\JornalImpresso;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -42,7 +33,8 @@ class JornalImpressoController extends Controller
 
     public function index()
     {
-        return view('jornal-impresso/index');
+        $dados = JornalImpresso::all();
+        return view('jornal-impresso/index',compact('dados'));
     }
 
     public function upload()
