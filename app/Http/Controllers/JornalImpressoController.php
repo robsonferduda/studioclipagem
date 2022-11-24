@@ -42,6 +42,7 @@ class JornalImpressoController extends Controller
 
     public function index()
     {
+        dd("Teste");
         return view('jornal-impresso/index');
     }
 
