@@ -15,7 +15,7 @@
                                 <div class="col-9 col-md-9">
                                     <div class="numbers">
                                         <p class="card-category">IMPRESSO</p>
-                                        <p class="card-title"><a href="{{ url('clientes') }}">80</a></p>
+                                        <p class="card-title"><a href="{{ url('clientes') }}">{{ $totais['impresso'] }}</a></p>
                                     </div>
                                 </div>
                             </div>
@@ -34,7 +34,7 @@
                                 <div class="col-9 col-md-9">
                                     <div class="numbers">
                                         <p class="card-category">WEB</p>
-                                        <p class="card-title"><a href="{{ url('clientes') }}">80</a></p>
+                                        <p class="card-title"><a href="{{ url('clientes') }}">{{ $totais['web'] }}</a></p>
                                     </div>
                                 </div>
                             </div>
@@ -53,7 +53,7 @@
                                 <div class="col-9 col-md-9">
                                     <div class="numbers">
                                         <p class="card-category">RÁDIO</p>
-                                        <p class="card-title"><a href="{{ url('clientes') }}">80</a></p>
+                                        <p class="card-title"><a href="{{ url('clientes') }}">{{ $totais['radio'] }}</a></p>
                                     </div>
                                 </div>
                             </div>
@@ -72,7 +72,7 @@
                                 <div class="col-9 col-md-9">
                                     <div class="numbers">
                                         <p class="card-category">TV</p>
-                                        <p class="card-title"><a href="{{ url('clientes') }}">80</a></p>
+                                        <p class="card-title"><a href="{{ url('clientes') }}">{{ $totais['tv'] }}</a></p>
                                     </div>
                                 </div>
                             </div>
@@ -92,10 +92,10 @@
                         </div>
                         <div class="timeline-panel">
                             <div class="timeline-heading">
-                                <h6>IDENTIFICAR ÁREAS <span class="badge badge-pill badge-success pull-right">13 NOTÍCIAS</span></h6>
+                                <h6>IDENTIFICAR ÁREAS <span class="badge badge-pill badge-success pull-right">{{ $totais['impresso'] }} NOTÍCIAS</span></h6>
                             </div>
                             <div class="timeline-body">
-                                <p>Existem xx notícias sem identificação das áreas.</p>
+                                <p>Existem {{ $totais['impresso'] }} notícias sem identificação das áreas.</p>
                             </div>
                         </div>
                      </li>

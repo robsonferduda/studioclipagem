@@ -4,17 +4,7 @@ namespace App\Http\Controllers;
 
 use DB;
 use Auth;
-use App\User;
-use App\Term;
-use App\Client;
-use App\Noticia;
-use App\Configs;
-use App\Hashtag;
-use App\Media;
-use App\FbPost;
-use App\MediaFilteredVw;
-use App\MediaRuleFilteredVw;
-use App\MediaTwitter;
+use App\Models\JornalImpresso;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -44,6 +34,13 @@ class HomeController extends Controller
 
     public function index()
     {
-        return view('index');
+        $totais = array();
+
+        $totais = array('impresso' => JornalImpresso::count(),
+                        'web' => 0,
+                        'radio' => 0,
+                        'tv' => 0);
+
+        return view('index', compact('totais'));
     }
 }
