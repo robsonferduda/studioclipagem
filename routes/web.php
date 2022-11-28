@@ -27,6 +27,8 @@ Route::get('impresso','JornalImpressoController@index');
 Route::get('jornal-impresso/processamento','JornalImpressoController@processamento');
 Route::get('jornal-impresso/upload','JornalImpressoController@upload');
 
+Route::get('jornal-web','JornalWebController@index');
+
 Route::get('boletins','BoletimController@index');
 Route::get('boletim/{id}','BoletimController@detalhes');
 Route::get('boletim/{id}/enviar','BoletimController@enviar');
