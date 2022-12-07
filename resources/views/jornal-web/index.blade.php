@@ -25,20 +25,12 @@
                         <div class="card">
                             <div class="card-body">                           
                                 <div class="row">
-                                    <div class="col-lg-3 col-sm-12">
-                                        <img src="{{ asset("jornal-impresso/1514/20221116/img/pagina_".$key.".png") }}" alt="..." class="img-thumbnail">
-                                    </div>
                                     <div class="col-lg-9 col-sm-12">
                                         <h6>{{ $noticia->titulo }}</h6>
-                                        <p>{{ $noticia->fonte->ds_fonte }} - {{ \Carbon\Carbon::parse($noticia->dt_clipagem)->format('d/m/Y') }}</p>
+                                        <p>{{ ($noticia->fonte) ? $noticia->fonte->ds_fonte : 'Fonte desconhecida' }} - {{ \Carbon\Carbon::parse($noticia->dt_clipagem)->format('d/m/Y') }}</p>
                                         <p>
                                             {{ Str::limit($noticia->texto, 450, " ...") }}
                                         </p>
-                                        @if($noticia->nu_pagina_atual == 1)
-                                            <p>Primeira Página</p>
-                                        @else
-                                            <p>Página <strong>{{ $noticia->nu_pagina_atual }}</strong> de <strong>{{ $noticia->nu_paginas_total }}</strong></p>
-                                        @endif
                                     </div>
                                 </div>                               
                             </div>
