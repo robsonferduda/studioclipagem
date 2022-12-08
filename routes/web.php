@@ -26,6 +26,7 @@ Route::resource('email', 'EmailController');
 Route::get('impresso','JornalImpressoController@index');
 Route::get('jornal-impresso/processamento','JornalImpressoController@processamento');
 Route::get('jornal-impresso/upload','JornalImpressoController@upload');
+Route::post('jornal-impresso/upload','JornalImpressoController@uploadFiles');
 
 Route::get('jornal-web','JornalWebController@index');
 

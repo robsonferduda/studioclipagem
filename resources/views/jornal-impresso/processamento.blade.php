@@ -19,7 +19,39 @@
             <div class="col-md-12">
                 @include('layouts.mensagens')
             </div>
-            
+            <table id="datatable" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th>Data Arquivo</th>
+                        <th>Fonte</th>
+                        <th>Arquivo</th>
+                        <th>Tamanho</th>
+                        <th class="text-center">Situação</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>Data Arquivo</th>
+                        <th>Fonte</th>
+                        <th>Arquivo</th>
+                        <th class="text-center">Tamanho</th>
+                        <th class="text-center">Situação</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    @foreach($fila as $arquivo)
+                        <tr>
+                            <td>{{ Carbon\Carbon::parse($arquivo->dt_arquivo)->format('d/m/Y') }}</td>
+                            <td>{{ $arquivo->id_fonte }}</td>
+                            <td><a href="{{ url('jornal-impresso/pendentes/'.$arquivo->ds_arquivo) }}">{{ $arquivo->ds_arquivo }}</a></td>
+                            <td class="text-center">{{ number_format($arquivo->tamanho, 2) }} MB</td>
+                            <td class="text-center">
+                                {!! ($arquivo->fl_processado) ? '<span class="badge badge-pill badge-success">PROCESSADO</span>' : '<span class="badge badge-pill badge-danger">PENDENTE</span>' !!}
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
     </div>
 </div> 

@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use DB;
 use Auth;
-use App\Models\JornalImpresso;
 use Carbon\Carbon;
+use App\Models\FilaImpresso;
+use App\Models\JornalImpresso;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -44,6 +45,31 @@ class JornalImpressoController extends Controller
 
     public function processamento()
     {
-        return view('jornal-impresso/processamento');
+        $fila = FilaImpresso::all();
+        return view('jornal-impresso/processamento', compact('fila'));
+    }
+
+    public function uploadFiles(Request $request)
+    {
+        $image = $request->file('file');
+        $fileInfo = $image->getClientOriginalName();
+        $filesize = $image->getSize()/1024/1024;
+        $filename = pathinfo($fileInfo, PATHINFO_FILENAME);
+        $extension = pathinfo($fileInfo, PATHINFO_EXTENSION);
+        $file_name= $filename.'-'.time().'.'.$extension;
+        $image->move(public_path('jornal-impresso/pendentes'),$file_name);
+
+        $partes = explode("_", $filename);
+        $dt_arquivo = strtotime($partes[1]);
+        $dt_arquivo = Carbon::createFromFormat('Ymd', $partes[0]); 
+        $id_fonte = $partes[1];
+
+        $dados = array('dt_arquivo' => $dt_arquivo->format('Y-m-d'),
+                       'ds_arquivo' => $file_name,
+                       'id_fonte' => $id_fonte,
+                       'tamanho' => $filesize);
+        FilaImpresso::create($dados);
+        
+        return response()->json(['success'=>$file_name, 'msg' => 'Arquivo inserido com sucesso.']);
     }
 }

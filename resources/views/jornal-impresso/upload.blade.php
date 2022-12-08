@@ -12,6 +12,7 @@
                 </div>
                 <div class="col-md-4">
                     <a href="{{ url('impresso') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-newspaper-o"></i> Dashboard</a>
+                    <a href="{{ url('jornal-impresso/processamento') }}" class="btn btn-info pull-right" style="margin-right: 12px;"><i class="fa fa-cogs"></i> Processamento</a>
                 </div>
             </div>
         </div>
@@ -20,10 +21,10 @@
                 @include('layouts.mensagens')
             </div>
             <div class="col-lg-12 col-md-3 mb-12">
-                <div class="form-group" style="position: relative;">
+                <div class="form-group" style="">
                     <div class='content'>
                         <span>Busque ou arraste os arquivos</span>
-                        {{ Form::open(array('url' => 'imageUpload', 'method' => 'POST', 'name'=>'product_images', 'id'=>'myImageDropzone', 'class'=>'dropzone', 'files' => true)) }}
+                        {{ Form::open(array('url' => 'jornal-impresso/upload', 'method' => 'POST', 'name'=>'product_images', 'id'=>'document-dropzone', 'class'=>'dropzone', 'files' => true)) }}
 
                         {{ Form::close() }}
                     </div>
@@ -32,4 +33,65 @@
         </div>
     </div>
 </div> 
+@endsection
+@section('script')
+<script>
+    $( document ).ready(function() {
+
+Dropzone.options.dropzone =
+         {
+	    maxFiles: 5, 
+            maxFilesize: 4,
+            acceptedFiles: ".jpeg,.jpg,.png,.gif",
+            addRemoveLinks: true,
+            timeout: 50000,
+            init:function() {
+
+				// Get images
+				var myDropzone = this;
+				$.ajax({
+					url: gallery,
+					type: 'GET',
+					dataType: 'json',
+					success: function(data){
+					//console.log(data);
+					$.each(data, function (key, value) {
+
+						var file = {name: value.name, size: value.size};
+						myDropzone.options.addedfile.call(myDropzone, file);
+						myDropzone.options.thumbnail.call(myDropzone, file, value.path);
+						myDropzone.emit("complete", file);
+					});
+					}
+				});
+			},
+                
+            success: function(file, response) 
+            {
+				file.previewElement.id = response.success;
+				//console.log(file); 
+				// set new images names in dropzone’s preview box.
+                var olddatadzname = file.previewElement.querySelector("[data-dz-name]");   
+				file.previewElement.querySelector("img").alt = response.success;
+				olddatadzname.innerHTML = response.success;
+            },
+            error: function(file, response)
+            {
+               if($.type(response) === "string")
+					var message = response; //dropzone sends it's own error messages in string
+				else
+					var message = response.message;
+				file.previewElement.classList.add("dz-error");
+				_ref = file.previewElement.querySelectorAll("[data-dz-errormessage]");
+				_results = [];
+				for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+					node = _ref[_i];
+					_results.push(node.textContent = message);
+				}
+				return _results;
+            }
+            
+};
+});
+</script>
 @endsection
