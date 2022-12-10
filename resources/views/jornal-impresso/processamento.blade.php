@@ -12,6 +12,7 @@
                 </div>
                 <div class="col-md-4">
                     <a href="{{ url('impresso') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-newspaper-o"></i> Dashboard</a>
+                    <a href="{{ url('jornal-impresso/processar') }}" class="btn btn-warning pull-right" style="margin-right: 12px;"><i class="fa fa-cogs"></i> Processar</a>
                 </div>
             </div>
         </div>

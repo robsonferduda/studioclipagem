@@ -9,6 +9,8 @@ use App\Models\FilaImpresso;
 use App\Models\JornalImpresso;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Symfony\Component\Process\Process;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class JornalImpressoController extends Controller
 {
@@ -71,5 +73,20 @@ class JornalImpressoController extends Controller
         FilaImpresso::create($dados);
         
         return response()->json(['success'=>$file_name, 'msg' => 'Arquivo inserido com sucesso.']);
+    }
+
+    public function processar()
+    {
+        $process = new Process(['python3', base_path().'/read-pdf-convert-to-jpg.py']);
+
+        $process->run(function ($type, $buffer){
+            if (Process::ERR === $type) {
+              
+            }else{
+
+            }
+        });
+
+        return redirect()->back();        
     }
 }

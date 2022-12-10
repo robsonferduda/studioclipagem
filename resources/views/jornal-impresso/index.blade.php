@@ -21,19 +21,19 @@
                 @include('layouts.mensagens')
             </div>
             <div class="row">
-                <div class="col-lg-6 col-sm-6">
+                <div class="col-lg-12 col-sm-12">
                     @foreach ($dados as $key => $noticia)
                         <div class="card">
                             <div class="card-body">                           
                                 <div class="row">
-                                    <div class="col-lg-3 col-sm-12">
+                                    <div class="col-lg-2 col-sm-12">
                                         <img src="{{ asset('jornal-impresso/'.$noticia->fonte->id_knewin.'/20221116/img/pagina_'.$noticia->nu_pagina_atual.'.png') }}" alt="..." class="img-thumbnail">
                                     </div>
-                                    <div class="col-lg-9 col-sm-12">
+                                    <div class="col-lg-10 col-sm-12">
                                         <h6>{{ $noticia->titulo }}</h6>
                                         <p>{{ $noticia->fonte->ds_fonte }} - {{ \Carbon\Carbon::parse($noticia->dt_clipagem)->format('d/m/Y') }}</p>
                                         <p>
-                                            {{ Str::limit($noticia->texto, 450, " ...") }}
+                                            {{ Str::limit($noticia->texto, 800, " ...") }}
                                         </p>
                                         @if($noticia->nu_pagina_atual == 1)
                                             <p>Primeira Página</p>
