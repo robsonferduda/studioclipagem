@@ -14,7 +14,7 @@ def create_path(img, txt):
 pasta_pendentes = 'public/jornal-impresso/pendentes'
 pasta_processados = 'public/jornal-impresso/processados'
 
-con = psycopg2.connect(host='localhost', database='postgres',user='postgres', password='cipplp10')
+con = psycopg2.connect(host='localhost', database='studioclipagem',user='postgres', password='cipplp10')
 cur = con.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
 
 for diretorio, subpastas, arquivos in os.walk(pasta_pendentes):
@@ -24,6 +24,10 @@ for diretorio, subpastas, arquivos in os.walk(pasta_pendentes):
         pasta_data = dados_arquivo[0]
         pasta_id = dados_arquivo[1]
         dt_formatada = pasta_data[:4]+"-"+ pasta_data[4:6]+"-"+pasta_data[6:]
+
+        sql = 'SELECT id FROM fonte WHERE id_knewin = '+pasta_id
+        cur.execute(sql)
+        id_fonte = cur.fetchone()['id']
 
         path_img = "public/jornal-impresso/"+pasta_id+"/"+pasta_data+"/img/"
         path_txt = "public/jornal-impresso/"+pasta_id+"/"+pasta_data+"/txt/"
