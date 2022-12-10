@@ -56,7 +56,7 @@ for diretorio, subpastas, arquivos in os.walk(pasta_pendentes):
             file_object.close()
 
             #sql = "INSERT INTO noticia_impresso (id_fonte, dt_clipagem, nu_pagina_atual, texto) VALUES("+pasta_id+",'"+dt_formatada+"',"+str(i)+",'"+texto+"')"
-            cur.execute("INSERT INTO noticia_impresso (id_fonte, dt_clipagem, nu_pagina_atual, titulo, texto) VALUES(%s, %s, %s, %s, %s)", (pasta_id, dt_formatada, i, titulo, texto))
+            cur.execute("INSERT INTO noticia_impresso (id_fonte, dt_clipagem, nu_pagina_atual, titulo, texto) VALUES(%s, %s, %s, %s, %s)", (id_fonte, dt_formatada, i, titulo, texto))
             con.commit() 
 
         sql = "UPDATE noticia_impresso SET nu_paginas_total = "+str(i)+" WHERE id_fonte = "+pasta_id+" AND dt_clipagem = '"+dt_formatada+"'"
