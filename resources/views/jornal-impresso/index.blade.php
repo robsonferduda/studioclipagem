@@ -27,7 +27,7 @@
                             <div class="card-body">                           
                                 <div class="row">
                                     <div class="col-lg-2 col-sm-12">
-                                        <img src="{{ asset('jornal-impresso/'.$noticia->fonte->id_knewin.'/20221116/img/pagina_'.$noticia->nu_pagina_atual.'.png') }}" alt="..." class="img-thumbnail">
+                                        <img src="{{ asset('jornal-impresso/'.$noticia->fonte->id_knewin.'/'.\Carbon\Carbon::parse($noticia->dt_clipagem)->format('Ymd').'/img/pagina_'.$noticia->nu_pagina_atual.'.png') }}" alt="..." class="img-thumbnail">
                                     </div>
                                     <div class="col-lg-10 col-sm-12">
                                         <h6>{{ $noticia->titulo }}</h6>
