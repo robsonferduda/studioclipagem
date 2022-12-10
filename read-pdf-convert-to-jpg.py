@@ -6,6 +6,7 @@ import shutil
 
 from pdf2image import convert_from_path
 from PIL import Image
+from decouple import config
 
 def create_path(img, txt):
     os.makedirs(img)
@@ -14,7 +15,12 @@ def create_path(img, txt):
 pasta_pendentes = 'public/jornal-impresso/pendentes'
 pasta_processados = 'public/jornal-impresso/processados'
 
-con = psycopg2.connect(host='localhost', database='studioclipagem',user='postgres', password='cipplp10')
+host = config('DB_HOST')
+database = config('DB_DATABASE')
+user = config('DB_USERNAME')
+password = config('DB_PASSWORD')
+
+con = psycopg2.connect(host=host, database=database,user=user, password=password)
 cur = con.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
 
 for diretorio, subpastas, arquivos in os.walk(pasta_pendentes):
