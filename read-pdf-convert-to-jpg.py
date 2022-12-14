@@ -7,6 +7,7 @@ import shutil
 from pdf2image import convert_from_path
 from PIL import Image
 from decouple import config
+from datetime import datetime
 
 def create_path(img, txt):
     os.makedirs(img)
@@ -66,8 +67,10 @@ for diretorio, subpastas, arquivos in os.walk(pasta_pendentes):
         #Move arquivo para a pasta de arquivos processados
         shutil.move(pasta_pendentes+'/'+arquivo, pasta_processados+'/'+arquivo)
 
+        dt_atual = datetime.now()
+
         #Atualiza o status do arquivo, indicando que o mesmo foi processado   
-        sql_update = "UPDATE fila_impresso SET fl_processado=true WHERE id_fonte = "+pasta_id+" AND dt_arquivo = '"+dt_formatada+"'" 
+        sql_update = "UPDATE fila_impresso SET fl_processado=true, start_at = '"+dt_atual+"' WHERE id_fonte = "+id_fonte+" AND dt_arquivo = '"+dt_formatada+"'" 
         cur.execute(sql_update)
         con.commit()  
 
