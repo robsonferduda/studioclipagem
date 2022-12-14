@@ -67,7 +67,7 @@ for diretorio, subpastas, arquivos in os.walk(pasta_pendentes):
         #Move arquivo para a pasta de arquivos processados
         shutil.move(pasta_pendentes+'/'+arquivo, pasta_processados+'/'+arquivo)
 
-        dt_atual = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        dt_atual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         #Atualiza o status do arquivo, indicando que o mesmo foi processado   
         sql_update = "UPDATE fila_impresso SET fl_processado=true, start_at = '"+dt_atual+"' WHERE id_fonte = "+str(id_fonte)+" AND dt_arquivo = '"+dt_formatada+"'" 
