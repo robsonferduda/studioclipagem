@@ -60,7 +60,7 @@ for diretorio, subpastas, arquivos in os.walk(pasta_pendentes):
             cur.execute("INSERT INTO noticia_impresso (id_fonte, dt_clipagem, nu_pagina_atual, titulo, texto) VALUES(%s, %s, %s, %s, %s)", (id_fonte, dt_formatada, i, titulo, texto))
             con.commit() 
 
-        sql = "UPDATE noticia_impresso SET nu_paginas_total = "+str(i)+" WHERE id_fonte = "+id_fonte+" AND dt_clipagem = '"+dt_formatada+"'"
+        sql = "UPDATE noticia_impresso SET nu_paginas_total = "+str(i)+" WHERE id_fonte = "+str(id_fonte)+" AND dt_clipagem = '"+dt_formatada+"'"
         cur.execute(sql)
         con.commit()     
 
@@ -70,7 +70,7 @@ for diretorio, subpastas, arquivos in os.walk(pasta_pendentes):
         dt_atual = datetime.now()
 
         #Atualiza o status do arquivo, indicando que o mesmo foi processado   
-        sql_update = "UPDATE fila_impresso SET fl_processado=true, start_at = '"+dt_atual+"' WHERE id_fonte = "+id_fonte+" AND dt_arquivo = '"+dt_formatada+"'" 
+        sql_update = "UPDATE fila_impresso SET fl_processado=true, start_at = '"+dt_atual+"' WHERE id_fonte = "+str(id_fonte)+" AND dt_arquivo = '"+dt_formatada+"'" 
         cur.execute(sql_update)
         con.commit()  
 
