@@ -15,7 +15,7 @@
                                 <div class="col-9 col-md-9">
                                     <div class="numbers">
                                         <p class="card-category">IMPRESSO</p>
-                                        <p class="card-title"><a href="{{ url('clientes') }}">{{ $totais['impresso'] }}</a></p>
+                                        <p class="card-title"><a href="{{ url('impresso') }}">{{ $totais['impresso'] }}</a></p>
                                     </div>
                                 </div>
                             </div>
@@ -34,7 +34,7 @@
                                 <div class="col-9 col-md-9">
                                     <div class="numbers">
                                         <p class="card-category">WEB</p>
-                                        <p class="card-title"><a href="{{ url('clientes') }}">{{ $totais['web'] }}</a></p>
+                                        <p class="card-title"><a href="{{ url('jornal-web') }}">{{ $totais['web'] }}</a></p>
                                     </div>
                                 </div>
                             </div>
@@ -53,7 +53,7 @@
                                 <div class="col-9 col-md-9">
                                     <div class="numbers">
                                         <p class="card-category">RÁDIO</p>
-                                        <p class="card-title"><a href="{{ url('clientes') }}">{{ $totais['radio'] }}</a></p>
+                                        <p class="card-title"><a href="{{ url('radio') }}">{{ $totais['radio'] }}</a></p>
                                     </div>
                                 </div>
                             </div>
@@ -72,7 +72,7 @@
                                 <div class="col-9 col-md-9">
                                     <div class="numbers">
                                         <p class="card-category">TV</p>
-                                        <p class="card-title"><a href="{{ url('clientes') }}">{{ $totais['tv'] }}</a></p>
+                                        <p class="card-title"><a href="{{ url('tv') }}">{{ $totais['tv'] }}</a></p>
                                     </div>
                                 </div>
                             </div>
