@@ -7,5 +7,5 @@ options.headless = True
 
 driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
 driver.get('https://www.urlbox.io')
-driver.save_screenshot('screenshot.png')
+driver.save_screenshot('public/screen/screenshot.png')
 driver.quit()
