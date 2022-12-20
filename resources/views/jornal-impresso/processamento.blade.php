@@ -12,6 +12,7 @@
                 </div>
                 <div class="col-md-4">
                     <a href="{{ url('impresso') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-newspaper-o"></i> Dashboard</a>
+                    <a href="{{ url('jornal-impresso/processar') }}" class="btn btn-warning pull-right" style="margin-right: 12px;"><i class="fa fa-cogs"></i> Processar</a>
                 </div>
             </div>
         </div>
@@ -42,7 +43,7 @@
                     @foreach($fila as $arquivo)
                         <tr>
                             <td>{{ Carbon\Carbon::parse($arquivo->dt_arquivo)->format('d/m/Y') }}</td>
-                            <td>{{ $arquivo->id_fonte }}</td>
+                            <td>{{ $arquivo->fonte->ds_fonte }}</td>
                             <td><a href="{{ url('jornal-impresso/pendentes/'.$arquivo->ds_arquivo) }}">{{ $arquivo->ds_arquivo }}</a></td>
                             <td class="text-center">{{ number_format($arquivo->tamanho, 2) }} MB</td>
                             <td class="text-center">

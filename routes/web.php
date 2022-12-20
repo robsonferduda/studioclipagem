@@ -18,17 +18,25 @@ Route::resource('client', 'ClientController');
 Route::resource('hashtag', 'HashtagController');
 Route::resource('notification', 'NotificacaoController');
 Route::resource('usuario', 'UserController');
-Route::resource('regras', 'RuleController');
-Route::resource('role', 'RoleController');
-Route::resource('term', 'TermController');
 Route::resource('email', 'EmailController');
+
+Route::get('areas','AreaController@index');
+
+Route::get('cliente','ClienteController@index');
+
+Route::get('fontes','FonteController@index');
 
 Route::get('impresso','JornalImpressoController@index');
 Route::get('jornal-impresso/processamento','JornalImpressoController@processamento');
+Route::get('jornal-impresso/processar','JornalImpressoController@processar');
 Route::get('jornal-impresso/upload','JornalImpressoController@upload');
 Route::post('jornal-impresso/upload','JornalImpressoController@uploadFiles');
 
 Route::get('jornal-web','JornalWebController@index');
+
+Route::get('radio','RadioController@index');
+
+Route::get('tv','TvController@index');
 
 Route::get('boletins','BoletimController@index');
 Route::get('boletim/{id}','BoletimController@detalhes');
@@ -37,7 +45,7 @@ Route::get('boletim/{id}/outlook','BoletimController@outlook');
 Route::get('boletim/{id}/visualizar','BoletimController@visualizar');
 Route::post('boletim/enviar/lista','BoletimController@enviarLista');
 
-Route::get('clientes','ClientController@index');
+
 Route::get('cliente/get/json','ClientController@json');
 Route::get('clientes','ClientController@index')->name('clientes.index');
 Route::get('client/accounts/facebook/{cliente}','ClientController@getFacebookAccounts');

@@ -49,8 +49,8 @@
                     </a>
                 </li>
                 @role('administradores')
-                  <li class="{{ (Session::has('url') and Session::get('url') == 'clientes') ? 'active' : '' }}">
-                    <a href="{{ url('clientes') }}">
+                  <li class="{{ (Session::has('url') and Session::get('url') == 'cliente') ? 'active' : '' }}">
+                    <a href="{{ url('cliente') }}">
                     <i class="nc-icon nc-briefcase-24"></i>
                     <p>Clientes</p>
                     </a>
