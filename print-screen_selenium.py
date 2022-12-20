@@ -23,7 +23,7 @@ chrome_options.add_argument(f"--window-size=1920,{height}")
 chrome_options.add_argument("--hide-scrollbars")
 chrome_options.add_argument('--no-sandbox')
 chrome_options.add_argument('--disable-dev-shm-usage')
-driver = webdriver.Chrome(options=chrome_options)
+driver = webdriver.Chrome("/usr/bin/chromedriver", options=chrome_options)
 
 driver.get(url)
 #pause 3 second to let page loads
