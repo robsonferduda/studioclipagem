@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use DB;
 use Auth;
 use App\Models\JornalImpresso;
+use App\Models\JornalWeb;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\Session;
 class HomeController extends Controller
 {
     private $client_id;
+    private $data_atual;
     private $periodo_padrao;
     private $noticias = array();
 
@@ -25,7 +27,7 @@ class HomeController extends Controller
 
         Session::put('cliente', session('cliente') ? session('cliente') : $clienteSession);
 
-        $this->client_id = session('cliente')['id'];
+        $this->data_atual = session('data_atual');
         
         Session::put('url','home');
 
@@ -36,8 +38,8 @@ class HomeController extends Controller
     {
         $totais = array();
 
-        $totais = array('impresso' => JornalImpresso::count(),
-                        'web' => 0,
+        $totais = array('impresso' => JornalImpresso::where('dt_clipagem', $this->data_atual)->count(),
+                        'web' => JornalWeb::where('dt_clipagem', $this->data_atual)->count(),
                         'radio' => 0,
                         'tv' => 0);
 

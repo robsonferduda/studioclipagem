@@ -3,7 +3,7 @@
     <div class="row">   
         <div class="col-md-6">
             <div class="row">
-                <div class="col-lg-3 col-md-3 col-sm-6">
+                <div class="col-lg-6 col-md-6 col-sm-12">
                     <div class="card card-stats">
                         <div class="card-body ">
                             <div class="row">
@@ -14,7 +14,7 @@
                                 </div>
                                 <div class="col-9 col-md-9">
                                     <div class="numbers">
-                                        <p class="card-category">IMPRESSO</p>
+                                        <p class="card-category">JORNAL IMPRESSO</p>
                                         <p class="card-title"><a href="{{ url('impresso') }}">{{ $totais['impresso'] }}</a></p>
                                     </div>
                                 </div>
@@ -22,7 +22,7 @@
                         </div>
                     </div>
                 </div>  
-                <div class="col-lg-3 col-md-3 col-sm-6">
+                <div class="col-lg-6 col-md-6 col-sm-12">
                     <div class="card card-stats">
                         <div class="card-body ">
                             <div class="row">
@@ -33,7 +33,7 @@
                                 </div>
                                 <div class="col-9 col-md-9">
                                     <div class="numbers">
-                                        <p class="card-category">WEB</p>
+                                        <p class="card-category">JORNAL WEB</p>
                                         <p class="card-title"><a href="{{ url('jornal-web') }}">{{ $totais['web'] }}</a></p>
                                     </div>
                                 </div>
@@ -41,7 +41,7 @@
                         </div>
                     </div>
                 </div>  
-                <div class="col-lg-3 col-md-3 col-sm-6">
+                <div class="col-lg-6 col-md-6 col-sm-12">
                     <div class="card card-stats">
                         <div class="card-body ">
                             <div class="row">
@@ -60,7 +60,7 @@
                         </div>
                     </div>
                 </div>  
-                <div class="col-lg-3 col-md-3 col-sm-6">
+                <div class="col-lg-6 col-md-6 col-sm-12">
                     <div class="card card-stats">
                         <div class="card-body ">
                             <div class="row">
@@ -71,7 +71,7 @@
                                 </div>
                                 <div class="col-9 col-md-9">
                                     <div class="numbers">
-                                        <p class="card-category">TV</p>
+                                        <p class="card-category">TELEVISÃO</p>
                                         <p class="card-title"><a href="{{ url('tv') }}">{{ $totais['tv'] }}</a></p>
                                     </div>
                                 </div>
@@ -83,7 +83,7 @@
         </div> 
         <div class="col-md-6">
             <div class="card card-timeline card-plain">
-                <h6>{{ date('d/m/Y') }} <a href=""><i class="fa fa-refresh"></i></a></h6>
+                <h6>{{ \Carbon\Carbon::parse(Session::get('data_atual'))->format('d/m/Y') }} <a href=""><i class="fa fa-refresh"></i></a></h6>
                 <div class="card-content">
                   <ul class="timeline timeline-simple">
                      <li class="timeline-inverted">
