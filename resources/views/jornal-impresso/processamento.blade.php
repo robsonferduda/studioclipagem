@@ -56,7 +56,7 @@
                             <td><a href="{{ url('jornal-impresso/pendentes/'.$arquivo->ds_arquivo) }}">{{ $arquivo->ds_arquivo }}</a></td>
                             <td class="text-center">{{ number_format($arquivo->tamanho, 2) }} MB</td>
                             <td class="text-center">
-                                @if($arquivo->start_at === NULL and !$arquivo->fl_processado)
+                                @if($arquivo->start_at and !$arquivo->fl_processado)
                                     {!! '<span class="badge badge-pill badge-warning">ANDAMENTO</span>' !!}
                                 @else
                                     {!! ($arquivo->fl_processado) ? '<span class="badge badge-pill badge-success">PROCESSADO </span>' : '<span class="badge badge-pill badge-danger">PENDENTE</span>' !!}
