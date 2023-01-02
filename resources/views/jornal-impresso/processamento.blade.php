@@ -23,6 +23,7 @@
             <table id="datatable" class="table table-striped table-bordered" cellspacing="0" width="100%">
                 <thead>
                     <tr>
+                        <th>Data Envio</th>
                         <th>Data Arquivo</th>
                         <th>Fonte</th>
                         <th>Arquivo</th>
@@ -32,6 +33,7 @@
                 </thead>
                 <tfoot>
                     <tr>
+                        <th>Data Envio</th>
                         <th>Data Arquivo</th>
                         <th>Fonte</th>
                         <th>Arquivo</th>
@@ -42,6 +44,7 @@
                 <tbody>
                     @foreach($fila as $arquivo)
                         <tr>
+                            <td>{{ Carbon\Carbon::parse($arquivo->created_at)->format('d/m/Y H:i:s') }}</td>
                             <td>{{ Carbon\Carbon::parse($arquivo->dt_arquivo)->format('d/m/Y') }}</td>
                             <td>{{ $arquivo->fonte->ds_fonte }}</td>
                             <td><a href="{{ url('jornal-impresso/pendentes/'.$arquivo->ds_arquivo) }}">{{ $arquivo->ds_arquivo }}</a></td>

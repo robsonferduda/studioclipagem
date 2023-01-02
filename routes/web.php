@@ -34,7 +34,7 @@ Route::post('jornal-impresso/upload','JornalImpressoController@uploadFiles');
 
 Route::get('jornal-web','JornalWebController@index');
 
-Route::get('radio','RadioController@index');
+Route::get('radios','RadioController@index');
 
 Route::get('tv','TvController@index');
 
