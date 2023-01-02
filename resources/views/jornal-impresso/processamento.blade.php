@@ -49,7 +49,7 @@
                     @foreach($fila as $arquivo)
                         <tr>
                             <td>{{ Carbon\Carbon::parse($arquivo->created_at)->format('d/m/Y H:i:s') }}</td>
-                            <td>{{ Carbon\Carbon::parse($arquivo->start_at)->format('d/m/Y H:i:s') }}</td>
+                            <td>{{ ($arquivo->start_at) ? Carbon\Carbon::parse($arquivo->start_at)->format('d/m/Y H:i:s') : 'Aguardando Processamento' }}</td>
                             <td>{{ Carbon\Carbon::parse($arquivo->updated_at)->format('d/m/Y H:i:s') }}</td>
                             <td>{{ Carbon\Carbon::parse($arquivo->dt_arquivo)->format('d/m/Y') }}</td>
                             <td>{{ $arquivo->fonte->ds_fonte }}</td>
