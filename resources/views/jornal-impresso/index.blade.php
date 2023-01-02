@@ -22,16 +22,69 @@
             </div>
             <div class="row">
                 <div class="col-lg-12 col-sm-12">
+
+                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['buscar-impresso']]) !!}
+                    <div class="form-group m-3 w-70">
+                        <div class="row">
+                            <div class="col-md-2 col-sm-6">
+                                <div class="form-group">
+                                    <label>Data Inicial</label>
+                                    <input type="text" class="form-control datepicker" name="dt_inicial" required="true" value=""" placeholder="__/__/____">
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-6">
+                                <div class="form-group">
+                                    <label>Data Final</label>
+                                    <input type="text" class="form-control datepicker" name="dt_final" required="true" value="{" placeholder="__/__/____">
+                                </div>
+                            </div>
+                            <div class="col-md-8 col-sm-12">
+                                <div class="form-group">
+                                    <label>Buscar por <span class="text-primary">Digite o termo ou expressão de busca</span></label>
+                                    <input type="text" class="form-control" name="termo" id="termo" minlength="3" placeholder="Termo" value="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Fonte</label>
+                                    <select class="form-control load_expression" name="regra" id="regra">
+                                        <option value="">Selecione uma fonte</option>
+                                        
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12 checkbox-radios mb-0">
+                                <button type="submit" id="btn-find" class="btn btn-primary mb-3"><i class="fa fa-search"></i> Buscar</button>
+                            </div>
+                        </div>     
+                    </div>
+                {!! Form::close() !!} 
+
+                @if($dados->count())
+                    <h6 class="ml-1 mt-5 mb-3">Mostrando {{ $dados->count() }} de {{ $dados->total() }} Páginas</h6>
+                @endif
+                
+                    {{ $dados->onEachSide(1)->links('vendor.pagination.bootstrap-4') }} 
+               
+
+                  
+
                     @foreach ($dados as $key => $noticia)
                         <div class="card">
                             <div class="card-body">                           
                                 <div class="row">
                                     <div class="col-lg-2 col-sm-12">
-                                        <img src="{{ asset('jornal-impresso/'.$noticia->fonte->id_knewin.'/'.\Carbon\Carbon::parse($noticia->dt_clipagem)->format('Ymd').'/img/pagina_'.$noticia->nu_pagina_atual.'.png') }}" alt="..." class="img-thumbnail">
+                                        @if($noticia->fonte)
+                                            <img src="{{ asset('jornal-impresso/'.$noticia->fonte->id_knewin.'/'.\Carbon\Carbon::parse($noticia->dt_clipagem)->format('Ymd').'/img/pagina_'.$noticia->nu_pagina_atual.'.png') }}" alt="..." class="img-thumbnail">
+                                        @else
+
+                                        @endif
                                     </div>
                                     <div class="col-lg-10 col-sm-12">
                                         <h6>{{ $noticia->titulo }}</h6>
-                                        <p>{{ $noticia->fonte->ds_fonte }} - {{ \Carbon\Carbon::parse($noticia->dt_clipagem)->format('d/m/Y') }}</p>
+                                        <p>{{ ($noticia->fonte) ? $noticia->fonte->ds_fonte : 'Não identificada' }} - {{ \Carbon\Carbon::parse($noticia->dt_clipagem)->format('d/m/Y') }}</p>
                                         <p>
                                             {{ Str::limit($noticia->texto, 800, " ...") }}
                                         </p>
@@ -40,6 +93,10 @@
                                         @else
                                             <p>Página <strong>{{ $noticia->nu_pagina_atual }}</strong> de <strong>{{ $noticia->nu_paginas_total }}</strong></p>
                                         @endif
+                                        <div>
+                                            <a class="btn btn-danger btn-sm" download target="_blank" href="{{ asset('jornal-impresso/processados/'.$noticia->fonte->id_knewin.'/'.\Carbon\Carbon::parse($noticia->dt_clipagem)->format('Ymd').'/img/pagina_'.$noticia->nu_pagina_atual.'.png') }}" role="button"><i class="fa fa-file-pdf-o"> </i> Documento Original</a>
+                                            <a class="btn btn-primary btn-sm" download target="_blank" href="{{ asset('jornal-impresso/'.$noticia->fonte->id_knewin.'/'.\Carbon\Carbon::parse($noticia->dt_clipagem)->format('Ymd').'/img/pagina_'.$noticia->nu_pagina_atual.'.png') }}" role="button"><i class="fa fa-file-image-o"> </i> Página Atual</a>
+                                        </div>
                                     </div>
                                 </div>                               
                             </div>

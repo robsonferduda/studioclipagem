@@ -15,4 +15,9 @@ class FilaImpresso extends Model
     {
         return $this->hasOne(Fonte::class, 'id_knewin', 'id_fonte');
     }
+
+    public function jornal()
+    {
+        return $this->hasMany(JornalImpresso::class, 'id', 'id_fila');
+    }
 }
