@@ -47,7 +47,7 @@ for diretorio, subpastas, arquivos in os.walk(pasta_pendentes):
             os.makedirs(path_txt)
 
         #Atualiza o status do arquivo, indicando que o mesmo foi processado   
-        sql_update = "UPDATE fila_impresso SET start_at = '"+dt_atual+"' WHERE id_fonte = "+str(id_fonte)+" AND dt_arquivo = '"+dt_formatada+"'" 
+        sql_update = "UPDATE fila_impresso SET start_at = '"+dt_atual+"' WHERE id_fonte = "+str(pasta_id)+" AND dt_arquivo = '"+dt_formatada+"'" 
         cur.execute(sql_update)
         con.commit()  
                 
@@ -74,7 +74,7 @@ for diretorio, subpastas, arquivos in os.walk(pasta_pendentes):
         shutil.move(pasta_pendentes+'/'+arquivo, pasta_processados+'/'+arquivo)
         
         #Atualiza o status do arquivo, indicando que o mesmo foi processado   
-        sql_update = "UPDATE fila_impresso SET fl_processado=true WHERE id_fonte = "+str(id_fonte)+" AND dt_arquivo = '"+dt_formatada+"'" 
+        sql_update = "UPDATE fila_impresso SET fl_processado = true WHERE id_fonte = "+str(pasta_id)+" AND dt_arquivo = '"+dt_formatada+"'" 
         cur.execute(sql_update)
         con.commit()  
 
