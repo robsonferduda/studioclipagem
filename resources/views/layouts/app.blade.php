@@ -90,7 +90,7 @@
                 @endrole
                 @role('administradores')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'radio') ? 'active' : '' }}">
-                      <a href="{{ url('radio') }}">
+                      <a href="{{ url('radios') }}">
                         <i class="fa fa-volume-up"></i>
                         <p>Rádio</p>
                       </a>

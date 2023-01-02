@@ -23,6 +23,9 @@
             <table id="datatable" class="table table-striped table-bordered" cellspacing="0" width="100%">
                 <thead>
                     <tr>
+                        <th>Data Envio</th>
+                        <th>Início Processamento</th>
+                        <th>Fim Processamento</th>
                         <th>Data Arquivo</th>
                         <th>Fonte</th>
                         <th>Arquivo</th>
@@ -32,6 +35,9 @@
                 </thead>
                 <tfoot>
                     <tr>
+                        <th>Data Envio</th>
+                        <th>Início Processamento</th>
+                        <th>Fim Processamento</th>
                         <th>Data Arquivo</th>
                         <th>Fonte</th>
                         <th>Arquivo</th>
@@ -42,12 +48,19 @@
                 <tbody>
                     @foreach($fila as $arquivo)
                         <tr>
+                            <td>{{ Carbon\Carbon::parse($arquivo->created_at)->format('d/m/Y H:i:s') }}</td>
+                            <td>{{ ($arquivo->start_at) ? Carbon\Carbon::parse($arquivo->start_at)->format('d/m/Y H:i:s') : 'Aguardando Processamento' }}</td>
+                            <td>{{ Carbon\Carbon::parse($arquivo->updated_at)->format('d/m/Y H:i:s') }}</td>
                             <td>{{ Carbon\Carbon::parse($arquivo->dt_arquivo)->format('d/m/Y') }}</td>
                             <td>{{ $arquivo->fonte->ds_fonte }}</td>
                             <td><a href="{{ url('jornal-impresso/pendentes/'.$arquivo->ds_arquivo) }}">{{ $arquivo->ds_arquivo }}</a></td>
                             <td class="text-center">{{ number_format($arquivo->tamanho, 2) }} MB</td>
                             <td class="text-center">
-                                {!! ($arquivo->fl_processado) ? '<span class="badge badge-pill badge-success">PROCESSADO</span>' : '<span class="badge badge-pill badge-danger">PENDENTE</span>' !!}
+                                @if($arquivo->start_at and !$arquivo->fl_processado)
+                                    {!! '<span class="badge badge-pill badge-warning">ANDAMENTO</span>' !!}
+                                @else
+                                    {!! ($arquivo->fl_processado) ? '<span class="badge badge-pill badge-success">PROCESSADO </span>' : '<span class="badge badge-pill badge-danger">PENDENTE</span>' !!}
+                                @endif
                             </td>
                         </tr>
                     @endforeach

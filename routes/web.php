@@ -36,7 +36,7 @@ Route::match(array('GET', 'POST'),'buscar-impresso','JornalImpressoController@in
 
 Route::get('jornal-web','JornalWebController@index');
 
-Route::get('radio','RadioController@index');
+Route::get('radios','RadioController@index');
 
 Route::get('tv','TvController@index');
 
