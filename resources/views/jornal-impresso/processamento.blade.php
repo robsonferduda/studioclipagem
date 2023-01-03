@@ -53,7 +53,13 @@
                             <td>{{ Carbon\Carbon::parse($arquivo->updated_at)->format('d/m/Y H:i:s') }}</td>
                             <td>{{ Carbon\Carbon::parse($arquivo->dt_arquivo)->format('d/m/Y') }}</td>
                             <td>{{ $arquivo->fonte->ds_fonte }}</td>
-                            <td><a href="{{ url('jornal-impresso/pendentes/'.$arquivo->ds_arquivo) }}">{{ $arquivo->ds_arquivo }}</a></td>
+                            <td>
+                                @if($arquivo->fl_processado)
+                                    <a href="{{ url('jornal-impresso/processados/'.$arquivo->ds_arquivo) }}" target="_blank">{{ $arquivo->ds_arquivo }}</a>
+                                @else
+                                    <a href="{{ url('jornal-impresso/pendentes/'.$arquivo->ds_arquivo) }}" target="_blank">{{ $arquivo->ds_arquivo }}</a>
+                                @endif
+                            </td>
                             <td class="text-center">{{ number_format($arquivo->tamanho, 2) }} MB</td>
                             <td class="text-center">
                                 @if($arquivo->start_at and !$arquivo->fl_processado)

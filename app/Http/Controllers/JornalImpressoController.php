@@ -14,30 +14,48 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class JornalImpressoController extends Controller
 {
-    private $client_id;
-    private $periodo_padrao;
+    private $data_atual;
 
     public function __construct()
     {
         $this->middleware('auth');
-
-        $cliente = null;
-
-        $clienteSession = ['id' => 1, 'nome' => 'Teste'];
-
-        Session::put('cliente', session('cliente') ? session('cliente') : $clienteSession);
-
-        $this->client_id = session('cliente')['id'];
-        
-        Session::put('url','home');
-
-        $this->periodo_padrao = 7;
+        $this->data_atual = session('data_atual');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $dados = JornalImpresso::all();
-        return view('jornal-impresso/index',compact('dados'));
+        if($request->isMethod('POST')){
+
+            $carbon = new Carbon();
+            $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
+            $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
+
+            $dados = JornalImpresso::whereBetween('dt_clipagem', [$dt_inicial, $dt_final])->orderBy('id_fonte')->orderBy('nu_pagina_atual')->paginate(10);
+
+        }
+
+        if($request->isMethod('GET')){
+
+            if($request->dt_inicial){
+                $dt_inicial = $request->dt_inicial;
+                $dt_final = $request->dt_final;
+
+                $dados = JornalImpresso::whereBetween('dt_clipagem', [$dt_inicial, $dt_final])->orderBy('id_fonte')->orderBy('nu_pagina_atual')->paginate(10);
+            }else{
+                $dt_inicial = date('d/m/Y');
+                $dt_final = date('d/m/Y');
+                $dados = JornalImpresso::where('dt_clipagem', $this->data_atual)->orderBy('id_fonte')->orderBy('nu_pagina_atual')->paginate(10);
+            }
+
+        }
+
+        return view('jornal-impresso/index',compact('dados','dt_inicial','dt_final'));
+    }
+
+    public function detalhes($id)
+    {
+        $noticia = JornalImpresso::find($id);
+        return view('jornal-impresso/detalhes',compact('noticia'));
     }
 
     public function upload()
