@@ -12,6 +12,7 @@
                 </div>
                 <div class="col-md-4">
                     <a href="{{ url('impresso') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-newspaper-o"></i> Dashboard</a>
+                    <a href="{{ url('jornal-impresso/upload') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-upload"></i> Upload</a>
                     <a href="{{ url('jornal-impresso/processar') }}" class="btn btn-warning pull-right" style="margin-right: 12px;"><i class="fa fa-cogs"></i> Processar</a>
                 </div>
             </div>
@@ -50,7 +51,7 @@
                         <tr>
                             <td>{{ Carbon\Carbon::parse($arquivo->created_at)->format('d/m/Y H:i:s') }}</td>
                             <td>{{ ($arquivo->start_at) ? Carbon\Carbon::parse($arquivo->start_at)->format('d/m/Y H:i:s') : 'Aguardando Processamento' }}</td>
-                            <td>{{ Carbon\Carbon::parse($arquivo->updated_at)->format('d/m/Y H:i:s') }}</td>
+                            <td>{{ ($arquivo->start_at and $arquivo->fl_processado) ? Carbon\Carbon::parse($arquivo->updated_at)->format('d/m/Y H:i:s') : 'Aguardando Processamento' }}</td>
                             <td>{{ Carbon\Carbon::parse($arquivo->dt_arquivo)->format('d/m/Y') }}</td>
                             <td>{{ $arquivo->fonte->ds_fonte }}</td>
                             <td>
