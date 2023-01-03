@@ -13,7 +13,7 @@ class JornalImpresso extends Model
     
     public function fonte()
     {
-        return $this->hasOne(Fonte::class, 'id_knewin', 'id_fonte');
+        return $this->hasOne(Fonte::class, 'id', 'id_fonte');
     }
 
     public function fila()

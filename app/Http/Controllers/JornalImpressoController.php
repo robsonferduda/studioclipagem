@@ -30,14 +30,32 @@ class JornalImpressoController extends Controller
             $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
             $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
 
-            $dados = JornalImpresso::whereBetween('dt_clipagem', [$dt_inicial, $dt_final])->paginate(10);
+            $dados = JornalImpresso::whereBetween('dt_clipagem', [$dt_inicial, $dt_final])->orderBy('id_fonte')->orderBy('nu_pagina_atual')->paginate(10);
+
         }
 
         if($request->isMethod('GET')){
-            $dados = JornalImpresso::where('dt_clipagem', $this->data_atual)->paginate(10);
+
+            if($request->dt_inicial){
+                $dt_inicial = $request->dt_inicial;
+                $dt_final = $request->dt_final;
+
+                $dados = JornalImpresso::whereBetween('dt_clipagem', [$dt_inicial, $dt_final])->orderBy('id_fonte')->orderBy('nu_pagina_atual')->paginate(10);
+            }else{
+                $dt_inicial = date('d/m/Y');
+                $dt_final = date('d/m/Y');
+                $dados = JornalImpresso::where('dt_clipagem', $this->data_atual)->orderBy('id_fonte')->orderBy('nu_pagina_atual')->paginate(10);
+            }
+
         }
 
-        return view('jornal-impresso/index',compact('dados'));
+        return view('jornal-impresso/index',compact('dados','dt_inicial','dt_final'));
+    }
+
+    public function detalhes($id)
+    {
+        $noticia = JornalImpresso::find($id);
+        return view('jornal-impresso/detalhes',compact('noticia'));
     }
 
     public function upload()

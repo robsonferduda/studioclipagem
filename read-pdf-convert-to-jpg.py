@@ -37,6 +37,11 @@ for diretorio, subpastas, arquivos in os.walk(pasta_pendentes):
         cur.execute(sql)
         id_fonte = cur.fetchone()['id']
 
+        sql = "SELECT id FROM fila_impresso WHERE ds_arquivo = '"+arquivo+"'"
+        print(sql)
+        cur.execute(sql)
+        id_fila = cur.fetchone()['id']
+
         path_img = "public/jornal-impresso/"+pasta_id+"/"+pasta_data+"/img/"
         path_txt = "public/jornal-impresso/"+pasta_id+"/"+pasta_data+"/txt/"
         
@@ -57,13 +62,13 @@ for diretorio, subpastas, arquivos in os.walk(pasta_pendentes):
             file_name_txt = path_txt+"pagina_{0}.txt".format(i)
             img.save(file_name_img, "PNG")
             texto = ocr.image_to_string(Image.open(file_name_img), lang='por')
-            titulo = texto[10:40]
+            titulo = texto[0:40]
             file_object = open(file_name_txt, 'w')
             file_object.write(texto)
             file_object.close()
 
             #sql = "INSERT INTO noticia_impresso (id_fonte, dt_clipagem, nu_pagina_atual, texto) VALUES("+pasta_id+",'"+dt_formatada+"',"+str(i)+",'"+texto+"')"
-            cur.execute("INSERT INTO noticia_impresso (id_fonte, dt_clipagem, nu_pagina_atual, titulo, texto) VALUES(%s, %s, %s, %s, %s)", (id_fonte, dt_formatada, i, titulo, texto))
+            cur.execute("INSERT INTO noticia_impresso (id_fonte, id_fila, dt_clipagem, nu_pagina_atual, titulo, texto) VALUES(%s, %s, %s, %s, %s, %s)", (id_fonte, id_fila, dt_formatada, i, titulo, texto))
             con.commit() 
 
         sql = "UPDATE noticia_impresso SET nu_paginas_total = "+str(i)+" WHERE id_fonte = "+str(id_fonte)+" AND dt_clipagem = '"+dt_formatada+"'"
