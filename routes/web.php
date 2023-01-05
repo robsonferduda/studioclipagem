@@ -19,10 +19,13 @@ Route::resource('hashtag', 'HashtagController');
 Route::resource('notification', 'NotificacaoController');
 Route::resource('usuario', 'UserController');
 Route::resource('email', 'EmailController');
+Route::resource('emissora', 'EmissoraController');
 
 Route::get('areas','AreaController@index');
 
 Route::get('cliente','ClienteController@index');
+
+Route::get('estado/{id}/cidades','EstadoController@getCidades');
 
 Route::get('fontes','FonteController@index');
 
@@ -40,6 +43,8 @@ Route::get('jornal-web','JornalWebController@index');
 Route::get('radios','RadioController@index');
 Route::match(array('GET', 'POST'),'radio/emissoras','RadioController@emissoras');
 Route::get('radio/emissora/{id}/transcricao/atualiza','RadioController@atualizaTranscricao');
+
+Route::get('radio/emissoras/novo','EmissoraController@novo');
 
 Route::get('tv','TvController@index');
 

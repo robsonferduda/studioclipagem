@@ -6,12 +6,12 @@
             <div class="row">
                 <div class="col-md-8">
                     <h4 class="card-title">
-                        <i class="fa fa-volume-up"></i> Rádio 
+                        <i class="fa fa-volume-up ml-3"></i> Rádio 
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Emissoras 
                     </h4>
                 </div>
                 <div class="col-md-4">
-                    
+                    <a href="{{ url('radio/emissoras/novo') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-plus"></i> Novo</a>
                 </div>
             </div>
         </div>
@@ -19,7 +19,7 @@
             <div class="col-md-12">
                 @include('layouts.mensagens')
             </div>
-            <div class="col-md-12">
+            <div class="col-md-12 px-0">
                 {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['radio/emissoras']]) !!}
                         <div class="form-group m-3 w-70">
                             <div class="row">
