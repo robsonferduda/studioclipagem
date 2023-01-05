@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use DB;
 use Auth;
+use App\Models\Cliente;
 use App\Models\JornalWeb;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -33,7 +34,7 @@ class ClienteController extends Controller
 
     public function index()
     {
-        $dados = array();
+        $dados = Cliente::all();
         return view('cliente/index',compact('dados'));
     }
 }
