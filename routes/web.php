@@ -38,6 +38,8 @@ Route::match(array('GET', 'POST'),'buscar-impresso','JornalImpressoController@in
 Route::get('jornal-web','JornalWebController@index');
 
 Route::get('radios','RadioController@index');
+Route::match(array('GET', 'POST'),'radio/emissoras','RadioController@emissoras');
+Route::get('radio/emissora/{id}/transcricao/atualiza','RadioController@atualizaTranscricao');
 
 Route::get('tv','TvController@index');
 

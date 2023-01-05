@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use DB;
 use Auth;
+use App\Models\Emissora;
 use App\Models\JornalWeb;
 use Carbon\Carbon;
+use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -35,5 +37,46 @@ class RadioController extends Controller
     {
         $dados = array();
         return view('radio/index',compact('dados'));
+    }
+
+    public function emissoras(Request $request)
+    {
+        if($request->isMethod('POST')){
+
+            $codigo = $request->codigo;
+            $descricao = $request->descricao;
+
+            $emissora = Emissora::query();
+
+            $emissora->when(request('codigo'), function ($q) use ($codigo) {
+                return $q->where('codigo', $codigo);
+            });
+
+            $emissora->when(request('descricao'), function ($q) use ($descricao) {
+                return $q->where('ds_emissora','ilike','%'.$descricao.'%');
+            });
+
+            $emissoras = $emissora->orderBy('ds_emissora')->paginate(15);
+
+        }
+
+        if($request->isMethod('GET')){
+
+            $emissoras = Emissora::orderBy('ds_emissora')->paginate(15);
+
+        }
+
+        return view('radio/emissoras', compact('emissoras'));
+    }
+
+    public function atualizaTranscricao($id)
+    {
+        $emissora = Emissora::find($id);
+        $emissora->fl_transcricao = !$emissora->fl_transcricao;
+        $emissora->save();
+
+        Flash::success("Transcrição atualizada com sucesso");
+
+        return redirect('radio/emissoras')->withInput();
     }
 }
