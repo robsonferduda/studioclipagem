@@ -11,7 +11,7 @@
                     </h4>
                 </div>
                 <div class="col-md-4">
-                    
+                    <a href="{{ url('radio/emissoras') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-signal"></i> Emissoras</a>
                 </div>
             </div>
         </div>

@@ -117,6 +117,6 @@ class UserController extends Controller
         else
             Flash::error("Erro ao excluir o registro");
 
-        return redirect('usuarios')->withInput();;
+        return redirect('usuarios')->withInput();
     }
 }
