@@ -15,4 +15,9 @@ class Pessoa extends Model
     {
         return $this->hasOne(Cliente::class, 'id', 'id');
     }
+
+    public function enderecoEletronico()
+    {
+        return $this->hasMany(EnderecoEletronico::class, 'id', 'id');
+    }
 }

@@ -34,7 +34,14 @@ class ClienteController extends Controller
 
     public function index()
     {
-        $dados = Cliente::all();
-        return view('cliente/index',compact('dados'));
+        $clientes = Cliente::all(); //Lista todos os clientes
+        
+        $pessoa = Cliente::find(4)->pessoa; //Lista a pessoa
+
+        $nome = Cliente::find(4)->pessoa->nome; //Mostra nome da pessoa
+
+        $emails = Cliente::find(4)->pessoa->enderecoEletronico; //Mostra os endereços da pessoa
+
+        return view('cliente/index',compact('clientes'));
     }
 }
