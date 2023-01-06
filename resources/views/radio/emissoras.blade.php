@@ -77,8 +77,8 @@
                                 <td class="center">
                                     <a href="{{ url('radio/emissora/'.$emissora->id.'/transcricao/atualiza') }}">{!! ($emissora->fl_transcricao) ? '<span class="badge badge-pill badge-success">ATIVA</span>' : '<span class="badge badge-pill badge-danger">INATIVA</span>' !!}</a>
                                 </td>
-                                <td>
-
+                                <td class="center">
+                                    <a title="Horários de Coleta" href="{{ url('radio/emissora/'.$emissora->id.'/horarios') }}" class="btn btn-primary btn-link btn-icon"><i class="nc-icon nc-time-alarm font-25"></i></a>
                                 </td>
                             </tr>
                         @endforeach

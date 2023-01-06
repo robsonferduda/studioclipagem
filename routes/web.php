@@ -45,6 +45,7 @@ Route::match(array('GET', 'POST'),'radio/emissoras','RadioController@emissoras')
 Route::get('radio/emissora/{id}/transcricao/atualiza','RadioController@atualizaTranscricao');
 
 Route::get('radio/emissoras/novo','EmissoraController@novo');
+Route::get('radio/emissora/{id}/horarios','EmissoraController@horarios');
 
 Route::get('tv','TvController@index');
 
