@@ -22,7 +22,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>Estado <span class="text-danger">Obrigatório</span></label>
-                                <select class="form-control" name="estado" id="estado" required="required">
+                                <select class="form-control" name="cd_estado" id="estado" required="required">
                                     <option value="">Selecione um estado</option>
                                     @foreach($estados as $estado)
                                         <option value="{{ $estado->cd_estado }}">{{ $estado->nm_estado }}</option>
@@ -33,7 +33,7 @@
                         <div class="col-md-9">
                             <div class="form-group">
                                 <label>Cidade <span class="text-danger">Obrigatório</span></label>
-                                <select class="form-control" name="cidade" id="cidade" required="required">
+                                <select class="form-control" name="cd_cidade" id="cidade" required="required">
                                     <option value="">Selecione uma cidade</option>
                                     
                                 </select>
@@ -89,8 +89,21 @@
                 $.ajax({
                     url: host+'/estado/'+id+'/cidades',
                     type: 'GET',        
-                    success: function(response) {
-                        
+                    success: function(data) {
+
+                        $('#cidade').empty();
+                        $('#cidade').append($('<option>', { 
+                                value: "",
+                                text : "Selecione uma cidade" 
+                        }));
+
+                        $.each(data, function(index, value) {
+
+                            $('#cidade').append($('<option>', { 
+                                value: value.cd_cidade,
+                                text : value.nm_cidade 
+                            }));
+                        });                        
                     },
                     error: function(xhr, status, error){
                         

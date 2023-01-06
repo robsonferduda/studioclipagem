@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use DB;
 use Auth;
+use App\Utils;
 use App\Models\Emissora;
 use App\Models\Estado;
 use Carbon\Carbon;
@@ -43,6 +44,34 @@ class EmissoraController extends Controller
     {
         $estados = Estado::orderBy('nm_estado')->get();
         return view('emissora/novo',compact('estados'));
+    }
+
+    public function store(Request $request)
+    {
+        try {
+            
+            Emissora::create($request->all());
+            $retorno = array('flag' => true,
+                             'msg' => "Dados inseridos com sucesso");
+
+        } catch (\Illuminate\Database\QueryException $e) {
+
+            $retorno = array('flag' => false,
+                             'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
+
+        } catch (Exception $e) {
+            
+            $retorno = array('flag' => true,
+                             'msg' => "Ocorreu um erro ao inserir o registro");
+        }
+
+        if ($retorno['flag']) {
+            Flash::success($retorno['msg']);
+            return redirect('radio/emissoras')->withInput();
+        } else {
+            Flash::error($retorno['msg']);
+            return redirect('radio/emissoras')->withInput();
+        }
     }
 
 }
