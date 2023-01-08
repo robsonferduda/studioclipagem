@@ -80,4 +80,14 @@ class EmissoraController extends Controller
         }
     }
 
+    public function destroy($id)
+    {
+        $emissora = Emissora::find($id);
+        if($emissora->delete())
+            Flash::success('<i class="fa fa-check"></i> Emissora <strong>'.$emissora->ds_emissora.'</strong> excluída com sucesso');
+        else
+            Flash::error("Erro ao excluir o registro");
+
+        return redirect('radio/emissoras')->withInput();
+    }
 }

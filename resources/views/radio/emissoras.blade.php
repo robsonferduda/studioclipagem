@@ -79,6 +79,13 @@
                                 </td>
                                 <td class="center">
                                     <a title="Horários de Coleta" href="{{ url('radio/emissora/'.$emissora->id.'/horarios') }}" class="btn btn-primary btn-link btn-icon"><i class="nc-icon nc-time-alarm font-25"></i></a>
+                                    <form class="form-delete" style="display: inline;" action="{{ route('emissora.destroy',$emissora->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button title="Excluir" type="submit" class="btn btn-danger btn-link btn-icon button-remove" title="Delete">
+                                            <i class="fa fa-times fa-2x"></i>
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                         @endforeach
