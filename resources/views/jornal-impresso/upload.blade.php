@@ -36,64 +36,36 @@
 @endsection
 @section('script')
 <script>
+    Dropzone.autoDiscover = false;
+
     $( document ).ready(function() {
 
         var host =  $('meta[name="base-url"]').attr('content');
+       
+        $(".dropzone").dropzone({ 
+            maxFilesize: 2, // 2 mb
+            acceptedFiles: ".jpeg,.jpg,.png,.pdf",
+            init: function() { 
+                myDropzone = this;
 
-    Dropzone.options.dropzone =
-         {
-	    maxFiles: 5, 
-            maxFilesize: 4,
-            acceptedFiles: ".jpeg,.jpg,.png,.gif",
-            addRemoveLinks: true,
-            timeout: 500,
-            init:function() {
+                $.ajax({
+                    url: host+'/jornal-impresso/pendentes/listar',
+                    type: 'get',
+                    dataType: 'json',
+                    success: function(response){
 
-				// Get images
-				var myDropzone = this;
-				$.ajax({
-					url: host+'/public/jornal-impresso/pendentes',
-					type: 'GET',
-					dataType: 'json',
-					success: function(data){
-					console.log(data);
-					$.each(data, function (key, value) {
+                    $.each(response, function(key,value) {
+                        var mockFile = { name: value.name, size: value.size };
 
-						var file = {name: value.name, size: value.size};
-						myDropzone.options.addedfile.call(myDropzone, file);
-						myDropzone.options.thumbnail.call(myDropzone, file, value.path);
-						myDropzone.emit("complete", file);
-					});
-					}
-				});
-			},
-                
-            success: function(file, response) 
-            {
-				file.previewElement.id = response.success;
-				console.log(file); 
-				//set new images names in dropzone’s preview box.
-                var olddatadzname = file.previewElement.querySelector("[data-dz-name]");   
-				file.previewElement.querySelector("img").alt = response.success;
-				olddatadzname.innerHTML = response.success;
-            },
-            error: function(file, response)
-            {
-               if($.type(response) === "string")
-					var message = response; //dropzone sends it's own error messages in string
-				else
-					var message = response.message;
-				file.previewElement.classList.add("dz-error");
-				_ref = file.previewElement.querySelectorAll("[data-dz-errormessage]");
-				_results = [];
-				for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-					node = _ref[_i];
-					_results.push(node.textContent = message);
-				}
-				return _results;
+                        myDropzone.emit("addedfile", mockFile);
+                        myDropzone.emit("complete", mockFile);
+
+                    });
+
+                    }
+                });
             }
-            
-};
-});
+        });
+    });
 </script>
 @endsection
