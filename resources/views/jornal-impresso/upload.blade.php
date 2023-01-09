@@ -24,7 +24,7 @@
                 <div class="form-group" style="">
                     <div class='content'>
                         <span>Busque ou arraste os arquivos</span>
-                        {{ Form::open(array('url' => 'jornal-impresso/upload', 'method' => 'POST', 'name'=>'product_images', 'id'=>'document-dropzone', 'class'=>'dropzone', 'files' => true)) }}
+                        {{ Form::open(array('url' => 'jornal-impresso/upload', 'method' => 'POST', 'name'=>'product_images', 'id'=>'dropzone', 'class'=>'dropzone', 'files' => true)) }}
 
                         {{ Form::close() }}
                     </div>
@@ -38,23 +38,25 @@
 <script>
     $( document ).ready(function() {
 
-Dropzone.options.dropzone =
+        var host =  $('meta[name="base-url"]').attr('content');
+
+    Dropzone.options.dropzone =
          {
 	    maxFiles: 5, 
             maxFilesize: 4,
             acceptedFiles: ".jpeg,.jpg,.png,.gif",
             addRemoveLinks: true,
-            timeout: 50000,
+            timeout: 500,
             init:function() {
 
 				// Get images
 				var myDropzone = this;
 				$.ajax({
-					url: gallery,
+					url: host+'/public/jornal-impresso/pendentes',
 					type: 'GET',
 					dataType: 'json',
 					success: function(data){
-					//console.log(data);
+					console.log(data);
 					$.each(data, function (key, value) {
 
 						var file = {name: value.name, size: value.size};
@@ -69,8 +71,8 @@ Dropzone.options.dropzone =
             success: function(file, response) 
             {
 				file.previewElement.id = response.success;
-				//console.log(file); 
-				// set new images names in dropzone’s preview box.
+				console.log(file); 
+				//set new images names in dropzone’s preview box.
                 var olddatadzname = file.previewElement.querySelector("[data-dz-name]");   
 				file.previewElement.querySelector("img").alt = response.success;
 				olddatadzname.innerHTML = response.success;

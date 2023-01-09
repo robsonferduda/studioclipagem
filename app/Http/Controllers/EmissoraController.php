@@ -40,16 +40,26 @@ class EmissoraController extends Controller
         return view('radio/index',compact('dados'));
     }
 
-    public function horarios()
+    public function horarios($emissora)
     {
+        $id_emissora = $emissora;
         $horarios = array();
-        return view('emissora/horarios',compact('horarios'));
+        return view('emissora/horarios',compact('horarios','id_emissora'));
     }
 
     public function novo()
     {
         $estados = Estado::orderBy('nm_estado')->get();
         return view('emissora/novo',compact('estados'));
+    }
+
+    public function adicionarHorarios(Request $request)
+    {
+        dd($request->all());
+        
+        $emissora = $request->id_emissora;
+        $hora_inicial = $request->hora_inicial;
+        $hora_final = $request->hora_final;
     }
 
     public function store(Request $request)

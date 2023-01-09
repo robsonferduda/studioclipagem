@@ -25,6 +25,8 @@ Route::get('areas','AreaController@index');
 
 Route::get('cliente','ClienteController@index');
 
+Route::post('emissoras/horario/adicionar','EmissoraController@adicionarHorarios');
+
 Route::get('estado/{id}/cidades','EstadoController@getCidades');
 
 Route::get('fontes','FonteController@index');
