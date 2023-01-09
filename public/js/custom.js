@@ -5,6 +5,7 @@ $(document).ready(function() {
     $('.dt_termino').mask('00/00/0000',{ "placeholder": "dd/mm/YYYY" });
     $('.dt_inicial_relatorio').mask('00/00/0000',{ "placeholder": "dd/mm/YYYY" });
     $('.dt_final_relatorio').mask('00/00/0000',{ "placeholder": "dd/mm/YYYY" });
+    $('.horario').mask('00:00');
 
     var host =  $('meta[name="base-url"]').attr('content');
     var token = $('meta[name="csrf-token"]').attr('content');
@@ -195,24 +196,6 @@ $(document).ready(function() {
     });
 
     var host =  $('meta[name="base-url"]').attr('content');
-
-    var inputOptionsPromise = new Promise(function (resolve) {
-        
-        var options = {};
-        $.ajax({
-            url: host+'/cliente/get/json',
-            type: 'GET',
-            success: function(response) {
-
-                $.map(response,
-                    function(o) {
-                        options[o.id] = o.name;
-                    });
-
-                resolve(options)               
-            }
-        });
-    });
 
     $('body').on("click", ".config_periodo", function(e) {
 

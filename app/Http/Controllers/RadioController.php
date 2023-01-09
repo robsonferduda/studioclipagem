@@ -56,13 +56,13 @@ class RadioController extends Controller
                 return $q->where('ds_emissora','ilike','%'.$descricao.'%');
             });
 
-            $emissoras = $emissora->orderBy('ds_emissora')->paginate(15);
+            $emissoras = $emissora->orderBy('ds_emissora')->paginate(10);
 
         }
 
         if($request->isMethod('GET')){
 
-            $emissoras = Emissora::orderBy('ds_emissora')->paginate(15);
+            $emissoras = Emissora::orderBy('ds_emissora')->paginate(10);
 
         }
 

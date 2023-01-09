@@ -19,16 +19,22 @@ Route::resource('hashtag', 'HashtagController');
 Route::resource('notification', 'NotificacaoController');
 Route::resource('usuario', 'UserController');
 Route::resource('email', 'EmailController');
+Route::resource('emissora', 'EmissoraController');
 
 Route::get('areas','AreaController@index');
 
 Route::get('cliente','ClienteController@index');
+
+Route::post('emissoras/horario/adicionar','EmissoraController@adicionarHorarios');
+
+Route::get('estado/{id}/cidades','EstadoController@getCidades');
 
 Route::get('fontes','FonteController@index');
 
 Route::get('impresso','JornalImpressoController@index');
 Route::get('jornal-impresso/processamento','JornalImpressoController@processamento');
 Route::get('jornal-impresso/processar','JornalImpressoController@processar');
+Route::get('jornal-impresso/pendentes/listar','JornalImpressoController@listarPendentes');
 Route::get('jornal-impresso/upload','JornalImpressoController@upload');
 Route::get('jornal-impresso/noticia/{id}','JornalImpressoController@detalhes');
 Route::post('jornal-impresso/upload','JornalImpressoController@uploadFiles');
@@ -40,6 +46,9 @@ Route::get('jornal-web','JornalWebController@index');
 Route::get('radios','RadioController@index');
 Route::match(array('GET', 'POST'),'radio/emissoras','RadioController@emissoras');
 Route::get('radio/emissora/{id}/transcricao/atualiza','RadioController@atualizaTranscricao');
+
+Route::get('radio/emissoras/novo','EmissoraController@novo');
+Route::get('radio/emissora/{id}/horarios','EmissoraController@horarios');
 
 Route::get('tv','TvController@index');
 

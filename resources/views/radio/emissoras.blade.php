@@ -6,12 +6,12 @@
             <div class="row">
                 <div class="col-md-8">
                     <h4 class="card-title">
-                        <i class="fa fa-volume-up"></i> Rádio 
+                        <i class="fa fa-volume-up ml-3"></i> Rádio 
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Emissoras 
                     </h4>
                 </div>
                 <div class="col-md-4">
-                    
+                    <a href="{{ url('radio/emissoras/novo') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-plus"></i> Novo</a>
                 </div>
             </div>
         </div>
@@ -19,7 +19,7 @@
             <div class="col-md-12">
                 @include('layouts.mensagens')
             </div>
-            <div class="col-md-12">
+            <div class="col-md-12 px-0">
                 {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['radio/emissoras']]) !!}
                         <div class="form-group m-3 w-70">
                             <div class="row">
@@ -77,8 +77,15 @@
                                 <td class="center">
                                     <a href="{{ url('radio/emissora/'.$emissora->id.'/transcricao/atualiza') }}">{!! ($emissora->fl_transcricao) ? '<span class="badge badge-pill badge-success">ATIVA</span>' : '<span class="badge badge-pill badge-danger">INATIVA</span>' !!}</a>
                                 </td>
-                                <td>
-
+                                <td class="center">
+                                    <a title="Horários de Coleta" href="{{ url('radio/emissora/'.$emissora->id.'/horarios') }}" class="btn btn-primary btn-link btn-icon"><i class="nc-icon nc-time-alarm font-25"></i></a>
+                                    <form class="form-delete" style="display: inline;" action="{{ route('emissora.destroy',$emissora->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button title="Excluir" type="submit" class="btn btn-danger btn-link btn-icon button-remove" title="Delete">
+                                            <i class="fa fa-times fa-2x"></i>
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                         @endforeach
