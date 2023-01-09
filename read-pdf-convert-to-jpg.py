@@ -38,7 +38,6 @@ for diretorio, subpastas, arquivos in os.walk(pasta_pendentes):
         id_fonte = cur.fetchone()['id']
 
         sql = "SELECT id FROM fila_impresso WHERE ds_arquivo = '"+arquivo+"'"
-        print(sql)
         cur.execute(sql)
         id_fila = cur.fetchone()['id']
 
@@ -79,7 +78,8 @@ for diretorio, subpastas, arquivos in os.walk(pasta_pendentes):
         shutil.move(pasta_pendentes+'/'+arquivo, pasta_processados+'/'+arquivo)
         
         #Atualiza o status do arquivo, indicando que o mesmo foi processado   
-        sql_update = "UPDATE fila_impresso SET fl_processado = true WHERE id_fonte = "+str(pasta_id)+" AND dt_arquivo = '"+dt_formatada+"'" 
+        dt_fim_processamento = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        sql_update = "UPDATE fila_impresso SET fl_processado = true, updated_at = '"+dt_fim_processamento+"' WHERE id_fonte = "+str(pasta_id)+" AND dt_arquivo = '"+dt_formatada+"'" 
         cur.execute(sql_update)
         con.commit()  
 
