@@ -43,7 +43,6 @@
         var host =  $('meta[name="base-url"]').attr('content');
        
         $(".dropzone").dropzone({ 
-            maxFilesize: 2, // 2 mb
             acceptedFiles: ".jpeg,.jpg,.png,.pdf",
             init: function() { 
                 myDropzone = this;
