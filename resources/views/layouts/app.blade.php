@@ -105,6 +105,14 @@
                   </li>
                 @endrole
                 @role('administradores')
+                  <li class="{{ (Session::has('url') and Session::get('url') == 'monitoramento') ? 'active' : '' }}">
+                    <a href="{{ url('monitoramento') }}">
+                    <i class="nc-icon nc-sound-wave"></i>
+                    <p>Monitoramento</p>
+                    </a>
+                  </li>
+                @endrole
+                @role('administradores')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'boletins') ? 'active' : '' }}">
                     <a href="{{ url('boletins') }}">
                     <i class="fa fa-file-o"></i>
