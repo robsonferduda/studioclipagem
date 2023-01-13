@@ -8,6 +8,7 @@ use File;
 use Carbon\Carbon;
 use App\Models\FilaImpresso;
 use App\Models\JornalImpresso;
+use App\Models\Fonte;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Symfony\Component\Process\Process;
@@ -25,6 +26,8 @@ class JornalImpressoController extends Controller
 
     public function index(Request $request)
     {
+        $fontes = Fonte::where('tipo_fonte_id',1)->get();
+
         if($request->isMethod('POST')){
 
             $carbon = new Carbon();
@@ -50,7 +53,7 @@ class JornalImpressoController extends Controller
 
         }
 
-        return view('jornal-impresso/index',compact('dados','dt_inicial','dt_final'));
+        return view('jornal-impresso/index',compact('fontes','dados','dt_inicial','dt_final'));
     }
 
     public function detalhes($id)
