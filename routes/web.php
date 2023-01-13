@@ -40,6 +40,7 @@ Route::get('jornal-impresso/noticia/{id}','JornalImpressoController@detalhes');
 Route::post('jornal-impresso/upload','JornalImpressoController@uploadFiles');
 
 Route::match(array('GET', 'POST'),'buscar-impresso','JornalImpressoController@index');
+Route::match(array('GET', 'POST'),'buscar-web','JornalWebController@index');
 
 Route::get('jornal-web','JornalWebController@index');
 
