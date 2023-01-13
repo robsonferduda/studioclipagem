@@ -53,7 +53,7 @@
                             <td>{{ ($arquivo->start_at) ? Carbon\Carbon::parse($arquivo->start_at)->format('d/m/Y H:i:s') : 'Aguardando Processamento' }}</td>
                             <td>{{ ($arquivo->start_at and $arquivo->fl_processado) ? Carbon\Carbon::parse($arquivo->updated_at)->format('d/m/Y H:i:s') : 'Aguardando Processamento' }}</td>
                             <td>{{ Carbon\Carbon::parse($arquivo->dt_arquivo)->format('d/m/Y') }}</td>
-                            <td>{{ $arquivo->fonte->ds_fonte }}</td>
+                            <td>{{ ($arquivo->fonte) ? $arquivo->fonte->ds_fonte : 'Dados Desconhecidos' }}</td>
                             <td>
                                 @if($arquivo->fl_processado)
                                     <a href="{{ url('jornal-impresso/processados/'.$arquivo->ds_arquivo) }}" target="_blank">{{ $arquivo->ds_arquivo }}</a>

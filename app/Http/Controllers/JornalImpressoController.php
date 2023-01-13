@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use DB;
 use Auth;
+use File;
 use Carbon\Carbon;
 use App\Models\FilaImpresso;
 use App\Models\JornalImpresso;
+use App\Models\Fonte;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Symfony\Component\Process\Process;
@@ -24,6 +26,8 @@ class JornalImpressoController extends Controller
 
     public function index(Request $request)
     {
+        $fontes = Fonte::where('tipo_fonte_id',1)->get();
+
         if($request->isMethod('POST')){
 
             $carbon = new Carbon();
@@ -49,7 +53,7 @@ class JornalImpressoController extends Controller
 
         }
 
-        return view('jornal-impresso/index',compact('dados','dt_inicial','dt_final'));
+        return view('jornal-impresso/index',compact('fontes','dados','dt_inicial','dt_final'));
     }
 
     public function detalhes($id)
@@ -106,5 +110,30 @@ class JornalImpressoController extends Controller
         });
 
         return redirect()->back();        
+    }
+
+    public function listarPendentes(){ 
+        
+        $directory = 'jornal-impresso/pendentes'; 
+        $files_info = []; 
+        $file_ext = array('png','jpg','jpeg','pdf'); 
+        
+        // Read files
+        foreach (File::allFiles(public_path($directory)) as $file) { 
+           $extension = strtolower($file->getExtension()); 
+       
+            if(in_array($extension,$file_ext)){ // Check file extension 
+                $filename = $file->getFilename(); 
+                $size = $file->getSize(); // Bytes 
+                $sizeinMB = round($size / (1000 * 1024), 2);// MB 
+            
+                $files_info[] = array( 
+                    "name" => $filename, 
+                    "size" => $size, 
+                    "path" => url($directory.'/'.$filename) 
+                ); 
+            } 
+        } 
+        return response()->json($files_info); 
     }
 }

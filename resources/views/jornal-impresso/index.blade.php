@@ -21,7 +21,7 @@
                 @include('layouts.mensagens')
             </div>
             <div class="row">
-                <div class="col-lg-12 col-sm-12">
+                <div class="col-lg-6 col-sm-6">
                     {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['buscar-impresso']]) !!}
                         <div class="form-group m-3 w-70">
                             <div class="row">
@@ -48,9 +48,11 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label>Fonte</label>
-                                        <select class="form-control load_expression" name="regra" id="regra">
+                                        <select class="form-control select2" name="regra" id="regra">
                                             <option value="">Selecione uma fonte</option>
-                                            
+                                            @foreach ($fontes as $fonte)
+                                                <option value="{{ $fonte->id }}">{{ $fonte->ds_fonte }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
