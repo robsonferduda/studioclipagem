@@ -21,7 +21,7 @@
                 @include('layouts.mensagens')
             </div>
             <div class="row">
-                <div class="col-lg-6 col-sm-6">
+                <div class="col-lg-12 col-sm-12">
                     {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['buscar-impresso']]) !!}
                         <div class="form-group m-3 w-70">
                             <div class="row">

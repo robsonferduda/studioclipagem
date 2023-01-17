@@ -1,3 +1,5 @@
+#pip3 install pytesseract
+
 import pytesseract as ocr
 import os
 import psycopg2
@@ -13,7 +15,7 @@ def create_path(img, txt):
     os.makedirs(img)
     os.makedirs(txt)
 
-pasta_pendentes = 'public/jornal-impresso/pendentes'
+pasta_pendentes = '../public/jornal-impresso/pendentes'
 pasta_processados = 'public/jornal-impresso/processados'
 
 host = config('DB_HOST')

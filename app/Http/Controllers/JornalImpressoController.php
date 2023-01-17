@@ -26,7 +26,7 @@ class JornalImpressoController extends Controller
 
     public function index(Request $request)
     {
-        $fontes = Fonte::where('tipo_fonte_id',1)->get();
+        $fontes = Fonte::where('tipo_fonte_id',1)->orderBy('ds_fonte')->get();
 
         if($request->isMethod('POST')){
 
@@ -99,15 +99,50 @@ class JornalImpressoController extends Controller
 
     public function processar()
     {
+
         $process = new Process(['python3', base_path().'/read-pdf-convert-to-jpg.py']);
 
+        try {
+            $process->run(function ($type, $buffer){
+
+                if (Process::ERR === $type) {
+    
+                    dd($buffer);
+                  
+                }else{
+                    
+                    dd($buffer);                
+    
+                    dd('Começou');
+    
+                }
+    
+            });
+        
+            echo $process->getOutput();
+        } catch (ProcessFailedException $exception) {
+            echo $exception->getMessage();
+        }
+
+        /*
         $process->run(function ($type, $buffer){
+
             if (Process::ERR === $type) {
+
+                dd($buffer);
               
             }else{
+                
+                dd($buffer);                
+
+                dd('Começou');
 
             }
+
         });
+        */
+
+        dd("Entrou");
 
         return redirect()->back();        
     }
