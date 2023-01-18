@@ -1,3 +1,5 @@
+#pip3 install pytesseract
+
 import pytesseract as ocr
 import os
 import psycopg2

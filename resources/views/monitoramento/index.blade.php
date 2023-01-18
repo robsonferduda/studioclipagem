@@ -48,11 +48,9 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label>Fonte</label>
-                                        <select class="form-control select2" name="regra" id="regra">
+                                        <select class="form-control load_expression" name="regra" id="regra">
                                             <option value="">Selecione uma fonte</option>
-                                            @foreach ($fontes as $fonte)
-                                                <option value="{{ $fonte->id }}">{{ $fonte->ds_fonte }}</option>
-                                            @endforeach
+                                            
                                         </select>
                                     </div>
                                 </div>
@@ -63,40 +61,13 @@
                         </div>
                     {!! Form::close() !!} 
 
-                    @if($dados->count())
-                        <h6 class="px-3">Mostrando {{ $dados->count() }} de {{ $dados->total() }} Páginas</h6>
-                    @endif
+                                    
 
-                    {{ $dados->onEachSide(1)->appends(['dt_inicial' => $dt_inicial, 'dt_final' => $dt_final])->links('vendor.pagination.bootstrap-4') }}                 
-
-                    @foreach ($dados as $key => $noticia)
+                    @foreach ($monitoramentos as $key => $monitoramento)
                         <div class="card">
                             <div class="card-body">                           
                                 <div class="row">
-                                    <div class="col-lg-2 col-sm-12">
-                                        @if($noticia->fonte)
-                                            <img src="{{ asset('jornal-impresso/'.$noticia->fonte->id_knewin.'/'.\Carbon\Carbon::parse($noticia->dt_clipagem)->format('Ymd').'/img/pagina_'.$noticia->nu_pagina_atual.'.png') }}" alt="..." class="img-thumbnail">
-                                        @else
-
-                                        @endif
-                                    </div>
-                                    <div class="col-lg-10 col-sm-12">
-                                        <h6>{{ $noticia->titulo }}</h6>
-                                        <p>{{ ($noticia->fonte) ? $noticia->fonte->ds_fonte : 'Não identificada' }} - {{ \Carbon\Carbon::parse($noticia->dt_clipagem)->format('d/m/Y') }}</p>
-                                        <p>
-                                            {{ Str::limit($noticia->texto, 800, " ...") }}
-                                        </p>
-                                        @if($noticia->nu_pagina_atual == 1)
-                                            <p>Primeira Página</p>
-                                        @else
-                                            <p>Página <strong>{{ $noticia->nu_pagina_atual }}</strong> de <strong>{{ $noticia->nu_paginas_total }}</strong></p>
-                                        @endif
-                                        <div>
-                                            <a class="btn btn-danger btn-sm" download target="_blank" href="{{ asset('jornal-impresso/processados/'.$noticia->fila->ds_arquivo) }}" role="button"><i class="fa fa-file-pdf-o"> </i> Documento Original</a>
-                                            <a class="btn btn-primary btn-sm" download target="_blank" href="{{ asset('jornal-impresso/'.$noticia->fonte->id_knewin.'/'.\Carbon\Carbon::parse($noticia->dt_clipagem)->format('Ymd').'/img/pagina_'.$noticia->nu_pagina_atual.'.png') }}" role="button"><i class="fa fa-file-image-o"> </i> Página Atual</a>
-                                            <a class="btn btn-success btn-sm" href="{{ asset('jornal-impresso/noticia/'.$noticia->id) }}" role="button"><i class="fa fa-eye"> </i> Detalhes</a>
-                                        </div>
-                                    </div>
+                                    
                                 </div>                               
                             </div>
                         </div>

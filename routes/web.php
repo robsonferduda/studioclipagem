@@ -44,6 +44,10 @@ Route::match(array('GET', 'POST'),'buscar-web','JornalWebController@index');
 
 Route::get('jornal-web','JornalWebController@index');
 
+Route::get('monitoramento','MonitoramentoController@index');
+Route::get('monitoramento/adicionar','MonitoramentoController@adicionar');
+Route::get('monitoramento/{id}/desabilitar','MonitoramentoController@desabilitar');
+
 Route::get('radios','RadioController@index');
 Route::match(array('GET', 'POST'),'radio/emissoras','RadioController@emissoras');
 Route::get('radio/emissora/{id}/transcricao/atualiza','RadioController@atualizaTranscricao');
