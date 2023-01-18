@@ -27,14 +27,24 @@ class ProcessarImpressos implements ShouldQueue
 
         $process = new Process(['python3', base_path().'/read-pdf-convert-to-jpg.py']);
 
-        $process->run();
-        
-        Mail::send('notificacoes.teste', $data, function($message){
-            $message->to("robsonferduda@gmail.com")
-                    ->subject('Notificação de Monitoramento - Teste de Envio');
-            $message->from('boletins@clipagens.com.br','Studio Social');
-        }); 
+        $process->run(function ($type, $buffer){
 
+            if (Process::ERR === $type) {
+
+                $data = $buffer;
+
+                Mail::send('notificacoes.teste', $data, function($message){
+                    $message->to("robsonferduda@gmail.com")
+                            ->subject('Erro - Processamento de Jornais Impresso');
+                    $message->from('boletins@clipagens.com.br','Studio Social');
+                }); 
+              
+            }else{
+                //Quando corre tudo bem
+            }
+
+        });
+        
         return true;
     }
 }
