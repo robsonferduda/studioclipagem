@@ -24,24 +24,12 @@ class Kernel extends ConsoleKernel
 
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('notificacao:cron')->hourly();
-
-        $schedule->command('media_view:cron')->everyThirtyMinutes();
-
-        $schedule->command('twitter:cron')->hourly();
+        $schedule->command('email:cron')->hourly();
+        $schedule->command('regras:cron')->everyThirtyMinutes();
 
         $schedule->call(function () {
-            (new IGHashTag())->pullMedias();
-            (new IGMention())->pullMedias();
-            (new TwitterCollect())->pullMedias();
-            (new FBMention())->pullMedias();
-            (new FBFeed())->pullMedias();   
-            (new FbTerm())->runJob();
-            (new FbHashtag())->runJob();
-            (new Rule())->runJob();       
-            (new FBFeed())->fetchPostCount();
-               
-        })->hourly()->between('2:00', '23:00');
+            //Adicionar conjunto de instruções               
+        })->hourly()->between('7:00', '22:00');
 
     }
 
