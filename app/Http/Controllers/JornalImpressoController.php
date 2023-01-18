@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use App\Models\FilaImpresso;
 use App\Models\JornalImpresso;
 use App\Models\Fonte;
+use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
 use App\Jobs\ProcessarImpressos as JobProcessarImpressos;
 use Illuminate\Support\Facades\Session;
