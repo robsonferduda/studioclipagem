@@ -17,9 +17,6 @@ class Kernel extends ConsoleKernel
 {
     protected $commands = [
         Commands\EmailCron::class,
-        Commands\NotificacaoCron::class,
-        Commands\TwitterCron::class,
-        Commands\MediaViewCron::class,
     ];
 
     protected function schedule(Schedule $schedule)
