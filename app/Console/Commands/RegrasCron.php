@@ -2,24 +2,24 @@
 
 namespace App\Console\Commands;
 
-use App\Twitter\TwitterCollect;
+use Mail;
 use Illuminate\Console\Command;
 
-class TwitterCron extends Command
+class RegrasCron extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'twitter:cron';
+    protected $signature = 'regras:cron';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Executa as regras de busca de expressão em notícias';
 
     /**
      * Create a new command instance.
@@ -38,6 +38,6 @@ class TwitterCron extends Command
      */
     public function handle()
     {
-        (new TwitterCollect())->pullMedias();
+        
     }
 }
