@@ -10,6 +10,7 @@ use App\Models\FilaImpresso;
 use App\Models\JornalImpresso;
 use App\Models\Fonte;
 use Illuminate\Http\Request;
+use App\Jobs\ProcessarImpressos as JobProcessarImpressos;
 use Illuminate\Support\Facades\Session;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -99,27 +100,20 @@ class JornalImpressoController extends Controller
 
     public function processar()
     {
+        JobProcessarImpressos::dispatch();
 
+        /*
         $process = new Process(['python3', base_path().'/read-pdf-convert-to-jpg.py']);
 
         try {
-            $process->run(function ($type, $buffer){
+            $process->start();
 
-                if (Process::ERR === $type) {
-    
-                    dd($buffer);
-                  
-                }else{
-                    
-                    dd($buffer);                
-    
-                    dd('Começou');
-    
-                }
-    
-            });
+            
         
-            echo $process->getOutput();
+            $process->waitUntil(function ($type, $output) {
+                return $output === 'Ready. Waiting for commands...';
+            });
+
         } catch (ProcessFailedException $exception) {
             echo $exception->getMessage();
         }
@@ -141,9 +135,7 @@ class JornalImpressoController extends Controller
 
         });
         */
-
-        dd("Entrou");
-
+        
         return redirect()->back();        
     }
 
