@@ -33,7 +33,7 @@ class ProcessarImpressos implements ShouldQueue
 
                 $data = $buffer;
 
-                Mail::send('notificacoes.teste', $data, function($message){
+                Mail::send('notificacoes.impressos.processamento', $data, function($message){
                     $message->to("robsonferduda@gmail.com")
                             ->subject('Erro - Processamento de Jornais Impresso');
                     $message->from('boletins@clipagens.com.br','Studio Social');

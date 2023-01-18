@@ -7,7 +7,7 @@
     <meta name="x-apple-disable-message-reformatting"> 
     <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
     <meta content="telephone=no" name="format-detection"> 
-    <title>Notificação de Monitoramento</title> 
+    <title>Notificação de Processamento</title> 
     <style>
 
     </style> 
@@ -18,10 +18,10 @@
             <tbody>
                 <tr>
                     <td style="width: 10%;">
-                        <img style="width: 80%;" src="https://studiosocial.app/img/studio_social.png">
+                        
                     </td>
                     <td style="width: 90%;">
-                        <h1 style="text-align: center;">Notificação de Monitoramento de Rede Social</h1>
+                        <h1 style="text-align: center;">Processamento de Jornais Impressos</h1>
                     </td>
                 </tr>
             </tbody>
