@@ -36,7 +36,7 @@ class ProcessarImpressos implements ShouldQueue
                 Mail::send('notificacoes.impressos.processamento', $data, function($message){
                     $message->to("robsonferduda@gmail.com")
                             ->subject('Erro - Processamento de Jornais Impresso');
-                    $message->from('boletins@clipagens.com.br','Studio Social');
+                    $message->from('boletins@clipagens.com.br','Studio Clipagem');
                 }); 
               
             }else{
@@ -44,6 +44,12 @@ class ProcessarImpressos implements ShouldQueue
             }
 
         });
+
+        Mail::send('notificacoes.impressos.processamento', $data, function($message){
+            $message->to("robsonferduda@gmail.com")
+                    ->subject('Tentou, mas não foi');
+            $message->from('boletins@clipagens.com.br','Studio Clipagem');
+        }); 
         
         return true;
     }
