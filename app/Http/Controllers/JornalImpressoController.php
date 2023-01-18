@@ -94,6 +94,8 @@ class JornalImpressoController extends Controller
                        'id_fonte' => $id_fonte,
                        'tamanho' => $filesize);
         FilaImpresso::create($dados);
+
+        JobProcessarImpressos::dispatch();
         
         return response()->json(['success'=>$file_name, 'msg' => 'Arquivo inserido com sucesso.']);
     }
@@ -135,7 +137,7 @@ class JornalImpressoController extends Controller
 
         });
         */
-        
+        Flash::success('<i class="fa fa-check"></i> Fila de processamento iniciada com sucesso');
         return redirect()->back();        
     }
 
