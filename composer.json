@@ -23,6 +23,7 @@
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.2",
         "laravelcollective/html": "^6.2",
+        "laravellegends/pt-br-validator": "^9.1",
         "maatwebsite/excel": "^3.1",
         "niklasravnsborg/laravel-pdf": "^4.0",
         "owen-it/laravel-auditing": "^12.0",

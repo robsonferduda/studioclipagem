@@ -14,7 +14,7 @@ Route::get('/termos-de-servico', function () { return view('termos-de-servico');
 
 Auth::routes();
 
-Route::resource('client', 'ClientController');
+// Route::resource('client', 'ClientController');
 Route::resource('hashtag', 'HashtagController');
 Route::resource('notification', 'NotificacaoController');
 Route::resource('usuario', 'UserController');
@@ -23,7 +23,7 @@ Route::resource('emissora', 'EmissoraController');
 
 Route::get('areas','AreaController@index');
 
-Route::get('cliente','ClienteController@index');
+Route::resource('cliente','ClienteController');
 
 Route::post('emissoras/horario/adicionar','EmissoraController@adicionarHorarios');
 

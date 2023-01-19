@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use DB;
-use Auth;
 use App\Models\Cliente;
-use App\Models\JornalWeb;
-use Carbon\Carbon;
+use App\Models\EnderecoEletronico;
+use App\Models\Pessoa;
+use App\Utils;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\View\View;
+use Laracasts\Flash\Flash;
 
 class ClienteController extends Controller
 {
@@ -26,22 +29,157 @@ class ClienteController extends Controller
         Session::put('cliente', session('cliente') ? session('cliente') : $clienteSession);
 
         $this->client_id = session('cliente')['id'];
-        
+
         Session::put('url','home');
 
         $this->periodo_padrao = 7;
     }
 
-    public function index()
+    public function index(): View
     {
-        $clientes = Cliente::all(); //Lista todos os clientes
-        
-        $pessoa = Cliente::find(4)->pessoa; //Lista a pessoa
+        // $clientes = Cliente::all(); //Lista todos os clientes
+        $clientes = Cliente::with('pessoa')->get();
 
-        $nome = Cliente::find(4)->pessoa->nome; //Mostra nome da pessoa
-
-        $emails = Cliente::find(4)->pessoa->enderecoEletronico; //Mostra os endereços da pessoa
+        // $pessoa = Cliente::find(4)->pessoa; //Lista a pessoa
+        // $nome = Cliente::find(4)->pessoa->nome; //Mostra nome da pessoa
+        // $emails = Cliente::find(4)->pessoa->enderecoEletronico; //Mostra os endereços da pessoa
 
         return view('cliente/index',compact('clientes'));
+    }
+
+    public function create(): View
+    {
+        return view('cliente/novo');
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        try {
+            $pessoa = Pessoa::create([
+                'nome' => $request->nome,
+                'cpf_cnpj' => preg_replace('/\D/', '', $request->cpf_cnpj)
+            ]);
+
+            $cliente = Cliente::create([
+                'ativo' => $request->ativo,
+                'pessoa_id' => $pessoa->id
+            ]);
+
+            $this->cadastrarEnderecoEletronico($request, $cliente);
+            $retorno = array('flag' => true,
+                             'msg' => "Dados inseridos com sucesso");
+
+        } catch (\Illuminate\Database\QueryException $e) {
+            $retorno = array('flag' => false,
+                             'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
+
+        } catch (\Exception $e) {
+            $retorno = array('flag' => true,
+                             'msg' => "Ocorreu um erro ao inserir o registro");
+        }
+
+        if ($retorno['flag']) {
+            Flash::success($retorno['msg']);
+            return redirect('cliente')->withInput();
+        } else {
+            Flash::error($retorno['msg']);
+            return redirect('cliente/create')->withInput();
+        }
+    }
+
+    public function edit($id): View
+    {
+        $cliente = Cliente::with('pessoa')->find($id);
+        $emails = EnderecoEletronico::where('pessoa_id', $cliente->pessoa->id)->get();
+
+        $emails = json_decode($emails); // Isso eh horrivel, precisa ser removido com urgencia
+
+        return view('cliente/editar',compact('cliente', 'emails'));
+    }
+
+    public function update(Request $request, int $id):RedirectResponse
+    {
+        $cliente = Cliente::find($id);
+        try {
+
+            $cliente->update(['ativo', $request->ativo]);
+            $cliente->pessoa->update([
+                'nome' => $request->nome,
+                'cpf_cnpj' => preg_replace('/\D/', '', $request->cpf_cnpj)
+            ]);
+
+            EnderecoEletronico::where('pessoa_id', $cliente->pessoa->id)->delete();
+
+            $this->cadastrarEnderecoEletronico($request, $cliente);
+
+            $retorno = array(
+                'flag' => true,
+                'msg' => '<i class="fa fa-check"></i> Dados atualizados com sucesso'
+            );
+
+        } catch (\Illuminate\Database\QueryException $e) {
+            $retorno = array(
+                'flag' => false,
+                'msg' => Utils::getDatabaseMessageByCode($e->getCode())
+            );
+        } catch (\Exception $e) {
+            $retorno = array(
+                'flag' => true,
+                'msg' => "Ocorreu um erro ao atualizar o registro"
+            );
+        }
+
+        if ($retorno['flag']) {
+            Flash::success($retorno['msg']);
+            return redirect('cliente')->withInput();
+        } else {
+            Flash::error($retorno['msg']);
+            return redirect()->route('cliente.edit', $cliente->id)->withInput();
+        }
+    }
+
+    public function validaCpf(Request $request):JsonResponse
+    {
+        $cpfCnpj = preg_replace('/\D/', '', $request->cpf_cnpj);
+
+        try{
+            $request->validate([
+                'cpf_cnpj' => 'cpf_ou_cnpj'
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(["success" => false, "msg" => "CPF/CNPJ inválido"], 200);
+        }
+        $pessoa = Pessoa::where('cpf_cnpj', $cpfCnpj)->get();
+
+        if(empty($pessoa->items)) {
+            return response()->json(["success" => true], 200);
+        }
+
+        if(empty($request->cliente_id)) {
+            return response()->json(["success" => false, "msg" => "CPF/CNPJ já cadastrado"], 200);
+        }
+
+        $pessoaCliente = Cliente::find($request->cliente_id)->pessoa;
+
+        if($pessoaCliente->id != $pessoa->items[0]->id) {
+            return response()->json(["success" => false, "msg" => "CPF/CNPJ já cadastrado"], 200);
+        }
+
+        return response()->json(["success" => true], 200);
+    }
+
+    private function cadastrarEnderecoEletronico(Request $request, Cliente $cliente): void
+    {
+        foreach($request->email as $email) {
+            if(empty($email)) {
+                continue;
+            }
+
+            EnderecoEletronico::create([
+                'pessoa_id' => $cliente->pessoa->id,
+                'endereco' => $email,
+                'tipo_id' => 1
+            ]);
+        }
     }
 }
