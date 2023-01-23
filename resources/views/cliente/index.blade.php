@@ -6,12 +6,12 @@
             <div class="row">
                 <div class="col-md-8">
                     <h4 class="card-title">
-                        <i class="nc-icon nc-briefcase-24"></i> Clientes 
-                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Dashboard 
+                        <i class="nc-icon nc-briefcase-24"></i> Clientes
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Dashboard
                     </h4>
                 </div>
                 <div class="col-md-4">
-                    
+                <a href="{{ route('cliente.create') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-plus"></i> Novo</a>
                 </div>
             </div>
         </div>
@@ -20,11 +20,40 @@
                 @include('layouts.mensagens')
             </div>
             <div class="row">
-                <div class="col-lg-6 col-sm-6">
-                   
+                <div class="col-md-12">
+                    <table id="datatable" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>CPF/CNPJ</th>
+                            <th class="disabled-sorting text-center">Situação</th>
+                            <th class="disabled-sorting text-center">Ações</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Nome</th>
+                            <th>CPF/CNPJ</th>
+                            <th class="disabled-sorting text-center">Situação</th>
+                            <th class="disabled-sorting text-center">Ações</th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        @foreach($clientes as $cliente)
+                            <tr>
+                                <td>{{ $cliente->pessoa->nome }}</td>
+                                <td>{{ $cliente->pessoa->cpf_cnpj }}</td>
+                                <td class="disabled-sorting text-center">{!! ($cliente->ativo) ? '<span class="badge badge-pill badge-success">ATIVO</span>' : '<span class="badge badge-pill badge-danger">INATIVO</span>' !!}</td>
+                                <td class="text-center">
+                                    <a title="Editar" href="{{ route('cliente.edit',$cliente->id) }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
                 </div>
             </div>
         </div>
     </div>
-</div> 
+</div>
 @endsection

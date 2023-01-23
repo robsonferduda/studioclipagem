@@ -5,12 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 class Pessoa extends Model
-{    
+{
     protected $connection = 'pgsql';
     protected $table = 'pessoas';
 
-    protected $fillable = [''];     
-    
+    protected $fillable = ['nome', 'cpf_cnpj'];
+
+    public $timestamps = false; // Verificar se as colunas de log não vão existir realmente
+
     public function cliente()
     {
         return $this->hasOne(Cliente::class, 'id', 'id');
