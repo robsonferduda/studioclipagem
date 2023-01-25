@@ -58,6 +58,12 @@ class JornalImpressoController extends Controller
         return view('jornal-impresso/index',compact('fontes','dados','dt_inicial','dt_final'));
     }
 
+    public function listar()
+    {
+        $jornais = JornalImpresso::all();
+        return view('jornal-impresso/listar',compact('jornais'));
+    }
+
     public function detalhes($id)
     {
         $noticia = JornalImpresso::find($id);

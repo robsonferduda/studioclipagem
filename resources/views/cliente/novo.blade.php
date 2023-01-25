@@ -37,7 +37,7 @@
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label>CPF/CNPJ <span class="text-danger">Obrigatório</span></label>
+                                    <label>CPF/CNPJ </label>
                                     <input type="text" class="form-control" name="cpf_cnpj" id="cpf_cnpj" placeholder="CPF/CNPJ" value="">
                                 </div>
                             </div>
@@ -65,7 +65,7 @@
                             <tbody id="tbody-endereco-eletronico">
                                 <tr class="linha-email">
                                     <td><input type="text" class="form-control" name="email[]" placeholder="Email" value="" /></td>
-                                    <td><a title="Remover" class="btn btn-primary btn-link btn-icon btn-remover"><i class="fa fa-trash"></i></a></td>
+                                    <td><a title="Remover" class="btn btn-danger btn-link btn-icon btn-remover"><i class="fa fa-trash"></i></a></td>
                                 </tr>
                             </tbody>
                         </table>

@@ -4,15 +4,16 @@
     <div class="card">
         <div class="card-header">
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-6">
                     <h4 class="card-title">
-                        <i class="fa fa-newspaper-o"></i> Jornal Impresso 
-                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Dashboard 
+                        <i class="fa fa-newspaper-o"></i> Jornal Impresso
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Dashboard
                     </h4>
                 </div>
-                <div class="col-md-4">
-                    <a href="{{ url('jornal-impresso/upload') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-upload"></i> Upload</a>
-                    <a href="{{ url('jornal-impresso/processamento') }}" class="btn btn-info pull-right" style="margin-right: 12px;"><i class="fa fa-cogs"></i> Processamento</a>
+                <div class="col-md-6">
+                    <a href="{{ url('jornal-impresso/listar') }}" class="btn btn-primary pull-right mr-3"><i class="fa fa-newspaper-o"></i> Jornais</a>
+                    <a href="{{ url('jornal-impresso/upload') }}" class="btn btn-info pull-right mr-1"><i class="fa fa-upload"></i> Upload</a>
+                    <a href="{{ url('jornal-impresso/processamento') }}" class="btn btn-warning pull-right mr-1"><i class="fa fa-cogs"></i> Processamento</a>
                 </div>
             </div>
         </div>
@@ -28,13 +29,13 @@
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
                                         <label>Data Inicial</label>
-                                        <input type="text" class="form-control datepicker" name="dt_inicial" required="true" value=""" placeholder="__/__/____">
+                                        <input type="text" class="form-control datepicker" name="dt_inicial" required="true" value="{{ date('d/m/Y') }}" placeholder="__/__/____">
                                     </div>
                                 </div>
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
                                         <label>Data Final</label>
-                                        <input type="text" class="form-control datepicker" name="dt_final" required="true" value="{" placeholder="__/__/____">
+                                        <input type="text" class="form-control datepicker" name="dt_final" required="true" value="{{ date('d/m/Y') }}" placeholder="__/__/____">
                                     </div>
                                 </div>
                                 <div class="col-md-8 col-sm-12">
@@ -59,19 +60,19 @@
                                 <div class="col-md-12 checkbox-radios mb-0">
                                     <button type="submit" id="btn-find" class="btn btn-primary mb-3"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
-                            </div>     
+                            </div>
                         </div>
-                    {!! Form::close() !!} 
+                    {!! Form::close() !!}
 
                     @if($dados->count())
                         <h6 class="px-3">Mostrando {{ $dados->count() }} de {{ $dados->total() }} Páginas</h6>
                     @endif
 
-                    {{ $dados->onEachSide(1)->appends(['dt_inicial' => $dt_inicial, 'dt_final' => $dt_final])->links('vendor.pagination.bootstrap-4') }}                 
+                    {{ $dados->onEachSide(1)->appends(['dt_inicial' => $dt_inicial, 'dt_final' => $dt_final])->links('vendor.pagination.bootstrap-4') }}
 
                     @foreach ($dados as $key => $noticia)
                         <div class="card">
-                            <div class="card-body">                           
+                            <div class="card-body">
                                 <div class="row">
                                     <div class="col-lg-2 col-sm-12">
                                         @if($noticia->fonte)
@@ -97,7 +98,7 @@
                                             <a class="btn btn-success btn-sm" href="{{ asset('jornal-impresso/noticia/'.$noticia->id) }}" role="button"><i class="fa fa-eye"> </i> Detalhes</a>
                                         </div>
                                     </div>
-                                </div>                               
+                                </div>
                             </div>
                         </div>
                     @endforeach
@@ -105,5 +106,5 @@
             </div>
         </div>
     </div>
-</div> 
+</div>
 @endsection

@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use DB;
 use Auth;
+use App\Models\Monitoramento;
 use App\Models\JornalImpresso;
 use App\Models\JornalWeb;
+use App\Models\Fonte;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -36,7 +38,9 @@ class MonitoramentoController extends Controller
 
     public function index()
     {
-        $monitoramentos = array();
-        return view('monitoramento/index', compact('monitoramentos'));
+        $fontes = Fonte::where('tipo_fonte_id',1)->orderBy('ds_fonte')->get();
+        $monitoramentos = Monitoramento::all();
+
+        return view('monitoramento/index', compact('monitoramentos','fontes'));
     }
 }

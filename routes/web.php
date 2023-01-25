@@ -32,6 +32,7 @@ Route::get('estado/{id}/cidades','EstadoController@getCidades');
 Route::get('fontes','FonteController@index');
 
 Route::get('impresso','JornalImpressoController@index');
+Route::get('jornal-impresso/listar','JornalImpressoController@listar');
 Route::get('jornal-impresso/processamento','JornalImpressoController@processamento');
 Route::get('jornal-impresso/processar','JornalImpressoController@processar');
 Route::get('jornal-impresso/pendentes/listar','JornalImpressoController@listarPendentes');
