@@ -6,8 +6,8 @@
             <div class="row">
                 <div class="col-md-6">
                     <h4 class="card-title">
-                        <i class="fa fa-newspaper-o"></i> Jornal Impresso 
-                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Dashboard 
+                        <i class="fa fa-newspaper-o"></i> Jornal Impresso
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Dashboard
                     </h4>
                 </div>
                 <div class="col-md-6">
@@ -60,19 +60,19 @@
                                 <div class="col-md-12 checkbox-radios mb-0">
                                     <button type="submit" id="btn-find" class="btn btn-primary mb-3"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
-                            </div>     
+                            </div>
                         </div>
-                    {!! Form::close() !!} 
+                    {!! Form::close() !!}
 
                     @if($dados->count())
                         <h6 class="px-3">Mostrando {{ $dados->count() }} de {{ $dados->total() }} Páginas</h6>
                     @endif
 
-                    {{ $dados->onEachSide(1)->appends(['dt_inicial' => $dt_inicial, 'dt_final' => $dt_final])->links('vendor.pagination.bootstrap-4') }}                 
+                    {{ $dados->onEachSide(1)->appends(['dt_inicial' => $dt_inicial, 'dt_final' => $dt_final])->links('vendor.pagination.bootstrap-4') }}
 
                     @foreach ($dados as $key => $noticia)
                         <div class="card">
-                            <div class="card-body">                           
+                            <div class="card-body">
                                 <div class="row">
                                     <div class="col-lg-2 col-sm-12">
                                         @if($noticia->fonte)
@@ -98,7 +98,7 @@
                                             <a class="btn btn-success btn-sm" href="{{ asset('jornal-impresso/noticia/'.$noticia->id) }}" role="button"><i class="fa fa-eye"> </i> Detalhes</a>
                                         </div>
                                     </div>
-                                </div>                               
+                                </div>
                             </div>
                         </div>
                     @endforeach
@@ -106,5 +106,5 @@
             </div>
         </div>
     </div>
-</div> 
+</div>
 @endsection
