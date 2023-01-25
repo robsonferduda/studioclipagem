@@ -92,7 +92,7 @@ class ClienteController extends Controller
         $cliente = Cliente::with('pessoa')->find($id);
         $emails = EnderecoEletronico::where('pessoa_id', $cliente->pessoa->id)->get();
 
-        $emails = json_decode($emails); // Isso eh horrivel, precisa ser removido com urgencia
+        $emails = json_decode($emails);
 
         return view('cliente/editar',compact('cliente', 'emails'));
     }
@@ -149,6 +149,7 @@ class ClienteController extends Controller
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json(["success" => false, "msg" => "CPF/CNPJ inválido"], 200);
         }
+
         $pessoa = Pessoa::where('cpf_cnpj', $cpfCnpj)->get();
 
         if(empty($pessoa->items)) {
@@ -177,8 +178,7 @@ class ClienteController extends Controller
 
             EnderecoEletronico::create([
                 'pessoa_id' => $cliente->pessoa->id,
-                'endereco' => $email,
-                'tipo_id' => 1
+                'endereco' => $email
             ]);
         }
     }
