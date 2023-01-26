@@ -62,9 +62,6 @@ class JornalImpressoController extends Controller
     public function listar()
     {
         $jornais = FonteImpressa::all();
-
-        dd($jornais);
-
         return view('jornal-impresso/listar',compact('jornais'));
     }
 
