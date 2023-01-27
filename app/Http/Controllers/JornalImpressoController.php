@@ -6,6 +6,7 @@ use DB;
 use Auth;
 use File;
 use Carbon\Carbon;
+use App\Models\FonteImpressa;
 use App\Models\FilaImpresso;
 use App\Models\JornalImpresso;
 use App\Models\Fonte;
@@ -60,7 +61,7 @@ class JornalImpressoController extends Controller
 
     public function listar()
     {
-        $jornais = JornalImpresso::all();
+        $jornais = FonteImpressa::all();
         return view('jornal-impresso/listar',compact('jornais'));
     }
 
