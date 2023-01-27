@@ -93,7 +93,7 @@ class JornalImpressoController extends Controller
 
         $partes = explode("_", $filename);
         $dt_arquivo = strtotime($partes[1]);
-        $dt_arquivo = Carbon::createFromFormat('Ymd', $partes[0]); 
+        $dt_arquivo = Carbon::createFromFormat('Ymd', $partes[0]);
         $id_fonte = $partes[1];
 
         $dados = array('dt_arquivo' => $dt_arquivo->format('Y-m-d'),
@@ -103,7 +103,7 @@ class JornalImpressoController extends Controller
         FilaImpresso::create($dados);
 
         JobProcessarImpressos::dispatch();
-        
+
         return response()->json(['success'=>$file_name, 'msg' => 'Arquivo inserido com sucesso.']);
     }
 
@@ -117,8 +117,8 @@ class JornalImpressoController extends Controller
         try {
             $process->start();
 
-            
-        
+
+
             $process->waitUntil(function ($type, $output) {
                 return $output === 'Ready. Waiting for commands...';
             });
@@ -133,10 +133,10 @@ class JornalImpressoController extends Controller
             if (Process::ERR === $type) {
 
                 dd($buffer);
-              
+
             }else{
-                
-                dd($buffer);                
+
+                dd($buffer);
 
                 dd('Começou');
 
@@ -145,31 +145,32 @@ class JornalImpressoController extends Controller
         });
         */
         Flash::success('<i class="fa fa-check"></i> Fila de processamento iniciada com sucesso');
-        return redirect()->back();        
+        return redirect()->back();
     }
 
-    public function listarPendentes(){ 
-        
-        $directory = 'jornal-impresso/pendentes'; 
-        $files_info = []; 
-        $file_ext = array('png','jpg','jpeg','pdf'); 
-        
+    public function listarPendentes()
+    {
+
+        $directory = 'jornal-impresso/pendentes';
+        $files_info = [];
+        $file_ext = array('png','jpg','jpeg','pdf');
+
         // Read files
-        foreach (File::allFiles(public_path($directory)) as $file) { 
-           $extension = strtolower($file->getExtension()); 
-       
-            if(in_array($extension,$file_ext)){ // Check file extension 
-                $filename = $file->getFilename(); 
-                $size = $file->getSize(); // Bytes 
-                $sizeinMB = round($size / (1000 * 1024), 2);// MB 
-            
-                $files_info[] = array( 
-                    "name" => $filename, 
-                    "size" => $size, 
-                    "path" => url($directory.'/'.$filename) 
-                ); 
-            } 
-        } 
-        return response()->json($files_info); 
+        foreach (File::allFiles(public_path($directory)) as $file) {
+           $extension = strtolower($file->getExtension());
+
+            if(in_array($extension,$file_ext)){ // Check file extension
+                $filename = $file->getFilename();
+                $size = $file->getSize(); // Bytes
+                $sizeinMB = round($size / (1000 * 1024), 2);// MB
+
+                $files_info[] = array(
+                    "name" => $filename,
+                    "size" => $size,
+                    "path" => url($directory.'/'.$filename)
+                );
+            }
+        }
+        return response()->json($files_info);
     }
 }
