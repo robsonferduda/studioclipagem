@@ -45,7 +45,7 @@ Route::get('jornal-impresso/{id}/editar','JornalImpressoController@editar');
 
 Route::post('jornal-impresso/inserir','JornalImpressoController@inserir');
 Route::post('jornal-impresso/{id}/atualizar','JornalImpressoController@atualizar');
-Route::post('jornal-impresso/remover','JornalImpressoController@remover');
+Route::get('jornal-impresso/{id}/remover','JornalImpressoController@remover');
 
 Route::match(array('GET', 'POST'),'buscar-impresso','JornalImpressoController@index');
 Route::match(array('GET', 'POST'),'buscar-web','JornalWebController@index');

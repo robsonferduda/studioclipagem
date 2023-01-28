@@ -19,3 +19,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::post('cliente/validaCpf', 'ClienteController@validaCpf');
+Route::get('estado/getCidades', 'EstadoController@getCidades');

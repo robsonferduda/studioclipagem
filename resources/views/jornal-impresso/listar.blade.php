@@ -11,9 +11,7 @@
                     </h4>
                 </div>
                 <div class="col-md-6">
-                    <a href="{{ url('impresso') }}" class="btn btn-primary pull-right mr-3"><i class="fa fa-newspaper-o"></i> Dashboard</a>
-                    <a href="{{ url('jornal-impresso/upload') }}" class="btn btn-info pull-right mr-1"><i class="fa fa-upload"></i> Upload</a>
-                    <a href="{{ url('jornal-impresso/processamento') }}" class="btn btn-warning pull-right mr-1"><i class="fa fa-cogs"></i> Processamento</a>
+                    <a href="{{ url('jornal-impresso/cadastrar') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-plus"></i> Novo</a>
                 </div>
             </div>
         </div>
@@ -26,6 +24,7 @@
                     <table id="datatable" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
+                                <th>Código</th>
                                 <th>Nome</th>
                                 <th>Cidade</th>
                                 <th class="disabled-sorting text-center">Ações</th>
@@ -33,6 +32,7 @@
                         </thead>
                         <tfoot>
                             <tr>
+                                <th>Código</th>
                                 <th>Nome</th>
                                 <th>Cidade</th>
                                 <th class="disabled-sorting text-center">Ações</th>
@@ -41,10 +41,12 @@
                         <tbody>
                             @foreach($jornais as $jornal)
                                 <tr>
+                                    <td>{{ $jornal->codigo }}</td>
                                     <td>{{ $jornal->nome }}</td>
-                                    <td>{{ $jornal->cidade->nome }}</td>
+                                    <td>{!! $jornal->cidade->nome ?? '' !!}</td>
                                     <td class="text-center">
-                                        <a title="Editar" href="{{ route('jornal.edit',$jornal->id) }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
+                                        <a title="Editar" href="{{ url('jornal-impresso/'.$jornal->id.'/editar') }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
+                                        <a title="Excluir" href="{{ url('jornal-impresso/'.$jornal->id.'/remover') }}" class="btn btn-danger btn-link btn-icon"><i class="fa fa-trash fa-2x"></i></a>
                                     </td>
                                 </tr>
                             @endforeach

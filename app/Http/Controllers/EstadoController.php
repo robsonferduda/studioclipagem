@@ -3,10 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cidade;
-use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
-use App\Http\Requests\EmailRequest;
-use Illuminate\Support\Facades\Session;
 
 class EstadoController extends Controller
 {
@@ -17,12 +14,12 @@ class EstadoController extends Controller
 
     public function index()
     {
-        
+
     }
 
-    public function getCidades($estado)
+    public function getCidades(Request $request)
     {
-        $cidades = Cidade::where('cd_estado',$estado)->orderBy('nm_cidade')->get();
+        $cidades = Cidade::where('cd_estado',$request->query('estado'))->orderBy('nm_cidade')->get();
         return response()->json($cidades);
     }
 }
