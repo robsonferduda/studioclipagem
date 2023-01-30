@@ -234,10 +234,10 @@ class JornalImpressoController extends Controller
 
         try {
             $jornal->update([
-                'codigo', 'bbb',
-                'nome', 'aaa',
-                'cd_cidade', $request->cidade,
-                'cd_estado', $request->estado
+                'codigo' => $request->codigo,
+                'nome' =>$request->nome,
+                'cd_cidade' => $request->cidade,
+                'cd_estado' => $request->estado
             ]);
 
             $retorno = array(
