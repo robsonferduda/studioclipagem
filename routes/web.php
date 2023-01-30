@@ -32,13 +32,20 @@ Route::get('estado/{id}/cidades','EstadoController@getCidades');
 Route::get('fontes','FonteController@index');
 
 Route::get('impresso','JornalImpressoController@index');
-Route::get('jornal-impresso/listar','JornalImpressoController@listar');
 Route::get('jornal-impresso/processamento','JornalImpressoController@processamento');
 Route::get('jornal-impresso/processar','JornalImpressoController@processar');
 Route::get('jornal-impresso/pendentes/listar','JornalImpressoController@listarPendentes');
 Route::get('jornal-impresso/upload','JornalImpressoController@upload');
 Route::get('jornal-impresso/noticia/{id}','JornalImpressoController@detalhes');
 Route::post('jornal-impresso/upload','JornalImpressoController@uploadFiles');
+
+Route::get('jornal-impresso/listar','JornalImpressoController@listar');
+Route::get('jornal-impresso/cadastrar','JornalImpressoController@cadastrar');
+Route::get('jornal-impresso/{id}/editar','JornalImpressoController@editar');
+
+Route::post('jornal-impresso/inserir','JornalImpressoController@inserir');
+Route::post('jornal-impresso/{id}/atualizar','JornalImpressoController@atualizar');
+Route::get('jornal-impresso/{id}/remover','JornalImpressoController@remover');
 
 Route::match(array('GET', 'POST'),'buscar-impresso','JornalImpressoController@index');
 Route::match(array('GET', 'POST'),'buscar-web','JornalWebController@index');

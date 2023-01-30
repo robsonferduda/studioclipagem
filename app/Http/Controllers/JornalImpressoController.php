@@ -13,6 +13,9 @@ use App\Models\Fonte;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
 use App\Jobs\ProcessarImpressos as JobProcessarImpressos;
+use App\Models\Cidade;
+use App\Models\Estado;
+use App\Utils;
 use Illuminate\Support\Facades\Session;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -65,6 +68,25 @@ class JornalImpressoController extends Controller
         return view('jornal-impresso/listar',compact('jornais'));
     }
 
+    public function cadastrar()
+    {
+        $estados = Estado::orderBy('nm_estado')->get();
+        return view('jornal-impresso/novo', compact('estados'));
+    }
+
+    public function editar(int $id)
+    {
+        $jornal = FonteImpressa::find($id);
+        $estados = Estado::orderBy('nm_estado')->get();
+
+        $cidades = null;
+        if($jornal->cd_estado) {
+            $cidades = Cidade::where(['cd_estado' => $jornal->cd_estado])->orderBy('nm_cidade')->get();;
+        }
+
+        return view('jornal-impresso/editar')->with('jornal', $jornal)->with('estados', $estados)->with('cidades', $cidades);
+    }
+
     public function detalhes($id)
     {
         $noticia = JornalImpresso::find($id);
@@ -94,7 +116,7 @@ class JornalImpressoController extends Controller
 
         $partes = explode("_", $filename);
         $dt_arquivo = strtotime($partes[1]);
-        $dt_arquivo = Carbon::createFromFormat('Ymd', $partes[0]); 
+        $dt_arquivo = Carbon::createFromFormat('Ymd', $partes[0]);
         $id_fonte = $partes[1];
 
         $dados = array('dt_arquivo' => $dt_arquivo->format('Y-m-d'),
@@ -104,7 +126,7 @@ class JornalImpressoController extends Controller
         FilaImpresso::create($dados);
 
         JobProcessarImpressos::dispatch();
-        
+
         return response()->json(['success'=>$file_name, 'msg' => 'Arquivo inserido com sucesso.']);
     }
 
@@ -118,8 +140,8 @@ class JornalImpressoController extends Controller
         try {
             $process->start();
 
-            
-        
+
+
             $process->waitUntil(function ($type, $output) {
                 return $output === 'Ready. Waiting for commands...';
             });
@@ -134,10 +156,10 @@ class JornalImpressoController extends Controller
             if (Process::ERR === $type) {
 
                 dd($buffer);
-              
+
             }else{
-                
-                dd($buffer);                
+
+                dd($buffer);
 
                 dd('Começou');
 
@@ -146,31 +168,112 @@ class JornalImpressoController extends Controller
         });
         */
         Flash::success('<i class="fa fa-check"></i> Fila de processamento iniciada com sucesso');
-        return redirect()->back();        
+        return redirect()->back();
     }
 
-    public function listarPendentes(){ 
-        
-        $directory = 'jornal-impresso/pendentes'; 
-        $files_info = []; 
-        $file_ext = array('png','jpg','jpeg','pdf'); 
-        
+    public function listarPendentes()
+    {
+
+        $directory = 'jornal-impresso/pendentes';
+        $files_info = [];
+        $file_ext = array('png','jpg','jpeg','pdf');
+
         // Read files
-        foreach (File::allFiles(public_path($directory)) as $file) { 
-           $extension = strtolower($file->getExtension()); 
-       
-            if(in_array($extension,$file_ext)){ // Check file extension 
-                $filename = $file->getFilename(); 
-                $size = $file->getSize(); // Bytes 
-                $sizeinMB = round($size / (1000 * 1024), 2);// MB 
-            
-                $files_info[] = array( 
-                    "name" => $filename, 
-                    "size" => $size, 
-                    "path" => url($directory.'/'.$filename) 
-                ); 
-            } 
-        } 
-        return response()->json($files_info); 
+        foreach (File::allFiles(public_path($directory)) as $file) {
+           $extension = strtolower($file->getExtension());
+
+            if(in_array($extension,$file_ext)){ // Check file extension
+                $filename = $file->getFilename();
+                $size = $file->getSize(); // Bytes
+                $sizeinMB = round($size / (1000 * 1024), 2);// MB
+
+                $files_info[] = array(
+                    "name" => $filename,
+                    "size" => $size,
+                    "path" => url($directory.'/'.$filename)
+                );
+            }
+        }
+        return response()->json($files_info);
+    }
+
+    public function inserir(Request $request)
+    {
+        try {
+            FonteImpressa::create([
+                'nome' => $request->nome,
+                'cd_cidade' => $request->cidade,
+                'cd_estado' => $request->estado,
+                'codigo' => $request->codigo ?? null
+            ]);
+
+            $retorno = array('flag' => true,
+                             'msg' => "Dados inseridos com sucesso");
+
+        } catch (\Illuminate\Database\QueryException $e) {
+            $retorno = array('flag' => false,
+                             'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
+
+        } catch (\Exception $e) {
+            $retorno = array('flag' => true,
+                             'msg' => "Ocorreu um erro ao inserir o registro");
+        }
+
+        if ($retorno['flag']) {
+            Flash::success($retorno['msg']);
+            return redirect('jornal-impresso/listar')->withInput();
+        } else {
+            Flash::error($retorno['msg']);
+            return redirect('jornal-impresso/cadastrar')->withInput();
+        }
+    }
+
+    public function atualizar(Request $request, int $id)
+    {
+        $jornal = FonteImpressa::find($id);
+
+        try {
+            $jornal->update([
+                'codigo', 'bbb',
+                'nome', 'aaa',
+                'cd_cidade', $request->cidade,
+                'cd_estado', $request->estado
+            ]);
+
+            $retorno = array(
+                'flag' => true,
+                'msg' => '<i class="fa fa-check"></i> Dados atualizados com sucesso'
+            );
+
+        } catch (\Illuminate\Database\QueryException $e) {
+            $retorno = array(
+                'flag' => false,
+                'msg' => Utils::getDatabaseMessageByCode($e->getCode())
+            );
+        } catch (\Exception $e) {
+            $retorno = array(
+                'flag' => true,
+                'msg' => "Ocorreu um erro ao atualizar o registro"
+            );
+        }
+
+        if ($retorno['flag']) {
+            Flash::success($retorno['msg']);
+            return redirect('jornal-impresso/listar')->withInput();
+        } else {
+            Flash::error($retorno['msg']);
+            return redirect()->route('jornal-impresso.editar', $jornal->id)->withInput();
+        }
+    }
+
+    public function remover(int $id)
+    {
+        $jornal = FonteImpressa::find($id);
+        if($jornal->delete())
+            Flash::success('<i class="fa fa-check"></i> Jornal <strong>'.$jornal->nome.'</strong> excluído com sucesso');
+        else
+            Flash::error("Erro ao excluir o registro");
+
+        return redirect('jornal-impresso/listar')->withInput();
     }
 }
