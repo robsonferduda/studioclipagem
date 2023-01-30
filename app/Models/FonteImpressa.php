@@ -9,5 +9,5 @@ class FonteImpressa extends Model
     protected $connection = 'pgsql';
     protected $table = 'fonte_impressa';
 
-    protected $fillable = [''];       
+    protected $fillable = ['cd_estado','cd_cidade','codigo','nome'];       
 }
