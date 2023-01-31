@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use DB;
 use Auth;
 use App\Models\Fonte;
+use App\Models\FonteWeb;
 use App\Models\JornalWeb;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -50,5 +51,11 @@ class JornalWebController extends Controller
         }
 
         return view('jornal-web/index',compact('fontes','dados','dt_inicial','dt_final'));
+    }
+
+    public function listar()
+    {
+        $sites = FonteWeb::all();
+        return view('jornal-web/listar',compact('sites'));
     }
 }

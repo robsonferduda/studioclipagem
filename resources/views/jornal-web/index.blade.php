@@ -4,14 +4,14 @@
     <div class="card">
         <div class="card-header">
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-6">
                     <h4 class="card-title">
                         <i class="fa fa-globe"></i> Jornal Web 
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Dashboard 
                     </h4>
                 </div>
-                <div class="col-md-4">
-                    
+                <div class="col-md-6">
+                    <a href="{{ url('jornal-web/listar') }}" class="btn btn-primary pull-right mr-3"><i class="fa fa-globe"></i> Sites</a>
                 </div>
             </div>
         </div>
