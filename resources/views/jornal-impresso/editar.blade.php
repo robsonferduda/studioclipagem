@@ -13,7 +13,7 @@
             <div class="card-header">
                 <div class="row">
                     <div class="col-md-6">
-                        <h4 class="card-title ml-2"><i class="nc-icon nc-circle-10"></i> Jornal Impresso
+                        <h4 class="card-title ml-2"><i class="fa fa-newspaper-o"> Jornal Impresso
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Atualizar</h4>
                     </div>
                     <div class="col-md-6">
