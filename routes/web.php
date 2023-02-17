@@ -30,6 +30,7 @@ Route::post('emissoras/horario/adicionar','EmissoraController@adicionarHorarios'
 Route::get('estado/{id}/cidades','EstadoController@getCidades');
 
 Route::get('fontes','FonteController@index');
+Route::get('fonte-web/listar','FonteWebController@listar');
 
 Route::get('impresso','JornalImpressoController@index');
 Route::get('jornal-impresso/processamento','JornalImpressoController@processamento');

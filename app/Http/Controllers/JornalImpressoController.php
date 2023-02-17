@@ -39,8 +39,15 @@ class JornalImpressoController extends Controller
             $carbon = new Carbon();
             $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
             $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
+            $termo = $request->termo;
 
-            $dados = JornalImpresso::whereBetween('dt_clipagem', [$dt_inicial, $dt_final])->orderBy('id_fonte')->orderBy('nu_pagina_atual')->paginate(10);
+            $jornais = JornalImpresso::query();
+
+            $jornais->when($termo, function ($q) use ($termo) {
+                return $q->where('texto', 'ILIKE', '%'.trim($termo).'%');
+            });
+
+            $dados = $jornais->whereBetween('dt_clipagem', [$dt_inicial, $dt_final])->orderBy('id_fonte')->orderBy('nu_pagina_atual')->paginate(10);
 
         }
 

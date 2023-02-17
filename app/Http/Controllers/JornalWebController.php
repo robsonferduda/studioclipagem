@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use DB;
 use Auth;
-use App\Models\Fonte;
+use App\Models\FonteWeb;
 use App\Models\JornalWeb;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -22,15 +22,25 @@ class JornalWebController extends Controller
 
     public function index(Request $request)
     {
-        $fontes = Fonte::where('tipo_fonte_id',1)->get();
+        $fontes = FonteWeb::orderBy('nome')->get();
+        $total_sites = FonteWeb::count();
 
         if($request->isMethod('POST')){
 
             $carbon = new Carbon();
             $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
             $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
+            $termo = $request->termo;
 
-            $dados = JornalWeb::whereBetween('dt_clipagem', [$dt_inicial, $dt_final])->orderBy('id_fonte')->paginate(10);
+            $jornais = JornalWeb::query();
+
+            $jornais->when($termo, function ($q) use ($termo) {
+                return $q->where('texto', 'ILIKE', '%'.trim($termo).'%');
+            });
+
+            $dados = $jornais->whereBetween('dt_clipagem', [$dt_inicial, $dt_final])->orderBy('id_fonte')->orderBy('titulo')->paginate(10);
+
+            $total_noticias = JornalWeb::whereBetween('dt_clipagem', [$dt_inicial, $dt_final])->count();
 
         }
 
@@ -41,14 +51,16 @@ class JornalWebController extends Controller
                 $dt_final = $request->dt_final;
 
                 $dados = JornalWeb::whereBetween('dt_clipagem', [$dt_inicial, $dt_final])->orderBy('id_fonte')->paginate(10);
+                $total_noticias = JornalWeb::whereBetween('dt_clipagem', [$dt_inicial, $dt_final])->count();
             }else{
                 $dt_inicial = date('d/m/Y');
                 $dt_final = date('d/m/Y');
                 $dados = JornalWeb::where('dt_clipagem', $this->data_atual)->orderBy('id_fonte')->paginate(10);
+                $total_noticias = JornalWeb::where('dt_clipagem', $this->data_atual)->count();
             }
 
         }
 
-        return view('jornal-web/index',compact('fontes','dados','dt_inicial','dt_final'));
+        return view('jornal-web/index',compact('fontes','dados','dt_inicial','dt_final','total_sites','total_noticias'));
     }
 }
