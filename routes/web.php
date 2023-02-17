@@ -59,6 +59,7 @@ Route::match(array('GET', 'POST'),'buscar-web','JornalWebController@index');
 
 Route::get('jornal-web','JornalWebController@index');
 Route::get('jornal-web/listar','JornalWebController@listar');
+Route::get('jornal-web/noticia/{id}','JornalWebController@detalhes');
 
 Route::get('monitoramento','MonitoramentoController@index');
 Route::get('monitoramento/adicionar','MonitoramentoController@adicionar');

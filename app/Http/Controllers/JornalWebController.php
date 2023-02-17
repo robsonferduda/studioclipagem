@@ -70,4 +70,10 @@ class JornalWebController extends Controller
         $sites = FonteWeb::all();
         return view('jornal-web/listar',compact('sites'));
     }
+
+    public function detalhes($id)
+    {
+        $noticia = JornalWeb::find($id);
+        return view('jornal-web/detalhes',compact('noticia'));
+    }
 }
