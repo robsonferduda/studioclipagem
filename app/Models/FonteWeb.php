@@ -11,9 +11,11 @@ class FonteWeb extends Model
 
     protected $fillable = ['codigo', 'nome', 'url', 'fl_coleta', 'cd_cidade', 'cd_estado'];
 
+    public $timestamps = false;
+
     public function estado()
     {
-        return $this->hasOne(Estado::class, 'cd_estado', 'cd_estado');
+        return $this->belongsTo(Estado::class, 'cd_estado', 'cd_estado');
     }
 
     public function cidade()

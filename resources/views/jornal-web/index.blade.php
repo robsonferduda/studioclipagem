@@ -4,7 +4,7 @@
     <div class="card">
         <div class="card-header">
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-6">
                     <h4 class="card-title">
                         <i class="fa fa-globe"></i> Jornal Web 
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Dashboard 

@@ -22,6 +22,12 @@ Route::resource('email', 'EmailController');
 Route::resource('emissora', 'EmissoraController');
 
 Route::get('areas','AreaController@index');
+Route::get('areas/cadastrar','AreaController@cadastrar');
+Route::get('areas/{id}/editar','AreaController@editar');
+Route::get('areas/{id}/remover','AreaController@remover');
+
+Route::post('areas/inserir','AreaController@inserir');
+Route::post('areas/{id}/atualizar','AreaController@atualizar');
 
 Route::resource('cliente','ClienteController');
 
@@ -52,6 +58,7 @@ Route::match(array('GET', 'POST'),'buscar-impresso','JornalImpressoController@in
 Route::match(array('GET', 'POST'),'buscar-web','JornalWebController@index');
 
 Route::get('jornal-web','JornalWebController@index');
+Route::get('jornal-web/listar','JornalWebController@listar');
 
 Route::get('monitoramento','MonitoramentoController@index');
 Route::get('monitoramento/adicionar','MonitoramentoController@adicionar');

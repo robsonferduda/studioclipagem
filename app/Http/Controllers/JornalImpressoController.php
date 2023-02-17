@@ -240,12 +240,12 @@ class JornalImpressoController extends Controller
         $jornal = FonteImpressa::find($id);
 
         try {
-            
-            $jornal->update(array('codigo' => 'bbb',
-                                  'nome' => 'aaa',
-                                  'cd_cidade' => $request->cidade,
-                                  'cd_estado' => $request->estado
-            ));
+            $jornal->update([
+                'codigo'    => $request->codigo,
+                'nome'      => $request->nome,
+                'cd_cidade' => $request->cidade,
+                'cd_estado' => $request->estado
+            ]);
 
             $retorno = array(
                 'flag' => true,
