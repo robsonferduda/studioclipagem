@@ -74,25 +74,25 @@
                                 <div class="row">
                                     <div class="col-lg-12 col-sm-12">
                                         <h6>{{ $noticia->titulo }}</h6>
-                                        <p>{{ ($noticia->fonte) ? $noticia->fonte->ds_fonte : 'Fonte desconhecida' }} - {{ \Carbon\Carbon::parse($noticia->dt_clipagem)->format('d/m/Y') }}</p>
+                                        <p>{{ ($noticia->fonte) ? $noticia->fonte->nome : 'Fonte desconhecida' }} - {{ \Carbon\Carbon::parse($noticia->dt_clipagem)->format('d/m/Y') }}</p>
                                         <p>
                                             {{ Str::limit($noticia->texto, 450, " ...") }}
                                         </p>
                                     </div>
+                                    <div class="col-lg-8 col-sm-10">
+                                        @if($noticia->categoria)
+                                            <span class="badge badge-pill badge-primary">{{ $noticia->categoria }}</span>
+                                        @else
+                                            <span class="badge badge-pill badge-default">Sem Categoria</span>
+                                        @endif
+                                    </div>
+                                    <div class="col-lg-4 col-sm-2">
+                                        <a class="btn btn-success btn-sm pull-right" href="{{ asset('jornal-web/noticia/'.$noticia->id) }}" role="button"><i class="fa fa-eye"> </i> Detalhes</a>
+                                        <a class="btn btn-info btn-sm pull-right" href="{{ asset('jornal-web/noticia/estatisticas/'.$noticia->id) }}" role="button"><i class="nc-icon nc-chart-bar-32"> </i> Estatísticas</a>
+                                    </div>
                                 </div>                               
                             </div>
-                            <div class="card-footer">
-                            <hr class="p-0">
-                                <div class="row">
-                                    <div class="col-lg-12 col-md-12 col-sm-12">
-                                        <div class="pull-right">
-                                            <button class="btn btn-success btn-round btn-icon btn-sm">
-                                            <i class="nc-icon nc-simple-add"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            
                         </div>
                     @endforeach
                 </div>
