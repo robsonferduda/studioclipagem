@@ -22,6 +22,12 @@ Route::resource('email', 'EmailController');
 Route::resource('emissora', 'EmissoraController');
 
 Route::get('areas','AreaController@index');
+Route::get('areas/cadastrar','AreaController@cadastrar');
+Route::get('areas/{id}/editar','AreaController@editar');
+Route::get('areas/{id}/remover','AreaController@remover');
+
+Route::post('areas/inserir','AreaController@inserir');
+Route::post('areas/{id}/atualizar','AreaController@atualizar');
 
 Route::resource('cliente','ClienteController');
 
@@ -30,9 +36,9 @@ Route::post('emissoras/horario/adicionar','EmissoraController@adicionarHorarios'
 Route::get('estado/{id}/cidades','EstadoController@getCidades');
 
 Route::get('fontes','FonteController@index');
+Route::get('fonte-web/listar','FonteWebController@listar');
 
 Route::get('impresso','JornalImpressoController@index');
-Route::get('jornal-impresso/listar','JornalImpressoController@listar');
 Route::get('jornal-impresso/processamento','JornalImpressoController@processamento');
 Route::get('jornal-impresso/processar','JornalImpressoController@processar');
 Route::get('jornal-impresso/pendentes/listar','JornalImpressoController@listarPendentes');
@@ -40,10 +46,19 @@ Route::get('jornal-impresso/upload','JornalImpressoController@upload');
 Route::get('jornal-impresso/noticia/{id}','JornalImpressoController@detalhes');
 Route::post('jornal-impresso/upload','JornalImpressoController@uploadFiles');
 
+Route::get('jornal-impresso/listar','JornalImpressoController@listar');
+Route::get('jornal-impresso/cadastrar','JornalImpressoController@cadastrar');
+Route::get('jornal-impresso/{id}/editar','JornalImpressoController@editar');
+
+Route::post('jornal-impresso/inserir','JornalImpressoController@inserir');
+Route::post('jornal-impresso/{id}/atualizar','JornalImpressoController@atualizar');
+Route::get('jornal-impresso/{id}/remover','JornalImpressoController@remover');
+
 Route::match(array('GET', 'POST'),'buscar-impresso','JornalImpressoController@index');
 Route::match(array('GET', 'POST'),'buscar-web','JornalWebController@index');
 
 Route::get('jornal-web','JornalWebController@index');
+Route::get('jornal-web/listar','JornalWebController@listar');
 
 Route::get('monitoramento','MonitoramentoController@index');
 Route::get('monitoramento/adicionar','MonitoramentoController@adicionar');

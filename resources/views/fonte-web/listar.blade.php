@@ -24,29 +24,32 @@
                     <table id="datatable" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
-                                <th>Código</th>
-                                <th>Nome</th>
+                                <th>Estado</th>
                                 <th>Cidade</th>
+                                <th>Nome</th>
+                                <th>URL</th>
                                 <th class="disabled-sorting text-center">Ações</th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
-                                <th>Código</th>
-                                <th>Nome</th>
+                                <th>Estado</th>
                                 <th>Cidade</th>
+                                <th>Nome</th>
+                                <th>URL</th>
                                 <th class="disabled-sorting text-center">Ações</th>
                             </tr>
                         </tfoot>
                         <tbody>
-                            @foreach($jornais as $jornal)
+                            @foreach($fontes as $site)
                                 <tr>
-                                    <td>{{ $jornal->codigo }}</td>
-                                    <td>{{ $jornal->nome }}</td>
-                                    <td>{!! $jornal->cidade->nm_cidade ?? '' !!}</td>
+                                    <td>{!! $site->estado->nm_estado ?? '' !!}</td>
+                                    <td>{!! $site->cidade->nm_cidade ?? '' !!}</td>
+                                    <td>{{ $site->nome }}</td>
+                                    <td>{{ $site->url }}</td>
                                     <td class="text-center">
-                                        <a title="Editar" href="{{ url('jornal-impresso/'.$jornal->id.'/editar') }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
-                                        <a title="Excluir" href="{{ url('jornal-impresso/'.$jornal->id.'/remover') }}" class="btn btn-danger btn-link btn-icon"><i class="fa fa-trash fa-2x"></i></a>
+                                        <a title="Editar" href="{{ url('font-web/'.$site->id.'/editar') }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
+                                        <a title="Excluir" href="{{ url('font-web/'.$site->id.'/remover') }}" class="btn btn-danger btn-link btn-icon"><i class="fa fa-trash fa-2x"></i></a>
                                     </td>
                                 </tr>
                             @endforeach

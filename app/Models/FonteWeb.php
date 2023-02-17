@@ -4,12 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class FonteImpressa extends Model
+class FonteWeb extends Model
 {
     protected $connection = 'pgsql';
-    protected $table = 'fonte_impressa';
+    protected $table = 'fonte_web';
 
-    protected $fillable = ['codigo', 'nome', 'cd_cidade', 'cd_estado'];
+    protected $fillable = ['codigo', 'nome', 'url', 'fl_coleta', 'cd_cidade', 'cd_estado'];
 
     public $timestamps = false;
 
@@ -20,6 +20,6 @@ class FonteImpressa extends Model
 
     public function cidade()
     {
-        return $this->belongsTo(Cidade::class, 'cd_cidade', 'cd_cidade');
-    }
+        return $this->hasOne(Cidade::class, 'cd_cidade', 'cd_cidade');
+    }  
 }
