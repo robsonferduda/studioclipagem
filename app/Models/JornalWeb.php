@@ -13,6 +13,6 @@ class JornalWeb extends Model
     
     public function fonte()
     {
-        return $this->hasOne(Fonte::class, 'id', 'id_fonte');
+        return $this->hasOne(FonteWeb::class, 'id', 'id_fonte');
     }
 }

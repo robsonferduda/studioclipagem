@@ -10,7 +10,7 @@
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Dashboard 
                     </h4>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <a href="{{ url('fonte-web/listar') }}" class="btn btn-primary pull-right mr-3"><i class="fa fa-globe"></i> Sites</a>
                 </div>
             </div>
