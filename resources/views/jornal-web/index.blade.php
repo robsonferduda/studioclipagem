@@ -27,13 +27,13 @@
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
                                         <label>Data Inicial</label>
-                                        <input type="text" class="form-control datepicker" name="dt_inicial" required="true" value=""" placeholder="__/__/____">
+                                        <input type="text" class="form-control datepicker" name="dt_inicial" required="true" value="{{ date("d/m/Y") }}" placeholder="__/__/____">
                                     </div>
                                 </div>
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
                                         <label>Data Final</label>
-                                        <input type="text" class="form-control datepicker" name="dt_final" required="true" value="{" placeholder="__/__/____">
+                                        <input type="text" class="form-control datepicker" name="dt_final" required="true" value="{{ date("d/m/Y") }}" placeholder="__/__/____">
                                     </div>
                                 </div>
                                 <div class="col-md-8 col-sm-12">
@@ -50,7 +50,7 @@
                                         <select class="form-control select2" name="regra" id="regra">
                                             <option value="">Selecione uma fonte</option>
                                             @foreach ($fontes as $fonte)
-                                                <option value="{{ $fonte->id }}">{{ $fonte->ds_fonte }}</option>
+                                                <option value="{{ $fonte->id }}">{{ $fonte->nome }}</option>
                                             @endforeach
                                         </select>
                                     </div>
