@@ -48,8 +48,14 @@
                                     <td>{{ $site->nome }}</td>
                                     <td>{{ $site->url }}</td>
                                     <td class="text-center">
-                                        <a title="Editar" href="{{ url('font-web/'.$site->id.'/editar') }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
-                                        <a title="Excluir" href="{{ url('font-web/'.$site->id.'/remover') }}" class="btn btn-danger btn-link btn-icon"><i class="fa fa-trash fa-2x"></i></a>
+                                        <a title="Editar" href="{{ route('fonte-web.edit', $site->id) }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
+                                        <form class="form-delete" style="display: inline;" action="{{ route('fonte-web.destroy',$site->id) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button title="Excluir" type="submit" class="btn btn-danger btn-link btn-icon button-remove" title="Delete">
+                                                <i class="fa fa-times fa-2x"></i>
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                             @endforeach

@@ -37,6 +37,7 @@ Route::get('estado/{id}/cidades','EstadoController@getCidades');
 
 Route::get('fontes','FonteController@index');
 Route::get('fonte-web/listar','FonteWebController@listar');
+Route::resource('fonte-web','FonteWebController');
 
 Route::get('impresso','JornalImpressoController@index');
 Route::get('jornal-impresso/processamento','JornalImpressoController@processamento');
@@ -60,6 +61,7 @@ Route::match(array('GET', 'POST'),'buscar-web','JornalWebController@index');
 Route::get('jornal-web','JornalWebController@index');
 Route::get('jornal-web/listar','JornalWebController@listar');
 Route::get('jornal-web/noticia/{id}','JornalWebController@detalhes');
+Route::get('jornal-web/noticia/estatisticas/{id}','JornalWebController@estatisticas');
 
 Route::get('monitoramento','MonitoramentoController@index');
 Route::get('monitoramento/adicionar','MonitoramentoController@adicionar');
