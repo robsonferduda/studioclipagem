@@ -48,7 +48,7 @@
                                     <td>{{ $site->nome }}</td>
                                     <td>{{ $site->url }}</td>
                                     <td class="text-center">
-                                        <a title="Editar" href="{{ url('jornal-web/'.$site->id.'/editar') }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
+                                        <a title="Editar" href="{{ route('fonte-web.edit',$cliente->id) }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
                                         <a title="Excluir" href="{{ url('jornal-web/'.$site->id.'/remover') }}" class="btn btn-danger btn-link btn-icon"><i class="fa fa-trash fa-2x"></i></a>
                                     </td>
                                 </tr>

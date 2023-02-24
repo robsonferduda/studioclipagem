@@ -5,8 +5,12 @@ namespace App\Http\Controllers;
 use DB;
 use Auth;
 use Carbon\Carbon;
+use App\Models\Estado;
+use App\Models\Cidade;
 use App\Models\FonteWeb;
+use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
+use App\Http\Requests\FontWebRequest;
 use Illuminate\Support\Facades\Session;
 
 class FonteWebController extends Controller
@@ -34,5 +38,75 @@ class FonteWebController extends Controller
         }
 
         return view('fonte-web/listar',compact('fontes'));
+    }
+
+    public function create(Request $request)
+    {
+        $cidades = Cidade::orderBy('nm_cidade')->get();
+        $estados = Estado::orderBy('nm_estado')->get();
+
+        return view('fonte-web/novo', compact('estados','cidades'));
+    }
+
+    public function edit(FonteWeb $fonte, $id)
+    {
+        $cidades = Cidade::orderBy('nm_cidade')->get();
+        $estados = Estado::orderBy('nm_estado')->get();
+        $fonte = FonteWeb::find($id);
+
+        return view('fonte-web/editar', compact('fonte','estados','cidades'));
+    }
+
+    public function store(FontWebRequest $request)
+    {
+        try {
+            FonteWeb::create($request->all());
+            $retorno = array('flag' => true,
+                             'msg' => "Dados inseridos com sucesso");
+
+        } catch (\Illuminate\Database\QueryException $e) {
+
+            $retorno = array('flag' => false,
+                             'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
+
+        } catch (Exception $e) {
+            
+            $retorno = array('flag' => true,
+                             'msg' => "Ocorreu um erro ao inserir o registro");
+        }
+
+        if ($retorno['flag']) {
+            Flash::success($retorno['msg']);
+            return redirect('fonte-web/listar')->withInput();
+        } else {
+            Flash::error($retorno['msg']);
+            return redirect('fonte-web/create')->withInput();
+        }
+    }
+
+    public function update(Request $request, $id)
+    {
+        $fonte = FonteWeb::find($id);
+    
+        try{
+        
+            $fonte->update($request->all());
+            $retorno = array('flag' => true,
+                             'msg' => '<i class="fa fa-check"></i> Dados atualizados com sucesso');
+        } catch (\Illuminate\Database\QueryException $e) {
+            $retorno = array('flag' => false,
+                             'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
+        } catch (Exception $e) {
+            $retorno = array('flag' => true,
+                             'msg' => "Ocorreu um erro ao atualizar o registro");
+        }
+
+        if ($retorno['flag']) {
+            Flash::success($retorno['msg']);
+            return redirect('fonte-web/listar')->withInput();
+        } else {
+            Flash::error($retorno['msg']);
+            return redirect()->route('font-web.edit', $fonte->id)->withInput();
+        }
     }
 }

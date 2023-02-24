@@ -76,4 +76,10 @@ class JornalWebController extends Controller
         $noticia = JornalWeb::find($id);
         return view('jornal-web/detalhes',compact('noticia'));
     }
+
+    public function estatisticas($id)
+    {
+        $noticia = JornalWeb::find($id);
+        return view('jornal-web/estatisticas',compact('noticia'));
+    }
 }

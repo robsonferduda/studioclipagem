@@ -6,12 +6,14 @@
             <div class="row">
                 <div class="col-md-6">
                     <h4 class="card-title">
-                        <i class="fa fa-newspaper-o"></i> Jornal Impresso
+                        <i class="fa fa-globe"></i> Jornal Web
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Fontes
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Listar
                     </h4>
                 </div>
                 <div class="col-md-6">
-                    <a href="{{ url('jornal-impresso/cadastrar') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-plus"></i> Novo</a>
+                    <a href="{{ url('buscar-web') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-globe"></i> Notícias Web</a>
+                    <a href="{{ url('fonte-web/create') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-plus"></i> Novo</a>
                 </div>
             </div>
         </div>
@@ -48,8 +50,15 @@
                                     <td>{{ $site->nome }}</td>
                                     <td>{{ $site->url }}</td>
                                     <td class="text-center">
-                                        <a title="Editar" href="{{ url('font-web/'.$site->id.'/editar') }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
-                                        <a title="Excluir" href="{{ url('font-web/'.$site->id.'/remover') }}" class="btn btn-danger btn-link btn-icon"><i class="fa fa-trash fa-2x"></i></a>
+                                        <a title="Editar" href="{{ url('fonte-web/estatisticas', $site->id) }}" class="btn btn-warning btn-link btn-icon"> <i class="fa fa-bar-chart fa-2x text-warning"></i></a>
+                                        <a title="Editar" href="{{ route('fonte-web.edit', $site->id) }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
+                                        <form class="form-delete" style="display: inline;" action="{{ route('fonte-web.destroy',$site->id) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button title="Excluir" type="submit" class="btn btn-danger btn-link btn-icon button-remove" title="Delete">
+                                                <i class="fa fa-times fa-2x"></i>
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                             @endforeach
