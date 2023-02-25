@@ -28,7 +28,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6 top-40">
-                        <div class="flex-wrap">
+                        <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label>Nome <span class="text-danger">Obrigatório</span></label>
@@ -79,6 +79,73 @@
                             </tbody>
                         </table>
                     </div>
+                    <div class="col-md-12">
+                        <hr/>
+                        <h4>Expressões</h4>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Área</th>
+                                    <th>Expressão</th>
+                                    <th>Status</th>
+                                    <th><a title="Adicionar" class="btn btn-primary btn-link btn-icon btn-adicionar-expressao"><i class="fa fa-plus"></i></a></th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-expressoes">
+                                @if(count($cliente->clienteArea) > 0)
+                                    @foreach($cliente->clienteArea as $expressao)
+                                        <tr class="linha-expressao">
+                                            <td>
+                                                <select class="form-control select-area" name="area[]">
+                                                    <option value="">Selecione</option>
+                                                    @foreach($areas as $area)
+                                                        <option value="{{ $area->id }}" {{ ($area->id == $expressao->area_id) ? 'selected' : '' }} >{{ $area->descricao }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control input-expressao" name="expressao[]" placeholder="Expressao" value="{{ $expressao->expressao }}" />
+                                            </td>
+                                            <td>
+                                                <select class="form-control select-status" name="status[]">
+                                                    <option value="true"  {{ ($area->id == $expressao->ativo) === true ? 'selected' : '' }}>Ativo</option>
+                                                    <option value="false"  {{ ($area->id == $expressao->ativo) === false ? 'selected' : '' }}>Inativo</option>
+                                                </select>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <a title="Remover" class="btn btn-danger btn-link btn-icon btn-remover-expressao"><i class="fa fa-trash"></i></a>
+                                                <input type="hidden" name="id[]" value="{{ $expressao->id }}" />
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @else
+                                    <tr class="linha-expressao">
+                                        <td>
+                                            <select class="form-control select-area" name="area[]">
+                                                <option value="">Selecione</option>
+                                                @foreach($areas as $area)
+                                                    <option value="{{ $area->id }}">{{ $area->descricao }}</option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control input-expressao" name="expressao[]" placeholder="Expressao" />
+                                        </td>
+                                        <td>
+                                            <select class="form-control select-status" name="status[]">
+                                                <option value="true">Ativo</option>
+                                                <option value="false">Inativo</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <a title="Remover" class="btn btn-danger btn-link btn-icon btn-remover-expressao"><i class="fa fa-trash"></i></a>
+                                        </td>
+                                    </tr>
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
             <div class="card-footer text-right">
@@ -91,11 +158,46 @@
 @endsection
 @section('script')
     <script>
+        Componente = {
+            init: function() {
+                $('.select-area').select2({
+                    placeholder: 'Selecione',
+                    allowClear: true
+                })
+
+                $('.select-status').select2({
+                    placeholder: 'Selecione',
+                    minimumResultsForSearch: Infinity
+                })
+            },
+            remove: function(element, table) {
+                if($(table).find('tr').length > 1) {
+                    $(element).parents('tr').remove();
+                    return;
+                }
+
+                $(element).parents('tr').find('input').val('');
+            }
+        }
+
         $(document).on('click', '.btn-adicionar', function() {
-            let clone = $('#tbody-endereco-eletronico').find('tr').eq(0).clone();
-            $(clone).find('input').val('');
-            $('#tbody-endereco-eletronico').prepend(clone);
-            $('#tbody-endereco-eletronico').find('tr').eq(0).find('input').focus();
+            let element = '#tbody-endereco-eletronico';
+            let clone = $(element).find('tr').eq(0).clone();
+            $(clone).find('input, select').val('');
+            $(element).prepend(clone);
+        });
+
+        $(document).on('click', '.btn-adicionar-expressao', function() {
+            let element = '#tbody-expressoes';
+            $(element).find('select').select2('destroy');
+
+            let clone = $(element).find('tr').eq(0).clone();
+            $(clone).find('input, select').val('');
+            $(clone).find('.select-area').val('');
+            $(clone).find('.select-status').val('true');
+            $(element).prepend(clone);
+            $(element).find('tr').eq(0).find('input-expressao').focus();
+            Componente.init();
         });
 
         $(document).on('change', '#cpf_cnpj', function() {
@@ -131,21 +233,21 @@
         });
 
         $(document).on('click', '.btn-remover', function() {
-            if($('.btn-remover').length > 1) {
-                $(this).parents('tr').remove();
-                return;
-            }
+            Componente.remove(this, '#tbody-endereco-eletronico');
+        });
 
-            $(this).parents('tr').find('input').val('');
+        $(document).on('click', '.btn-remover-expressao', function() {
+            Componente.remove(this, '#tbody-expressoes');
         });
 
         $(document).ready(function() {
+            Componente.init();
 
-            var host =  $('meta[name="base-url"]').attr('content');
+            let host =  $('meta[name="base-url"]').attr('content');
 
-                var options = {
+            let options = {
                 onKeyPress: function (cpf, ev, el, op) {
-                    var masks = ['000.000.000-000', '00.000.000/0000-00'];
+                    let masks = ['000.000.000-000', '00.000.000/0000-00'];
                     $('#cpf_cnpj').mask((cpf.length > 14) ? masks[1] : masks[0], op);
                 }
             }

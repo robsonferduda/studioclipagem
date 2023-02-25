@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Area;
 use App\Models\Cliente;
+use App\Models\ClienteArea;
 use App\Models\EnderecoEletronico;
 use App\Models\Pessoa;
 use App\Utils;
@@ -49,7 +51,8 @@ class ClienteController extends Controller
 
     public function create(): View
     {
-        return view('cliente/novo');
+        $areas  =Area::all();
+        return view('cliente/novo', compact('areas'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -66,6 +69,8 @@ class ClienteController extends Controller
             ]);
 
             $this->cadastrarEnderecoEletronico($request, $cliente);
+            $this->gerenciaClienteArea($request, $cliente);
+
             $retorno = array('flag' => true,
                              'msg' => "Dados inseridos com sucesso");
 
@@ -89,12 +94,13 @@ class ClienteController extends Controller
 
     public function edit($id): View
     {
-        $cliente = Cliente::with('pessoa')->find($id);
+        $cliente = Cliente::with(['pessoa', 'clienteArea'])->find($id);
+        $areas  = Area::all();
         $emails = EnderecoEletronico::where('pessoa_id', $cliente->pessoa->id)->get();
 
         $emails = json_decode($emails);
 
-        return view('cliente/editar',compact('cliente', 'emails'));
+        return view('cliente/editar',compact('cliente', 'emails', 'areas'));
     }
 
     public function update(Request $request, int $id):RedirectResponse
@@ -111,6 +117,7 @@ class ClienteController extends Controller
             EnderecoEletronico::where('pessoa_id', $cliente->pessoa->id)->delete();
 
             $this->cadastrarEnderecoEletronico($request, $cliente);
+            $this->gerenciaClienteArea($request, $cliente);
 
             $retorno = array(
                 'flag' => true,
@@ -178,8 +185,50 @@ class ClienteController extends Controller
 
             EnderecoEletronico::create([
                 'pessoa_id' => $cliente->pessoa->id,
-                'endereco' => $email
+                'endereco' => $email,
+                'tipo_id' => 1
             ]);
+        }
+    }
+
+    private function gerenciaClienteArea(Request $request, Cliente $cliente): void
+    {
+        $id = [];
+        try {
+            foreach($request->area as $key => $area) {
+                if(!empty($request->id[$key])) {
+                    $id[] = $request->id[$key];
+                    $clienteArea = ClienteArea::find($request->id[$key]);
+                    $clienteArea->update([
+                        'area_id' => $area,
+                        'expressao' => $request->expressao[$key],
+                        'ativo' => $request->status[$key] == "true"
+                    ]);
+                    continue;
+                }
+
+                if(empty($request->expressao[$key])) {
+                    continue;
+                }
+
+                $created = ClienteArea::create([
+                    'cliente_id' => $cliente->id,
+                    'area_id' => $area,
+                    'expressao' => $request->expressao[$key],
+                    'ativo' => $request->status[$key] == "true"
+                ]);
+                $id[] = $created->id;
+            }
+
+            $remover = ClienteArea::whereNotIn('id', $id)->where('cliente_id', $cliente->id)->get();
+
+            foreach($remover as $excluir) {
+                $excluir->delete();
+            }
+
+
+        } catch(\Exception $e) {
+            throw new \RuntimeException($e);
         }
     }
 }
