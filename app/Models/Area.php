@@ -14,4 +14,8 @@ class Area extends Model
 
     protected $fillable = ['descricao'];
 
+    public function clienteArea()
+    {
+        return $this->belongsTo(ClienteArea::class, 'id', 'area_id');
+    }
 }

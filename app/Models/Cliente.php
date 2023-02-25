@@ -17,4 +17,9 @@ class Cliente extends Model
     {
         return $this->belongsTo(Pessoa::class, 'pessoa_id', 'id');
     }
+
+    public function clienteArea()
+    {
+        return $this->hasMany(ClienteArea::class, 'cliente_id', 'id');
+    }
 }
