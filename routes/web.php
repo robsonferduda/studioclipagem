@@ -37,6 +37,7 @@ Route::get('estado/{id}/cidades','EstadoController@getCidades');
 
 Route::get('fontes','FonteController@index');
 Route::get('fonte-web/listar','FonteWebController@listar');
+Route::get('fonte-web/estatisticas/{id}','FonteWebController@estatisticas');
 Route::resource('fonte-web','FonteWebController');
 
 Route::get('impresso','JornalImpressoController@index');

@@ -39,7 +39,7 @@ class MonitoramentoController extends Controller
     public function index()
     {
         $fontes = Fonte::where('tipo_fonte_id',1)->orderBy('ds_fonte')->get();
-        $monitoramentos = Monitoramento::all();
+        $monitoramentos = Monitoramento::with('cliente')->get();
 
         return view('monitoramento/index', compact('monitoramentos','fontes'));
     }
