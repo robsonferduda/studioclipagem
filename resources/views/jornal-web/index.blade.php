@@ -119,7 +119,7 @@
                                 <hr>
                                 <div class="stats">
                                     <i class="fa fa-calendar"></i>
-                                    Última Atualização em 
+                                    Última Atualização em {{ $ultima_atualizacao }}
                                 </div>
                             </div>
                         </div>
@@ -152,7 +152,7 @@
                             </div>
                         </div>
                     </div>
-                 </div>
+                </div>
             </div>
         </div>
     </div>
