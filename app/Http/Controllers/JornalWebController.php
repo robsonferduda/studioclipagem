@@ -25,6 +25,8 @@ class JornalWebController extends Controller
     {
         $fontes = FonteWeb::orderBy('nome')->get();
         $total_sites = FonteWeb::count();
+        $ultima_atualizacao_web = FonteWeb::max('created_at');
+        $ultima_atualizacao_noticia = JornalWeb::max('created_at');
 
         if($request->isMethod('POST')){
 
@@ -62,7 +64,7 @@ class JornalWebController extends Controller
 
         }
 
-        return view('jornal-web/index',compact('fontes','dados','dt_inicial','dt_final','total_sites','total_noticias'));
+        return view('jornal-web/index',compact('fontes','dados','dt_inicial','dt_final','total_sites','total_noticias','ultima_atualizacao_web','ultima_atualizacao_noticia'));
     }
 
     public function listar()

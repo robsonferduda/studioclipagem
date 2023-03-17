@@ -34,7 +34,7 @@ class JornalImpressoController extends Controller
     {
         $fontes = Fonte::where('tipo_fonte_id',1)->orderBy('ds_fonte')->get();
         $total_impresso = FonteImpressa::count();
-        $ultima_atualizacao = FonteImpressa::max('created_at');
+        $ultima_atualizacao_impresso = FonteImpressa::max('created_at');
 
         if($request->isMethod('POST')){
 
@@ -68,7 +68,7 @@ class JornalImpressoController extends Controller
 
         }
 
-        return view('jornal-impresso/index',compact('fontes','dados','dt_inicial','dt_final','total_impresso','ultima_atualizacao'));
+        return view('jornal-impresso/index',compact('fontes','dados','dt_inicial','dt_final','total_impresso','ultima_atualizacao_impresso'));
     }
 
     public function listar()
