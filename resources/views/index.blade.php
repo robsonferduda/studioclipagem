@@ -111,7 +111,9 @@
                                 <table id="bootstrap-table" class="table table-hover">
                                     <thead>
                                         <tr>
-                                            <th>Data da Execução</th>
+                                            <th>Data da Início</th>
+                                            <th>Data da Término</th>
+                                            <th>Duração</th>
                                             <th class="center">Total Coletado</th>
                                         </tr>
                                     </thead>
@@ -119,6 +121,8 @@
                                         @foreach ($coletas as $coleta)
                                             <tr>
                                                 <td>{{ \Carbon\Carbon::parse($coleta->created_at)->format('d/m/Y H:i:s') }}</td>
+                                                <td>{{ \Carbon\Carbon::parse($coleta->updated_at)->format('d/m/Y H:i:s') }}</td>
+                                                <td>{{ \Carbon\Carbon::create($coleta->updated_at)->diffInMinutes(\Carbon\Carbon::create($coleta->created_at)) }} minutos</td>
                                                 <td class="center">{{ $coleta->total_coletas }} </td>
                                             </tr>   
                                         @endforeach                                   
