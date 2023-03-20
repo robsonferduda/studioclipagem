@@ -5,6 +5,7 @@ import psycopg2.extras
 
 from trafilatura import spider
 from decouple import config
+from datetime import datetime
 
 host = config('DB_HOST')
 database = config('DB_DATABASE')
@@ -14,6 +15,8 @@ password = config('DB_PASSWORD')
 con = psycopg2.connect(host=host, database=database,user=user, password=password)
 cur = con.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
 
+total_coleta = 0
+dt_atual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 sql = 'SELECT id, url FROM fonte_web'
 cur.execute(sql)
 fontes = cur.fetchall()
@@ -35,5 +38,11 @@ for fonte in fontes:
             if id_url is None:
                 cur.execute("INSERT INTO links_pendentes (fonte_id, url) VALUES(%s, %s)", (fonte['id'], visit))
                 con.commit() 
+
+                total_coleta += 1
     except:
         print("Falha ao recuperar dados da fonte "+fonte['url'])
+
+dt_final = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+cur.execute("INSERT INTO public.coleta_web(total_coletas, created_at, updated_at) VALUES(%s, %s, %s)", (total_coleta, dt_atual, dt_final))
+con.commit() 

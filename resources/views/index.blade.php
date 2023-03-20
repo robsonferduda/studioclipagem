@@ -92,14 +92,42 @@
                         </div>
                         <div class="timeline-panel">
                             <div class="timeline-heading">
-                                <h6>IDENTIFICAR ÁREAS <span class="badge badge-pill badge-success pull-right">{{ $totais['impresso'] }} NOTÍCIAS</span></h6>
+                                <h6>CATEGORIAS <span class="badge badge-pill badge-success pull-right">{{ $total_sem_area }} NOTÍCIAS</span></h6>
                             </div>
                             <div class="timeline-body">
-                                <p>Existem {{ $totais['impresso'] }} notícias sem identificação das áreas.</p>
+                                <p>Existem {{ $total_sem_area }} notícias sem identificação das áreas.</p>
                             </div>
                         </div>
                      </li>
-                     <li class="timeline-inverted">
+                    <li class="timeline-inverted">
+                        <div class="timeline-badge warning">
+                           <i class="fa fa-globe fa-2x mt-0"></i>
+                        </div>
+                        <div class="timeline-panel">
+                            <div class="timeline-heading">
+                                <h6>COLETAS EXECUTADAS <span class="badge badge-pill badge-warning pull-right">{{ $coletas->count() }} coletas</span></h6>
+                            </div>
+                            <div class="timeline-body">
+                                <table id="bootstrap-table" class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Data da Execução</th>
+                                            <th class="center">Total Coletado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($coletas as $coleta)
+                                            <tr>
+                                                <td>{{ \Carbon\Carbon::parse($coleta->created_at)->format('d/m/Y H:i:s') }}</td>
+                                                <td class="center">{{ $coleta->total_coletas }} </td>
+                                            </tr>   
+                                        @endforeach                                   
+                                    </tbody>
+                                 </table>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="timeline-inverted">
                         <div class="timeline-badge info">
                            <i class="fa fa-cogs font-20 mt-1"></i>
                         </div>
@@ -132,7 +160,7 @@
                                 </button>
                             </div>
                         </div>
-                     </li>
+                    </li>
                   </ul>
                </div>
             </div>

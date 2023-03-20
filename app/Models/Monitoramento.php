@@ -15,4 +15,9 @@ class Monitoramento extends Model
     {
         return $this->hasOne(Cliente::class, 'id', 'id_cliente');
     }
+
+    public function fontes()
+    {
+        return $this->hasMany(FontWeb::class, 'id', 'id_fila');
+    }
 }

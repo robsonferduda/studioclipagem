@@ -119,7 +119,7 @@
                                 <hr>
                                 <div class="stats">
                                     <i class="fa fa-calendar"></i>
-                                    Última Atualização em 
+                                    Última Atualização em {{ \Carbon\Carbon::parse($ultima_atualizacao_web)->format('d/m/Y H:i:s') }} 
                                 </div>
                             </div>
                         </div>
@@ -147,12 +147,12 @@
                                 <hr>
                                 <div class="stats">
                                     <i class="fa fa-calendar"></i>
-                                    Última Atualização em 
+                                    Última Atualização em {{ \Carbon\Carbon::parse($ultima_atualizacao_noticia)->format('d/m/Y H:i:s') }}
                                 </div>
                             </div>
                         </div>
                     </div>
-                 </div>
+                </div>
             </div>
         </div>
     </div>

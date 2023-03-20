@@ -40,6 +40,13 @@ class FonteWebController extends Controller
         return view('fonte-web/listar',compact('fontes'));
     }
 
+    public function estatisticas($id)
+    {
+        $fonte = FonteWeb::find($id);
+
+        return view('fonte-web/estatisticas', compact('fonte'));
+    }
+
     public function create(Request $request)
     {
         $cidades = Cidade::orderBy('nm_cidade')->get();

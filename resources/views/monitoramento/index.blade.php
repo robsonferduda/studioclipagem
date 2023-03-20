@@ -38,30 +38,38 @@
                             </div>     
                         </div>
                     {!! Form::close() !!}
-                    
-                    <div id="accordion" role="tablist" aria-multiselectable="true" class="card-collapse ml-3 mr-3">
-                        @foreach ($monitoramentos as $key => $monitoramento)
-                            <div class="card card-plain">
-                                <div class="card-header" role="tab" id="headingOne">
-                                    <a data-toggle="collapse" data-parent="#accordion" href="#tab{{ $monitoramento->id }}" aria-expanded="false" aria-controls="{{ $monitoramento->id }}">
-                                        @if($monitoramento->fl_ativo)
-                                            <i class="fa fa fa-clock-o text-success float-left"></i>{{ $monitoramento->cliente->nome }}
-                                        @else
-                                            <i class="fa fa fa-ban text-danger float-left"></i>{{ $monitoramento->cliente->nome }}
-                                        @endif
-                                        
-                                        <i class="nc-icon nc-minimal-down"></i>
-                                    </a>
-                                </div>
-                                <div id="tab{{ $monitoramento->id }}" class="collapse" role="tabpanel" aria-labelledby="headingOne">
-                                    <div class="card-body">
-                                        {{ $monitoramento->expressao }}
+                </div>               
+                    @foreach ($monitoramentos as $key => $monitoramento)
+                        
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <div class="card card-stats ml-3 mr-3">
+                                    <div class="card-body ">
+                                        <div class="row">
+                                            <div class="col-12 col-md-12">
+                                           
+                                                <p class="card-category">{{ $monitoramento->cliente }}</p>
+                                                <p class="card-title"></p>
+                                                <p>{{ $monitoramento->expressao }}</p>
+                                            
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer ">
+                                        <div class="legend">
+                                            @if($monitoramento->fl_ativo)
+                                                <i class="fa fa-circle text-success"></i> Ativo
+                                            @else
+                                                <i class="fa fa-circle text-danger"></i> Inativo
+                                            @endif
+                                        </div>
+                                        <hr>
+                                        <div class="stats">
+                                            <i class="fa fa-refresh"></i>Última atualização em {{ \Carbon\Carbon::parse($monitoramento->dt_processamento)->format('d/m/Y H:i:s') }}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        @endforeach
-                    </div>
-                </div>
+                    @endforeach                        
             </div>
         </div>
     </div>

@@ -22,7 +22,7 @@
                 @include('layouts.mensagens')
             </div>
             <div class="row">
-                <div class="col-lg-12 col-sm-12">
+                <div class="col-lg-9 col-sm-9">
                     {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['buscar-impresso']]) !!}
                         <div class="form-group m-3 w-70">
                             <div class="row">
@@ -102,6 +102,63 @@
                             </div>
                         </div>
                     @endforeach
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="card card-stats">
+                            <div class="card-body ">
+                                <div class="row">
+                                    <div class="col-5 col-md-4">
+                                        <div class="icon-big text-center icon-warning">
+                                        <i class="fa fa-newspaper-o text-warning"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-7 col-md-8">
+                                        <div class="numbers">
+                                        <p class="card-category">Jornal Impresso</p>
+                                        <p class="card-title">{{ $total_impresso }}</p>
+                                        <p></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer ">
+                                <hr>
+                                <div class="stats">
+                                    <i class="fa fa-calendar"></i>
+                                    Última Atualização em {{ \Carbon\Carbon::parse($ultima_atualizacao_impresso)->format('d/m/Y H:i:s') }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="card card-stats">
+                            <div class="card-body ">
+                                <div class="row">
+                                    <div class="col-5 col-md-4">
+                                        <div class="icon-big text-center icon-warning">
+                                        <i class="nc-icon nc-chart-bar-32 text-primary"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-7 col-md-8">
+                                        <div class="numbers">
+                                        <p class="card-category">Páginas Coletadas</p>
+                                        <p class="card-title"></p>
+                                        <p></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer ">
+                                <hr>
+                                <div class="stats">
+                                    <i class="fa fa-calendar"></i>
+                                    Última Atualização em 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
