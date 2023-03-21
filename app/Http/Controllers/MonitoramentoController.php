@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use DB;
 use Auth;
+use Mail;
 use App\Models\Monitoramento;
 use App\Models\JornalImpresso;
 use App\Models\JornalWeb;
@@ -42,5 +43,16 @@ class MonitoramentoController extends Controller
         $monitoramentos = Monitoramento::with('cliente')->get();
 
         return view('monitoramento/index', compact('monitoramentos','fontes'));
+    }
+
+    public function executar()
+    {
+        $data['dados'] = null;
+        
+        Mail::send('notificacoes.teste', $data, function($message){
+            $message->to("robsonferduda@gmail.com")
+                    ->subject('Notificação de Monitoramento - Teste de Envio');
+            $message->from('boletins@clipagens.com.br','Studio Social');
+        });
     }
 }

@@ -95,7 +95,11 @@
                                 <h6>CATEGORIAS <span class="badge badge-pill badge-success pull-right">{{ $total_sem_area }} NOTÍCIAS</span></h6>
                             </div>
                             <div class="timeline-body">
-                                <p>Existem {{ $total_sem_area }} notícias sem identificação das áreas.</p>
+                                @if($coletas->count())
+                                    <p>Existem {{ $total_sem_area }} notícias sem identificação de categoria.</p>
+                                @else
+                                    <p><i class="fa fa-hourglass-start mr-1"></i>Nenhuma coleta realizada no dia de hoje</p>
+                                @endif
                             </div>
                         </div>
                      </li>
@@ -108,26 +112,30 @@
                                 <h6>COLETAS EXECUTADAS <span class="badge badge-pill badge-warning pull-right">{{ $coletas->count() }} coletas</span></h6>
                             </div>
                             <div class="timeline-body">
-                                <table id="bootstrap-table" class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>Data da Início</th>
-                                            <th>Data da Término</th>
-                                            <th>Duração</th>
-                                            <th class="center">Total Coletado</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($coletas as $coleta)
+                                @if($coletas->count())
+                                    <table id="bootstrap-table" class="table table-hover">
+                                        <thead>
                                             <tr>
-                                                <td>{{ \Carbon\Carbon::parse($coleta->created_at)->format('d/m/Y H:i:s') }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($coleta->updated_at)->format('d/m/Y H:i:s') }}</td>
-                                                <td>{{ \Carbon\Carbon::create($coleta->updated_at)->diffInMinutes(\Carbon\Carbon::create($coleta->created_at)) }} minutos</td>
-                                                <td class="center">{{ $coleta->total_coletas }} </td>
-                                            </tr>   
-                                        @endforeach                                   
-                                    </tbody>
-                                 </table>
+                                                <th>Data da Início</th>
+                                                <th>Data da Término</th>
+                                                <th>Duração</th>
+                                                <th class="center">Total Coletado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($coletas as $coleta)
+                                                <tr>
+                                                    <td>{{ \Carbon\Carbon::parse($coleta->created_at)->format('d/m/Y H:i:s') }}</td>
+                                                    <td>{{ \Carbon\Carbon::parse($coleta->updated_at)->format('d/m/Y H:i:s') }}</td>
+                                                    <td>{{ \Carbon\Carbon::create($coleta->updated_at)->diffInMinutes(\Carbon\Carbon::create($coleta->created_at)) }} minutos</td>
+                                                    <td class="center">{{ $coleta->total_coletas }} </td>
+                                                </tr>   
+                                            @endforeach                                   
+                                        </tbody>
+                                    </table>
+                                @else
+                                    <p><i class="fa fa-hourglass-start mr-1"></i>Nenhuma coleta realizada no dia de hoje</p>
+                                @endif
                             </div>
                         </div>
                     </li>
