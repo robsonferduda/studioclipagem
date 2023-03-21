@@ -9,6 +9,7 @@ use App\Models\Monitoramento;
 use App\Models\JornalImpresso;
 use App\Models\JornalWeb;
 use App\Models\Fonte;
+use App\Models\NoticiaCliente;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -47,16 +48,34 @@ class MonitoramentoController extends Controller
 
     public function executar()
     {
-        $monitoramentos = Monitoramento::all();
+        $monitoramentos = Monitoramento::where('fl_ativo', true)->get();
 
         foreach ($monitoramentos as $key => $monitoramento) {
             
-            $dados = DB::select("SELECT id
+            $match = DB::select("SELECT id
                             FROM
                             (SELECT id,
                                     to_tsvector(t1.texto) AS document
                             FROM noticia_web t1) search
                             WHERE search.document @@ to_tsquery('$monitoramento->expressao')");
+
+            for ($i=0; $i < count($match); $i++) { 
+                
+                $id_noticia = $match[$i]->id;
+
+                $noticia = NoticiaCliente::where('noticia_id', $id_noticia)->where('tipo_id', 2)->first();
+
+                if(!$noticia){
+
+                    $dados = array('cliente_id' => $monitoramento->id_cliente,
+                                'tipo_id'    => 2,
+                                'noticia_id' => $id_noticia);
+
+                    NoticiaCliente::create($dados);
+                }
+            }
         }
+
+        return redirect('monitoramento');
     }
 }
