@@ -66,6 +66,7 @@ Route::get('jornal-web/noticia/estatisticas/{id}','JornalWebController@estatisti
 
 Route::get('monitoramento','MonitoramentoController@index');
 Route::get('monitoramento/adicionar','MonitoramentoController@adicionar');
+Route::get('monitoramento/executar','MonitoramentoController@executar');
 Route::get('monitoramento/{id}/desabilitar','MonitoramentoController@desabilitar');
 
 Route::get('radios','RadioController@index');

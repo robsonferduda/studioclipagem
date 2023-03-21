@@ -12,6 +12,7 @@
                 </div>
                 <div class="col-md-4">
                     <button class="btn btn-primary pull-right mr-3"><i class="fa fa-plus"></i> Novo</button>
+                    <a href="{{ url('monitoramento/executar') }}" class="btn btn-warning pull-right mr-3"><i class="fa fa-bolt"></i> Executar</a>
                 </div>
             </div>
         </div>
