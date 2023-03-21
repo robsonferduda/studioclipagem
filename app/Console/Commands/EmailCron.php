@@ -39,10 +39,9 @@ class EmailCron extends Command
     public function handle()
     {
         $data['dados'] = null;
-
         $titulo = " Notificação de Monitoramento - Execução automática - ".date("d/m/Y H:i:s"); 
         
-        Mail::send('notificacoes.teste', $data, function($message){
+        Mail::send('notificacoes.teste', $data, function($message) use ($titulo){
             $message->to("robsonferduda@gmail.com")
                     ->subject($titulo);
             $message->from('boletins@clipagens.com.br','Studio Social');
