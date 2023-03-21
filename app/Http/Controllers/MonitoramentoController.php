@@ -47,12 +47,16 @@ class MonitoramentoController extends Controller
 
     public function executar()
     {
-        $data['dados'] = null;
-        
-        Mail::send('notificacoes.teste', $data, function($message){
-            $message->to("robsonferduda@gmail.com")
-                    ->subject('Notificação de Monitoramento - Teste de Envio');
-            $message->from('boletins@clipagens.com.br','Studio Social');
-        });
+        $monitoramentos = Monitoramento::all();
+
+        foreach ($monitoramentos as $key => $monitoramento) {
+            
+            $dados = DB::select("SELECT id
+                            FROM
+                            (SELECT id,
+                                    to_tsvector(t1.texto) AS document
+                            FROM noticia_web t1) search
+                            WHERE search.document @@ to_tsquery('$monitoramento->expressao')");
+        }
     }
 }
