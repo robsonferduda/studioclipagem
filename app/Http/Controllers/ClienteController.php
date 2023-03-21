@@ -98,7 +98,7 @@ class ClienteController extends Controller
         $areas  = Area::all();
         $emails = EnderecoEletronico::where('pessoa_id', $cliente->pessoa->id)->get();
 
-        $emails = json_decode($emails);
+        //$emails = json_decode($emails);
 
         return view('cliente/editar',compact('cliente', 'emails', 'areas'));
     }
