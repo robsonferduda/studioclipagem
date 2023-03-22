@@ -6,6 +6,7 @@ use DB;
 use Auth;
 use Mail;
 use App\Models\Monitoramento;
+use App\Models\MonitoramentoExecucao;
 use App\Models\JornalImpresso;
 use App\Models\JornalWeb;
 use App\Models\Fonte;
@@ -52,6 +53,9 @@ class MonitoramentoController extends Controller
 
         foreach ($monitoramentos as $key => $monitoramento) {
             
+            $data_inicio = date('Y-m-d H:i:s');
+            $total_vinculado = 0;
+
             $match = DB::select("SELECT id
                             FROM
                             (SELECT id,
@@ -72,8 +76,15 @@ class MonitoramentoController extends Controller
                                 'noticia_id' => $id_noticia);
 
                     NoticiaCliente::create($dados);
+                    $total_vinculado++;
                 }
             }
+
+            $data_termino = date('Y-m-d H:i:s');
+
+            $dado_moninoramento = array('monitoramento_id' => $monitoramento->id, 'total_vinculado' => $total_vinculado);
+            MonitoramentoExecucao::create($dado_moninoramento);
+            
         }
 
         return redirect('monitoramento');
