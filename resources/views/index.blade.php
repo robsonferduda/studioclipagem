@@ -162,7 +162,13 @@
                                             <tr>
                                                 <td>{{ \Carbon\Carbon::parse($monitoramento->created_at)->format('d/m/Y H:i:s') }}</td>
                                                 <td>{{ \Carbon\Carbon::parse($monitoramento->updated_at)->format('d/m/Y H:i:s') }}</td>
-                                                <td>{{ \Carbon\Carbon::create($monitoramento->updated_at)->diffInMinutes(\Carbon\Carbon::create($monitoramento->created_at)) }} minutos</td>
+                                                <td>
+                                                    @if(\Carbon\Carbon::create($monitoramento->updated_at)->diffInMinutes(\Carbon\Carbon::create($monitoramento->created_at)))
+                                                        {{ \Carbon\Carbon::create($monitoramento->updated_at)->diffInMinutes(\Carbon\Carbon::create($monitoramento->created_at)) }} minutos
+                                                    @else
+                                                        {{ \Carbon\Carbon::create($monitoramento->updated_at)->diffInSeconds(\Carbon\Carbon::create($monitoramento->created_at)) }} segundos
+                                                    @endif
+                                                </td>
                                                 <td class="center">{{ $monitoramento->total_vinculado }} </td>
                                             </tr>   
                                         @endforeach                                    
