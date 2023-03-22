@@ -157,13 +157,14 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr data-index="0">
-                                            <td></td>
-                                            <td>7</td>
-                                            <td class="center">
-                                                <a href="{{ url('noticias/cliente/4') }}"><i class="fa fa-eye"></i></a>
-                                            </td>
-                                        </tr>                                      
+                                        @foreach ($monitoramentos as $monitoramento)
+                                            <tr>
+                                                <td>{{ \Carbon\Carbon::parse($monitoramento->created_at)->format('d/m/Y H:i:s') }}</td>
+                                                <td>{{ \Carbon\Carbon::parse($monitoramento->updated_at)->format('d/m/Y H:i:s') }}</td>
+                                                <td>{{ \Carbon\Carbon::create($monitoramento->updated_at)->diffInMinutes(\Carbon\Carbon::create($monitoramento->created_at)) }} minutos</td>
+                                                <td class="center">{{ $monitoramento->total_vinculado }} </td>
+                                            </tr>   
+                                        @endforeach                                    
                                     </tbody>
                                  </table>
                                 <hr/>
