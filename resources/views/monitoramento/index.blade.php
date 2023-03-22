@@ -43,14 +43,16 @@
                     @foreach ($monitoramentos as $key => $monitoramento)
                         
                             <div class="col-lg-12 col-md-12 col-sm-12">
-                                <div class="card card-stats ml-3 mr-3">
-                                    <div class="card-body ">
+                                <div class="card card-stats ml-3 mr-3" style="border: 1px solid #f1f1f1;">
+                                    <div class="card-body">
                                         <div class="row">
                                             <div class="col-12 col-md-12">
                                            
-                                                <p class="card-category">{{ $monitoramento->cliente }}</p>
+                                                <p><span class="badge badge-danger">
+                                                    {{ $monitoramento->cliente->pessoa->nome }}
+                                                    </span></p>
                                                 <p class="card-title"></p>
-                                                <p>{{ $monitoramento->expressao }}</p>
+                                                <p class="text-bold">"{{ $monitoramento->expressao }}"</p>
                                             
                                             </div>
                                         </div>
