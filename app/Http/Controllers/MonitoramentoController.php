@@ -73,7 +73,8 @@ class MonitoramentoController extends Controller
 
                     $dados = array('cliente_id' => $monitoramento->id_cliente,
                                 'tipo_id'    => 2,
-                                'noticia_id' => $id_noticia);
+                                'noticia_id' => $id_noticia,
+                                'monitoramento_id' => $monitoramento->id);
 
                     NoticiaCliente::create($dados);
                     $total_vinculado++;
