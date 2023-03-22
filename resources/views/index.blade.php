@@ -151,9 +151,10 @@
                                 <table id="bootstrap-table" class="table table-hover">
                                     <thead>
                                         <tr>
-                                            <th>CÓDIGO</th>
-                                            <th>NOME</th>
-                                            <th class="center">VER</th>
+                                            <th>Data da Início</th>
+                                            <th>Data da Término</th>
+                                            <th>Duração</th>
+                                            <th class="center">Total Vinculado</th>
                                         </tr>
                                     </thead>
                                     <tbody>
