@@ -141,11 +141,11 @@
                     </li>
                     <li class="timeline-inverted">
                         <div class="timeline-badge info">
-                           <i class="fa fa-cogs font-20 mt-1"></i>
+                           <i class="nc-icon nc-sound-wave font-20"></i>
                         </div>
                         <div class="timeline-panel">
                             <div class="timeline-heading">
-                                <h6>GERAR BOLETINS <span class="badge badge-pill badge-primary pull-right">23 CLIENTES</span></h6>
+                                <h6>REGISTRO DE MONITORAMENTO DIÁRIO<span class="badge badge-pill badge-primary pull-right">23 EXECUÇÕES</span></h6>
                             </div>
                             <div class="timeline-body">
                                 <table id="bootstrap-table" class="table table-hover">
