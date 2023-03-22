@@ -151,9 +151,10 @@
                                 <table id="bootstrap-table" class="table table-hover">
                                     <thead>
                                         <tr>
-                                            <th>CÓDIGO</th>
-                                            <th>NOME</th>
-                                            <th class="center">VER</th>
+                                            <th>Data da Início</th>
+                                            <th>Data da Término</th>
+                                            <th>Duração</th>
+                                            <th class="center">Total Vinculado</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -166,11 +167,7 @@
                                             </tr>   
                                         @endforeach                                    
                                     </tbody>
-                                 </table>
-                                <hr/>
-                                <button type="button" class="btn btn-sm btn-primary pull-right">
-                                    <span class="btn-label"><i class="fa fa-check"></i></span> Gerar Boletins
-                                </button>
+                                </table>
                             </div>
                         </div>
                     </li>
