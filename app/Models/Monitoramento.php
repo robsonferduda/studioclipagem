@@ -20,4 +20,9 @@ class Monitoramento extends Model
     {
         return $this->hasMany(FontWeb::class, 'id', 'id_fila');
     }
+
+    public function noticiaWeb()
+    {
+        return $this->hasMany(JornalWeb::class, 'id', 'monitoramento_id');
+    }
 }
