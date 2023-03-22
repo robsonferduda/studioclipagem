@@ -167,11 +167,7 @@
                                             </tr>   
                                         @endforeach                                    
                                     </tbody>
-                                 </table>
-                                <hr/>
-                                <button type="button" class="btn btn-sm btn-primary pull-right">
-                                    <span class="btn-label"><i class="fa fa-check"></i></span> Gerar Boletins
-                                </button>
+                                </table>
                             </div>
                         </div>
                     </li>
