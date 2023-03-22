@@ -82,7 +82,11 @@ class MonitoramentoController extends Controller
 
             $data_termino = date('Y-m-d H:i:s');
 
-            $dado_moninoramento = array('monitoramento_id' => $monitoramento->id, 'total_vinculado' => $total_vinculado);
+            $dado_moninoramento = array('monitoramento_id' => $monitoramento->id, 
+                                        'total_vinculado' => $total_vinculado,
+                                        'created_at' => $data_inicio,
+                                        'updated_at' => $data_termino);
+
             MonitoramentoExecucao::create($dado_moninoramento);
             
         }
