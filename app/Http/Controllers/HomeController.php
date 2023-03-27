@@ -47,9 +47,9 @@ class HomeController extends Controller
 
         $total_sem_area = JornalWeb::where('dt_clipagem', $this->data_atual)->where('categoria','')->count(); 
         $coletas = ColetaWeb::whereBetween('created_at', [$this->data_atual.' 00:00:00', $this->data_atual.' 23:59:59'])->get();
-        $monitoramentos = MonitoramentoExecucao::whereBetween('created_at', [$this->data_atual.' 00:00:00', $this->data_atual.' 23:59:59'])->get();
+        $execucoes = MonitoramentoExecucao::whereBetween('created_at', [$this->data_atual.' 00:00:00', $this->data_atual.' 23:59:59'])->get();
 
-        return view('index', compact('totais','coletas','total_sem_area','monitoramentos'));
+        return view('index', compact('totais','coletas','total_sem_area','execucoes'));
     }
 
     public function atualizarData(Request $request)

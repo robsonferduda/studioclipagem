@@ -9,6 +9,11 @@ class MonitoramentoExecucao extends Model
     protected $connection = 'pgsql';
     protected $table = 'monitoramento_execucao';
 
-    protected $fillable = ['monitoramento_id','total_vinculado','created_at','updated_at'];   
+    protected $fillable = ['monitoramento_id','total_vinculado','created_at','updated_at'];
+    
+    public function monitoramento()
+    {
+        return $this->hasOne(Monitoramento::class, 'id', 'monitoramento_id');
+    }
     
 }

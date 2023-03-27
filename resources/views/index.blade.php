@@ -145,32 +145,32 @@
                         </div>
                         <div class="timeline-panel">
                             <div class="timeline-heading">
-                                <h6>REGISTRO DE MONITORAMENTO DIÁRIO<span class="badge badge-pill badge-primary pull-right">{{ $monitoramentos->count() }} EXECUÇÕES</span></h6>
+                                <h6>REGISTRO DE MONITORAMENTO DIÁRIO<span class="badge badge-pill badge-primary pull-right">{{ $execucoes->count() }} EXECUÇÕES</span></h6>
                             </div>
                             <div class="timeline-body">
-                                @if($monitoramentos->count())
+                                @if($execucoes->count())
                                     <table id="bootstrap-table" class="table table-hover">
                                         <thead>
                                             <tr>
                                                 <th>Data da Início</th>
-                                                <th>Data da Término</th>
+                                                <th>Expressão</th>
                                                 <th>Duração</th>
                                                 <th class="center">Total Vinculado</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($monitoramentos as $monitoramento)
+                                            @foreach ($execucoes as $execucao)
                                                 <tr>
-                                                    <td>{{ \Carbon\Carbon::parse($monitoramento->created_at)->format('d/m/Y H:i:s') }}</td>
-                                                    <td>{{ \Carbon\Carbon::parse($monitoramento->updated_at)->format('d/m/Y H:i:s') }}</td>
+                                                    <td>{{ \Carbon\Carbon::parse($execucao->created_at)->format('d/m/Y H:i:s') }}</td>
+                                                    <td>{{ $execucao->monitoramento->expressao }}</td>
                                                     <td>
-                                                        @if(\Carbon\Carbon::create($monitoramento->updated_at)->diffInMinutes(\Carbon\Carbon::create($monitoramento->created_at)))
-                                                            {{ \Carbon\Carbon::create($monitoramento->updated_at)->diffInMinutes(\Carbon\Carbon::create($monitoramento->created_at)) }} minutos
+                                                        @if(\Carbon\Carbon::create($execucao->updated_at)->diffInMinutes(\Carbon\Carbon::create($execucao->created_at)))
+                                                            {{ \Carbon\Carbon::create($execucao->updated_at)->diffInMinutes(\Carbon\Carbon::create($execucao->created_at)) }} minutos
                                                         @else
-                                                            {{ \Carbon\Carbon::create($monitoramento->updated_at)->diffInSeconds(\Carbon\Carbon::create($monitoramento->created_at)) }} segundos
+                                                            {{ \Carbon\Carbon::create($execucao->updated_at)->diffInSeconds(\Carbon\Carbon::create($execucao->created_at)) }} segundos
                                                         @endif
                                                     </td>
-                                                    <td class="center"><a href="{{ url('monitoramento/noticias', $monitoramento->id) }}">{{ $monitoramento->total_vinculado }}</a></td>
+                                                    <td class="center"><a href="{{ url('monitoramento/noticias', $execucao->id) }}">{{ $execucao->total_vinculado }}</a></td>
                                                 </tr>   
                                             @endforeach                                    
                                         </tbody>
