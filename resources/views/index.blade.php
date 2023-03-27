@@ -83,7 +83,7 @@
         </div> 
         <div class="col-md-6">
             <div class="card card-timeline card-plain">
-                <h6>{{ \Carbon\Carbon::parse(Session::get('data_atual'))->format('d/m/Y') }} <a href=""><i class="fa fa-refresh"></i></a></h6>
+                <h6>{{ \Carbon\Carbon::parse(Session::get('data_atual'))->format('d/m/Y') }} <a href="#"><i class="fa fa-refresh btn-refresh"></i></a></h6>
                 <div class="card-content">
                   <ul class="timeline timeline-simple">
                      <li class="timeline-inverted">
@@ -145,35 +145,39 @@
                         </div>
                         <div class="timeline-panel">
                             <div class="timeline-heading">
-                                <h6>REGISTRO DE MONITORAMENTO DIÁRIO<span class="badge badge-pill badge-primary pull-right">23 EXECUÇÕES</span></h6>
+                                <h6>REGISTRO DE MONITORAMENTO DIÁRIO<span class="badge badge-pill badge-primary pull-right">{{ $monitoramentos->count() }} EXECUÇÕES</span></h6>
                             </div>
                             <div class="timeline-body">
-                                <table id="bootstrap-table" class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>Data da Início</th>
-                                            <th>Data da Término</th>
-                                            <th>Duração</th>
-                                            <th class="center">Total Vinculado</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($monitoramentos as $monitoramento)
+                                @if($monitoramentos->count())
+                                    <table id="bootstrap-table" class="table table-hover">
+                                        <thead>
                                             <tr>
-                                                <td>{{ \Carbon\Carbon::parse($monitoramento->created_at)->format('d/m/Y H:i:s') }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($monitoramento->updated_at)->format('d/m/Y H:i:s') }}</td>
-                                                <td>
-                                                    @if(\Carbon\Carbon::create($monitoramento->updated_at)->diffInMinutes(\Carbon\Carbon::create($monitoramento->created_at)))
-                                                        {{ \Carbon\Carbon::create($monitoramento->updated_at)->diffInMinutes(\Carbon\Carbon::create($monitoramento->created_at)) }} minutos
-                                                    @else
-                                                        {{ \Carbon\Carbon::create($monitoramento->updated_at)->diffInSeconds(\Carbon\Carbon::create($monitoramento->created_at)) }} segundos
-                                                    @endif
-                                                </td>
-                                                <td class="center"><a href="{{ url('monitoramento/noticias', $monitoramento->id) }}">{{ $monitoramento->total_vinculado }}</a></td>
-                                            </tr>   
-                                        @endforeach                                    
-                                    </tbody>
-                                </table>
+                                                <th>Data da Início</th>
+                                                <th>Data da Término</th>
+                                                <th>Duração</th>
+                                                <th class="center">Total Vinculado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($monitoramentos as $monitoramento)
+                                                <tr>
+                                                    <td>{{ \Carbon\Carbon::parse($monitoramento->created_at)->format('d/m/Y H:i:s') }}</td>
+                                                    <td>{{ \Carbon\Carbon::parse($monitoramento->updated_at)->format('d/m/Y H:i:s') }}</td>
+                                                    <td>
+                                                        @if(\Carbon\Carbon::create($monitoramento->updated_at)->diffInMinutes(\Carbon\Carbon::create($monitoramento->created_at)))
+                                                            {{ \Carbon\Carbon::create($monitoramento->updated_at)->diffInMinutes(\Carbon\Carbon::create($monitoramento->created_at)) }} minutos
+                                                        @else
+                                                            {{ \Carbon\Carbon::create($monitoramento->updated_at)->diffInSeconds(\Carbon\Carbon::create($monitoramento->created_at)) }} segundos
+                                                        @endif
+                                                    </td>
+                                                    <td class="center"><a href="{{ url('monitoramento/noticias', $monitoramento->id) }}">{{ $monitoramento->total_vinculado }}</a></td>
+                                                </tr>   
+                                            @endforeach                                    
+                                        </tbody>
+                                    </table>
+                                @else
+                                    <p><i class="fa fa-hourglass-start mr-1"></i>Nenhum monitoramento realizado no dia de hoje</p>
+                                @endif
                             </div>
                         </div>
                     </li>
@@ -187,7 +191,56 @@
 <script>
     $(document).ready(function() {
 
-        
+        var host =  $('meta[name="base-url"]').attr('content');
+
+        $(".btn-refresh").click(function(){
+            
+            Swal.fire({
+                input: 'text',
+                title: "Alterar Data",
+                text: "Informe a data que deseja visualizar",              
+                showCancelButton: true,
+                confirmButtonColor: "#28a745",
+                confirmButtonText: '<i class="fa fa-refresh"></i> Atualizar Data',
+                cancelButtonText: '<i class="fa fa-times"></i> Cancelar',
+                preConfirm: () => {
+                    if ($(".swal2-input").val()) {
+                        return true;
+                    } else {
+                        Swal.showValidationMessage('Campo obrigatório')   
+                    }
+                },
+                didOpen: () => {
+                    $('.swal2-input').mask('00/00/0000',{ "placeholder": "dd/mm/YYYY" });
+                }
+            }).then(function(result) {
+                if (result.isConfirmed) {
+
+                    var data = $(".swal2-input").val();
+
+                    if(data){
+
+                        $.ajax({
+                            url: host+'/alterar-data',
+                            type: 'POST',
+                            data: {
+                                    "_token": $('meta[name="csrf-token"]').attr('content'),
+                                    "data": data
+                            },
+                            success: function(response) {
+                                window.location.reload();                                
+                            },
+                            error: function(response){
+                                console.log(response);
+                            }
+                        });
+                    }else{
+                        return false;
+                    }
+                }
+            });
+
+        });
     });
 </script>
 @endsection

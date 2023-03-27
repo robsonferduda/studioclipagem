@@ -51,4 +51,14 @@ class HomeController extends Controller
 
         return view('index', compact('totais','coletas','total_sem_area','monitoramentos'));
     }
+
+    public function atualizarData(Request $request)
+    {
+        $carbon = new Carbon();
+        $data = ($request->data) ? $carbon->createFromFormat('d/m/Y', $request->data)->format('Y-m-d') : date("Y-m-d");
+
+        Session::put('data_atual', $data);
+
+        return redirect('/');
+    }
 }
