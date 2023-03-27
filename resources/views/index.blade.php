@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
     <div class="row">   
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="row">
                 <div class="col-lg-6 col-md-6 col-sm-12">
                     <div class="card card-stats">
@@ -81,7 +81,7 @@
                 </div>  
             </div>
         </div> 
-        <div class="col-md-6">
+        <div class="col-md-8">
             <div class="card card-timeline card-plain">
                 <h6>{{ \Carbon\Carbon::parse(Session::get('data_atual'))->format('d/m/Y') }} <a href="#"><i class="fa fa-refresh btn-refresh"></i></a></h6>
                 <div class="card-content">
@@ -116,10 +116,10 @@
                                     <table id="bootstrap-table" class="table table-hover">
                                         <thead>
                                             <tr>
-                                                <th>Data da Início</th>
-                                                <th>Data da Término</th>
+                                                <th>Início</th>
+                                                <th>Término</th>
                                                 <th>Duração</th>
-                                                <th class="center">Total Coletado</th>
+                                                <th class="center">Total</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -152,10 +152,10 @@
                                     <table id="bootstrap-table" class="table table-hover">
                                         <thead>
                                             <tr>
-                                                <th>Data da Início</th>
+                                                <th>Início</th>
                                                 <th>Expressão</th>
                                                 <th>Duração</th>
-                                                <th class="center">Total Vinculado</th>
+                                                <th class="center">Total</th>
                                             </tr>
                                         </thead>
                                         <tbody>
