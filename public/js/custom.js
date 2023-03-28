@@ -6,7 +6,8 @@ $(document).ready(function() {
     $('.dt_inicial_relatorio').mask('00/00/0000',{ "placeholder": "dd/mm/YYYY" });
     $('.dt_final_relatorio').mask('00/00/0000',{ "placeholder": "dd/mm/YYYY" });
     $('.horario').mask('00:00');
-
+    $('.swal2-input').mask('00/00/0000',{ "placeholder": "dd/mm/YYYY" });
+    
     var host =  $('meta[name="base-url"]').attr('content');
     var token = $('meta[name="csrf-token"]').attr('content');
             
