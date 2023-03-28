@@ -49,10 +49,11 @@ class MonitoramentoController extends Controller
 
     public function noticias($id)
     {
-       $monitoramento = Monitoramento::find($id);
-       $noticias = $monitoramento->noticias->whereBetween('created_at', [$this->data_atual.' 00:00:00', $this->data_atual.' 23:59:59']);
-
-       return view('monitoramento/noticias', compact('noticias','monitoramento'));
+        $execucao = MonitoramentoExecucao::find($id);
+        $monitoramento = $execucao->monitoramento;
+        $noticias = $monitoramento->noticias->whereBetween('created_at', [$execucao->created_at, $execucao->updated_at]);
+    
+        return view('monitoramento/noticias', compact('noticias','monitoramento'));
     }
 
     public function executar()
