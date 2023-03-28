@@ -47,6 +47,14 @@ class MonitoramentoController extends Controller
         return view('monitoramento/index', compact('monitoramentos','fontes'));
     }
 
+    public function noticias($id)
+    {
+       $monitoramento = Monitoramento::find($id);
+       $noticias = $monitoramento->noticias->whereBetween('created_at', [$this->data_atual.' 00:00:00', $this->data_atual.' 23:59:59']);
+
+       return view('monitoramento/noticias', compact('noticias','monitoramento'));
+    }
+
     public function executar()
     {
         $monitoramentos = Monitoramento::where('fl_ativo', true)->get();

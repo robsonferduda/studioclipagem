@@ -70,6 +70,7 @@ Route::get('monitoramento','MonitoramentoController@index');
 Route::get('monitoramento/adicionar','MonitoramentoController@adicionar');
 Route::get('monitoramento/executar','MonitoramentoController@executar');
 Route::get('monitoramento/{id}/desabilitar','MonitoramentoController@desabilitar');
+Route::get('monitoramento/{id}/noticias','MonitoramentoController@noticias');
 
 Route::get('radios','RadioController@index');
 Route::match(array('GET', 'POST'),'radio/emissoras','RadioController@emissoras');
