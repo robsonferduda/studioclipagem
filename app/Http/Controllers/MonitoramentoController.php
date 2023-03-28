@@ -47,6 +47,14 @@ class MonitoramentoController extends Controller
         return view('monitoramento/index', compact('monitoramentos','fontes'));
     }
 
+    public function noticias($id)
+    {
+       $monitoramento = Monitoramento::find($id);
+       $noticias_web = $monitoramento->noticiaWeb;
+
+       dd($noticias_web);
+    }
+
     public function executar()
     {
         $monitoramentos = Monitoramento::where('fl_ativo', true)->get();

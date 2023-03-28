@@ -169,7 +169,7 @@
                                                         {{ \Carbon\Carbon::create($monitoramento->updated_at)->diffInSeconds(\Carbon\Carbon::create($monitoramento->created_at)) }} segundos
                                                     @endif
                                                 </td>
-                                                <td class="center"><a href="{{ url('monitoramento/noticias', $monitoramento->id) }}">{{ $monitoramento->total_vinculado }}</a></td>
+                                                <td class="center"><a href="{{ url('monitoramento/'.$monitoramento->id.'/noticias') }}">{{ $monitoramento->total_vinculado }}</a></td>
                                             </tr>   
                                         @endforeach                                    
                                     </tbody>
