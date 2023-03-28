@@ -25,7 +25,7 @@
                     <h6>{{ $noticia->titulo }}</h6>
                     <p>{{ ($noticia->fonte) ? $noticia->fonte->nome : 'Não identificada' }} - {{ \Carbon\Carbon::parse($noticia->dt_clipagem)->format('d/m/Y') }}</p>
                     <p>
-                        {{ $noticia->texto }}
+                        {!! nl2br($noticia->texto) !!}
                     </p>
                 </div>   
             </div>
