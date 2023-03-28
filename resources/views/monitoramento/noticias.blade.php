@@ -7,7 +7,7 @@
                 <div class="col-md-8">
                     <h4 class="card-title">
                         <i class="nc-icon nc-sound-wave ml-2"></i> Monitoramento 
-                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Dashboard 
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Detalhes 
                     </h4>
                 </div>
                 <div class="col-md-4">
@@ -25,9 +25,10 @@
                         <h6>Expressão</h6>
                         <h5>{{ $monitoramento->expressao }}</h5>
                     </div>
+                    <hr/>
                     <h6 class="mt-3">Notícias VINCULADAS</h6>
                     @foreach ($noticias as $noticia) 
-                        <p><a href=" {{ url('/') }} ">{{ $noticia->noticiaWeb->titulo }}</a></p>
+                        <p><a href=" {{ url('jornal-web/noticia', $noticia->noticiaWeb->id) }} ">{{ $noticia->noticiaWeb->titulo }}</a></p>
                     @endforeach   
                 </div>          
             </div>
