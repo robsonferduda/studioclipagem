@@ -179,6 +179,7 @@
                                     <p><i class="fa fa-hourglass-start mr-1"></i>Nenhum monitoramento realizado no dia de hoje</p>
                                 @endif
                             </div>
+                            <a href="{{ url('monitoramento/listar') }}">Ver Mais</a>
                         </div>
                     </li>
                   </ul>
