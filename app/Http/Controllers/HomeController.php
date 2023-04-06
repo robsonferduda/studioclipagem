@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use DB;
 use Auth;
+use App\Models\FonteWeb;
 use App\Models\JornalImpresso;
 use App\Models\JornalWeb;
 use App\Models\ColetaWeb;
@@ -49,7 +50,9 @@ class HomeController extends Controller
         $coletas = ColetaWeb::whereBetween('created_at', [$this->data_atual.' 00:00:00', $this->data_atual.' 23:59:59'])->get();
         $execucoes = MonitoramentoExecucao::whereBetween('created_at', [$this->data_atual.' 00:00:00', $this->data_atual.' 23:59:59'])->get();
 
-        return view('index', compact('totais','coletas','total_sem_area','execucoes'));
+        $top_sites = (new FonteWeb())->getTopColetas();
+
+        return view('index', compact('totais','coletas','total_sem_area','execucoes','top_sites'));
     }
 
     public function atualizarData(Request $request)
