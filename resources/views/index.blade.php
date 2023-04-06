@@ -197,7 +197,7 @@
                                                             {{ \Carbon\Carbon::create($execucao->updated_at)->diffInSeconds(\Carbon\Carbon::create($execucao->created_at)) }} segundos
                                                         @endif
                                                     </td>
-                                                    <td class="center"><a href="{{ url('monitoramento/noticias', $execucao->id) }}">{{ $execucao->total_vinculado }}</a></td>
+                                                    <td class="center"><a href="{{ url('monitoramento/'.$execucao->id.'/noticias') }}">{{ $execucao->total_vinculado }}</a></td>
                                                 </tr>   
                                             @endforeach                                    
                                         </tbody>
@@ -206,6 +206,7 @@
                                     <p><i class="fa fa-hourglass-start mr-1"></i>Nenhum monitoramento realizado no dia de hoje</p>
                                 @endif
                             </div>
+                            <a href="{{ url('monitoramento/listar') }}">Ver Mais</a>
                         </div>
                     </li>
                   </ul>
