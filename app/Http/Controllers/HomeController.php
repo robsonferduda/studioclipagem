@@ -51,8 +51,9 @@ class HomeController extends Controller
         $execucoes = MonitoramentoExecucao::whereBetween('created_at', [$this->data_atual.' 00:00:00', $this->data_atual.' 23:59:59'])->orderBy('created_at', 'DESC')->take(5)->get();
 
         $top_sites = (new FonteWeb())->getTopColetas();
+        $sem_coleta = (new FonteWeb())->getSemColetas();
 
-        return view('index', compact('totais','coletas','total_sem_area','execucoes','top_sites'));
+        return view('index', compact('totais','coletas','total_sem_area','execucoes','top_sites','sem_coleta'));
     }
 
     public function atualizarData(Request $request)
