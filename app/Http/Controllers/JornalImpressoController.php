@@ -126,11 +126,19 @@ class JornalImpressoController extends Controller
         $partes = explode("_", $filename);
         $dt_arquivo = strtotime($partes[1]);
         $dt_arquivo = Carbon::createFromFormat('Ymd', $partes[0]);
-        $id_fonte = $partes[1];
+        $cod_fonte = $partes[1];
+
+        $fonte = FonteImpressa::where('codigo', $cod_fonte)->first();
+
+        if(!$fonte){
+            
+            $dados = array('codigo' => $cod_fonte);
+            $fonte = FonteImpressa::create($dados);
+        }
 
         $dados = array('dt_arquivo' => $dt_arquivo->format('Y-m-d'),
                        'ds_arquivo' => $file_name,
-                       'id_fonte' => $id_fonte,
+                       'id_fonte' => $fonte->id,
                        'tamanho' => $filesize);
         FilaImpresso::create($dados);
 

@@ -105,7 +105,7 @@
                                     @endforeach                                
                                 </ul>
                             @else
-                                <p><i class="fa fa-hourglass-start mr-1"></i>Nenhuma coleta realizada no dia de hoje</p>
+                                <p class="mr-2 ml-3"><i class="fa fa-hourglass-start mr-1"></i>Nenhuma coleta realizada no dia de hoje</p>
                             @endif
                         </div>
                     </div>
@@ -135,7 +135,7 @@
                                     @endforeach                                
                                 </ul>
                             @else
-                                <p><i class="fa fa-hourglass-start mr-1"></i>Nenhuma coleta realizada no dia de hoje</p>
+                                <p class="mr-2 ml-3"><i class="fa fa-hourglass-start mr-1"></i>Nenhuma coleta realizada no dia de hoje</p>
                             @endif
                         </div>
                     </div>

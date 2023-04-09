@@ -10,7 +10,7 @@
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Cadastrar</h4>
                     </div>
                     <div class="col-md-6">
-                        <a href="{{ url('jornal-impresso/listar') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-table"></i> Jornal Impresso</a>
+                        <a href="{{ url('jornal-impresso/listar') }}" class="btn btn-primary pull-right mr-3"><i class="fa fa-table"></i> Jornal Impresso</a>
                     </div>
                 </div>
             </div>
@@ -20,20 +20,20 @@
                         @include('layouts.mensagens')
                     </div>
                 </div>
-                <div class="row">
+                <div class="row mr-1 ml-1">
                     <div class="col-md-2">
                         <div class="form-group">
                             <label>Código</label>
                             <input type="text" class="form-control" name="codigo" id="codigo" placeholder="Código">
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-10">
                         <div class="form-group">
                             <label>Nome <span class="text-danger">Obrigatório</span></label>
                             <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome" required>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label>Estado </label>
                             <select class="form-control" name="estado" id="estado">
@@ -44,7 +44,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label>Cidade </label>
                             <select class="form-control select2" name="cidade" id="cidade" disabled="disabled">
@@ -54,9 +54,9 @@
                     </div>
                 </div>
             </div>
-            <div class="card-footer text-right">
+            <div class="card-footer text-center mb-2">
                 <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Salvar</button>
-                <a href="{{ url('jornal_impresso') }}" class="btn btn-danger"><i class="fa fa-times"></i> Cancelar</a>
+                <a href="{{ url('impresso') }}" class="btn btn-danger ml-2"><i class="fa fa-times"></i> Cancelar</a>
             </div>
         </div>
     {!! Form::close() !!}

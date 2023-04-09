@@ -11,6 +11,7 @@
                     </h4>
                 </div>
                 <div class="col-md-6">
+                    <a href="{{ url('impresso') }}" class="btn btn-info pull-right" style="margin-right: 12px;"><i class="fa fa-newspaper-o"></i> Dashboard</a>
                     <a href="{{ url('jornal-impresso/cadastrar') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-plus"></i> Novo</a>
                 </div>
             </div>
