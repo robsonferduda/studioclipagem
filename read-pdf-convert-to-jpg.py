@@ -35,7 +35,7 @@ for diretorio, subpastas, arquivos in os.walk(pasta_pendentes):
         dt_formatada = pasta_data[:4]+"-"+ pasta_data[4:6]+"-"+pasta_data[6:]
         dt_atual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        sql = 'SELECT id FROM fonte WHERE id_knewin = '+pasta_id
+        sql = "SELECT id FROM fonte_impressa WHERE codigo = '"+pasta_id+"'"
         cur.execute(sql)
         id_fonte = cur.fetchone()['id']
 
@@ -53,7 +53,7 @@ for diretorio, subpastas, arquivos in os.walk(pasta_pendentes):
             os.makedirs(path_txt)
 
         #Atualiza o status do arquivo, indicando que o mesmo foi processado   
-        sql_update = "UPDATE fila_impresso SET start_at = '"+dt_atual+"' WHERE id_fonte = "+str(pasta_id)+" AND dt_arquivo = '"+dt_formatada+"'" 
+        sql_update = "UPDATE fila_impresso SET start_at = '"+dt_atual+"' WHERE id_fonte = "+str(id_fonte)+" AND dt_arquivo = '"+dt_formatada+"'" 
         cur.execute(sql_update)
         con.commit()  
                 
@@ -81,7 +81,7 @@ for diretorio, subpastas, arquivos in os.walk(pasta_pendentes):
         
         #Atualiza o status do arquivo, indicando que o mesmo foi processado   
         dt_fim_processamento = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        sql_update = "UPDATE fila_impresso SET fl_processado = true, updated_at = '"+dt_fim_processamento+"' WHERE id_fonte = "+str(pasta_id)+" AND dt_arquivo = '"+dt_formatada+"'" 
+        sql_update = "UPDATE fila_impresso SET fl_processado = true, updated_at = '"+dt_fim_processamento+"' WHERE id_fonte = "+str(id_fonte)+" AND dt_arquivo = '"+dt_formatada+"'" 
         cur.execute(sql_update)
         con.commit()  
 

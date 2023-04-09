@@ -3,15 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class FonteImpressa extends Model
 {
+    use SoftDeletes;
+
     protected $connection = 'pgsql';
     protected $table = 'fonte_impressa';
 
     protected $fillable = ['codigo', 'nome', 'cd_cidade', 'cd_estado'];
-
-    public $timestamps = false;
 
     public function estado()
     {

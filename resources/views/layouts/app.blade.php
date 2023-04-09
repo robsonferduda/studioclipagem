@@ -65,14 +65,6 @@
                   </li>
                 @endrole
                 @role('administradores')
-                  <li class="{{ (Session::has('url') and Session::get('url') == 'fontes') ? 'active' : '' }}">
-                      <a href="{{ url('fontes') }}">
-                        <i class="fa fa-database"></i>
-                        <p>Fontes</p>
-                      </a>
-                  </li>
-                @endrole
-                @role('administradores')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'jornal-impresso') ? 'active' : '' }}">
                       <a href="{{ url('impresso') }}">
                         <i class="fa fa-newspaper-o"></i>
