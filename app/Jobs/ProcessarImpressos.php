@@ -31,7 +31,7 @@ class ProcessarImpressos implements ShouldQueue
 
             if (Process::ERR === $type) {
 
-                $data['dados'] = null;
+                $data['dados'] = $buffer;
 
                 Mail::send('notificacoes.impressos.processamento', $data, function($message){
                     $message->to("robsonferduda@gmail.com")
