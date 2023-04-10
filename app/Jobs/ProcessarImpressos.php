@@ -25,7 +25,7 @@ class ProcessarImpressos implements ShouldQueue
     {
         $data['dados'] = null;
 
-        $process = new Process(['python3', base_path().'/read-pdf-convert-to-jpg.py']);
+        $process = new Process(['sudo python3', base_path().'/read-pdf-convert-to-jpg.py']);
 
         $process->run(function ($type, $buffer){
 
