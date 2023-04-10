@@ -25,7 +25,7 @@ class ProcessarImpressos implements ShouldQueue
     {
         $data['dados'] = null;
 
-        $process = new Process(['sudo python3', base_path().'/read-pdf-convert-to-jpg.py']);
+        $process = new Process(['python3', base_path().'/read-pdf-convert-to-jpg.py']);
 
         $process->run(function ($type, $buffer){
 
@@ -44,12 +44,6 @@ class ProcessarImpressos implements ShouldQueue
             }
 
         });
-
-        Mail::send('notificacoes.impressos.processamento', $data, function($message){
-            $message->to("robsonferduda@gmail.com")
-                    ->subject('Tentou, mas não foi');
-            $message->from('boletins@clipagens.com.br','Studio Clipagem');
-        }); 
         
         return true;
     }
