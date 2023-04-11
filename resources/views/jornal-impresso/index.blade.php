@@ -94,7 +94,7 @@
                                         @endif
                                         <div>
                                             <a class="btn btn-danger btn-sm" download target="_blank" href="{{ asset('jornal-impresso/processados/'.$noticia->fila->ds_arquivo) }}" role="button"><i class="fa fa-file-pdf-o"> </i> Documento Original</a>
-                                            <a class="btn btn-primary btn-sm" download target="_blank" href="{{ asset('jornal-impresso/'.$noticia->fonte->id_knewin.'/'.\Carbon\Carbon::parse($noticia->dt_clipagem)->format('Ymd').'/img/pagina_'.$noticia->nu_pagina_atual.'.png') }}" role="button"><i class="fa fa-file-image-o"> </i> Página Atual</a>
+                                            <a class="btn btn-primary btn-sm" download target="_blank" href="{{ asset('jornal-impresso/'.$noticia->fonte->codigo.'/'.\Carbon\Carbon::parse($noticia->dt_clipagem)->format('Ymd').'/img/pagina_'.$noticia->nu_pagina_atual.'.png') }}" role="button"><i class="fa fa-file-image-o"> </i> Página Atual</a>
                                             <a class="btn btn-success btn-sm" href="{{ asset('jornal-impresso/noticia/'.$noticia->id) }}" role="button"><i class="fa fa-eye"> </i> Detalhes</a>
                                         </div>
                                     </div>
