@@ -144,7 +144,7 @@
                                     <div class="col-7 col-md-8">
                                         <div class="numbers">
                                         <p class="card-category">Páginas Coletadas</p>
-                                        <p class="card-title"></p>
+                                        <p class="card-title">{{ $total_noticias }}</p>
                                         <p></p>
                                         </div>
                                     </div>
@@ -154,7 +154,7 @@
                                 <hr>
                                 <div class="stats">
                                     <i class="fa fa-calendar"></i>
-                                    Última Atualização em 
+                                    Última Atualização em {{ \Carbon\Carbon::parse($ultima_atualizacao_noticia)->format('d/m/Y H:i:s') }}
                                 </div>
                             </div>
                         </div>
