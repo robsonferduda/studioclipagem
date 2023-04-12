@@ -116,6 +116,12 @@ class JornalImpressoController extends Controller
         return view('jornal-impresso/processamento', compact('fila'));
     }
 
+    public function monitoramento()
+    {
+        $fila = FilaImpresso::all();
+        return view('jornal-impresso/processamento', compact('fila'));
+    }
+
     public function uploadFiles(Request $request)
     {
         $image = $request->file('file');

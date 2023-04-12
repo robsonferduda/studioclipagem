@@ -14,6 +14,7 @@
                     <a href="{{ url('jornal-impresso/listar') }}" class="btn btn-primary pull-right mr-3"><i class="fa fa-newspaper-o"></i> Jornais</a>
                     <a href="{{ url('jornal-impresso/upload') }}" class="btn btn-info pull-right mr-1"><i class="fa fa-upload"></i> Upload</a>
                     <a href="{{ url('jornal-impresso/processamento') }}" class="btn btn-warning pull-right mr-1"><i class="fa fa-cogs"></i> Processamento</a>
+                    <a href="{{ url('jornal-impresso/monitoramento') }}" class="btn btn-success pull-right mr-1"><i class="nc-icon nc-sound-wave"></i> Monitoramento</a>
                 </div>
             </div>
         </div>
@@ -93,7 +94,7 @@
                                             <p>Página <strong>{{ $noticia->nu_pagina_atual }}</strong> de <strong>{{ $noticia->nu_paginas_total }}</strong></p>
                                         @endif
                                         <div>
-                                            <a class="btn btn-danger btn-sm" download target="_blank" href="{{ asset('jornal-impresso/processados/'.$noticia->fila->ds_arquivo) }}" role="button"><i class="fa fa-file-pdf-o"> </i> Documento Original</a>
+                                            <a class="btn btn-danger btn-sm" download target="_blank" href="{{ asset('jornal-impresso/processados/'.($noticia->fila) ? $noticia->fila : '') }}" role="button"><i class="fa fa-file-pdf-o"> </i> Documento Original</a>
                                             <a class="btn btn-primary btn-sm" download target="_blank" href="{{ asset('jornal-impresso/'.$noticia->fonte->codigo.'/'.\Carbon\Carbon::parse($noticia->dt_clipagem)->format('Ymd').'/img/pagina_'.$noticia->nu_pagina_atual.'.png') }}" role="button"><i class="fa fa-file-image-o"> </i> Página Atual</a>
                                             <a class="btn btn-success btn-sm" href="{{ asset('jornal-impresso/noticia/'.$noticia->id) }}" role="button"><i class="fa fa-eye"> </i> Detalhes</a>
                                         </div>

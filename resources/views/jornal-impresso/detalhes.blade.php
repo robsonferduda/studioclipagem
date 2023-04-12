@@ -39,7 +39,7 @@
                         <p>Página <strong>{{ $noticia->nu_pagina_atual }}</strong> de <strong>{{ $noticia->nu_paginas_total }}</strong></p>
                     @endif
                     <p>
-                        {{ $noticia->texto }}
+                        {!! nl2br($noticia->texto) !!}
                     </p>
                 </div>   
             </div>
