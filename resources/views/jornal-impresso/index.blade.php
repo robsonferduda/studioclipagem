@@ -14,6 +14,7 @@
                     <a href="{{ url('jornal-impresso/listar') }}" class="btn btn-primary pull-right mr-3"><i class="fa fa-newspaper-o"></i> Jornais</a>
                     <a href="{{ url('jornal-impresso/upload') }}" class="btn btn-info pull-right mr-1"><i class="fa fa-upload"></i> Upload</a>
                     <a href="{{ url('jornal-impresso/processamento') }}" class="btn btn-warning pull-right mr-1"><i class="fa fa-cogs"></i> Processamento</a>
+                    <a href="{{ url('jornal-impresso/monitoramento') }}" class="btn btn-success pull-right mr-1"><i class="nc-icon nc-sound-wave"></i> Monitoramento</a>
                 </div>
             </div>
         </div>
@@ -76,14 +77,14 @@
                                 <div class="row">
                                     <div class="col-lg-2 col-sm-12">
                                         @if($noticia->fonte)
-                                            <img src="{{ asset('jornal-impresso/'.$noticia->fonte->id_knewin.'/'.\Carbon\Carbon::parse($noticia->dt_clipagem)->format('Ymd').'/img/pagina_'.$noticia->nu_pagina_atual.'.png') }}" alt="..." class="img-thumbnail">
+                                            <img src="{{ asset('jornal-impresso/'.$noticia->fonte->codigo.'/'.\Carbon\Carbon::parse($noticia->dt_clipagem)->format('Ymd').'/img/pagina_'.$noticia->nu_pagina_atual.'.png') }}" alt="..." class="img-thumbnail">
                                         @else
 
                                         @endif
                                     </div>
                                     <div class="col-lg-10 col-sm-12">
                                         <h6>{{ $noticia->titulo }}</h6>
-                                        <p>{{ ($noticia->fonte) ? $noticia->fonte->ds_fonte : 'Não identificada' }} - {{ \Carbon\Carbon::parse($noticia->dt_clipagem)->format('d/m/Y') }}</p>
+                                        <p>{{ ($noticia->fonte) ? $noticia->fonte->nome : 'Não identificada' }} - {{ \Carbon\Carbon::parse($noticia->dt_clipagem)->format('d/m/Y') }}</p>
                                         <p>
                                             {{ Str::limit($noticia->texto, 800, " ...") }}
                                         </p>
@@ -93,8 +94,8 @@
                                             <p>Página <strong>{{ $noticia->nu_pagina_atual }}</strong> de <strong>{{ $noticia->nu_paginas_total }}</strong></p>
                                         @endif
                                         <div>
-                                            <a class="btn btn-danger btn-sm" download target="_blank" href="{{ asset('jornal-impresso/processados/'.$noticia->fila->ds_arquivo) }}" role="button"><i class="fa fa-file-pdf-o"> </i> Documento Original</a>
-                                            <a class="btn btn-primary btn-sm" download target="_blank" href="{{ asset('jornal-impresso/'.$noticia->fonte->id_knewin.'/'.\Carbon\Carbon::parse($noticia->dt_clipagem)->format('Ymd').'/img/pagina_'.$noticia->nu_pagina_atual.'.png') }}" role="button"><i class="fa fa-file-image-o"> </i> Página Atual</a>
+                                            <a class="btn btn-danger btn-sm" download target="_blank" href="{{ asset('jornal-impresso/processados/'.($noticia->fila) ? $noticia->fila : '') }}" role="button"><i class="fa fa-file-pdf-o"> </i> Documento Original</a>
+                                            <a class="btn btn-primary btn-sm" download target="_blank" href="{{ asset('jornal-impresso/'.$noticia->fonte->codigo.'/'.\Carbon\Carbon::parse($noticia->dt_clipagem)->format('Ymd').'/img/pagina_'.$noticia->nu_pagina_atual.'.png') }}" role="button"><i class="fa fa-file-image-o"> </i> Página Atual</a>
                                             <a class="btn btn-success btn-sm" href="{{ asset('jornal-impresso/noticia/'.$noticia->id) }}" role="button"><i class="fa fa-eye"> </i> Detalhes</a>
                                         </div>
                                     </div>
@@ -144,7 +145,7 @@
                                     <div class="col-7 col-md-8">
                                         <div class="numbers">
                                         <p class="card-category">Páginas Coletadas</p>
-                                        <p class="card-title"></p>
+                                        <p class="card-title">{{ $total_noticias }}</p>
                                         <p></p>
                                         </div>
                                     </div>
@@ -154,7 +155,7 @@
                                 <hr>
                                 <div class="stats">
                                     <i class="fa fa-calendar"></i>
-                                    Última Atualização em 
+                                    Última Atualização em {{ \Carbon\Carbon::parse($ultima_atualizacao_noticia)->format('d/m/Y H:i:s') }}
                                 </div>
                             </div>
                         </div>

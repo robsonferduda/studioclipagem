@@ -26,6 +26,15 @@
                 </tr>
             </tbody>
         </table>  
+        <table>
+            <tbody>
+                <tr>
+                    <td style="width: 1000%;">
+                        <h1 style="text-align: center;">{{ $dados }}</h1>
+                    </td>
+                </tr>
+            </tbody>
+        </table>  
     </div> 
   </body>
 </html>
