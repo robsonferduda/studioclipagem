@@ -66,19 +66,48 @@
                 @endrole
                 @role('administradores')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'jornal-impresso') ? 'active' : '' }}">
-                      <a href="{{ url('impresso') }}">
+                      <a data-toggle="collapse" href="#submenu-impresso" class="collapsed" aria-expanded="false">
                         <i class="fa fa-newspaper-o"></i>
-                        <p>Jornal Impresso</p>
+                        <p>Jornal Impresso
+                          <b class="caret"></b>
+                        </p>
                       </a>
+                      <div class="collapse" id="submenu-impresso" aria-expanded="false" style="height: 0px;">
+                        <ul class="nav ml-5">
+                           <li>
+                              <a href="{{ url('impresso') }}">
+                              <span class="sidebar-normal">Dashboard</span>
+                              </a>
+                           </li> 
+                           <li>
+                              <a href="{{ url('noticia-impressa/cadastrar') }}">
+                              <span class="sidebar-normal">Cadastrar</span>
+                              </a>
+                          </li> 
+                        </ul>
+                     </div>
                   </li>
                 @endrole
                 @role('administradores')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'jornal-web') ? 'active' : '' }}">
-                      <a href="{{ url('jornal-web') }}">
+                    <a data-toggle="collapse" href="#submenu-web" class="collapsed" aria-expanded="false">
                         <i class="fa fa-globe"></i>
-                        <p>Jornal Web</p>
-                      </a>
-                  </li>
+                        <p>Jornal Web
+                          <b class="caret"></b>
+                        </p>
+                    </a>
+                    <div class="collapse" id="submenu-web" aria-expanded="false" style="height: 0px;">
+                       <ul class="nav ml-5">
+                          <li>
+                             <a href="{{ url('jornal-web') }}">
+                             <span class="sidebar-normal">Dashboard</span>
+                             </a>
+                          </li>
+
+                       </ul>
+                    </div>
+                 </li>
+                  
                 @endrole
                 @role('administradores')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'radio') ? 'active' : '' }}">

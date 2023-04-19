@@ -1,2 +1,21 @@
 [2023-04-09 10:52:20][24] Processing: App\Jobs\ProcessarImpressos
 [2023-04-09 10:53:20][24] Failed:     App\Jobs\ProcessarImpressos
+
+   Predis\Connection\ConnectionException 
+
+  Error while reading line from the server. [tcp://127.0.0.1:6379]
+
+  at vendor/predis/predis/src/Connection/AbstractConnection.php:155
+    151|      */
+    152|     protected function onConnectionError($message, $code = null)
+    153|     {
+    154|         CommunicationException::handle(
+  > 155|             new ConnectionException($this, static::createExceptionMessage($message), $code)
+    156|         );
+    157|     }
+    158| 
+    159|     /**
+
+      [2m+28 vendor frames [22m
+  29  artisan:37
+      Illuminate\Foundation\Console\Kernel::handle()
