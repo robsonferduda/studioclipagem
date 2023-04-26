@@ -32,6 +32,7 @@ cur = con.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
 
 for diretorio, subpastas, arquivos in os.walk(pasta_pendentes):
     for arquivo in arquivos:
+        print(arquivo)
         imgs = convert_from_path(os.path.join(diretorio, arquivo), dpi=200)
         dados_arquivo = arquivo.split('_')
         pasta_data = dados_arquivo[0]
