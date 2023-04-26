@@ -61,6 +61,9 @@ for diretorio, subpastas, arquivos in os.walk(pasta_pendentes):
         sql_update = "UPDATE fila_impresso SET start_at = '"+dt_atual+"' WHERE id_fonte = "+str(id_fonte)+" AND dt_arquivo = '"+dt_formatada+"'" 
         cur.execute(sql_update)
         con.commit()  
+
+        #Move arquivo para a pasta de arquivos processados
+        shutil.move(pasta_pendentes+'/'+arquivo, pasta_andamento+'/'+arquivo)
                 
         for i, img in enumerate(imgs):
             i = i + 1;
@@ -82,7 +85,7 @@ for diretorio, subpastas, arquivos in os.walk(pasta_pendentes):
         con.commit()     
 
         #Move arquivo para a pasta de arquivos processados
-        shutil.move(pasta_pendentes+'/'+arquivo, pasta_processados+'/'+arquivo)
+        shutil.move(pasta_andamento+'/'+arquivo, pasta_processados+'/'+arquivo)
         
         #Atualiza o status do arquivo, indicando que o mesmo foi processado   
         dt_fim_processamento = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
