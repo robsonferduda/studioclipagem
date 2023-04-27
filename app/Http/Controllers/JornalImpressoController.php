@@ -116,8 +116,8 @@ class JornalImpressoController extends Controller
 
         if($request->isMethod('GET')){
 
-            $dt_inicial = date('d/m/Y');
-            $dt_final = date('d/m/Y');
+            $dt_inicial = date('Y-m-d');
+            $dt_final = date('Y-m-d');
 
             $fila = FilaImpresso::whereBetween('dt_arquivo', [$dt_inicial, $dt_final])->get();
         }
