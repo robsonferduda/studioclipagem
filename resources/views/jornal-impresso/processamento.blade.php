@@ -21,6 +21,65 @@
             <div class="col-md-12">
                 @include('layouts.mensagens')
             </div>
+            <div>
+                {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['buscar-impresso']]) !!}
+                    <div class="form-group m-3 w-70">
+                        <div class="row">
+                            <div class="col-md-3 col-sm-12">
+                                <div class="form-group">
+                                    <label>Data de Envio</label>
+                                    <input type="text" class="form-control datepicker" name="dt_envio" required="true" value="{{ date('d/m/Y') }}" placeholder="__/__/____">
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-12">
+                                <div class="form-group">
+                                    <label>Início do Processamento</label>
+                                    <input type="text" class="form-control datepicker" name="dt_inicial" required="true" value="{{ date('d/m/Y') }}" placeholder="__/__/____">
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-12">
+                                <div class="form-group">
+                                    <label>Fim do Processamento</label>
+                                    <input type="text" class="form-control datepicker" name="dt_final" required="true" value="{{ date('d/m/Y') }}" placeholder="__/__/____">
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-12">
+                                <div class="form-group">
+                                    <label>Data do Arquivo</label>
+                                    <input type="text" class="form-control datepicker" name="dt_arquivo" required="true" value="{{ date('d/m/Y') }}" placeholder="__/__/____">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label>Fonte</label>
+                                    <select class="form-control select2" name="fonte_impressa" id="fonte_impressa">
+                                        <option value="">Selecione uma fonte</option>
+                                        @foreach ($fontes as $fonte)
+                                            <option value="{{ $fonte->id }}">{{ $fonte->ds_fonte }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label>Situação</label>
+                                    <select class="form-control select2" name="situacao" id="situacao">
+                                        <option value="">Selecione uma situação</option>
+                                        @foreach ($fontes as $fonte)
+                                            <option value="{{ $fonte->id }}">{{ $fonte->ds_fonte }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12 checkbox-radios mb-0">
+                                <button type="submit" id="btn-find" class="btn btn-primary mb-3"><i class="fa fa-search"></i> Buscar</button>
+                            </div>
+                        </div>
+                    </div>
+                {!! Form::close() !!}
+            </div>
             <table id="datatable" class="table table-striped table-bordered" cellspacing="0" width="100%">
                 <thead>
                     <tr>

@@ -110,10 +110,23 @@ class JornalImpressoController extends Controller
         return view('jornal-impresso/upload');
     }
 
-    public function processamento()
+    public function processamento(Request $request)
     {
-        $fila = FilaImpresso::all();
-        return view('jornal-impresso/processamento', compact('fila'));
+        $fontes = FonteImpressa::all();
+
+        if($request->isMethod('GET')){
+
+            $dt_inicial = date('d/m/Y');
+            $dt_final = date('d/m/Y');
+
+            $fila = FilaImpresso::whereBetween('dt_arquivo', [$dt_inicial, $dt_final])->get();
+        }
+
+        if($request->isMethod('POST')){
+
+        }
+
+        return view('jornal-impresso/processamento', compact('fila','fontes'));
     }
 
     public function monitoramento()
