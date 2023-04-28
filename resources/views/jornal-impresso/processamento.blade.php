@@ -22,31 +22,31 @@
                 @include('layouts.mensagens')
             </div>
             <div>
-                {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['buscar-impresso']]) !!}
+                {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['jornal-impresso/processamento']]) !!}
                     <div class="form-group m-3 w-70">
                         <div class="row">
                             <div class="col-md-3 col-sm-12">
                                 <div class="form-group">
                                     <label>Data de Envio</label>
-                                    <input type="text" class="form-control datepicker" name="dt_envio" required="true" value="{{ date('d/m/Y') }}" placeholder="__/__/____">
+                                    <input type="text" class="form-control datepicker" name="dt_envio" value="{{ date('d/m/Y') }}" placeholder="__/__/____">
                                 </div>
                             </div>
                             <div class="col-md-3 col-sm-12">
                                 <div class="form-group">
                                     <label>Início do Processamento</label>
-                                    <input type="text" class="form-control datepicker" name="dt_inicial" required="true" value="{{ date('d/m/Y') }}" placeholder="__/__/____">
+                                    <input type="text" class="form-control datepicker" name="dt_inicial" value="" placeholder="__/__/____">
                                 </div>
                             </div>
                             <div class="col-md-3 col-sm-12">
                                 <div class="form-group">
                                     <label>Fim do Processamento</label>
-                                    <input type="text" class="form-control datepicker" name="dt_final" required="true" value="{{ date('d/m/Y') }}" placeholder="__/__/____">
+                                    <input type="text" class="form-control datepicker" name="dt_final" value="" placeholder="__/__/____">
                                 </div>
                             </div>
                             <div class="col-md-3 col-sm-12">
                                 <div class="form-group">
                                     <label>Data do Arquivo</label>
-                                    <input type="text" class="form-control datepicker" name="dt_arquivo" required="true" value="{{ date('d/m/Y') }}" placeholder="__/__/____">
+                                    <input type="text" class="form-control datepicker" name="dt_arquivo" value="" placeholder="__/__/____">
                                 </div>
                             </div>
                         </div>

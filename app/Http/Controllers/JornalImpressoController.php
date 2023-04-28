@@ -116,13 +116,50 @@ class JornalImpressoController extends Controller
 
         if($request->isMethod('GET')){
 
-            $dt_inicial = date('Y-m-d');
-            $dt_final = date('Y-m-d');
+            $dt_inicial = date('Y-m-d H:i:s');
+            $dt_final = date('Y-m-d H:i:s');
 
             $fila = FilaImpresso::whereBetween('dt_arquivo', [$dt_inicial, $dt_final])->get();
         }
 
         if($request->isMethod('POST')){
+
+            $carbon = new Carbon();
+            $dt_envio = $request->dt_envio;
+            $dt_inicial = $request->dt_inicial;
+            $dt_final = $request->dt_final;
+            $dt_arquivo = $request->dt_arquivo;
+
+            $fila = FilaImpresso::query();
+
+            $fila->when($dt_envio, function ($q) use ($dt_envio, $carbon) {
+                $dt_envio_inicio = $carbon->createFromFormat('d/m/Y H:i:s', $dt_envio." 00:00:00")->format('Y-m-d H:i:s');
+                $dt_envio_final = $carbon->createFromFormat('d/m/Y H:i:s', $dt_envio." 23:59:59")->format('Y-m-d H:i:s');
+
+                return $q->whereBetween('created_at', [$dt_envio_inicio, $dt_envio_final]);
+            });
+
+            $fila->when($dt_inicial, function ($q) use ($dt_inicial, $carbon) {
+                $dt_inicial_inicio = $carbon->createFromFormat('d/m/Y', $dt_inicial)->format('Y-m-d H:i:s');
+                $dt_inicial_final = $carbon->createFromFormat('d/m/Y', $dt_inicial)->format('Y-m-d H:i:s');
+
+                return $q->whereBetween('start_at', [$dt_inicial_inicio, $dt_inicial_final]);
+            });
+
+            $fila->when($dt_final, function ($q) use ($dt_final, $carbon) {
+                $dt_final_inicio = $carbon->createFromFormat('d/m/Y', $dt_final)->format('Y-m-d H:i:s');
+                $dt_final_final = $carbon->createFromFormat('d/m/Y', $dt_final)->format('Y-m-d H:i:s');
+
+                return $q->whereBetween('updated_at', [$dt_final_inicio, $dt_final_final]);
+            });
+
+            $fila->when($dt_arquivo, function ($q) use ($dt_arquivo, $carbon) {
+                return $q->where('dt_arquivo', $dt_arquivo);
+            });
+
+            $fila = $fila->orderBy('id_fonte')->get();
+
+            //$fila = FilaImpresso::all();
 
         }
 
