@@ -16,6 +16,11 @@ class Monitoramento extends Model
         return $this->hasOne(Cliente::class, 'id', 'id_cliente');
     }
 
+    public function tipo()
+    {
+        return $this->hasOne(TipoFonte::class, 'id', 'tipo_midia');
+    }
+
     public function fontes()
     {
         return $this->hasMany(FontWeb::class, 'id', 'id_fila');

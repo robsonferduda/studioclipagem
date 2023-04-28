@@ -64,24 +64,28 @@ class MonitoramentoController extends Controller
             
             $data_inicio = date('Y-m-d H:i:s');
             $total_vinculado = 0;
+            $tabela = '';
+
+            if($monitoramento->tipo_midia == 1) $tabela = 'noticia_impresso';
+            if($monitoramento->tipo_midia == 2) $tabela = 'noticia_web';
 
             $match = DB::select("SELECT id
                             FROM
                             (SELECT id,
                                     to_tsvector(t1.texto) AS document
-                            FROM noticia_web t1) search
+                            FROM $tabela t1) search
                             WHERE search.document @@ to_tsquery('$monitoramento->expressao')");
 
             for ($i=0; $i < count($match); $i++) { 
                 
                 $id_noticia = $match[$i]->id;
 
-                $noticia = NoticiaCliente::where('noticia_id', $id_noticia)->where('tipo_id', 2)->first();
+                $noticia = NoticiaCliente::where('noticia_id', $id_noticia)->where('tipo_id', $monitoramento->tipo_midia)->first();
 
                 if(!$noticia){
 
                     $dados = array('cliente_id' => $monitoramento->id_cliente,
-                                'tipo_id'    => 2,
+                                'tipo_id'    => $monitoramento->tipo_midia,
                                 'noticia_id' => $id_noticia,
                                 'monitoramento_id' => $monitoramento->id);
 

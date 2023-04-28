@@ -48,9 +48,21 @@
                                         <div class="row">
                                             <div class="col-12 col-md-12">
                                            
-                                                <p><span class="badge badge-danger">
-                                                    {{ $monitoramento->cliente->pessoa->nome }}
-                                                    </span></p>
+                                                <p>
+                                                    <h6>
+                                                        {{ $monitoramento->cliente->pessoa->nome }} 
+                                                        <span class="pull-right">
+                                                        @if($monitoramento->fl_ativo)
+                                                            <i class="fa fa-circle text-success"></i> Ativo
+                                                        @else
+                                                            <i class="fa fa-circle text-danger"></i> Inativo
+                                                        @endif
+                                                        </span>
+                                                    </h6>
+                                                    <span class="badge badge-{{ $monitoramento->tipo->ds_tipo_color }}">
+                                                        {{ $monitoramento->tipo->ds_tipo_fonte }}
+                                                    </span>
+                                                </p>
                                                 <p class="card-title"></p>
                                                 <p class="text-bold">"{{ $monitoramento->expressao }}"</p>
                                             
@@ -58,13 +70,6 @@
                                         </div>
                                     </div>
                                     <div class="card-footer ">
-                                        <div class="legend">
-                                            @if($monitoramento->fl_ativo)
-                                                <i class="fa fa-circle text-success"></i> Ativo
-                                            @else
-                                                <i class="fa fa-circle text-danger"></i> Inativo
-                                            @endif
-                                        </div>
                                         <hr>
                                         <div class="stats">
                                             <i class="fa fa-refresh"></i>Última atualização em {{ \Carbon\Carbon::parse($monitoramento->dt_processamento)->format('d/m/Y H:i:s') }}

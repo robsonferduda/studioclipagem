@@ -158,9 +158,6 @@ class JornalImpressoController extends Controller
             });
 
             $fila = $fila->orderBy('id_fonte')->get();
-
-            //$fila = FilaImpresso::all();
-
         }
 
         return view('jornal-impresso/processamento', compact('fila','fontes'));

@@ -80,8 +80,13 @@
                               </a>
                            </li> 
                            <li>
+                            <a href="{{ url('jornal-impresso/monitoramento') }}">
+                              <span class="sidebar-normal">Monitoramento</span>
+                              </a>
+                          </li> 
+                           <li>
                               <a href="{{ url('noticia-impressa/cadastrar') }}">
-                              <span class="sidebar-normal">Cadastrar</span>
+                              <span class="sidebar-normal">Cadastrar Notícia</span>
                               </a>
                           </li> 
                         </ul>
