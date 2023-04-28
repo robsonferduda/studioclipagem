@@ -6,6 +6,8 @@ use DB;
 use Auth;
 use File;
 use Carbon\Carbon;
+use App\Models\Cliente;
+use App\Models\NoticiaCliente;
 use App\Models\FonteImpressa;
 use App\Models\FilaImpresso;
 use App\Models\JornalImpresso;
@@ -165,8 +167,14 @@ class JornalImpressoController extends Controller
 
     public function monitoramento()
     {
-        $fila = FilaImpresso::all();
-        return view('jornal-impresso/processamento', compact('fila'));
+        $clientes = Cliente::with('pessoa')
+                    ->join('pessoas', 'pessoas.id', '=', 'clientes.pessoa_id')
+                    ->orderBy('nome')
+                    ->get();
+
+        $noticias = NoticiaCliente::where('tipo_id', 1)->whereBetween('created_at', [date('Y-m-d')." 00:00:00", date('Y-m-d')." 23:59:59"])->get();
+
+        return view('jornal-impresso/monitoramento', compact('clientes','noticias'));
     }
 
     public function uploadFiles(Request $request)

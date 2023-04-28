@@ -56,6 +56,7 @@ Route::get('jornal-impresso/cadastrar','JornalImpressoController@cadastrar');
 Route::get('jornal-impresso/{id}/editar','JornalImpressoController@editar');
 
 Route::get('noticia-impressa/cadastrar','NoticiaImpressaController@cadastrar');
+Route::get('noticia-impressa/cliente/{cliente}/editar/{id}','NoticiaImpressaController@editar');
 
 Route::post('jornal-impresso/inserir','JornalImpressoController@inserir');
 Route::post('jornal-impresso/{id}/atualizar','JornalImpressoController@atualizar');

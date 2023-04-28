@@ -6,6 +6,7 @@ use DB;
 use Auth;
 use File;
 use Carbon\Carbon;
+use App\Models\NoticiaCliente;
 use App\Models\FonteImpressa;
 use App\Models\FilaImpresso;
 use App\Models\JornalImpresso;
@@ -38,5 +39,20 @@ class NoticiaImpressaController extends Controller
     public function cadastrar()
     {
         return view('noticia-impressa/cadastrar');
+    }
+
+    public function editar($cliente, $id_noticia)
+    {
+        $noticia_original = JornalImpresso::find($id_noticia);
+        $vinculo_original = NoticiaCliente::where('noticia_id', $id_noticia)->where('tipo_id',1)->where('cliente_id', $cliente)->first();
+
+        $nova = $noticia_original->replicate();
+        $nova->titulo = "Notícia Alterada";
+        $nova->save();
+
+        $vinculo_original->noticia_id = $nova->id;
+        $vinculo_original->save();
+
+        return redirect('jornal-impresso/monitoramento');
     }
 }

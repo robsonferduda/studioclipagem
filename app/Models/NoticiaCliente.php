@@ -11,9 +11,19 @@ class NoticiaCliente extends Model
 
     protected $fillable = ['cliente_id','tipo_id','noticia_id','monitoramento_id'];
 
+    public function cliente()
+    {
+        return $this->hasOne(Cliente::class, 'id', 'cliente_id');
+    }
+
     public function noticiaWeb()
     {
         return $this->hasOne(JornalWeb::class, 'id', 'noticia_id');
+    }
+
+    public function noticiaImpressa()
+    {
+        return $this->hasOne(JornalImpresso::class, 'id', 'noticia_id');
     }
 
     public function monitoramento()
