@@ -74,6 +74,9 @@
                                             <a href="{{ url('noticia-impressa/cliente/'.$noticia->cliente_id.'/editar', $noticia->noticiaImpressa->id) }}" class="btn btn-primary btn-round btn-icon btn-sm">
                                                 <i class="fa fa-edit fa-2x"></i>
                                             </a>
+                                            <a href="{{ url('jornal-impresso/noticia', $noticia->noticiaImpressa->id) }}" class="btn btn-success btn-round btn-icon btn-sm">
+                                                <i class="fa fa-eye fa-2x"></i>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>

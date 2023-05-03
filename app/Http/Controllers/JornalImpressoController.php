@@ -174,6 +174,8 @@ class JornalImpressoController extends Controller
 
         $noticias = NoticiaCliente::where('tipo_id', 1)->whereBetween('created_at', [date('Y-m-d')." 00:00:00", date('Y-m-d')." 23:59:59"])->get();
 
+        $noticias = NoticiaCliente::where('tipo_id', 1)->orderBy('id')->get();
+
         return view('jornal-impresso/monitoramento', compact('clientes','noticias'));
     }
 

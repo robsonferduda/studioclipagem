@@ -28,6 +28,7 @@
   <link href="{{ asset('css/bootstrap-duallistbox.css') }}" rel="stylesheet" />
   <link href="{{ asset('css/dropzone.min.css') }}" rel="stylesheet" />
   <link href="{{ asset('css/select2.min.css') }}" rel="stylesheet" />
+  <link href="{{ asset('css/cropper.css') }}" rel="stylesheet" />
   <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
   @yield('style')
 </head>
@@ -253,6 +254,8 @@
   <script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
   <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
   <script src="{{ asset('js/dropzone.js') }}"></script>
+  <script src="{{ asset('js/cropper.js') }}"></script>
+  <script src="{{ asset('js/cropper-main.js') }}"></script>
   <script>
     function setFormValidation(id) {
       $(id).validate({

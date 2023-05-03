@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use DB;
 use Auth;
 use File;
+use App\Models\Cliente;
 use Carbon\Carbon;
 use App\Models\NoticiaCliente;
 use App\Models\FonteImpressa;
@@ -43,16 +44,54 @@ class NoticiaImpressaController extends Controller
 
     public function editar($cliente, $id_noticia)
     {
+
+        $clientes = Cliente::with('pessoa')
+                    ->join('pessoas', 'pessoas.id', '=', 'clientes.pessoa_id')
+                    ->orderBy('nome')
+                    ->get();
+
         $noticia_original = JornalImpresso::find($id_noticia);
-        $vinculo_original = NoticiaCliente::where('noticia_id', $id_noticia)->where('tipo_id',1)->where('cliente_id', $cliente)->first();
+        $vinculo = NoticiaCliente::where('noticia_id', $id_noticia)->where('tipo_id',1)->where('cliente_id', $cliente)->first();
 
-        $nova = $noticia_original->replicate();
-        $nova->titulo = "Notícia Alterada";
-        $nova->save();
+        if(!$noticia_original->fl_copia){
 
-        $vinculo_original->noticia_id = $nova->id;
-        $vinculo_original->save();
+            $noticia = $noticia_original->replicate();
+            $noticia->fl_copia = true;
+            $noticia->save();
+    
+            $vinculo->noticia_id = $noticia->id;
+            $vinculo->save();
+            
+        }else{
+            $noticia = $noticia_original;
+        }
 
-        return redirect('jornal-impresso/monitoramento');
+        return view('noticia-impressa/editar', compact('noticia','clientes','vinculo'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $noticia = JornalImpresso::find($id);
+        
+        try {
+        
+            $noticia->update($request->all());
+            $retorno = array('flag' => true,
+                             'msg' => '<i class="fa fa-check"></i> Dados atualizados com sucesso');
+        } catch (\Illuminate\Database\QueryException $e) {
+            $retorno = array('flag' => false,
+                             'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
+        } catch (Exception $e) {
+            $retorno = array('flag' => true,
+                             'msg' => "Ocorreu um erro ao atualizar o registro");
+        }
+
+        if ($retorno['flag']) {
+            Flash::success($retorno['msg']);
+            return redirect('jornal-impresso/monitoramento')->withInput();
+        } else {
+            Flash::error($retorno['msg']);
+            return redirect()->route('')->withInput();
+        }
     }
 }
