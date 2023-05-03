@@ -115,12 +115,38 @@
                   
                 @endrole
                 @role('administradores')
-                  <li class="{{ (Session::has('url') and Session::get('url') == 'radio') ? 'active' : '' }}">
-                      <a href="{{ url('radios') }}">
-                        <i class="fa fa-volume-up"></i>
-                        <p>Rádio</p>
-                      </a>
-                  </li>
+                <li class="{{ (Session::has('url') and Session::get('url') == 'radio') ? 'active' : '' }}">
+                  <a data-toggle="collapse" href="#submenu-radio" class="collapsed" aria-expanded="false">
+                     <i class="fa fa-volume-up"></i>
+                     <p>Rádio
+                        <b class="caret"></b>
+                     </p>
+                  </a>
+                  <div class="collapse" id="submenu-radio" aria-expanded="false" style="height: 0px;">
+                     <ul class="nav ml-5">
+                        <li>
+                           <a href="{{ url('radios') }}">
+                           <span class="sidebar-normal">Dashboard</span>
+                           </a>
+                        </li>
+                        <li>
+                           <a href="{{ url('emissoras') }}">
+                           <span class="sidebar-normal">Emissoras</span>
+                           </a>
+                        </li>
+                        <li>
+                           <a href="{{ url('emissoras/programas') }}">
+                           <span class="sidebar-normal">Programas</span>
+                           </a>
+                        </li>
+                        <li>
+                           <a href="{{ url('radio/noticias') }}">
+                           <span class="sidebar-normal">Notícias</span>
+                           </a>
+                        </li>
+                     </ul>
+                  </div>
+               </li>
                 @endrole
                 @role('administradores')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'tv') ? 'active' : '' }}">
