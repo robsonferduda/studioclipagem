@@ -30,6 +30,7 @@ class JornalImpressoController extends Controller
     {
         $this->middleware('auth');
         $this->data_atual = session('data_atual');
+        Session::put('url','impresso');
     }
 
     public function index(Request $request)

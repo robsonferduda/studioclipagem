@@ -20,6 +20,7 @@ class NoticiaRadioController extends Controller
     {
         $this->middleware('auth');
         $this->data_atual = session('data_atual');
+        Session::put('url','radio');
     }
 
     public function index(Request $request)

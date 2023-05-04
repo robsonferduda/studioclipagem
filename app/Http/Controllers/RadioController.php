@@ -28,7 +28,7 @@ class RadioController extends Controller
 
         $this->client_id = session('cliente')['id'];
         
-        Session::put('url','home');
+        Session::put('url','radio');
 
         $this->periodo_padrao = 7;
     }

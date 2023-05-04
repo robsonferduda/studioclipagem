@@ -19,6 +19,7 @@ class JornalWebController extends Controller
     {
         $this->middleware('auth');
         $this->data_atual = session('data_atual');
+        Session::put('url','jornal-web');
     }
 
     public function index(Request $request)

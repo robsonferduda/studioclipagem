@@ -11,24 +11,10 @@ use Illuminate\Support\Facades\Session;
 
 class TvController extends Controller
 {
-    private $client_id;
-    private $periodo_padrao;
-
     public function __construct()
     {
         $this->middleware('auth');
-
-        $cliente = null;
-
-        $clienteSession = ['id' => 1, 'nome' => 'Teste'];
-
-        Session::put('cliente', session('cliente') ? session('cliente') : $clienteSession);
-
-        $this->client_id = session('cliente')['id'];
-        
-        Session::put('url','home');
-
-        $this->periodo_padrao = 7;
+        Session::put('url','tv');
     }
 
     public function index()

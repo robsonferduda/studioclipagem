@@ -66,14 +66,14 @@
                   </li>
                 @endrole
                 @role('administradores')
-                  <li class="{{ (Session::has('url') and Session::get('url') == 'jornal-impresso') ? 'active' : '' }}">
-                      <a data-toggle="collapse" href="#submenu-impresso" class="collapsed" aria-expanded="false">
+                  <li class="{{ (Session::has('url') and Session::get('url') == 'impresso') ? 'active' : '' }}">
+                      <a data-toggle="collapse" href="#submenu-impresso" class="{{ (Session::has('url') and Session::get('url') == 'impresso') ? '' : 'collapsed' }}" aria-expanded="{{ (Session::has('url') and Session::get('url') == 'impresso') ? 'true' : 'false' }}">
                         <i class="fa fa-newspaper-o"></i>
                         <p>Jornal Impresso
                           <b class="caret"></b>
                         </p>
                       </a>
-                      <div class="collapse" id="submenu-impresso" aria-expanded="false" style="height: 0px;">
+                      <div class="collapse {{ (Session::has('url') and Session::get('url') == 'impresso') ? 'show' : '' }}" id="submenu-impresso" aria-expanded="false">
                         <ul class="nav ml-5">
                            <li>
                               <a href="{{ url('impresso') }}">
@@ -96,13 +96,13 @@
                 @endrole
                 @role('administradores')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'jornal-web') ? 'active' : '' }}">
-                    <a data-toggle="collapse" href="#submenu-web" class="collapsed" aria-expanded="false">
+                    <a data-toggle="collapse" href="#submenu-web" class="{{ (Session::has('url') and Session::get('url') == 'jornal-web') ? '' : 'collapsed' }}" aria-expanded="{{ (Session::has('url') and Session::get('url') == 'jornal-web') ? 'true' : 'false' }}">
                         <i class="fa fa-globe"></i>
                         <p>Jornal Web
                           <b class="caret"></b>
                         </p>
                     </a>
-                    <div class="collapse" id="submenu-web" aria-expanded="false" style="height: 0px;">
+                    <div class="collapse {{ (Session::has('url') and Session::get('url') == 'jornal-web') ? 'show' : '' }}" id="submenu-web" aria-expanded="false">
                        <ul class="nav ml-5">
                           <li>
                              <a href="{{ url('jornal-web') }}">
@@ -117,13 +117,13 @@
                 @endrole
                 @role('administradores')
                 <li class="{{ (Session::has('url') and Session::get('url') == 'radio') ? 'active' : '' }}">
-                  <a data-toggle="collapse" href="#submenu-radio" class="collapsed" aria-expanded="false">
+                  <a data-toggle="collapse" href="#submenu-radio" class="{{ (Session::has('url') and Session::get('url') == 'radio') ? '' : 'collapsed' }}" aria-expanded="{{ (Session::has('url') and Session::get('url') == 'radio') ? 'true' : 'false' }}">
                      <i class="fa fa-volume-up"></i>
                      <p>Rádio
                         <b class="caret"></b>
                      </p>
                   </a>
-                  <div class="collapse" id="submenu-radio" aria-expanded="false" style="height: 0px;">
+                  <div class="collapse {{ (Session::has('url') and Session::get('url') == 'radio') ? 'show' : '' }}" id="submenu-radio" aria-expanded="false">
                      <ul class="nav ml-5">
                         <li>
                            <a href="{{ url('radios') }}">
