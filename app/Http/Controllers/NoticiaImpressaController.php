@@ -39,6 +39,8 @@ class NoticiaImpressaController extends Controller
 
     public function cadastrar()
     {
+        Session::put('sub-menu','cadastrar');
+        
         return view('noticia-impressa/cadastrar');
     }
 

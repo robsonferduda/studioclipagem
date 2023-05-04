@@ -75,17 +75,17 @@
                       </a>
                       <div class="collapse {{ (Session::has('url') and Session::get('url') == 'impresso') ? 'show' : '' }}" id="submenu-impresso" aria-expanded="false">
                         <ul class="nav ml-5">
-                           <li>
+                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'impresso') ? 'active' : '' }}">
                               <a href="{{ url('impresso') }}">
                               <span class="sidebar-normal">Dashboard</span>
                               </a>
                            </li> 
-                           <li>
+                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'monitoramento') ? 'active' : '' }}">
                             <a href="{{ url('jornal-impresso/monitoramento') }}">
                               <span class="sidebar-normal">Monitoramento</span>
                               </a>
                           </li> 
-                           <li>
+                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'cadastrar') ? 'active' : '' }}">
                               <a href="{{ url('noticia-impressa/cadastrar') }}">
                               <span class="sidebar-normal">Cadastrar Notícia</span>
                               </a>

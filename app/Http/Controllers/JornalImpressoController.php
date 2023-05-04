@@ -35,6 +35,8 @@ class JornalImpressoController extends Controller
 
     public function index(Request $request)
     {
+        Session::put('sub-menu','impresso');
+
         $fontes = FonteImpressa::orderBy('nome')->get();
         $total_impresso = FonteImpressa::count();
         $ultima_atualizacao_impresso = FonteImpressa::max('created_at');
@@ -168,6 +170,8 @@ class JornalImpressoController extends Controller
 
     public function monitoramento()
     {
+        Session::put('sub-menu','monitoramento');
+
         $clientes = Cliente::with('pessoa')
                     ->join('pessoas', 'pessoas.id', '=', 'clientes.pessoa_id')
                     ->orderBy('nome')
