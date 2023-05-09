@@ -112,7 +112,7 @@ class NoticiaRadioController extends Controller
             $emissora = Emissora::find($request->emissora);
             if($request->remover == "true") {
                 $baseUrl = $this->getBasePath();
-                @unlink($baseUrl.$noticia->arquivo);
+                unlink($baseUrl.$noticia->arquivo);
             }
             $filename = $this->uploadFiles($request);
 
