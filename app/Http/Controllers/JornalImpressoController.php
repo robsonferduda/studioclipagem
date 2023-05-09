@@ -98,7 +98,7 @@ class JornalImpressoController extends Controller
 
         $cidades = null;
         if($jornal->cd_estado) {
-            $cidades = Cidade::where(['cd_estado' => $jornal->cd_estado])->orderBy('nm_cidade')->get();;
+            $cidades = Cidade::where(['cd_estado' => $jornal->cd_estado])->orderBy('nm_cidade')->get();
         }
 
         return view('jornal-impresso/editar')->with('jornal', $jornal)->with('estados', $estados)->with('cidades', $cidades);
@@ -202,7 +202,7 @@ class JornalImpressoController extends Controller
         $fonte = FonteImpressa::where('codigo', $cod_fonte)->first();
 
         if(!$fonte){
-            
+
             $dados = array('codigo' => $cod_fonte);
             $fonte = FonteImpressa::create($dados);
         }

@@ -87,7 +87,12 @@ Route::get('radio/emissoras/novo','EmissoraController@novo');
 Route::get('radio/emissora/{id}/horarios','EmissoraController@horarios');
 
 Route::get('radio/noticias','NoticiaRadioController@index');
-Route::get('radio/noticias/create','NoticiaRadioController@create');
+Route::get('radio/noticias/cadastrar','NoticiaRadioController@cadastrar');
+Route::get('radio/noticias/{id}/editar','NoticiaRadioController@editar');
+Route::post('radio/noticias/inserir','NoticiaRadioController@inserir');
+Route::post('radio/noticias/{id}/atualizar','NoticiaRadioController@atualizar');
+Route::get('radio/noticias/{id}/remover','NoticiaRadioController@remover');
+Route::get('radio/noticias/{id}/download','NoticiaRadioController@download');
 
 Route::get('tv','TvController@index');
 
