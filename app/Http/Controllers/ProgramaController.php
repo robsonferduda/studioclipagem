@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Utils;
+use App\Models\Emissora;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -19,9 +20,18 @@ class ProgramaController extends Controller
         Session::put('url','radio');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $programas = array();
-        return view('programa/index',compact('programas'));
+        $emissoras = Emissora::orderBy('ds_emissora')->get();
+        
+        if($request->isMethod('POST')){
+            $programas = array();
+        }
+
+        if($request->isMethod('GET')){
+            $programas = array();
+        }
+
+        return view('programa/index',compact('programas','emissoras'));
     }
 }

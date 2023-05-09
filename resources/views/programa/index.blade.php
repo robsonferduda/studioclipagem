@@ -21,19 +21,24 @@
                 @include('layouts.mensagens')
             </div>
             <div class="col-md-12 px-0">
-                {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['radio/emissoras']]) !!}
+                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['radio/emissoras']]) !!}
                         <div class="form-group m-3 w-70">
                             <div class="row">
-                                <div class="col-md-3 col-sm-12">
-                                    <div class="form-group">
-                                        <label>Código</label>
-                                        <input type="text" class="form-control" name="codigo" id="codigo" placeholder="Código" value="">
-                                    </div>
-                                </div>
-                                <div class="col-md-9 col-sm-12">
+                                <div class="col-md-6 col-sm-12">
                                     <div class="form-group">
                                         <label>Emissora</label>
-                                        <input type="text" class="form-control" name="descricao" id="descricao" placeholder="Emissora" value="">
+                                        <select class="form-control select2" name="cliente" id="cliente">
+                                            <option value="">Selecione uma emissora</option>
+                                            @foreach ($emissoras as $emissora)
+                                                <option value="{{ $emissora->id }}">{{ $emissora->ds_emissora }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-12">
+                                    <div class="form-group">
+                                        <label>Programa</label>
+                                        <input type="text" class="form-control" name="descricao" id="descricao" placeholder="Programa" value="">
                                     </div>
                                 </div>
                             </div>

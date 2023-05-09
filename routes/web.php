@@ -89,6 +89,8 @@ Route::get('radio/emissora/{id}/horarios','EmissoraController@horarios');
 Route::get('radio/noticias','NoticiaRadioController@index');
 Route::get('radio/noticias/create','NoticiaRadioController@create');
 
+Route::get('relatorios','RelatorioController@index');
+
 Route::get('tv','TvController@index');
 
 Route::get('boletins','BoletimController@index');
