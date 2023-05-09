@@ -176,6 +176,33 @@ class ClienteController extends Controller
         return response()->json(["success" => true], 200);
     }
 
+    public function buscarClientes(Request $request)
+    {
+        $clientes = Cliente::select('clientes.id', 'pessoas.nome as text');
+        $clientes->join('pessoas', 'pessoas.id', '=', 'clientes.pessoa_id');
+
+        $clientes->where('ativo', true);
+        if(!empty($request->query('q'))) {
+            $replace = preg_replace('!\s+!', ' ', $request->query('q'));
+            $busca = str_replace(' ', '%', $replace);
+            $clientes->whereRaw('pessoas.nome ILIKE ?', ['%' . strtolower($busca) . '%']);
+        }
+
+
+        $result = $clientes->orderBy('pessoas.nome', 'asc')->paginate(30);
+        return response()->json($result);
+    }
+
+    public function getAreasCliente(Request $request)
+    {
+        $areas = ClienteArea::where('cliente_id', $request->query('cliente'));
+        $areas->join('area', 'area.id', '=', 'area_cliente.area_id');
+        $areas->where(['ativo' => true]);
+        $result = $areas->select('area.id', 'area.descricao')->get();
+
+        return response()->json($result);
+    }
+
     private function cadastrarEnderecoEletronico(Request $request, Cliente $cliente): void
     {
         foreach($request->email as $email) {
