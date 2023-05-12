@@ -31,6 +31,30 @@ $(function () {
   var uploadedImageType = 'image/jpeg';
   var uploadedImageURL;
 
+  function b64toBlob(b64Data, contentType, sliceSize) {
+    contentType = contentType || '';
+    sliceSize = sliceSize || 512;
+
+    var byteCharacters = atob(b64Data);
+    var byteArrays = [];
+
+    for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+        var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+        var byteNumbers = new Array(slice.length);
+        for (var i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+        }
+
+        var byteArray = new Uint8Array(byteNumbers);
+
+        byteArrays.push(byteArray);
+    }
+
+  var blob = new Blob(byteArrays, {type: contentType});
+  return blob;
+}
+
 
   // Tooltip
   $('[data-toggle="tooltip"]').tooltip();
@@ -173,7 +197,50 @@ $(function () {
         case 'getCroppedCanvas':
           if (result) {
             // Bootstrap's Modal
-            $('#getCroppedCanvasModal').modal().find('.modal-body').html(result);
+            //$('#getCroppedCanvasModal').modal().find('.modal-body').html(result);
+
+              var host =  $('meta[name="base-url"]').attr('content');
+              var img = result.toDataURL(uploadedImageType);
+
+              var block = img.split(";");
+                // Get the content type
+                var contentType = block[0].split(":")[1];// In this case "image/gif"
+                // get the real base64 content of the file
+                var realData = block[1].split(",")[1];// In this case "iVBORw0KGg...."
+
+                // Convert to blob
+                var blob = b64toBlob(realData, contentType);
+
+                  // Create a FormData and append the file
+                  var formData = new FormData();
+                  formData.append('picture', blob);
+                  formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+                        
+
+                  $.ajaxSetup({
+                    headers: {
+                        '_token': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+
+              $.ajax({
+                url: host+'/noticia-impressa/upload',
+                type: 'POST',
+                data: formData,
+                contentType:false,
+                processData:false,
+                cache: false,
+                beforeSend: function() {
+                   
+                },
+                success: function(data) {
+                    
+                },
+                complete: function(){
+                    
+                }
+            });
+            
 
             if (!$download.hasClass('disabled')) {
               download.download = uploadedImageName;
@@ -235,7 +302,6 @@ $(function () {
     }
 
   });
-
 
   // Import image
   var $inputImage = $('#inputImage');

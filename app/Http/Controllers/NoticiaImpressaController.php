@@ -37,6 +37,11 @@ class NoticiaImpressaController extends Controller
         
     }
 
+    public function upload(Request $request)
+    {
+        dd($request->all());
+    }
+
     public function cadastrar()
     {
         Session::put('sub-menu','cadastrar');

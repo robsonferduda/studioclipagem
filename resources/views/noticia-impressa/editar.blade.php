@@ -5,7 +5,7 @@
         <div class="card-header">
             <div class="row">
                 <div class="col-md-8">
-                    <h4 class="card-title">
+                    <h4 class="card-title ml-3">
                         <i class="fa fa-newspaper-o"></i> Jornal Impresso 
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Notícias 
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Editar
@@ -28,7 +28,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label>Mostrar Notícias Vinculadas</label>
+                                        <label>Cliente</label>
                                         <select class="form-control select2" name="cliente" id="cliente">
                                             <option value="">Selecione um cliente</option>
                                             @foreach ($clientes as $cliente)
@@ -69,19 +69,7 @@
                                         
                                                 <!-- <h3>Data:</h3> -->
                                                 <div class="docs-data">
-                                                    <div class="input-group mb-3">
-                                                        <div class="input-group-prepend">
-                                                          <span class="input-group-text" id="basic-addon1">Posição X</span>
-                                                        </div>
-                                                        <input type="text" class="form-control" id="dataX" placeholder="x">
-                                                      </div>
-                                                      <div class="input-group mb-3">
-                                                        <div class="input-group-prepend">
-                                                          <span class="input-group-text" id="basic-addon1">Posição Y</span>
-                                                        </div>
-                                                        <input type="text" class="form-control" id="dataY" placeholder="x">
-                                                      </div>
-                                                    
+                                                                                                       
                                                     <div class="input-group mb-3">
                                                       <div class="input-group-prepend">
                                                         <span class="input-group-text" id="basic-addon1">Largura</span>
@@ -141,4 +129,13 @@
               </div>
             </div>
           </div><!-- /.modal -->
+@endsection
+@section('script')
+<script>
+    $( document ).ready(function() {
+
+      
+
+    });
+</script>
 @endsection

@@ -5,14 +5,14 @@
         <div class="card-header">
             <div class="row">
                 <div class="col-md-8">
-                    <h4 class="card-title">
+                    <h4 class="card-title ml-3">
                         <i class="fa fa-newspaper-o"></i> Jornal Impresso 
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Processamento 
                     </h4>
                 </div>
                 <div class="col-md-4">
                     <a href="{{ url('impresso') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-newspaper-o"></i> Dashboard</a>
-                    <a href="{{ url('jornal-impresso/upload') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-upload"></i> Upload</a>
+                    <a href="{{ url('jornal-impresso/upload') }}" class="btn btn-info pull-right" style="margin-right: 12px;"><i class="fa fa-upload"></i> Upload</a>
                     <a href="{{ url('jornal-impresso/processar') }}" class="btn btn-warning pull-right" style="margin-right: 12px;"><i class="fa fa-cogs"></i> Processar</a>
                 </div>
             </div>

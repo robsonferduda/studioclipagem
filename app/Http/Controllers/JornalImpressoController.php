@@ -112,6 +112,8 @@ class JornalImpressoController extends Controller
 
     public function upload()
     {
+        Session::put('sub-menu','upload');
+
         return view('jornal-impresso/upload');
     }
 
@@ -287,6 +289,16 @@ class JornalImpressoController extends Controller
 
     public function inserir(Request $request)
     {
+        $fonte = FonteImpressa::where('codigo', $request->codigo)->first();
+
+        if($fonte){
+            $retorno = array('flag' => true,
+                             'msg' => '<i class="fa fa-exclamation"></i> Já existe um registro cadastrado com esse código');
+
+            Flash::warning($retorno['msg']);
+            return redirect('jornal-impresso/cadastrar')->withInput();
+        }
+
         try {
             FonteImpressa::create([
                 'nome' => $request->nome,
@@ -296,7 +308,7 @@ class JornalImpressoController extends Controller
             ]);
 
             $retorno = array('flag' => true,
-                             'msg' => "Dados inseridos com sucesso");
+                             'msg' => '<i class="fa fa-check"></i> Dados inseridos com sucesso');
 
         } catch (\Illuminate\Database\QueryException $e) {
             $retorno = array('flag' => false,
