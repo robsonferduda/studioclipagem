@@ -12,11 +12,11 @@
         <div class="card">
             <div class="card-header">
                 <div class="row">
-                    <div class="col-md-6">
-                        <h4 class="card-title ml-2"><i class="fa fa-newspaper-o"></i> Jornal Impresso
+                    <div class="col-md-8">
+                        <h4 class="card-title ml-3"><i class="fa fa-newspaper-o"></i> Jornal Impresso
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Atualizar</h4>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <a href="{{ url('jornal-impresso/listar') }}" class="btn btn-primary pull-right mr-3"><i class="fa fa-table"></i> Jornal Impresso</a>
                     </div>
                 </div>
@@ -77,16 +77,21 @@
 @section('script')
     <script>
         $(document).ready(function(){
+
             $('#estado').select2({
                 placeholder: 'Selecione',
                 allowClear: true
             });
+
             $('#cidade').select2({
                 placeholder: 'Selecione',
                 allowClear: true
             });
         })
+
         $(document).on('change', '#estado', function() {
+
+            var host =  $('meta[name="base-url"]').attr('content');
             $('#cidade').find('option').remove().end();
 
             if($(this).val() == '') {
@@ -98,7 +103,7 @@
             $('#cidade').append('<option value="">Carregando...</option>').val('');
 
             $.ajax({
-                url: '/api/estado/getCidades',
+                url: host+'/api/estado/getCidades',
                 type: 'GET',
                 data: {
                     "_token": $('meta[name="csrf-token"]').attr('content'),
