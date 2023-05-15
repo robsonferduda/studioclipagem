@@ -27,8 +27,8 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label>Mostrar Notícias Vinculadas</label>
-                                        <select class="form-control select2" name="cliente" id="cliente">
+                                        <label>Cliente</label>
+                                        <select class="form-control select2" name="btn-buscar-noticias" id="btn-buscar-noticias">
                                             <option value="">Selecione um cliente</option>
                                             @foreach ($clientes as $cliente)
                                                 <option value="{{ $cliente->id }}">{{ $cliente->pessoa->nome }}</option>
@@ -46,18 +46,20 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-12 col-md-12">
-                                
-                                        <p>
-                                            <h6>
-                                                {{ $noticia->cliente->pessoa->nome }} 
-                                            </h6>
-                                        </p>
+                                        <h6>
+                                            {{ $noticia->cliente->pessoa->nome }} 
+                                        </h6>
                                         <p class="card-title">
-                                            {{ $noticia->noticiaImpressa->titulo }}
+                                            {{ ($noticia->noticiaImpressa) ? $noticia->noticiaImpressa->titulo : "Sem título"}}
                                         </p>
                                         <p class="text-bold">
                                             {!! \Illuminate\Support\Str::limit($noticia->noticiaImpressa->texto, 300, '...') !!}
-                                        </p>                                    
+                                        </p>   
+                                        @if($noticia->noticiaImpressa->fl_copia)
+                                            <span class="badge badge-warning">CÓPIA</span>
+                                        @else
+                                            <span class="badge badge-success">ORIGINAL</span>
+                                        @endif                                 
                                     </div>
                                 </div>
                             </div>
@@ -71,9 +73,16 @@
                                     </div>
                                     <div class="col-6 col-md-6">
                                         <div class="pull-right">
-                                            <a href="{{ url('noticia-impressa/cliente/'.$noticia->cliente_id.'/editar', $noticia->noticiaImpressa->id) }}" class="btn btn-primary btn-round btn-icon btn-sm">
-                                                <i class="fa fa-edit fa-2x"></i>
-                                            </a>
+                                            @if($noticia->fl_copia)
+                                                <a href="{{ url('noticia-impressa/cliente/'.$noticia->cliente_id.'/editar', $noticia->noticiaImpressa->id) }}" class="btn btn-primary btn-round btn-icon btn-sm">
+                                                    <i class="fa fa-edit fa-2x"></i>
+                                                </a>
+                                            @else
+                                                <a href="{{ url('noticia-impressa/cliente/'.$noticia->cliente_id.'/copiar', $noticia->noticiaImpressa->id) }}" class="btn btn-primary btn-round btn-icon btn-sm">
+                                                    <i class="fa fa-edit fa-2x"></i>
+                                                </a>
+                                            @endif
+                                            
                                             <a href="{{ url('jornal-impresso/noticia', $noticia->noticiaImpressa->id) }}" class="btn btn-success btn-round btn-icon btn-sm">
                                                 <i class="fa fa-eye fa-2x"></i>
                                             </a>
@@ -88,4 +97,39 @@
         </div>
     </div>
 </div> 
+@endsection
+@section('script')
+    <script>
+        $(document).ready(function(){
+
+            var host =  $('meta[name="base-url"]').attr('content');
+
+            $("#btn-buscar-noticias").change(function(){
+
+                cliente_id = $(this).val();
+
+                if(cliente_id){
+
+                    $.ajax({
+                        url: host+'/jornal-impresso/monitoramento',
+                        type: 'POST',
+                        data: {
+                            "_token": $('meta[name="csrf-token"]').attr('content'),
+                            "cliente": cliente_id,
+                        },
+                        beforeSend: function() {
+                            
+                        },
+                        success: function(data) {
+                        
+                        },
+                        complete: function(){
+                            window.location.reload();
+                        }
+                    });
+
+                }
+            })
+        })
+    </script>
 @endsection

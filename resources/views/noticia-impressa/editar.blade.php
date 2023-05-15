@@ -54,15 +54,17 @@
                                     <div class="form-group">
                                         <label>Imagem</label>
                                         <div class="row">
-                                            <div class="col-md-9 box-img">
-                                              <div class="img-container">
-                                                @if(!$noticia->fl_copia and $noticia->print)
-                                                    <img id="image" src="{{ asset('jornal-impresso/noticias/'.$noticia->print) }}" alt="Recorte do Jornal">
-                                                @else
-                                                    <img id="image" src="{{ asset('jornal-impresso/'.$noticia->fonte->codigo.'/'.\Carbon\Carbon::parse($noticia->dt_clipagem)->format('Ymd').'/img/pagina_'.$noticia->nu_pagina_atual.'.png') }}" alt="Recorte do Jornal">
-                                                @endif
-                                            </div>
-                                            </div>
+                                            @if($noticia->fl_copia and $noticia->print)
+                                                <div class="col-md-12">
+                                                    <img src="{{ asset('jornal-impresso/noticias/'.$noticia->print) }}" alt="Recorte do Jornal">
+                                                </div>
+                                            @else
+                                                <div class="col-md-9">
+                                                    <div class="img-container">
+                                                        <img id="image" src="{{ asset('jornal-impresso/'.$noticia->fonte->codigo.'/'.\Carbon\Carbon::parse($noticia->dt_clipagem)->format('Ymd').'/img/pagina_'.$noticia->nu_pagina_atual.'.png') }}" alt="Recorte do Jornal">
+                                                    </div>
+                                                </div>
+
                                             <div class="col-md-3">
                                                 <!-- <h3>Preview:</h3> -->
                                                 <div class="docs-preview clearfix">
@@ -100,7 +102,8 @@
                                                         </span>
                                                       </button>
                                                 </div>
-                                              </div>
+                                              </div>                                                
+                                            @endif
                                         </div>
                                     </div>
                                 </div>                                
