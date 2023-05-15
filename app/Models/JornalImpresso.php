@@ -9,7 +9,7 @@ class JornalImpresso extends Model
     protected $connection = 'pgsql';
     protected $table = 'noticia_impresso';
 
-    protected $fillable = ['titulo','texto','fl_copia'];
+    protected $fillable = ['titulo','texto','fl_copia','print'];
 
     public function fonte()
     {

@@ -28,6 +28,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
+                                        <input type="hidden" name="noticia_id" id="noticia_id" value="{{ $noticia->id }}"/>
                                         <label>Cliente</label>
                                         <select class="form-control select2" name="cliente" id="cliente">
                                             <option value="">Selecione um cliente</option>
@@ -53,10 +54,14 @@
                                     <div class="form-group">
                                         <label>Imagem</label>
                                         <div class="row">
-                                            <div class="col-md-9">
+                                            <div class="col-md-9 box-img">
                                               <div class="img-container">
-                                                <img id="image" src="{{ asset('jornal-impresso/'.$noticia->fonte->codigo.'/'.\Carbon\Carbon::parse($noticia->dt_clipagem)->format('Ymd').'/img/pagina_'.$noticia->nu_pagina_atual.'.png') }}" alt="Recorte do Jornal">
-                                              </div>
+                                                @if(!$noticia->fl_copia and $noticia->print)
+                                                    <img id="image" src="{{ asset('jornal-impresso/noticias/'.$noticia->print) }}" alt="Recorte do Jornal">
+                                                @else
+                                                    <img id="image" src="{{ asset('jornal-impresso/'.$noticia->fonte->codigo.'/'.\Carbon\Carbon::parse($noticia->dt_clipagem)->format('Ymd').'/img/pagina_'.$noticia->nu_pagina_atual.'.png') }}" alt="Recorte do Jornal">
+                                                @endif
+                                            </div>
                                             </div>
                                             <div class="col-md-3">
                                                 <!-- <h3>Preview:</h3> -->

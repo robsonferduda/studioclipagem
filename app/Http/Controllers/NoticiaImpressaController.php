@@ -39,7 +39,21 @@ class NoticiaImpressaController extends Controller
 
     public function upload(Request $request)
     {
-        dd($request->all());
+        //dd($request->picture);
+
+        $image = $request->file('picture');
+        $fileInfo = $image->getClientOriginalName();
+        $filesize = $image->getSize()/1024/1024;
+        $filename = pathinfo($fileInfo, PATHINFO_FILENAME);
+        $extension = "jpeg";
+        $file_name= $filename.'-'.time().'.'.$extension;
+        $image->move(public_path('jornal-impresso/noticias'),$file_name);
+
+        $noticia = JornalImpresso::find($request->id);
+        $noticia->print = $file_name;
+        $noticia->save();
+
+        return $file_name;
     }
 
     public function cadastrar()

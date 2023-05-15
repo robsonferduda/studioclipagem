@@ -215,6 +215,7 @@ $(function () {
                   var formData = new FormData();
                   formData.append('picture', blob);
                   formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+                  formData.append('id', $("#noticia_id").val());
                         
 
                   $.ajaxSetup({
@@ -234,7 +235,14 @@ $(function () {
                    
                 },
                 success: function(data) {
+
+                    var img = host+"/jornal-impresso/noticias/"+data;
                     
+                    
+                    $(".img-container").remove();
+                    $(".box-img").append('<img id="image" src="'+img+'">');
+                    
+
                 },
                 complete: function(){
                     
