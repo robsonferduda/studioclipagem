@@ -37,6 +37,25 @@ class NoticiaImpressaController extends Controller
         
     }
 
+    public function upload(Request $request)
+    {
+        //dd($request->picture);
+
+        $image = $request->file('picture');
+        $fileInfo = $image->getClientOriginalName();
+        $filesize = $image->getSize()/1024/1024;
+        $filename = pathinfo($fileInfo, PATHINFO_FILENAME);
+        $extension = "jpeg";
+        $file_name= $filename.'-'.time().'.'.$extension;
+        $image->move(public_path('jornal-impresso/noticias'),$file_name);
+
+        $noticia = JornalImpresso::find($request->id);
+        $noticia->print = $file_name;
+        $noticia->save();
+
+        return $file_name;
+    }
+
     public function cadastrar()
     {
         Session::put('sub-menu','cadastrar');
@@ -44,20 +63,18 @@ class NoticiaImpressaController extends Controller
         return view('noticia-impressa/cadastrar');
     }
 
-    public function editar($cliente, $id_noticia)
+    public function copiar($cliente, $id_noticia)
     {
-
-        $clientes = Cliente::with('pessoa')
-                    ->join('pessoas', 'pessoas.id', '=', 'clientes.pessoa_id')
-                    ->orderBy('nome')
-                    ->get();
-
+        //PNotícia original
         $noticia_original = JornalImpresso::find($id_noticia);
+
+        //Vínculo original
         $vinculo = NoticiaCliente::where('noticia_id', $id_noticia)->where('tipo_id',1)->where('cliente_id', $cliente)->first();
 
         if(!$noticia_original->fl_copia){
 
             $noticia = $noticia_original->replicate();
+            $noticia->noticia_original_id = $noticia_original->id;
             $noticia->fl_copia = true;
             $noticia->save();
     
@@ -67,6 +84,19 @@ class NoticiaImpressaController extends Controller
         }else{
             $noticia = $noticia_original;
         }
+
+        return redirect('noticia-impressa/cliente/'.$cliente.'/editar/'.$noticia->id);
+    }
+
+    public function editar($cliente, $id_noticia)
+    {
+        $clientes = Cliente::with('pessoa')
+                    ->join('pessoas', 'pessoas.id', '=', 'clientes.pessoa_id')
+                    ->orderBy('nome')
+                    ->get();
+
+        $noticia = JornalImpresso::find($id_noticia);
+        $vinculo = NoticiaCliente::where('noticia_id', $id_noticia)->where('tipo_id',1)->where('cliente_id', $cliente)->first();
 
         return view('noticia-impressa/editar', compact('noticia','clientes','vinculo'));
     }

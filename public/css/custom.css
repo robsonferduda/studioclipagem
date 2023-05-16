@@ -159,3 +159,11 @@
 .texto-noticia-field{
     min-height: 350px;
 }
+.select2-selection__clear{
+    font-size: 25px !important;
+    color: #eb1616;
+}
+.w-10 {width: 10% !important;}
+.w-15 {width: 15% !important;}
+.w-40 {width: 40% !important;}
+.w-80 {width: 80% !important;}

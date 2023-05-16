@@ -62,35 +62,47 @@ for diretorio, subpastas, arquivos in os.walk(pasta_pendentes):
         cur.execute(sql_update)
         con.commit()  
 
-        #Move arquivo para a pasta de arquivos processados
+        #Move arquivo para a pasta de arquivos em andamento
         shutil.move(pasta_pendentes+'/'+arquivo, pasta_andamento+'/'+arquivo)
-                
-        for i, img in enumerate(imgs):
-            i = i + 1;
-            file_name_img = path_img+"pagina_{0}.png".format(i)
-            file_name_txt = path_txt+"pagina_{0}.txt".format(i)
-            img.save(file_name_img, "PNG")
-            texto = ocr.image_to_string(Image.open(file_name_img), lang='por')
-            titulo = texto[0:40]
-            file_object = open(file_name_txt, 'w')
-            file_object.write(texto)
-            file_object.close()
+        
+        try:
+            for i, img in enumerate(imgs):
+                i = i + 1;
+                file_name_img = path_img+"pagina_{0}.png".format(i)
+                file_name_txt = path_txt+"pagina_{0}.txt".format(i)
+                img.save(file_name_img, "PNG")
+                texto = ocr.image_to_string(Image.open(file_name_img), lang='por')
+                titulo = texto[0:40]
+                file_object = open(file_name_txt, 'w')
+                file_object.write(texto)
+                file_object.close()
 
-            #sql = "INSERT INTO noticia_impresso (id_fonte, dt_clipagem, nu_pagina_atual, texto) VALUES("+pasta_id+",'"+dt_formatada+"',"+str(i)+",'"+texto+"')"
-            cur.execute("INSERT INTO noticia_impresso (id_fonte, id_fila, dt_clipagem, nu_pagina_atual, titulo, texto) VALUES(%s, %s, %s, %s, %s, %s)", (id_fonte, id_fila, dt_formatada, i, titulo, texto))
+                #sql = "INSERT INTO noticia_impresso (id_fonte, dt_clipagem, nu_pagina_atual, texto) VALUES("+pasta_id+",'"+dt_formatada+"',"+str(i)+",'"+texto+"')"
+                cur.execute("INSERT INTO noticia_impresso (id_fonte, id_fila, dt_clipagem, nu_pagina_atual, titulo, texto) VALUES(%s, %s, %s, %s, %s, %s)", (id_fonte, id_fila, dt_formatada, i, titulo, texto))
+                con.commit() 
+
+            sql = "UPDATE noticia_impresso SET nu_paginas_total = "+str(i)+" WHERE id_fonte = "+str(id_fonte)+" AND dt_clipagem = '"+dt_formatada+"'"
+            cur.execute(sql)
+            con.commit()     
+
+            #Move arquivo para a pasta de arquivos processados
+            shutil.move(pasta_andamento+'/'+arquivo, pasta_processados+'/'+arquivo)
+            
+            #Atualiza o status do arquivo, indicando que o mesmo foi processado   
+            dt_fim_processamento = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            sql_update = "UPDATE fila_impresso SET fl_processado = true, updated_at = '"+dt_fim_processamento+"' WHERE id_fonte = "+str(id_fonte)+" AND dt_arquivo = '"+dt_formatada+"'" 
+            cur.execute(sql_update)
             con.commit() 
 
-        sql = "UPDATE noticia_impresso SET nu_paginas_total = "+str(i)+" WHERE id_fonte = "+str(id_fonte)+" AND dt_clipagem = '"+dt_formatada+"'"
-        cur.execute(sql)
-        con.commit()     
+            print("SUCESSO - Arquivo: "+arquivo)
 
-        #Move arquivo para a pasta de arquivos processados
-        shutil.move(pasta_andamento+'/'+arquivo, pasta_processados+'/'+arquivo)
-        
-        #Atualiza o status do arquivo, indicando que o mesmo foi processado   
-        dt_fim_processamento = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        sql_update = "UPDATE fila_impresso SET fl_processado = true, updated_at = '"+dt_fim_processamento+"' WHERE id_fonte = "+str(id_fonte)+" AND dt_arquivo = '"+dt_formatada+"'" 
-        cur.execute(sql_update)
-        con.commit()  
+        except Exception as e:
+            #Move novamente o arquivo para a pasta de arquivos pendentes
+            shutil.move(pasta_andamento+'/'+arquivo, pasta_pendentes+'/'+arquivo)
 
-print("Processamento concluido")
+            #Atualiza o status do arquivo, indicando que o mesmo foi retornou para processamento   
+            sql_update = "UPDATE fila_impresso SET start_at = null WHERE id_fonte = "+str(id_fonte)+" AND dt_arquivo = '"+dt_formatada+"'" 
+            cur.execute(sql_update)
+            con.commit() 
+
+            print("ERRO - Arquivo: "+arquivo+" Erro:"+str(e))

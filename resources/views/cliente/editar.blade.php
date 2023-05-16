@@ -13,7 +13,10 @@
             <div class="card-header">
                 <div class="row">
                     <div class="col-md-6">
-                        <h4 class="card-title ml-2"><i class="nc-icon nc-circle-10"></i> Clientes > Editar</h4>
+                        <h4 class="card-title ml-3">
+                            <i class="nc-icon nc-briefcase-24"></i> Clientes
+                            <i class="fa fa-angle-double-right" aria-hidden="true"></i> Editar
+                        </h4>
                     </div>
                     <div class="col-md-6">
                         <a href="{{ url('cliente') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-table"></i> Clientes</a>
@@ -26,8 +29,8 @@
                         @include('layouts.mensagens')
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-6 top-40">
+                <div class="row mr-1 ml-1">
+                    <div class="col-md-12">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
@@ -35,16 +38,16 @@
                                     <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome" required value="{{ $cliente->pessoa->nome }}">
                                 </div>
                             </div>
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <label>CPF/CNPJ </label>
                                     <input type="text" class="form-control" name="cpf_cnpj" id="cpf_cnpj" placeholder="CPF/CNPJ" value="{{ $cliente->pessoa->cpf_cnpj }}">
                                 </div>
                             </div>
-                            <div class="col-md-12">
-                                <div class="form-check mt-3">
-                                    <div class="form-check">
-                                        <label class="form-check-label">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="form-check mt-4">
+                                        <label class="form-check-label mt-2">
                                             <input class="form-check-input" {{ ($cliente->ativo) ? 'checked' : '' }} type="checkbox" name="ativo" value="true">
                                             ATIVO
                                             <span class="form-check-sign"></span>
@@ -54,7 +57,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <table class="table table-striped">
                             <thead>
                                 <tr>
@@ -63,7 +66,7 @@
                                 </tr>
                             </thead>
                             <tbody id="tbody-endereco-eletronico">
-                                @if($emails)
+                                @if(count($emails))
                                     @foreach($emails as $email)
                                         <tr class="linha-email">
                                             <td><input type="text" class="form-control" name="email[]" placeholder="Email" value="{{ $email->endereco }}" /></td>
@@ -81,7 +84,7 @@
                     </div>
                     <div class="col-md-12">
                         <hr/>
-                        <h4>Expressões</h4>
+                        <p><i class="fa fa-tags"></i> Áreas do Cliente</p>
                         <table class="table table-striped">
                             <thead>
                                 <tr>
@@ -104,7 +107,7 @@
                                                 </select>
                                             </td>
                                             <td>
-                                                <input type="text" class="form-control input-expressao" name="expressao[]" placeholder="Expressao" value="{{ $expressao->expressao }}" />
+                                                <input type="text" class="form-control input-expressao p-" name="expressao[]" placeholder="Expressao" value="{{ $expressao->expressao }}" />
                                             </td>
                                             <td>
                                                 <select class="form-control select-status" name="status[]">
@@ -148,7 +151,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card-footer text-right">
+            <div class="card-footer text-center mb-3">
                 <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Salvar</button>
                 <a href="{{ url('cliente') }}" class="btn btn-danger"><i class="fa fa-times"></i> Cancelar</a>
             </div>

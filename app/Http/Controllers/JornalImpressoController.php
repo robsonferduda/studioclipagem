@@ -112,6 +112,8 @@ class JornalImpressoController extends Controller
 
     public function upload()
     {
+        Session::put('sub-menu','upload');
+
         return view('jornal-impresso/upload');
     }
 
@@ -168,18 +170,25 @@ class JornalImpressoController extends Controller
         return view('jornal-impresso/processamento', compact('fila','fontes'));
     }
 
-    public function monitoramento()
+    public function monitoramento(Request $request)
     {
         Session::put('sub-menu','monitoramento');
+        
+        $cliente = session('cliente_monitoramento') ? session('cliente_monitoramento') : 0;
 
         $clientes = Cliente::with('pessoa')
                     ->join('pessoas', 'pessoas.id', '=', 'clientes.pessoa_id')
                     ->orderBy('nome')
                     ->get();
 
-        $noticias = NoticiaCliente::where('tipo_id', 1)->whereBetween('created_at', [date('Y-m-d')." 00:00:00", date('Y-m-d')." 23:59:59"])->get();
+        $noticias = NoticiaCliente::where('tipo_id', 1)->where('cliente_id', $cliente)->whereBetween('created_at', [date('Y-m-d')." 00:00:00", date('Y-m-d')." 23:59:59"])->get();
+        $noticias = NoticiaCliente::where('tipo_id', 1)->where('cliente_id', $cliente)->orderBy('id')->get();
 
-        $noticias = NoticiaCliente::where('tipo_id', 1)->orderBy('id')->get();
+        if($request->isMethod('POST')){
+
+            $cliente = ($request->cliente) ? $request->cliente : 0;
+            Session::put('cliente_monitoramento', $cliente);
+        }
 
         return view('jornal-impresso/monitoramento', compact('clientes','noticias'));
     }
@@ -211,6 +220,7 @@ class JornalImpressoController extends Controller
                        'ds_arquivo' => $file_name,
                        'id_fonte' => $fonte->id,
                        'tamanho' => $filesize);
+
         FilaImpresso::create($dados);
 
         JobProcessarImpressos::dispatch();
@@ -287,6 +297,16 @@ class JornalImpressoController extends Controller
 
     public function inserir(Request $request)
     {
+        $fonte = FonteImpressa::where('codigo', $request->codigo)->first();
+
+        if($fonte){
+            $retorno = array('flag' => true,
+                             'msg' => '<i class="fa fa-exclamation"></i> Já existe um registro cadastrado com esse código');
+
+            Flash::warning($retorno['msg']);
+            return redirect('jornal-impresso/cadastrar')->withInput();
+        }
+
         try {
             FonteImpressa::create([
                 'nome' => $request->nome,
@@ -296,7 +316,7 @@ class JornalImpressoController extends Controller
             ]);
 
             $retorno = array('flag' => true,
-                             'msg' => "Dados inseridos com sucesso");
+                             'msg' => '<i class="fa fa-check"></i> Dados inseridos com sucesso');
 
         } catch (\Illuminate\Database\QueryException $e) {
             $retorno = array('flag' => false,

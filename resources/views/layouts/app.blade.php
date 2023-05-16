@@ -80,6 +80,11 @@
                               <span class="sidebar-normal">Dashboard</span>
                               </a>
                            </li> 
+                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'upload') ? 'active' : '' }}">
+                            <a href="{{ url('jornal-impresso/upload') }}">
+                              <span class="sidebar-normal">Arquivos Impressos</span>
+                              </a>
+                          </li> 
                            <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'monitoramento') ? 'active' : '' }}">
                             <a href="{{ url('jornal-impresso/monitoramento') }}">
                               <span class="sidebar-normal">Monitoramento</span>
@@ -151,10 +156,36 @@
                 @endrole
                 @role('administradores')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'tv') ? 'active' : '' }}">
-                      <a href="{{ url('tv') }}">
+                      <a data-toggle="collapse" href="#submenu-tv" class="{{ (Session::has('url') and Session::get('url') == 'tv') ? '' : 'collapsed' }}" aria-expanded="{{ (Session::has('url') and Session::get('url') == 'tv') ? 'true' : 'false' }}">
                         <i class="fa fa-tv"></i>
-                        <p>Televisão</p>
-                      </a>
+                        <p>Televisão
+                           <b class="caret"></b>
+                        </p>
+                     </a>
+                     <div class="collapse {{ (Session::has('url') and Session::get('url') == 'tv') ? 'show' : '' }}" id="submenu-tv" aria-expanded="false">
+                        <ul class="nav ml-5">
+                           <li>
+                              <a href="{{ url('tv') }}">
+                              <span class="sidebar-normal">Dashboard</span>
+                              </a>
+                           </li>
+                           <li>
+                              <a href="{{ url('emissoras') }}">
+                              <span class="sidebar-normal">Emissoras</span>
+                              </a>
+                           </li>
+                           <li>
+                              <a href="{{ url('emissoras/programas') }}">
+                              <span class="sidebar-normal">Programas</span>
+                              </a>
+                           </li>
+                           <li>
+                              <a href="{{ url('radio/noticias') }}">
+                              <span class="sidebar-normal">Notícias</span>
+                              </a>
+                           </li>
+                        </ul>
+                     </div>
                   </li>
                 @endrole
                 @role('administradores')
@@ -170,6 +201,14 @@
                     <a href="{{ url('boletins') }}">
                     <i class="fa fa-file-o"></i>
                     <p>Boletins</p>
+                    </a>
+                  </li>
+                @endrole
+                @role('administradores')
+                  <li class="{{ (Session::has('url') and Session::get('url') == 'relatorios') ? 'active' : '' }}">
+                    <a href="{{ url('relatorios') }}">
+                    <i class="fa fa-file-pdf-o"></i>
+                    <p>Relatórios</p>
                     </a>
                   </li>
                 @endrole

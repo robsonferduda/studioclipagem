@@ -46,7 +46,7 @@ Route::resource('fonte-web','FonteWebController');
 
 Route::get('impresso','JornalImpressoController@index');
 Route::match(array('GET', 'POST'),'jornal-impresso/processamento','JornalImpressoController@processamento');
-Route::get('jornal-impresso/monitoramento','JornalImpressoController@monitoramento');
+Route::match(array('GET', 'POST'),'jornal-impresso/monitoramento','JornalImpressoController@monitoramento');
 Route::get('jornal-impresso/processar','JornalImpressoController@processar');
 Route::get('jornal-impresso/pendentes/listar','JornalImpressoController@listarPendentes');
 Route::get('jornal-impresso/upload','JornalImpressoController@upload');
@@ -58,8 +58,10 @@ Route::get('jornal-impresso/cadastrar','JornalImpressoController@cadastrar');
 Route::get('jornal-impresso/{id}/editar','JornalImpressoController@editar');
 
 Route::get('noticia-impressa/cadastrar','NoticiaImpressaController@cadastrar');
+Route::get('noticia-impressa/cliente/{cliente}/copiar/{id}','NoticiaImpressaController@copiar');
 Route::get('noticia-impressa/cliente/{cliente}/editar/{id}','NoticiaImpressaController@editar');
 Route::resource('noticia-impressa','NoticiaImpressaController');
+Route::post('noticia-impressa/upload','NoticiaImpressaController@upload');
 
 Route::post('jornal-impresso/inserir','JornalImpressoController@inserir');
 Route::post('jornal-impresso/{id}/atualizar','JornalImpressoController@atualizar');
@@ -93,6 +95,8 @@ Route::post('radio/noticias/inserir','NoticiaRadioController@inserir');
 Route::post('radio/noticias/{id}/atualizar','NoticiaRadioController@atualizar');
 Route::get('radio/noticias/{id}/remover','NoticiaRadioController@remover');
 Route::get('radio/noticias/{id}/download','NoticiaRadioController@download');
+
+Route::get('relatorios','RelatorioController@index');
 
 Route::get('tv','TvController@index');
 
