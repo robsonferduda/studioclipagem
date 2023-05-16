@@ -5,7 +5,7 @@
         <div class="card-header">
             <div class="row">
                 <div class="col-md-8">
-                    <h4 class="card-title">
+                    <h4 class="card-title ml-3">
                         <i class="nc-icon nc-briefcase-24"></i> Clientes
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Dashboard
                     </h4>
@@ -24,10 +24,10 @@
                     <table id="datatable" class="table table-striped table-bordered" cellspacing="0" width="100%">
                     <thead>
                         <tr>
-                            <th>Nome</th>
-                            <th>CPF/CNPJ</th>
-                            <th class="disabled-sorting text-center">Situação</th>
-                            <th class="disabled-sorting text-center">Ações</th>
+                            <th class="w-50">Nome</th>
+                            <th class="w-10">CPF/CNPJ</th>
+                            <th class="w-10 disabled-sorting text-center">Situação</th>
+                            <th class="w-10 disabled-sorting text-center">Ações</th>
                         </tr>
                     </thead>
                     <tfoot>
@@ -41,7 +41,12 @@
                     <tbody>
                         @foreach($clientes as $cliente)
                             <tr>
-                                <td>{{ $cliente->pessoa->nome }}</td>
+                                <td>
+                                    {{ $cliente->pessoa->nome }} 
+                                    @if($cliente->clienteArea->count())
+                                        <i class="fa fa-tags text-primary"></i>
+                                    @endif
+                                </td>
                                 <td>{{ $cliente->pessoa->cpf_cnpj }}</td>
                                 <td class="disabled-sorting text-center">{!! ($cliente->ativo) ? '<span class="badge badge-pill badge-success">ATIVO</span>' : '<span class="badge badge-pill badge-danger">INATIVO</span>' !!}</td>
                                 <td class="text-center">

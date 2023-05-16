@@ -47,6 +47,7 @@ class ClienteController extends Controller
     public function store(Request $request): RedirectResponse
     {
         try {
+
             $pessoa = Pessoa::create([
                 'nome' => $request->nome,
                 'cpf_cnpj' => preg_replace('/\D/', '', $request->cpf_cnpj)
@@ -64,6 +65,9 @@ class ClienteController extends Controller
                              'msg' => "Dados inseridos com sucesso");
 
         } catch (\Illuminate\Database\QueryException $e) {
+
+            dd($e);
+
             $retorno = array('flag' => false,
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
 
@@ -94,10 +98,14 @@ class ClienteController extends Controller
 
     public function update(Request $request, int $id):RedirectResponse
     {
+        $flag = $request->ativo == true ? true : false;
+
         $cliente = Cliente::find($id);
         try {
 
-            $cliente->update(['ativo', $request->ativo]);
+            $cliente->ativo = $flag;
+            $cliente->update();
+
             $cliente->pessoa->update([
                 'nome' => $request->nome,
                 'cpf_cnpj' => preg_replace('/\D/', '', $request->cpf_cnpj)
@@ -120,18 +128,18 @@ class ClienteController extends Controller
             );
         } catch (\Exception $e) {
             $retorno = array(
-                'flag' => true,
-                'msg' => "Ocorreu um erro ao atualizar o registro"
+                'flag' => false,
+                'msg' => "Ocorreu um erro ao atualizar o registro".$e
             );
         }
 
         if ($retorno['flag']) {
             Flash::success($retorno['msg']);
-            return redirect('cliente')->withInput();
         } else {
             Flash::error($retorno['msg']);
-            return redirect()->route('cliente.edit', $cliente->id)->withInput();
         }
+
+        return redirect()->route('cliente.edit', $cliente->id)->withInput();
     }
 
     public function validaCpf(Request $request):JsonResponse
@@ -167,57 +175,64 @@ class ClienteController extends Controller
 
     private function cadastrarEnderecoEletronico(Request $request, Cliente $cliente): void
     {
-        foreach($request->email as $email) {
-            if(empty($email)) {
-                continue;
-            }
+        if($request->email){
+            
+            foreach($request->email as $email) {
+                if(empty($email)) {
+                    continue;
+                }
 
-            EnderecoEletronico::create([
-                'pessoa_id' => $cliente->pessoa->id,
-                'endereco' => $email,
-                'tipo_id' => 1
-            ]);
+                EnderecoEletronico::create([
+                    'pessoa_id' => $cliente->pessoa->id,
+                    'endereco' => $email,
+                    'tipo_id' => 1
+                ]);
+            }
         }
     }
 
     private function gerenciaClienteArea(Request $request, Cliente $cliente): void
     {
         $id = [];
-        try {
-            foreach($request->area as $key => $area) {
-                if(!empty($request->id[$key])) {
-                    $id[] = $request->id[$key];
-                    $clienteArea = ClienteArea::find($request->id[$key]);
-                    $clienteArea->update([
+
+        if($request->area){
+            try {
+                foreach($request->area as $key => $area) {
+
+                    if(!empty($request->id[$key])) {
+                        $id[] = $request->id[$key];
+                        $clienteArea = ClienteArea::find($request->id[$key]);
+                        $clienteArea->update([
+                            'area_id' => $area,
+                            'expressao' => $request->expressao[$key],
+                            'ativo' => $request->status[$key] == "true"
+                        ]);
+                        continue;
+                    }
+
+                    if(empty($request->expressao[$key])) {
+                        continue;
+                    }
+
+                    $created = ClienteArea::create([
+                        'cliente_id' => $cliente->id,
                         'area_id' => $area,
                         'expressao' => $request->expressao[$key],
                         'ativo' => $request->status[$key] == "true"
                     ]);
-                    continue;
+                    $id[] = $created->id;
                 }
 
-                if(empty($request->expressao[$key])) {
-                    continue;
+                $remover = ClienteArea::whereNotIn('id', $id)->where('cliente_id', $cliente->id)->get();
+
+                foreach($remover as $excluir) {
+                    $excluir->delete();
                 }
 
-                $created = ClienteArea::create([
-                    'cliente_id' => $cliente->id,
-                    'area_id' => $area,
-                    'expressao' => $request->expressao[$key],
-                    'ativo' => $request->status[$key] == "true"
-                ]);
-                $id[] = $created->id;
+
+            } catch(\Exception $e) {
+                throw new \RuntimeException($e);
             }
-
-            $remover = ClienteArea::whereNotIn('id', $id)->where('cliente_id', $cliente->id)->get();
-
-            foreach($remover as $excluir) {
-                $excluir->delete();
-            }
-
-
-        } catch(\Exception $e) {
-            throw new \RuntimeException($e);
         }
     }
 }
