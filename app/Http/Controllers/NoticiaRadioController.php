@@ -112,7 +112,7 @@ class NoticiaRadioController extends Controller
             $emissora = Emissora::find($request->emissora);
             if($request->remover == "true") {
                 $baseUrl = $this->getBasePath();
-                @unlink($baseUrl.$noticia->arquivo);
+                unlink($baseUrl.$noticia->arquivo);
             }
             $filename = $this->uploadFiles($request);
 
@@ -184,7 +184,7 @@ class NoticiaRadioController extends Controller
         $file_name= $filename.'-'.time().'.'.$extension;
 
         $path = 'noticias-radio'.DIRECTORY_SEPARATOR.$request->cliente.DIRECTORY_SEPARATOR.date('Ym').DIRECTORY_SEPARATOR;
-        $arquivo->move($this->getBasePath().$path,$file_name);
+        $arquivo->move(public_path($this->getBasePath()).$path,$file_name);
 
         return $path.$file_name;
     }

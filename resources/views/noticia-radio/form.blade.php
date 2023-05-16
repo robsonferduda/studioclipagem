@@ -187,6 +187,9 @@
 @section('script')
     <script>
         $(document).ready(function(){
+
+            var host =  $('meta[name="base-url"]').attr('content');
+
             $('.selector-select2').select2({
                 placeholder: 'Selecione',
                 allowClear: true
@@ -196,7 +199,7 @@
                 placeholder: 'Selecione',
                 allowClear: true,
                 ajax: {
-                    url: "/api/cliente/buscarClientes",
+                    url: host+"/api/cliente/buscarClientes",
                     dataType: 'json',
                     delay: 250,
                     data: function (params) {
@@ -222,7 +225,7 @@
                 placeholder: 'Selecione',
                 allowClear: true,
                 ajax: {
-                    url: "/api/emissora/buscarEmissoras",
+                    url: host+"/api/emissora/buscarEmissoras",
                     dataType: 'json',
                     delay: 250,
                     data: function (params) {
@@ -256,7 +259,7 @@
                 placeholder: 'Selecione',
                 allowClear: true,
                 ajax: {
-                    url: "/api/programa/buscarProgramas",
+                    url: host+"/api/programa/buscarProgramas",
                     dataType: 'json',
                     delay: 250,
                     data: function (params) {
@@ -313,6 +316,7 @@
         });
 
         $(document).on('change', '#estado', function() {
+
             $('#cidade').find('option').remove().end();
             $('#emissora').find('option').remove().end();
             $('#programa').find('option').remove().end();
@@ -324,9 +328,11 @@
             }
 
             $('#cidade').append('<option value="">Carregando...</option>').val('');
+            
+            var host =  $('meta[name="base-url"]').attr('content');
 
             $.ajax({
-                url: '/api/estado/getCidades',
+                url: host+'/api/estado/getCidades',
                 type: 'GET',
                 data: {
                     "_token": $('meta[name="csrf-token"]').attr('content'),
@@ -372,8 +378,10 @@
 
             $('#area').append('<option value="">Carregando...</option>').val('');
 
+            var host =  $('meta[name="base-url"]').attr('content');
+
             $.ajax({
-                url: '/api/cliente/getAreasCliente',
+                url: host+'/api/cliente/getAreasCliente',
                 type: 'GET',
                 data: {
                     "_token": $('meta[name="csrf-token"]').attr('content'),
