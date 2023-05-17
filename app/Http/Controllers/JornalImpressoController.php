@@ -211,7 +211,7 @@ class JornalImpressoController extends Controller
         $fonte = FonteImpressa::where('codigo', $cod_fonte)->first();
 
         if(!$fonte){
-            
+
             $dados = array('codigo' => $cod_fonte);
             $fonte = FonteImpressa::create($dados);
         }

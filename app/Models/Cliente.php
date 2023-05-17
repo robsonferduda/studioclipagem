@@ -15,7 +15,7 @@ class Cliente extends Model
 
     public function pessoa()
     {
-        return $this->belongsTo(Pessoa::class, 'pessoa_id', 'id');
+        return $this->hasOne(Pessoa::class, 'id', 'pessoa_id');
     }
 
     public function clienteArea()

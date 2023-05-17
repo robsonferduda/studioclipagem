@@ -28,7 +28,7 @@ class EmissoraController extends Controller
         Session::put('cliente', session('cliente') ? session('cliente') : $clienteSession);
 
         $this->client_id = session('cliente')['id'];
-        
+
         Session::put('url','radio');
 
         $this->periodo_padrao = 7;
@@ -56,7 +56,7 @@ class EmissoraController extends Controller
     public function adicionarHorarios(Request $request)
     {
         dd($request->all());
-        
+
         $emissora = $request->id_emissora;
         $hora_inicial = $request->hora_inicial;
         $hora_final = $request->hora_final;
@@ -65,7 +65,7 @@ class EmissoraController extends Controller
     public function store(Request $request)
     {
         try {
-            
+
             Emissora::create($request->all());
             $retorno = array('flag' => true,
                              'msg' => "Dados inseridos com sucesso");
@@ -75,8 +75,8 @@ class EmissoraController extends Controller
             $retorno = array('flag' => false,
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
 
-        } catch (Exception $e) {
-            
+        } catch (\Exception $e) {
+
             $retorno = array('flag' => true,
                              'msg' => "Ocorreu um erro ao inserir o registro");
         }
@@ -99,5 +99,25 @@ class EmissoraController extends Controller
             Flash::error("Erro ao excluir o registro");
 
         return redirect('radio/emissoras')->withInput();
+    }
+
+    public function buscarEmissoras(Request $request)
+    {
+        $emissoras = Emissora::select('id', 'ds_emissora as text', 'nm_cidade as cidade');
+        $emissoras->join('cidade', 'cidade.cd_cidade', '=', 'emissora.cd_cidade');
+        $emissoras->where('tipo_id', 1);
+        if(!empty($request->query('q'))) {
+            $replace = preg_replace('!\s+!', ' ', $request->query('q'));
+            $busca = str_replace(' ', '%', $replace);
+            $emissoras->whereRaw('ds_emissora ILIKE ?', ['%' . strtolower($busca) . '%']);
+        }
+        if(!empty($request->query('estado'))) {
+            $emissoras->where('emissora.cd_estado', $request->query('estado'));
+        }
+        if(!empty($request->query('cidade'))) {
+            $emissoras->where('emissora.cd_cidade', $request->query('cidade'));
+        }
+        $result = $emissoras->orderBy('ds_emissora', 'asc')->paginate(30);
+        return response()->json($result);
     }
 }
