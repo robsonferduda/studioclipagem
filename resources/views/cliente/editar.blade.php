@@ -8,7 +8,7 @@
 @endsection
 @section('content')
 <div class="col-md-12">
-    {!! Form::open(['id' => 'frm_cliente_edit', 'url' => ['cliente', $cliente->id], 'method' => 'patch']) !!}
+    {!! Form::open(['id' => 'frm_cliente_edit', 'url' => ['cliente', $cliente->id], 'method' => 'patch', 'files' => true]) !!}
         <div class="card">
             <div class="card-header">
                 <div class="row">
@@ -52,6 +52,28 @@
                                             ATIVO
                                             <span class="form-check-sign"></span>
                                         </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div>
+                                    <label>Logo</label>
+                                    <input type="file" class="form-control" name="logo" id="logo">
+                                    <div class="row">
+                                        <div class="col-md-12 mt-2">
+                                            <img src="{{ asset('img/clientes/logo/'.$cliente->logo) }}" alt="{{ $cliente->logo }}" class="img-thumbnail">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div>
+                                    <label>Logo Expandida </label>
+                                    <input type="file" class="form-control" name="logo_expandida" id="logo_expandida">
+                                    <div class="row">
+                                        <div class="col-md-12 mt-2">
+                                            <img src="{{ asset('img/clientes/logo_expandida/'.$cliente->logo_expandida) }}" alt="{{ $cliente->logo_expandida }}" class="img-thumbnail">
+                                        </div>
                                     </div>
                                 </div>
                             </div>

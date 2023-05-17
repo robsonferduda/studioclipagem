@@ -26,21 +26,38 @@ class ClienteController extends Controller
         Session::put('url','cliente');
     }
 
-    public function index(): View
+    public function index(Request $request): View
     {
-        // $clientes = Cliente::all(); //Lista todos os clientes
-        $clientes = Cliente::with('pessoa')->get();
+        if($request->isMethod('GET')){
 
-        // $pessoa = Cliente::find(4)->pessoa; //Lista a pessoa
-        // $nome = Cliente::find(4)->pessoa->nome; //Mostra nome da pessoa
-        // $emails = Cliente::find(4)->pessoa->enderecoEletronico; //Mostra os endereços da pessoa
+            $clientes = Cliente::with('pessoa')->paginate(10);
+        }
+
+        if($request->isMethod('POST')){
+
+            $nome = $request->nome;
+
+            $cliente = Cliente::query();
+
+            $cliente->when($nome, function ($q) use ($nome) {
+
+                $q->whereHas('pessoa', function ($q) use ($nome){
+
+                    return $q->where('nome', 'ILIKE', '%'.trim($nome).'%');
+
+                });
+                
+            });
+            
+            $clientes = $cliente->with('pessoa')->paginate(10);
+        }
 
         return view('cliente/index',compact('clientes'));
     }
 
     public function create(): View
     {
-        $areas  =Area::all();
+        $areas = Area::all();
         return view('cliente/novo', compact('areas'));
     }
 
@@ -58,6 +75,32 @@ class ClienteController extends Controller
                 'pessoa_id' => $pessoa->id
             ]);
 
+            if($request->logo){
+                
+                $logo = $request->file('logo');
+                $fileInfo = $logo->getClientOriginalName();
+                $filesize = $logo->getSize()/1024/1024;
+                $filename = pathinfo($fileInfo, PATHINFO_FILENAME);
+                $extension = pathinfo($fileInfo, PATHINFO_EXTENSION);
+                $file_name = $cliente->id.'.'.$extension;
+                $logo->move(public_path('img/clientes/logo'),$file_name);
+                
+                $cliente->update(['logo' => $file_name]);
+            }
+
+            if($request->logo_expandida){
+                
+                $logo_expandida = $request->file('logo_expandida');
+                $fileInfo = $logo_expandida->getClientOriginalName();
+                $filesize = $logo_expandida->getSize()/1024/1024;
+                $filename = pathinfo($fileInfo, PATHINFO_FILENAME);
+                $extension = pathinfo($fileInfo, PATHINFO_EXTENSION);
+                $file_name = $cliente->id.'.'.$extension;
+                $logo_expandida->move(public_path('img/clientes/logo_expandida'),$file_name);
+                
+                $cliente->update(['logo_expandida' => $file_name]);
+            }
+
             $this->cadastrarEnderecoEletronico($request, $cliente);
             $this->gerenciaClienteArea($request, $cliente);
 
@@ -65,8 +108,6 @@ class ClienteController extends Controller
                              'msg' => "Dados inseridos com sucesso");
 
         } catch (\Illuminate\Database\QueryException $e) {
-
-            dd($e);
 
             $retorno = array('flag' => false,
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
@@ -115,6 +156,32 @@ class ClienteController extends Controller
 
             $this->cadastrarEnderecoEletronico($request, $cliente);
             $this->gerenciaClienteArea($request, $cliente);
+
+            if($request->logo){
+                
+                $logo = $request->file('logo');
+                $fileInfo = $logo->getClientOriginalName();
+                $filesize = $logo->getSize()/1024/1024;
+                $filename = pathinfo($fileInfo, PATHINFO_FILENAME);
+                $extension = pathinfo($fileInfo, PATHINFO_EXTENSION);
+                $file_name = $cliente->id.'.'.$extension;
+                $logo->move(public_path('img/clientes/logo'),$file_name);
+                
+                $cliente->update(['logo' => $file_name]);
+            }
+
+            if($request->logo_expandida){
+                
+                $logo_expandida = $request->file('logo_expandida');
+                $fileInfo = $logo_expandida->getClientOriginalName();
+                $filesize = $logo_expandida->getSize()/1024/1024;
+                $filename = pathinfo($fileInfo, PATHINFO_FILENAME);
+                $extension = pathinfo($fileInfo, PATHINFO_EXTENSION);
+                $file_name = $cliente->id.'.'.$extension;
+                $logo_expandida->move(public_path('img/clientes/logo_expandida'),$file_name);
+                
+                $cliente->update(['logo_expandida' => $file_name]);
+            }
 
             $retorno = array(
                 'flag' => true,
@@ -176,7 +243,7 @@ class ClienteController extends Controller
     private function cadastrarEnderecoEletronico(Request $request, Cliente $cliente): void
     {
         if($request->email){
-            
+
             foreach($request->email as $email) {
                 if(empty($email)) {
                     continue;

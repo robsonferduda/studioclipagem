@@ -20,8 +20,27 @@
                 @include('layouts.mensagens')
             </div>
             <div class="row">
+                <div class="col-lg-12 col-sm-12">
+                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['clientes']]) !!}
+                        <div class="form-group m-3 w-70">
+                            <div class="row">
+                                <div class="col-md-6 col-sm-12">
+                                    <div class="form-group">
+                                        <label>Nome</label>
+                                        <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="submit" id="btn-find" class="btn btn-primary mt-4"><i class="fa fa-search"></i> Buscar</button>
+                                </div>
+                            </div>
+                        </div>
+                    {!! Form::close() !!}
+                </div>
+            </div>
+            <div class="row mr-1 ml-1">
                 <div class="col-md-12">
-                    <table id="datatable" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                    <table id="" class="table table-striped table-bordered" cellspacing="0" width="100%">
                     <thead>
                         <tr>
                             <th class="w-50">Nome</th>
@@ -44,7 +63,7 @@
                                 <td>
                                     {{ $cliente->pessoa->nome }} 
                                     @if($cliente->clienteArea->count())
-                                        <i class="fa fa-tags text-primary"></i>
+                                        <i title="Cliente possui áreas vinculadas" class="fa fa-tags text-primary"></i>
                                     @endif
                                 </td>
                                 <td>{{ $cliente->pessoa->cpf_cnpj }}</td>
@@ -56,6 +75,9 @@
                         @endforeach
                     </tbody>
                 </table>
+                </div>
+                <div class="col-md-12 text-center">
+                    {{ $clientes->onEachSide(1)->links('vendor.pagination.bootstrap-4') }}
                 </div>
             </div>
         </div>

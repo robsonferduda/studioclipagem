@@ -8,7 +8,7 @@
 @endsection
 @section('content')
 <div class="col-md-12">
-    {!! Form::open(['id' => 'frm_cliente', 'url' => ['cliente']]) !!}
+    {!! Form::open(['id' => 'frm_cliente', 'url' => ['cliente'], 'files' => true]) !!}
         <div class="card">
             <div class="card-header">
                 <div class="row">
@@ -55,13 +55,25 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-md-6">
+                                <div>
+                                    <label>Logo</label>
+                                    <input type="file" class="form-control" name="logo" id="logo">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div>
+                                    <label>Logo Expandida </label>
+                                    <input type="file" class="form-control" name="logo_expandida" id="logo_expandida">
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-12">
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th>Email</th>
+                                    <th>Emails</th>
                                     <th><a title="Adicionar" class="btn btn-primary btn-link btn-icon btn-adicionar"><i class="fa fa-plus"></i></a></th>
                                 </tr>
                             </thead>

@@ -32,6 +32,7 @@ Route::post('areas/inserir','AreaController@inserir');
 Route::post('areas/{id}/atualizar','AreaController@atualizar');
 
 Route::resource('cliente','ClienteController');
+Route::match(array('GET', 'POST'),'clientes','ClienteController@index');
 
 Route::post('emissoras/horario/adicionar','EmissoraController@adicionarHorarios');
 
