@@ -110,7 +110,6 @@ Route::post('boletim/enviar/lista','BoletimController@enviarLista');
 
 
 Route::get('cliente/get/json','ClientController@json');
-Route::get('clientes','ClientController@index')->name('clientes.index');
 Route::get('client/accounts/facebook/{cliente}','ClientController@getFacebookAccounts');
 Route::get('client/hashtags/{cliente}','ClientController@getHashtags');
 Route::get('client/emails/{cliente}','ClientController@emails');

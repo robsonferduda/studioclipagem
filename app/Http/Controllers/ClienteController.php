@@ -28,14 +28,14 @@ class ClienteController extends Controller
 
     public function index(Request $request): View
     {
+        $nome = ($request->nome) ? $request->nome  : "";
+
         if($request->isMethod('GET')){
 
             $clientes = Cliente::with('pessoa')->paginate(10);
         }
 
         if($request->isMethod('POST')){
-
-            $nome = $request->nome;
 
             $cliente = Cliente::query();
 
@@ -52,7 +52,7 @@ class ClienteController extends Controller
             $clientes = $cliente->with('pessoa')->paginate(10);
         }
 
-        return view('cliente/index',compact('clientes'));
+        return view('cliente/index',compact('clientes','nome'));
     }
 
     public function create(): View
