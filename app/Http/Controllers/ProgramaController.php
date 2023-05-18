@@ -25,17 +25,24 @@ class ProgramaController extends Controller
     {
         Session::put('sub-menu','emissoras-programas');
 
+        $emissora = $request->emissora_id;
+        $programa = $request->nome;
+
         $emissoras = Emissora::orderBy('ds_emissora')->get();
 
-        if($request->isMethod('GET')){
-            $programas = Programa::with('emissora')->orderBy('nome')->paginate(10);
-        }
+        $prog = Programa::query();
 
-        if($request->isMethod('POST')){
-            $programas = array();
-        }
+        $prog->when($emissora, function ($q) use ($emissora) {
+            return $q->where('emissora_id', $emissora);
+        });
 
-        return view('programa/index',compact('programas','emissoras'));
+        $prog->when($programa, function ($q) use ($programa) {
+            return $q->where('nome','ilike','%'.$programa.'%');
+        });
+
+        $programas = $prog->orderBy('nome')->paginate(10);
+
+        return view('programa/index', compact('programas','emissoras','emissora','programa'));
     }
 
     public function novo()
@@ -69,6 +76,50 @@ class ProgramaController extends Controller
         } else {
             Flash::error($retorno['msg']);
         }
+
+        return redirect('emissoras/programas')->withInput();
+    }
+
+    public function edit($id)
+    {
+        $programa = Programa::find($id);
+        $emissoras = Emissora::orderBy('ds_emissora')->get();
+
+        return view('programa/editar',compact('programa','emissoras'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $programa = Programa::find($id);
+
+        try {        
+            $programa->update($request->all());
+            $retorno = array('flag' => true,
+                             'msg' => '<i class="fa fa-check"></i> Dados atualizados com sucesso');
+        } catch (\Illuminate\Database\QueryException $e) {
+            $retorno = array('flag' => false,
+                             'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
+        } catch (Exception $e) {
+            $retorno = array('flag' => true,
+                             'msg' => "Ocorreu um erro ao atualizar o registro");
+        }
+
+        if($retorno['flag']) {
+            Flash::success($retorno['msg']);
+        }else{
+            Flash::error($retorno['msg']);
+        }
+
+        return redirect('emissoras/programas')->withInput();
+    }
+
+    public function destroy($id)
+    {
+        $programa = Programa::find($id);
+        if($programa->delete())
+            Flash::success('<i class="fa fa-check"></i> Programa <strong>'.$programa->nome.'</strong> excluído com sucesso');
+        else
+            Flash::error("Erro ao excluir o registro");
 
         return redirect('emissoras/programas')->withInput();
     }

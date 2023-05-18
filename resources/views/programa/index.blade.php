@@ -21,13 +21,13 @@
                 @include('layouts.mensagens')
             </div>
             <div class="col-md-12 px-0">
-                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['radio/emissoras']]) !!}
+                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['emissoras/programas']]) !!}
                         <div class="form-group m-3 w-70">
                             <div class="row">
                                 <div class="col-md-6 col-sm-12">
                                     <div class="form-group">
                                         <label>Emissora</label>
-                                        <select class="form-control select2" name="cliente" id="cliente">
+                                        <select class="form-control select2" name="emissora_id" id="emissora_id">
                                             <option value="">Selecione uma emissora</option>
                                             @foreach ($emissoras as $emissora)
                                                 <option value="{{ $emissora->id }}">{{ $emissora->ds_emissora }}</option>
@@ -38,7 +38,7 @@
                                 <div class="col-md-6 col-sm-12">
                                     <div class="form-group">
                                         <label>Programa</label>
-                                        <input type="text" class="form-control" name="descricao" id="descricao" placeholder="Programa" value="">
+                                        <input type="text" class="form-control" name="nome" id="nome" placeholder="Programa" value="">
                                     </div>
                                 </div>
                             </div>

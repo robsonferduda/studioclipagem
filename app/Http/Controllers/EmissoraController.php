@@ -29,9 +29,7 @@ class EmissoraController extends Controller
         Session::put('sub-menu','emissoras');
 
         $codigo = ($request->codigo) ? $request->codigo : null;
-        $descricao = ($request->descricao) ? $request->descricao : null;
-        
-      
+        $descricao = ($request->descricao) ? $request->descricao : null;       
 
             $emissora = Emissora::query();
 
