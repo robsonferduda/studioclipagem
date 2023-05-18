@@ -32,6 +32,8 @@ class NoticiaRadioController extends Controller
 
     public function index(Request $request)
     {
+        Session::put('sub-menu','radio-noticias');
+
         $noticias = NoticiaRadio::all();
         return view('noticia-radio/index', compact('noticias'));
     }

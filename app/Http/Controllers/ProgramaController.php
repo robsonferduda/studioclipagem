@@ -23,6 +23,8 @@ class ProgramaController extends Controller
 
     public function index(Request $request)
     {
+        Session::put('sub-menu','emissoras-programas');
+
         $emissoras = Emissora::orderBy('ds_emissora')->get();
 
         if($request->isMethod('GET')){

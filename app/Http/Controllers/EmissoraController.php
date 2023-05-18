@@ -26,6 +26,8 @@ class EmissoraController extends Controller
 
     public function index(Request $request)
     {
+        Session::put('sub-menu','emissoras');
+        
         if($request->isMethod('POST')){
 
             $codigo = $request->codigo;
