@@ -27,33 +27,26 @@ class EmissoraController extends Controller
     public function index(Request $request)
     {
         Session::put('sub-menu','emissoras');
-        
-        if($request->isMethod('POST')){
 
-            $codigo = $request->codigo;
-            $descricao = $request->descricao;
+        $codigo = ($request->codigo) ? $request->codigo : null;
+        $descricao = ($request->descricao) ? $request->descricao : null;
+        
+      
 
             $emissora = Emissora::query();
 
-            $emissora->when(request('codigo'), function ($q) use ($codigo) {
+            $emissora->when($codigo, function ($q) use ($codigo) {
                 return $q->where('codigo', $codigo);
             });
 
-            $emissora->when(request('descricao'), function ($q) use ($descricao) {
+            $emissora->when($descricao, function ($q) use ($descricao) {
                 return $q->where('ds_emissora','ilike','%'.$descricao.'%');
             });
 
             $emissoras = $emissora->orderBy('ds_emissora')->paginate(10);
+        
 
-        }
-
-        if($request->isMethod('GET')){
-
-            $emissoras = Emissora::orderBy('ds_emissora')->paginate(10);
-
-        }
-
-        return view('emissora/index', compact('emissoras'));
+        return view('emissora/index', compact('emissoras','codigo','descricao'));
     }
 
     public function horarios($emissora)

@@ -19,8 +19,9 @@
             <div class="col-md-12">
                 @include('layouts.mensagens')
             </div>
-            <div class="col-md-12 px-0">
-                {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['emissoras']]) !!}
+            <div class="row mr-1 ml-1">
+                <div class="col-md-12 px-0">
+                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['emissoras']]) !!}
                         <div class="form-group m-3 w-70">
                             <div class="row">
                                 <div class="col-md-3 col-sm-12">
@@ -43,9 +44,10 @@
                             </div>     
                         </div>
                     {!! Form::close() !!} 
+                </div>
             </div>
             <div class="col-md-12">
-                {{ $emissoras->onEachSide(1)->links('vendor.pagination.bootstrap-4') }}
+                {{ $emissoras->onEachSide(1)->appends(['descricao' => $descricao, 'codigo' => $codigo])->links('vendor.pagination.bootstrap-4') }}
                 <table id="" class="table table-striped table-bordered" cellspacing="0" width="100%">
                     <thead>
                         <tr>
