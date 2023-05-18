@@ -12,9 +12,7 @@ class Programa extends Model
     protected $connection = 'pgsql';
     protected $table = 'programa';
 
-    protected $fillable = [
-        'nome'
-    ];
+    protected $fillable = ['nome','emissora_id'];
 
     public function emissora()
     {

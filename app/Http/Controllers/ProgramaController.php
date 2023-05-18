@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Programa;
 use App\Utils;
-use App\Models\Emissora;
 use Carbon\Carbon;
+use App\Models\Emissora;
+use App\Models\Programa;
+use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -24,15 +25,50 @@ class ProgramaController extends Controller
     {
         $emissoras = Emissora::orderBy('ds_emissora')->get();
 
+        if($request->isMethod('GET')){
+            $programas = Programa::with('emissora')->orderBy('nome')->paginate(10);
+        }
+
         if($request->isMethod('POST')){
             $programas = array();
         }
 
-        if($request->isMethod('GET')){
-            $programas = array();
+        return view('programa/index',compact('programas','emissoras'));
+    }
+
+    public function novo()
+    {
+        $emissoras = Emissora::orderBy('ds_emissora')->get();
+
+        return view('programa/novo',compact('emissoras'));
+    }
+
+    public function store(Request $request)
+    {
+        try {
+
+            Programa::create($request->all());
+            $retorno = array('flag' => true,
+                             'msg' => '<i class="fa fa-check"></i> Dados inseridos com sucesso');
+
+        } catch (\Illuminate\Database\QueryException $e) {
+
+            $retorno = array('flag' => false,
+                             'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
+
+        } catch (\Exception $e) {
+
+            $retorno = array('flag' => false,
+                             'msg' => '<i class="fa fa-times"></i> Ocorreu um erro ao inserir o registro');
         }
 
-        return view('programa/index',compact('programas','emissoras'));
+        if ($retorno['flag']) {
+            Flash::success($retorno['msg']);
+        } else {
+            Flash::error($retorno['msg']);
+        }
+
+        return redirect('emissoras/programas')->withInput();
     }
 
     public function buscarProgramas(Request $request)

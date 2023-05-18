@@ -12,7 +12,7 @@
                     </h4>
                 </div>
                 <div class="col-md-4">
-                    <a href="{{ url('radio/emissoras/novo') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-plus"></i> Novo</a>
+                    <a href="{{ url('emissora/programa/novo') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-plus"></i> Novo</a>
                 </div>
             </div>
         </div>
@@ -51,8 +51,42 @@
                     {!! Form::close() !!} 
             </div>
             <div class="col-md-12">
-                
-               
+                {{ $programas->onEachSide(1)->links('vendor.pagination.bootstrap-4') }}
+                <table id="" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th class="w-10">Emissora</th>
+                            <th class="w-80">Programa</th>
+                            <th class="w-10 disabled-sorting text-center">Ações</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Emissora</th>
+                            <th>Programa</th>
+                            <th class="disabled-sorting text-center">Ações</th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        @foreach($programas as $programa)
+                            <tr>
+                                <td>{{ ($programa->emissora) ? $programa->emissora->ds_emissora : 'Não informado' }}</td>
+                                <td>{{ $programa->nome }}</td>
+                                <td class="text-center">
+                                    <a title="Editar" href="{{ route('programa.edit',$programa->id) }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
+                                    <form class="form-delete" style="display: inline;" action="{{ route('programa.destroy',$programa->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button title="Excluir" type="submit" class="btn btn-danger btn-link btn-icon button-remove" title="Delete">
+                                            <i class="fa fa-times fa-2x"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                {{ $programas->onEachSide(1)->links('vendor.pagination.bootstrap-4') }}                
             </div>
         </div>
     </div>

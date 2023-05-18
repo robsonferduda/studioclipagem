@@ -20,6 +20,7 @@ Route::resource('notification', 'NotificacaoController');
 Route::resource('usuario', 'UserController');
 Route::resource('email', 'EmailController');
 Route::resource('emissora', 'EmissoraController');
+Route::resource('programa', 'ProgramaController');
 
 Route::get('areas','AreaController@index');
 Route::get('areas/cadastrar','AreaController@cadastrar');
@@ -37,6 +38,7 @@ Route::match(array('GET', 'POST'),'clientes','ClienteController@index');
 Route::post('emissoras/horario/adicionar','EmissoraController@adicionarHorarios');
 
 Route::get('emissoras/programas','ProgramaController@index');
+Route::get('emissora/programa/novo','ProgramaController@novo');
 
 Route::get('estado/{id}/cidades','EstadoController@getCidades');
 
@@ -85,7 +87,7 @@ Route::get('monitoramento/{id}/noticias','MonitoramentoController@noticias');
 Route::get('radios','RadioController@index');
 Route::get('radio/emissora/{id}/transcricao/atualiza','RadioController@atualizaTranscricao');
 
-Route::match(array('GET', 'POST'),'emissoras','RadioController@emissoras');
+Route::match(array('GET', 'POST'),'emissoras','EmissoraController@index');
 Route::get('radio/emissoras/novo','EmissoraController@novo');
 Route::get('radio/emissora/{id}/horarios','EmissoraController@horarios');
 
