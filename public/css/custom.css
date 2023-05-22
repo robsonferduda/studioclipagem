@@ -163,6 +163,7 @@
     font-size: 25px !important;
     color: #eb1616;
 }
+.data-refresh:hover { cursor: pointer; color: #007bff;}
 .w-10 {width: 10% !important;}
 .w-15 {width: 15% !important;}
 .w-40 {width: 40% !important;}

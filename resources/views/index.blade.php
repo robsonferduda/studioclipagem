@@ -144,7 +144,7 @@
         </div> 
         <div class="col-md-8">
             <div class="card card-timeline card-plain">
-                <h6>{{ \Carbon\Carbon::parse(Session::get('data_atual'))->format('d/m/Y') }} <a href="#"><i class="fa fa-refresh btn-refresh"></i></a></h6>
+                <h6>{{ \Carbon\Carbon::parse(Session::get('data_atual'))->format('d/m/Y') }}</h6>
                 <div class="card-content">
                   <ul class="timeline timeline-simple">
                      <li class="timeline-inverted">

@@ -10,6 +10,68 @@ $(document).ready(function() {
     
     var host =  $('meta[name="base-url"]').attr('content');
     var token = $('meta[name="csrf-token"]').attr('content');
+
+    function formatDate(date) {
+
+        dia = (date.getDate() < 10) ? "0"+date.getDate() : date.getDate();
+        mes = ((date.getMonth() + 1) < 10) ? "0"+(date.getMonth() + 1) : date.getMonth() + 1;
+
+        return dia+"/"+mes+"/"+date.getFullYear()
+    }
+
+    $(".data-refresh").click(function(){
+            
+        Swal.fire({
+            input: 'text',
+            title: "Alterar Data",
+            text: "Informe a data que deseja visualizar",              
+            showCancelButton: true,
+            confirmButtonColor: "#28a745",
+            confirmButtonText: '<i class="fa fa-refresh"></i> Atualizar Data',
+            cancelButtonText: '<i class="fa fa-times"></i> Cancelar',
+            preConfirm: () => {
+                if ($(".swal2-input").val()) {
+                    return true;
+                } else {
+                    Swal.showValidationMessage('Campo obrigatório')   
+                }
+            },
+            didOpen: () => {
+
+                const today = new Date();
+                data = formatDate(today);
+
+                $('.swal2-input').val(data);
+                $('.swal2-input').mask('00/00/0000',{ "placeholder": "dd/mm/YYYY" });
+            }
+        }).then(function(result) {
+            if (result.isConfirmed) {
+
+                var data = $(".swal2-input").val();
+
+                if(data){
+
+                    $.ajax({
+                        url: host+'/alterar-data',
+                        type: 'POST',
+                        data: {
+                                "_token": $('meta[name="csrf-token"]').attr('content'),
+                                "data": data
+                        },
+                        success: function(response) {
+                            window.location.reload();                                
+                        },
+                        error: function(response){
+                            console.log(response);
+                        }
+                    });
+                }else{
+                    return false;
+                }
+            }
+        });
+
+    });
             
     $(".flag_regras").click(function(){
 
