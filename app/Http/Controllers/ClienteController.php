@@ -54,6 +54,8 @@ class ClienteController extends Controller
             $clientes = $cliente->with('pessoa')->join('pessoas', 'pessoas.id', '=','clientes.pessoa_id')->orderBy('nome')->paginate(10);
         }
 
+        dd($clientes);
+
         return view('cliente/index',compact('clientes','nome'));
     }
 
