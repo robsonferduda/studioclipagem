@@ -306,7 +306,7 @@ class ClienteController extends Controller
                         continue;
                     }
 
-                    if(empty($request->expressao[$key])) {
+                    if($request->expressao and empty($request->expressao[$key])) {
                         continue;
                     }
 
