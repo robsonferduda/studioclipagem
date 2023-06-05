@@ -15,7 +15,7 @@ class Cliente extends Model
 
     public function pessoa()
     {
-        return $this->hasOne(Pessoa::class, 'id', 'pessoa_id');
+        return $this->hasOne(Pessoa::class, 'id', 'pessoa_id')->orderBy('nome');
     }
 
     public function clienteArea()
