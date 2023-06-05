@@ -300,7 +300,7 @@ class ClienteController extends Controller
                         $clienteArea = ClienteArea::find($request->id[$key]);
                         $clienteArea->update([
                             'area_id' => $area,
-                            'expressao' => $request->expressao[$key],
+                            'expressao' => ($request->expressao) ? $request->expressao[$key] : '',
                             'ativo' => $request->status[$key] == "true"
                         ]);
                         continue;
@@ -313,7 +313,7 @@ class ClienteController extends Controller
                     $created = ClienteArea::create([
                         'cliente_id' => $cliente->id,
                         'area_id' => $area,
-                        'expressao' => $request->expressao[$key],
+                        'expressao' => ($request->expressao) ? $request->expressao[$key] : '',
                         'ativo' => $request->status[$key] == "true"
                     ]);
                     $id[] = $created->id;
