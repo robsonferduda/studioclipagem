@@ -32,7 +32,7 @@ class ClienteController extends Controller
 
         if($request->isMethod('GET')){
 
-            $clientes = Cliente::with('pessoa')->join('pessoas', 'pessoas.id','clientes.pessoa_id')
+            $clientes = Cliente::with('pessoa')->join('pessoas', 'pessoas.id', '=', 'clientes.pessoa_id')
             ->orderBy('nome')
             ->paginate(10);
         }
@@ -51,7 +51,7 @@ class ClienteController extends Controller
                 
             });
             
-            $clientes = $cliente->with('pessoa')->join('pessoas', 'pessoas.id','clientes.pessoa_id')->orderBy('nome')->paginate(10);
+            $clientes = $cliente->with('pessoa')->join('pessoas', 'pessoas.id', '=','clientes.pessoa_id')->orderBy('nome')->paginate(10);
         }
 
         return view('cliente/index',compact('clientes','nome'));
