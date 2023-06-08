@@ -22,7 +22,11 @@ class NoticiaRadio extends Model
         'arquivo',
         'programa_id',
         'dt_noticia',
-        'fl_boletim'
+        'fl_boletim',
+        'sinopse',
+        'link',
+        'sentimento',
+        'duracao'
     ];
 
     public function cliente()

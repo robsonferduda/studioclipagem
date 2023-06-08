@@ -78,6 +78,11 @@ class NoticiaRadioController extends Controller
                 'titulo'        => $request->titulo,
                 'dt_noticia'    => $request->data,
                 'arquivo'       => $filename,
+                'link'          => $request->link,
+                'sinopse'       => $request->sinopse,
+                'link'          => $request->link,
+                'sentimento'    => $request->sentimento,
+                'duracao'       => $request->duracao,
                 'fl_boletim'    => $request->boletim == 'S'
             ]);
 
@@ -128,6 +133,10 @@ class NoticiaRadioController extends Controller
                 'titulo'        => $request->titulo,
                 'dt_noticia'    => $request->data,
                 'arquivo'       => $filename,
+                'sinopse'       => $request->sinopse,
+                'link'          => $request->link,
+                'sentimento'    => $request->sentimento,
+                'duracao'       => $request->duracao,
                 'fl_boletim'    => $request->boletim == 'S'
             ]);
 
