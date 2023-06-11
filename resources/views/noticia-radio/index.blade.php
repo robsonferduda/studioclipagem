@@ -20,6 +20,36 @@
                 @include('layouts.mensagens')
             </div>
             <div class="col-md-12">
+                @foreach($noticias as $noticia)
+                    <div class="card ml-2 mr-2">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                    <p>{{ $noticia->cliente->pessoa->nome }}</p>
+                                    <h6>{!! $noticia->emissora->ds_emissora ?? '' !!}</h6>
+                                    <p>{!! $noticia->programa->nome ?? '' !!}</p>
+                                    <p>{!! !empty($noticia->dt_noticia) ? date('d/m/Y', strtotime($noticia->dt_noticia)) : '' !!}</p>
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                    
+                                    <audio controls>
+                                        <source src="{{ asset($noticia->arquivo) }}" type="audio/ogg">
+                                        <source src="{{ asset($noticia->arquivo) }}" type="audio/mpeg">
+                                      Your browser does not support the audio element.
+                                      </audio>
+                                    <div style="position: absolute; bottom: 5px; right: 5px;">
+                                        <a title="Editar" href="{{ url('radio/noticias/'.$noticia->id.'/editar') }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
+                                        <a title="Excluir" href="{{ url('radio/noticias/'.$noticia->id.'/remover') }}" class="btn btn-danger btn-link btn-icon"><i class="fa fa-trash fa-2x"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>            
+            
+            <div class="col-md-12">
+                <!--
                 <table id="datatable" class="table table-striped table-bordered" cellspacing="0" width="100%">
                     <thead>
                         <tr>
@@ -54,6 +84,7 @@
                         @endforeach
                     </tbody>
                 </table>
+                -->
             </div>
         </div>
     </div>
