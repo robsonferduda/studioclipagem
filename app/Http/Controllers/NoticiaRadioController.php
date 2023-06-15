@@ -27,7 +27,7 @@ class NoticiaRadioController extends Controller
 
     public function getBasePath()
     {
-        return storage_path().DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR;
+        return public_path().DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR;
     }
 
     public function index(Request $request)
@@ -176,7 +176,6 @@ class NoticiaRadioController extends Controller
     {
         $noticia = NoticiaRadio::find($id);
 
-        $baseUrl =
         $path = $this->getBasePath() . $noticia->arquivo;
         if (file_exists($path)) {
             return response()->download($path);
@@ -188,6 +187,7 @@ class NoticiaRadioController extends Controller
         if(empty($request->file('arquivo'))) {
             return null;
         }
+
         $arquivo = $request->file('arquivo');
         $fileInfo = $arquivo->getClientOriginalName();
         $filename = pathinfo($fileInfo, PATHINFO_FILENAME);
@@ -195,7 +195,12 @@ class NoticiaRadioController extends Controller
         $file_name= $filename.'-'.time().'.'.$extension;
 
         $path = 'noticias-radio'.DIRECTORY_SEPARATOR.$request->cliente.DIRECTORY_SEPARATOR.date('Ym').DIRECTORY_SEPARATOR;
-        $arquivo->move(public_path($this->getBasePath()).$path,$file_name);
+        //$arquivo->move(public_path($this->getBasePath()).$path,$file_name);
+        dd($arquivo->move(public_path($path), $file_name));
+
+        $arquivo->move(public_path($path), $file_name);
+
+        dd("sdfsf");
 
         return $path.$file_name;
     }

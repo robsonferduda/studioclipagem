@@ -175,7 +175,7 @@
                             <div class="mr-2" style="margin-top: -10px">
                                 <a
                                     class="btn btn-outline-primary baixar-arquivo"
-                                    href="/radio/noticias/{{$dados->id}}/download"
+                                    href="{{ asset('radio/noticias/'.$dados->id.'/download') }}"
                                     target="_blank"
                                 ><i class="fa fa-download" aria-hidden="true"></i>  Baixar Arquivo</a>
                             </div>
