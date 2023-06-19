@@ -142,7 +142,7 @@
                     <div class="col-md-8">
                         <label for="arquivo">Arquivo</label>
                         <div class="upload-arquivo {!! empty($dados->arquivo) ? '' : 'hide' !!}">
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3" style="margin-top: -10px">
                                 <div class="input-group-prepend">
                                     <button
                                         class="btn btn-outline-info selecionar-arquivo"

@@ -21,9 +21,13 @@ class ProgramaController extends Controller
         Session::put('url','radio');
     }
 
-    public function index(Request $request)
+    public function index(Request $request, $tipo)
     {
-        Session::put('sub-menu','emissoras-programas');
+        $tipo = ($tipo == 'tv') ? 'tv' : 'radio';
+        $id_tipo = ($tipo == 'tv') ? 2 : 1;
+
+        Session::put('url', $tipo);
+        Session::put('sub-menu', "programas-".$tipo);
 
         $emissora = $request->emissora_id;
         $programa = $request->nome;

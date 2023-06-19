@@ -75,6 +75,7 @@
 </div>
 @endsection
 @section('script')
+    <script src="{{ asset('js/cropper-main.js') }}"></script>
     <script>
         $(document).ready(function(){
 

@@ -35,9 +35,10 @@ Route::post('areas/{id}/atualizar','AreaController@atualizar');
 Route::resource('cliente','ClienteController');
 Route::match(array('GET', 'POST'),'clientes','ClienteController@index');
 
+Route::get('emissoras/{tipo}','EmissoraController@listar');
 Route::post('emissoras/horario/adicionar','EmissoraController@adicionarHorarios');
 
-Route::match(array('GET', 'POST'),'emissoras/programas','ProgramaController@index');
+Route::match(array('GET', 'POST'),'programas/{tipo}','ProgramaController@index');
 Route::get('emissora/programa/novo','ProgramaController@novo');
 
 Route::get('estado/{id}/cidades','EstadoController@getCidades');
@@ -101,7 +102,8 @@ Route::get('radio/noticias/{id}/download','NoticiaRadioController@download');
 
 Route::get('relatorios','RelatorioController@index');
 
-Route::get('tv','TvController@index');
+Route::get('tv','NoticiaTvController@index');
+Route::get('tv/noticias','NoticiaTvController@index');
 
 Route::get('boletins','BoletimController@index');
 Route::get('boletim/{id}','BoletimController@detalhes');

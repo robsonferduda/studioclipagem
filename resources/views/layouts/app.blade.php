@@ -135,13 +135,13 @@
                            <span class="sidebar-normal">Dashboard</span>
                            </a>
                         </li>
-                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'emissoras') ? 'active' : '' }}">
-                           <a href="{{ url('emissoras') }}">
+                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'emissoras-radio') ? 'active' : '' }}">
+                           <a href="{{ url('emissoras/radio') }}">
                            <span class="sidebar-normal">Emissoras</span>
                            </a>
                         </li>
-                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'emissoras-programas') ? 'active' : '' }}">
-                           <a href="{{ url('emissoras/programas') }}">
+                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'programas-radio') ? 'active' : '' }}">
+                           <a href="{{ url('programas/radio') }}">
                            <span class="sidebar-normal">Programas</span>
                            </a>
                         </li>
@@ -164,23 +164,23 @@
                      </a>
                      <div class="collapse {{ (Session::has('url') and Session::get('url') == 'tv') ? 'show' : '' }}" id="submenu-tv" aria-expanded="false">
                         <ul class="nav ml-5">
-                           <li>
+                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'tvs') ? 'active' : '' }}">
                               <a href="{{ url('tv') }}">
                               <span class="sidebar-normal">Dashboard</span>
                               </a>
                            </li>
-                           <li>
-                              <a href="{{ url('emissoras') }}">
+                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'emissoras-tv') ? 'active' : '' }}">
+                              <a href="{{ url('emissoras/tv') }}">
                               <span class="sidebar-normal">Emissoras</span>
                               </a>
                            </li>
-                           <li>
-                              <a href="{{ url('emissoras/programas') }}">
+                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'programas-tv') ? 'active' : '' }}">
+                              <a href="{{ url('programas/tv') }}">
                               <span class="sidebar-normal">Programas</span>
                               </a>
                            </li>
-                           <li>
-                              <a href="{{ url('radio/noticias') }}">
+                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'tv-noticias') ? 'active' : '' }}">
+                              <a href="{{ url('tv/noticias') }}">
                               <span class="sidebar-normal">Notícias</span>
                               </a>
                            </li>
@@ -324,7 +324,6 @@
   <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
   <script src="{{ asset('js/dropzone.js') }}"></script>
   <script src="{{ asset('js/cropper.js') }}"></script>
-  <script src="{{ asset('js/cropper-main.js') }}"></script>
   <script>
     function setFormValidation(id) {
       $(id).validate({

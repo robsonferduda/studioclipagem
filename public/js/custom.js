@@ -43,6 +43,8 @@ $(document).ready(function() {
 
                 $('.swal2-input').val(data);
                 $('.swal2-input').mask('00/00/0000',{ "placeholder": "dd/mm/YYYY" });
+
+                $(".swal2-input").addClass("datepicker");
             }
         }).then(function(result) {
             if (result.isConfirmed) {
