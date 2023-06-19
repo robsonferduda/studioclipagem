@@ -15,7 +15,7 @@ class Pessoa extends Model
 
     public function cliente()
     {
-        return $this->hasOne(Cliente::class, 'id', 'id');
+        return $this->belongsTo(Cliente::class, 'pessoa_id', 'id');
     }
 
     public function enderecoEletronico()

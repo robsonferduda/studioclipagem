@@ -32,7 +32,9 @@ class ClienteController extends Controller
 
         if($request->isMethod('GET')){
 
-            $clientes = Cliente::with('pessoa')->paginate(10);
+            $clientes = Cliente::select('clientes.*')->with('pessoa')->join('pessoas', 'pessoas.id', '=', 'clientes.pessoa_id')
+            ->orderBy('nome')
+            ->paginate(10);
         }
 
         if($request->isMethod('POST')){
@@ -49,7 +51,7 @@ class ClienteController extends Controller
                 
             });
             
-            $clientes = $cliente->with('pessoa')->paginate(10);
+            $clientes = $cliente->select('clientes.*')->with('pessoa')->join('pessoas', 'pessoas.id', '=','clientes.pessoa_id')->orderBy('nome')->paginate(10);
         }
 
         return view('cliente/index',compact('clientes','nome'));
@@ -298,20 +300,20 @@ class ClienteController extends Controller
                         $clienteArea = ClienteArea::find($request->id[$key]);
                         $clienteArea->update([
                             'area_id' => $area,
-                            'expressao' => $request->expressao[$key],
+                            'expressao' => ($request->expressao) ? $request->expressao[$key] : '',
                             'ativo' => $request->status[$key] == "true"
                         ]);
                         continue;
                     }
 
-                    if(empty($request->expressao[$key])) {
+                    if($request->expressao and empty($request->expressao[$key])) {
                         continue;
                     }
 
                     $created = ClienteArea::create([
                         'cliente_id' => $cliente->id,
                         'area_id' => $area,
-                        'expressao' => $request->expressao[$key],
+                        'expressao' => ($request->expressao) ? $request->expressao[$key] : '',
                         'ativo' => $request->status[$key] == "true"
                     ]);
                     $id[] = $created->id;

@@ -40,19 +40,13 @@
                     </div>
                 </div>
                 <div class="row mr-1 ml-1">
-                    <div class="col-md-8">
-                        <div class="form-group">
-                            <label>Título <span class="text-danger">Obrigatório</span></label>
-                            <input type="text" class="form-control" name="titulo" id="titulo" placeholder="Título" required value="{{ $dados->titulo }}">
-                        </div>
-                    </div>
-                    <div class="col-md-4">
+                    <div class="col-md-2">
                         <div class="form-group">
                             <label>Data <span class="text-danger">Obrigatório</span></label>
                             <input type="date" class="form-control" name="data" id="data" required value="{!! !empty($dados->dt_noticia) ? date('Y-m-d', strtotime($dados->dt_noticia)) : '' !!}">
                         </div>
                     </div>
-                    <div class="col-md-8">
+                    <div class="col-md-10">
                         <div class="form-group">
                             <label>Cliente <span class="text-danger">Obrigatório</span></label>
                             <select class="form-control selector-select2" name="cliente" id="cliente" required>
@@ -75,6 +69,31 @@
                                     </option>
                                 @endforeach
                             </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Sentimento</label>
+                            <select class="form-control" name="sentimento" id="sentimento">
+                                <option value="1" {!! $dados->sentimento == 1  ? 'selected' : '' !!}>Positivo</option>
+                                <option value="0" {!! $dados->sentimento == 0 ? 'selected' : '' !!}>Neutro</option>
+                                <option value="-1" {!! $dados->sentimento == -1 ? 'selected' : '' !!}>Negativo</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Foi para boletim automático</label>
+                            <select class="form-control" name="boletim" id="boletim">
+                                <option value="S" {!! $dados->fl_boletim  ? 'selected' : '' !!}>Sim</option>
+                                <option value="N" {!! !$dados->fl_boletim ? 'selected' : '' !!}>Não</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Duração</label>
+                            <input type="text" class="form-control horario" name="duracao" id="duracao" placeholder="Duração" value="{{ $dados->duracao }}">
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -101,7 +120,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                         <div class="form-group">
                             <label>Emissora <span class="text-danger">Obrigatório</span></label>
                             <select class="form-control" name="emissora" id="emissora" required>
@@ -112,7 +131,13 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Horário</label>
+                            <input type="text" class="form-control horario" name="horario" id="horario" placeholder="Horário">
+                        </div>
+                    </div>
+                    <div class="col-md-5">
                         <div class="form-group">
                             <label>Programa</label>
                             <select class="form-control selector-select2" name="programa" id="programa" {!! !empty($dados->programa_id ? '' : 'disabled') !!}>
@@ -123,26 +148,16 @@
                             </select>
                         </div>
                     </div>
-                    <!-- Falta o campo no banco -->
-                    <!-- <div class="col-md-8">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label>Link</label>
-                            <input type="text" class="form-control" name="link" id="link" placeholder="Link" required value="{{ $dados->link }}">
-                        </div>
-                    </div> -->
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>Foi para boletim automático</label>
-                            <select class="form-control" name="boletim" id="boletim">
-                                <option value="S" {!! $dados->fl_boletim  ? 'selected' : '' !!}>Sim</option>
-                                <option value="N" {!! !$dados->fl_boletim ? 'selected' : '' !!}>Não</option>
-                            </select>
+                            <input type="text" class="form-control" name="link" id="link" placeholder="Link" value="{{ $dados->link }}">
                         </div>
                     </div>
-                    <div class="col-md-8">
+                    <div class="col-md-6">
                         <label for="arquivo">Arquivo</label>
-                        <div class="upload-arquivo {!! empty($dados->arquivo) ? '' : 'hide' !!}">
-                            <div class="input-group mb-3" style="margin-top: -10px">
+                        <div class="upload-arquivo {!! empty($dados->arquivo) ? '' : 'hide' !!}" style="margin-top: -10px">
+                            <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <button
                                         class="btn btn-outline-info selecionar-arquivo"
@@ -160,7 +175,7 @@
                             <div class="mr-2" style="margin-top: -10px">
                                 <a
                                     class="btn btn-outline-primary baixar-arquivo"
-                                    href="/radio/noticias/{{$dados->id}}/download"
+                                    href="{{ asset('radio/noticias/'.$dados->id.'/download') }}"
                                     target="_blank"
                                 ><i class="fa fa-download" aria-hidden="true"></i>  Baixar Arquivo</a>
                             </div>
@@ -174,6 +189,12 @@
                             <input type="hidden" name="remover" id="remover" value="false">
                         </div>
                     </div>
+                    <div class="col-md-12">
+                        <label for="sinopse">Sinopse</label>
+                        <div class="form-group">
+                            <textarea name="sinopse" id="sinopse">{!! nl2br($dados->sinopse) !!}</textarea>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="card-footer text-center mb-2">
@@ -185,10 +206,17 @@
 </div>
 @endsection
 @section('script')
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+    
     <script>
         $(document).ready(function(){
 
             var host =  $('meta[name="base-url"]').attr('content');
+
+             $('#sinopse').summernote({
+        height: 300
+      });
 
             $('.selector-select2').select2({
                 placeholder: 'Selecione',
