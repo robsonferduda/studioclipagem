@@ -40,63 +40,121 @@
                     </div>
                 </div>
                 <div class="row mr-1 ml-1">
+                    <div class="col-md-12 mt-3">
+                        <h6>Clientes Vinculados</h6>
+                    </div>
+                    
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Cliente <span class="text-danger">Obrigatório</span></label>
+                                <select class="form-control selector-select2" name="cliente" id="cliente" required>
+                                    @if(!empty($dados->cliente_id))
+                                        <option value="{!! $dados->cliente->id !!}">{!! $dados->cliente->pessoa->nome !!}</option>
+                                    @else
+                                        <option value="">Selecione</option>
+                                    @endif
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Área</label>
+                                <select class="form-control selector-select2" name="area" id="area" {!! !empty($dados->area_id) ? '' : 'disabled' !!}>
+                                    <option value="">Selecione</option>
+                                    @foreach($areas as $area)
+                                        <option value="{!! $area->id !!}" {!! $dados->area_id == $area->id ? 'selected' : '' !!}>
+                                            {!! $area->descricao !!}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Sentimento</label>
+                                <select class="form-control" name="sentimento" id="sentimento">
+                                    <option value="1" {!! $dados->sentimento == 1  ? 'selected' : '' !!}>Positivo</option>
+                                    <option value="0" {!! $dados->sentimento == 0 ? 'selected' : '' !!}>Neutro</option>
+                                    <option value="-1" {!! $dados->sentimento == -1 ? 'selected' : '' !!}>Negativo</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group mt-3">
+                                <button type="button" class="btn btn-success"><i class="fa fa-plus"></i></button>
+                            </div>
+                        </div>
+
+                    
+                        <div class="col-md-12">
+                            <div class="card">
+                               <div class="card-body">
+                                  <ul class="list-unstyled team-members">
+                                     <li>
+                                        <div class="row">
+                                           
+                                           <div class="col-md-9 col-9">
+                                              Fecomércio
+                                              <br>
+                                              <span class="text-success">Positivo</span> | <span>Comércio</span>
+                                           </div>
+                                           <div class="col-md-3 col-3 text-right">
+                                              <btn class="btn btn-sm btn-outline-danger btn-round btn-icon"><i class="fa fa-times"></i></btn>
+                                           </div>
+                                        </div>
+                                     </li>
+                                     <hr/>
+                                     <li>
+                                        <div class="row">
+                                           
+                                           <div class="col-md-9 col-9">
+                                              Alesc
+                                              <br>
+                                              <span class="text-danger">Negativo</span> | <span>Comércio</span>
+                                           </div>
+                                           <div class="col-md-3 col-3 text-right">
+                                              <btn class="btn btn-sm btn-outline-danger btn-round btn-icon"><i class="fa fa-times"></i></btn>
+                                           </div>
+                                        </div>
+                                     </li>
+                                  </ul>
+                               </div>
+                            </div>
+                         </div>
+                    
+                    <div class="col-md-12">
+                        <h6>Dados da Notícia</h6>
+                    </div>
                     <div class="col-md-2">
                         <div class="form-group">
                             <label>Data <span class="text-danger">Obrigatório</span></label>
                             <input type="date" class="form-control" name="data" id="data" required value="{!! !empty($dados->dt_noticia) ? date('Y-m-d', strtotime($dados->dt_noticia)) : '' !!}">
                         </div>
                     </div>
-                    <div class="col-md-10">
+                    <div class="col-md-2">
                         <div class="form-group">
-                            <label>Cliente <span class="text-danger">Obrigatório</span></label>
-                            <select class="form-control selector-select2" name="cliente" id="cliente" required>
-                                @if(!empty($dados->cliente_id))
-                                    <option value="{!! $dados->cliente->id !!}">{!! $dados->cliente->pessoa->nome !!}</option>
-                                @else
-                                    <option value="">Selecione</option>
+                            <label>Duração</label>
+                            <input type="text" class="form-control duracao" name="duracao" id="duracao" placeholder="00:00:00" value="{{ $dados->duracao }}">
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label>Emissora <span class="text-danger">Obrigatório</span></label>
+                            <select class="form-control" name="emissora" id="emissora" required>
+                            <option value="">Selecione</option>
+                                @if(!empty($dados->emissora->id))
+                                    <option value="{!! $dados->emissora_id !!}" selected>{!! $dados->emissora->ds_emissora !!}</option>
                                 @endif
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>Área</label>
-                            <select class="form-control selector-select2" name="area" id="area" {!! !empty($dados->area_id) ? '' : 'disabled' !!}>
-                                <option value="">Selecione</option>
-                                @foreach($areas as $area)
-                                    <option value="{!! $area->id !!}" {!! $dados->area_id == $area->id ? 'selected' : '' !!}>
-                                        {!! $area->descricao !!}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label>Sentimento</label>
-                            <select class="form-control" name="sentimento" id="sentimento">
-                                <option value="1" {!! $dados->sentimento == 1  ? 'selected' : '' !!}>Positivo</option>
-                                <option value="0" {!! $dados->sentimento == 0 ? 'selected' : '' !!}>Neutro</option>
-                                <option value="-1" {!! $dados->sentimento == -1 ? 'selected' : '' !!}>Negativo</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label>Foi para boletim automático</label>
-                            <select class="form-control" name="boletim" id="boletim">
-                                <option value="S" {!! $dados->fl_boletim  ? 'selected' : '' !!}>Sim</option>
-                                <option value="N" {!! !$dados->fl_boletim ? 'selected' : '' !!}>Não</option>
                             </select>
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label>Duração</label>
-                            <input type="text" class="form-control horario" name="duracao" id="duracao" placeholder="Duração" value="{{ $dados->duracao }}">
+                            <label>Horário</label>
+                            <input type="text" class="form-control horario" name="horario" id="horario" placeholder="Horário">
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label>Estado </label>
                             <select class="form-control selector-select2" name="estado" id="estado">
@@ -120,24 +178,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-5">
-                        <div class="form-group">
-                            <label>Emissora <span class="text-danger">Obrigatório</span></label>
-                            <select class="form-control" name="emissora" id="emissora" required>
-                            <option value="">Selecione</option>
-                                @if(!empty($dados->emissora->id))
-                                    <option value="{!! $dados->emissora_id !!}" selected>{!! $dados->emissora->ds_emissora !!}</option>
-                                @endif
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label>Horário</label>
-                            <input type="text" class="form-control horario" name="horario" id="horario" placeholder="Horário">
-                        </div>
-                    </div>
-                    <div class="col-md-5">
+                    <div class="col-md-12">
                         <div class="form-group">
                             <label>Programa</label>
                             <select class="form-control selector-select2" name="programa" id="programa" {!! !empty($dados->programa_id ? '' : 'disabled') !!}>
@@ -148,14 +189,11 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Link</label>
-                            <input type="text" class="form-control" name="link" id="link" placeholder="Link" value="{{ $dados->link }}">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <label for="arquivo">Arquivo</label>
+                        <div class="dropzone" id="dropzone"></div>
+
+                        <!--
                         <div class="upload-arquivo {!! empty($dados->arquivo) ? '' : 'hide' !!}" style="margin-top: -10px">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
@@ -188,13 +226,22 @@
                             </div>
                             <input type="hidden" name="remover" id="remover" value="false">
                         </div>
+                    -->
                     </div>
                     <div class="col-md-12">
                         <label for="sinopse">Sinopse</label>
                         <div class="form-group">
-                            <textarea name="sinopse" id="sinopse">{!! nl2br($dados->sinopse) !!}</textarea>
+                            <textarea class="form-control" name="sinopse" id="sinopse" rows="10">{!! nl2br($dados->sinopse) !!}</textarea>
                         </div>
                     </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Link</label>
+                            <input type="text" class="form-control" name="link" id="link" placeholder="Link" value="{{ $dados->link }}">
+                        </div>
+                    </div>
+                    
+                    
                 </div>
             </div>
             <div class="card-footer text-center mb-2">
@@ -210,17 +257,39 @@
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
     
     <script>
+        Dropzone.autoDiscover = false;
         $(document).ready(function(){
 
             var host =  $('meta[name="base-url"]').attr('content');
 
-             $('#sinopse').summernote({
-        height: 300
-      });
-
             $('.selector-select2').select2({
                 placeholder: 'Selecione',
                 allowClear: true
+            });
+
+            $(".dropzone").dropzone({ 
+                acceptedFiles: ".jpeg,.jpg,.png,.pdf",
+                url: "radio/noticias",
+                init: function() { 
+                    myDropzone = this;
+
+                    $.ajax({
+                        url: host+'/jornal-impresso/pendentes/listar',
+                        type: 'get',
+                        dataType: 'json',
+                        success: function(response){
+
+                        $.each(response, function(key,value) {
+                            var mockFile = { name: value.name, size: value.size };
+
+                            myDropzone.emit("addedfile", mockFile);
+                            myDropzone.emit("complete", mockFile);
+
+                        });
+
+                        }
+                    });
+                }
             });
 
             $('#cliente').select2({

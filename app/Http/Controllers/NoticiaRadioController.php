@@ -82,8 +82,7 @@ class NoticiaRadioController extends Controller
                 'sinopse'       => $request->sinopse,
                 'link'          => $request->link,
                 'sentimento'    => $request->sentimento,
-                'duracao'       => $request->duracao,
-                'fl_boletim'    => $request->boletim == 'S'
+                'duracao'       => $request->duracao
             ]);
 
             $retorno = array('flag' => true,
@@ -136,8 +135,7 @@ class NoticiaRadioController extends Controller
                 'sinopse'       => $request->sinopse,
                 'link'          => $request->link,
                 'sentimento'    => $request->sentimento,
-                'duracao'       => $request->duracao,
-                'fl_boletim'    => $request->boletim == 'S'
+                'duracao'       => $request->duracao
             ]);
 
             $retorno = array('flag' => true,
