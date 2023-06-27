@@ -24,30 +24,48 @@
                     {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['emissoras']]) !!}
                         <div class="form-group m-3 w-70">
                             <div class="row">
-                                <div class="col-md-3 col-sm-12">
+                                <div class="col-md-2 col-sm-12">
                                     <div class="form-group">
                                         <label>Código</label>
                                         <input type="text" class="form-control" name="codigo" id="codigo" placeholder="Código" value="">
                                     </div>
                                 </div>
-                                <div class="col-md-9 col-sm-12">
+                                <div class="col-md-2 col-sm-12">
+                                    <div class="form-group">
+                                        <label>Estado</label>
+                                        <select class="form-control" name="cd_estado" id="estado" required="required">
+                                            <option value="">Selecione um estado</option>
+                                            @foreach($estados as $estado)
+                                                <option value="{{ $estado->cd_estado }}">{{ $estado->nm_estado }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-12">
+                                    <div class="form-group">
+                                        <label>Cidade</label>
+                                        <select class="form-control" name="cd_cidade" id="cidade" required="required">
+                                            <option value="">Selecione uma cidade</option>
+                                            
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-12">
                                     <div class="form-group">
                                         <label>Emissora</label>
                                         <input type="text" class="form-control" name="descricao" id="descricao" placeholder="Emissora" value="">
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12 checkbox-radios mb-0">
-                                    <button type="submit" id="btn-find" class="btn btn-primary mb-3"><i class="fa fa-search"></i> Buscar</button>
+                                <div class="col-md-2 checkbox-radios mb-0">
+                                    <button type="submit" id="btn-find" class="btn btn-primary mt-4"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
-                            </div>     
+                            </div>    
                         </div>
                     {!! Form::close() !!} 
                 </div>
             </div>
             <div class="col-md-12">
-                {{ $emissoras->onEachSide(1)->appends(['descricao' => $descricao, 'codigo' => $codigo])->links('vendor.pagination.bootstrap-4') }}
+                <p><strong>Total de registros</strong>: {{ $emissoras->total() }} </p>
                 <table id="" class="table table-striped table-bordered" cellspacing="0" width="100%">
                     <thead>
                         <tr>
@@ -80,7 +98,8 @@
                                     <a href="{{ url('radio/emissora/'.$emissora->id.'/transcricao/atualiza') }}">{!! ($emissora->fl_transcricao) ? '<span class="badge badge-pill badge-success">ATIVA</span>' : '<span class="badge badge-pill badge-danger">INATIVA</span>' !!}</a>
                                 </td>
                                 <td class="center">
-                                    <a title="Horários de Coleta" href="{{ url('radio/emissora/'.$emissora->id.'/horarios') }}" class="btn btn-primary btn-link btn-icon"><i class="nc-icon nc-time-alarm font-25"></i></a>
+                                    <a title="Editar" href="{{ route('emissora.edit',$emissora->id) }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
+                                    <a title="Horários de Coleta" href="{{ url('radio/emissora/'.$emissora->id.'/horarios') }}" class="btn btn-warning btn-link btn-icon"><i class="nc-icon nc-time-alarm font-25"></i></a>
                                     <form class="form-delete" style="display: inline;" action="{{ route('emissora.destroy',$emissora->id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
@@ -93,9 +112,47 @@
                         @endforeach
                     </tbody>
                 </table>
-                {{ $emissoras->onEachSide(1)->links('vendor.pagination.bootstrap-4') }} 
+                {{ $emissoras->onEachSide(1)->appends(['descricao' => $descricao, 'codigo' => $codigo])->links('vendor.pagination.bootstrap-4') }}
             </div>
         </div>
     </div>
 </div> 
+@endsection
+@section('script')
+    <script>
+        $(document).ready(function() {
+
+            var host =  $('meta[name="base-url"]').attr('content');
+            
+            $("#estado").change(function(){
+
+                id = $(this).val();
+
+                $.ajax({
+                    url: host+'/estado/'+id+'/cidades',
+                    type: 'GET',        
+                    success: function(data) {
+
+                        $('#cidade').empty();
+                        $('#cidade').append($('<option>', { 
+                                value: "",
+                                text : "Selecione uma cidade" 
+                        }));
+
+                        $.each(data, function(index, value) {
+
+                            $('#cidade').append($('<option>', { 
+                                value: value.cd_cidade,
+                                text : value.nm_cidade 
+                            }));
+                        });                        
+                    },
+                    error: function(xhr, status, error){
+                        
+                    }
+                });    
+
+            });
+        });
+    </script>
 @endsection

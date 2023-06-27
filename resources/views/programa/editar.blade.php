@@ -41,6 +41,24 @@
                                     <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome" value="{{ $programa->nome }}" required="required">
                                 </div>
                             </div>
+                            <div class="col-md-2 col-sm-6">
+                                <div class="form-group">
+                                    <label>Horário Inicial</label>
+                                    <input type="text" class="form-control horario" name="hora_inicio" id="hora_inicio" placeholder="00:00" value="{{ $programa->hora_inicio }}">
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-6">
+                                <div class="form-group">
+                                    <label>Horário Final</label>
+                                    <input type="text" class="form-control horario" name="hora_fim" id="hora_fim" placeholder="00:00" value="{{ $programa->hora_fim }}">
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-6">
+                                <div class="form-group">
+                                    <label>Valor do Segundo</label>
+                                    <input type="text" class="form-control" name="valor_segundo" id="valor_segundo" placeholder="00,00" value="{{ $programa->valor_segundo }}">
+                                </div>
+                            </div>
                         </div>  
                     </div>
                     <div class="card-footer text-center mb-3">

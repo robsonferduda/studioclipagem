@@ -4,7 +4,7 @@
         <div class="card">
             <div class="card-header">
                 <div class="row">
-                    <div class="col-md-6 mt-3">
+                    <div class="col-md-9 mt-3">
                         <h4 class="card-title ml-2">
                             <i class="fa fa-volume-up ml-3"></i> Rádio 
                             <i class="fa fa-angle-double-right" aria-hidden="true"></i> Emissoras
@@ -12,8 +12,8 @@
                             <i class="fa fa-angle-double-right" aria-hidden="true"></i> Cadastrar
                         </h4>
                     </div>
-                    <div class="col-md-6">
-                        <a href="{{ url('radio/emissoras') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-signal"></i> Emissoras</a>
+                    <div class="col-md-3">
+                        <a href="{{ url('emissoras/radio') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-signal"></i> Emissoras</a>
                     </div>
                 </div>
             </div>
@@ -39,6 +39,24 @@
                             <div class="form-group">
                                 <label>Nome <span class="text-danger">Obrigatório</span></label>
                                 <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome" value="{{ old('nome') }}" required="required">
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-sm-6">
+                            <div class="form-group">
+                                <label>Horário Inicial</label>
+                                <input type="text" class="form-control horario" name="hora_inicio" id="hora_inicio" placeholder="00:00" value="">
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-sm-6">
+                            <div class="form-group">
+                                <label>Horário Final</label>
+                                <input type="text" class="form-control horario" name="hora_fim" id="hora_fim" placeholder="00:00" value="">
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-sm-6">
+                            <div class="form-group">
+                                <label>Valor do Segundo</label>
+                                <input type="text" class="form-control" name="valor_segundo" id="valor_segundo" placeholder="00,00" value="">
                             </div>
                         </div>
                     </div>  

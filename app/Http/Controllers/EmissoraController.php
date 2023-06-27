@@ -27,6 +27,7 @@ class EmissoraController extends Controller
     public function index(Request $request)
     {
         Session::put('sub-menu','emissoras');
+        $estados = Estado::orderBy('nm_estado')->get();
 
         $codigo = ($request->codigo) ? $request->codigo : null;
         $descricao = ($request->descricao) ? $request->descricao : null;       
@@ -44,7 +45,7 @@ class EmissoraController extends Controller
             $emissoras = $emissora->orderBy('ds_emissora')->paginate(10);
         
 
-        return view('emissora/index', compact('emissoras','codigo','descricao'));
+        return view('emissora/index', compact('emissoras','codigo','descricao','estados'));
     }
 
     public function listar(Request $request, $tipo)
@@ -54,6 +55,8 @@ class EmissoraController extends Controller
 
         Session::put('url', $tipo);
         Session::put('sub-menu', "emissoras-".$tipo);
+
+        $estados = Estado::orderBy('nm_estado')->get();
 
         $codigo = ($request->codigo) ? $request->codigo : null;
         $descricao = ($request->descricao) ? $request->descricao : null;       
@@ -71,7 +74,7 @@ class EmissoraController extends Controller
             $emissoras = $emissora->where('tipo_id', $id_tipo)->orderBy('ds_emissora')->paginate(10);
         
 
-        return view('emissora/index', compact('emissoras','codigo','descricao'));
+        return view('emissora/index', compact('emissoras','codigo','descricao','estados'));
     }
 
     public function horarios($emissora)

@@ -55,15 +55,21 @@
                 <table id="" class="table table-striped table-bordered" cellspacing="0" width="100%">
                     <thead>
                         <tr>
-                            <th class="w-10">Emissora</th>
-                            <th class="w-80">Programa</th>
-                            <th class="w-10 disabled-sorting text-center">Ações</th>
+                            <th class="">Emissora</th>
+                            <th class="">Programa</th>
+                            <th>Início</th>
+                            <th>Término</th>
+                            <th>Valor</th>
+                            <th class="disabled-sorting text-center">Ações</th>
                         </tr>
                     </thead>
                     <tfoot>
                         <tr>
                             <th>Emissora</th>
                             <th>Programa</th>
+                            <th>Início</th>
+                            <th>Término</th>
+                            <th>Valor</th>
                             <th class="disabled-sorting text-center">Ações</th>
                         </tr>
                     </tfoot>
@@ -72,6 +78,9 @@
                             <tr>
                                 <td>{{ ($programa->emissora) ? $programa->emissora->ds_emissora : 'Não informado' }}</td>
                                 <td>{{ $programa->nome }}</td>
+                                <td>{{ date('H:i', strtotime($programa->hora_inicio)) }}</td>
+                                <td>{{ date('H:i', strtotime($programa->hora_fim)) }}</td>
+                                <td>R$ {{ $programa->valor_segundo }}</td>
                                 <td class="text-center">
                                     <a title="Editar" href="{{ route('programa.edit',$programa->id) }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
                                     <form class="form-delete" style="display: inline;" action="{{ route('programa.destroy',$programa->id) }}" method="POST">
