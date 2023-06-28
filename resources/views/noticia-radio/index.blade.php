@@ -20,6 +20,43 @@
                 @include('layouts.mensagens')
             </div>
             <div class="col-md-12">
+                {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['buscar-impresso']]) !!}
+                    <div class="form-group m-3 w-70">
+                        <div class="row">
+                            <div class="col-md-2 col-sm-6">
+                                <div class="form-group">
+                                    <label>Data Inicial</label>
+                                    <input type="text" class="form-control datepicker" name="dt_inicial" required="true" value="{{ date('d/m/Y') }}" placeholder="__/__/____">
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-6">
+                                <div class="form-group">
+                                    <label>Data Final</label>
+                                    <input type="text" class="form-control datepicker" name="dt_final" required="true" value="{{ date('d/m/Y') }}" placeholder="__/__/____">
+                                </div>
+                            </div>
+                            <div class="col-md-8 col-sm-12">
+                                <div class="form-group">
+                                    <label>Buscar por <span class="text-primary">Digite o termo ou expressão de busca</span></label>
+                                    <input type="text" class="form-control" name="termo" id="termo" minlength="3" placeholder="Termo" value="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Fonte</label>
+                                    
+                                </div>
+                            </div>
+                            <div class="col-md-12 checkbox-radios mb-0">
+                                <button type="submit" id="btn-find" class="btn btn-primary mb-3"><i class="fa fa-search"></i> Buscar</button>
+                            </div>
+                        </div>
+                    </div>
+                {!! Form::close() !!}
+            </div>
+            <div class="col-md-12">
                 @foreach($noticias as $noticia)
                     <div class="card ml-2 mr-2">
                         <div class="card-body">

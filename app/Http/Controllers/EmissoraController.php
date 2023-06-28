@@ -87,6 +87,22 @@ class EmissoraController extends Controller
         return view('emissora/index', compact('emissoras','codigo','descricao','estados'));
     }
 
+    public function novo()
+    {
+        $estados = Estado::orderBy('nm_estado')->get();
+        $emissora = new Emissora();
+        
+        return view('emissora/form',compact('estados','emissora'));
+    }
+
+    public function edit($id)
+    {
+        $estados = Estado::orderBy('nm_estado')->get();
+        $emissora = Emissora::find($id);
+
+        return view('emissora/form',compact('estados','emissora'));
+    }
+
     public function horarios($emissora)
     {
         $id_emissora = $emissora;
@@ -105,12 +121,7 @@ class EmissoraController extends Controller
         return redirect('emissoras/'.$tipo)->withInput();
     }
 
-    public function novo()
-    {
-        $estados = Estado::orderBy('nm_estado')->get();
-        return view('emissora/novo',compact('estados'));
-    }
-
+    
     public function adicionarHorarios(Request $request)
     {
         dd($request->all());

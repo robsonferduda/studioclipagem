@@ -324,6 +324,7 @@
   <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
   <script src="{{ asset('js/dropzone.js') }}"></script>
   <script src="{{ asset('js/cropper.js') }}"></script>
+  <script src="{{ asset('js/plugins/chartist.min.js') }}"></script>
   <script>
     function setFormValidation(id) {
       $(id).validate({
@@ -344,6 +345,7 @@
     $(document).ready(function() {
       // Javascript method's body can be found in assets/assets-for-demo/js/demo.js
       //demo.initChartsPages();
+      
       demo.initDateTimePicker();
       setFormValidation('#RegisterValidation');
     });

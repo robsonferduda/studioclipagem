@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -58,4 +59,12 @@ class NoticiaRadio extends Model
     {
         return $this->hasOne(Programa::class, 'id', 'programa_id');
     }
+
+    public function getTotais()
+    {
+        $sql = "SELECT dt_noticia, count(*) AS total FROM noticia_radio GROUP BY dt_noticia ORDER BY dt_noticia";
+
+        return DB::select($sql);
+    }
+ 
 }

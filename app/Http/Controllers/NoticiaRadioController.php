@@ -38,6 +38,20 @@ class NoticiaRadioController extends Controller
         return view('noticia-radio/index', compact('noticias'));
     }
 
+    public function dashboard()
+    {
+        Session::put('sub-menu','radios');
+
+        $total_noticia_radio = NoticiaRadio::count();
+        $ultima_atualizacao = NoticiaRadio::max('created_at');
+
+        $total_emissora_radio = Emissora::where('tipo_id', 1)->count();
+        $ultima_atualizacao_radio = Emissora::where('tipo_id', 1)->max('created_at');
+
+        $noticias = NoticiaRadio::paginate(10);
+        return view('noticia-radio/dashboard', compact('noticias','total_noticia_radio', 'total_emissora_radio', 'ultima_atualizacao','ultima_atualizacao_radio'));
+    }
+
     public function cadastrar()
     {
         $dados = new NoticiaRadio();
@@ -201,5 +215,18 @@ class NoticiaRadioController extends Controller
         dd("sdfsf");
 
         return $path.$file_name;
+    }
+
+    public function estatisticas()
+    {
+        $dados = array();
+        $totais = (new NoticiaRadio())->getTotais();
+
+        for ($i=0; $i < count($totais); $i++) { 
+            $dados['label'][] = date('d/m/Y', strtotime($totais[$i]->dt_noticia));
+            $dados['totais'][] = $totais[$i]->total;
+        }
+
+        return response()->json($dados);
     }
 }
