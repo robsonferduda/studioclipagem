@@ -30,15 +30,4 @@ class RadioController extends Controller
         $dados = array();
         return view('radio/index',compact('dados'));
     }
-
-    public function atualizaTranscricao($id)
-    {
-        $emissora = Emissora::find($id);
-        $emissora->fl_transcricao = !$emissora->fl_transcricao;
-        $emissora->save();
-
-        Flash::success("Transcrição atualizada com sucesso");
-
-        return redirect('radio/emissoras')->withInput();
-    }
 }

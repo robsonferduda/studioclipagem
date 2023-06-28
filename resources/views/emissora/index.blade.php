@@ -21,7 +21,7 @@
             </div>
             <div class="row mr-1 ml-1">
                 <div class="col-md-12 px-0">
-                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['emissoras']]) !!}
+                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['emissoras/radio']]) !!}
                         <div class="form-group m-3 w-70">
                             <div class="row">
                                 <div class="col-md-2 col-sm-12">
@@ -33,7 +33,7 @@
                                 <div class="col-md-2 col-sm-12">
                                     <div class="form-group">
                                         <label>Estado</label>
-                                        <select class="form-control" name="cd_estado" id="estado" required="required">
+                                        <select class="form-control" name="cd_estado" id="estado">
                                             <option value="">Selecione um estado</option>
                                             @foreach($estados as $estado)
                                                 <option value="{{ $estado->cd_estado }}">{{ $estado->nm_estado }}</option>
@@ -44,7 +44,7 @@
                                 <div class="col-md-2 col-sm-12">
                                     <div class="form-group">
                                         <label>Cidade</label>
-                                        <select class="form-control" name="cd_cidade" id="cidade" required="required">
+                                        <select class="form-control" name="cd_cidade" id="cidade">
                                             <option value="">Selecione uma cidade</option>
                                             
                                         </select>
@@ -95,7 +95,7 @@
                                 <td>{{ $emissora->codigo }}</td>
                                 <td>{{ $emissora->ds_emissora }}</td>
                                 <td class="center">
-                                    <a href="{{ url('radio/emissora/'.$emissora->id.'/transcricao/atualiza') }}">{!! ($emissora->fl_transcricao) ? '<span class="badge badge-pill badge-success">ATIVA</span>' : '<span class="badge badge-pill badge-danger">INATIVA</span>' !!}</a>
+                                    <a href="{{ url('emissora/'.$emissora->id.'/radio/transcricao/atualiza') }}">{!! ($emissora->fl_transcricao) ? '<span class="badge badge-pill badge-success">ATIVA</span>' : '<span class="badge badge-pill badge-danger">INATIVA</span>' !!}</a>
                                 </td>
                                 <td class="center">
                                     <a title="Editar" href="{{ route('emissora.edit',$emissora->id) }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>

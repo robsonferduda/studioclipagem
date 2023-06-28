@@ -59,12 +59,22 @@ class EmissoraController extends Controller
         $estados = Estado::orderBy('nm_estado')->get();
 
         $codigo = ($request->codigo) ? $request->codigo : null;
-        $descricao = ($request->descricao) ? $request->descricao : null;       
+        $descricao = ($request->descricao) ? $request->descricao : null;  
+        $cd_cidade = ($request->cd_cidade) ? $request->cd_cidade : null;    
+        $cd_estado = ($request->cd_estado) ? $request->cd_estado : null;   
 
             $emissora = Emissora::query();
 
             $emissora->when($codigo, function ($q) use ($codigo) {
                 return $q->where('codigo', $codigo);
+            });
+
+            $emissora->when($cd_cidade, function ($q) use ($cd_cidade) {
+                return $q->where('cd_cidade', $cd_cidade);
+            });
+
+            $emissora->when($cd_estado, function ($q) use ($cd_estado) {
+                return $q->where('cd_estado', $cd_estado);
             });
 
             $emissora->when($descricao, function ($q) use ($descricao) {
@@ -82,6 +92,17 @@ class EmissoraController extends Controller
         $id_emissora = $emissora;
         $horarios = array();
         return view('emissora/horarios',compact('horarios','id_emissora'));
+    }
+
+    public function atualizaTranscricao($id, $tipo)
+    {
+        $emissora = Emissora::find($id);
+        $emissora->fl_transcricao = !$emissora->fl_transcricao;
+        $emissora->save();
+
+        Flash::success('<i class="fa fa-check"></i> Transcrição da emissora atualizada com sucesso');
+
+        return redirect('emissoras/'.$tipo)->withInput();
     }
 
     public function novo()
