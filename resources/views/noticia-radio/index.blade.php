@@ -20,37 +20,29 @@
                 @include('layouts.mensagens')
             </div>
             <div class="col-md-12">
-                {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['buscar-impresso']]) !!}
+                {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['radio/noticias']]) !!}
                     <div class="form-group m-3 w-70">
                         <div class="row">
                             <div class="col-md-2 col-sm-6">
                                 <div class="form-group">
                                     <label>Data Inicial</label>
-                                    <input type="text" class="form-control datepicker" name="dt_inicial" required="true" value="{{ date('d/m/Y') }}" placeholder="__/__/____">
+                                    <input type="text" class="form-control datepicker" name="dt_inicial" required="true" value="{{ ($dt_inicial) ? date('d/m/Y', strtotime($dt_inicial)) : date('d/m/Y') }}" placeholder="__/__/____">
                                 </div>
                             </div>
                             <div class="col-md-2 col-sm-6">
                                 <div class="form-group">
                                     <label>Data Final</label>
-                                    <input type="text" class="form-control datepicker" name="dt_final" required="true" value="{{ date('d/m/Y') }}" placeholder="__/__/____">
+                                    <input type="text" class="form-control datepicker" name="dt_final" required="true" value="{{ ($dt_final) ? date('d/m/Y', strtotime($dt_final)) : date('d/m/Y') }}" placeholder="__/__/____">
                                 </div>
                             </div>
-                            <div class="col-md-8 col-sm-12">
+                            <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
-                                    <label>Buscar por <span class="text-primary">Digite o termo ou expressão de busca</span></label>
-                                    <input type="text" class="form-control" name="termo" id="termo" minlength="3" placeholder="Termo" value="">
+                                    <label>Buscar por <span class="text-primary">Digite o termo ou expressão de busca na sinopse</span></label>
+                                    <input type="text" class="form-control" name="termo" id="termo" minlength="3" placeholder="Termo" value="{{ $termo }}">
                                 </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label>Fonte</label>
-                                    
-                                </div>
-                            </div>
-                            <div class="col-md-12 checkbox-radios mb-0">
-                                <button type="submit" id="btn-find" class="btn btn-primary mb-3"><i class="fa fa-search"></i> Buscar</button>
+                            </div>                            
+                            <div class="col-md-2 checkbox-radios mb-0">
+                                <button type="submit" id="btn-find" class="btn btn-primary mt-4"><i class="fa fa-search"></i> Buscar</button>
                             </div>
                         </div>
                     </div>
@@ -61,22 +53,20 @@
                     <div class="card ml-2 mr-2">
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-lg-6 col-md-6 col-sm-12">
-                                    <p>{{ $noticia->cliente->pessoa->nome }}</p>
+                                <div class="col-lg-12 col-md-12 col-sm-12">
                                     <h6>{!! $noticia->emissora->ds_emissora ?? '' !!}</h6>
-                                    <p>{!! $noticia->programa->nome ?? '' !!}</p>
-                                    <p>{!! !empty($noticia->dt_noticia) ? date('d/m/Y', strtotime($noticia->dt_noticia)) : '' !!}</p>
+                                    <p>{!! $noticia->programa->nome ?? 'Nenhum Programa Vinculado' !!} - {!! !empty($noticia->dt_noticia) ? date('d/m/Y', strtotime($noticia->dt_noticia)) : '' !!}</p>
+                                    <p>{!! $noticia->sinopse !!}</p>
                                 </div>
-                                <div class="col-lg-6 col-md-6 col-sm-12">
-                                    
+                                <div class="col-lg-12 col-md-12 col-sm-12">                                    
                                     <audio controls>
-                                        <source src="{{ asset($noticia->arquivo) }}" type="audio/ogg">
-                                        <source src="{{ asset($noticia->arquivo) }}" type="audio/mpeg">
+                                        <source src="{{ asset('noticias-radio/'. substr($noticia->arquivo, 0, 10).'/'.$noticia->arquivo) }}" type="audio/ogg">
+                                        <source src="{{ asset('noticias-radio/'. substr($noticia->arquivo, 0, 10).'/'.$noticia->arquivo) }}" type="audio/mpeg">
                                       Your browser does not support the audio element.
                                       </audio>
                                     <div style="position: absolute; bottom: 5px; right: 5px;">
                                         <a title="Editar" href="{{ url('radio/noticias/'.$noticia->id.'/editar') }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
-                                        <a title="Excluir" href="{{ url('radio/noticias/'.$noticia->id.'/remover') }}" class="btn btn-danger btn-link btn-icon"><i class="fa fa-trash fa-2x"></i></a>
+                                        <a title="Excluir" href="{{ url('radio/noticias/'.$noticia->id.'/remover') }}" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-trash fa-2x"></i></a>
                                     </div>
                                 </div>
                             </div>
@@ -84,45 +74,6 @@
                     </div>
                 @endforeach
             </div>            
-            
-            <div class="col-md-12">
-                <!--
-                <table id="datatable" class="table table-striped table-bordered" cellspacing="0" width="100%">
-                    <thead>
-                        <tr>
-                            <th>Cliente</th>
-                            <th>Emissora</th>
-                            <th>Programa</th>
-                            <th>Data</th>
-                            <th class="disabled-sorting text-center">Ações</th>
-                        </tr>
-                    </thead>
-                    <tfoot>
-                        <tr>
-                            <th>Cliente</th>
-                            <th>Emissora</th>
-                            <th>Programa</th>
-                            <th>Data</th>
-                            <th class="disabled-sorting text-center">Ações</th>
-                        </tr>
-                    </tfoot>
-                    <tbody>
-                        @foreach($noticias as $noticia)
-                            <tr>
-                                <td>{{ $noticia->cliente->pessoa->nome }}</td>
-                                <td>{!! $noticia->emissora->ds_emissora ?? '' !!}</td>
-                                <td>{!! $noticia->programa->nome ?? '' !!}</td>
-                                <td>{!! !empty($noticia->dt_noticia) ? date('d/m/Y', strtotime($noticia->dt_noticia)) : '' !!}</td>
-                                <td class="text-center">
-                                    <a title="Editar" href="{{ url('radio/noticias/'.$noticia->id.'/editar') }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
-                                    <a title="Excluir" href="{{ url('radio/noticias/'.$noticia->id.'/remover') }}" class="btn btn-danger btn-link btn-icon"><i class="fa fa-trash fa-2x"></i></a>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-                -->
-            </div>
         </div>
     </div>
 </div>

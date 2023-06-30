@@ -62,7 +62,7 @@ class NoticiaRadio extends Model
 
     public function getTotais()
     {
-        $sql = "SELECT dt_noticia, count(*) AS total FROM noticia_radio GROUP BY dt_noticia ORDER BY dt_noticia";
+        $sql = "SELECT dt_noticia, count(*) AS total FROM noticia_radio WHERE deleted_at IS NULL GROUP BY dt_noticia ORDER BY dt_noticia";
 
         return DB::select($sql);
     }
