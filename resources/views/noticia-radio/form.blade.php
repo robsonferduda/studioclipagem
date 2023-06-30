@@ -62,7 +62,7 @@
                                 <select class="form-control selector-select2" name="area" id="area" {!! !empty($dados->area_id) ? '' : 'disabled' !!}>
                                     <option value="">Selecione</option>
                                     @foreach($areas as $area)
-                                        <option value="{!! $area->id !!}" {!! $dados->area_id == $area->id ? 'selected' : '' !!}>
+                                        <option value="{!! $area->id !!}">
                                             {!! $area->descricao !!}
                                         </option>
                                     @endforeach
@@ -73,52 +73,25 @@
                             <div class="form-group">
                                 <label>Sentimento</label>
                                 <select class="form-control" name="sentimento" id="sentimento">
-                                    <option value="1" {!! $dados->sentimento == 1  ? 'selected' : '' !!}>Positivo</option>
-                                    <option value="0" {!! $dados->sentimento == 0 ? 'selected' : '' !!}>Neutro</option>
-                                    <option value="-1" {!! $dados->sentimento == -1 ? 'selected' : '' !!}>Negativo</option>
+                                    <option value="">Selecione</option>
+                                    <option value="1">Positivo</option>
+                                    <option value="0">Neutro</option>
+                                    <option value="-1">Negativo</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-1">
                             <div class="form-group mt-3">
-                                <button type="button" class="btn btn-success"><i class="fa fa-plus"></i></button>
+                                <button type="button" class="btn btn-success btn-add-cliente"><i class="fa fa-plus"></i></button>
                             </div>
                         </div>
 
-                    
                         <div class="col-md-12">
                             <div class="card">
-                               <div class="card-body">
-                                  <ul class="list-unstyled team-members">
-                                     <li>
-                                        <div class="row">
-                                           
-                                           <div class="col-md-9 col-9">
-                                              Fecomércio
-                                              <br>
-                                              <span class="text-success">Positivo</span> | <span>Comércio</span>
-                                           </div>
-                                           <div class="col-md-3 col-3 text-right">
-                                              <btn class="btn btn-sm btn-outline-danger btn-round btn-icon"><i class="fa fa-times"></i></btn>
-                                           </div>
-                                        </div>
-                                     </li>
-                                     <hr/>
-                                     <li>
-                                        <div class="row">
-                                           
-                                           <div class="col-md-9 col-9">
-                                              Alesc
-                                              <br>
-                                              <span class="text-danger">Negativo</span> | <span>Comércio</span>
-                                           </div>
-                                           <div class="col-md-3 col-3 text-right">
-                                              <btn class="btn btn-sm btn-outline-danger btn-round btn-icon"><i class="fa fa-times"></i></btn>
-                                           </div>
-                                        </div>
-                                     </li>
-                                  </ul>
-                               </div>
+                                <div class="card-body">
+                                    <ul class="list-unstyled metadados">
+                                    </ul>
+                                </div>
                             </div>
                          </div>
                     
@@ -193,41 +166,6 @@
                         <label for="arquivo">Arquivo</label>
                         <div style="min-height: 302px;" class="dropzone" id="dropzone"><div class="dz-message" data-dz-message><span>CLIQUE AQUI<br/> ou <br/>ARRASTE</span></div></div>
                         <input type="hidden" name="arquivo" id="arquivo">
-
-                        <!--
-                        <div class="upload-arquivo {!! empty($dados->arquivo) ? '' : 'hide' !!}" style="margin-top: -10px">
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <button
-                                        class="btn btn-outline-info selecionar-arquivo"
-                                        id="btn-arquivo" type="button"
-                                    ><i class="fa fa-upload" aria-hidden="true"></i> Escolher Arquivo</button>
-                                </div>
-                                <input
-                                    type="text" class="form-control"
-                                    id="filename" placeholder="Nenhum arquivo escolhido" disabled
-                                />
-                                <input type="file" name="arquivo" id="arquivo" style="display: none;">
-                            </div>
-                        </div>
-                        <div class="input-group mb-3 download-arquivo {!! empty($dados->arquivo) ? 'hide' : '' !!}">
-                            <div class="mr-2" style="margin-top: -10px">
-                                <a
-                                    class="btn btn-outline-primary baixar-arquivo"
-                                    href="{{ asset('radio/noticias/'.$dados->id.'/download') }}"
-                                    target="_blank"
-                                ><i class="fa fa-download" aria-hidden="true"></i>  Baixar Arquivo</a>
-                            </div>
-                            <div class="mr-2" style="margin-top: -10px">
-                                <button
-                                    class="btn btn-outline-danger remover-arquivo"
-                                    id="remover-arquivo" type="button"
-                                    data-file="{!! $dados->id !!}"
-                                ><i class="fa fa-trash" aria-hidden="true"></i> Remover Arquivo</button>
-                            </div>
-                            <input type="hidden" name="remover" id="remover" value="false">
-                        </div>
-                    -->
                     </div>
                     <div class="col-md-9">
                         <label for="sinopse">Sinopse</label>
@@ -260,7 +198,7 @@
 
             var host =  $('meta[name="base-url"]').attr('content');
             var token =  $('meta[name="csrf-token"]').attr('content');
-
+            
             $('.selector-select2').select2({
                 placeholder: 'Selecione',
                 allowClear: true
@@ -378,6 +316,46 @@
         $(document).on("click", ".selecionar-arquivo", function() {
             $('#arquivo').trigger('click');
         });
+
+        $(document).on("click", ".btn-add-cliente", function(clientes) {
+
+            
+            var id_cliente = $("#cliente").val();
+            if(id_cliente){
+                var cliente = $("#cliente option:selected").text();
+
+                var id_area = $("#area").val();
+                if(id_area)
+                    var area = $("#area option:selected").text();
+                else
+                    var area = 'Nenhuma área selecionada';
+
+                var id_sentimento = $("#sentimento").val();
+                if(id_sentimento)
+                    var sentimento = $("#sentimento option:selected").text();
+                else
+                    var sentimento = "Nenhum sentimento selecionado";
+
+                
+                var dados = { id_cliente: id_cliente, cliente: cliente, id_area: id_area, area: area, id_sentimento: id_sentimento, sentimento: sentimento };
+                inicializaClientes(dados);
+            }else{
+                alert("Obrigatório selecionar um cliente");
+            }
+        });
+
+        function inicializaClientes(dados){
+
+            clientes.push(dados);
+
+            $(".metadados").empty();
+
+            $.each(clientes, function(index, value) {                
+                $(".metadados").append('<li><div class="row"><div class="col-md-9 col-9"><span>'+value.cliente+'</span> | <span>'+value.area+'</span> | <span>'+value.sentimento+'</span></div><div class="col-md-3 col-3 text-right"><btn class="btn btn-sm btn-outline-danger btn-round btn-icon"><i class="fa fa-times"></i></btn></div></div></li>');
+            });
+        }
+
+        var clientes = [];
 
         $(document).on('change', '#arquivo', function() {
             let filename = ''
