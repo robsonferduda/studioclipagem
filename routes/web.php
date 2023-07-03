@@ -100,8 +100,6 @@ Route::get('radio/noticias/{id}/remover','NoticiaRadioController@remover');
 Route::get('radio/noticias/{id}/download','NoticiaRadioController@download');
 Route::get('radio/noticias/estatisticas','NoticiaRadioController@estatisticas');
 
-Route::get('relatorios','RelatorioController@index');
-
 Route::get('tv','NoticiaTvController@index');
 Route::get('tv/noticias','NoticiaTvController@index');
 
@@ -111,7 +109,6 @@ Route::get('boletim/{id}/enviar','BoletimController@enviar');
 Route::get('boletim/{id}/outlook','BoletimController@outlook');
 Route::get('boletim/{id}/visualizar','BoletimController@visualizar');
 Route::post('boletim/enviar/lista','BoletimController@enviarLista');
-
 
 Route::get('cliente/get/json','ClientController@json');
 Route::get('client/accounts/facebook/{cliente}','ClientController@getFacebookAccounts');
@@ -145,6 +142,8 @@ Route::get('transcricao/baixar/{pasta}','ProcessamentoController@baixar');
 Route::get('transcricao/processar/{pasta}','ProcessamentoController@processar');
 ROute::get('transcricao/audios/{emissora}','ProcessamentoController@audios');
 Route::get('processamento','ProcessamentoController@index');
+
+Route::match(array('GET', 'POST'),'relatorios','RelatorioController@index');
 
 Route::get('files/{file_name}', function($file_name = null)
 {

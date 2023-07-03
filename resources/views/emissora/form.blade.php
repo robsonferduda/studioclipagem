@@ -59,7 +59,7 @@
                             <div class="form-check mt-3">
                                 <div class="form-check">
                                     <label class="form-check-label">
-                                        <input class="form-check-input" {{ ($emissora) ? (($emissora->fl_transcricao) ? 'selected' : '') : (old('is_active')) ? 'checked' : '' }} type="checkbox" name="is_active" value="true">
+                                        <input class="form-check-input" {{ ($emissora) ? ($emissora->fl_transcricao) ? 'selected' : '' : (old('is_active')) ? 'checked' : '' }} type="checkbox" name="is_active" value="true">
                                         Fazer Transcrição
                                         <span class="form-check-sign"></span>
                                     </label>
