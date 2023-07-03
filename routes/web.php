@@ -91,14 +91,15 @@ Route::get('radio/emissoras/novo','EmissoraController@novo');
 Route::get('radio/emissora/{id}/horarios','EmissoraController@horarios');
 
 Route::get('radios','NoticiaRadioController@dashboard');
-Route::get('radio/noticias','NoticiaRadioController@index');
+Route::match(array('GET', 'POST'),'radio/noticias','NoticiaRadioController@index');
 Route::get('radio/noticias/cadastrar','NoticiaRadioController@cadastrar');
 Route::get('radio/noticias/{id}/editar','NoticiaRadioController@editar');
-Route::post('radio/noticias/inserir','NoticiaRadioController@inserir');
-Route::post('radio/noticias/{id}/atualizar','NoticiaRadioController@atualizar');
 Route::get('radio/noticias/{id}/remover','NoticiaRadioController@remover');
 Route::get('radio/noticias/{id}/download','NoticiaRadioController@download');
 Route::get('radio/noticias/estatisticas','NoticiaRadioController@estatisticas');
+Route::post('radio/noticias/inserir','NoticiaRadioController@inserir');
+Route::post('radio/noticias/{id}/atualizar','NoticiaRadioController@atualizar');
+Route::post('radio/noticias/upload','NoticiaRadioController@upload');
 
 Route::get('tv','NoticiaTvController@index');
 Route::get('tv/noticias','NoticiaTvController@index');

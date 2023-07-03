@@ -23,7 +23,7 @@
                 <div class="col-lg-9 col-md-6 col-sm-6">
                     <div class="card car-chart">
                         <div class="card-header">
-                          <p class="">Total de coletas diárias por rede social no período de </p>
+                          <p class="">Total de notícias diárias cadastradas no período de {{ \Carbon\Carbon::parse($data_inicial)->format('d/m/Y') }} a {{ \Carbon\Carbon::parse($data_final)->format('d/m/Y') }}</p>
                         </div>
                         <div class="card-body">
                             <canvas id="chartjs-0" class="chartjs">
@@ -70,7 +70,7 @@
                                     </div>
                                     <div class="col-7 col-md-8">
                                         <div class="numbers">
-                                        <p class="card-category">Notícias</p>
+                                        <p class="card-category">Notícias de Hoje</p>
                                         <p class="card-title">{{ $total_noticia_radio }}</p>
                                         <p></p>
                                         </div>

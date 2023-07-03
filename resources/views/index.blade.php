@@ -14,7 +14,7 @@
                                 </div>
                                 <div class="col-9 col-md-9">
                                     <div class="numbers">
-                                        <p class="card-category">JORNAL IMPRESSO</p>
+                                        <p class="card-category">JORNAL</p>
                                         <p class="card-title"><a href="{{ url('impresso') }}">{{ $totais['impresso'] }}</a></p>
                                     </div>
                                 </div>
@@ -33,7 +33,7 @@
                                 </div>
                                 <div class="col-9 col-md-9">
                                     <div class="numbers">
-                                        <p class="card-category">JORNAL WEB</p>
+                                        <p class="card-category">WEB</p>
                                         <p class="card-title"><a href="{{ url('jornal-web') }}">{{ $totais['web'] }}</a></p>
                                     </div>
                                 </div>

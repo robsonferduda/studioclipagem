@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Area;
 use App\Models\Cidade;
 use App\Utils;
+use Carbon\Carbon;
 use App\Models\Emissora;
 use App\Models\Estado;
 use App\Models\NoticiaRadio;
@@ -34,22 +35,49 @@ class NoticiaRadioController extends Controller
     {
         Session::put('sub-menu','radio-noticias');
 
-        $noticias = NoticiaRadio::all();
-        return view('noticia-radio/index', compact('noticias'));
+        $carbon = new Carbon();
+        $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
+        $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
+        $termo = $request->termo;
+
+        if($request->isMethod('GET')){
+            $noticias = NoticiaRadio::where('dt_noticia', $this->data_atual)->get();
+        }
+
+        if($request->isMethod('POST')){
+
+            $noticia = NoticiaRadio::query();
+
+            $noticia->when($termo, function ($q) use ($termo) {
+                return $q->where('sinopse', 'ILIKE', '%'.trim($termo).'%');
+            });
+
+            $noticia->when($dt_inicial, function ($q) use ($dt_inicial, $dt_final) {
+                return $q->whereBetween('dt_noticia', [$dt_inicial, $dt_final]);
+            });
+
+            $noticias = $noticia->get();
+
+        }
+
+        return view('noticia-radio/index', compact('noticias','dt_inicial','dt_final','termo'));
     }
 
     public function dashboard()
     {
         Session::put('sub-menu','radios');
 
-        $total_noticia_radio = NoticiaRadio::count();
+        $data_final = date("Y-m-d");
+        $data_inicial = Carbon::now()->subDays(7)->format('Y-m-d');
+
+        $total_noticia_radio = NoticiaRadio::whereBetween('created_at', [$data_inicial, $data_final])->count();
         $ultima_atualizacao = NoticiaRadio::max('created_at');
 
         $total_emissora_radio = Emissora::where('tipo_id', 1)->count();
         $ultima_atualizacao_radio = Emissora::where('tipo_id', 1)->max('created_at');
 
         $noticias = NoticiaRadio::paginate(10);
-        return view('noticia-radio/dashboard', compact('noticias','total_noticia_radio', 'total_emissora_radio', 'ultima_atualizacao','ultima_atualizacao_radio'));
+        return view('noticia-radio/dashboard', compact('noticias','total_noticia_radio', 'total_emissora_radio', 'ultima_atualizacao','ultima_atualizacao_radio','data_final','data_inicial'));
     }
 
     public function cadastrar()
@@ -80,29 +108,27 @@ class NoticiaRadioController extends Controller
     public function inserir(Request $request)
     {
         try {
-            $filename = $this->uploadFiles($request);
+           
             $emissora = Emissora::find($request->emissora);
-            NoticiaRadio::create([
-                'cliente_id'    => $request->cliente,
-                'area_id'       => $request->area,
-                'emissora_id'   => $request->emissora,
-                'programa_id'   => $request->programa,
-                'cd_estado'     => $emissora->cd_estado,
-                'cd_cidade'     => $emissora->cd_cidade,
-                'titulo'        => $request->titulo,
-                'dt_noticia'    => $request->data,
-                'arquivo'       => $filename,
-                'link'          => $request->link,
-                'sinopse'       => $request->sinopse,
-                'link'          => $request->link,
-                'sentimento'    => $request->sentimento,
-                'duracao'       => $request->duracao
-            ]);
+           
+            $dados = array('dt_noticia' => $request->data,
+                           'duracao' => $request->duracao,
+                           'emissora_id' => $request->emissora,
+                           'programa_id' => $request->programa,
+                           'arquivo' => $request->arquivo,
+                           'sinopse' => $request->sinopse,
+                           'cd_estado' => $emissora->cd_estado,
+                           'cd_cidade' => $emissora->cd_cidade,
+                           'link' => $request->link
+                        ); 
+
+            NoticiaRadio::create($dados);
 
             $retorno = array('flag' => true,
                              'msg' => "Dados inseridos com sucesso");
 
         } catch (\Illuminate\Database\QueryException $e) {
+
             $retorno = array('flag' => false,
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
 
@@ -122,6 +148,7 @@ class NoticiaRadioController extends Controller
 
     public function atualizar(Request $request, int $id)
     {
+
         try {
             $noticia = NoticiaRadio::find($id);
 
@@ -130,27 +157,19 @@ class NoticiaRadioController extends Controller
             }
 
             $emissora = Emissora::find($request->emissora);
-            if($request->remover == "true") {
-                $baseUrl = $this->getBasePath();
-                unlink($baseUrl.$noticia->arquivo);
-            }
-            $filename = $this->uploadFiles($request);
+            
+            $dados = array('dt_noticia' => $request->data,
+                            'duracao' => $request->duracao,
+                            'emissora_id' => $request->emissora,
+                            'programa_id' => $request->programa,
+                            'arquivo' => ($request->arquivo) ? $request->arquivo : $noticia->arquivo,
+                            'sinopse' => $request->sinopse,
+                            'cd_estado' => $emissora->cd_estado,
+                            'cd_cidade' => $emissora->cd_cidade,
+                            'link' => $request->link
+            ); 
 
-            $noticia->update([
-                'cliente_id'    => $request->cliente,
-                'area_id'       => $request->area,
-                'emissora_id'   => $request->emissora,
-                'programa_id'   => $request->programa,
-                'cd_estado'     => $emissora->cd_estado,
-                'cd_cidade'     => $emissora->cd_cidade,
-                'titulo'        => $request->titulo,
-                'dt_noticia'    => $request->data,
-                'arquivo'       => $filename,
-                'sinopse'       => $request->sinopse,
-                'link'          => $request->link,
-                'sentimento'    => $request->sentimento,
-                'duracao'       => $request->duracao
-            ]);
+            $noticia->update($dados);
 
             $retorno = array('flag' => true,
                              'msg' => "Dados atualizados com sucesso");
@@ -160,6 +179,7 @@ class NoticiaRadioController extends Controller
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
 
         } catch (\Exception $e) {
+
             $retorno = array('flag' => false,
                              'msg' => "Ocorreu um erro ao atualizar o registro");
         }
@@ -169,7 +189,7 @@ class NoticiaRadioController extends Controller
             return redirect('radio/noticias')->withInput();
         } else {
             Flash::error($retorno['msg']);
-            return redirect('radio/noticias/' . $id . '/editar')->withInput();
+            return redirect('radio/noticias/'.$id.'/editar')->withInput();
         }
     }
 
@@ -194,27 +214,23 @@ class NoticiaRadioController extends Controller
         }
     }
 
-    private function uploadFiles(Request $request)
+    public function upload(Request $request)
     {
-        if(empty($request->file('arquivo'))) {
-            return null;
-        }
-
-        $arquivo = $request->file('arquivo');
+        $arquivo = $request->file('file');
         $fileInfo = $arquivo->getClientOriginalName();
         $filename = pathinfo($fileInfo, PATHINFO_FILENAME);
         $extension = pathinfo($fileInfo, PATHINFO_EXTENSION);
-        $file_name= $filename.'-'.time().'.'.$extension;
+        $file_name = date('Y-m-d-H-i-s').'.'.$extension;
 
-        $path = 'noticias-radio'.DIRECTORY_SEPARATOR.$request->cliente.DIRECTORY_SEPARATOR.date('Ym').DIRECTORY_SEPARATOR;
-        //$arquivo->move(public_path($this->getBasePath()).$path,$file_name);
-        dd($arquivo->move(public_path($path), $file_name));
+        $audio = new \wapmorgan\Mp3Info\Mp3Info($arquivo, true);
+        $duracao = gmdate("H:i:s", $audio->duration);
 
+        $path = 'noticias-radio'.DIRECTORY_SEPARATOR.date('Y-m-d').DIRECTORY_SEPARATOR;
         $arquivo->move(public_path($path), $file_name);
 
-        dd("sdfsf");
+        $dados = array('arquivo' => $file_name, 'duracao' => $duracao);
 
-        return $path.$file_name;
+        return response()->json($dados);
     }
 
     public function estatisticas()
