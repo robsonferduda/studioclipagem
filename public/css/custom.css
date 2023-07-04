@@ -171,3 +171,4 @@
 
 .btn-remover-cliente{font-weight: bold; }
 .btn-remover-cliente:hover {cursor: pointer; }
+.dt_noticia_box { position: absolute; right: 10px; top: 5px;}
