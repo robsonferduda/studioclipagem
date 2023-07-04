@@ -98,6 +98,7 @@
                     <div class="col-md-12">
                         <h6>Dados da Notícia</h6>
                     </div>
+                    <input type="hidden" name="clientes[]" id="clientes">
                     <div class="col-md-2">
                         <div class="form-group">
                             <label>Data <span class="text-danger">Obrigatório</span></label>
@@ -347,15 +348,29 @@
         function inicializaClientes(dados){
 
             clientes.push(dados);
+            $("#clientes").val(JSON.stringify(clientes));
 
             $(".metadados").empty();
 
             $.each(clientes, function(index, value) {                
-                $(".metadados").append('<li><div class="row"><div class="col-md-9 col-9"><span>'+value.cliente+'</span> | <span>'+value.area+'</span> | <span>'+value.sentimento+'</span></div><div class="col-md-3 col-3 text-right"><btn class="btn btn-sm btn-outline-danger btn-round btn-icon"><i class="fa fa-times"></i></btn></div></div></li>');
+                $(".metadados").append('<li><div class="row"><div class="col-md-9 col-9"><span>'+value.cliente+'</span> | <span>'+value.area+'</span> | <span>'+value.sentimento+'</span></div><div class="col-md-3 col-3 text-right"><btn class="btn btn-sm btn-outline-danger btn-round btn-icon btn-remover-cliente" data-id="'+index+'"><i class="fa fa-times"></i></btn></div></div></li>');
             });
         }
 
         var clientes = [];
+
+        $(document).on('click', '.btn-remover-cliente', function() {
+            
+            id = $(this).data("id");
+            
+            clientes.splice(id, 1);
+            $("#clientes").val(JSON.stringify(clientes));
+
+            $(".metadados").empty();
+            $.each(clientes, function(index, value) {                
+                $(".metadados").append('<li><div class="row"><div class="col-md-9 col-9"><span>'+value.cliente+'</span> | <span>'+value.area+'</span> | <span>'+value.sentimento+'</span></div><div class="col-md-3 col-3 text-right"><btn class="btn btn-sm btn-outline-danger btn-round btn-icon btn-remover-cliente" data-id="'+index+'"><i class="fa fa-times"></i></btn></div></div></li>');
+            });
+        });
 
         $(document).on('change', '#arquivo', function() {
             let filename = ''

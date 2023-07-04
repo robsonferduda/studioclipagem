@@ -122,7 +122,12 @@ class NoticiaRadioController extends Controller
                            'link' => $request->link
                         ); 
 
-            NoticiaRadio::create($dados);
+            if($noticia = NoticiaRadio::create($dados))
+            {
+                //dd($noticia);
+
+               //dd(json_decode($request->clientes[0]));
+            }
 
             $retorno = array('flag' => true,
                              'msg' => "Dados inseridos com sucesso");
