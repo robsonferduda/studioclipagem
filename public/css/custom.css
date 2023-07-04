@@ -168,3 +168,6 @@
 .w-15 {width: 15% !important;}
 .w-40 {width: 40% !important;}
 .w-80 {width: 80% !important;}
+
+.btn-remover-cliente{font-weight: bold; }
+.btn-remover-cliente:hover {cursor: pointer; }
