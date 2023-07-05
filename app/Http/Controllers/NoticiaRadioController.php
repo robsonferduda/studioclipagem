@@ -116,11 +116,12 @@ class NoticiaRadioController extends Controller
 
     public function inserir(Request $request)
     {
+        $carbon = new Carbon();
         try {
            
             $emissora = Emissora::find($request->emissora);
            
-            $dados = array('dt_noticia' => $request->data,
+            $dados = array('dt_noticia' => ($request->data) ? $carbon->createFromFormat('d/m/Y', $request->data)->format('Y-m-d') : date("Y-m-d"),
                            'duracao' => $request->duracao,
                            'emissora_id' => $request->emissora,
                            'programa_id' => $request->programa,
