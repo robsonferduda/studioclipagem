@@ -15,7 +15,7 @@ Route::get('/termos-de-servico', function () { return view('termos-de-servico');
 Auth::routes();
 
 // Route::resource('client', 'ClientController');
-Route::resource('hashtag', 'HashtagController');
+Route::resource('tag', 'TagController');
 Route::resource('notification', 'NotificacaoController');
 Route::resource('usuario', 'UserController');
 Route::resource('email', 'EmailController');
@@ -100,6 +100,10 @@ Route::get('radio/noticias/estatisticas','NoticiaRadioController@estatisticas');
 Route::post('radio/noticias/inserir','NoticiaRadioController@inserir');
 Route::post('radio/noticias/{id}/atualizar','NoticiaRadioController@atualizar');
 Route::post('radio/noticias/upload','NoticiaRadioController@upload');
+
+Route::get('tags','TagController@index');
+Route::get('tags/cadastrar','TagController@cadastrar');
+Route::get('tags/{id}/remover','TagController@destroy');
 
 Route::get('tv','NoticiaTvController@index');
 Route::get('tv/noticias','NoticiaTvController@index');

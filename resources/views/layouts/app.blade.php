@@ -66,6 +66,14 @@
                   </li>
                 @endrole
                 @role('administradores')
+                <li class="{{ (Session::has('url') and Session::get('url') == 'tags') ? 'active' : '' }}">
+                  <a href="{{ url('tags') }}">
+                    <i class="fa fa-hashtag" aria-hidden="true"></i>
+                  <p>Tags</p>
+                  </a>
+                </li>
+              @endrole
+                @role('administradores')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'impresso') ? 'active' : '' }}">
                       <a data-toggle="collapse" href="#submenu-impresso" class="{{ (Session::has('url') and Session::get('url') == 'impresso') ? '' : 'collapsed' }}" aria-expanded="{{ (Session::has('url') and Session::get('url') == 'impresso') ? 'true' : 'false' }}">
                         <i class="fa fa-newspaper-o"></i>

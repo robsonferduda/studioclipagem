@@ -7,6 +7,7 @@ use App\Models\Area;
 use App\Models\Cidade;
 use App\Utils;
 use Carbon\Carbon;
+use App\Models\Tag;
 use App\Models\Emissora;
 use App\Models\NoticiaCliente;
 use App\Models\Estado;
@@ -93,7 +94,9 @@ class NoticiaRadioController extends Controller
         $areas = [];
 
         $estados = Estado::orderBy('nm_estado')->get();
-        return view('noticia-radio/form', compact('dados', 'estados', 'cidades', 'areas'));
+        $tags = Tag::orderBy('nome')->get();
+
+        return view('noticia-radio/form', compact('dados', 'estados', 'cidades', 'areas','tags'));
     }
 
     public function editar(int $id)

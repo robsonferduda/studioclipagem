@@ -159,6 +159,16 @@
                             </select>
                         </div>
                     </div>
+                    <div class="col-md-12">
+                        <div class="form-group">    
+                            <label for="tags[]">TAGs</label>
+                            <select name="tags[]" multiple="multiple" class="form-control select2">
+                                @foreach ($tags as $tag)
+                                    <option value="{{ $tag->id }}">{{ $tag->nome }}</option>
+                                @endforeach
+                            </select> 
+                        </div>    
+                    </div> 
                     <div class="col-md-3">
                         <label for="arquivo">Arquivo</label>
                         <div style="min-height: 302px;" class="dropzone" id="dropzone"><div class="dz-message" data-dz-message><span>CLIQUE AQUI<br/> ou <br/>ARRASTE</span></div></div>
