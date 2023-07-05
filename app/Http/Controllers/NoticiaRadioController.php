@@ -134,6 +134,12 @@ class NoticiaRadioController extends Controller
 
             if($noticia = NoticiaRadio::create($dados))
             {
+                $tags = collect($request->tags)->mapWithKeys(function($tag){
+                    return [$tag => ['tipo_id' => 3]];
+                })->toArray();
+
+                $noticia->tags()->sync($tags);
+
                 $clientes = json_decode($request->clientes[0]);
                 if($clientes){
 
