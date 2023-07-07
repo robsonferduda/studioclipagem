@@ -145,10 +145,12 @@ Route::post('role/permission/{role}','RoleController@addPermission');
 Route::get('transcricao','ProcessamentoController@radios');
 Route::get('transcricao/baixar/{pasta}','ProcessamentoController@baixar');
 Route::get('transcricao/processar/{pasta}','ProcessamentoController@processar');
-ROute::get('transcricao/audios/{emissora}','ProcessamentoController@audios');
+Route::get('transcricao/audios/{emissora}','ProcessamentoController@audios');
 Route::get('processamento','ProcessamentoController@index');
 
 Route::match(array('GET', 'POST'),'relatorios','RelatorioController@index');
+
+Route::get('leitura','RelatorioController@word');
 
 Route::get('files/{file_name}', function($file_name = null)
 {

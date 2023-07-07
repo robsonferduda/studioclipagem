@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Laracasts\Flash\Flash;
+use PhpOffice\PhpWord\IOFactory;
 
 class RelatorioController extends Controller
 {
@@ -17,6 +18,37 @@ class RelatorioController extends Controller
         $this->middleware('auth');
         $this->data_atual = session('data_atual');
         Session::put('url','relatorio');
+    }
+
+    public function word()
+    {
+        //dd(public_path().'/word/word.docx');
+
+        $phpWord = IOFactory::createReader('Word2007')->load(public_path().'/word/word.docx');
+
+        foreach($phpWord->getSections() as $section) {
+            foreach($section->getElements() as $element) {
+
+                switch (get_class($element)) {
+                    case 'PhpOffice\PhpWord\Element\Text' :
+                        $text[] = $element->getText();
+                        break;
+                    case 'PhpOffice\PhpWord\Element\TextRun':
+                        $textRunElements = $element->getElements();
+                        foreach ($textRunElements as $textRunElement) {
+                            $text[] = $textRunElement->getText();
+                        }
+                        break;
+                    case 'PhpOffice\PhpWord\Element\TextBreak':
+                        $text[] = " ";
+                        break;
+                    default:
+                        throw new Exception('Something went wrong...');
+                }
+            }
+        }
+
+        dd($text);
     }
 
     public function index(Request $request)
