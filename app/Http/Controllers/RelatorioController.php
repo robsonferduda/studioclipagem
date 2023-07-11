@@ -54,6 +54,10 @@ class RelatorioController extends Controller
     public function index(Request $request)
     {
         if($request->isMethod('GET')){
+
+            dd($this->dadosTv());
+
+
             $sql = $this->sqlDiario();
             $dados = DB::connection('mysql')->select($sql);
         }
@@ -64,6 +68,35 @@ class RelatorioController extends Controller
         }
         
         return view('relatorio/index', compact('dados'));
+    }
+
+    public function dadosTv()
+    {
+        $sql = "SELECT 
+                        tv.id as id,
+                        CONCAT('','') as titulo, 
+                        tv.data as data,
+                        tv.segundos_totais as segundos, 
+                        tv.sinopse as sinopse, 
+                        tv.uf as uf, 
+                        CONCAT('','') as link, 
+                        tv.status as status, 
+                        '' as printurl,
+                        cidade.titulo as cidade_titulo, 
+                        veiculo.titulo as INFO1,
+                        parte.titulo as INFO2, 
+                        parte.hora as INFOHORA, 
+                        CONCAT('tv','') as clipagem,
+                        area.titulo as area,
+                        area.ordem as ordem
+                FROM app_tv as tv 
+                    LEFT JOIN app_tv_emissora as veiculo ON veiculo.id = tv.id_emissora
+                    LEFT JOIN app_tv_programa as parte ON parte.id = tv.id_programa 
+                    LEFT JOIN app_cidades as cidade ON cidade.id = tv.id_cidade 
+                    LEFT JOIN app_areasmodalidade as area ON (tv.id_area = area.id)
+                WHERE tv.data = '2023-06-29'";
+
+        return DB::connection('mysql')->select($sql);
     }
 
     public function sqlDiario()
