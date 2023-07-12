@@ -1,0 +1,13 @@
+<div style="clear:both; margin-top: 20px;">
+    <div style="width: 80%; float: left;">
+        <h6 style="margin-bottom: 0px; padding-bottom: 5px; margin-top: 26px; font-size: 17px; border-bottom: 2px solid #b5b4b4;">{{ $nome }}</h6>
+        <p style="color: #eb8e06; margin: 0;"><strong>Período: {{ $dt_inicial }} à {{ $dt_final }}</strong></p>
+        <p style="color: #eb8e06; margin: 0; margin-top: -3px;">Ministério Público Federal</p>        
+    </div>
+    <div style="width: 20%; float: right; text-align: right; padding: 10px;">
+        <img style="width: 100%" src="{{ public_path('img/logo.png') }}"/>
+    </div>
+</div> 
+<div style="clear:both">
+    
+</div>

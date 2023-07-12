@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Laracasts\Flash\Flash;
 use PhpOffice\PhpWord\IOFactory;
+use Barryvdh\DomPDF\Facade\Pdf as DOMPDF;
 
 class RelatorioController extends Controller
 {
@@ -55,19 +56,41 @@ class RelatorioController extends Controller
     {
         if($request->isMethod('GET')){
 
-            dd($this->dadosTv());
-
-
             $sql = $this->sqlDiario();
             $dados = DB::connection('mysql')->select($sql);
+            
         }
 
         if($request->isMethod('POST')){
+
+            switch($request->acao) {
+
+                case 'gerar-pdf':
+
+                    $dados = $this->dadosTv();
+
+                    $dt_inicial = date('d/m/Y');
+                    $dt_final = date('d/m/Y');
+                    $nome = "Relatório Completo";
+                    $nome_arquivo = date('YmdHis').".pdf";
+
+                    $pdf = DOMPDF::loadView('relatorio/pdf/principal', compact('dt_inicial','dt_final','nome','dados'));
+                    
+                    return $pdf->download($nome_arquivo);
+                break;
+            
+                case 'pesquisar': 
+                    return view('relatorio/index', compact('dados'));
+                break;
+            }
+
+
             $sql = $this->sqlDiario();
             $dados = DB::connection('mysql')->select($sql);
         }
-        
+
         return view('relatorio/index', compact('dados'));
+        
     }
 
     public function dadosTv()
@@ -200,5 +223,19 @@ class RelatorioController extends Controller
                 LIMIT 10";
 
         return $sql;
+    }
+
+    public function pdf(Request $request)
+    {
+        $dt_inicial = date('Y-m-d');
+        $dt_final = date('Y-m-d');
+        $nome = "Relatório de Sentimentos";
+
+        $nome_arquivo = date('YmdHis').".pdf";
+
+        $pdf = DOMPDF::loadView('relatorio/pdf/principal', compact('dt_inicial','dt_final','nome'));
+        
+
+        return $pdf->download($nome_arquivo);
     }
 }

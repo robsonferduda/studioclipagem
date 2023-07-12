@@ -10,7 +10,7 @@
     "require": {
         "php": "^7.2.5",
         "axisofstevil/stop-words": "^0.1.0",
-        "barryvdh/laravel-dompdf": "^0.9.0",
+        "barryvdh/laravel-dompdf": "^2.0",
         "bensampo/laravel-enum": "v2.2.0",
         "beyondcode/laravel-websockets": "^1.12",
         "composer/ca-bundle": "^1.2",
