@@ -20,7 +20,7 @@ class RelatorioController extends Controller
     }
 
     public function index(Request $request)
-    {
+    {   
         if($request->isMethod('GET')){
             $sql = $this->sqlDiario();
             $dados = DB::connection('mysql')->select($sql);
@@ -32,6 +32,11 @@ class RelatorioController extends Controller
         }
         
         return view('relatorio/index', compact('dados'));
+    }
+
+    public function diario()
+    {
+        
     }
 
     public function sqlDiario()
@@ -131,8 +136,7 @@ class RelatorioController extends Controller
                     LEFT JOIN app_cidades as cidade ON cidade.id = web.id_cidade 
                     LEFT JOIN app_areasmodalidade as area ON (web.id_area = area.id)
                 WHERE web.data_clipping = '2023-06-29'
-                ORDER BY id 
-                LIMIT 10";
+                ORDER BY id";
 
         return $sql;
     }

@@ -24,19 +24,19 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Termo de busca</label>
-                                <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome" value="{{ old('nome') }}">
+                                <input type="text" class="form-control" name="termo" id="termo" placeholder="Termo" value="{{ old('nome') }}">
                             </div>
                         </div>
                         <div class="col-md-3 col-sm-6">
                             <div class="form-group">
                                 <label>Data Inicial</label>
-                                <input type="text" class="form-control horario" name="hora_inicio" id="hora_inicio" placeholder="__/__/____" value="">
+                                <input type="text" class="form-control" name="dt_inicio" id="dt_inicio" placeholder="__/__/____" value="{{ date('d/m/Y') }}">
                             </div>
                         </div>
                         <div class="col-md-3 col-sm-6">
                             <div class="form-group">
                                 <label>Data Final</label>
-                                <input type="text" class="form-control horario" name="hora_fim" id="hora_fim" placeholder="__/__/____" value="">
+                                <input type="text" class="form-control" name="dt_fim" id="dt_fim" placeholder="__/__/____" value="{{ date('d/m/Y') }}">
                             </div>
                         </div>
                         <div class="col-md-3 col-sm-6">
