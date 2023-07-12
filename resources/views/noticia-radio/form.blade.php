@@ -29,7 +29,8 @@
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> {!! empty($dados->id) ? 'Cadastrar' : 'Atualizar' !!}</h4>
                     </div>
                     <div class="col-md-6">
-                        <a href="{{ url('radio/noticias') }}" class="btn btn-primary pull-right mr-3"><i class="fa fa-table"></i> Notícias</a>
+                        <a href="{{ url('radios') }}" class="btn btn-warning pull-right mr-3"><i class="nc-icon nc-chart-pie-36"></i> Dashboard</a>
+                        <a href="{{ url('radio/noticias') }}" class="btn btn-info pull-right mr-3"><i class="fa fa-table"></i> Notícias</a>
                     </div>
                 </div>
             </div>
@@ -58,7 +59,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label>Área</label>
+                                <label>Área <span class="text-info">Opcional</span></label>
                                 <select class="form-control selector-select2" name="area" id="area" {!! !empty($dados->area_id) ? '' : 'disabled' !!}>
                                     <option value="">Selecione</option>
                                     @foreach($areas as $area)
@@ -71,7 +72,7 @@
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
-                                <label>Sentimento</label>
+                                <label>Sentimento <span class="text-info">Opcional</span></label>
                                 <select class="form-control" name="sentimento" id="sentimento">
                                     <option value="">Selecione</option>
                                     <option value="1">Positivo</option>
@@ -87,13 +88,8 @@
                         </div>
 
                         <div class="col-md-12">
-                            <div class="card">
-                                <div class="card-body">
-                                    <ul class="list-unstyled metadados">
-                                    </ul>
-                                </div>
-                            </div>
-                         </div>
+                            <ul class="list-unstyled metadados"></ul>
+                        </div>
                     
                     <div class="col-md-12">
                         <h6>Dados da Notícia</h6>
@@ -102,7 +98,7 @@
                     <div class="col-md-2">
                         <div class="form-group">
                             <label>Data <span class="text-danger">Obrigatório</span></label>
-                            <input type="date" class="form-control" name="data" id="data" required value="{!! !empty($dados->dt_noticia) ? date('Y-m-d', strtotime($dados->dt_noticia)) : '' !!}">
+                            <input type="text" class="form-control datepicker" name="data" id="data" placeholder="__/__/____" required value="{!! !empty($dados->dt_noticia) ? date('Y-m-d', strtotime($dados->dt_noticia)) : '' !!}">
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -163,6 +159,16 @@
                             </select>
                         </div>
                     </div>
+                    <div class="col-md-12">
+                        <div class="form-group">    
+                            <label for="tags[]">TAGs</label>
+                            <select name="tags[]" multiple="multiple" class="form-control select2">
+                                @foreach ($tags as $tag)
+                                    <option value="{{ $tag->id }}">{{ $tag->nome }}</option>
+                                @endforeach
+                            </select> 
+                        </div>    
+                    </div> 
                     <div class="col-md-3">
                         <label for="arquivo">Arquivo</label>
                         <div style="min-height: 302px;" class="dropzone" id="dropzone"><div class="dz-message" data-dz-message><span>CLIQUE AQUI<br/> ou <br/>ARRASTE</span></div></div>
@@ -341,7 +347,12 @@
                 var dados = { id_cliente: id_cliente, cliente: cliente, id_area: id_area, area: area, id_sentimento: id_sentimento, sentimento: sentimento };
                 inicializaClientes(dados);
             }else{
-                alert("Obrigatório selecionar um cliente");
+                Swal.fire({
+                    text: 'Obrigatório informar um cliente.',
+                    type: "warning",
+                    icon: "warning",
+                    confirmButtonText: '<i class="fa fa-check"></i> Ok',
+                });
             }
         });
 
@@ -353,7 +364,7 @@
             $(".metadados").empty();
 
             $.each(clientes, function(index, value) {                
-                $(".metadados").append('<li><div class="row"><div class="col-md-9 col-9"><span>'+value.cliente+'</span> | <span>'+value.area+'</span> | <span>'+value.sentimento+'</span></div><div class="col-md-3 col-3 text-right"><btn class="btn btn-sm btn-outline-danger btn-round btn-icon btn-remover-cliente" data-id="'+index+'"><i class="fa fa-times"></i></btn></div></div></li>');
+                $(".metadados").append('<li><div class="row"><div class="col-md-12 col-12 mb-2"><span>'+value.cliente+'</span> | <span>'+value.area+'</span> | <span>'+value.sentimento+'</span> | <span class="text-danger btn-remover-cliente" data-id="'+index+'">Excluir</span></div></div></li>');
             });
         }
 

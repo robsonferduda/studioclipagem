@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use DB;
 use App\Models\Area;
 use App\Models\Cidade;
 use App\Utils;
 use Carbon\Carbon;
+use App\Models\Tag;
 use App\Models\Emissora;
+use App\Models\NoticiaCliente;
 use App\Models\Estado;
 use App\Models\NoticiaRadio;
 use Laracasts\Flash\Flash;
@@ -41,12 +44,16 @@ class NoticiaRadioController extends Controller
         $termo = $request->termo;
 
         if($request->isMethod('GET')){
-            $noticias = NoticiaRadio::where('dt_noticia', $this->data_atual)->get();
+            $noticias = NoticiaRadio::leftJoin('noticia_cliente', function($join){
+                $join->on('noticia_cliente.noticia_id', '=', 'noticia_radio.id');
+                $join->on('noticia_cliente.tipo_id','=', DB::raw(3));
+            })->where('dt_noticia', $this->data_atual)->get();
         }
 
         if($request->isMethod('POST')){
 
             $noticia = NoticiaRadio::query();
+            $noticia->leftJoin('noticia_cliente', 'noticia_cliente.noticia_id', '=', 'noticia_radio.id')->where('tipo_id', 3);
 
             $noticia->when($termo, function ($q) use ($termo) {
                 return $q->where('sinopse', 'ILIKE', '%'.trim($termo).'%');
@@ -87,7 +94,9 @@ class NoticiaRadioController extends Controller
         $areas = [];
 
         $estados = Estado::orderBy('nm_estado')->get();
-        return view('noticia-radio/form', compact('dados', 'estados', 'cidades', 'areas'));
+        $tags = Tag::orderBy('nome')->get();
+
+        return view('noticia-radio/form', compact('dados', 'estados', 'cidades', 'areas','tags'));
     }
 
     public function editar(int $id)
@@ -107,11 +116,12 @@ class NoticiaRadioController extends Controller
 
     public function inserir(Request $request)
     {
+        $carbon = new Carbon();
         try {
            
             $emissora = Emissora::find($request->emissora);
            
-            $dados = array('dt_noticia' => $request->data,
+            $dados = array('dt_noticia' => ($request->data) ? $carbon->createFromFormat('d/m/Y', $request->data)->format('Y-m-d') : date("Y-m-d"),
                            'duracao' => $request->duracao,
                            'emissora_id' => $request->emissora,
                            'programa_id' => $request->programa,
@@ -124,9 +134,26 @@ class NoticiaRadioController extends Controller
 
             if($noticia = NoticiaRadio::create($dados))
             {
-                //dd($noticia);
+                $tags = collect($request->tags)->mapWithKeys(function($tag){
+                    return [$tag => ['tipo_id' => 3]];
+                })->toArray();
 
-               //dd(json_decode($request->clientes[0]));
+                $noticia->tags()->sync($tags);
+
+                $clientes = json_decode($request->clientes[0]);
+                if($clientes){
+
+                    for ($i=0; $i < count($clientes); $i++) { 
+                        
+                        $dados = array('tipo_id' => 3,
+                                'noticia_id' => $noticia->id,
+                                'cliente_id' => $clientes[$i]->id_cliente,
+                                'area_id' => $clientes[$i]->id_area,
+                                'sentimento' => $clientes[$i]->id_sentimento);
+                    
+                        NoticiaCliente::create($dados);
+                    }
+                }
             }
 
             $retorno = array('flag' => true,
@@ -138,7 +165,10 @@ class NoticiaRadioController extends Controller
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
 
         } catch (\Exception $e) {
-            $retorno = array('flag' => true,
+
+            dd($e);
+
+            $retorno = array('flag' => false,
                              'msg' => "Ocorreu um erro ao inserir o registro");
         }
 

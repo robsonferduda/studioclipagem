@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Tags extends Model
+class Tag extends Model
 {
     use SoftDeletes;
 
     protected $connection = 'pgsql';
-    protected $table = 'tags';
+    protected $table = 'tag';
 
     protected $fillable = ['nome'];
 }

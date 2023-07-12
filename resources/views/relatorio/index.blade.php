@@ -152,7 +152,8 @@
                     </div>
                     <hr/>
                     <div class="card-footer text-center mb-3">
-                        <button type="submit" class="btn btn-info"><i class="fa fa-search"></i> Pesquisar</button>
+                        <button type="submit" class="btn btn-danger" name="acao" value="gerar-pdf"><i class="fa fa-file-pdf-o"></i> Gerar PDF</button>
+                        <button type="submit" class="btn btn-info" name="acao" value="pesquisar"><i class="fa fa-search"></i> Pesquisar</button>
                     </div>
                 {!! Form::close() !!} 
             </div>

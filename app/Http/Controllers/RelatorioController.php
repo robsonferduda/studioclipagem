@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Laracasts\Flash\Flash;
+use PhpOffice\PhpWord\IOFactory;
+use Barryvdh\DomPDF\Facade\Pdf as DOMPDF;
 
 class RelatorioController extends Controller
 {
@@ -19,19 +21,105 @@ class RelatorioController extends Controller
         Session::put('url','relatorio');
     }
 
+    public function word()
+    {
+        //dd(public_path().'/word/word.docx');
+
+        $phpWord = IOFactory::createReader('Word2007')->load(public_path().'/word/word.docx');
+
+        foreach($phpWord->getSections() as $section) {
+            foreach($section->getElements() as $element) {
+
+                switch (get_class($element)) {
+                    case 'PhpOffice\PhpWord\Element\Text' :
+                        $text[] = $element->getText();
+                        break;
+                    case 'PhpOffice\PhpWord\Element\TextRun':
+                        $textRunElements = $element->getElements();
+                        foreach ($textRunElements as $textRunElement) {
+                            $text[] = $textRunElement->getText();
+                        }
+                        break;
+                    case 'PhpOffice\PhpWord\Element\TextBreak':
+                        $text[] = " ";
+                        break;
+                    default:
+                        throw new Exception('Something went wrong...');
+                }
+            }
+        }
+
+        dd($text);
+    }
+
     public function index(Request $request)
     {   
         if($request->isMethod('GET')){
+
+            $sql = $this->sqlDiario();
+            $dados = DB::connection('mysql')->select($sql);
+            
+        }
+
+        if($request->isMethod('POST')){
+
+            switch($request->acao) {
+
+                case 'gerar-pdf':
+
+                    $dados = $this->dadosTv();
+
+                    $dt_inicial = date('d/m/Y');
+                    $dt_final = date('d/m/Y');
+                    $nome = "Relatório Completo";
+                    $nome_arquivo = date('YmdHis').".pdf";
+
+                    $pdf = DOMPDF::loadView('relatorio/pdf/principal', compact('dt_inicial','dt_final','nome','dados'));
+                    
+                    return $pdf->download($nome_arquivo);
+                break;
+            
+                case 'pesquisar': 
+                    return view('relatorio/index', compact('dados'));
+                break;
+            }
+
+
             $sql = $this->sqlDiario();
             $dados = DB::connection('mysql')->select($sql);
         }
 
-        if($request->isMethod('POST')){
-            $sql = $this->sqlDiario();
-            $dados = DB::connection('mysql')->select($sql);
-        }
-        
         return view('relatorio/index', compact('dados'));
+        
+    }
+
+    public function dadosTv()
+    {
+        $sql = "SELECT 
+                        tv.id as id,
+                        CONCAT('','') as titulo, 
+                        tv.data as data,
+                        tv.segundos_totais as segundos, 
+                        tv.sinopse as sinopse, 
+                        tv.uf as uf, 
+                        CONCAT('','') as link, 
+                        tv.status as status, 
+                        '' as printurl,
+                        cidade.titulo as cidade_titulo, 
+                        veiculo.titulo as INFO1,
+                        parte.titulo as INFO2, 
+                        parte.hora as INFOHORA, 
+                        CONCAT('tv','') as clipagem,
+                        area.titulo as area,
+                        area.ordem as ordem
+                FROM app_tv as tv 
+                    LEFT JOIN app_tv_emissora as veiculo ON veiculo.id = tv.id_emissora
+                    LEFT JOIN app_tv_programa as parte ON parte.id = tv.id_programa 
+                    LEFT JOIN app_cidades as cidade ON cidade.id = tv.id_cidade 
+                    LEFT JOIN app_areasmodalidade as area ON (tv.id_area = area.id)
+                WHERE tv.data = '2023-06-29'";
+
+        return DB::connection('mysql')->select($sql);
     }
 
     public function diario()
@@ -139,5 +227,19 @@ class RelatorioController extends Controller
                 ORDER BY id";
 
         return $sql;
+    }
+
+    public function pdf(Request $request)
+    {
+        $dt_inicial = date('Y-m-d');
+        $dt_final = date('Y-m-d');
+        $nome = "Relatório de Sentimentos";
+
+        $nome_arquivo = date('YmdHis').".pdf";
+
+        $pdf = DOMPDF::loadView('relatorio/pdf/principal', compact('dt_inicial','dt_final','nome'));
+        
+
+        return $pdf->download($nome_arquivo);
     }
 }

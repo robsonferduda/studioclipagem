@@ -15,7 +15,7 @@ Route::get('/termos-de-servico', function () { return view('termos-de-servico');
 Auth::routes();
 
 // Route::resource('client', 'ClientController');
-Route::resource('hashtag', 'HashtagController');
+Route::resource('tag', 'TagController');
 Route::resource('notification', 'NotificacaoController');
 Route::resource('usuario', 'UserController');
 Route::resource('email', 'EmailController');
@@ -101,6 +101,10 @@ Route::post('radio/noticias/inserir','NoticiaRadioController@inserir');
 Route::post('radio/noticias/{id}/atualizar','NoticiaRadioController@atualizar');
 Route::post('radio/noticias/upload','NoticiaRadioController@upload');
 
+Route::get('tags','TagController@index');
+Route::get('tags/cadastrar','TagController@cadastrar');
+Route::get('tags/{id}/remover','TagController@destroy');
+
 Route::get('tv','NoticiaTvController@index');
 Route::get('tv/noticias','NoticiaTvController@index');
 
@@ -141,10 +145,12 @@ Route::post('role/permission/{role}','RoleController@addPermission');
 Route::get('transcricao','ProcessamentoController@radios');
 Route::get('transcricao/baixar/{pasta}','ProcessamentoController@baixar');
 Route::get('transcricao/processar/{pasta}','ProcessamentoController@processar');
-ROute::get('transcricao/audios/{emissora}','ProcessamentoController@audios');
+Route::get('transcricao/audios/{emissora}','ProcessamentoController@audios');
 Route::get('processamento','ProcessamentoController@index');
 
 Route::match(array('GET', 'POST'),'relatorios','RelatorioController@index');
+
+Route::get('leitura','RelatorioController@word');
 
 Route::get('files/{file_name}', function($file_name = null)
 {

@@ -11,7 +11,7 @@
                     </h4>
                 </div>
                 <div class="col-md-4">
-                    <a href="{{ url('radio/noticias/cadastrar') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-plus"></i> Novo</a>
+                    <a href="{{ url('radio/noticias/cadastrar') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-plus"></i> Cadastrar Notícia</a>
                 </div>
             </div>
         </div>
@@ -54,8 +54,9 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-lg-12 col-md-12 col-sm-12">
-                                    <h6>{!! $noticia->emissora->ds_emissora ?? '' !!}</h6>
-                                    <p>{!! $noticia->programa->nome ?? 'Nenhum Programa Vinculado' !!} - {!! !empty($noticia->dt_noticia) ? date('d/m/Y', strtotime($noticia->dt_noticia)) : '' !!}</p>
+                                    <span class="dt_noticia_box">{!! !empty($noticia->dt_noticia) ? date('d/m/Y', strtotime($noticia->dt_noticia)) : '' !!}</span>
+                                    <h6>{!! ($noticia->cliente and $noticia->cliente->pessoa) ? $noticia->cliente->pessoa->nome : 'Nenhum cliente vinculado' !!}</h6>
+                                    <p>{!! $noticia->emissora->ds_emissora ?? '' !!} - {!! $noticia->programa->nome ?? 'Nenhum Programa Vinculado' !!}</p>
                                     <p>{!! $noticia->sinopse !!}</p>
                                 </div>
                                 <div class="col-lg-12 col-md-12 col-sm-12">                                    
