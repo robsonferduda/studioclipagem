@@ -17,7 +17,8 @@
                     @include('layouts.mensagens')
                 </div>
                 <div class="col-md-12">
-                    {!! Form::open(['id' => 'frm_user_create', 'url' => ['emissora']]) !!}
+                    {!! Form::open(['id' => 'frm_user_create', 'url' => ['emissora/'.$tipo.'/adicionar']]) !!}
+                    <input type="hidden" name="tipo" value="{{ $tipo }}">
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
@@ -59,7 +60,7 @@
                             <div class="form-check mt-3">
                                 <div class="form-check">
                                     <label class="form-check-label">
-                                        <input class="form-check-input" {{ ($emissora) ? ($emissora->fl_transcricao) ? 'selected' : '' : (old('is_active')) ? 'checked' : '' }} type="checkbox" name="is_active" value="true">
+                                        <input class="form-check-input" {{ (($emissora and $emissora->fl_transcricao) ? 'selected' : '') ? ((old('is_active')) ? 'checked' : '') : '' }} type="checkbox" name="is_active" value="true">
                                         Fazer Transcrição
                                         <span class="form-check-sign"></span>
                                     </label>

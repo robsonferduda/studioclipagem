@@ -87,12 +87,12 @@ class EmissoraController extends Controller
         return view('emissora/index', compact('emissoras','codigo','descricao','estados','tipo','cd_estado','cd_cidade'));
     }
 
-    public function novo()
+    public function novo($tipo)
     {
         $estados = Estado::orderBy('nm_estado')->get();
         $emissora = new Emissora();
         
-        return view('emissora/form',compact('estados','emissora'));
+        return view('emissora/form',compact('estados','emissora','tipo'));
     }
 
     public function edit($id)
@@ -133,7 +133,10 @@ class EmissoraController extends Controller
 
     public function store(Request $request)
     {
+        $id_tipo = ($request->tipo == 'tv') ? 2 : 1;
+
         try {
+            $request->merge(['tipo_id' => $id_tipo]);
 
             Emissora::create($request->all());
             $retorno = array('flag' => true,
@@ -152,22 +155,24 @@ class EmissoraController extends Controller
 
         if ($retorno['flag']) {
             Flash::success($retorno['msg']);
-            return redirect('radio/emissoras')->withInput();
+            return redirect('emissoras/'.$request->tipo)->withInput();
         } else {
             Flash::error($retorno['msg']);
-            return redirect('radio/emissoras')->withInput();
+            return redirect('emissoras/'.$request->tipo.'/novo')->withInput();
         }
     }
 
     public function destroy($id)
     {
         $emissora = Emissora::find($id);
+        $tipo = ($emissora->tipo_id == 1) ? 'radio' : 'tv';
+
         if($emissora->delete())
             Flash::success('<i class="fa fa-check"></i> Emissora <strong>'.$emissora->ds_emissora.'</strong> excluída com sucesso');
         else
             Flash::error("Erro ao excluir o registro");
 
-        return redirect('radio/emissoras')->withInput();
+        return redirect('emissoras/'.$tipo)->withInput();
     }
 
     public function buscarEmissoras(Request $request)
