@@ -53,7 +53,10 @@ class NoticiaRadioController extends Controller
         if($request->isMethod('POST')){
 
             $noticia = NoticiaRadio::query();
-            $noticia->leftJoin('noticia_cliente', 'noticia_cliente.noticia_id', '=', 'noticia_radio.id')->where('tipo_id', 3);
+            $noticia->leftJoin('noticia_cliente', function($join){
+                $join->on('noticia_cliente.noticia_id', '=', 'noticia_radio.id');
+                $join->on('tipo_id','=', DB::raw(3));
+            }); 
 
             $noticia->when($termo, function ($q) use ($termo) {
                 return $q->where('sinopse', 'ILIKE', '%'.trim($termo).'%');
@@ -111,7 +114,9 @@ class NoticiaRadioController extends Controller
             ->orderBy('area.descricao')
             ->get();
 
-        return view('noticia-radio/form', compact('dados', 'estados', 'cidades', 'areas'));
+        $tags = Tag::orderBy('nome')->get();
+
+        return view('noticia-radio/form', compact('dados', 'estados', 'cidades', 'areas','tags'));
     }
 
     public function inserir(Request $request)
@@ -161,14 +166,10 @@ class NoticiaRadioController extends Controller
 
         } catch (\Illuminate\Database\QueryException $e) {
 
-            dd($e);
-
             $retorno = array('flag' => false,
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
 
         } catch (\Exception $e) {
-
-            dd($e);
 
             $retorno = array('flag' => false,
                              'msg' => "Ocorreu um erro ao inserir o registro");
@@ -185,6 +186,7 @@ class NoticiaRadioController extends Controller
 
     public function atualizar(Request $request, int $id)
     {
+        $carbon = new Carbon();
 
         try {
             $noticia = NoticiaRadio::find($id);
@@ -195,7 +197,7 @@ class NoticiaRadioController extends Controller
 
             $emissora = Emissora::find($request->emissora);
             
-            $dados = array('dt_noticia' => $request->data,
+            $dados = array('dt_noticia' => ($request->data) ? $carbon->createFromFormat('d/m/Y', $request->data)->format('Y-m-d') : date("Y-m-d"),
                             'duracao' => $request->duracao,
                             'emissora_id' => $request->emissora,
                             'programa_id' => $request->programa,
