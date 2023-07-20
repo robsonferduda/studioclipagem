@@ -13,7 +13,8 @@
                         </h4>
                     </div>
                     <div class="col-md-3">
-                        <a href="{{ url('emissoras/radio') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-signal"></i> Emissoras</a>
+                        <a href="{{ url('programas/'.$tipo) }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-signal"></i> Programas</a>
+                        <a href="{{ url('emissoras/'.$tipo) }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-signal"></i> Emissoras</a>
                     </div>
                 </div>
             </div>
@@ -23,6 +24,7 @@
                 </div>
                 <div class="col-md-12">
                     {!! Form::open(['id' => 'frm_user_create', 'url' => ['programa']]) !!}
+                    <input type="hidden" name="tipo" value="{{ $tipo }}">
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
@@ -56,14 +58,14 @@
                         <div class="col-md-2 col-sm-6">
                             <div class="form-group">
                                 <label>Valor do Segundo</label>
-                                <input type="text" class="form-control" name="valor_segundo" id="valor_segundo" placeholder="00,00" value="">
+                                <input type="text" class="form-control monetario" name="valor_segundo" id="valor_segundo" placeholder="0.00" value="">
                             </div>
                         </div>
                     </div>  
                 </div>
                 <div class="card-footer text-center mb-3">
                     <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Salvar</button>
-                    <a href="{{ url('usuarios') }}" class="btn btn-danger"><i class="fa fa-times"></i> Cancelar</a>
+                    <a href="{{ url()->previous() }}" class="btn btn-danger"><i class="fa fa-times"></i> Cancelar</a>
                 </div>
             </div>
         {!! Form::close() !!} 

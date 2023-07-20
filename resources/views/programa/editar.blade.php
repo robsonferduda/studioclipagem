@@ -22,6 +22,7 @@
                     @include('layouts.mensagens')
                 </div>
                 {!! Form::open(['id' => 'frm_user_create', 'url' =>  ['programa', $programa->id], 'method' => 'patch']) !!}
+                    
                     <div class="col-md-12">
                         <div class="row">
                             <div class="col-md-4">
@@ -56,14 +57,14 @@
                             <div class="col-md-2 col-sm-6">
                                 <div class="form-group">
                                     <label>Valor do Segundo</label>
-                                    <input type="text" class="form-control" name="valor_segundo" id="valor_segundo" placeholder="00,00" value="{{ $programa->valor_segundo }}">
+                                    <input type="text" class="form-control monetario" name="valor_segundo" id="valor_segundo" placeholder="0.00" value="{{ $programa->valor_segundo }}">
                                 </div>
                             </div>
                         </div>  
                     </div>
                     <div class="card-footer text-center mb-3">
                         <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Salvar</button>
-                        <a href="{{ url('usuarios') }}" class="btn btn-danger"><i class="fa fa-times"></i> Cancelar</a>
+                        <a href="{{ url()->previous() }}" class="btn btn-danger"><i class="fa fa-times"></i> Cancelar</a>
                     </div>
                 {!! Form::close() !!} 
             </div>

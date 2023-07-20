@@ -12,6 +12,7 @@
                 </div>
                 <div class="col-md-4">
                     <a href="{{ url('radio/noticias/cadastrar') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-plus"></i> Cadastrar Notícia</a>
+                    <a href="{{ url('radios') }}" class="btn btn-warning pull-right mr-3"><i class="nc-icon nc-chart-pie-36"></i> Dashboard</a>
                 </div>
             </div>
         </div>

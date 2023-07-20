@@ -73,9 +73,9 @@
                         </div>
                     </div>          
                 </div>
-                <div class="card-footer text-right">
+                <div class="card-footer text-center">
                     <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Salvar</button>
-                    <a href="{{ url('emissoras') }}" class="btn btn-danger"><i class="fa fa-times"></i> Cancelar</a>
+                    <a href="{{ url()->previous() }}" class="btn btn-danger"><i class="fa fa-times"></i> Cancelar</a>
                 </div>
             </div>
         {!! Form::close() !!} 

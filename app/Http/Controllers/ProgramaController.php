@@ -32,9 +32,13 @@ class ProgramaController extends Controller
         $emissora = $request->emissora_id;
         $programa = $request->nome;
 
-        $emissoras = Emissora::orderBy('ds_emissora')->get();
+        $emissoras = Emissora::where('tipo_id', $id_tipo)->orderBy('ds_emissora')->get();
 
         $prog = Programa::query();
+
+        $prog->whereHas('emissora', function($q) use($id_tipo){
+            $q->where('tipo_id', '=', $id_tipo);
+        });
 
         $prog->when($emissora, function ($q) use ($emissora) {
             return $q->where('emissora_id', $emissora);
@@ -46,18 +50,21 @@ class ProgramaController extends Controller
 
         $programas = $prog->orderBy('nome')->paginate(10);
 
-        return view('programa/index', compact('programas','emissoras','emissora','programa'));
+        return view('programa/index', compact('programas','emissoras','emissora','programa','tipo'));
     }
 
-    public function novo()
+    public function novo($tipo)
     {
-        $emissoras = Emissora::orderBy('ds_emissora')->get();
+        $id_tipo = ($tipo == 'tv') ? 2 : 1;
+        $emissoras = Emissora::where('tipo_id', $id_tipo)->orderBy('ds_emissora')->get();
 
-        return view('programa/novo',compact('emissoras'));
+        return view('programa/novo',compact('emissoras','tipo'));
     }
 
     public function store(Request $request)
     {
+        $tipo = $request->tipo;
+
         try {
 
             Programa::create($request->all());
@@ -81,13 +88,15 @@ class ProgramaController extends Controller
             Flash::error($retorno['msg']);
         }
 
-        return redirect('emissoras/programas')->withInput();
+        return redirect('programas/'.$tipo)->withInput();
     }
 
     public function edit($id)
     {
         $programa = Programa::find($id);
-        $emissoras = Emissora::orderBy('ds_emissora')->get();
+        $id_tipo = $programa->emissora->tipo_id;
+
+        $emissoras = Emissora::where('tipo_id', $id_tipo)->orderBy('ds_emissora')->get();
 
         return view('programa/editar',compact('programa','emissoras'));
     }
@@ -95,6 +104,8 @@ class ProgramaController extends Controller
     public function update(Request $request, $id)
     {
         $programa = Programa::find($id);
+        $id_tipo = $programa->emissora->tipo_id;
+        $tipo = ($id_tipo == 1) ? 'radio' : 'tv';
 
         try {        
             $programa->update($request->all());
@@ -114,7 +125,7 @@ class ProgramaController extends Controller
             Flash::error($retorno['msg']);
         }
 
-        return redirect('emissoras/programas')->withInput();
+        return redirect('programas/'.$tipo)->withInput();
     }
 
     public function destroy($id)

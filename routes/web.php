@@ -36,13 +36,13 @@ Route::resource('cliente','ClienteController');
 Route::match(array('GET', 'POST'),'clientes','ClienteController@index');
 
 Route::match(array('GET', 'POST'),'emissoras/{tipo}','EmissoraController@listar');
-Route::get('emissora/programa/novo','ProgramaController@novo');
 Route::get('emissora/{id}/transcricao/atualiza','EmissoraController@atualizaTranscricao');
 Route::post('emissora/{tipo}/adicionar','EmissoraController@store');
 Route::post('emissora/{tipo}/atualizar','EmissoraController@update');
 Route::post('emissoras/horario/adicionar','EmissoraController@adicionarHorarios');
 
 Route::match(array('GET', 'POST'),'programas/{tipo}','ProgramaController@index');
+Route::get('programa/{tipo}/novo','ProgramaController@novo');
 
 Route::get('estado/{id}/cidades','EstadoController@getCidades');
 
