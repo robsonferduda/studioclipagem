@@ -96,7 +96,7 @@
                                     <td>{{ $emissora->codigo }}</td>
                                     <td>{{ $emissora->ds_emissora }}</td>
                                     <td class="center">
-                                        <a href="{{ url('radio/emissora/'.$emissora->id.'/transcricao/atualiza') }}">{!! ($emissora->fl_transcricao) ? '<span class="badge badge-pill badge-success">ATIVA</span>' : '<span class="badge badge-pill badge-danger">INATIVA</span>' !!}</a>
+                                        <a href="{{ url('emissora/'.$emissora->id.'/transcricao/atualiza') }}">{!! ($emissora->fl_transcricao) ? '<span class="badge badge-pill badge-success">ATIVA</span>' : '<span class="badge badge-pill badge-danger">INATIVA</span>' !!}</a>
                                     </td>
                                     <td class="center">
                                         <a title="Editar" href="{{ route('emissora.edit',$emissora->id) }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>

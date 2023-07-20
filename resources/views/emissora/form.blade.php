@@ -17,7 +17,11 @@
                     @include('layouts.mensagens')
                 </div>
                 <div class="col-md-12">
-                    {!! Form::open(['id' => 'frm_user_create', 'url' => ['emissora/'.$tipo.'/adicionar']]) !!}
+                    @if(empty($emissora->id))
+                        {!! Form::open(['id' => 'frm_user_create', 'url' => ['emissora/'.$tipo.'/adicionar']]) !!}
+                    @else
+                        {!! Form::open(['id' => 'frm_noticia_radio_editar', 'url' => ['emissora/'. $emissora->id. '/atualizar'], 'method' => 'post']) !!}
+                    @endif
                     <input type="hidden" name="tipo" value="{{ $tipo }}">
                     <div class="row">
                         <div class="col-md-3">

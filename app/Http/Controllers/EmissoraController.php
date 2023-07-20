@@ -100,7 +100,9 @@ class EmissoraController extends Controller
         $estados = Estado::orderBy('nm_estado')->get();
         $emissora = Emissora::find($id);
 
-        return view('emissora/form',compact('estados','emissora'));
+        $tipo = ($emissora->tipo_id == 1) ? 'radio' : 'tv';
+
+        return view('emissora/form',compact('estados','emissora','tipo'));
     }
 
     public function horarios($emissora)
@@ -110,11 +112,13 @@ class EmissoraController extends Controller
         return view('emissora/horarios',compact('horarios','id_emissora'));
     }
 
-    public function atualizaTranscricao($id, $tipo)
+    public function atualizaTranscricao($id)
     {
         $emissora = Emissora::find($id);
         $emissora->fl_transcricao = !$emissora->fl_transcricao;
         $emissora->save();
+
+        $tipo = ($emissora->tipo_id == 1) ? 'radio' : 'tv';
 
         Flash::success('<i class="fa fa-check"></i> Transcrição da emissora atualizada com sucesso');
 
@@ -124,8 +128,6 @@ class EmissoraController extends Controller
     
     public function adicionarHorarios(Request $request)
     {
-        dd($request->all());
-
         $emissora = $request->id_emissora;
         $hora_inicial = $request->hora_inicial;
         $hora_final = $request->hora_final;
@@ -159,6 +161,36 @@ class EmissoraController extends Controller
         } else {
             Flash::error($retorno['msg']);
             return redirect('emissoras/'.$request->tipo.'/novo')->withInput();
+        }
+    }
+
+    public function update(Request $request, $id)
+    {
+        $emissora = Emissora::find($id);
+        $tipo = ($emissora->tipo_id == 1) ? 'radio' : 'tv';
+
+        try {
+            $emissora->update($request->all());
+            $retorno = array('flag' => true,
+                             'msg' => "Dados atualizados com sucesso");
+
+        } catch (\Illuminate\Database\QueryException $e) {
+
+            $retorno = array('flag' => false,
+                             'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
+
+        } catch (\Exception $e) {
+
+            $retorno = array('flag' => true,
+                             'msg' => "Ocorreu um erro ao atualizar o registro");
+        }
+
+        if ($retorno['flag']) {
+            Flash::success($retorno['msg']);
+            return redirect('emissoras/'.$tipo)->withInput();
+        } else {
+            Flash::error($retorno['msg']);
+            return redirect('emissoras/'.$tipo.'/atualizar')->withInput();
         }
     }
 
