@@ -77,7 +77,7 @@ class NoticiaRadioController extends Controller
         $data_final = date("Y-m-d");
         $data_inicial = Carbon::now()->subDays(7)->format('Y-m-d');
 
-        $total_noticia_radio = NoticiaRadio::whereBetween('created_at', [$data_inicial, $data_final])->count();
+        $total_noticia_radio = NoticiaRadio::whereBetween('created_at', [$this->data_atual.' 00:00:00', $this->data_atual.' 23:59:59'])->count();
         $ultima_atualizacao = NoticiaRadio::max('created_at');
 
         $total_emissora_radio = Emissora::where('tipo_id', 1)->count();
@@ -160,6 +160,8 @@ class NoticiaRadioController extends Controller
                              'msg' => "Dados inseridos com sucesso");
 
         } catch (\Illuminate\Database\QueryException $e) {
+
+            dd($e);
 
             $retorno = array('flag' => false,
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));

@@ -69,12 +69,34 @@ class RelatorioController extends Controller
 
                     $dados = $this->dadosTv();
 
+                    //dd($dados);
+
                     $dt_inicial = date('d/m/Y');
                     $dt_final = date('d/m/Y');
                     $nome = "Relatório Completo";
                     $nome_arquivo = date('YmdHis').".pdf";
 
-                    $pdf = DOMPDF::loadView('relatorio/pdf/principal', compact('dt_inicial','dt_final','nome','dados'));
+                    $pdf = \App::make('dompdf.wrapper');
+                    $pdf->getDomPDF()->set_option("enable_php", true);
+
+                    $pdf->loadView('relatorio/pdf/principal', compact('dt_inicial','dt_final','nome','dados'));
+
+                    $pdf->render();
+
+                    $canvas = $pdf->get_canvas();
+                    $canvas->page_script('
+                    if ($pdf->get_page_number() != $pdf->get_page_count()) {
+
+                        $width = $fontMetrics->get_text_width($text, $font, $size) / 2;
+                        $x = ($pdf->get_width() - $width) / 2;
+                        $x = ($pdf->get_width() - $width - 5);
+                        $y = $pdf->get_height() - 30;
+
+                        $font = Font_Metrics::get_font("helvetica", "12");                  
+                        $pdf->page_text($x, $y, "Page {PAGE_NUM} - {PAGE_COUNT}", $font, 10, array(0,0,0));
+                    }
+                    ');
+                    //$pdf = $dompdf->output();
                     
                     return $pdf->download($nome_arquivo);
                 break;
@@ -117,7 +139,8 @@ class RelatorioController extends Controller
                     LEFT JOIN app_tv_programa as parte ON parte.id = tv.id_programa 
                     LEFT JOIN app_cidades as cidade ON cidade.id = tv.id_cidade 
                     LEFT JOIN app_areasmodalidade as area ON (tv.id_area = area.id)
-                WHERE tv.data = '2023-06-29'";
+                WHERE tv.data = '2023-06-29'
+                LIMIT 8";
 
         return DB::connection('mysql')->select($sql);
     }

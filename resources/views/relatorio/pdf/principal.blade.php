@@ -1,8 +1,8 @@
 @extends('layouts.relatorios')
 @section('content')
     @include("relatorio/pdf/cabecalho")
-        @foreach($dados as $noticia)
-            <div style="margin-bottom: 0px; clear: both; border-bottom: 1px solid gray">
+        @foreach($dados as $key => $noticia)
+            <div class="info borda" style="margin-bottom: 0px; clear: both;">
                 <div>
                     <div style="float:left; margin-right: 10px;">
                         <span style="font-size: 8px;  margin:0px; padding: 0px;">EMISSORA</span>  
@@ -22,11 +22,8 @@
                 </div>
                 <div style="clear: both;">
                     <span style="font-size: 8px;">SINOPSE</span>   
-                    <p style="font-size: 13px; ">{!! $noticia->sinopse !!}</p> 
+                    <p style="font-size: 13px; margin:0px; padding: 0px;">{!! $noticia->sinopse !!}</p> 
                 </div>
             </div>          
         @endforeach
-    <footer>
-        Relatório gerado em {{ date("d/m/Y") }} às {{ date("H:i:s") }} 
-    </footer>
 @endsection
