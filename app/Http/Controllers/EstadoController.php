@@ -17,9 +17,9 @@ class EstadoController extends Controller
 
     }
 
-    public function getCidades(Request $request)
+    public function getCidades($id)
     {
-        $cidades = Cidade::where('cd_estado',$request->query('estado'))->orderBy('nm_cidade')->get();
+        $cidades = Cidade::where('cd_estado', $id)->orderBy('nm_cidade')->get();
         return response()->json($cidades);
     }
 }

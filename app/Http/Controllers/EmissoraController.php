@@ -84,7 +84,7 @@ class EmissoraController extends Controller
             $emissoras = $emissora->where('tipo_id', $id_tipo)->orderBy('ds_emissora')->paginate(10);
         
 
-        return view('emissora/index', compact('emissoras','codigo','descricao','estados'));
+        return view('emissora/index', compact('emissoras','codigo','descricao','estados','tipo','cd_estado','cd_cidade'));
     }
 
     public function novo()

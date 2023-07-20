@@ -21,22 +21,22 @@
             </div>
             <div class="row mr-1 ml-1">
                 <div class="col-md-12 px-0">
-                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['emissoras']]) !!}
+                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['emissoras/'.$tipo]]) !!}
                         <div class="form-group m-3 w-70">
                             <div class="row">
                                 <div class="col-md-2 col-sm-12">
                                     <div class="form-group">
                                         <label>Código</label>
-                                        <input type="text" class="form-control" name="codigo" id="codigo" placeholder="Código" value="">
+                                        <input type="text" class="form-control" name="codigo" id="codigo" placeholder="Código" value="{{ $codigo }}">
                                     </div>
                                 </div>
                                 <div class="col-md-2 col-sm-12">
                                     <div class="form-group">
                                         <label>Estado</label>
-                                        <select class="form-control" name="cd_estado" id="estado" required="required">
+                                        <select class="form-control" name="cd_estado" id="estado">
                                             <option value="">Selecione um estado</option>
                                             @foreach($estados as $estado)
-                                                <option value="{{ $estado->cd_estado }}">{{ $estado->nm_estado }}</option>
+                                                <option value="{{ $estado->cd_estado }}" {{ ($cd_estado == $estado->cd_estado) ? 'selected' : '' }}>{{ $estado->nm_estado }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -44,7 +44,7 @@
                                 <div class="col-md-2 col-sm-12">
                                     <div class="form-group">
                                         <label>Cidade</label>
-                                        <select class="form-control" name="cd_cidade" id="cidade" required="required">
+                                        <select class="form-control" name="cd_cidade" id="cidade">
                                             <option value="">Selecione uma cidade</option>
                                             
                                         </select>
@@ -53,7 +53,7 @@
                                 <div class="col-md-4 col-sm-12">
                                     <div class="form-group">
                                         <label>Emissora</label>
-                                        <input type="text" class="form-control" name="descricao" id="descricao" placeholder="Emissora" value="">
+                                        <input type="text" class="form-control" name="descricao" id="descricao" placeholder="Emissora" value="{{ $descricao }}">
                                     </div>
                                 </div>
                                 <div class="col-md-2 checkbox-radios mb-0">
@@ -66,53 +66,57 @@
             </div>
             <div class="col-md-12">
                 <p><strong>Total de registros</strong>: {{ $emissoras->total() }} </p>
-                <table id="" class="table table-striped table-bordered" cellspacing="0" width="100%">
-                    <thead>
-                        <tr>
-                            <th>Estado</th>
-                            <th>Cidade</th>
-                            <th>Código</th>
-                            <th>Emissora</th>
-                            <th class="disabled-sorting text-center">Transcrição</th>
-                            <th class="disabled-sorting text-center">Ações</th>
-                        </tr>
-                    </thead>
-                    <tfoot>
-                        <tr>
-                            <th>Estado</th>
-                            <th>Cidade</th>
-                            <th>Código</th>
-                            <th>Emissora</th>
-                            <th class="disabled-sorting text-center">Transcrição</th>
-                            <th class="disabled-sorting text-center">Ações</th>
-                        </tr>
-                    </tfoot>
-                    <tbody>
-                        @foreach($emissoras as $emissora)
+                @if($emissoras->total())
+                    <table id="" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                        <thead>
                             <tr>
-                                <td>{{ $emissora->estado->sg_estado }}</td>
-                                <td>{{ $emissora->cidade->nm_cidade }}</td>
-                                <td>{{ $emissora->codigo }}</td>
-                                <td>{{ $emissora->ds_emissora }}</td>
-                                <td class="center">
-                                    <a href="{{ url('radio/emissora/'.$emissora->id.'/transcricao/atualiza') }}">{!! ($emissora->fl_transcricao) ? '<span class="badge badge-pill badge-success">ATIVA</span>' : '<span class="badge badge-pill badge-danger">INATIVA</span>' !!}</a>
-                                </td>
-                                <td class="center">
-                                    <a title="Editar" href="{{ route('emissora.edit',$emissora->id) }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
-                                    <a title="Horários de Coleta" href="{{ url('radio/emissora/'.$emissora->id.'/horarios') }}" class="btn btn-warning btn-link btn-icon"><i class="nc-icon nc-time-alarm font-25"></i></a>
-                                    <form class="form-delete" style="display: inline;" action="{{ route('emissora.destroy',$emissora->id) }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button title="Excluir" type="submit" class="btn btn-danger btn-link btn-icon button-remove" title="Delete">
-                                            <i class="fa fa-times fa-2x"></i>
-                                        </button>
-                                    </form>
-                                </td>
+                                <th>Estado</th>
+                                <th>Cidade</th>
+                                <th>Código</th>
+                                <th>Emissora</th>
+                                <th class="disabled-sorting text-center">Transcrição</th>
+                                <th class="disabled-sorting text-center">Ações</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-                {{ $emissoras->onEachSide(1)->appends(['descricao' => $descricao, 'codigo' => $codigo])->links('vendor.pagination.bootstrap-4') }}
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>Estado</th>
+                                <th>Cidade</th>
+                                <th>Código</th>
+                                <th>Emissora</th>
+                                <th class="disabled-sorting text-center">Transcrição</th>
+                                <th class="disabled-sorting text-center">Ações</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            @foreach($emissoras as $emissora)
+                                <tr>
+                                    <td>{{ $emissora->estado->sg_estado }}</td>
+                                    <td>{{ $emissora->cidade->nm_cidade }}</td>
+                                    <td>{{ $emissora->codigo }}</td>
+                                    <td>{{ $emissora->ds_emissora }}</td>
+                                    <td class="center">
+                                        <a href="{{ url('radio/emissora/'.$emissora->id.'/transcricao/atualiza') }}">{!! ($emissora->fl_transcricao) ? '<span class="badge badge-pill badge-success">ATIVA</span>' : '<span class="badge badge-pill badge-danger">INATIVA</span>' !!}</a>
+                                    </td>
+                                    <td class="center">
+                                        <a title="Editar" href="{{ route('emissora.edit',$emissora->id) }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
+                                        <a title="Horários de Coleta" href="{{ url('radio/emissora/'.$emissora->id.'/horarios') }}" class="btn btn-warning btn-link btn-icon"><i class="nc-icon nc-time-alarm font-25"></i></a>
+                                        <form class="form-delete" style="display: inline;" action="{{ route('emissora.destroy',$emissora->id) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button title="Excluir" type="submit" class="btn btn-danger btn-link btn-icon button-remove" title="Delete">
+                                                <i class="fa fa-times fa-2x"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    {{ $emissoras->onEachSide(1)->appends(['descricao' => $descricao, 'codigo' => $codigo])->links('vendor.pagination.bootstrap-4') }}
+                @else
+                    <p>Não existem registros para os termos de busca selecionados.</p>
+                @endif
             </div>
         </div>
     </div>
@@ -153,6 +157,13 @@
                 });    
 
             });
+        });
+        $(function() {
+            var estado = $("#estado").val();
+            
+            if(estado){
+                $("#estado").trigger('change');
+            }
         });
     </script>
 @endsection
