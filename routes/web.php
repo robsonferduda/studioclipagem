@@ -107,8 +107,9 @@ Route::get('tags','TagController@index');
 Route::get('tags/cadastrar','TagController@cadastrar');
 Route::get('tags/{id}/remover','TagController@destroy');
 
-Route::get('tv','NoticiaTvController@index');
+Route::get('tv','NoticiaTvController@dashboard');
 Route::get('tv/noticias','NoticiaTvController@index');
+Route::get('tv/noticias/estatisticas','NoticiaTvController@estatisticas');
 
 Route::get('boletins','BoletimController@index');
 Route::get('boletim/{id}','BoletimController@detalhes');
