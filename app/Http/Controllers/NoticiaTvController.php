@@ -10,6 +10,7 @@ use App\Models\Cidade;
 use App\Models\Emissora;
 use App\Models\Estado;
 use App\Models\NoticiaTv;
+use App\Models\Tag;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -88,6 +89,17 @@ class NoticiaTvController extends Controller
         return view('noticia-tv/dashboard', compact('noticias','total_noticia_tv', 'total_emissora_tv', 'ultima_atualizacao','ultima_atualizacao_tv','data_final','data_inicial'));
     }
 
+    public function cadastrar()
+    {
+        $dados = new NoticiaTv();
+        $cidades = [];
+        $areas = [];
+
+        $estados = Estado::orderBy('nm_estado')->get();
+        $tags = Tag::orderBy('nome')->get();
+
+        return view('noticia-tv/form', compact('dados', 'estados', 'cidades', 'areas','tags'));
+    }
 
     public function estatisticas()
     {
