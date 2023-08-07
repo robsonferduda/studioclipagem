@@ -108,8 +108,8 @@ Route::get('tags/cadastrar','TagController@cadastrar');
 Route::get('tags/{id}/remover','TagController@destroy');
 
 Route::get('tv','NoticiaTvController@dashboard');
-Route::get('tv/noticias','NoticiaTvController@index');
 Route::get('tv/noticias/estatisticas','NoticiaTvController@estatisticas');
+Route::match(array('GET', 'POST'),'tv/noticias','NoticiaTvController@index');
 
 Route::get('boletins','BoletimController@index');
 Route::get('boletim/{id}','BoletimController@detalhes');
