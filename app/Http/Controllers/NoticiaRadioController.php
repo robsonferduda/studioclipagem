@@ -175,12 +175,33 @@ class NoticiaRadioController extends Controller
                              'msg' => "Ocorreu um erro ao inserir o registro");
         }
 
-        if ($retorno['flag']) {
-            Flash::success($retorno['msg']);
-            return redirect('radio/noticias')->withInput();
-        } else {
-            Flash::error($retorno['msg']);
-            return redirect('radio/noticias/cadastrar')->withInput();
+        switch ($request->btn_enviar) {
+            case 'salvar':
+                if ($retorno['flag']) {
+                    Flash::success($retorno['msg']);
+                    return redirect('radio/noticias')->withInput();
+                } else {
+                    Flash::error($retorno['msg']);
+                    return redirect('radio/noticias/cadastrar')->withInput();
+                }
+                break;
+
+            case 'salvar_e_copiar':
+
+                $dados = $noticia;
+                $estados = Estado::orderBy('nm_estado')->get();
+                $cidades = Cidade::where(['cd_estado' => $dados->cd_estado])->orderBy('nm_cidade')->get();
+                $areas = Area::select('area.id', 'area.descricao')
+                    ->join('area_cliente', 'area_cliente.area_id', '=', 'area.id')
+                    ->where(['cliente_id' => $dados->cliente_id,])
+                    ->where(['ativo' => true])
+                    ->orderBy('area.descricao')
+                    ->get();
+
+                $tags = Tag::orderBy('nome')->get();
+                
+                return view('noticia-radio/form', compact('dados', 'estados', 'cidades', 'areas','tags'));
+                break;
         }
     }
 
@@ -208,7 +229,29 @@ class NoticiaRadioController extends Controller
                             'link' => $request->link
             ); 
 
-            $noticia->update($dados);
+            if($noticia->update($dados)){
+
+                $tags = collect($request->tags)->mapWithKeys(function($tag){
+                    return [$tag => ['tipo_id' => 3]];
+                })->toArray();
+
+                $noticia->tags()->sync($tags);
+
+                $clientes = json_decode($request->clientes[0]);
+                if($clientes){
+
+                    for ($i=0; $i < count($clientes); $i++) { 
+                        
+                        $dados = array('tipo_id' => 3,
+                                'noticia_id' => $noticia->id,
+                                'cliente_id' => $clientes[$i]->id_cliente,
+                                'area_id' => $clientes[$i]->id_area,
+                                'sentimento' => $clientes[$i]->id_sentimento);
+                    
+                        NoticiaCliente::create($dados);
+                    }
+                }
+            }
 
             $retorno = array('flag' => true,
                              'msg' => "Dados atualizados com sucesso");
