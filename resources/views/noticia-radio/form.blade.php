@@ -191,8 +191,9 @@
                 </div>
             </div>
             <div class="card-footer text-center mb-2">
-                <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Salvar</button>
-                <a href="{{ url('radio/noticias') }}" class="btn btn-danger ml-2"><i class="fa fa-times"></i> Cancelar</a>
+                <button type="submit" class="btn btn-success" name="btn_enviar" value="salvar"><i class="fa fa-save"></i> Salvar</button>
+                <button type="submit" class="btn btn-warning" name="btn_enviar" value="salvar_e_copiar"><i class="fa fa-copy"></i> Salvar e Copiar</button>
+                <a href="{{ url('radio/noticias') }}" class="btn btn-danger"><i class="fa fa-times"></i> Cancelar</a>
             </div>
         </div>
     {!! Form::close() !!}

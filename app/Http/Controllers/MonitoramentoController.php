@@ -51,6 +51,7 @@ class MonitoramentoController extends Controller
 
         foreach ($monitoramentos as $key => $monitoramento) {
             
+            $data_atual = date('Y-m-d');
             $data_inicio = date('Y-m-d H:i:s');
             $total_vinculado = 0;
             $tabela = '';
@@ -61,9 +62,11 @@ class MonitoramentoController extends Controller
             $match = DB::select("SELECT id
                             FROM
                             (SELECT id,
+                                    dt_clipagem,
                                     to_tsvector(t1.texto) AS document
                             FROM $tabela t1) search
-                            WHERE search.document @@ to_tsquery('$monitoramento->expressao')");
+                            WHERE search.document @@ to_tsquery('$monitoramento->expressao')
+                            AND dt_clipagem = '$data_atual'");
 
             for ($i=0; $i < count($match); $i++) { 
                 
