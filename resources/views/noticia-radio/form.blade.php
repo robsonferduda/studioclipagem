@@ -203,8 +203,8 @@
         Dropzone.autoDiscover = false;
         $(document).ready(function(){
 
-            var host =  $('meta[name="base-url"]').attr('content');
-            var token =  $('meta[name="csrf-token"]').attr('content');
+            var host = $('meta[name="base-url"]').attr('content');
+            var token = $('meta[name="csrf-token"]').attr('content');
             
             $('.selector-select2').select2({
                 placeholder: 'Selecione',
@@ -426,14 +426,11 @@
             $('#cidade').append('<option value="">Carregando...</option>').val('');
             
             var host =  $('meta[name="base-url"]').attr('content');
+            var id_estado = $(this).val();
 
             $.ajax({
-                url: host+'/api/estado/getCidades',
+                url: host+'/api/estado/'+id_estado+'/cidades',
                 type: 'GET',
-                data: {
-                    "_token": $('meta[name="csrf-token"]').attr('content'),
-                    "estado": $(this).val(),
-                },
                 beforeSend: function() {
                     $('.content').loader('show');
                 },
