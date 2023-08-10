@@ -22,8 +22,9 @@ Route::post('cliente/validaCpf', 'ClienteController@validaCpf');
 Route::get('cliente/buscarClientes', 'ClienteController@buscarClientes');
 Route::get('cliente/getAreasCliente', 'ClienteController@getAreasCliente');
 
-Route::get('estado/{id_estado}/cidades', 'EstadoController@getCidades');
-
 Route::get('emissora/buscarEmissoras', 'EmissoraController@buscarEmissoras');
 
+Route::get('estado/{id_estado}/cidades', 'EstadoController@getCidades');
+
 Route::get('programa/buscarProgramas', 'ProgramaController@buscarProgramas');
+Route::get('programa/buscar-horario/{horario}', 'ProgramaController@buscarProgramasHorario');

@@ -201,6 +201,7 @@
 @section('script')    
     <script>
         Dropzone.autoDiscover = false;
+
         $(document).ready(function(){
 
             var host = $('meta[name="base-url"]').attr('content');
@@ -292,31 +293,33 @@
                 }
             });
 
-            $('#programa').select2({
-                placeholder: 'Selecione',
-                allowClear: true,
-                ajax: {
-                    url: host+"/api/programa/buscarProgramas",
-                    dataType: 'json',
-                    delay: 250,
-                    data: function (params) {
-                        return {
-                            q: params.term,
-                            page: params.page || 1,
-                            emissora: $('#emissora').val()
-                        };
-                    },
-                    processResults: function (data, params) {
-                        params.page = params.page || 1;
 
-                        return {
-                            results: data.data,
-                            pagination: {
-                                more: (params.page * 30) < data.total
-                            }
-                        };
+           
+
+            $(document).on("change", "#horario", function() {
+            
+                var horario = $(this).val();
+
+                $.ajax({
+                    url: host+'/api/programa/buscar-horario/'+horario,
+                    type: 'GET',
+                    beforeSend: function() {
+                        $('.content').loader('show');
                     },
-                },
+                    success: function(data) {
+
+                        $('#programa').empty();
+
+                        data.forEach(element => {
+                        let option = new Option(element.text, element.id);
+                            $('#programa').append(option);
+                        });
+                        
+                    },
+                    complete: function(){
+                        $('.content').loader('hide');
+                    }
+                });
             });
         });
 
@@ -461,6 +464,7 @@
         });
 
         $(document).on('change', '#cliente', function() {
+
             $('#area').find('option').remove().end();
 
             if($(this).val() == '') {

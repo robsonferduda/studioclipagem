@@ -154,4 +154,13 @@ class ProgramaController extends Controller
         $result = $programas->orderBy('nome', 'asc')->paginate(30);
         return response()->json($result);
     }
+
+    public function buscarProgramasHorario(Request $request)
+    {
+        $horario = $request->horario;
+
+        $programas = Programa::select('id', 'nome as text');
+        $result = $programas->where('hora_inicio', '<=', $horario)->where('hora_fim', '>=', $horario)->orderBy('nome', 'asc')->get();
+        return response()->json($result);
+    }
 }
