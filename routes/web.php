@@ -108,9 +108,14 @@ Route::get('tags/cadastrar','TagController@cadastrar');
 Route::get('tags/{id}/remover','TagController@destroy');
 
 Route::get('tv','NoticiaTvController@dashboard');
+Route::get('tv/decupagem','NoticiaTvController@decupagem');
 Route::get('tv/noticias/estatisticas','NoticiaTvController@estatisticas');
 Route::get('tv/noticias/cadastrar','NoticiaTvController@cadastrar');
+Route::get('noticia-tv/decupagem/listar','NoticiaTvController@listarArquivos');
 Route::match(array('GET', 'POST'),'tv/noticias','NoticiaTvController@index');
+Route::post('noticia_tv/decupagem/salvar','NoticiaTvController@salvarDecugem');
+Route::post('noticia_tv/decupagem/processar','NoticiaTvController@processar');
+Route::post('noticia_tv/upload','NoticiaTvController@upload');
 
 Route::get('boletins','BoletimController@index');
 Route::get('boletim/{id}','BoletimController@detalhes');

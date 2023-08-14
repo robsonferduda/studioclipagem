@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use DB;
+use File;
 use App\Utils;
 use Carbon\Carbon;
 use App\Models\Area;
@@ -11,6 +12,7 @@ use App\Models\Emissora;
 use App\Models\Estado;
 use App\Models\NoticiaTv;
 use App\Models\Tag;
+use PhpOffice\PhpWord\IOFactory;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -87,6 +89,103 @@ class NoticiaTvController extends Controller
 
         $noticias = NoticiaTv::paginate(10);
         return view('noticia-tv/dashboard', compact('noticias','total_noticia_tv', 'total_emissora_tv', 'ultima_atualizacao','ultima_atualizacao_tv','data_final','data_inicial'));
+    }
+
+    public function decupagem()
+    {
+        Session::put('sub-menu','tv/decupagem');
+        return view('noticia-tv/decupagem');
+    }
+
+    public function listarArquivos()
+    {
+        $directory = 'noticias-tv/pendentes';
+        $files_info = [];
+        $file_ext = array('doc','docx');
+
+        // Read files
+        foreach (File::allFiles(public_path($directory)) as $file) {
+           $extension = strtolower($file->getExtension());
+
+            if(in_array($extension,$file_ext)){ // Check file extension
+                $filename = $file->getFilename();
+                $size = $file->getSize(); // Bytes
+                $sizeinMB = round($size / (1000 * 1024), 2);// MB
+
+                $files_info[] = array(
+                    "name" => $filename,
+                    "size" => $size,
+                    "path" => url($directory.'/'.$filename)
+                );
+            }
+        }
+
+        return response()->json($files_info);
+    }
+
+    public function processar()
+    {
+
+        $directory = 'noticias-tv/pendentes/';
+        $files_info = [];
+        $file_ext = array('doc','docx');
+
+        // Read files
+        foreach (File::allFiles(public_path($directory)) as $file) {
+           $extension = strtolower($file->getExtension());
+
+            if(in_array($extension,$file_ext)){ // Check file extension
+                $filename = $file->getFilename();
+                $size = $file->getSize(); // Bytes
+                $sizeinMB = round($size / (1000 * 1024), 2);// MB
+
+                $phpWord = IOFactory::createReader('Word2007')->load(public_path().'/'.$directory.$filename);
+
+                foreach($phpWord->getSections() as $section) {
+                    foreach($section->getElements() as $element) {
+        
+                        switch (get_class($element)) {
+                            case 'PhpOffice\PhpWord\Element\Text' :
+                                //$textos[] = $element->getText();
+                                break;
+                            case 'PhpOffice\PhpWord\Element\TextRun':
+                                $textRunElements = $element->getElements();
+                                foreach ($textRunElements as $textRunElement) {
+                                    if(strlen($textRunElement->getText()) > 5)
+                                        $textos[] = trim($textRunElement->getText());
+                                }
+                                break;
+                            case 'PhpOffice\PhpWord\Element\TextBreak':
+                                //$textos[] = " ";
+                                break;
+                            default:
+                                throw new Exception('Something went wrong...');
+                        }
+                    }
+                }
+            }
+        }
+
+        return view('noticia-tv/salvar', compact('textos'));
+    }
+
+    
+    public function salvarDecugem(Request $request)
+    {
+        dd($request->all());
+    }
+
+    public function upload(Request $request)
+    {
+        $image = $request->file('file');
+        $fileInfo = $image->getClientOriginalName();
+        $filesize = $image->getSize()/1024/1024;
+        $filename = pathinfo($fileInfo, PATHINFO_FILENAME);
+        $extension = pathinfo($fileInfo, PATHINFO_EXTENSION);
+        $file_name= $filename.'-'.time().'.'.$extension;
+        $image->move(public_path('noticias-tv/pendentes'),$file_name);
+
+        return response()->json(['success'=>$file_name, 'msg' => 'Arquivo inserido com sucesso.']);
     }
 
     public function cadastrar()
