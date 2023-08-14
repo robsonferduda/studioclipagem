@@ -125,8 +125,7 @@
 
                        </ul>
                     </div>
-                 </li>
-                  
+                 </li>                  
                 @endrole
                 @role('administradores')
                 <li class="{{ (Session::has('url') and Session::get('url') == 'radio') ? 'active' : '' }}">
@@ -196,6 +195,30 @@
                      </div>
                   </li>
                 @endrole
+                @role('administradores')
+                <li class="{{ (Session::has('url') and Session::get('url') == 'pautas') ? 'active' : '' }}">
+                  <a data-toggle="collapse" href="#submenu-pauta" class="{{ (Session::has('url') and Session::get('url') == 'pautas') ? '' : 'collapsed' }}" aria-expanded="{{ (Session::has('url') and Session::get('url') == 'jornal-web') ? 'true' : 'false' }}">
+                      <i class="fa fa-file-text-o"></i>
+                      <p>Pautas
+                        <b class="caret"></b>
+                      </p>
+                  </a>
+                  <div class="collapse {{ (Session::has('url') and Session::get('url') == 'pautas') ? 'show' : '' }}" id="submenu-pauta" aria-expanded="false">
+                     <ul class="nav ml-5">
+                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'pautas') ? 'active' : '' }}">
+                           <a href="{{ url('pautas') }}">
+                           <span class="sidebar-normal">Listar</span>
+                           </a>
+                        </li>
+                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'pauta-cadastrar') ? 'active' : '' }}">
+                          <a href="{{ url('pauta/cadastrar') }}">
+                          <span class="sidebar-normal">Cadastrar</span>
+                          </a>
+                       </li>
+                     </ul>
+                  </div>
+               </li>                  
+              @endrole
                 @role('administradores')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'monitoramento') ? 'active' : '' }}">
                     <a href="{{ url('monitoramento') }}">
