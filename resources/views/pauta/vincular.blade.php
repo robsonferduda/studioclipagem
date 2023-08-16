@@ -34,7 +34,7 @@
                                     <div class="form-check">
                                         <label class="form-check-label">
                                             <input class="form-check-input" type="checkbox" name="is_active" value="true">
-                                            {{ $noticia->sinopse }}
+                                            {!! $noticia->sinopse !!}
                                             <span class="form-check-sign"></span>
                                         </label>
                                     </div>
