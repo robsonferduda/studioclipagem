@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use DB;
 use Auth;
-use App\Models\Emissora;
+use App\Models\Pauta;
 use App\Models\JornalWeb;
 use Carbon\Carbon;
 use Laracasts\Flash\Flash;
@@ -26,7 +26,9 @@ class PautaController extends Controller
     {
         Session::put('sub-menu','pautas');
 
-        return view('pauta/index');
+        $pautas = Pauta::all();
+
+        return view('pauta/index', compact('pautas'));
     }
 
     public function cadastrar()

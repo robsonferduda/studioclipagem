@@ -21,21 +21,29 @@
             </div>
             <div class="row">
                 <div class="col-lg-12 col-sm-12">
-                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['buscar-monitoramento']]) !!}
+                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['pauta']]) !!}
                         <div class="form-group m-3 w-70">
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label>Buscar Monitoramento</label>
+                                        <label>Cliente</label>
                                         <select class="form-control select2" name="regra" id="regra">
                                             <option value="">Selecione um cliente</option>
-                                            @foreach ($fontes as $fonte)
-                                                <option value="{{ $fonte->id }}">{{ $fonte->ds_fonte }}</option>
-                                            @endforeach
+                                            
                                         </select>
                                     </div>
                                 </div>
+                                <div class="col-md-12">
+                                    <label for="sinopse">Texto</label>
+                                    <div class="form-group">
+                                        <textarea class="form-control" name="sinopse" id="sinopse" rows="5"></textarea>
+                                    </div>
+                                </div>
                             </div>     
+                        </div>
+                        <div class="text-center ml-2 mr-2">
+                            <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Salvar</button>
+                            <a href="{{ url()->previous() }}" class="btn btn-danger ml-2"><i class="fa fa-times"></i> Cancelar</a>
                         </div>
                     {!! Form::close() !!}
                 </div>

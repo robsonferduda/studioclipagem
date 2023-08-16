@@ -19,8 +19,31 @@
             <div class="col-md-12">
                 @include('layouts.mensagens')
             </div>
-            <div class="row">
-                
+            <div class="col-md-12">
+                <div class="content table-full-width">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Pauta</th>
+                                <th class="center">Opções</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($pautas as $pauta)
+                                <tr>
+                                    <td>{!! $pauta->cliente->pessoa->nome !!}</td>
+                                    <td>{!! $pauta->descricao !!}</td>
+                                    <td class="center">
+                                        <a title="Editar" href="{{ url('radio/noticias/'.$pauta->id.'/editar') }}" class="btn btn-warning btn-link btn-icon"><i class="fa fa-check fa-2x"></i></a>
+                                        <a title="Editar" href="{{ url('radio/noticias/'.$pauta->id.'/editar') }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
+                                        <a title="Excluir" href="{{ url('radio/noticias/'.$pauta->id.'/remover') }}" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-trash fa-2x"></i></a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
