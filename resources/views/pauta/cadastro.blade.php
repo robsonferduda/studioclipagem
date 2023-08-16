@@ -21,22 +21,26 @@
             </div>
             <div class="row">
                 <div class="col-lg-12 col-sm-12">
-                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['pauta']]) !!}
+                    {!! Form::open(['id' => 'frm-pauta', 'class' => 'form-horizontal', 'url' => ['pauta']]) !!}
                         <div class="form-group m-3 w-70">
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label>Cliente</label>
-                                        <select class="form-control select2" name="regra" id="regra">
+                                        <label>Cliente <span class="text-danger">Obrigatório</span></label>
+                                        <select class="form-control select2" name="cliente_id" id="cliente_id" required>
                                             <option value="">Selecione um cliente</option>
-                                            
+                                            @foreach($clientes as $cliente)
+                                                <option value="{!! $cliente->id !!}">
+                                                    {!! $cliente->pessoa->nome !!}
+                                                </option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
-                                    <label for="sinopse">Texto</label>
+                                    <label for="sinopse">Texto <span class="text-danger">Obrigatório</span></label>
                                     <div class="form-group">
-                                        <textarea class="form-control" name="sinopse" id="sinopse" rows="5"></textarea>
+                                        <textarea class="form-control" name="descricao" id="descricao" rows="5" required></textarea>
                                     </div>
                                 </div>
                             </div>     

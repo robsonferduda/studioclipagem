@@ -92,8 +92,11 @@ Route::match(array('GET', 'POST'),'emissoras','EmissoraController@index');
 Route::get('emissoras/{tipo}/novo','EmissoraController@novo');
 Route::get('radio/emissora/{id}/horarios','EmissoraController@horarios');
 
-Route::get('pautas','PautaController@index');
+Route::post('pauta','PautaController@store');
+Route::match(array('GET', 'POST'),'pautas','PautaController@index');
 Route::get('pauta/cadastrar','PautaController@cadastrar');
+Route::get('pauta/{id}/vincular','PautaController@vincular');
+Route::get('pauta/{id}/remover','PautaController@remover');
 
 Route::get('radios','NoticiaRadioController@dashboard');
 Route::match(array('GET', 'POST'),'radio/noticias','NoticiaRadioController@index');
