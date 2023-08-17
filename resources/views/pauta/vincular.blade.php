@@ -24,12 +24,44 @@
                 <p class="mb-1"><strong>Cliente</strong>: {{ $pauta->descricao }}</p>
                 <p class="mb-1"><strong>Pauta</strong>: {{ $pauta->descricao }}</p>
                 <p><strong>Notícias do Cliente</strong></p>
+            </div>            
+            <div class="col-lg-12 col-sm-12">
+                <div class="row">
+                    <div class="row ml-3">
+                        <div class="tile">
+                            <input type="checkbox" name="midia" id="midia-tv">
+                            <label class="label-check" for="midia-tv">
+                                <i class="fa fa-tv"></i>
+                                <h6>TV</h6>
+                            </label>
+                        </div>
+                        <div class="tile">
+                            <input type="checkbox" name="midia" id="midia-radio">
+                            <label class="label-check" for="midia-radio">
+                                <i class="fa fa-volume-up"></i>
+                                <h6>Rádio</h6>
+                            </label>
+                        </div>
+                        <div class="tile">
+                            <input type="checkbox" name="midia" id="midia-impresso">
+                            <label class="label-check" for="midia-impresso">
+                                <i class="fa fa-newspaper-o"></i>
+                                <h6>Impresso</h6>
+                            </label>
+                        </div>
+                        <div class="tile">
+                            <input type="checkbox" name="midia" id="midia-web">
+                            <label class="label-check" for="midia-web">
+                                <i class="fa fa-globe"></i>
+                                <h6>Web</h6>
+                            </label>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="row">
-                <div class="col-lg-12 col-sm-12">
-                    {!! Form::open(['id' => 'frm-pautas', 'class' => 'form-horizontal', 'url' => ['pautas']]) !!}
-                        <div class="form-group m-3 w-70">
-                            <div class="form-check mt-3">
+            <div class="col-lg-12 col-sm-12">
+                <h6 class="mt-3">Listagem de Notícias</h6>
+                    <div class="box-lista-noticias mt-3" style="position: relative; padding: 5px; ">
                                 @foreach($noticias as $noticia)
                                     <div class="form-check">
                                         <label class="form-check-label">
@@ -39,11 +71,8 @@
                                         </label>
                                     </div>
                                 @endforeach
-                            </div>
-                        </div>
-                    {!! Form::close() !!}
-                </div>
-            </div>            
+                    </div>
+            </div>           
         </div>
     </div>
 </div> 
@@ -53,6 +82,14 @@
         $(document).ready(function() { 
 
             var host =  $('meta[name="base-url"]').attr('content');
+
+            $("#midia-tv").click(function(){
+                if($(this).is(":checked")){
+                    $('.box-lista-noticias').loader('show');
+                }else{
+                    $('.box-lista-noticias').loader('hide');
+                }
+            });
 
         });
     </script>
