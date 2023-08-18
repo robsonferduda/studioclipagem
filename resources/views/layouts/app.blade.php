@@ -325,6 +325,7 @@
       </footer>
     </div>
   </div>
+  
   <!--   Core JS Files   -->
   <script src="{{ asset('js/core/jquery.min.js') }}"></script>
   <script src="{{ asset('js/core/popper.min.js') }}"></script>
@@ -361,6 +362,7 @@
   <script src="{{ asset('js/dropzone.js') }}"></script>
   <script src="{{ asset('js/cropper.js') }}"></script>
   <script src="{{ asset('js/plugins/chartist.min.js') }}"></script>
+  @yield('script')
   <script>
     function setFormValidation(id) {
       $(id).validate({
@@ -383,6 +385,7 @@
       //demo.initChartsPages();
       
       demo.initDateTimePicker();
+      
       setFormValidation('#RegisterValidation');
     });
   </script>
@@ -434,7 +437,7 @@
       
     });
   </script>
-  @yield('script')
+  
 </body>
 
 </html>
