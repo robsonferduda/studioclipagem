@@ -21,6 +21,7 @@
                 @include('layouts.mensagens')
             </div>
             <div class="col-lg-12 col-sm-12">
+                <input type="hidden" name="pauta_id" id="pauta_id" value="{{ $pauta->id }}">
                 <input type="hidden" name="cliente" id="cliente" value="{{ $pauta->cliente->id }}">
                 <p class="mb-1"><strong>Cliente</strong>: {{ $pauta->cliente->pessoa->nome }}</p>
                 <p class="mb-1"><strong>Pauta</strong>: {{ $pauta->descricao }}</p>
@@ -118,7 +119,55 @@
             });
 
             $(document).on("change", ".item-noticia", function() {
-                alert($(this).val());
+                
+                var noticia_id = $(this).val();
+                var tipo_id = $(this).data("tipo");
+                var pauta_id = $("#pauta_id").val();
+
+                if($(this).is(':checked')){
+
+                    $.ajax({
+                        url: host+'/pauta/vincular',
+                        type: 'POST',
+                        data: {
+                            "_token": token,
+                            "noticia_id": noticia_id,
+                            "pauta_id": pauta_id,
+                            "tipo_id": tipo_id
+                        },
+                        beforeSend: function() {
+                            $('.table-noticias').loader('show');
+                        },
+                        success: function(data) {
+                            
+                        },
+                        complete: function(){
+                            $('.table-noticias').loader('hide');
+                        }
+                    });
+
+                }else{
+
+                    $.ajax({
+                        url: host+'/pauta/desvincular',
+                        type: 'POST',
+                        data: {
+                            "_token": token,
+                            "noticia_id": noticia_id,
+                            "pauta_id": pauta_id,
+                            "tipo_id": tipo_id
+                        },
+                        beforeSend: function() {
+                            $('.table-noticias').loader('show');
+                        },
+                        success: function(data) {
+                            
+                        },
+                        complete: function(){
+                            $('.table-noticias').loader('hide');
+                        }
+                    });
+                }
             });
 
             listaNoticias();
@@ -174,9 +223,11 @@
                     if(noticia.tipo == 'web') icone = '<i class="fa fa-globe"></i> Web';
                     if(noticia.tipo == 'impresso') icone = '<i class="fa fa-newspaper-o"></i> Impresso';
 
+                    var check = (noticia.vinculo) ? 'checked' : '';
+
                     $(".table-noticias tbody").append('<tr>'+
                                                         '<td><div class="form-check" style="margin-top: -20px !important;"><label class="form-check-label">'+
-                                                        '<input class="form-check-input item-noticia" type="checkbox" name="lista_noticia[]" value="'+noticia.id+'"><span class="form-check-sign"></span></label></div></td>'+
+                                                        '<input class="form-check-input item-noticia" type="checkbox" name="lista_noticia[]" '+check+' value="'+noticia.id+'" data-tipo="'+noticia.tipo+'"><span class="form-check-sign"></span></label></div></td>'+
                                                         '<td><strong>'+noticia.titulo+'</strong><br/>'+icone+' '+noticia.dt_noticia+' '+noticia.fonte+' <br/>'+noticia.texto.substring(0, 200)+'</td>'+
                                                        '</tr>');
                    

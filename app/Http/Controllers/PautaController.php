@@ -7,6 +7,7 @@ use Auth;
 use App\Utils;
 use App\Models\Cliente;
 use App\Models\Pauta;
+use App\Models\PautaNoticia;
 use App\Models\NoticiaRadio;
 use Carbon\Carbon;
 use Laracasts\Flash\Flash;
@@ -125,5 +126,65 @@ class PautaController extends Controller
             Flash::error('<i class="fa fa-check"></i> Impossível excluir a pauta, ela possui notícias vinculadas');
         }
         return redirect('pautas')->withInput();
+    }
+
+    public function vincularNoticia(Request $request)
+    {
+        $tipo = null;
+
+        switch ($request->tipo_id) {
+            case 'impresso':
+                $tipo = 1;
+                break;
+            
+            case 'web':
+                $tipo = 2;
+                break;
+            
+            case 'radio':
+                $tipo = 3;
+                break;
+                
+            case 'tv':
+                $tipo = 4;     
+                break;
+        
+        }
+
+        $dados = array('noticia_id' => $request->noticia_id, 
+                        'pauta_id' => $request->pauta_id, 
+                        'tipo_id' => $tipo);
+
+        PautaNoticia::create($dados);
+    }
+
+    public function desvincularNoticia(Request $request)
+    {
+        $tipo = null;
+
+        switch ($request->tipo_id) {
+            case 'impresso':
+                $tipo = 1;
+                break;
+            
+            case 'web':
+                $tipo = 2;
+                break;
+            
+            case 'radio':
+                $tipo = 3;
+                break;
+                
+            case 'tv':
+                $tipo = 4;     
+                break;
+        
+        }
+
+        $vinculo = PautaNoticia::where('noticia_id',$request->noticia_id)->where('pauta_id',$request->pauta_id)->where('tipo_id',$tipo)->first();
+
+        if($vinculo){
+            $vinculo->delete();
+        }
     }
 }

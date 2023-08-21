@@ -97,6 +97,8 @@ Route::match(array('GET', 'POST'),'pautas','PautaController@index');
 Route::get('pauta/cadastrar','PautaController@cadastrar');
 Route::get('pauta/{id}/vincular','PautaController@vincular');
 Route::get('pauta/{id}/remover','PautaController@remover');
+Route::post('pauta/vincular','PautaController@vincularNoticia');
+Route::post('pauta/desvincular','PautaController@desvincularNoticia');
 
 Route::get('radios','NoticiaRadioController@dashboard');
 Route::match(array('GET', 'POST'),'radio/noticias','NoticiaRadioController@index');

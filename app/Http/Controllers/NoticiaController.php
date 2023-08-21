@@ -35,14 +35,18 @@ class NoticiaController extends Controller
 
         $tipo = array();
 
-        $sql = "SELECT id, dt_noticia, titulo, texto, fonte, tipo FROM (
-                    SELECT t1.id, titulo, texto, to_char(dt_clipagem,'DD/MM/YYYY') as dt_noticia, t2.nome AS fonte, 'web' as tipo
-                    FROM noticia_web t1, fonte_web t2 
-                    WHERE t1.id_fonte = t2.id AND dt_clipagem BETWEEN '{$dt_inicial}' AND '{$dt_final}'   
+        $sql = "SELECT id, dt_noticia, titulo, texto, fonte, tipo, vinculo FROM (
+                    SELECT t1.id, titulo, texto, to_char(dt_clipagem,'DD/MM/YYYY') as dt_noticia, t2.nome AS fonte, 'web' as tipo, t3.id AS vinculo 
+                    FROM noticia_web t1
+                    JOIN fonte_web t2 ON t1.id_fonte = t2.id 
+                    LEFT JOIN pauta_noticia t3 ON t3.noticia_id = t1.id  
+                    WHERE dt_clipagem BETWEEN '{$dt_inicial}' AND '{$dt_final}'   
                     UNION
-                    SELECT t1.id, titulo, texto, to_char(dt_clipagem,'DD/MM/YYYY') as dt_noticia, t2.nome AS fonte, 'web' as tipo
-                    FROM noticia_impresso t1, fonte_impressa t2 
-                    WHERE t1.id_fonte = t2.id AND dt_clipagem BETWEEN '{$dt_inicial}' AND '{$dt_final}' 
+                    SELECT t1.id, titulo, texto, to_char(dt_clipagem,'DD/MM/YYYY') as dt_noticia, t2.nome AS fonte, 'web' as tipo, t3.id AS vinculo 
+                    FROM noticia_impresso t1
+                    JOIN fonte_impressa t2 ON t1.id_fonte = t2.id 
+                    LEFT JOIN pauta_noticia t3 ON t3.noticia_id = t1.id 
+                    WHERE dt_clipagem BETWEEN '{$dt_inicial}' AND '{$dt_final}' 
                 ) as noticias WHERE 1=1 ";
 
         if($request->flag_web == 'true'){

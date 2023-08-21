@@ -12,6 +12,6 @@ class PautaNoticia extends Model
     protected $connection = 'pgsql';
     protected $table = 'pauta_noticia';
 
-    protected $fillable = ['pauta_id'];
+    protected $fillable = ['tipo_id','noticia_id','pauta_id'];
 
 }
