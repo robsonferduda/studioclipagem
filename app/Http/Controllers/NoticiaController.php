@@ -27,9 +27,11 @@ class NoticiaController extends Controller
     {
         $dados = array();
         $cliente = $request->cliente;
-        $dt_inicial = $request->dt_inicial;
-        $dt_final = $request->dt_final;
         $termo = $request->termo;
+
+        $carbon = new Carbon();
+        $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
+        $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
 
         $tipo = array();
 
