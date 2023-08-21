@@ -46,6 +46,7 @@
                             <input type="text" class="form-control" name="termo" id="termo" minlength="3" placeholder="Termo">
                         </div>
                     </div>  
+                    
                 </div>      
                 <div class="row">
                     <div class="row ml-3">
@@ -82,12 +83,23 @@
             </div>
             <div class="col-lg-12 col-sm-12">
                 <h6 class="mt-5">Listagem de Notícias</h6>
-                <div class="form-check" style="margin-left: 6px;">
-                    <label class="form-check-label"><input class="form-check-input" type="checkbox" name="is_active" value="true">
-                        SELECIONAR TODAS<span class="form-check-sign"></span>
-                    </label>
-                </div>
-                <div class="box-lista-noticias mt-3" style="position: relative; padding: 5px; padding-bottom: 20px;"></div>
+                <table class="table-noticias table table-striped">
+                    <thead>
+                        <th>
+                            <tr>                            
+                                <td colspan="2">
+                                    <div class="form-check">
+                                        <label class="form-check-label"><input class="form-check-input todas" type="checkbox" name="is_active" value="true">
+                                            SELECIONAR TODAS<span class="form-check-sign"></span>
+                                        </label>
+                                    </div>
+                                </td>
+                            </tr>
+                        </th>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
             </div>           
         </div>
     </div>
@@ -100,6 +112,14 @@
             var host  = $('meta[name="base-url"]').attr('content');
             var token = $('meta[name="csrf-token"]').attr('content');
             var dados = [];
+
+            $(".todas").change(function(){
+                $(".item-noticia").not(this).prop('checked', this.checked);
+            });
+
+            $(document).on("change", ".item-noticia", function() {
+                alert($(this).val());
+            });
 
             listaNoticias();
 
@@ -116,8 +136,7 @@
 
                 //Limpas os dados
                 dados = [];
-                $(".box-lista-noticias").empty();
-
+                
                 //Carrega os dados web
                 $.ajax({
                     url: host+'/api/noticias/listar',
@@ -134,29 +153,33 @@
                         "termo": termo
                     },
                     beforeSend: function() {
-                        $('.box-lista-noticias').loader('show');
+                        $('.table-noticias').loader('show');
                     },
                     success: function(data) {
                         dados = data;
                         desenhaTabela();
                     },
                     complete: function(){
-                        $('.box-lista-noticias').loader('hide');
+                        $('.table-noticias').loader('hide');
                     }
                 });
             }
 
             function desenhaTabela(){
+
+                $(".table-noticias tbody").empty();
+
                 dados.forEach(function (noticia, indice) {    
                     
                     if(noticia.tipo == 'web') icone = '<i class="fa fa-globe"></i> Web';
                     if(noticia.tipo == 'impresso') icone = '<i class="fa fa-newspaper-o"></i> Impresso';
 
-                    $(".box-lista-noticias").append('<div class="form-check">'+
-                                                        '<label class="form-check-label">'+
-                                                            '<input class="form-check-input" type="checkbox" name="is_active" value="true"><strong>'+noticia.titulo+'</strong><br/>'+noticia.dt_noticia+' '+icone+'<br/>'+noticia.texto.substring(0, 200)+'... <span class="form-check-sign"></span>'+
-                                                        '</label>'+
-                                                    '</div>');       
+                    $(".table-noticias tbody").append('<tr>'+
+                                                        '<td><div class="form-check" style="margin-top: -20px !important;"><label class="form-check-label">'+
+                                                        '<input class="form-check-input item-noticia" type="checkbox" name="lista_noticia[]" value="'+noticia.id+'"><span class="form-check-sign"></span></label></div></td>'+
+                                                        '<td><strong>'+noticia.titulo+'</strong><br/>'+icone+' '+noticia.dt_noticia+' '+noticia.fonte+' <br/>'+noticia.texto.substring(0, 200)+'</td>'+
+                                                       '</tr>');
+                   
                 });
             }
 
