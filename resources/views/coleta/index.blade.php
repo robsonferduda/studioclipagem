@@ -26,7 +26,7 @@
                                 <div class="col-md-1 col-sm-6">
                                     <div class="form-group">
                                         <label>Data Inicial</label>
-                                        <input type="text" class="form-control datepicker" name="dt_coleta" required="true" value="{{ $dt_coleta }}" placeholder="__/__/____">
+                                        <input type="text" class="form-control datepicker" name="dt_coleta" required="true" value="{{ \Carbon\Carbon::parse($dt_coleta)->format('d/m/Y H:i:s') }}" placeholder="__/__/____">
                                     </div>
                                 </div>
                                 <div class="col-md-2 mt-3">
@@ -59,7 +59,7 @@
                             </tbody>
                         </table> 
                     @else
-                        <p>Nenhuma coleta realizada no dia {{ $dt_coleta }}</p>
+                        <p>Nenhuma coleta realizada no dia {{ \Carbon\Carbon::parse($dt_coleta)->format('d/m/Y H:i:s') }}</p>
                     @endif
                 </div>                          
             </div>

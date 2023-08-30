@@ -24,7 +24,8 @@ class ColetaController extends Controller
     public function index(Request $request)
     {
         $coletas = array();
-        $dt_coleta = ($request->dt_coleta) ? $request->dt_coleta : date("d/m/Y");
+        $carbon = new Carbon();
+        $dt_coleta = ($request->dt_coleta) ? $carbon->createFromFormat('d/m/Y', $request->dt_coleta)->format('Y-m-d') : date("Y-m-d");
 
         if($request->isMethod('GET')){
             $coletas = ColetaWeb::whereBetween('created_at', [$this->data_atual.' 00:00:00', $this->data_atual.' 23:59:59'])->get();
