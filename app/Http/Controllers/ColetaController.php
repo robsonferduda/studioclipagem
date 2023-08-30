@@ -32,7 +32,7 @@ class ColetaController extends Controller
         }
 
         if($request->isMethod('POST')){
-            $coletas = ColetaWeb::whereBetween('created_at', [$request->dt_coleta.' 00:00:00', $request->dt_coleta.' 23:59:59'])->get();
+            $coletas = ColetaWeb::whereBetween('created_at', [$dt_coleta.' 00:00:00', $dt_coleta.' 23:59:59'])->get();
         }
 
         return view('coleta/index', compact('coletas','dt_coleta'));
