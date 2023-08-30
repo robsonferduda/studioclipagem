@@ -7,7 +7,7 @@
   <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
   <link href="images/favicon.png" rel="shortcut icon">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-  <title>{{ config('app.name', 'Studioclipagem') }}</title>
+  <title>{{ config('app.name', 'Studio Clipagem') }}</title>
   <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
   <!--     Fonts and icons     -->
   <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
@@ -70,6 +70,14 @@
                   <a href="{{ url('tags') }}">
                     <i class="fa fa-hashtag" aria-hidden="true"></i>
                   <p>Tags</p>
+                  </a>
+                </li>
+              @endrole
+              @role('administradores')
+                <li class="{{ (Session::has('url') and Session::get('url') == 'assessorias') ? 'active' : '' }}">
+                  <a href="{{ url('assessorias') }}">
+                    <i class="fa fa-microphone" aria-hidden="true"></i>
+                  <p>Assessorias</p>
                   </a>
                 </li>
               @endrole
@@ -224,6 +232,14 @@
                   </div>
                </li>                  
               @endrole
+              @role('administradores')
+                <li class="{{ (Session::has('url') and Session::get('url') == 'coleta') ? 'active' : '' }}">
+                  <a href="{{ url('coletas') }}">
+                  <i class="fa fa-database"></i>
+                  <p>Coletas</p>
+                  </a>
+                </li>
+              @endrole
                 @role('administradores')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'monitoramento') ? 'active' : '' }}">
                     <a href="{{ url('monitoramento') }}">
@@ -317,7 +333,7 @@
                 © 2021 - 
                 <script>
                   document.write(new Date().getFullYear())
-                </script> - Studioclipagem
+                </script> - Studio Clipagem
               </span>
             </div>
           </div>

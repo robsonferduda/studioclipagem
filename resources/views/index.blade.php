@@ -84,7 +84,7 @@
                 <div class="col-lg-12 col-md-12 col-sm-12">
                     <div class="card">
                         <div class="card-header">
-                            <h6 class="card-title"><i class="fa fa-line-chart" aria-hidden="true"></i> Mais Acessados</h6>
+                            <h6 class="card-title"><i class="fa fa-line-chart" aria-hidden="true"></i> Maiores Coletas</h6>
                         </div>
                         <div class="card-content">
                             @if($totais['web'])
@@ -119,19 +119,21 @@
                         <div class="card-content">
                             @if($totais['web'])
                                 <ul class="list-unstyled team-members ml-3 mr-3">
-                                    @foreach ($sem_coleta as $site)
-                                        <li style="border-bottom: 1px solid #ebebeb; margin-bottom: 3px;">
-                                            <div class="row">                                            
-                                                <div class="col-md-9">
-                                                    {{ $site->nome }}
-                                                    <br>
-                                                    <span class="text-muted"><small>{{ $site->url }}</small></span>
-                                                </div>   
-                                                <div class="col-md-2 text-right">
-                                                   
-                                                </div>             
-                                            </div>
-                                        </li>
+                                    @foreach ($sem_coleta as $key => $site)
+                                        @if($key < 9)
+                                            <li style="border-bottom: 1px solid #ebebeb; margin-bottom: 3px;">
+                                                <div class="row">                                            
+                                                    <div class="col-md-9">
+                                                        {{ $site->nome }}
+                                                        <br>
+                                                        <span class="text-muted"><small>{{ $site->url }}</small></span>
+                                                    </div>   
+                                                    <div class="col-md-2 text-right">
+                                                    
+                                                    </div>             
+                                                </div>
+                                            </li>
+                                        @endif
                                     @endforeach                                
                                 </ul>
                             @else
@@ -194,6 +196,7 @@
                                             @endforeach                                   
                                         </tbody>
                                     </table>
+                                    <a href="{{ url('coletas') }}">Ver Mais</a>
                                 @else
                                     <p><i class="fa fa-hourglass-start mr-1"></i>Nenhuma coleta realizada no dia de hoje</p>
                                 @endif
