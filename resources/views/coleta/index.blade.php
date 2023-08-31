@@ -10,7 +10,7 @@
                     </h4>
                 </div>
                 <div class="col-md-4">
-                    
+                    <a href="{{ url('/') }}" class="btn btn-primary pull-right mr-3"><i class="nc-icon nc-chart-pie-36"></i> Dashboard</a>
                 </div>
             </div>
         </div>

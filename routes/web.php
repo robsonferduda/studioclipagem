@@ -88,7 +88,7 @@ Route::match(array('GET', 'POST'),'monitoramento','MonitoramentoController@index
 Route::match(array('GET', 'POST'),'monitoramento/listar','MonitoramentoController@listar');
 Route::get('monitoramento/adicionar','MonitoramentoController@adicionar');
 Route::get('monitoramento/executar','MonitoramentoController@executar');
-Route::get('monitoramento/{id}/desabilitar','MonitoramentoController@desabilitar');
+Route::get('monitoramento/{id}/atualizar-status','MonitoramentoController@atualizarStatus');
 Route::get('monitoramento/{id}/noticias','MonitoramentoController@noticias');
 
 Route::match(array('GET', 'POST'),'emissoras','EmissoraController@index');
