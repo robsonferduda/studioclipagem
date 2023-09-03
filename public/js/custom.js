@@ -21,6 +21,57 @@ $(document).ready(function() {
         return dia+"/"+mes+"/"+date.getFullYear()
     }
 
+    var inputOptionsPromise = new Promise(function (resolve) {
+        
+        var options = {};
+        $.ajax({
+            url: host+'/assessorias/clientes',
+            type: 'GET',
+            success: function(response) {
+
+                $.map(response,
+                    function(o) {
+                        options[o.id] = o.pessoa.nome;
+                    });
+
+                resolve(options)               
+            }
+        });
+    });
+
+    $('body').on("click", ".troca_cliente", function(e) {
+        e.preventDefault();
+        Swal.fire({
+            title: "Selecione um cliente",
+            input: 'select',
+            inputOptions: inputOptionsPromise,
+            showCancelButton: true,
+            confirmButtonColor: "#28a745",
+            confirmButtonText: "Confirmar",
+            cancelButtonText: "Cancelar"
+        }).then(function(result) {
+            if (result.isConfirmed) {
+
+                var cliente = $(".swal2-select").val();
+
+                $.ajax({
+                    url: host+'/cliente/selecionar',
+                       type: 'POST',
+                       data: {
+                            "_token": $('meta[name="csrf-token"]').attr('content'),
+                            "cliente": cliente
+                    },
+                    success: function(response) {
+                        window.location.reload();                                
+                    },
+                    error: function(response){
+                        console.log(response);
+                    }
+                });
+            }
+        });
+    });
+
     $(".data-refresh").click(function(){
             
         Swal.fire({
