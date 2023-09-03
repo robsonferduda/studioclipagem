@@ -12,6 +12,7 @@ use App\Models\JornalWeb;
 use App\Models\Fonte;
 use App\Models\NoticiaCliente;
 use Carbon\Carbon;
+use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -31,7 +32,7 @@ class MonitoramentoController extends Controller
     public function index()
     {
         $fontes = Fonte::where('tipo_fonte_id',1)->orderBy('ds_fonte')->get();
-        $monitoramentos = Monitoramento::with('cliente')->get();
+        $monitoramentos = Monitoramento::with('cliente')->orderBy('id','DESC')->paginate(10);
 
         return view('monitoramento/index', compact('monitoramentos','fontes'));
     }
@@ -98,5 +99,20 @@ class MonitoramentoController extends Controller
         }
 
         return redirect('monitoramento');
+    }
+
+    public function atualizarStatus($id)
+    {
+        $monitoramento = Monitoramento::find($id);
+
+        if($monitoramento){
+            $monitoramento->fl_ativo = !$monitoramento->fl_ativo;
+            if($monitoramento->save())
+                Flash::success('<i class="fa fa-check"></i> Status do monitoramento atualizado com sucesso');
+            else
+                Flash::error('<i class="fa fa-times"></i> Erro ao atualizar status');
+        }
+
+        return redirect('monitoramento')->withInput();
     }
 }

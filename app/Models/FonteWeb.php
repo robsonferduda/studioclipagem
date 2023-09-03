@@ -37,7 +37,7 @@ class FonteWeb extends Model
                 AND dt_clipagem BETWEEN '$data_inicio' AND '$data_fim'
                 GROUP BY t2.id, t2.nome, t2.url
                 ORDER BY total DESC
-                LIMIT 5";
+                LIMIT 10";
 
         return DB::select($sql);
     }

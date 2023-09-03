@@ -11,6 +11,7 @@
                     </h4>
                 </div>
                 <div class="col-md-4">
+                    <a href="{{ url('/') }}" class="btn btn-primary pull-right mr-3"><i class="nc-icon nc-chart-pie-36"></i> Dashboard</a>
                     <button class="btn btn-primary pull-right mr-3"><i class="fa fa-plus"></i> Novo</button>
                     <a href="{{ url('monitoramento/executar') }}" class="btn btn-warning pull-right mr-3"><i class="fa fa-bolt"></i> Executar</a>
                 </div>
@@ -46,16 +47,15 @@
                                 <div class="card card-stats ml-3 mr-3" style="border: 1px solid #f1f1f1;">
                                     <div class="card-body">
                                         <div class="row">
-                                            <div class="col-12 col-md-12">
-                                           
+                                            <div class="col-12 col-md-12">                                           
                                                 <p>
                                                     <h6>
                                                         {{ $monitoramento->cliente->pessoa->nome }} 
                                                         <span class="pull-right">
                                                         @if($monitoramento->fl_ativo)
-                                                            <i class="fa fa-circle text-success"></i> Ativo
+                                                        <i class="fa fa-circle text-success mr-1"></i><a href="{{ url('monitoramento/'.$monitoramento->id.'/atualizar-status') }}">Ativo </a>
                                                         @else
-                                                            <i class="fa fa-circle text-danger"></i> Inativo
+                                                            <i class="fa fa-circle text-danger mr-1"></i><a href="{{ url('monitoramento/'.$monitoramento->id.'/atualizar-status') }}">Inativo </a>
                                                         @endif
                                                         </span>
                                                     </h6>
@@ -64,15 +64,22 @@
                                                     </span>
                                                 </p>
                                                 <p class="card-title"></p>
-                                                <p class="text-bold">"{{ $monitoramento->expressao }}"</p>
-                                            
+                                                <p class="text-bold">"{{ $monitoramento->expressao }}"</p>                                            
                                             </div>
                                         </div>
                                     </div>
                                     <div class="card-footer ">
                                         <hr>
                                         <div class="stats">
-                                            <i class="fa fa-refresh"></i>Última atualização em {{ \Carbon\Carbon::parse($monitoramento->dt_processamento)->format('d/m/Y H:i:s') }}
+                                            <i class="fa fa-refresh"></i>Última atualização em {{ \Carbon\Carbon::parse($monitoramento->created_at)->format('d/m/Y H:i:s') }}
+                                            <div class="pull-right">
+                                                <a href="{{ url('monitoramento/'.$monitoramento->id.'/execucoes') }}" class="btn btn-info btn-fill btn-icon btn-sm" style="border-radius: 30px;">
+                                                    <i class="fa fa-clock-o fa-3x text-white"></i>
+                                                </a>
+                                                <a href="{{ url('monitoramento/'.$monitoramento->id.'/executar') }}" class="btn btn-warning btn-fill btn-icon btn-sm" style="border-radius: 30px;">
+                                                    <i class="fa fa-bolt fa-3x text-white"></i>
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

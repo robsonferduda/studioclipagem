@@ -37,6 +37,8 @@ Route::post('areas/{id}/atualizar','AreaController@atualizar');
 Route::resource('cliente','ClienteController');
 Route::match(array('GET', 'POST'),'clientes','ClienteController@index');
 
+Route::match(array('GET', 'POST'),'coletas','ColetaController@index');
+
 Route::match(array('GET', 'POST'),'emissoras/{tipo}','EmissoraController@listar');
 Route::get('emissora/{id}/transcricao/atualiza','EmissoraController@atualizaTranscricao');
 Route::post('emissora/{tipo}/adicionar','EmissoraController@store');
@@ -84,10 +86,11 @@ Route::get('jornal-web/listar','JornalWebController@listar');
 Route::get('jornal-web/noticia/{id}','JornalWebController@detalhes');
 Route::get('jornal-web/noticia/estatisticas/{id}','JornalWebController@estatisticas');
 
-Route::get('monitoramento','MonitoramentoController@index');
+Route::match(array('GET', 'POST'),'monitoramento','MonitoramentoController@index');
+Route::match(array('GET', 'POST'),'monitoramento/listar','MonitoramentoController@listar');
 Route::get('monitoramento/adicionar','MonitoramentoController@adicionar');
 Route::get('monitoramento/executar','MonitoramentoController@executar');
-Route::get('monitoramento/{id}/desabilitar','MonitoramentoController@desabilitar');
+Route::get('monitoramento/{id}/atualizar-status','MonitoramentoController@atualizarStatus');
 Route::get('monitoramento/{id}/noticias','MonitoramentoController@noticias');
 
 Route::match(array('GET', 'POST'),'emissoras','EmissoraController@index');

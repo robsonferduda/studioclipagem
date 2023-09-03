@@ -15,11 +15,15 @@ password = config('DB_PASSWORD')
 con = psycopg2.connect(host=host, database=database,user=user, password=password)
 cur = con.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
 
-total_coleta = 0
+total_coleta = 10
 dt_atual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 sql = 'SELECT id, url FROM fonte_web'
 cur.execute(sql)
 fontes = cur.fetchall()
+
+cur.execute("INSERT INTO public.coleta_web(total_coletas) VALUES(0) RETURNING id")
+con.commit() 
+id_coleta = cur.fetchone()['id']
 
 for fonte in fontes:
 
@@ -44,5 +48,5 @@ for fonte in fontes:
         print("Falha ao recuperar dados da fonte "+fonte['url'])
 
 dt_final = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-cur.execute("INSERT INTO public.coleta_web(total_coletas, created_at, updated_at) VALUES(%s, %s, %s)", (total_coleta, dt_atual, dt_final))
+cur.execute("UPDATE coleta_web SET total_coletas = "+str(total_coleta)+", updated_at = '"+str(dt_final)+"' WHERE id = "+str(id_coleta))
 con.commit() 
