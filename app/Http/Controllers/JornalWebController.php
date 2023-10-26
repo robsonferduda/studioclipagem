@@ -68,6 +68,18 @@ class JornalWebController extends Controller
         return view('jornal-web/index',compact('fontes','dados','dt_inicial','dt_final','total_sites','total_noticias','ultima_atualizacao_web','ultima_atualizacao_noticia'));
     }
 
+    public function fontes()
+    {
+        $fontes = FonteWeb::all();
+        return view('jornal-web/fontes',compact('fontes'));
+    }
+
+    public function cadastrar()
+    {
+        $fontes = FonteWeb::all();
+        return view('jornal-web/cadastrar',compact('fontes'));
+    }
+
     public function listar()
     {
         $sites = FonteWeb::all();
