@@ -130,7 +130,21 @@
                              <span class="sidebar-normal">Dashboard</span>
                              </a>
                           </li>
-
+                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'fontes') ? 'active' : '' }}">
+                            <a href="{{ url('fonte-web/listar') }}">
+                            <span class="sidebar-normal">Fontes</span>
+                            </a>
+                         </li>
+                         <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'fonte-web') ? 'active' : '' }}">
+                          <a href="{{ url('fonte-web/create') }}">
+                          <span class="sidebar-normal">Cadastrar</span>
+                          </a>
+                       </li>
+                       <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'relatorios-web') ? 'active' : '' }}">
+                        <a href="{{ url('fonte-web/relatorios') }}">
+                        <span class="sidebar-normal">Relatórios</span>
+                        </a>
+                     </li>
                        </ul>
                     </div>
                  </li>                  

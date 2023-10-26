@@ -25,6 +25,8 @@ class FonteWebController extends Controller
 
     public function listar(Request $request)
     {
+        Session::put('sub-menu','fontes');
+            
         $fontes = FonteWeb::with('estado')->orderBy('nome')->get();
 
         if($request->isMethod('POST')){
@@ -47,8 +49,17 @@ class FonteWebController extends Controller
         return view('fonte-web/estatisticas', compact('fonte'));
     }
 
+    public function relatorios()
+    {
+        Session::put('sub-menu','relatorios-web');
+
+        return view('fonte-web/relatorios');
+    }
+
     public function create(Request $request)
     {
+        Session::put('sub-menu','fonte-web');
+
         $cidades = Cidade::orderBy('nm_cidade')->get();
         $estados = Estado::orderBy('nm_estado')->get();
 
