@@ -54,11 +54,10 @@ class RelatorioController extends Controller
 
     public function index(Request $request)
     {   
-        if($request->isMethod('GET')){
+        $dados = array();
 
-            $sql = $this->sqlDiario();
-            $dados = DB::connection('mysql')->select($sql);
-            
+        if($request->isMethod('GET')){
+           
         }
 
         if($request->isMethod('POST')){
@@ -69,8 +68,6 @@ class RelatorioController extends Controller
 
                     $dados = $this->dadosTv();
 
-                    //dd($dados);
-
                     $dt_inicial = date('d/m/Y');
                     $dt_final = date('d/m/Y');
                     $nome = "Relatório Completo";
@@ -78,6 +75,7 @@ class RelatorioController extends Controller
 
                     $pdf = \App::make('dompdf.wrapper');
                     $pdf->getDomPDF()->set_option("enable_php", true);
+                    $pdf->getDomPDF()->set_option("enable_remote", false);
 
                     $pdf->loadView('relatorio/pdf/principal', compact('dt_inicial','dt_final','nome','dados'));
 
@@ -102,13 +100,13 @@ class RelatorioController extends Controller
                 break;
             
                 case 'pesquisar': 
+                    $sql = $this->sqlDiario();
+                    $dados = DB::connection('mysql')->select($sql); 
+
                     return view('relatorio/index', compact('dados'));
                 break;
             }
 
-
-            $sql = $this->sqlDiario();
-            $dados = DB::connection('mysql')->select($sql);
         }
 
         return view('relatorio/index', compact('dados'));
@@ -139,7 +137,7 @@ class RelatorioController extends Controller
                     LEFT JOIN app_tv_programa as parte ON parte.id = tv.id_programa 
                     LEFT JOIN app_cidades as cidade ON cidade.id = tv.id_cidade 
                     LEFT JOIN app_areasmodalidade as area ON (tv.id_area = area.id)
-                WHERE tv.data = '2023-06-29'
+                WHERE tv.data = '$this->data_atual'
                 LIMIT 8";
 
         return DB::connection('mysql')->select($sql);
@@ -174,7 +172,7 @@ class RelatorioController extends Controller
                     LEFT JOIN app_tv_programa as parte ON parte.id = tv.id_programa 
                     LEFT JOIN app_cidades as cidade ON cidade.id = tv.id_cidade 
                     LEFT JOIN app_areasmodalidade as area ON (tv.id_area = area.id)
-                WHERE tv.data = '2023-06-29'
+                WHERE tv.data = '$this->data_atual'
                 UNION
                 SELECT 
                     radio.id as id,
@@ -198,7 +196,7 @@ class RelatorioController extends Controller
                     LEFT JOIN app_radio_programa as parte ON parte.id = radio.id_programa 
                     LEFT JOIN app_cidades as cidade ON cidade.id = radio.id_cidade 
                     LEFT JOIN app_areasmodalidade as area ON (radio.id_area = area.id)
-                WHERE radio.data = '2023-06-29'
+                WHERE radio.data = '$this->data_atual'
                 UNION
                 SELECT
                     jornal.id as id, 
@@ -222,7 +220,7 @@ class RelatorioController extends Controller
                     LEFT JOIN app_jornal_secao as parte ON parte.id = jornal.id_secao 
                     LEFT JOIN app_cidades as cidade ON cidade.id = jornal.id_cidade 
                     LEFT JOIN app_areasmodalidade as area ON (jornal.id_area = area.id)
-                WHERE data_clipping = '2023-06-29'
+                WHERE data_clipping = '$this->data_atual'
                 UNION
                 SELECT 
                     web.id as id, 
@@ -246,7 +244,7 @@ class RelatorioController extends Controller
                     LEFT JOIN app_web_secao as parte ON parte.id = web.id_secao 
                     LEFT JOIN app_cidades as cidade ON cidade.id = web.id_cidade 
                     LEFT JOIN app_areasmodalidade as area ON (web.id_area = area.id)
-                WHERE web.data_clipping = '2023-06-29'
+                WHERE web.data_clipping = '$this->data_atual'
                 ORDER BY id";
 
         return $sql;

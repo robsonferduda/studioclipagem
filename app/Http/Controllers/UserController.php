@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Hash;
 use App\User;
 use App\Utils;
+use App\Models\Pessoa;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
@@ -50,12 +51,23 @@ class UserController extends Controller
     public function store(UserRequest $request)
     {
         try {
-            $request->merge(['password' => \Hash::make($request->password)]);
-            User::create($request->all());
+
+            $pessoa = Pessoa::create([
+                'nome' => $request->name
+            ]);
+
+            $user = array('name' => $request->name,
+                          'email' => $request->email,
+                          'password' => \Hash::make($request->password),
+                          'pessoa_id' => $pessoa->id);
+
+            User::create($user);
             $retorno = array('flag' => true,
                              'msg' => "Dados inseridos com sucesso");
 
         } catch (\Illuminate\Database\QueryException $e) {
+
+            dd($e);
 
             $retorno = array('flag' => false,
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
