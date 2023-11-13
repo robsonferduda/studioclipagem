@@ -15,5 +15,9 @@ class Cidade extends Model
     {
         return $this->belongsTo(Estado::class, 'cd_estado', 'cd_estado');
     }
-    
+
+    public function regional()
+    {
+        return $this->belongsTo(Regional::class, 'cd_regional', 'cd_regional');
+    }    
 }
