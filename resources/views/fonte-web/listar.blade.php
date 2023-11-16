@@ -22,10 +22,64 @@
                 @include('layouts.mensagens')
             </div>
             <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['buscar-web']]) !!}
+                    <div class="form-group m-3 w-70">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Estado</label>
+                                    <select class="form-control select2" name="cd_estado" id="cd_estado">
+                                        <option value="">Selecione um estado</option>
+                                        @foreach ($estados as $estado)
+                                            <option value="{{ $estado->cd_estado }}">{{ $estado->nm_estado }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Cidade</label>
+                                    <select class="form-control select2" name="cd_cidade" id="cd_cidade">
+                                        <option value="">Selecione uma cidade</option>
+                                        @foreach ($cidades as $cidade)
+                                            <option value="{{ $cidade->cd_cidade }}">{{ $cidade->nm_cidade }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Nome</label>
+                                    <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome" value="">
+                                </div>
+                            </div>             
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 checkbox-radios mb-0">
+                                <button type="submit" id="btn-find" class="btn btn-primary mb-3"><i class="fa fa-search"></i> Buscar</button>
+                            </div>
+                        </div>     
+                    </div>
+                    {!! Form::close() !!} 
+                </div>
+            </div>
+            <div>
                 <div class="col-lg-12 col-sm-12">
-                    <table id="datatable" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                    <div class="fixed-table-toolbar">
+                        <div class="bars pull-left">
+                           <div class="toolbar">
+                           </div>
+                        </div>
+                        <div class="columns columns-right pull-right">
+                           <button class="btn btn-primary" type="button" name="refresh" title="Refresh"  data-toggle="modal" data-target="#exampleModal"><i class="fa fa-edit"></i> Editar Seleção</button>
+                        </div>
+                        <div class="pull-left search"><input class="form-control" type="text" placeholder="Search"></div>
+                     </div>
+                    <table id="bootstrap-table" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
+                                <th><input style="-webkit-appearance: auto;" class="" type="checkbox" name="is_active" value="true"></th>
                                 <th>Estado</th>
                                 <th>Cidade</th>
                                 <th>Nome</th>
@@ -35,6 +89,7 @@
                         </thead>
                         <tfoot>
                             <tr>
+                                <th></th>
                                 <th>Estado</th>
                                 <th>Cidade</th>
                                 <th>Nome</th>
@@ -45,6 +100,7 @@
                         <tbody>
                             @foreach($fontes as $site)
                                 <tr>
+                                    <td class="bs-checkbox"><input style="-webkit-appearance: auto;" data-index="1" name="btSelectItem" type="checkbox"></td>
                                     <td>{!! $site->estado->nm_estado ?? '' !!}</td>
                                     <td>{!! $site->cidade->nm_cidade ?? '' !!}</td>
                                     <td>{{ $site->nome }}</td>
@@ -69,4 +125,46 @@
         </div>
     </div>
 </div>
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-edit"></i> Editar Seleção</h6>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Estado</label>
+                        <select class="form-control select2" name="cd_estado" id="cd_estado">
+                            <option value="">Selecione um estado</option>
+                            @foreach ($estados as $estado)
+                                <option value="{{ $estado->cd_estado }}">{{ $estado->nm_estado }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Cidade</label>
+                        <select class="form-control select2" name="cd_cidade" id="cd_cidade">
+                            <option value="">Selecione uma cidade</option>
+                            @foreach ($cidades as $cidade)
+                                <option value="{{ $cidade->cd_cidade }}">{{ $cidade->nm_cidade }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+        </div>
+        <div class="center">
+          <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
+          <button type="button" class="btn btn-success"><i class="fa fa-save"></i> Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
 @endsection
