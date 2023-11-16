@@ -81,6 +81,7 @@
                             <tr>
                                 <th><input style="-webkit-appearance: auto;" class="" type="checkbox" name="is_active" value="true"></th>
                                 <th>Estado</th>
+                                <th>Regional</th>
                                 <th>Cidade</th>
                                 <th>Nome</th>
                                 <th>URL</th>
@@ -91,6 +92,7 @@
                             <tr>
                                 <th></th>
                                 <th>Estado</th>
+                                <th>Regional</th>
                                 <th>Cidade</th>
                                 <th>Nome</th>
                                 <th>URL</th>
@@ -102,10 +104,11 @@
                                 <tr>
                                     <td class="bs-checkbox"><input style="-webkit-appearance: auto;" data-index="1" name="btSelectItem" type="checkbox"></td>
                                     <td>{!! $site->estado->nm_estado ?? '' !!}</td>
+                                    <td>{!! ($site->cidade and $site->cidade->regional) ? $site->cidade->regional->descricao : '' !!}</td>
                                     <td>{!! $site->cidade->nm_cidade ?? '' !!}</td>
                                     <td>{{ $site->nome }}</td>
                                     <td>{{ $site->url }}</td>
-                                    <td class="text-center">
+                                    <td class="text-center" style="width: 230px;">
                                         <a title="Editar" href="{{ url('fonte-web/estatisticas', $site->id) }}" class="btn btn-warning btn-link btn-icon"> <i class="fa fa-bar-chart fa-2x text-warning"></i></a>
                                         <a title="Editar" href="{{ route('fonte-web.edit', $site->id) }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
                                         <form class="form-delete" style="display: inline;" action="{{ route('fonte-web.destroy',$site->id) }}" method="POST">

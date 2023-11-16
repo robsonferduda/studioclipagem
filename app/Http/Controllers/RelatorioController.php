@@ -74,12 +74,13 @@ class RelatorioController extends Controller
                     $nome_arquivo = date('YmdHis').".pdf";
 
                     $pdf = \App::make('dompdf.wrapper');
-                    $pdf->getDomPDF()->set_option("enable_php", true);
-                    $pdf->getDomPDF()->set_option("enable_remote", false);
+                    //$pdf->getDomPDF()->set_option("enable_php", true);
 
                     $pdf->loadView('relatorio/pdf/principal', compact('dt_inicial','dt_final','nome','dados'));
 
-                    $pdf->render();
+                    //$pdf->render();
+
+                    /*
 
                     $canvas = $pdf->get_canvas();
                     $canvas->page_script('
@@ -95,6 +96,9 @@ class RelatorioController extends Controller
                     }
                     ');
                     //$pdf = $dompdf->output();
+                    */
+
+                    //return $pdf->output();
                     
                     return $pdf->download($nome_arquivo);
                 break;
