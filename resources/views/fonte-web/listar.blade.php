@@ -76,6 +76,7 @@
                         </div>
                         <div class="pull-left search"><input class="form-control" type="text" placeholder="Search"></div>
                      </div>
+                     {{ $fontes->onEachSide(1)->links('vendor.pagination.bootstrap-4') }}   
                     <table id="bootstrap-table" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
