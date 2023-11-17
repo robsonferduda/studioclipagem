@@ -29,23 +29,26 @@
                             <tr>
                                 <th>Data</th>
                                 <th>Notícia</th>
+                                <th>Ver</th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
                                 <th>Data</th>
                                 <th>Notícia</th>
+                                <th>Ver</th>
                             </tr>
                         </tfoot>
                         <tbody>
                             @forelse($noticias_knewin as $noticia)
                                 <tr>
-                                    <td>{{ $noticia->data_cadastro }}</td>
+                                    <td>{{ date('d/m/Y', strtotime($noticia->data_cadastro)) }}</td>
                                     <td>{{ $noticia->titulo }}</td>
+                                    <td class="center"><a href="{{ $noticia->link }}" target="BLANK"><i class="fa fa-eye"></i></a></td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="2">Nenhuma notícia coletada</td>
+                                    <td colspan="3">Nenhuma notícia coletada</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -58,19 +61,22 @@
                             <tr>
                                 <th>Data</th>
                                 <th>Notícia</th>
+                                <th>Ver</th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
                                 <th>Data</th>
                                 <th>Notícia</th>
+                                <th>Ver</th>
                             </tr>
                         </tfoot>
                         <tbody>
                             @foreach($noticias as $noticia)
                                 <tr>
-                                    <td>{{ $noticia->dt_clipagem }}</td>
+                                    <td>{{ date('d/m/Y', strtotime($noticia->dt_clipagem)) }}</td>
                                     <td>{{ $noticia->titulo }}</td>
+                                    <td class="center"><a href="{{ $noticia->url }}" target="BLANK"><i class="fa fa-eye"></i></a></td>
                                 </tr>
                             @endforeach
                         </tbody>
