@@ -38,12 +38,16 @@
                             </tr>
                         </tfoot>
                         <tbody>
-                            @foreach($noticias_knewin as $noticia)
+                            @forelse($noticias_knewin as $noticia)
                                 <tr>
                                     <td>{{ $noticia->data_cadastro }}</td>
                                     <td>{{ $noticia->titulo }}</td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="2">Nenhuma notícia coletada</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
