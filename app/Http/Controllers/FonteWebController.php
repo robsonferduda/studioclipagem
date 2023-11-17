@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use DB;
 use Auth;
 use Carbon\Carbon;
+use App\Noticia;
 use App\Models\JornalWeb;
 use App\Models\Estado;
 use App\Models\Cidade;
@@ -31,13 +32,11 @@ class FonteWebController extends Controller
         $cidades = Cidade::orderBy('nm_cidade')->get();
         $estados = Estado::orderBy('nm_estado')->get();
             
-        $fontes = FonteWeb::with('estado')->orderBy('nome')->where('misc_data','=', 'mapeado')->paginate(10);
+        //$fontes = FonteWeb::with('estado')->orderBy('nome')->where('misc_data','=', 'mapeado')->paginate(10);
 
-        $fontes = FonteWeb::select('fonte_web.*')->leftJoin('noticia_web', function($join){
-                        $join->on('noticia_web.id_fonte', '=', 'fonte_web.id');
-                        //$join->on('tipo_id','=', DB::raw(4));
-                    })->where('misc_data','=', 'mapeado')
-                    ->paginate(10);
+        $ids = JornalWeb::select('id_fonte')->distinct()->where('origem', 'MONITORAMENTO')->pluck('id_fonte')->toArray();
+
+        $fontes = FonteWeb::where('misc_data','=', 'mapeado')->whereIn('id',$ids)->paginate(10);
 
         if($request->isMethod('POST')){
 
@@ -54,9 +53,10 @@ class FonteWebController extends Controller
 
     public function coletas($id)
     {
-        $noticias = JornalWeb::where('id_fonte', $id)->limit(10);
+        $noticias = JornalWeb::where('id_fonte', $id)->orderBy('dt_clipagem',"DESC")->paginate(30);
+        $noticias_knewin = (new Noticia)->getNoticias($id);
 
-        return view('fonte-web/coletas', compact('noticias'));
+        return view('fonte-web/coletas', compact('noticias','noticias_knewin'));
     }
 
     public function estatisticas($id)

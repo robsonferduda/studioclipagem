@@ -24,25 +24,49 @@
             <div class="row">
                 <div class="col-lg-6 col-sm-12">
                     <h5><i class="fa fa-database" aria-hidden="true"></i> Dados Knewin</h5>
-
-                </div>
-                <div class="col-lg-6 col-sm-12">
-                    <h5><i class="fa fa-database" aria-hidden="true"></i> Dados Studio Clipagem</h5>
-                    <table id="bootstrap-table" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                    <table id="" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
-                                <th>Nome</th>
+                                <th>Data</th>
+                                <th>Notícia</th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
-                                <th>URL</th>
+                                <th>Data</th>
+                                <th>Notícia</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            @foreach($noticias_knewin as $noticia)
+                                <tr>
+                                    <td>{{ $noticia->data_cadastro }}</td>
+                                    <td>{{ $noticia->titulo }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-lg-6 col-sm-12">
+                    <h5><i class="fa fa-database" aria-hidden="true"></i> Dados Studio Clipagem</h5>
+                    <table id="" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Notícia</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>Data</th>
+                                <th>Notícia</th>
                             </tr>
                         </tfoot>
                         <tbody>
                             @foreach($noticias as $noticia)
                                 <tr>
-                                    <td>{{ $noticia }}</td>
+                                    <td>{{ $noticia->dt_clipagem }}</td>
+                                    <td>{{ $noticia->titulo }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

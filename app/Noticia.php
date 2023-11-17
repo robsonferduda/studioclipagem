@@ -2,6 +2,7 @@
 
 namespace App;
 
+use DB;
 use Illuminate\Database\Eloquent\Model;
 
 class Noticia extends Model
@@ -11,5 +12,12 @@ class Noticia extends Model
     protected $connection = 'mysql';
     protected $table = 'app_web';
 
-    protected $fillable = ['status_envio'];                        
+    protected $fillable = ['status_envio'];   
+    
+    public function getNoticias($id_fonte)
+    {
+        $sql = "SELECT * FROM app_web WHERE data_cadastro > '2023-01-01' AND veiculoid = 121728 ORDER BY data_cadastro DESC LIMIT 30";
+
+        return DB::connection('mysql')->select($sql);
+    }
 }
