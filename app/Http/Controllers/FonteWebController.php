@@ -53,8 +53,10 @@ class FonteWebController extends Controller
 
     public function coletas($id)
     {
+        $fonte = FonteWeb::where('id', $id)->first();
+
         $noticias = JornalWeb::where('id_fonte', $id)->orderBy('dt_clipagem',"DESC")->paginate(30);
-        $noticias_knewin = (new Noticia)->getNoticias($id);
+        $noticias_knewin = (new Noticia)->getNoticias($fonte->id_knewin);
 
         return view('fonte-web/coletas', compact('noticias','noticias_knewin'));
     }
