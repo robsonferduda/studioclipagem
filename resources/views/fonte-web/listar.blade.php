@@ -12,8 +12,9 @@
                     </h4>
                 </div>
                 <div class="col-md-6">
-                    <a href="{{ url('buscar-web') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-globe"></i> Notícias Web</a>
+                    <a href="{{ url('buscar-web') }}" class="btn btn-info pull-right" style="margin-right: 12px;"><i class="fa fa-globe"></i> Notícias Web</a>
                     <a href="{{ url('fonte-web/create') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-plus"></i> Novo</a>
+                    <button class="btn btn-warning pull-right" style="margin-right: 12px;" type="button" name="refresh" title="Refresh"  data-toggle="modal" data-target="#exampleModal"><i class="fa fa-edit"></i> Editar Seleção</button>
                 </div>
             </div>
         </div>
@@ -65,18 +66,7 @@
                 </div>
             </div>
             <div>
-                <div class="col-lg-12 col-sm-12">
-                    <div class="fixed-table-toolbar">
-                        <div class="bars pull-left">
-                           <div class="toolbar">
-                           </div>
-                        </div>
-                        <div class="columns columns-right pull-right">
-                           <button class="btn btn-primary" type="button" name="refresh" title="Refresh"  data-toggle="modal" data-target="#exampleModal"><i class="fa fa-edit"></i> Editar Seleção</button>
-                        </div>
-                        <div class="pull-left search"><input class="form-control" type="text" placeholder="Search"></div>
-                     </div>
-                     {{ $fontes->onEachSide(1)->links('vendor.pagination.bootstrap-4') }}   
+                <div class="col-lg-12 col-sm-12">                        
                     <table id="bootstrap-table" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
@@ -125,6 +115,7 @@
                             @endforeach
                         </tbody>
                     </table>
+                    {{ $fontes->onEachSide(1)->links('vendor.pagination.bootstrap-4') }}
                 </div>
             </div>
         </div>
