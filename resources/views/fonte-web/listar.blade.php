@@ -108,8 +108,9 @@
                                     <td>{!! $site->cidade->nm_cidade ?? '' !!}</td>
                                     <td>{{ $site->nome }}</td>
                                     <td>{{ $site->url }}</td>
-                                    <td class="text-center" style="width: 230px;">
-                                        <a title="Editar" href="{{ url('fonte-web/estatisticas', $site->id) }}" class="btn btn-warning btn-link btn-icon"> <i class="fa fa-bar-chart fa-2x text-warning"></i></a>
+                                    <td class="text-center" style="width: 300px;">
+                                        <a title="Coletas" href="{{ url('fonte-web/coletas', $site->id) }}" class="btn btn-info btn-link btn-icon"> <i class="fa fa-area-chart fa-2x "></i></a>
+                                        <a title="Estatísticas" href="{{ url('fonte-web/estatisticas', $site->id) }}" class="btn btn-warning btn-link btn-icon"> <i class="fa fa-bar-chart fa-2x"></i></a>
                                         <a title="Editar" href="{{ route('fonte-web.edit', $site->id) }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
                                         <form class="form-delete" style="display: inline;" action="{{ route('fonte-web.destroy',$site->id) }}" method="POST">
                                             @csrf

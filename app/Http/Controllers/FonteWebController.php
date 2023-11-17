@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use DB;
 use Auth;
 use Carbon\Carbon;
+use App\Models\JornalWeb;
 use App\Models\Estado;
 use App\Models\Cidade;
 use App\Models\FonteWeb;
@@ -30,7 +31,13 @@ class FonteWebController extends Controller
         $cidades = Cidade::orderBy('nm_cidade')->get();
         $estados = Estado::orderBy('nm_estado')->get();
             
-        $fontes = FonteWeb::with('estado')->orderBy('nome')->get();
+        $fontes = FonteWeb::with('estado')->orderBy('nome')->where('misc_data','=', 'mapeado')->paginate(10);
+
+        $fontes = FonteWeb::select('fonte_web.*')->leftJoin('noticia_web', function($join){
+                        $join->on('noticia_web.id_fonte', '=', 'fonte_web.id');
+                        //$join->on('tipo_id','=', DB::raw(4));
+                    })->where('misc_data','=', 'mapeado')
+                    ->paginate(10);
 
         if($request->isMethod('POST')){
 
@@ -45,9 +52,16 @@ class FonteWebController extends Controller
         return view('fonte-web/listar',compact('fontes','cidades','estados'));
     }
 
+    public function coletas($id)
+    {
+        $noticias = JornalWeb::where('id_fonte', $id)->limit(10);
+
+        return view('fonte-web/coletas', compact('noticias'));
+    }
+
     public function estatisticas($id)
     {
-        $fonte = FonteWeb::find($id);
+        $fonte = FonteWeb::find($id)->limit(10);
 
         return view('fonte-web/estatisticas', compact('fonte'));
     }
