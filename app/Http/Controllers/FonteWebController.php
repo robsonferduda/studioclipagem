@@ -112,13 +112,7 @@ class FonteWebController extends Controller
     public function coletas($id)
     {
         $fonte = FonteWeb::where('id', $id)->first();
-
-        $noticias = JornalWeb::where('id_fonte', $id)->orderBy('dt_clipagem',"DESC")->paginate(30);
-        //$noticias_knewin = (new Noticia)->getNoticias($fonte->id_knewin);
-
-        $noticias_knewin = array();
-
-        return view('fonte-web/coletas', compact('fonte','noticias','noticias_knewin'));
+        return view('fonte-web/coletas', compact('fonte'));
     }
 
     public function listarColetas($origem, $id)
