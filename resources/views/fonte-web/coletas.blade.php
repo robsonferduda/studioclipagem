@@ -82,9 +82,9 @@
             url: '../coletas/studio/listar/'+id_fonte,
             type: 'GET',
             success: function(result) {
+                $("#table_studio  > tbody > tr").remove();
                 $.each(result, function( index, value ) {
-                    $("#table_studio  > tbody > tr").remove();
-                    $("#table_studio").append('<tr><td>'+value.dt_clipagem+'</td><td>'+value.texto+'</td><td></td></tr>');
+                    $("#table_studio").append('<tr><td>'+value.dt_clipagem+'</td><td>'+value.titulo+'</td><td></td></tr>');
                 });            
             },
             error: function(response){
