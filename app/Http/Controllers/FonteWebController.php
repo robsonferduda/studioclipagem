@@ -73,13 +73,12 @@ class FonteWebController extends Controller
                     return $fonte->url;
                 })    
                 ->addColumn('acoes', function ($fonte) {
-                    return '<div class="text-center"><a title="Coletas" href="" class="btn btn-info btn-link btn-icon"> <i class="fa fa-area-chart fa-2x "></i></a>
-                    <a title="Estatísticas" href="" class="btn btn-warning btn-link btn-icon"> <i class="fa fa-bar-chart fa-2x"></i></a>
-                    <a title="Editar" href="" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
-                    <button title="Excluir" type="submit" class="btn btn-danger btn-link btn-icon button-remove" title="Delete">
-                            <i class="fa fa-times fa-2x"></i>
-                        </button>
-                    </form></div>';
+                    return '<div class="text-center">
+                                <a title="Coletas" href="../fonte-web/coletas/'.$fonte->id.'" class="btn btn-info btn-link btn-icon"> <i class="fa fa-area-chart fa-2x "></i></a>
+                                <a title="Estatísticas" href="" class="btn btn-warning btn-link btn-icon"> <i class="fa fa-bar-chart fa-2x"></i></a>
+                                <a title="Editar" href="" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
+                                <a title="Excluir" href="" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-times fa-2x"></i></a>
+                            </div>';
                 })   
                 ->rawColumns(['id','acoes'])         
                 ->make(true);
@@ -115,9 +114,30 @@ class FonteWebController extends Controller
         $fonte = FonteWeb::where('id', $id)->first();
 
         $noticias = JornalWeb::where('id_fonte', $id)->orderBy('dt_clipagem',"DESC")->paginate(30);
-        $noticias_knewin = (new Noticia)->getNoticias($fonte->id_knewin);
+        //$noticias_knewin = (new Noticia)->getNoticias($fonte->id_knewin);
 
-        return view('fonte-web/coletas', compact('noticias','noticias_knewin'));
+        $noticias_knewin = array();
+
+        return view('fonte-web/coletas', compact('fonte','noticias','noticias_knewin'));
+    }
+
+    public function listarColetas($origem, $id)
+    {
+        $dados = array();
+
+        switch ($origem) {
+            case 'studio':
+                $dados = JornalWeb::where('id_fonte', $id)->take(10)->orderBy('dt_clipagem',"DESC")->get();
+                break;
+            case 'knewin':
+                $dados = array();
+                break;
+            default:
+            $dados = array();
+                break;
+        }
+
+        return response()->json($dados);
     }
 
     public function estatisticas($id)

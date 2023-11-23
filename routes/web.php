@@ -51,10 +51,11 @@ Route::get('programa/{tipo}/novo','ProgramaController@novo');
 Route::get('estado/{id}/cidades','EstadoController@getCidades');
 
 Route::get('fontes','FonteController@index');
+Route::get('fonte-web/coletas/{origem}/listar/{id_fonte}','FonteWebController@listarColetas');
 Route::get('fonte-web/coletas/{id}','FonteWebController@coletas');
-Route::match(array('GET', 'POST'),'fonte-web/listar','FonteWebController@listar');
 Route::get('fonte-web/relatorios','FonteWebController@relatorios');
 Route::get('fonte-web/estatisticas/{id}','FonteWebController@estatisticas');
+Route::match(array('GET', 'POST'),'fonte-web/listar','FonteWebController@listar');
 Route::resource('fonte-web','FonteWebController');
 
 Route::get('impresso','JornalImpressoController@index');
