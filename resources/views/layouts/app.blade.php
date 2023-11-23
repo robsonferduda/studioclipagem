@@ -391,6 +391,7 @@
   <script src="{{ asset('js/dropzone.js') }}"></script>
   <script src="{{ asset('js/cropper.js') }}"></script>
   <script src="{{ asset('js/plugins/chartist.min.js') }}"></script>
+  <script src="{{ asset('js/dataTables.checkboxes.min.js') }}"></script>
   @yield('script')
   <script>
     function setFormValidation(id) {

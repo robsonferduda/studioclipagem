@@ -57,20 +57,23 @@
                             </div>             
                         </div>
                         <div class="row">
-                            <div class="col-md-12 checkbox-radios mb-0">
-                                <button type="submit" id="btn-find" class="btn btn-primary mb-3"><i class="fa fa-search"></i> Buscar</button>
+                            <div class="col-md-12 mb-0">
+                                @foreach($situacoes as $situacao)
+                                    <span data-valor="{{ $situacao->id_situacao }}" class="badge badge-{{ $situacao->ds_color }} filtro-situacao">{{ $situacao->ds_situacao }} ({{ $situacao->total }})</span>
+                                @endforeach
                             </div>
                         </div>     
                     </div>
+                    
                     {!! Form::close() !!} 
                 </div>
             </div>
             <div>
-                <div class="col-lg-12 col-sm-12">                        
+                <div class="col-lg-12 col-sm-12 conteudo">                        
                     <table id="bootstrap-table" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
-                                <th><input style="-webkit-appearance: auto;" class="" type="checkbox" name="is_active" value="true"></th>
+                                <th>Selecionar</th>
                                 <th>Estado</th>
                                 <th>Regional</th>
                                 <th>Cidade</th>
@@ -81,7 +84,7 @@
                         </thead>
                         <tfoot>
                             <tr>
-                                <th></th>
+                                <th>Selecionar</th>
                                 <th>Estado</th>
                                 <th>Regional</th>
                                 <th>Cidade</th>
@@ -91,31 +94,10 @@
                             </tr>
                         </tfoot>
                         <tbody>
-                            @foreach($fontes as $site)
-                                <tr>
-                                    <td class="bs-checkbox"><input style="-webkit-appearance: auto;" data-index="1" name="btSelectItem" type="checkbox"></td>
-                                    <td>{!! $site->estado->nm_estado ?? '' !!}</td>
-                                    <td>{!! ($site->cidade and $site->cidade->regional) ? $site->cidade->regional->descricao : '' !!}</td>
-                                    <td>{!! $site->cidade->nm_cidade ?? '' !!}</td>
-                                    <td>{{ $site->nome }}</td>
-                                    <td>{{ $site->url }}</td>
-                                    <td class="text-center" style="width: 300px;">
-                                        <a title="Coletas" href="{{ url('fonte-web/coletas', $site->id) }}" class="btn btn-info btn-link btn-icon"> <i class="fa fa-area-chart fa-2x "></i></a>
-                                        <a title="Estatísticas" href="{{ url('fonte-web/estatisticas', $site->id) }}" class="btn btn-warning btn-link btn-icon"> <i class="fa fa-bar-chart fa-2x"></i></a>
-                                        <a title="Editar" href="{{ route('fonte-web.edit', $site->id) }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
-                                        <form class="form-delete" style="display: inline;" action="{{ route('fonte-web.destroy',$site->id) }}" method="POST">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button title="Excluir" type="submit" class="btn btn-danger btn-link btn-icon button-remove" title="Delete">
-                                                <i class="fa fa-times fa-2x"></i>
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            @endforeach
+                            <tr></tr>
                         </tbody>
                     </table>
-                    {{ $fontes->onEachSide(1)->links('vendor.pagination.bootstrap-4') }}
+                   
                 </div>
             </div>
         </div>
@@ -163,4 +145,63 @@
       </div>
     </div>
   </div>
+@endsection
+@section('script')
+<script>
+    $(document).ready(function() {
+
+        var host =  $('meta[name="base-url"]').attr('content');
+        var token = $('meta[name="csrf-token"]').attr('content');
+        var situacao = 2;
+
+        var table = $('#bootstrap-table').DataTable({
+                "processing": true,
+                "paginate": true,
+                "serverSide": true,
+                "bFilter": true,
+                "ajax":{
+                    "url": "{{ url('fonte-web/listar') }}",
+                    "dataType": "json",
+                    "type": "GET",
+                    "data": function (d) {
+                        d._token   = "{{csrf_token()}}";
+                        d.situacao   = situacao;
+                    }
+                },
+                "columns": [
+                    { data: "id" },
+                    { data: "estado" },
+                    { data: "regional" },
+                    { data: "cidade" },
+                    { data: "nome" },
+                    { data: "url" },
+                    { data: "acoes" },
+                ],
+                'columnDefs': [
+                    {
+                        'targets': 0,
+                        'className': 'item',
+                        'checkboxes': true
+                    }
+                ],
+                "stateSave": true
+            });
+        
+        $(document).on('click', '.filtro-situacao', function() {     
+            situacao = $(this).data("valor");
+            table.draw();
+        });
+
+        $(document).on('click', '.btn-selecao', function() {     
+            
+            rows_selected = table.column(0).checkboxes.selected();
+
+            $.each(rows_selected, function(index, rowId){
+                alert(rowId)
+            });
+
+        }) ;       
+
+    });
+</script>
 @endsection

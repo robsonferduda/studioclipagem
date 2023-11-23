@@ -24,6 +24,16 @@ class FonteWeb extends Model
         return $this->hasOne(Cidade::class, 'cd_cidade', 'cd_cidade');
     }  
 
+    public function getSituacoes()
+    {
+        $sql = "SELECT id_situacao, ds_situacao, ds_color, count(*) AS total  
+                FROM fonte_web t1
+                LEFT JOIN situacao_fonte_web t2 ON t2.id_situacao_fonte_web = t1.id_situacao 
+                GROUP BY id_situacao, ds_situacao, ds_color 
+                ORDER BY ds_situacao";
+
+        return DB::select($sql);
+    }
 
     public function getTopColetas()
     {

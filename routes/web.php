@@ -52,7 +52,7 @@ Route::get('estado/{id}/cidades','EstadoController@getCidades');
 
 Route::get('fontes','FonteController@index');
 Route::get('fonte-web/coletas/{id}','FonteWebController@coletas');
-Route::get('fonte-web/listar','FonteWebController@listar');
+Route::match(array('GET', 'POST'),'fonte-web/listar','FonteWebController@listar');
 Route::get('fonte-web/relatorios','FonteWebController@relatorios');
 Route::get('fonte-web/estatisticas/{id}','FonteWebController@estatisticas');
 Route::resource('fonte-web','FonteWebController');

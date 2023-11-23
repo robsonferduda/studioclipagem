@@ -182,7 +182,6 @@
 }
 
 input[type="checkbox"]{
-    -webkit-appearance: none;
     position: relative;
     height: 100%;
     width: 100%;
@@ -239,3 +238,4 @@ input[type="checkbox"]:checked + label-check .fa{
     font-weight: 400;
     color: #7b7b93;
 }
+.filtro-situacao:hover{ cursor: pointer;}

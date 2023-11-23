@@ -12,6 +12,7 @@ use App\Models\Cidade;
 use App\Models\FonteWeb;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
+use Yajra\DataTables\DataTables;
 use App\Http\Requests\FontWebRequest;
 use Illuminate\Support\Facades\Session;
 
@@ -32,23 +33,81 @@ class FonteWebController extends Controller
         $cidades = Cidade::orderBy('nm_cidade')->get();
         $estados = Estado::orderBy('nm_estado')->get();
             
-        //$fontes = FonteWeb::with('estado')->orderBy('nome')->where('misc_data','=', 'mapeado')->paginate(10);
+        $fontes = FonteWeb::where('misc_data','=', 'mapeado')->get();
+        $situacoes = (new FonteWeb())->getSituacoes();
 
-        $ids = JornalWeb::select('id_fonte')->distinct()->where('origem', 'MONITORAMENTO')->pluck('id_fonte')->toArray();
+        if($request->ajax()) {
 
-        $fontes = FonteWeb::where('misc_data','=', 'mapeado')->whereIn('id',$ids)->paginate(10);
+            $situacao = ($request->situacao) ? $request->situacao : "";
+                $nome = ($request->nome) ? $request->nome : "";
+    
+                $fonte = FonteWeb::query();
+    
+                $fonte->when($situacao, function ($q) use ($situacao) {
+                    return $q->where('id_situacao', $situacao);
+                });
+    
+                $fonte->when($nome, function ($q) use ($nome) {
+                    return $q->where('nome', 'ILIKE', '%'.trim($nome).'%');
+                });
+    
+                $fontes = $fonte->get();
 
-        if($request->isMethod('POST')){
-
-            $carbon = new Carbon();
-            $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
-            $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
-
-            $dados = FonteWeb::whereBetween('dt_clipagem', [$dt_inicial, $dt_final])->orderBy('id_fonte')->paginate(10);
+            return DataTables::of($fontes)
+                ->addColumn('id', function ($fonte) {
+                    return $fonte->id;
+                })     
+                ->addColumn('estado', function ($fonte) {
+                    return ($fonte->estado) ? $fonte->estado->nm_estado : "Não informado";
+                }) 
+                ->addColumn('regional', function ($fonte) {
+                    return ($fonte->cidade and $fonte->cidade->regional) ? $fonte->cidade->regional->descricao : "Não informado";
+                })
+                ->addColumn('cidade', function ($fonte) {
+                    return ($fonte->cidade) ? $fonte->cidade->nm_cidade : "Não informado";
+                })
+                ->addColumn('nome', function ($fonte) {
+                    return $fonte->nome;
+                })  
+                ->addColumn('url', function ($fonte) {
+                    return $fonte->url;
+                })    
+                ->addColumn('acoes', function ($fonte) {
+                    return '<div class="text-center"><a title="Coletas" href="" class="btn btn-info btn-link btn-icon"> <i class="fa fa-area-chart fa-2x "></i></a>
+                    <a title="Estatísticas" href="" class="btn btn-warning btn-link btn-icon"> <i class="fa fa-bar-chart fa-2x"></i></a>
+                    <a title="Editar" href="" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
+                    <button title="Excluir" type="submit" class="btn btn-danger btn-link btn-icon button-remove" title="Delete">
+                            <i class="fa fa-times fa-2x"></i>
+                        </button>
+                    </form></div>';
+                })   
+                ->rawColumns(['id','acoes'])         
+                ->make(true);
 
         }
 
-        return view('fonte-web/listar',compact('fontes','cidades','estados'));
+        /*
+
+        if($request->isMethod('POST')){
+
+            $situacao = ($request->situacao) ? $request->situacao : "";
+            $nome = ($request->nome) ? $request->nome : "";
+
+            $fonte = FonteWeb::query();
+
+            $fonte->when($situacao, function ($q) use ($situacao) {
+                return $q->where('id_situacao', $situacao);
+            });
+
+            $fonte->when($nome, function ($q) use ($nome) {
+                return $q->where('nome', 'ILIKE', '%'.trim($nome).'%');
+            });
+
+            $fontes = $fonte->paginate(10);
+
+        }*/
+
+        return view('fonte-web/listar',compact('fontes','cidades','estados','situacoes'));
     }
 
     public function coletas($id)
