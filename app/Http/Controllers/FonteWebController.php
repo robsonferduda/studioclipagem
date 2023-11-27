@@ -124,7 +124,7 @@ class FonteWebController extends Controller
                 $dados = JornalWeb::where('id_fonte', $id)->take(10)->orderBy('dt_clipagem',"DESC")->get();
                 break;
             case 'knewin':
-                $dados = array();
+                $dados = (new Noticia())->getNoticias($id);
                 break;
             default:
             $dados = array();

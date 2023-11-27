@@ -239,3 +239,5 @@ input[type="checkbox"]:checked + label-check .fa{
     color: #7b7b93;
 }
 .filtro-situacao:hover{ cursor: pointer;}
+.box-studio { display: none;}
+.box-knewin { display: none;}
