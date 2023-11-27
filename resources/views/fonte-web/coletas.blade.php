@@ -114,7 +114,7 @@
                         $("#table_studio").append('<tr><td>'+dt_data+'</td><td>'+value.titulo+'</td><td class="center"><a class="fa fa-eye" href="../../jornal-web/noticia/'+value.id+'"></a></td></tr>');
                     }); 
                 }else{
-                    $("#table_knewin").append('<tr><td colspan="3">Nenhuma notícia coletada</td></tr>');
+                    $("#table_studio").append('<tr><td colspan="3">Nenhuma notícia coletada</td></tr>');
                 }            
             },
             error: function(response){
