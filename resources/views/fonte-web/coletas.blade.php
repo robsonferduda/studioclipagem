@@ -92,6 +92,18 @@
 
         $('.dados-knewin').loader('show');
         $(".box-knewin").css("display","none");
+
+        function formataData(data){
+
+            const dataCriada = new Date(data);
+            const dataFormatada = dataCriada.toLocaleDateString('pt-BR', {
+            timeZone: 'UTC',
+            });
+
+            return data;
+        }
+
+        
       
         $.ajax({
             url: '../coletas/studio/listar/'+id_fonte,
@@ -123,6 +135,7 @@
                 $("#table_knewin  > tbody > tr").remove();
                 if(result.length){
                     $.each(result, function( index, value ) {
+                        alert(formataData(value.data_cadastro));
                         $("#table_knewin").append('<tr><td>'+value.data_cadastro+'</td><td>'+value.titulo+'</td><td class="center"><a class="fa fa-eye" href="../../jornal-web/noticia/'+value.id+'"></a></td></tr>');
                     });    
                 }else{
