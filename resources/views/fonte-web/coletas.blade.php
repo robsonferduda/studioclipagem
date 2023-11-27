@@ -123,7 +123,7 @@
                 $("#table_knewin  > tbody > tr").remove();
                 if(result.length){
                     $.each(result, function( index, value ) {
-                        $("#table_knewin").append('<tr><td>'+value.dt_clipagem+'</td><td>'+value.titulo+'</td><td class="center"><a class="fa fa-eye" href="../../jornal-web/noticia/'+value.id+'"></a></td></tr>');
+                        $("#table_knewin").append('<tr><td>'+value.data_cadastro+'</td><td>'+value.titulo+'</td><td class="center"><a class="fa fa-eye" href="../../jornal-web/noticia/'+value.id+'"></a></td></tr>');
                     });    
                 }else{
                     $("#table_knewin").append('<tr><td colspan="3">Nenhuma notícia coletada</td></tr>');
