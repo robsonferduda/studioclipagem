@@ -100,7 +100,7 @@
             timeZone: 'UTC',
             });
 
-            return data;
+            return dataFormatada;
         }
 
         
