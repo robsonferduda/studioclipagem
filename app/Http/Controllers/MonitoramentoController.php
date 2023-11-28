@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use DB;
 use Auth;
 use Mail;
+use App\Models\Cliente;
 use App\Models\Monitoramento;
 use App\Models\MonitoramentoExecucao;
 use App\Models\JornalImpresso;
@@ -48,9 +49,10 @@ class MonitoramentoController extends Controller
 
     public function getMonitoramentoCliente($id_cliente)
     {
-        $monitoramentos = Monitoramento::with('cliente')->where('', $id_cliente)->orderBy('id','DESC')->get();
+        $cliente = Cliente::find($id_cliente);
+        $monitoramentos = Monitoramento::with('cliente')->where('id_cliente', $id_cliente)->orderBy('id','DESC')->get();
 
-        return view('monitoramento/index', compact('monitoramentos','fontes'));
+        return view('monitoramento/detalhes', compact('monitoramentos','cliente'));
     }
 
     public function executar()

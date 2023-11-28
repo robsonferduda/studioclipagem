@@ -149,7 +149,7 @@ class FonteWebController extends Controller
                                 ->get(); 
 
         foreach ($total_semana as $key => $total) {
-            $dados['data'][$key] = Carbon::parse($total->dt_clipagem)->format('d/m/Y');
+            $dados['data'][$key] = Carbon::parse($total->data)->format('d/m/Y');
             $dados['total'][$key] = $total->total;
         }
 

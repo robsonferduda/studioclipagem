@@ -7,13 +7,13 @@
                 <div class="col-md-8">
                     <h4 class="card-title">
                         <i class="nc-icon nc-sound-wave ml-2"></i> Monitoramento 
-                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Dashboard 
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Cliente 
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> {{ $cliente->pessoa->nome }} 
                     </h4>
                 </div>
                 <div class="col-md-4">
                     <a href="{{ url('/') }}" class="btn btn-primary pull-right mr-3"><i class="nc-icon nc-chart-pie-36"></i> Dashboard</a>
                     <button class="btn btn-primary pull-right mr-3"><i class="fa fa-plus"></i> Novo</button>
-                    <a href="{{ url('monitoramento/executar') }}" class="btn btn-warning pull-right mr-3"><i class="fa fa-bolt"></i> Executar</a>
                 </div>
             </div>
         </div>
