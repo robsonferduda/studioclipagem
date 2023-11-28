@@ -92,6 +92,16 @@
 
         $('.dados-knewin').loader('show');
         $(".box-knewin").css("display","none");
+
+        function formataData(data){
+
+            const dataCriada = new Date(data);
+            const dataFormatada = dataCriada.toLocaleDateString('pt-BR', {
+            timeZone: 'UTC',
+            });
+
+            return dataFormatada;
+        }        
       
         $.ajax({
             url: '../coletas/studio/listar/'+id_fonte,
@@ -100,10 +110,11 @@
                 $("#table_studio  > tbody > tr").remove();
                 if(result.length){
                     $.each(result, function( index, value ) {
-                        $("#table_studio").append('<tr><td>'+value.dt_clipagem+'</td><td>'+value.titulo+'</td><td class="center"><a class="fa fa-eye" href="../../jornal-web/noticia/'+value.id+'"></a></td></tr>');
+                        dt_data = formataData(value.dt_clipagem);
+                        $("#table_studio").append('<tr><td>'+dt_data+'</td><td>'+value.titulo+'</td><td class="center"><a class="fa fa-eye" href="../../jornal-web/noticia/'+value.id+'"></a></td></tr>');
                     }); 
                 }else{
-                    $("#table_knewin").append('<tr><td colspan="3">Nenhuma notícia coletada</td></tr>');
+                    $("#table_studio").append('<tr><td colspan="3">Nenhuma notícia coletada</td></tr>');
                 }            
             },
             error: function(response){
@@ -123,7 +134,8 @@
                 $("#table_knewin  > tbody > tr").remove();
                 if(result.length){
                     $.each(result, function( index, value ) {
-                        $("#table_knewin").append('<tr><td>'+value.dt_clipagem+'</td><td>'+value.titulo+'</td><td class="center"><a class="fa fa-eye" href="../../jornal-web/noticia/'+value.id+'"></a></td></tr>');
+                        dt_data = formataData(value.data_cadastro);
+                        $("#table_knewin").append('<tr><td>'+dt_data+'</td><td>'+value.titulo+'</td><td class="center"><a class="fa fa-eye" href="../../jornal-web/noticia/'+value.id+'"></a></td></tr>');
                     });    
                 }else{
                     $("#table_knewin").append('<tr><td colspan="3">Nenhuma notícia coletada</td></tr>');
