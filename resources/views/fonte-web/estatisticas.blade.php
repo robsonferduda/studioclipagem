@@ -65,7 +65,7 @@
                                     <li>
                                         <div class="row">
                                             <div class="col-md-3 col-3">
-                                                <img src="{{ asset('img/clientes/logo/'.$cliente->logo) }}" alt="Circle Image" class="">
+                                                <img class="rounded-circle" src="{{ asset('img/clientes/logo/'.$cliente->logo) }}" alt="Circle Image" class="">
                                             </div>
                                             <div class="col-md-9 col-9">
                                                 <h5 class="mt-1 mb-0">{{ $cliente->nome }}</h5>
