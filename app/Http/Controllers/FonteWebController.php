@@ -39,12 +39,22 @@ class FonteWebController extends Controller
         if($request->ajax()) {
 
             $situacao = ($request->situacao) ? $request->situacao : "";
-                $nome = ($request->nome) ? $request->nome : "";
+            $nome = ($request->nome) ? $request->nome : "";
+            $estado = ($request->estado) ? $request->estado : "";
+            $cidade = ($request->cidade) ? $request->cidade : "";
     
                 $fonte = FonteWeb::query();
     
                 $fonte->when($situacao, function ($q) use ($situacao) {
                     return $q->where('id_situacao', $situacao);
+                });
+
+                $fonte->when($estado, function ($q) use ($estado) {
+                    return $q->where('cd_estado', $estado);
+                });
+
+                $fonte->when($cidade, function ($q) use ($cidade) {
+                    return $q->where('cd_cidade', $cidade);
                 });
     
                 $fonte->when($nome, function ($q) use ($nome) {

@@ -24,7 +24,6 @@
             </div>
             <div class="row">
                 <div class="col-lg-12 col-md-12 col-sm-12">
-                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['buscar-web']]) !!}
                     <div class="form-group m-3 w-70">
                         <div class="row">
                             <div class="col-md-4">
@@ -64,8 +63,6 @@
                             </div>
                         </div>     
                     </div>
-                    
-                    {!! Form::close() !!} 
                 </div>
             </div>
             <div>
@@ -152,6 +149,9 @@
 
         var host =  $('meta[name="base-url"]').attr('content');
         var token = $('meta[name="csrf-token"]').attr('content');
+        var estado = 0;
+        var cidade = 0;
+        var nome = "";
         var situacao = 2;
 
         var table = $('#bootstrap-table').DataTable({
@@ -165,7 +165,10 @@
                     "type": "GET",
                     "data": function (d) {
                         d._token   = "{{csrf_token()}}";
-                        d.situacao   = situacao;
+                        d.situacao = situacao;
+                        d.estado   = estado;
+                        d.cidade   = cidade;
+                        d.nome     = nome;
                     }
                 },
                 "columns": [
@@ -189,6 +192,21 @@
         
         $(document).on('click', '.filtro-situacao', function() {     
             situacao = $(this).data("valor");
+            table.draw();
+        });
+
+        $(document).on('change', '#cd_estado', function() {     
+            estado = $(this).val();
+            table.draw();
+        });
+
+        $(document).on('change', '#cd_cidade', function() {     
+            cidade = $(this).val();
+            table.draw();
+        });
+
+        $(document).on('change', '#nome', function() {     
+            nome = $(this).val();
             table.draw();
         });
 
