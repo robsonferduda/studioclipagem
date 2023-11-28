@@ -9,11 +9,13 @@
                         <i class="fa fa-globe"></i> Jornal Web
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Fontes
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Estatísticas
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> {{ $fonte->nome }} <a href="{{$fonte->url }}" target="BLANK"><i class="fa fa-external-link text-info"></i></a>
                     </h4>
                 </div>
                 <div class="col-md-6">
                     <a href="{{ url('buscar-web') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-globe"></i> Notícias Web</a>
                     <a href="{{ url('fonte-web/listar') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-globe"></i> Fontes Web</a>
+                    <a href="{{ url('fonte-web/listar') }}" class="btn btn-warning pull-right" style="margin-right: 12px;"><i class="nc-icon nc-minimal-left"></i> Voltar</a>
                 </div>
             </div>
         </div>
@@ -23,7 +25,9 @@
             </div>
             <div class="row">
                 <div class="col-lg-8 col-sm-12">
+                    <input type="hidden" id="id_fonte" value="{{ $fonte->id }}"/>
                     <canvas id="speedChart"></canvas>
+                    <p class="text-center mt-2">Coletas dos últimos 7 dias</p>
                 </div>
                 <div class="col-lg-4 col-sm-12">
                     <div class="card card-stats">
@@ -31,13 +35,13 @@
                            <div class="row">
                               <div class="col-5 col-md-4">
                                  <div class="icon-big text-center icon-warning">
-                                    <i class="nc-icon nc-favourite-28 text-danger"></i>
+                                    <i class="fa fa-globe text-info"></i>
                                  </div>
                               </div>
                               <div class="col-7 col-md-8">
                                  <div class="numbers">
-                                    <p class="card-category">Notícias Coletadas</p>
-                                    <p class="card-title">235</p>
+                                    <p class="card-category">Coletas de Hoje</p>
+                                    <p class="card-title">{{ $total_dia }}</p>
                                     <p></p>
                                  </div>
                               </div>
@@ -82,21 +86,48 @@
 <script>
     $(document).ready(function() {
 
-        var speedCanvas = document.getElementById("speedChart");
-        var dataFirst = {
-            data: [0, 13, 3, 20, 30, 11, 1],
-            fill: false,
-            borderColor: '#fbc658',
-            backgroundColor: 'transparent',
-            pointBorderColor: '#fbc658',
-            pointRadius: 4,
-            pointHoverRadius: 4,
-            pointBorderWidth: 8,
-        };
-      
-        var speedData={labels:["23/02","23/02","23/02","23/02","23/02","23/02","23/02"],datasets:[dataFirst]};var chartOptions={legend:{display:false,position:'top'}};
+        var id_fonte = $("#id_fonte").val();
 
-        var lineChart=new Chart(speedCanvas,{type:'line',hover:false,data:speedData,options:chartOptions});
+        $.ajax({
+            url: '../../fonte-web/totais/semana/'+id_fonte,
+            type: 'GET',
+            success: function(result) {
+
+                var speedCanvas = document.getElementById("speedChart");
+                var dataFirst = {
+                    data: result.total,
+                    fill: false,
+                    borderColor: '#fbc658',
+                    backgroundColor: 'transparent',
+                    pointBorderColor: '#fbc658',
+                    pointRadius: 4,
+                    pointHoverRadius: 4,
+                    pointBorderWidth: 8,
+                };
+               
+            
+                var speedData={labels: result.data,datasets:[dataFirst]};
+                
+                var chartOptions={legend:{display:false,position:'top'},   scales: {
+                        yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            min: 0
+                        }    
+                        }]
+                    }};
+
+                var lineChart=new Chart(speedCanvas,{type:'line',hover:false,data:speedData,options:chartOptions});
+
+                       
+            },
+            error: function(response){
+
+            },
+            complete: function(response) {
+                     
+            }
+        }); 
       
     });
 </script>
