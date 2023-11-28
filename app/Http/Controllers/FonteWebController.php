@@ -127,9 +127,12 @@ class FonteWebController extends Controller
     {
         $fonte = FonteWeb::find($id);
         $hoje = $this->data_atual;
+        $data_inicial = Carbon::parse($hoje)->subDays(7)->format('Y-m-d');
         $total_dia = JornalWeb::where("id_fonte", $id)->where('dt_clipagem', $hoje)->count();  
+
+        $clientes = $fonte->getColetasByFonte($id, $data_inicial, $hoje);
         
-        return view('fonte-web/estatisticas', compact('fonte','total_dia'));
+        return view('fonte-web/estatisticas', compact('fonte','total_dia','clientes'));
     }
 
     public function getSemanaColetas($id_fonte)

@@ -35,6 +35,20 @@ class FonteWeb extends Model
         return DB::select($sql);
     }
 
+    public function getColetasByFonte($id_fonte, $dt_inicial,$dt_final)
+    {
+        $sql = "SELECT t4.id, t4.nome, t3.logo, count(*) as total   
+                FROM noticia_cliente t1
+                JOIN noticia_web t2 ON t2.id = t1 .noticia_id AND tipo_id = 2
+                JOIN clientes t3 ON t3.id = t1.cliente_id 
+                JOIN pessoas t4 ON t4.id = t3.pessoa_id 
+                WHERE t2.id_fonte = $id_fonte
+                AND t2.dt_clipagem between '$dt_inicial' AND '$dt_final'
+                GROUP BY t4.id, t4.nome, t3.logo";
+
+        return DB::select($sql);
+    }
+
     public function getTopColetas()
     {
         $data_inicio = date("Y-m-d")." 00:00:00";

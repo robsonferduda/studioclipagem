@@ -57,22 +57,34 @@
                     </div>
                     <div class="card">
                         <div class="card-header">
-                            <h6 class="card-title">Clientes Citados</h6>
+                            <h6 class="card-title">Clientes Citados Hoje</h6>
                         </div>
                         <div class="card-body">
                             <ul class="list-unstyled team-members">
-                                <li>
-                                    <div class="row">
-                                        <div class="col-md-4 col-4">
-                                            <img src="{{ asset('img/logo_zurich.png') }}" alt="Circle Image" class="">
+                                @forelse ($clientes as $cliente)
+                                    <li>
+                                        <div class="row">
+                                            <div class="col-md-3 col-3">
+                                                <img src="{{ asset('img/clientes/logo/'.$cliente->logo) }}" alt="Circle Image" class="">
+                                            </div>
+                                            <div class="col-md-9 col-9">
+                                                <h5 class="mt-1 mb-0">{{ $cliente->nome }}</h5>
+                                                <p class="mt-0 mb-0"><a href="{{ url("monitoramento/cliente/".$cliente->id) }}">Ver Monitoramento</a></p>
+                                                <p class="mt-0 mb-0">
+                                                    @if($cliente->total > 1)
+                                                        <span class="text-muted"><small>{{ $cliente->total }} notícias</small></span>
+                                                    @else
+                                                        <span class="text-muted"><small>{{ $cliente->total }} notícia</small></span>
+                                                    @endif
+                                                </p>
+                                            </div>
                                         </div>
-                                        <div class="col-md-8 col-8">
-                                            <a href="{{ url("/") }}">Zurich</a>
-                                        <br>
-                                        <span class="text-muted"><small>5 Citações</small></span>
-                                        </div>
-                                    </div>
-                                </li>
+                                    </li>
+                                @empty 
+                                    <li>
+                                        Nenhum cliente vinculado às notícias de hoje
+                                    </li>
+                                @endforelse
                             </ul>
                         </div>
                     </div>

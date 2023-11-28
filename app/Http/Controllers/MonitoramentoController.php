@@ -46,6 +46,13 @@ class MonitoramentoController extends Controller
         return view('monitoramento/noticias', compact('noticias','monitoramento'));
     }
 
+    public function getMonitoramentoCliente($id_cliente)
+    {
+        $monitoramentos = Monitoramento::with('cliente')->where('', $id_cliente)->orderBy('id','DESC')->get();
+
+        return view('monitoramento/index', compact('monitoramentos','fontes'));
+    }
+
     public function executar()
     {
         $monitoramentos = Monitoramento::where('fl_ativo', true)->get();
