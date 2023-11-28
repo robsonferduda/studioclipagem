@@ -139,10 +139,10 @@ class FonteWebController extends Controller
         $dt_final_formatada = $dt_final->format('Y-m-d');
         $dt_inicial = $dt_final->subDays(7);
 
-        $total_semana =  JornalWeb::select('dt_clipagem', DB::raw('COUNT(dt_clipagem) as total'))
+        $total_semana =  JornalWeb::select(DB::raw('dt_clipagem::date as data'), DB::raw('COUNT(dt_clipagem) as total'))
                                 ->where("id_fonte", $id_fonte)
                                 ->whereBetween('dt_clipagem', [$dt_inicial->format('Y-m-d'), $dt_final_formatada])
-                                ->groupBy('dt_clipagem')
+                                ->groupBy('data')
                                 ->get(); 
 
         foreach ($total_semana as $key => $total) {
