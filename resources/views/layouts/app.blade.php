@@ -125,16 +125,16 @@
                     </a>
                     <div class="collapse {{ (Session::has('url') and Session::get('url') == 'jornal-web') ? 'show' : '' }}" id="submenu-web" aria-expanded="false">
                        <ul class="nav ml-5">
-                          <li>
-                             <a href="{{ url('jornal-web') }}">
-                             <span class="sidebar-normal">Dashboard</span>
-                             </a>
-                          </li>
                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'fontes') ? 'active' : '' }}">
                             <a href="{{ url('fonte-web/listar') }}">
                             <span class="sidebar-normal">Fontes</span>
                             </a>
                          </li>
+                         <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'jornal-web') ? 'active' : '' }}">
+                          <a href="{{ url('jornal-web') }}">
+                          <span class="sidebar-normal">Notícias</span>
+                          </a>
+                       </li>
                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'fonte-web') ? 'active' : '' }}">
                           <a href="{{ url('jornal-web/cadastrar') }}">
                           <span class="sidebar-normal">Cadastrar</span>

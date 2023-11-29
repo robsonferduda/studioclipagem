@@ -24,6 +24,7 @@ class FonteWebController extends Controller
     {
         $this->middleware('auth');
         $this->data_atual = session('data_atual');
+        Session::put('url','jornal-web');
     }
 
     public function listar(Request $request)

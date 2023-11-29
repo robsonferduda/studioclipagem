@@ -11,7 +11,7 @@
                     </h4>
                 </div>
                 <div class="col-md-6">
-                    <a href="{{ url('fonte-web/listar') }}" class="btn btn-primary pull-right mr-3"><i class="fa fa-globe"></i> Sites</a>
+                    <a href="{{ url('fonte-web/listar') }}" class="btn btn-primary pull-right mr-3"><i class="fa fa-database"></i> Fontes Web</a>
                 </div>
             </div>
         </div>

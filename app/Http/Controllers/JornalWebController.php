@@ -24,6 +24,8 @@ class JornalWebController extends Controller
 
     public function index(Request $request)
     {
+        Session::put('sub-menu','jornal-web');
+
         $fontes = FonteWeb::orderBy('nome')->get();
         $total_sites = FonteWeb::count();
         $ultima_atualizacao_web = FonteWeb::max('created_at');
