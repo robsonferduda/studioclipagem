@@ -211,7 +211,7 @@ input[type="checkbox"]:checked{
 input[type="checkbox"]:checked:after{
     font-weight: 900;
     content: "\f058";
-    color: #478bfb;
+    color: #fb4747;
 }
 .label-check{
     display: flex;
