@@ -54,6 +54,7 @@ Route::get('fontes','FonteController@index');
 Route::get('fonte-web/coletas/{origem}/listar/{id_fonte}','FonteWebController@listarColetas');
 Route::get('fonte-web/coletas/{id}','FonteWebController@coletas');
 Route::get('fonte-web/relatorios','FonteWebController@relatorios');
+Route::get('fonte-web/importar','FonteWebController@importar');
 Route::get('fonte-web/estatisticas/{id}','FonteWebController@estatisticas');
 Route::match(array('GET', 'POST'),'fonte-web/listar','FonteWebController@listar');
 Route::resource('fonte-web','FonteWebController');

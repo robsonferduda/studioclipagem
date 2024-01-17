@@ -109,6 +109,18 @@ class FonteWebController extends Controller
         return view('fonte-web/listar',compact('fontes','cidades','estados','situacoes'));
     }
 
+    public function importar()
+    {
+        $fontes = FonteWeb::where('id_situacao', 1)->get();
+        
+        dd($fontes);
+        foreach ($fontes as $key => $fonte) {
+            
+        }
+
+
+    }
+
     public function coletas($id)
     {
         $fonte = FonteWeb::where('id', $id)->first();
