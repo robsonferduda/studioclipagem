@@ -103,8 +103,11 @@ class FonteWebController extends Controller
     {
         $fontes = FonteWeb::where('id_situacao', 1)->get();
         
-        dd($fontes);
         foreach ($fontes as $key => $fonte) {
+
+            $noticia = Noticia::where('veiculoid', $fonte->id_knewin)->orderBy('id', 'desc')->first();
+
+            dd($noticia);
             
         }
 
