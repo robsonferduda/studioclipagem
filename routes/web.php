@@ -34,6 +34,13 @@ Route::post('alterar-data','HomeController@atualizarData');
 Route::post('areas/inserir','AreaController@inserir');
 Route::post('areas/{id}/atualizar','AreaController@atualizar');
 
+Route::get('boletins','BoletimController@index');
+Route::get('boletim/{id}','BoletimController@detalhes');
+Route::get('boletim/{id}/enviar','BoletimController@enviar');
+Route::get('boletim/{id}/outlook','BoletimController@outlook');
+Route::get('boletim/{id}/visualizar','BoletimController@visualizar');
+Route::post('boletim/enviar/lista','BoletimController@enviarLista');
+
 Route::resource('cliente','ClienteController');
 Route::match(array('GET', 'POST'),'clientes','ClienteController@index');
 
@@ -56,6 +63,7 @@ Route::get('fonte-web/coletas/{id}','FonteWebController@coletas');
 Route::get('fonte-web/relatorios','FonteWebController@relatorios');
 Route::get('fonte-web/importar','FonteWebController@importar');
 Route::get('fonte-web/estatisticas/{id}','FonteWebController@estatisticas');
+Route::get('fonte-web/totais/semana/{id}','FonteWebController@getSemanaColetas');
 Route::match(array('GET', 'POST'),'fonte-web/listar','FonteWebController@listar');
 Route::resource('fonte-web','FonteWebController');
 
@@ -98,6 +106,7 @@ Route::get('monitoramento/adicionar','MonitoramentoController@adicionar');
 Route::get('monitoramento/executar','MonitoramentoController@executar');
 Route::get('monitoramento/{id}/atualizar-status','MonitoramentoController@atualizarStatus');
 Route::get('monitoramento/{id}/noticias','MonitoramentoController@noticias');
+Route::get('monitoramento/cliente/{id}','MonitoramentoController@getMonitoramentoCliente');
 
 Route::match(array('GET', 'POST'),'emissoras','EmissoraController@index');
 Route::get('emissoras/{tipo}/novo','EmissoraController@novo');
@@ -135,13 +144,6 @@ Route::match(array('GET', 'POST'),'tv/noticias','NoticiaTvController@index');
 Route::post('noticia_tv/decupagem/salvar','NoticiaTvController@salvarDecugem');
 Route::post('noticia_tv/decupagem/processar','NoticiaTvController@processar');
 Route::post('noticia_tv/upload','NoticiaTvController@upload');
-
-Route::get('boletins','BoletimController@index');
-Route::get('boletim/{id}','BoletimController@detalhes');
-Route::get('boletim/{id}/enviar','BoletimController@enviar');
-Route::get('boletim/{id}/outlook','BoletimController@outlook');
-Route::get('boletim/{id}/visualizar','BoletimController@visualizar');
-Route::post('boletim/enviar/lista','BoletimController@enviarLista');
 
 Route::get('cliente/get/json','ClientController@json');
 Route::get('client/accounts/facebook/{cliente}','ClientController@getFacebookAccounts');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Auth;
 use Mail;
 use App\Boletim;
+use App\Models\Cliente;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -19,8 +20,11 @@ class BoletimController extends Controller
 
     public function index()
     {
-        $boletins = Boletim::whereIn('id_cliente',[443,452])->orderBy('data','DESC')->get();
-        return view('boletim/index',compact('boletins'));
+        $clientes = Cliente::whereHas('pessoa', function ($q){
+            return $q->orderBy('nome');
+        })->get();
+
+        return view('boletim/index',compact('clientes'));
     }
 
     public function detalhes($id)

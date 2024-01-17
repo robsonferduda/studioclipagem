@@ -48,39 +48,53 @@
                         </div>
                     </div>  
                     
-                </div>      
+                </div>  
                 <div class="row">
-                    <div class="row ml-3">
-                        <div class="tile">
-                            <input type="checkbox" name="midia" id="midia-tv">
-                            <label class="label-check" for="midia-tv">
-                                <i class="fa fa-tv"></i>
-                                <h6>TV</h6>
-                            </label>
-                        </div>
-                        <div class="tile">
-                            <input type="checkbox" name="midia" id="midia-radio">
-                            <label class="label-check" for="midia-radio">
-                                <i class="fa fa-volume-up"></i>
-                                <h6>Rádio</h6>
-                            </label>
-                        </div>
-                        <div class="tile">
-                            <input type="checkbox" name="midia" id="midia-impresso">
-                            <label class="label-check" for="midia-impresso">
-                                <i class="fa fa-newspaper-o"></i>
-                                <h6>Impresso</h6>
-                            </label>
-                        </div>
-                        <div class="tile">
-                            <input type="checkbox" name="midia" id="midia-web">
-                            <label class="label-check" for="midia-web">
-                                <i class="fa fa-globe"></i>
-                                <h6>Web</h6>
-                            </label>
+                    <div class="col-md-3">
+                        <div class="form-check mt-3">
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox" name="is_active" id="midia-impresso" value="true">
+                                    Clipagem de Jornal
+                                    <span class="form-check-sign"></span>
+                                </label>
+                            </div>
                         </div>
                     </div>
-                </div>
+                    <div class="col-md-3">
+                        <div class="form-check mt-3">
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox" name="is_active" id="midia-radio" value="true">
+                                    Clipagem de Rádio
+                                    <span class="form-check-sign"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-check mt-3">
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox" name="is_active" id="midia-tv" value="true">
+                                    Clipagem de TV
+                                    <span class="form-check-sign"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-check mt-3">
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox" name="is_active" id="midia-web" value="true">
+                                    Clipagem de Web
+                                    <span class="form-check-sign"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>    
             </div>
             <div class="col-lg-12 col-sm-12">
                 <h6 class="mt-5">Listagem de Notícias</h6>

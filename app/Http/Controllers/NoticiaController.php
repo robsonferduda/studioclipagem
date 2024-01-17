@@ -82,6 +82,10 @@ class NoticiaController extends Controller
         
         $dados = DB::select($sql);
 
+        $dados = JornalWeb::where('dt_clipagem', $this->data_atual)->get();
+
+        dd($dados);
+
         $dados = array_map(function ($value) {
             return (array)$value;
         }, $dados);
