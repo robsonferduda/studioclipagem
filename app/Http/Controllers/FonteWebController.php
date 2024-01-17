@@ -105,7 +105,7 @@ class FonteWebController extends Controller
         
         foreach ($fontes as $key => $fonte) {
 
-            $noticia = (new Noticia())->getNoticiaByFonte($donte->id_knewin);
+            $noticia = (new Noticia())->getNoticiaByFonte($fonte->id_knewin);
 
             dd($noticia);
             
