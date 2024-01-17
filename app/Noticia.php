@@ -20,4 +20,11 @@ class Noticia extends Model
 
         return DB::connection('mysql')->select($sql);
     }
+
+    public function getNoticiaByFonte($id_fonte)
+    {
+        $sql = "SELECT * FROM app_web WHERE data_cadastro > '2023-01-01' AND veiculoid = $id_fonte ORDER BY data_cadastro DESC LIMIT 10";
+
+        return DB::connection('mysql')->select($sql);
+    }
 }

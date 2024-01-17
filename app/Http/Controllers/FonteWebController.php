@@ -105,7 +105,7 @@ class FonteWebController extends Controller
         
         foreach ($fontes as $key => $fonte) {
 
-            $noticia = Noticia::where('veiculoid', $fonte->id_knewin)->orderBy('id', 'desc')->first();
+            $noticia = (new Noticia())->getNoticiaByFonte($donte->id_knewin);
 
             dd($noticia);
             
