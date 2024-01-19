@@ -25,6 +25,9 @@
                     </div>
                 </div>
                 <div class="row">
+                    <div class="col-md-12">
+                        <h6>Dados da Fonte</h6>
+                    </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Estado <span class="text-danger">Obrigatório</span></label>
@@ -57,11 +60,40 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label>URL</label>
+                            <label>URL <span class="text-danger">Obrigatório</span></label>
                             <input type="text" class="form-control" name="url" id="url" placeholder="URL" value="">
                         </div>
                     </div>
-                </div>  
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-12">
+                        <h6>Dados de Mapeamento</h6>
+                    </div> 
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Título <span class="text-danger">Obrigatório</span></label>
+                            <input type="text" class="form-control" name="titulo" id="titulo" placeholder="Título" value="">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Data Notícia <span class="text-danger">Obrigatório</span></label>
+                            <input type="text" class="form-control datepicker" name="dt_clipagem" required="true" value="{{ date("d/m/Y") }}" placeholder="__/__/____">
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="form-group">
+                            <label>Link da Notícia <span class="text-danger">Obrigatório</span></label>
+                            <input type="text" class="form-control" name="link" id="link" placeholder="Link da Notícia" value="">
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="sinopse">Texto <span class="text-danger">Obrigatório</span></label>
+                        <div class="form-group">
+                            <textarea class="form-control" name="texto" id="texto" rows="10"></textarea>
+                        </div>
+                    </div>
+                </div> 
             </div>
             <div class="card-footer text-center mb-3">
                 <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Salvar</button>
