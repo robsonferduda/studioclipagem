@@ -23,7 +23,7 @@
                 <div class="row mr-1 ml-1">
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label>Código</label>
+                            <label>Código <span class="text-info">Código Knewin</span></label>
                             <input type="text" class="form-control" name="codigo" id="codigo" placeholder="Código">
                         </div>
                     </div>

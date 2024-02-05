@@ -91,12 +91,17 @@
                       </a>
                       <div class="collapse {{ (Session::has('url') and Session::get('url') == 'impresso') ? 'show' : '' }}" id="submenu-impresso" aria-expanded="false">
                         <ul class="nav ml-5">
-                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'impresso') ? 'active' : '' }}">
-                              <a href="{{ url('impresso') }}">
-                              <span class="sidebar-normal">Dashboard</span>
-                              </a>
-                           </li> 
-                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'upload') ? 'active' : '' }}">
+                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'impresso') ? 'active' : '' }}">
+                            <a href="{{ url('impresso') }}">
+                            <span class="sidebar-normal">Dashboard</span>
+                            </a>
+                         </li> 
+                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'fonte-impressa') ? 'active' : '' }}">
+                            <a href="{{ url('jornal-impresso/cadastrar') }}">
+                            <span class="sidebar-normal">Fontes</span>
+                            </a>
+                          </li>
+                            <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'upload') ? 'active' : '' }}">
                             <a href="{{ url('jornal-impresso/upload') }}">
                               <span class="sidebar-normal">Arquivos Impressos</span>
                               </a>

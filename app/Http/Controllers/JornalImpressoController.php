@@ -87,6 +87,7 @@ class JornalImpressoController extends Controller
 
     public function cadastrar()
     {
+        Session::put('sub-menu','fonte-impressa');
         $estados = Estado::orderBy('nm_estado')->get();
 
         return view('fonte-impresso/novo', compact('estados'));
