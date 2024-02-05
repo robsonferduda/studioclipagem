@@ -60,6 +60,7 @@ Route::get('estado/{id}/cidades','EstadoController@getCidades');
 Route::get('fonte-impresso/listar','JornalImpressoController@listar');
 Route::get('fonte-impresso/cadastrar','JornalImpressoController@cadastrar');
 Route::get('fonte-impresso/{id}/editar','JornalImpressoController@editar');
+Route::get('fonte-impresso/{id}/excluir','JornalImpressoController@excluir');
 
 Route::get('fontes','FonteController@index');
 Route::get('fonte-web/coletas/{origem}/listar/{id_fonte}','FonteWebController@listarColetas');

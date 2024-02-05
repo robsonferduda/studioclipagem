@@ -377,14 +377,19 @@ class JornalImpressoController extends Controller
         }
     }
 
-    public function remover(int $id)
+    public function excluir(int $id)
     {
-        $jornal = FonteImpressa::find($id);
-        if($jornal->delete())
-            Flash::success('<i class="fa fa-check"></i> Jornal <strong>'.$jornal->nome.'</strong> excluído com sucesso');
-        else
-            Flash::error("Erro ao excluir o registro");
+        $fonte = FonteImpressa::find($id);
+        
+        if($fonte->noticias){
+            if($jornal->delete())
+                Flash::success('<i class="fa fa-check"></i> Fonte impressa <strong>'.$jornal->nome.'</strong> excluído com sucesso');
+            else
+                Flash::error("Erro ao excluir o registro");
+        }else{
+            Flash::warning('<i class="fa fa-check"></i> Impossível excluir essa fonte, ela possui notícias associadas');
+        }
 
-        return redirect('jornal-impresso/listar')->withInput();
+        return redirect('fonte-impresso/listar')->withInput();
     }
 }
