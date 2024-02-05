@@ -381,7 +381,7 @@ class JornalImpressoController extends Controller
     {
         $fonte = FonteImpressa::find($id);
         
-        if($fonte->noticias){
+        if(!$fonte->noticias){
             if($jornal->delete())
                 Flash::success('<i class="fa fa-check"></i> Fonte impressa <strong>'.$jornal->nome.'</strong> excluído com sucesso');
             else
