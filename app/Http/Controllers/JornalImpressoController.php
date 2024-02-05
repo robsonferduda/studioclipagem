@@ -151,7 +151,8 @@ class JornalImpressoController extends Controller
         
         $cliente = session('cliente_monitoramento') ? session('cliente_monitoramento') : 0;
 
-        $clientes = Cliente::with('pessoa')
+        $clientes = Cliente::select('clientes.*','pessoas.nome')
+                    ->with('pessoa')
                     ->join('pessoas', 'pessoas.id', '=', 'clientes.pessoa_id')
                     ->orderBy('nome')
                     ->get();
@@ -166,6 +167,11 @@ class JornalImpressoController extends Controller
         }
 
         return view('jornal-impresso/monitoramento', compact('clientes','noticias'));
+    }
+
+    public function listarMonitoramento($id)
+    {
+        dd($id);
     }
 
     public function uploadFiles(Request $request)

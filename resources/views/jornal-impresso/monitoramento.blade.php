@@ -111,7 +111,7 @@
                 if(cliente_id){
 
                     $.ajax({
-                        url: host+'/jornal-impresso/monitoramento',
+                        url: host+'/jornal-impresso/monitoramento/'+cliente_id+'/listar',
                         type: 'POST',
                         data: {
                             "_token": $('meta[name="csrf-token"]').attr('content'),
