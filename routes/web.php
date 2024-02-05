@@ -83,10 +83,10 @@ Route::get('jornal-impresso/upload','JornalImpressoController@upload');
 Route::get('jornal-impresso/noticia/{id}','JornalImpressoController@detalhes');
 Route::post('jornal-impresso/upload','JornalImpressoController@uploadFiles');
 
+//Route::resource('noticia-impressa','NoticiaImpressaController');
 Route::get('noticia-impressa/cadastrar','NoticiaImpressaController@cadastrar');
 Route::get('noticia-impressa/cliente/{cliente}/copiar/{id}','NoticiaImpressaController@copiar');
 Route::get('noticia-impressa/cliente/{cliente}/editar/{id}','NoticiaImpressaController@editar');
-Route::resource('noticia-impressa','NoticiaImpressaController');
 Route::post('noticia-impressa/upload','NoticiaImpressaController@upload');
 
 Route::match(array('GET', 'POST'),'buscar-impresso','JornalImpressoController@index');

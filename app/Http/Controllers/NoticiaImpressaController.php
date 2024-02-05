@@ -30,6 +30,7 @@ class NoticiaImpressaController extends Controller
     {
         $this->middleware('auth');
         $this->data_atual = session('data_atual');
+        Session::put('url','impresso');
     }
 
     public function index(Request $request)
@@ -37,35 +38,22 @@ class NoticiaImpressaController extends Controller
         
     }
 
-    public function upload(Request $request)
+    public function show(Request $request)
     {
-        //dd($request->picture);
-
-        $image = $request->file('picture');
-        $fileInfo = $image->getClientOriginalName();
-        $filesize = $image->getSize()/1024/1024;
-        $filename = pathinfo($fileInfo, PATHINFO_FILENAME);
-        $extension = "jpeg";
-        $file_name= $filename.'-'.time().'.'.$extension;
-        $image->move(public_path('jornal-impresso/noticias'),$file_name);
-
-        $noticia = JornalImpresso::find($request->id);
-        $noticia->print = $file_name;
-        $noticia->save();
-
-        return $file_name;
+        
     }
 
     public function cadastrar()
     {
-        Session::put('sub-menu','cadastrar');
+        Session::put('sub-menu','noticia-impressa-cadastrar');
+        $fontes = FonteImpressa::all();
         
-        return view('noticia-impressa/cadastrar');
+        return view('noticia-impressa/cadastrar', compact('fontes'));
     }
 
     public function copiar($cliente, $id_noticia)
     {
-        //PNotícia original
+        //Notícia original
         $noticia_original = JornalImpresso::find($id_noticia);
 
         //Vínculo original
@@ -94,6 +82,8 @@ class NoticiaImpressaController extends Controller
                     ->join('pessoas', 'pessoas.id', '=', 'clientes.pessoa_id')
                     ->orderBy('nome')
                     ->get();
+
+                    dd($cleintes);
 
         $noticia = JornalImpresso::find($id_noticia);
         $vinculo = NoticiaCliente::where('noticia_id', $id_noticia)->where('tipo_id',1)->where('cliente_id', $cliente)->first();
@@ -125,5 +115,24 @@ class NoticiaImpressaController extends Controller
             Flash::error($retorno['msg']);
             return redirect()->route('')->withInput();
         }
+    }
+
+    public function upload(Request $request)
+    {
+        //dd($request->picture);
+
+        $image = $request->file('picture');
+        $fileInfo = $image->getClientOriginalName();
+        $filesize = $image->getSize()/1024/1024;
+        $filename = pathinfo($fileInfo, PATHINFO_FILENAME);
+        $extension = "jpeg";
+        $file_name= $filename.'-'.time().'.'.$extension;
+        $image->move(public_path('jornal-impresso/noticias'),$file_name);
+
+        $noticia = JornalImpresso::find($request->id);
+        $noticia->print = $file_name;
+        $noticia->save();
+
+        return $file_name;
     }
 }

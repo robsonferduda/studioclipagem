@@ -111,7 +111,7 @@
                               <span class="sidebar-normal">Monitoramento</span>
                               </a>
                           </li> 
-                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'cadastrar') ? 'active' : '' }}">
+                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'noticia-impressa-cadastrar') ? 'active' : '' }}">
                               <a href="{{ url('noticia-impressa/cadastrar') }}">
                               <span class="sidebar-normal">Cadastrar Notícia</span>
                               </a>
