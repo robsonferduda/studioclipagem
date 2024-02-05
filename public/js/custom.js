@@ -13,6 +13,57 @@ $(document).ready(function() {
     var host =  $('meta[name="base-url"]').attr('content');
     var token = $('meta[name="csrf-token"]').attr('content');
 
+    $(document).on('change', '#cd_estado', function() {
+
+        var estado = $(this).val();
+        $('#cidade').find('option').remove().end();
+
+        if($(this).val() == '') {
+            $('#cidade').attr('disabled', true);
+            $('#cidade').append('<option value="">Selecione</option>').val('');
+            return;
+        }
+
+        $('#cidade').append('<option value="">Carregando...</option>').val('');
+
+        $.ajax({
+            url: host+'/estado/'+estado+'/cidades',
+            type: 'GET',
+            data: {
+                "_token": $('meta[name="csrf-token"]').attr('content'),
+                "estado": $(this).val(),
+            },
+            beforeSend: function() {
+                $('.content').loader('show');
+            },
+            success: function(data) {
+                if(!data) {
+                    Swal.fire({
+                        text: 'Não foi possível buscar as cidades. Por favor, tente novamente mais tarde',
+                        type: "warning",
+                        icon: "warning",
+                    });
+                    return;
+                }
+                $('#cidade').attr('disabled', false);
+                $('#cidade').find('option').remove().end();
+
+                data.forEach(element => {
+                    let option = new Option(element.nm_cidade, element.cd_cidade);
+                    $('#cidade').append(option);
+                });
+                $('#cidade').val('');
+                $('#cidade').select2('destroy');
+                $('#cidade').select2({placeholder: 'Selecione', allowClear: true});
+
+                $('#cidade').focus();
+            },
+            complete: function(){
+                $('.content').loader('hide');
+            }
+        });
+    });
+
     function formatDate(date) {
 
         dia = (date.getDate() < 10) ? "0"+date.getDate() : date.getDate();

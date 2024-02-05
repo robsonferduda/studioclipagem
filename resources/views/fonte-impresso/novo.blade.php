@@ -33,9 +33,9 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label>Estado </label>
-                            <select class="form-control" name="estado" id="estado">
-                                <option value="">Selecione</option>
+                            <label>Estado <span class="text-danger">Obrigatório</span></label>
+                            <select class="form-control select2" name="cd_estado" id="cd_estado">
+                                <option value="">Selecione um estado</option>
                                 @foreach ($estados as $estado)
                                     <option value="{{ $estado->cd_estado }}">{{ $estado->nm_estado }}</option>
                                 @endforeach
@@ -46,7 +46,7 @@
                         <div class="form-group">
                             <label>Cidade </label>
                             <select class="form-control select2" name="cidade" id="cidade" disabled="disabled">
-                                <option value="">Selecione o estado</option>
+                                <option value="">Selecione uma cidade</option>
                             </select>
                         </div>
                     </div>
@@ -64,65 +64,7 @@
     <script>
         $(document).ready(function(){
 
-            $('#estado').select2({
-                placeholder: 'Selecione',
-                allowClear: true
-            });
-
-            $('#cidade').select2({
-                placeholder: 'Selecione',
-                allowClear: true
-            });
-
-        })
-
-        $(document).on('change', '#estado', function() {
-
-            var host =  $('meta[name="base-url"]').attr('content');
-            $('#cidade').find('option').remove().end();
-
-            if($(this).val() == '') {
-                $('#cidade').attr('disabled', true);
-                $('#cidade').append('<option value="">Selecione</option>').val('');
-                return;
-            }
-
-            $('#cidade').append('<option value="">Carregando...</option>').val('');
-
-            $.ajax({
-                url: host+'/api/estado/getCidades',
-                type: 'GET',
-                data: {
-                    "_token": $('meta[name="csrf-token"]').attr('content'),
-                    "estado": $(this).val(),
-                },
-                beforeSend: function() {
-                    $('.content').loader('show');
-                },
-                success: function(data) {
-                    if(!data) {
-                        Swal.fire({
-                            text: 'Não foi possível buscar as cidades. Por favor, tente novamente mais tarde',
-                            type: "warning",
-                            icon: "warning",
-                        });
-                        return;
-                    }
-                    $('#cidade').attr('disabled', false);
-                    $('#cidade').find('option').remove().end();
-
-                    data.forEach(element => {
-                        let option = new Option(element.nm_cidade, element.cd_cidade);
-                        $('#cidade').append(option);
-                    });
-                    $('#cidade').val('');
-                    $('#cidade').select2('destroy');
-                    $('#cidade').select2({placeholder: 'Selecione', allowClear: true});
-                },
-                complete: function(){
-                    $('.content').loader('hide');
-                }
-            });
-        })
+        
+        });
     </script>
 @endsection

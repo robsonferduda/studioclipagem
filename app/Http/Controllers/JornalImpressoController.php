@@ -88,7 +88,8 @@ class JornalImpressoController extends Controller
     public function cadastrar()
     {
         $estados = Estado::orderBy('nm_estado')->get();
-        return view('jornal-impresso/novo', compact('estados'));
+
+        return view('fonte-impresso/novo', compact('estados'));
     }
 
     public function editar(int $id)
