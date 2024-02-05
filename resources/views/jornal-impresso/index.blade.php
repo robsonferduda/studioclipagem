@@ -11,7 +11,7 @@
                     </h4>
                 </div>
                 <div class="col-md-6">
-                    <a href="{{ url('jornal-impresso/listar') }}" class="btn btn-primary pull-right mr-3"><i class="fa fa-newspaper-o"></i> Fontes</a>
+                    <a href="{{ url('fonte-impresso/listar') }}" class="btn btn-primary pull-right mr-3"><i class="fa fa-newspaper-o"></i> Fontes de Impresso</a>
                     <a href="{{ url('jornal-impresso/upload') }}" class="btn btn-info pull-right mr-1"><i class="fa fa-upload"></i> Upload</a>
                     <a href="{{ url('jornal-impresso/processamento') }}" class="btn btn-info pull-right mr-1"><i class="fa fa-list"></i> Fila</a>
                     <a href="{{ url('jornal-impresso/monitoramento') }}" class="btn btn-success pull-right mr-1"><i class="nc-icon nc-sound-wave"></i> Monitoramento</a>

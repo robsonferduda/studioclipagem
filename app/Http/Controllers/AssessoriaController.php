@@ -21,6 +21,11 @@ class AssessoriaController extends Controller
         return view('assessoria/index');
     }
 
+    public function clientes()
+    {
+        
+    }
+
     public function show($id)
     {
         

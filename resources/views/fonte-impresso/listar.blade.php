@@ -7,6 +7,7 @@
                 <div class="col-md-8">
                     <h4 class="card-title ml-3">
                         <i class="fa fa-newspaper-o"></i> Jornal Impresso
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Fontes
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Listar
                     </h4>
                 </div>

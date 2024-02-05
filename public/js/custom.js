@@ -16,6 +16,8 @@ $(document).ready(function() {
     $(document).on('change', '#cd_estado', function() {
 
         var estado = $(this).val();
+        var cd_cidade = $("#cd_cidade").val();
+        
         $('#cidade').find('option').remove().end();
 
         if($(this).val() == '') {
@@ -52,11 +54,12 @@ $(document).ready(function() {
                     let option = new Option(element.nm_cidade, element.cd_cidade);
                     $('#cidade').append(option);
                 });
+
                 $('#cidade').val('');
                 $('#cidade').select2('destroy');
-                $('#cidade').select2({placeholder: 'Selecione', allowClear: true});
+                $('#cidade').select2({placeholder: 'Selecione uma cidade', allowClear: true});
 
-                $('#cidade').focus();
+                $('#cidade').val(cd_cidade).change();
             },
             complete: function(){
                 $('.content').loader('hide');
@@ -90,7 +93,7 @@ $(document).ready(function() {
         });
     });
 
-    $('body').on("click", ".troca_cliente", function(e) {
+    $('body').on("click", ".troca_cliente_off", function(e) {
         e.preventDefault();
         Swal.fire({
             title: "Selecione um cliente",

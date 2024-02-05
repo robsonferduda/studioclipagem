@@ -57,10 +57,12 @@ Route::get('programa/{tipo}/novo','ProgramaController@novo');
 
 Route::get('estado/{id}/cidades','EstadoController@getCidades');
 
-Route::get('fonte-impresso/listar','JornalImpressoController@listar');
-Route::get('fonte-impresso/cadastrar','JornalImpressoController@cadastrar');
-Route::get('fonte-impresso/{id}/editar','JornalImpressoController@editar');
-Route::get('fonte-impresso/{id}/excluir','JornalImpressoController@excluir');
+Route::get('fonte-impresso/listar','FonteImpressoController@listar');
+Route::get('fonte-impresso/cadastrar','FonteImpressoController@cadastrar');
+Route::get('fonte-impresso/{id}/editar','FonteImpressoController@editar');
+Route::get('fonte-impresso/{id}/excluir','FonteImpressoController@excluir');
+Route::post('fonte-impresso/inserir','FonteImpressoController@inserir');
+Route::post('fonte-impresso/{id}/atualizar','FonteImpressoController@atualizar');
 
 Route::get('fontes','FonteController@index');
 Route::get('fonte-web/coletas/{origem}/listar/{id_fonte}','FonteWebController@listarColetas');
@@ -86,10 +88,6 @@ Route::get('noticia-impressa/cliente/{cliente}/copiar/{id}','NoticiaImpressaCont
 Route::get('noticia-impressa/cliente/{cliente}/editar/{id}','NoticiaImpressaController@editar');
 Route::resource('noticia-impressa','NoticiaImpressaController');
 Route::post('noticia-impressa/upload','NoticiaImpressaController@upload');
-
-Route::post('jornal-impresso/inserir','JornalImpressoController@inserir');
-Route::post('jornal-impresso/{id}/atualizar','JornalImpressoController@atualizar');
-Route::get('jornal-impresso/{id}/remover','JornalImpressoController@remover');
 
 Route::match(array('GET', 'POST'),'buscar-impresso','JornalImpressoController@index');
 Route::match(array('GET', 'POST'),'buscar-web','JornalWebController@index');
