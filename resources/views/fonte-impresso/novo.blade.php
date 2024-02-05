@@ -12,7 +12,7 @@
                     </h4>
                     </div>
                     <div class="col-md-4">
-                        <a href="{{ url('jornal-impresso/listar') }}" class="btn btn-primary pull-right mr-3"><i class="fa fa-table"></i> Jornal Impresso</a>
+                        <a href="{{ url('fonte-impresso/listar') }}" class="btn btn-primary pull-right mr-3"><i class="fa fa-table"></i> Fontes de Impresso</a>
                     </div>
                 </div>
             </div>

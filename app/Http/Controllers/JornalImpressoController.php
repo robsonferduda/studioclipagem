@@ -81,8 +81,9 @@ class JornalImpressoController extends Controller
 
     public function listar()
     {
-        $jornais = FonteImpressa::all();
-        return view('jornal-impresso/listar',compact('jornais'));
+        Session::put('sub-menu','fonte-impressa');
+        $jornais = FonteImpressa::orderBy('nome')->get();
+        return view('fonte-impresso/listar',compact('jornais'));
     }
 
     public function cadastrar()

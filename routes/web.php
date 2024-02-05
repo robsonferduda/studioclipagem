@@ -57,6 +57,10 @@ Route::get('programa/{tipo}/novo','ProgramaController@novo');
 
 Route::get('estado/{id}/cidades','EstadoController@getCidades');
 
+Route::get('fonte-impresso/listar','JornalImpressoController@listar');
+Route::get('fonte-impresso/cadastrar','JornalImpressoController@cadastrar');
+Route::get('fonte-impresso/{id}/editar','JornalImpressoController@editar');
+
 Route::get('fontes','FonteController@index');
 Route::get('fonte-web/coletas/{origem}/listar/{id_fonte}','FonteWebController@listarColetas');
 Route::get('fonte-web/coletas/{id}','FonteWebController@coletas');
@@ -75,10 +79,6 @@ Route::get('jornal-impresso/pendentes/listar','JornalImpressoController@listarPe
 Route::get('jornal-impresso/upload','JornalImpressoController@upload');
 Route::get('jornal-impresso/noticia/{id}','JornalImpressoController@detalhes');
 Route::post('jornal-impresso/upload','JornalImpressoController@uploadFiles');
-
-Route::get('jornal-impresso/listar','JornalImpressoController@listar');
-Route::get('jornal-impresso/cadastrar','JornalImpressoController@cadastrar');
-Route::get('jornal-impresso/{id}/editar','JornalImpressoController@editar');
 
 Route::get('noticia-impressa/cadastrar','NoticiaImpressaController@cadastrar');
 Route::get('noticia-impressa/cliente/{cliente}/copiar/{id}','NoticiaImpressaController@copiar');
