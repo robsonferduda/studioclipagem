@@ -6,8 +6,10 @@
             <div class="card-header">
                 <div class="row">
                     <div class="col-md-8">
-                        <h4 class="card-title ml-3"><i class="fa fa-newspaper-o"></i> Jornal Impresso
-                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Cadastrar</h4>
+                    <h4 class="card-title ml-3"><i class="fa fa-newspaper-o"></i> Jornal Impresso
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Fonte
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Cadastrar
+                    </h4>
                     </div>
                     <div class="col-md-4">
                         <a href="{{ url('jornal-impresso/listar') }}" class="btn btn-primary pull-right mr-3"><i class="fa fa-table"></i> Jornal Impresso</a>
