@@ -124,7 +124,7 @@
                         
                         },
                         complete: function(){
-                            window.location.reload();
+                            
                         }
                     });
 
