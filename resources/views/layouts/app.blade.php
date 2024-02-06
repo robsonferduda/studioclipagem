@@ -161,9 +161,14 @@
                      <ul class="nav ml-5">
                         <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'radios') ? 'active' : '' }}">
                            <a href="{{ url('radios') }}">
-                           <span class="sidebar-normal">Dashboard</span>
+                           <span class="sidebar-normal">Notícias</span>
                            </a>
                         </li>
+                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'radio-cadastrar') ? 'active' : '' }}">
+                          <a href="{{ url('radio/noticias/cadastrar') }}">
+                          <span class="sidebar-normal">Nova Notícia</span>
+                          </a>
+                       </li>
                         <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'emissoras-radio') ? 'active' : '' }}">
                            <a href="{{ url('emissoras/radio') }}">
                            <span class="sidebar-normal">Emissoras</span>
@@ -174,9 +179,9 @@
                            <span class="sidebar-normal">Programas</span>
                            </a>
                         </li>
-                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'radio-noticias') ? 'active' : '' }}">
-                           <a href="{{ url('radio/noticias') }}">
-                           <span class="sidebar-normal">Notícias</span>
+                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'radio-estatisticas') ? 'active' : '' }}">
+                           <a href="{{ url('radio/estatisticas') }}">
+                           <span class="sidebar-normal">Estatísticas</span>
                            </a>
                         </li>
                      </ul>
@@ -389,9 +394,15 @@
   <script src="{{ asset('js/jquery.validate.min.js') }}"></script>
   <script src="{{ asset('js/bootstrap-multiselect.js') }}"></script>
   <script src="{{ asset('js/jquery.bootstrap-duallistbox.min.js') }}"></script>
-  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+
+
+  
+  <script src="{{ asset('js/select2.js') }}"></script>
+
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
   <script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
+  
   <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
   <script src="{{ asset('js/dropzone.js') }}"></script>
   <script src="{{ asset('js/cropper.js') }}"></script>

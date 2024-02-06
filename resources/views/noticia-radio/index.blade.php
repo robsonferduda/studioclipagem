@@ -12,7 +12,7 @@
                 </div>
                 <div class="col-md-4">
                     <a href="{{ url('radio/noticias/cadastrar') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-plus"></i> Cadastrar Notícia</a>
-                    <a href="{{ url('radios') }}" class="btn btn-warning pull-right mr-3"><i class="nc-icon nc-chart-pie-36"></i> Dashboard</a>
+                    <a href="{{ url('radio/estatisticas') }}" class="btn btn-warning pull-right mr-3"><i class="nc-icon nc-chart-pie-36"></i> Dashboard</a>
                 </div>
             </div>
         </div>
@@ -21,7 +21,7 @@
                 @include('layouts.mensagens')
             </div>
             <div class="col-md-12">
-                {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['radio/noticias']]) !!}
+                {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['radios']]) !!}
                     <div class="form-group m-3 w-70">
                         <div class="row">
                             <div class="col-md-2 col-sm-6">

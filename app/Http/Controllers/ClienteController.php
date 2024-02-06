@@ -255,7 +255,7 @@ class ClienteController extends Controller
         }
 
 
-        $result = $clientes->orderBy('pessoas.nome', 'asc')->paginate(30);
+        $result = $clientes->orderBy('pessoas.nome', 'asc')->get();
         return response()->json($result);
     }
 

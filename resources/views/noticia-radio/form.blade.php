@@ -48,7 +48,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Cliente <span class="text-danger">Obrigatório</span></label>
-                                <select class="form-control selector-select2" name="cliente" id="cliente">
+                                <select class="form-control select2" name="cliente" id="cliente">
                                     @if(!empty($dados->cliente_id))
                                         <option value="{!! $dados->cliente->id !!}">{!! $dados->cliente->pessoa->nome !!}</option>
                                     @else
@@ -60,7 +60,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>Área <span class="text-info">Opcional</span></label>
-                                <select class="form-control selector-select2" name="area" id="area" {!! !empty($dados->area_id) ? '' : 'disabled' !!}>
+                                <select class="form-control select2" name="area" id="area" {!! !empty($dados->area_id) ? '' : 'disabled' !!}>
                                     <option value="">Selecione</option>
                                     @foreach($areas as $area)
                                         <option value="{!! $area->id !!}">
@@ -208,11 +208,6 @@
             var host = $('meta[name="base-url"]').attr('content');
             var token = $('meta[name="csrf-token"]').attr('content');
             
-            $('.selector-select2').select2({
-                placeholder: 'Selecione',
-                allowClear: true
-            });
-
             $(".dropzone").dropzone({ 
                 acceptedFiles: ".mp3",
                 maxFiles: 1,
@@ -234,69 +229,128 @@
                 }
             });
 
-            $('#cliente').select2({
-                placeholder: 'Selecione',
-                allowClear: true,
-                ajax: {
-                    url: host+"/api/cliente/buscarClientes",
-                    dataType: 'json',
-                    delay: 250,
-                    data: function (params) {
-                        return {
-                            q: params.term,
-                            page: params.page || 1
-                        };
-                    },
-                    processResults: function (data, params) {
-                        params.page = params.page || 1;
-
-                        return {
-                            results: data.data,
-                            pagination: {
-                                more: (params.page * 30) < data.total
-                            }
-                        };
-                    },
+            $.ajax({
+                url: host+'/api/cliente/buscarClientes',
+                type: 'GET',
+                data: {
+                    "_token": $('meta[name="csrf-token"]').attr('content'),
+                    "estado": $(this).val(),
                 },
-            });
-
-            $('#emissora').select2({
-                placeholder: 'Selecione',
-                allowClear: true,
-                ajax: {
-                    url: host+"/api/emissora/buscarEmissoras",
-                    dataType: 'json',
-                    delay: 250,
-                    data: function (params) {
-                        return {
-                            q: params.term,
-                            page: params.page || 1,
-                            estado: $('#estado').val(),
-                            cidade: $('#cidade').val()
-                        };
-                    },
-                    processResults: function (data, params) {
-                        params.page = params.page || 1;
-
-                        return {
-                            results: data.data,
-                            pagination: {
-                                more: (params.page * 30) < data.total
-                            }
-                        };
-                    },
+                beforeSend: function() {
+                    $('.content').loader('show');
                 },
-                templateResult: function(result) {
-                    if (result.loading) {
-                        return 'Buscando...';
+                success: function(data) {
+                    if(!data) {
+                        Swal.fire({
+                            text: 'Não foi possível buscar as cidades. Por favor, tente novamente mais tarde',
+                            type: "warning",
+                            icon: "warning",
+                        });
+                        return;
                     }
-                    return `${result.text} - ${result.cidade}`
+                    $('#cliente').attr('disabled', false);
+                    $('#cliente').find('option').remove().end();
+
+                    data.forEach(element => {
+                        let option = new Option(element.text, element.id);
+                        $('#cliente').append(option);
+                    });
+
+                    $('#cliente').val('');
+                
+
+                    //$('#cidade').val(cd_cidade).change();
+                },
+                complete: function(){
+                    $('.content').loader('hide');
                 }
             });
 
+            $.ajax({
+                url: host+'/api/emissora/buscarEmissoras',
+                type: 'GET',
+                data: {
+                    "_token": $('meta[name="csrf-token"]').attr('content'),
+                    "estado": $(this).val(),
+                },
+                beforeSend: function() {
+                    $('.content').loader('show');
+                },
+                success: function(data) {
+                    if(!data) {
+                        Swal.fire({
+                            text: 'Não foi possível buscar as cidades. Por favor, tente novamente mais tarde',
+                            type: "warning",
+                            icon: "warning",
+                        });
+                        return;
+                    }
+                    $('#emissora').attr('disabled', false);
+                    $('#emissora').find('option').remove().end();
 
-           
+                    data.forEach(element => {
+                        let option = new Option(element.text, element.id);
+                        $('#emissora').append(option);
+                    });
 
+                    $('#emissora').val('');
+                
+
+                    //$('#cidade').val(cd_cidade).change();
+                },
+                complete: function(){
+                    $('.content').loader('hide');
+                }
+            });
+
+            $(document).on('change', '#cliente', function() {
+
+                $('#area').find('option').remove().end();
+
+                if($(this).val() == '') {
+                    $('#area').attr('disabled', true);
+                    $('#area').append('<option value="">Selecione</option>').val('');
+                    return;
+                }
+
+                $('#area').append('<option value="">Carregando...</option>').val('');
+
+                var host =  $('meta[name="base-url"]').attr('content');
+
+                $.ajax({
+                    url: host+'/api/cliente/getAreasCliente',
+                    type: 'GET',
+                    data: {
+                        "_token": $('meta[name="csrf-token"]').attr('content'),
+                        "cliente": $(this).val(),
+                    },
+                    beforeSend: function() {
+                        $('.content').loader('show');
+                    },
+                    success: function(data) {
+                        if(!data) {
+                            Swal.fire({
+                                text: 'Não foi possível buscar as áreas. Por favor, tente novamente mais tarde',
+                                type: "warning",
+                                icon: "warning",
+                            });
+                            return;
+                        }
+                        $('#area').attr('disabled', false);
+                        $('#area').find('option').remove().end();
+
+                        data.forEach(element => {
+                            let option = new Option(element.descricao, element.id);
+                            $('#area').append(option);
+                        });
+                        $('#area').val('');
+                        
+                    },
+                    complete: function(){
+                        $('.content').loader('hide');
+                    }
+                });
+            });
             $(document).on("change", "#horario", function() {
             
                 var horario = $(this).val();
@@ -464,54 +518,5 @@
             });
         });
 
-        $(document).on('change', '#cliente', function() {
-
-            $('#area').find('option').remove().end();
-
-            if($(this).val() == '') {
-                $('#area').attr('disabled', true);
-                $('#area').append('<option value="">Selecione</option>').val('');
-                return;
-            }
-
-            $('#area').append('<option value="">Carregando...</option>').val('');
-
-            var host =  $('meta[name="base-url"]').attr('content');
-
-            $.ajax({
-                url: host+'/api/cliente/getAreasCliente',
-                type: 'GET',
-                data: {
-                    "_token": $('meta[name="csrf-token"]').attr('content'),
-                    "cliente": $(this).val(),
-                },
-                beforeSend: function() {
-                    $('.content').loader('show');
-                },
-                success: function(data) {
-                    if(!data) {
-                        Swal.fire({
-                            text: 'Não foi possível buscar as áreas. Por favor, tente novamente mais tarde',
-                            type: "warning",
-                            icon: "warning",
-                        });
-                        return;
-                    }
-                    $('#area').attr('disabled', false);
-                    $('#area').find('option').remove().end();
-
-                    data.forEach(element => {
-                        let option = new Option(element.descricao, element.id);
-                        $('#area').append(option);
-                    });
-                    $('#area').val('');
-                    $('#area').select2('destroy');
-                    $('#area').select2({placeholder: 'Selecione', allowClear: true});
-                },
-                complete: function(){
-                    $('.content').loader('hide');
-                }
-            });
-        });
     </script>
 @endsection

@@ -36,7 +36,7 @@ class NoticiaRadioController extends Controller
 
     public function index(Request $request)
     {
-        Session::put('sub-menu','radio-noticias');
+        Session::put('sub-menu','radios');
 
         $carbon = new Carbon();
         $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
@@ -44,7 +44,8 @@ class NoticiaRadioController extends Controller
         $termo = $request->termo;
 
         if($request->isMethod('GET')){
-            $noticias = NoticiaRadio::leftJoin('noticia_cliente', function($join){
+            $noticias = NoticiaRadio::select('noticia_radio.*','noticia_cliente.cliente_id')
+                ->leftJoin('noticia_cliente', function($join){
                 $join->on('noticia_cliente.noticia_id', '=', 'noticia_radio.id');
                 $join->on('noticia_cliente.tipo_id','=', DB::raw(3));
             })->where('dt_noticia', $this->data_atual)->get();
@@ -53,6 +54,7 @@ class NoticiaRadioController extends Controller
         if($request->isMethod('POST')){
 
             $noticia = NoticiaRadio::query();
+            $noticia->select('noticia_radio.*','noticia_cliente.cliente_id');
             $noticia->leftJoin('noticia_cliente', function($join){
                 $join->on('noticia_cliente.noticia_id', '=', 'noticia_radio.id');
                 $join->on('tipo_id','=', DB::raw(3));
@@ -73,33 +75,36 @@ class NoticiaRadioController extends Controller
         return view('noticia-radio/index', compact('noticias','dt_inicial','dt_final','termo'));
     }
 
-    public function dashboard()
+    public function estatisticas()
     {
-        Session::put('sub-menu','radios');
+        Session::put('sub-menu','radio-estatisticas');
 
         $data_final = date("Y-m-d");
         $data_inicial = Carbon::now()->subDays(7)->format('Y-m-d');
 
-        $total_noticia_radio = NoticiaRadio::whereBetween('created_at', [$this->data_atual.' 00:00:00', $this->data_atual.' 23:59:59'])->count();
+        $total_noticia_radio = NoticiaRadio::whereBetween('created_at', [$data_inicial.' 00:00:00', $data_final.' 23:59:59'])->count();
         $ultima_atualizacao = NoticiaRadio::max('created_at');
 
         $total_emissora_radio = Emissora::where('tipo_id', 1)->count();
         $ultima_atualizacao_radio = Emissora::where('tipo_id', 1)->max('created_at');
 
         $noticias = NoticiaRadio::paginate(10);
-        return view('noticia-radio/dashboard', compact('noticias','total_noticia_radio', 'total_emissora_radio', 'ultima_atualizacao','ultima_atualizacao_radio','data_final','data_inicial'));
+        return view('noticia-radio/estatisticas', compact('noticias','total_noticia_radio', 'total_emissora_radio', 'ultima_atualizacao','ultima_atualizacao_radio','data_final','data_inicial'));
     }
 
     public function cadastrar()
     {
+        Session::put('sub-menu','radio-cadastrar');        
+
         $dados = new NoticiaRadio();
         $cidades = [];
         $areas = [];
 
         $estados = Estado::orderBy('nm_estado')->get();
         $tags = Tag::orderBy('nome')->get();
+        $emissoras = Emissora::orderBy('ds_emissora')->get();
 
-        return view('noticia-radio/form', compact('dados', 'estados', 'cidades', 'areas','tags'));
+        return view('noticia-radio/form', compact('dados', 'estados', 'cidades', 'areas','tags','emissoras'));
     }
 
     public function editar(int $id)
@@ -166,6 +171,8 @@ class NoticiaRadioController extends Controller
 
         } catch (\Illuminate\Database\QueryException $e) {
 
+            dd($e);
+
             $retorno = array('flag' => false,
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
 
@@ -179,7 +186,7 @@ class NoticiaRadioController extends Controller
             case 'salvar':
                 if ($retorno['flag']) {
                     Flash::success($retorno['msg']);
-                    return redirect('radio/noticias')->withInput();
+                    return redirect('radios')->withInput();
                 } else {
                     Flash::error($retorno['msg']);
                     return redirect('radio/noticias/cadastrar')->withInput();
@@ -268,7 +275,7 @@ class NoticiaRadioController extends Controller
 
         if ($retorno['flag']) {
             Flash::success($retorno['msg']);
-            return redirect('radio/noticias')->withInput();
+            return redirect('radios')->withInput();
         } else {
             Flash::error($retorno['msg']);
             return redirect('radio/noticias/'.$id.'/editar')->withInput();
@@ -315,10 +322,13 @@ class NoticiaRadioController extends Controller
         return response()->json($dados);
     }
 
-    public function estatisticas()
+    public function getEstatisticas()
     {
         $dados = array();
-        $totais = (new NoticiaRadio())->getTotais();
+        $data_final = date("Y-m-d")." 00:00:00";
+        $data_inicial = Carbon::now()->subDays(7)->format('Y-m-d')." 23:59:59";;
+
+        $totais = (new NoticiaRadio())->getTotais($data_inicial, $data_final);
 
         for ($i=0; $i < count($totais); $i++) { 
             $dados['label'][] = date('d/m/Y', strtotime($totais[$i]->dt_noticia));

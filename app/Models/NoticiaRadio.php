@@ -65,9 +65,9 @@ class NoticiaRadio extends Model
         return $this->belongsToMany(Tag::class,'tag_radio','noticia_id','tag_id')->withPivot('tipo_id')->withTimestamps();
     }
 
-    public function getTotais()
+    public function getTotais($dt_inicial, $dt_final)
     {
-        $sql = "SELECT dt_noticia, count(*) AS total FROM noticia_radio WHERE deleted_at IS NULL GROUP BY dt_noticia ORDER BY dt_noticia";
+        $sql = "SELECT dt_noticia, count(*) AS total FROM noticia_radio WHERE deleted_at IS NULL AND created_at BETWEEN '$dt_inicial' AND '$dt_final' GROUP BY dt_noticia ORDER BY dt_noticia";
 
         return DB::select($sql);
     }

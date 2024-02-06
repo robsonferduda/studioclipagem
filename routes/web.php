@@ -120,13 +120,13 @@ Route::get('pauta/{id}/remover','PautaController@remover');
 Route::post('pauta/vincular','PautaController@vincularNoticia');
 Route::post('pauta/desvincular','PautaController@desvincularNoticia');
 
-Route::get('radios','NoticiaRadioController@dashboard');
-Route::match(array('GET', 'POST'),'radio/noticias','NoticiaRadioController@index');
+Route::get('radio/estatisticas','NoticiaRadioController@estatisticas');
+Route::match(array('GET', 'POST'),'radios','NoticiaRadioController@index');
 Route::get('radio/noticias/cadastrar','NoticiaRadioController@cadastrar');
 Route::get('radio/noticias/{id}/editar','NoticiaRadioController@editar');
 Route::get('radio/noticias/{id}/remover','NoticiaRadioController@remover');
 Route::get('radio/noticias/{id}/download','NoticiaRadioController@download');
-Route::get('radio/noticias/estatisticas','NoticiaRadioController@estatisticas');
+Route::get('radio/noticias/estatisticas','NoticiaRadioController@getEstatisticas');
 Route::post('radio/noticias/inserir','NoticiaRadioController@inserir');
 Route::post('radio/noticias/{id}/atualizar','NoticiaRadioController@atualizar');
 Route::post('radio/noticias/upload','NoticiaRadioController@upload');

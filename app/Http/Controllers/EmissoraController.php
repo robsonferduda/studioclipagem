@@ -223,7 +223,8 @@ class EmissoraController extends Controller
         if(!empty($request->query('cidade'))) {
             $emissoras->where('emissora.cd_cidade', $request->query('cidade'));
         }
-        $result = $emissoras->orderBy('ds_emissora', 'asc')->paginate(30);
+        $result = $emissoras->orderBy('ds_emissora', 'asc')->get();
+
         return response()->json($result);
     }
 }
