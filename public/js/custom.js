@@ -13,6 +13,10 @@ $(document).ready(function() {
     var host =  $('meta[name="base-url"]').attr('content');
     var token = $('meta[name="csrf-token"]').attr('content');
 
+    $(document).on('change', '#dt_inicial', function() {
+        alert("sfsdfsdf");
+    });
+
     $(document).on('change', '#cd_estado', function() {
 
         var estado = $(this).val();

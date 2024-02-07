@@ -27,23 +27,25 @@
                             <div class="col-md-2 col-sm-6">
                                 <div class="form-group">
                                     <label>Data Inicial</label>
-                                    <input type="text" class="form-control datepicker" name="dt_inicial" required="true" value="{{ ($dt_inicial) ? date('d/m/Y', strtotime($dt_inicial)) : date('d/m/Y') }}" placeholder="__/__/____">
+                                    <input type="text" class="form-control datepicker dt-search" name="dt_inicial" id="dt_inicial" required="true" value="{{ ($dt_inicial) ? date('d/m/Y', strtotime($dt_inicial)) : date('d/m/Y') }}" placeholder="__/__/____">
                                 </div>
                             </div>
                             <div class="col-md-2 col-sm-6">
                                 <div class="form-group">
                                     <label>Data Final</label>
-                                    <input type="text" class="form-control datepicker" name="dt_final" required="true" value="{{ ($dt_final) ? date('d/m/Y', strtotime($dt_final)) : date('d/m/Y') }}" placeholder="__/__/____">
+                                    <input type="text" class="form-control datepicker dt-search" name="dt_final" required="true" value="{{ ($dt_final) ? date('d/m/Y', strtotime($dt_final)) : date('d/m/Y') }}" placeholder="__/__/____">
                                 </div>
                             </div>
-                            <div class="col-md-6 col-sm-12">
+                            <div class="col-md-8 col-sm-12">
                                 <div class="form-group">
                                     <label>Buscar por <span class="text-primary">Digite o termo ou expressão de busca na sinopse</span></label>
                                     <input type="text" class="form-control" name="termo" id="termo" minlength="3" placeholder="Termo" value="{{ $termo }}">
                                 </div>
                             </div>                            
-                            <div class="col-md-2 checkbox-radios mb-0">
-                                <button type="submit" id="btn-find" class="btn btn-primary mt-4"><i class="fa fa-search"></i> Buscar</button>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 checkbox-radios mb-0">
+                                <button type="submit" id="btn-find" class="btn btn-primary mt-4 btn-search"><i class="fa fa-search"></i> Buscar</button>
                             </div>
                         </div>
                     </div>
