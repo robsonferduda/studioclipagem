@@ -62,7 +62,11 @@
                                     <input type="file" class="form-control" name="logo" id="logo">
                                     <div class="row">
                                         <div class="col-md-12 mt-2">
-                                            <img src="{{ asset('img/clientes/logo/'.$cliente->logo) }}" alt="{{ $cliente->logo }}" class="img-thumbnail">
+                                            @if($cliente->logo)
+                                                <img src="{{ asset('img/clientes/logo/'.$cliente->logo) }}" alt="{{ $cliente->logo }}" class="img-thumbnail">
+                                            @else
+                                                <span class="text-danger">Nenhuma mídia cadastrada</span>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -73,7 +77,11 @@
                                     <input type="file" class="form-control" name="logo_expandida" id="logo_expandida">
                                     <div class="row">
                                         <div class="col-md-12 mt-2">
-                                            <img src="{{ asset('img/clientes/logo_expandida/'.$cliente->logo_expandida) }}" alt="{{ $cliente->logo_expandida }}" class="img-thumbnail">
+                                            @if($cliente->logo)
+                                                <img src="{{ asset('img/clientes/logo_expandida/'.$cliente->logo_expandida) }}" alt="{{ $cliente->logo_expandida }}" class="img-thumbnail">
+                                            @else
+                                                <span class="text-danger">Nenhuma mídia cadastrada</span>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
