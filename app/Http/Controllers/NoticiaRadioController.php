@@ -48,7 +48,7 @@ class NoticiaRadioController extends Controller
                 ->leftJoin('noticia_cliente', function($join){
                 $join->on('noticia_cliente.noticia_id', '=', 'noticia_radio.id');
                 $join->on('noticia_cliente.tipo_id','=', DB::raw(3));
-            })->where('dt_noticia', $this->data_atual)->get();
+            })->where('dt_noticia', $this->data_atual)->paginate(10);
         }
 
         if($request->isMethod('POST')){
@@ -68,7 +68,7 @@ class NoticiaRadioController extends Controller
                 return $q->whereBetween('dt_noticia', [$dt_inicial, $dt_final]);
             });
 
-            $noticias = $noticia->get();
+            $noticias = $noticia->paginate(10);
 
         }
 
@@ -325,8 +325,8 @@ class NoticiaRadioController extends Controller
     public function getEstatisticas()
     {
         $dados = array();
-        $data_final = date("Y-m-d")." 00:00:00";
-        $data_inicial = Carbon::now()->subDays(7)->format('Y-m-d')." 23:59:59";;
+        $data_final = date("Y-m-d")." 23:59:59";
+        $data_inicial = Carbon::now()->subDays(7)->format('Y-m-d')." 00:00:00";;
 
         $totais = (new NoticiaRadio())->getTotais($data_inicial, $data_final);
 

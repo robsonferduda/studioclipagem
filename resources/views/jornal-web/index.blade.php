@@ -63,7 +63,7 @@
                     {!! Form::close() !!} 
 
                     @if($dados->count())
-                        <h6 class="px-3">Mostrando {{ $dados->count() }} de {{ $dados->total() }} Páginas</h6>
+                        <h6 class="px-3">Mostrando {{ $dados->count() }} de {{ $dados->total() }} Notícias</h6>
                     @endif
 
                     {{ $dados->onEachSide(1)->appends(['dt_inicial' => $dt_inicial, 'dt_final' => $dt_final])->links('vendor.pagination.bootstrap-4') }}    

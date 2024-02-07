@@ -29,8 +29,8 @@
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> {!! empty($dados->id) ? 'Cadastrar' : 'Atualizar' !!}</h4>
                     </div>
                     <div class="col-md-6">
-                        <a href="{{ url('radios') }}" class="btn btn-warning pull-right mr-3"><i class="nc-icon nc-chart-pie-36"></i> Dashboard</a>
-                        <a href="{{ url('radio/noticias') }}" class="btn btn-info pull-right mr-3"><i class="fa fa-table"></i> Notícias</a>
+                        <a href="{{ url('radios') }}" class="btn btn-info pull-right mr-3"><i class="fa fa-table"></i> Notícias</a>
+                        <a href="{{ url('radio/estatisticas') }}" class="btn btn-warning pull-right mr-3"><i class="nc-icon nc-chart-pie-36"></i> Estatísticas</a>
                     </div>
                 </div>
             </div>
