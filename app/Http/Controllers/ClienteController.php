@@ -103,8 +103,8 @@ class ClienteController extends Controller
                 $cliente->update(['logo_expandida' => $file_name]);
             }
 
-            $this->cadastrarEnderecoEletronico($request, $cliente);
-            $this->gerenciaClienteArea($request, $cliente);
+            //$this->cadastrarEnderecoEletronico($request, $cliente);
+            //$this->gerenciaClienteArea($request, $cliente);
 
             $retorno = array('flag' => true,
                              'msg' => "Dados inseridos com sucesso");
@@ -130,7 +130,7 @@ class ClienteController extends Controller
 
     public function edit($id): View
     {
-        $cliente = Cliente::with(['pessoa', 'clienteArea'])->find($id);
+        $cliente = Cliente::with(['pessoa', 'areas'])->find($id);
         $areas  = Area::all();
         $emails = EnderecoEletronico::where('pessoa_id', $cliente->pessoa->id)->get();
 

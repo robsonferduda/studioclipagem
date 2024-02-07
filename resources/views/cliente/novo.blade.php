@@ -100,7 +100,7 @@
                             <tbody id="tbody-expressoes">
                                 <tr class="linha-expressao">
                                     <td>
-                                        <select class="form-control select-area" name="area[]">
+                                        <select class="form-control" name="area[]">
                                             <option value="">Selecione</option>
                                             @foreach($areas as $area)
                                                 <option value="{{ $area->id }}">{{ $area->descricao }}</option>
@@ -111,7 +111,7 @@
                                         <input type="text" class="form-control input-expressao" name="expressao[]" placeholder="Expressao" />
                                     </td>
                                     <td>
-                                        <select class="form-control select-status" name="status[]">
+                                        <select class="form-control" name="status[]">
                                             <option value="true">Ativo</option>
                                             <option value="false">Inativo</option>
                                         </select>
@@ -131,52 +131,13 @@
             </div>
         </div>
     {!! Form::close() !!}
+    {!! Form::open(['id' => 'frm_cliente', 'url' => ['cliente'], 'files' => true]) !!}
+
+    {!! Form::close() !!}
 </div>
 @endsection
 @section('script')
     <script>
-        Componente = {
-            init: function() {
-                $('.select-area').select2({
-                    placeholder: 'Selecione',
-                    allowClear: true
-                })
-
-                $('.select-status').select2({
-                    placeholder: 'Selecione',
-                    minimumResultsForSearch: Infinity
-                })
-            },
-            remove: function(element, table) {
-                if($(table).find('tr').length > 1) {
-                    $(element).parents('tr').remove();
-                    return;
-                }
-
-                $(element).parents('tr').find('input').val('');
-            }
-        }
-
-        $(document).on('click', '.btn-adicionar', function() {
-            let element = '#tbody-endereco-eletronico';
-            let clone = $(element).find('tr').eq(0).clone();
-            $(clone).find('input, select').val('');
-            $(element).prepend(clone);
-        });
-
-        $(document).on('click', '.btn-adicionar-expressao', function() {
-            let element = '#tbody-expressoes';
-            $(element).find('select').select2('destroy');
-
-            let clone = $(element).find('tr').eq(0).clone();
-            $(clone).find('input, select').val('');
-            $(clone).find('.select-area').val('');
-            $(clone).find('.select-status').val('true');
-            $(element).prepend(clone);
-            $(element).find('tr').eq(0).find('input-expressao').focus();
-            Componente.init();
-        });
-
         $(document).on('change', '#cpf_cnpj', function() {
             if($.inArray($(this).val().length, [14,18]) === -1) {
                 return;

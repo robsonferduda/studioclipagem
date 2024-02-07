@@ -34,6 +34,8 @@ Route::post('alterar-data','HomeController@atualizarData');
 Route::post('areas/inserir','AreaController@inserir');
 Route::post('areas/{id}/atualizar','AreaController@atualizar');
 
+Route::post('areas/cliente/cadastrar','AreaController@cadastrarAreaCliente');
+
 Route::get('boletins','BoletimController@index');
 Route::get('boletim/{id}','BoletimController@detalhes');
 Route::get('boletim/{id}/enviar','BoletimController@enviar');

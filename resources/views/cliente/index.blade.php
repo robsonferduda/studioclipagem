@@ -62,7 +62,7 @@
                             <tr>
                                 <td>
                                     {{ $cliente->pessoa->nome }} 
-                                    @if($cliente->clienteArea->count())
+                                    @if($cliente->areas->count())
                                         <i title="Cliente possui áreas vinculadas" class="fa fa-tags text-primary"></i>
                                     @endif
                                 </td>
