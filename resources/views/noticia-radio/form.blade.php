@@ -102,8 +102,8 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label>Estado </label>
-                            <select class="form-control selector-select2" name="estado" id="estado">
-                                <option value="">Selecione</option>
+                            <select class="form-control selector-select2" name="cd_estado" id="cd_estado">
+                                <option value="">Selecione um estado</option>
                                 @foreach ($estados as $estado)
                                     <option value="{{ $estado->cd_estado }}" {!! $dados->cd_estado == $estado->cd_estado ? " selected" : '' !!}>
                                         {{ $estado->nm_estado }}
@@ -115,18 +115,15 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label>Cidade </label>
-                            <select class="form-control selector-select2" name="cidade" id="cidade" {!! $dados->cd_estado ? '' : 'disabled="disabled"' !!}>
-                                <option value="">{!! $dados->cd_estado ? 'Selecione' : 'Selecione o estado' !!}</option>
-                                @foreach ($cidades as $cidade)
-                                    <option value="{{ $cidade->cd_cidade }}" {!! $dados->cd_cidade == $cidade->cd_cidade ? 'selected' : '' !!}>{{ $cidade->nm_cidade }}</option>
-                                @endforeach
+                            <select class="form-control select2" name="cidade" id="cidade" disabled="disabled">
+                                <option value="">Selecione uma cidade</option>
                             </select>
                         </div>
                     </div>
                     <div class="col-md-5">
                         <div class="form-group">
                             <label>Emissora <span class="text-danger">Obrigatório</span></label>
-                            <select class="form-control" name="emissora" id="emissora" required>
+                            <select class="form-control select2" name="emissora" id="emissora" required>
                             <option value="">Selecione uma emissora</option>
                             </select>
                         </div>
@@ -456,60 +453,6 @@
             $('.upload-arquivo').slideDown();
             $('.download-arquivo').slideUp();
         })
-
-        $(document).on('change', '#estado', function() {
-            $('#emissora').find('option').remove().end();
-            $('#programa').find('option').remove().end();
-        });
-
-        $(document).on('change', '#estado', function() {
-
-            $('#cidade').find('option').remove().end();
-            $('#emissora').find('option').remove().end();
-            $('#programa').find('option').remove().end();
-
-            if($(this).val() == '') {
-                $('#cidade').attr('disabled', true);
-                $('#cidade').append('<option value="">Selecione</option>').val('');
-                return;
-            }
-
-            $('#cidade').append('<option value="">Carregando...</option>').val('');
-            
-            var host =  $('meta[name="base-url"]').attr('content');
-            var id_estado = $(this).val();
-
-            $.ajax({
-                url: host+'/api/estado/'+id_estado+'/cidades',
-                type: 'GET',
-                beforeSend: function() {
-                    $('.content').loader('show');
-                },
-                success: function(data) {
-                    if(!data) {
-                        Swal.fire({
-                            text: 'Não foi possível buscar as cidades. Por favor, tente novamente mais tarde',
-                            type: "warning",
-                            icon: "warning",
-                        });
-                        return;
-                    }
-                    $('#cidade').attr('disabled', false);
-                    $('#cidade').find('option').remove().end();
-
-                    data.forEach(element => {
-                        let option = new Option(element.nm_cidade, element.cd_cidade);
-                        $('#cidade').append(option);
-                    });
-                    $('#cidade').val('');
-                    $('#cidade').select2('destroy');
-                    $('#cidade').select2({placeholder: 'Selecione', allowClear: true});
-                },
-                complete: function(){
-                    $('.content').loader('hide');
-                }
-            });
-        });
 
     </script>
 @endsection
