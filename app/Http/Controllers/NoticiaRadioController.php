@@ -167,7 +167,7 @@ class NoticiaRadioController extends Controller
             }
 
             $retorno = array('flag' => true,
-                             'msg' => "Dados inseridos com sucesso");
+                             'msg' => '<i class="fa fa-check"></i> Dados inseridos com sucesso');
 
         } catch (\Illuminate\Database\QueryException $e) {
 
@@ -261,7 +261,7 @@ class NoticiaRadioController extends Controller
             }
 
             $retorno = array('flag' => true,
-                             'msg' => "Dados atualizados com sucesso");
+                             'msg' => '<i class="fa fa-check"></i> Dados atualizados com sucesso');
 
         } catch (\Illuminate\Database\QueryException $e) {
             $retorno = array('flag' => false,

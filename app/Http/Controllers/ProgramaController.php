@@ -155,6 +155,15 @@ class ProgramaController extends Controller
         return response()->json($result);
     }
 
+    public function buscarProgramasEmissora(Request $request)
+    {
+        $emissora = $request->emissora;
+
+        $programas = Programa::select('id', 'nome as text');
+        $result = $programas->where('emissora_id', $emissora)->orderBy('nome', 'asc')->get();
+        return response()->json($result);
+    }
+
     public function buscarProgramasHorario(Request $request)
     {
         $horario = $request->horario;

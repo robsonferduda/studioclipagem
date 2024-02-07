@@ -18,7 +18,7 @@ class Cliente extends Model
         return $this->hasOne(Pessoa::class, 'id', 'pessoa_id')->orderBy('nome');
     }
 
-    public function clienteArea()
+    public function areas()
     {
         return $this->hasMany(ClienteArea::class, 'cliente_id', 'id');
     }

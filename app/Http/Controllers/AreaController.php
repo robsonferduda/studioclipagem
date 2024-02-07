@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Area;
 use DB;
 use Auth;
+use App\Models\ClienteArea;
 use App\Models\JornalWeb;
 use App\Utils;
 use Carbon\Carbon;
@@ -106,5 +107,15 @@ class AreaController extends Controller
             Flash::error("Erro ao excluir o registro");
 
         return redirect('areas')->withInput();
+    }
+
+    public function cadastrarAreaCliente(Request $request)
+    {
+        $chave = array('cliente_id' => $request->cliente, 'area_id' => $request->area);
+
+        $dados = array('expressao' => $request->expressao,
+                        'ativo' => $request->situacao);
+
+        ClienteArea::updateOrCreate($chave, $dados);
     }
 }
