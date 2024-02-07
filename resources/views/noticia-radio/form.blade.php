@@ -48,25 +48,17 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Cliente <span class="text-danger">Obrigatório</span></label>
+                                <input hidden name="cliente_id" id="cliente_id" value="{{ ($dados and $dados->cliente) ? $dados->cliente->id : '' }}">
                                 <select class="form-control select2" name="cliente" id="cliente">
-                                    @if(!empty($dados->cliente_id))
-                                        <option value="{!! $dados->cliente->id !!}">{!! $dados->cliente->pessoa->nome !!}</option>
-                                    @else
-                                        <option value="">Selecione</option>
-                                    @endif
+                                    <option value="">Selecione um cliente</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label>Área <span class="text-info">Opcional</span></label>
-                                <select class="form-control select2" name="area" id="area" {!! !empty($dados->area_id) ? '' : 'disabled' !!}>
-                                    <option value="">Selecione</option>
-                                    @foreach($areas as $area)
-                                        <option value="{!! $area->id !!}">
-                                            {!! $area->descricao !!}
-                                        </option>
-                                    @endforeach
+                                <label>Área do Cliente <span class="text-info">Opcional</span></label>
+                                <select class="form-control select2" name="area" id="area" disabled>
+                                    <option value="">Selecione uma área</option>
                                 </select>
                             </div>
                         </div>
@@ -74,7 +66,7 @@
                             <div class="form-group">
                                 <label>Sentimento <span class="text-info">Opcional</span></label>
                                 <select class="form-control" name="sentimento" id="sentimento">
-                                    <option value="">Selecione</option>
+                                    <option value="">Selecione um sentimento</option>
                                     <option value="1">Positivo</option>
                                     <option value="0">Neutro</option>
                                     <option value="-1">Negativo</option>
@@ -135,10 +127,7 @@
                         <div class="form-group">
                             <label>Emissora <span class="text-danger">Obrigatório</span></label>
                             <select class="form-control" name="emissora" id="emissora" required>
-                            <option value="">Selecione</option>
-                                @if(!empty($dados->emissora->id))
-                                    <option value="{!! $dados->emissora_id !!}" selected>{!! $dados->emissora->ds_emissora !!}</option>
-                                @endif
+                            <option value="">Selecione uma emissora</option>
                             </select>
                         </div>
                     </div>
@@ -151,11 +140,8 @@
                     <div class="col-md-5">
                         <div class="form-group">
                             <label>Programa</label>
-                            <select class="form-control selector-select2" name="programa" id="programa" {!! !empty($dados->programa_id ? '' : 'disabled') !!}>
-                                <option value="">Selecione</option>
-                                @if(!empty($dados->programa->id))
-                                    <option value="{!! $dados->programa_id !!}" selected>{!! $dados->programa->nome !!}</option>
-                                @endif
+                            <select class="form-control selector-select2" name="programa" id="programa" disabled>
+                                <option value="">Selecione um programa</option>
                             </select>
                         </div>
                     </div>
@@ -232,34 +218,24 @@
             $.ajax({
                 url: host+'/api/cliente/buscarClientes',
                 type: 'GET',
-                data: {
-                    "_token": $('meta[name="csrf-token"]').attr('content'),
-                    "estado": $(this).val(),
-                },
                 beforeSend: function() {
                     $('.content').loader('show');
                 },
                 success: function(data) {
                     if(!data) {
                         Swal.fire({
-                            text: 'Não foi possível buscar as cidades. Por favor, tente novamente mais tarde',
+                            text: 'Não foi possível buscar os clientes. Entre em contato com o suporte.',
                             type: "warning",
                             icon: "warning",
                         });
                         return;
                     }
-                    $('#cliente').attr('disabled', false);
-                    $('#cliente').find('option').remove().end();
 
                     data.forEach(element => {
                         let option = new Option(element.text, element.id);
                         $('#cliente').append(option);
                     });
 
-                    $('#cliente').val('');
-                
-
-                    //$('#cidade').val(cd_cidade).change();
                 },
                 complete: function(){
                     $('.content').loader('hide');
@@ -269,34 +245,23 @@
             $.ajax({
                 url: host+'/api/emissora/buscarEmissoras',
                 type: 'GET',
-                data: {
-                    "_token": $('meta[name="csrf-token"]').attr('content'),
-                    "estado": $(this).val(),
-                },
                 beforeSend: function() {
                     $('.content').loader('show');
                 },
                 success: function(data) {
                     if(!data) {
                         Swal.fire({
-                            text: 'Não foi possível buscar as cidades. Por favor, tente novamente mais tarde',
+                            text: 'Não foi possível buscar as emissoras. Entre em contato com o suporte.',
                             type: "warning",
                             icon: "warning",
                         });
                         return;
                     }
-                    $('#emissora').attr('disabled', false);
-                    $('#emissora').find('option').remove().end();
 
                     data.forEach(element => {
                         let option = new Option(element.text, element.id);
                         $('#emissora').append(option);
                     });
-
-                    $('#emissora').val('');
-                
-
-                    //$('#cidade').val(cd_cidade).change();
                 },
                 complete: function(){
                     $('.content').loader('hide');
@@ -305,17 +270,11 @@
 
             $(document).on('change', '#cliente', function() {
 
-                $('#area').find('option').remove().end();
-
                 if($(this).val() == '') {
                     $('#area').attr('disabled', true);
-                    $('#area').append('<option value="">Selecione</option>').val('');
+                    $('#area').append('<option value="">Cliente não possui áreas</option>').val('');
                     return;
                 }
-
-                $('#area').append('<option value="">Carregando...</option>').val('');
-
-                var host =  $('meta[name="base-url"]').attr('content');
 
                 $.ajax({
                     url: host+'/api/cliente/getAreasCliente',
@@ -326,31 +285,69 @@
                     },
                     beforeSend: function() {
                         $('.content').loader('show');
+                        $('#area').append('<option value="">Carregando...</option>').val('');
                     },
                     success: function(data) {
-                        if(!data) {
-                            Swal.fire({
-                                text: 'Não foi possível buscar as áreas. Por favor, tente novamente mais tarde',
-                                type: "warning",
-                                icon: "warning",
-                            });
+
+                        $('#area').find('option').remove();
+                        $('#area').attr('disabled', false);
+
+                        if(data.length == 0) {                            
+                            $('#area').append('<option value="">Cliente não possui áreas vinculadas</option>').val('');
                             return;
                         }
-                        $('#area').attr('disabled', false);
-                        $('#area').find('option').remove().end();
-
+                        
+                        $('#area').append('<option value="">Selecione uma área</option>').val('');
                         data.forEach(element => {
                             let option = new Option(element.descricao, element.id);
                             $('#area').append(option);
                         });
-                        $('#area').val('');
-                        
+                                    
                     },
                     complete: function(){
                         $('.content').loader('hide');
                     }
                 });
             });
+
+            $(document).on('change', '#emissora', function() {
+                
+                var emissora = $(this).val();
+
+                $.ajax({
+                    url: host+'/api/programa/buscar-emissora/'+emissora,
+                    type: 'GET',
+                    beforeSend: function() {
+                        $('.content').loader('show');
+                        $('#programa').append('<option value="">Carregando...</option>').val('');
+                    },
+                    success: function(data) {
+
+                        $('#programa').find('option').remove();
+                        $('#programa').attr('disabled', false);
+
+                        if(data.length == 0) {                            
+                            $('#programa').append('<option value="">Emissora não possui programas cadastrados</option>').val('');
+                            return;
+                        }
+
+                        $('#programa').append('<option value="">Selecione um programa</option>').val('');
+
+                        data.forEach(element => {
+                            let option = new Option(element.text, element.id);
+                            $('#programa').append(option);
+                        });
+                        
+                    },
+                    complete: function(){
+                        $('.content').loader('hide');
+                    }
+                });
+
+
+                return $('#programa').prop('disabled', false);
+            });
+
             $(document).on("change", "#horario", function() {
             
                 var horario = $(this).val();
@@ -363,13 +360,18 @@
                     },
                     success: function(data) {
 
-                        $('#programa').empty();
+                        if(data.length > 0) { 
 
-                        data.forEach(element => {
-                        let option = new Option(element.text, element.id);
-                            $('#programa').append(option);
-                        });
-                        
+                            $('#programa').find('option').remove();
+                            $('#programa').attr('disabled', false);
+
+                            $('#programa').append('<option value="">Selecione um programa</option>').val('');
+
+                            data.forEach(element => {
+                                let option = new Option(element.text, element.id);
+                                $('#programa').append(option);
+                            });
+                        }                        
                     },
                     complete: function(){
                         $('.content').loader('hide');
@@ -454,15 +456,6 @@
             $('.upload-arquivo').slideDown();
             $('.download-arquivo').slideUp();
         })
-
-        $(document).on('change', '#emissora', function() {
-            $('#programa').find('option').remove().end();
-            if($(this).val() == '') {
-                return $('#programa').prop('disabled', true);
-            }
-
-            return $('#programa').prop('disabled', false);
-        });
 
         $(document).on('change', '#estado', function() {
             $('#emissora').find('option').remove().end();
