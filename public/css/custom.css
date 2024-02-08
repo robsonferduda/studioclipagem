@@ -241,3 +241,4 @@ input[type="checkbox"]:checked + label-check .fa{
 .filtro-situacao:hover{ cursor: pointer;}
 .box-studio { display: none;}
 .box-knewin { display: none;}
+.btn-excluir-email:hover {cursor: pointer;}

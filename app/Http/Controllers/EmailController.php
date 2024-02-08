@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Email;
-use App\Client;
+use App\Models\Cliente;
+use App\Models\EnderecoEletronico;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
-use App\Http\Requests\EmailRequest;
 use Illuminate\Support\Facades\Session;
 
 class EmailController extends Controller
@@ -30,6 +29,17 @@ class EmailController extends Controller
         return redirect('client/emails/'.$email->client->id);
     }
 
+    public function cadastrar(Request $request)
+    {
+        $cliente = Cliente::where('id', $request->cliente)->first();
+
+        $dados = array('pessoa_id' => $cliente->pessoa_id, 
+                       'tipo_id' => 1,
+                       'endereco' => $request->email);
+
+        EnderecoEletronico::create($dados);
+    }
+
     public function store(EmailRequest $request)
     {
         if(Email::create($request->all())){
@@ -40,15 +50,15 @@ class EmailController extends Controller
         return redirect('client/emails/'.$request->client_id);
     }
 
-    public function destroy($id)
+    public function excluir($id)
     {
-        $email = Email::find($id);
+        $email = EnderecoEletronico::find($id);
  
         if($email->delete())
-            Flash::success('<i class="fa fa-check"></i> Email <strong>'.$email->ds_email.'</strong> excluído com sucesso');
+            Flash::success('<i class="fa fa-check"></i> Email <strong>'.$email->endereco.'</strong> excluído com sucesso');
         else
             Flash::error("Erro ao excluir email");
 
-        return redirect('client/emails/'.$email->client->id);
+        return redirect()->back();
     }
 }

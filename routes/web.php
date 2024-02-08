@@ -57,6 +57,9 @@ Route::post('emissoras/horario/adicionar','EmissoraController@adicionarHorarios'
 Route::match(array('GET', 'POST'),'programas/{tipo}','ProgramaController@index');
 Route::get('programa/{tipo}/novo','ProgramaController@novo');
 
+Route::get('email/cliente/excluir/{id}','EmailController@excluir');
+Route::post('email/cliente/cadastrar','EmailController@cadastrar');
+
 Route::get('estado/{id}/cidades','EstadoController@getCidades');
 
 Route::get('fonte-impresso/listar','FonteImpressoController@listar');
