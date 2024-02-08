@@ -89,31 +89,25 @@
                         </div>
                     </div>
                     <div class="col-md-12">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Email</th>
-                                    <th><a title="Adicionar" class="btn btn-primary btn-link btn-icon btn-adicionar"><i class="fa fa-plus"></i></a></th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbody-endereco-eletronico">
+                        <p class="mb-0">
+                            <i class="fa fa-envelope"></i> Endereços Eletrônicos 
+                            <button type="button" class="btn btn-sm btn-primary btn-icon btn-email" style="border-radius: 50%; height: 1.5rem;
+                            min-width: 1.5rem;
+                            width: 1.5rem;" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-plus fa-2x"></i></button>
+                        </p>
+                        <div class="row">
+                            <div class="col-md-12">
                                 @if(count($emails))
-                                    @foreach($emails as $email)
-                                        <tr class="linha-email">
-                                            <td><input type="text" class="form-control" name="email[]" placeholder="Email" value="{{ $email->endereco }}" /></td>
-                                            <td><a title="Remover" class="btn btn-danger btn-link btn-icon btn-remover"><i class="fa fa-trash"></i></a></td>
-                                        </tr>
+                                    @foreach($emails as $email)                                        
+                                        <span data-id="{{ $email->id }}" class="btn-excluir-email">{{ $email->endereco }}<a title="Remover" class=""><i class="fa fa-trash text-danger ml-1 mr-3"></i></a></span>
                                     @endforeach
                                 @else
-                                    <tr class="linha-email">
-                                        <td><input type="text" class="form-control" name="email[]" placeholder="Email" value="" /></td>
-                                        <td><a title="Remover" class="btn btn-danger btn-link btn-icon btn-remover"><i class="fa fa-trash"></i></a></td>
-                                    </tr>
+                                    <p class="text-danger">Nenhum endereço eletrônico cadastrado</p>
                                 @endif
-                            </tbody>
-                        </table>
+                            </div>
+                        </div>
                     </div>
-                <div class="col-md-12">
+                <div class="col-md-12 mt-4">
                     <p><i class="fa fa-tags"></i> Áreas do Cliente</p>
                     {!! Form::open(['id' => 'frm_cliente_edit', 'url' => ['cliente', $cliente->id], 'method' => 'patch', 'files' => true]) !!}
                         <div class="row">
@@ -186,6 +180,33 @@
         </div>
     {!! Form::close() !!}    
 </div>
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-envelope"></i> Adicionar Endereço Eletrônico</h6>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Digite o endereço</label>
+                        <input type="mail" class="form-control" name="email" id="email">
+                    </div>
+                </div>
+               
+        </div>
+        <div class="center">
+          <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
+          <button type="button" class="btn btn-success btn-salvar-email"><i class="fa fa-save"></i> Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 @endsection
 @section('script')
     <script>
@@ -194,6 +215,42 @@
         $(document).ready(function() {
             
             let host =  $('meta[name="base-url"]').attr('content');
+
+            $(".btn-salvar-email").click(function(){
+
+                var cliente = $("#cliente_id").val();
+                var email = $("#email").val();
+
+                if(!email){
+
+                    Swal.fire({
+                        html: 'Informe um email válido.',
+                        type: "warning",
+                        icon: "warning",
+                        confirmButtonText: '<i class="fa fa-check"></i> Entendi',
+                    });
+
+                }else{
+
+                    $.ajax({
+                        url: host+'/email/cliente/cadastrar',
+                        type: 'POST',
+                        data: {
+                                "_token": $('meta[name="csrf-token"]').attr('content'),
+                                "email": email,
+                                "cliente": cliente
+                        },
+                        success: function(response) {
+                            location.reload();                    
+                        },
+                        error: function(response){
+                            
+                        }
+                    });
+
+                }
+
+            });
 
             $(".btn-add-area").click(function(){
 
@@ -224,7 +281,7 @@
                                 "cliente": cliente
                         },
                         success: function(response) {
-                                                            
+                            location.reload();                       
                         },
                         error: function(response){
                             
