@@ -7,6 +7,9 @@ use Auth;
 use App\Models\FonteWeb;
 use App\Models\JornalImpresso;
 use App\Models\JornalWeb;
+use App\Models\NoticiaRadio;
+use App\Models\NoticiaWeb;
+use App\Models\NoticiaTv;
 use App\Models\ColetaWeb;
 use App\Models\MonitoramentoExecucao;
 use Carbon\Carbon;
@@ -77,8 +80,8 @@ class HomeController extends Controller
     {
         $totais = array('impresso' => JornalImpresso::where('dt_clipagem', $this->data_atual)->count(),
                         'web' => JornalWeb::where('dt_clipagem', $this->data_atual)->count(),
-                        'radio' => 0,
-                        'tv' => 0);
+                        'radio' => NoticiaRadio::where('dt_noticia', $this->data_atual)->count(),
+                        'tv' => NoticiaTv::where('dt_noticia', $this->data_atual)->count());
 
         return response()->json($totais);
     }
