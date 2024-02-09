@@ -30,6 +30,7 @@ Route::get('areas/{id}/remover','AreaController@remover');
 Route::get('assessorias/clientes','AssessoriaController@clientes');
 
 Route::post('alterar-data','HomeController@atualizarData');
+Route::get('inicio/estatisticas','HomeController@estatisticas');
 
 Route::post('areas/inserir','AreaController@inserir');
 Route::post('areas/{id}/atualizar','AreaController@atualizar');

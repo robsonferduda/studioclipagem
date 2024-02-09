@@ -15,7 +15,9 @@
                                 <div class="col-9 col-md-9">
                                     <div class="numbers">
                                         <p class="card-category">JORNAL</p>
-                                        <p class="card-title"><a href="{{ url('impresso') }}">{{ $totais['impresso'] }}</a></p>
+                                        <p class="card-title total_jornal">
+                                            <i class="fa fa-circle-o-notch fa-spin fa-fw text-gray"></i>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -34,7 +36,9 @@
                                 <div class="col-9 col-md-9">
                                     <div class="numbers">
                                         <p class="card-category">WEB</p>
-                                        <p class="card-title"><a href="{{ url('jornal-web') }}">{{ $totais['web'] }}</a></p>
+                                        <p class="card-title total_web">
+                                            <i class="fa fa-circle-o-notch fa-spin fa-fw text-gray"></i>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -53,7 +57,9 @@
                                 <div class="col-9 col-md-9">
                                     <div class="numbers">
                                         <p class="card-category">RÁDIO</p>
-                                        <p class="card-title"><a href="{{ url('radio') }}">{{ $totais['radio'] }}</a></p>
+                                        <p class="card-title total_radio">
+                                            <i class="fa fa-circle-o-notch fa-spin fa-fw text-gray"></i>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -72,7 +78,9 @@
                                 <div class="col-9 col-md-9">
                                     <div class="numbers">
                                         <p class="card-category">TELEVISÃO</p>
-                                        <p class="card-title"><a href="{{ url('tv') }}">{{ $totais['tv'] }}</a></p>
+                                        <p class="card-title total_tv">
+                                            <i class="fa fa-circle-o-notch fa-spin fa-fw text-gray"></i>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -87,7 +95,8 @@
                             <h6 class="card-title"><i class="fa fa-line-chart" aria-hidden="true"></i> Maiores Coletas</h6>
                         </div>
                         <div class="card-content">
-                            @if($totais['web'])
+                            <!--
+                            @if(false)
                                 <ul class="list-unstyled team-members ml-3 mr-3">
                                     @foreach ($top_sites as $site)
                                         <li style="border-bottom: 1px solid #ebebeb; margin-bottom: 3px;">
@@ -107,6 +116,7 @@
                             @else
                                 <p class="mr-2 ml-3"><i class="fa fa-hourglass-start mr-1"></i>Nenhuma coleta realizada no dia de hoje</p>
                             @endif
+                            -->
                         </div>
                     </div>
                 </div>
@@ -117,7 +127,7 @@
                             <h6 class="card-title"><i class="fa fa-ban" aria-hidden="true"></i> Sem Coleta</h6>
                         </div>
                         <div class="card-content">
-                            @if($totais['web'])
+                            @if(false)
                                 <ul class="list-unstyled team-members ml-3 mr-3">
                                     @foreach ($sem_coleta as $key => $site)
                                         @if($key < 9)
@@ -155,11 +165,11 @@
                         </div>
                         <div class="timeline-panel">
                             <div class="timeline-heading">
-                                <h6>CATEGORIAS <span class="badge badge-pill badge-success pull-right">{{ $total_sem_area }} NOTÍCIAS</span></h6>
+                                <h6>CATEGORIAS <span class="badge badge-pill badge-success pull-right"> NOTÍCIAS</span></h6>
                             </div>
                             <div class="timeline-body">
-                                @if($coletas->count())
-                                    <p>Existem {{ $total_sem_area }} notícias sem identificação de categoria.</p>
+                                @if(false)
+                                    <p>Existem  notícias sem identificação de categoria.</p>
                                 @else
                                     <p><i class="fa fa-hourglass-start mr-1"></i>Nenhuma coleta realizada no dia de hoje</p>
                                 @endif
@@ -172,10 +182,10 @@
                         </div>
                         <div class="timeline-panel">
                             <div class="timeline-heading">
-                                <h6>COLETAS EXECUTADAS <span class="badge badge-pill badge-warning pull-right">{{ $coletas->count() }} coletas</span></h6>
+                                <h6>COLETAS EXECUTADAS <span class="badge badge-pill badge-warning pull-right">0 coletas</span></h6>
                             </div>
                             <div class="timeline-body">
-                                @if($coletas->count())
+                                @if(false)
                                     <table id="bootstrap-table" class="table table-hover">
                                         <thead>
                                             <tr>
@@ -209,10 +219,10 @@
                         </div>
                         <div class="timeline-panel">
                             <div class="timeline-heading">
-                                <h6>REGISTRO DE MONITORAMENTO DIÁRIO<span class="badge badge-pill badge-primary pull-right">{{ $execucoes->count() }} EXECUÇÕES</span></h6>
+                                <h6>REGISTRO DE MONITORAMENTO DIÁRIO<span class="badge badge-pill badge-primary pull-right">0 EXECUÇÕES</span></h6>
                             </div>
                             <div class="timeline-body">
-                                @if($execucoes->count())
+                                @if(false)
                                     <table id="bootstrap-table" class="table table-hover">
                                         <thead>
                                             <tr>
@@ -258,6 +268,36 @@
     $(document).ready(function() {
 
         var host =  $('meta[name="base-url"]').attr('content');
+
+        $.ajax({
+            url: host+'/inicio/estatisticas',
+            type: 'GET',
+            beforeSend: function() {
+                
+            },
+            success: function(data) {
+                $(".total_radio > .fa-spin").remove();
+                $(".total_tv > .fa-spin").remove();
+                $(".total_jornal > .fa-spin").remove();
+                $(".total_web > .fa-spin").remove();
+
+                $(".total_jornal").append('<a href="https://studioclipagem.com/impresso">'+data.impresso+'</a>');
+                $(".total_tv").append('<a href="https://studioclipagem.com/impresso">'+data.tv+'</a>');
+                $(".total_radio").append('<a href="https://studioclipagem.com/radios">'+data.radio+'</a>');
+                $(".total_web").append('<a href="https://studioclipagem.com/jornal-web">'+data.web+'</a>');
+            },
+            error: function(){
+                $(".total_radio").text('Erro ao carregar').css('color','#dc3545').css('font-size', '18px');
+                $(".total_tv").text('Erro ao carregar').css('color','#dc3545').css('font-size', '18px');
+                $(".total_jornal").text('Erro ao carregar').css('color','#dc3545').css('font-size', '18px');
+                $(".total_web").text('Erro ao carregar').css('color','#dc3545').css('font-size', '18px');
+            },
+            complete: function(){
+                
+            }
+        });
+
+        inicio/estatisticas
 
         $(".btn-refresh").click(function(){
             
