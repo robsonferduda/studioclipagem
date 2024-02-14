@@ -123,7 +123,7 @@
                     <div class="col-md-2">
                         <div class="form-group">
                             <label>Horário</label>
-                            <input type="text" class="form-control horario" name="horario" id="horario" value="{{ ($dados->horario) ? $dados->horario : 0  }}" placeholder="Horário">
+                            <input type="text" class="form-control horario" name="horario" id="horario" value="{{ ($dados->horario) ? $dados->horario : ''  }}" placeholder="Horário">
                         </div>
                     </div>
                     <div class="col-md-5">

@@ -103,7 +103,11 @@ class Utils
             case '42P01':
                 return '<i class="fa fa-times"></i> Tabela inexistente no banco de dados';
                 break;
-                            
+
+            case '22007':
+                return '<i class="fa fa-times"></i> Data com formato inválido';
+                break;
+
             default:
                 return '<i class="fa fa-times"></i> Código de erro desconhecido: '.$errorCode;
                 break;

@@ -191,8 +191,6 @@ class NoticiaRadioController extends Controller
 
         } catch (\Illuminate\Database\QueryException $e) {
 
-            dd($e);
-
             $retorno = array('flag' => false,
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
 
@@ -298,6 +296,7 @@ class NoticiaRadioController extends Controller
                              'msg' => '<i class="fa fa-check"></i> Dados atualizados com sucesso');
 
         } catch (\Illuminate\Database\QueryException $e) {
+
             $retorno = array('flag' => false,
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
 
