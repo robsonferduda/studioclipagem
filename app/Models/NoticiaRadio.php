@@ -36,6 +36,11 @@ class NoticiaRadio extends Model
         return $this->hasOne(Cliente::class, 'id', 'cliente_id');
     }
 
+    public function clientes()
+    {
+        return $this->belongsToMany(Cliente::class,'noticia_cliente','noticia_id','cliente_id')->withTimestamps()->whereNull('noticia_cliente.deleted_at');
+    }
+
     public function area()
     {
         return $this->hasOne(Area::class, 'id', 'area_id');
@@ -72,5 +77,10 @@ class NoticiaRadio extends Model
 
         return DB::select($sql);
     }
- 
+
+    protected static function booted () {
+        static::deleting(function(NoticiaRadio $noticia) { 
+            $noticia->tags()->delete();
+        });
+    } 
 }

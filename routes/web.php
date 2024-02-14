@@ -131,6 +131,7 @@ Route::match(array('GET', 'POST'),'radios','NoticiaRadioController@index');
 Route::get('radio/noticias/cadastrar','NoticiaRadioController@cadastrar');
 Route::get('radio/noticias/{id}/editar','NoticiaRadioController@editar');
 Route::get('radio/noticias/{id}/remover','NoticiaRadioController@remover');
+Route::get('radio/noticias/{id}/cliente/{cliente}/remover','NoticiaRadioController@remover');
 Route::get('radio/noticias/{id}/download','NoticiaRadioController@download');
 Route::get('radio/noticias/estatisticas','NoticiaRadioController@getEstatisticas');
 Route::post('radio/noticias/inserir','NoticiaRadioController@inserir');

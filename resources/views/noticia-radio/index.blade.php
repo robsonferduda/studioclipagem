@@ -73,10 +73,38 @@
                                         <source src="{{ asset('noticias-radio/'. substr($noticia->arquivo, 0, 10).'/'.$noticia->arquivo) }}" type="audio/ogg">
                                         <source src="{{ asset('noticias-radio/'. substr($noticia->arquivo, 0, 10).'/'.$noticia->arquivo) }}" type="audio/mpeg">
                                       Your browser does not support the audio element.
-                                      </audio>
-                                    <div style="position: absolute; bottom: 5px; right: 5px;">
+                                    </audio>
+                                    <div style="position: absolute; bottom: 15px; left: 330px;">
+                                        @switch($noticia->sentimento)
+                                            @case(0)
+                                                <span><i class="fa fa-smile-o fa-2x op-2"></i></span>                                                
+                                                <span><i class="fa fa-frown-o fa-2x op-2"></i></span>
+                                                <span><i class="fa fa-ban fa-2x text-info"></i></span>
+                                            @break
+                                            @case(-1)
+                                                <span><i class="fa fa-smile-o fa-2x op-2"></i></span>                                                
+                                                <span><i class="fa fa-frown-o fa-2x text-danger"></i></span>
+                                                <span><i class="fa fa-ban fa-2x op-2"></i></span>
+                                            @break
+                                            @case(1)
+                                                <span><i class="fa fa-smile-o fa-2x text-success"></i></span>                                                
+                                                <span><i class="fa fa-frown-o fa-2x op-2"></i></span>
+                                                <span><i class="fa fa-ban fa-2x op-2"></i></span>
+                                            @break  
+                                            @default
+                                                <span><i class="fa fa-smile-o fa-2x op-2"></i></span>                                                
+                                                <span><i class="fa fa-frown-o fa-2x op-2"></i></span>
+                                                <span><i class="fa fa-ban fa-2x op-2"></i></span>
+                                            @break                                           
+                                        @endswitch
+                                    </div>
+                                    <div style="position: absolute; bottom: 0px; right: 5px;">
                                         <a title="Editar" href="{{ url('radio/noticias/'.$noticia->id.'/editar') }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
-                                        <a title="Excluir" href="{{ url('radio/noticias/'.$noticia->id.'/remover') }}" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-trash fa-2x"></i></a>
+                                        @if($noticia->cliente)
+                                            <a title="Excluir" href="{{ url('radio/noticias/'.$noticia->id.'/cliente/'.$noticia->cliente->id.'/remover') }}" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-trash fa-2x"></i></a>
+                                        @else 
+                                            <a title="Excluir" href="{{ url('radio/noticias/'.$noticia->id.'/remover') }}" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-trash fa-2x"></i></a>
+                                        @endif
                                     </div>
                                 </div>
                             </div>

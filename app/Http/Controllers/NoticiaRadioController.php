@@ -44,20 +44,22 @@ class NoticiaRadioController extends Controller
         $termo = $request->termo;
 
         if($request->isMethod('GET')){
-            $noticias = NoticiaRadio::select('noticia_radio.*','noticia_cliente.cliente_id')
+            $noticias = NoticiaRadio::select('noticia_radio.*','noticia_cliente.cliente_id','noticia_cliente.sentimento')
                 ->leftJoin('noticia_cliente', function($join){
                 $join->on('noticia_cliente.noticia_id', '=', 'noticia_radio.id');
                 $join->on('noticia_cliente.tipo_id','=', DB::raw(3));
+                $join->whereNull('noticia_cliente.deleted_at');
             })->where('dt_noticia', $this->data_atual)->paginate(10);
         }
 
         if($request->isMethod('POST')){
 
             $noticia = NoticiaRadio::query();
-            $noticia->select('noticia_radio.*','noticia_cliente.cliente_id');
+            $noticia->select('noticia_radio.*','noticia_cliente.cliente_id','noticia_cliente.sentimento');
             $noticia->leftJoin('noticia_cliente', function($join){
                 $join->on('noticia_cliente.noticia_id', '=', 'noticia_radio.id');
                 $join->on('tipo_id','=', DB::raw(3));
+                $join->whereNull('noticia_cliente.deleted_at');
             }); 
 
             $noticia->when($termo, function ($q) use ($termo) {
@@ -294,15 +296,34 @@ class NoticiaRadioController extends Controller
         }
     }
 
-    public function remover(int $id)
+    public function remover(int $id, $cliente = null)
     {
         $noticia = NoticiaRadio::find($id);
-        if($noticia->delete())
-            Flash::success('<i class="fa fa-check"></i> Notícia <strong>'.$noticia->titulo.'</strong> excluída com sucesso');
-        else
-            Flash::error("Erro ao excluir o registro");
 
-        return redirect('radio/noticias')->withInput();
+        if($cliente){
+
+            $noticia_cliente = NoticiaCliente::where('noticia_id', $id)->where('cliente_id', $cliente)->first();
+
+            if($noticia_cliente->delete()){
+
+                if(count($noticia->clientes) == 0){
+
+                    if($noticia->delete())
+                        Flash::success('<i class="fa fa-check"></i> Notícia <strong>'.$noticia->titulo.'</strong> excluída com sucesso');
+                }
+            }
+            else
+                Flash::error("Erro ao excluir o registro");
+
+        }else{
+
+            if($noticia->delete())
+                Flash::success('<i class="fa fa-check"></i> Notícia <strong>'.$noticia->titulo.'</strong> excluída com sucesso');
+            else
+                Flash::error("Erro ao excluir o registro");
+        }
+
+        return redirect('radios')->withInput();
     }
 
     public function download(int $id)
