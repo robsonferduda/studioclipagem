@@ -241,6 +241,7 @@ class NoticiaRadioController extends Controller
             
             $dados = array('dt_noticia' => ($request->data) ? $carbon->createFromFormat('d/m/Y', $request->data)->format('Y-m-d') : date("Y-m-d"),
                             'duracao' => $request->duracao,
+                            'horario' => $request->horario,
                             'emissora_id' => $request->emissora,
                             'programa_id' => $request->programa,
                             'arquivo' => ($request->arquivo) ? $request->arquivo : $noticia->arquivo,
