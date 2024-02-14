@@ -198,6 +198,11 @@
                      </a>
                      <div class="collapse {{ (Session::has('url') and Session::get('url') == 'tv') ? 'show' : '' }}" id="submenu-tv" aria-expanded="false">
                         <ul class="nav ml-5">
+                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'tv-noticias') ? 'active' : '' }}">
+                            <a href="{{ url('tv/noticias') }}">
+                            <span class="sidebar-normal">Notícias</span>
+                            </a>
+                         </li>
                            <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'tvs') ? 'active' : '' }}">
                               <a href="{{ url('tv') }}">
                               <span class="sidebar-normal">Dashboard</span>
@@ -218,11 +223,7 @@
                             <span class="sidebar-normal">Decupagem</span>
                             </a>
                          </li>
-                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'tv-noticias') ? 'active' : '' }}">
-                              <a href="{{ url('tv/noticias') }}">
-                              <span class="sidebar-normal">Notícias</span>
-                              </a>
-                           </li>
+                           
                         </ul>
                      </div>
                   </li>

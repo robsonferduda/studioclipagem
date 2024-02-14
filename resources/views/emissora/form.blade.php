@@ -27,7 +27,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>Estado <span class="text-danger">Obrigatório</span></label>
-                                <select class="form-control" name="cd_estado" id="estado" required="required">
+                                <select class="form-control selector-select2" name="cd_estado" id="cd_estado">
                                     <option value="">Selecione um estado</option>
                                     @foreach($estados as $estado)
                                         <option value="{{ $estado->cd_estado }}" {{ ($emissora) ? (($emissora->cd_estado == $estado->cd_estado) ? 'selected' : '' ) : '' }}>{{ $estado->nm_estado }}</option>
@@ -37,10 +37,10 @@
                         </div>
                         <div class="col-md-9">
                             <div class="form-group">
+                                <input type="hidden" name="cd_cidade" id="cd_cidade" value="{{ ($emissora->cd_cidade) ? $emissora->cd_cidade : 0  }}">
                                 <label>Cidade <span class="text-danger">Obrigatório</span></label>
-                                <select class="form-control" name="cd_cidade" id="cidade" required="required">
-                                    <option value="">Selecione uma cidade</option>
-                                    
+                                <select class="form-control select2" name="cidade" id="cidade" disabled="disabled">
+                                    <option value="">Selecione uma cidade</option>                                    
                                 </select>
                             </div>
                         </div>
@@ -86,36 +86,9 @@
         $(document).ready(function() {
 
             var host =  $('meta[name="base-url"]').attr('content');
+
+            $("#cd_estado").trigger('change');
             
-            $("#estado").change(function(){
-
-                id = $(this).val();
-
-                $.ajax({
-                    url: host+'/estado/'+id+'/cidades',
-                    type: 'GET',        
-                    success: function(data) {
-
-                        $('#cidade').empty();
-                        $('#cidade').append($('<option>', { 
-                                value: "",
-                                text : "Selecione uma cidade" 
-                        }));
-
-                        $.each(data, function(index, value) {
-
-                            $('#cidade').append($('<option>', { 
-                                value: value.cd_cidade,
-                                text : value.nm_cidade 
-                            }));
-                        });                        
-                    },
-                    error: function(xhr, status, error){
-                        
-                    }
-                });    
-
-            });
         });
     </script>
 @endsection

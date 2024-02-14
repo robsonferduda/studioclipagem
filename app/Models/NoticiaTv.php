@@ -11,7 +11,7 @@ class NoticiaTv extends Model
     use SoftDeletes;
 
     protected $connection = 'pgsql';
-    protected $table = 'noticia_radio';
+    protected $table = 'noticia_tv';
 
     protected $fillable = [
         'cliente_id',
