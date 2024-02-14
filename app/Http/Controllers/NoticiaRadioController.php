@@ -133,6 +133,7 @@ class NoticiaRadioController extends Controller
            
             $dados = array('dt_noticia' => ($request->data) ? $carbon->createFromFormat('d/m/Y', $request->data)->format('Y-m-d') : date("Y-m-d"),
                            'duracao' => $request->duracao,
+                           'horario' => $request->horario,
                            'emissora_id' => $request->emissora,
                            'programa_id' => $request->programa,
                            'arquivo' => $request->arquivo,
@@ -141,9 +142,20 @@ class NoticiaRadioController extends Controller
                            'cd_cidade' => $emissora->cd_cidade,
                            'link' => $request->link
                         ); 
-
+           
             if($noticia = NoticiaRadio::create($dados))
             {
+                if($request->cd_cliente){
+
+                    $inserir = array('tipo_id' => 3,
+                                        'noticia_id' => $noticia->id,
+                                        'cliente_id' => $request->cd_cliente,
+                                        'area_id' => $request->cd_area,
+                                        'sentimento' => $request->cd_sentimento);
+                            
+                    NoticiaCliente::create($inserir);
+                }
+
                 $tags = collect($request->tags)->mapWithKeys(function($tag){
                     return [$tag => ['tipo_id' => 3]];
                 })->toArray();

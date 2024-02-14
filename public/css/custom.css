@@ -242,3 +242,4 @@ input[type="checkbox"]:checked + label-check .fa{
 .box-studio { display: none;}
 .box-knewin { display: none;}
 .btn-excluir-email:hover {cursor: pointer;}
+.add-clientes:hover{ cursor: pointer;}

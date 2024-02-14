@@ -27,7 +27,8 @@ class NoticiaRadio extends Model
         'sinopse',
         'link',
         'sentimento',
-        'duracao'
+        'duracao',
+        'horario'
     ];
 
     public function cliente()

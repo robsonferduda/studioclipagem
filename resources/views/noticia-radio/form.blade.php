@@ -41,52 +41,41 @@
                     </div>
                 </div>
                 <div class="row mr-1 ml-1">
-                    <div class="col-md-12 mt-3">
-                        <h6>Clientes Vinculados</h6>
-                    </div>
-                    
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Cliente <span class="text-danger">Obrigatório</span></label>
-                                <input hidden name="cliente_id" id="cliente_id" value="{{ ($dados and $dados->cliente) ? $dados->cliente->id : '' }}">
-                                <select class="form-control select2" name="cliente" id="cliente">
-                                    <option value="">Selecione um cliente</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label>Área do Cliente <span class="text-info">Opcional</span></label>
-                                <select class="form-control select2" name="area" id="area" disabled>
-                                    <option value="">Selecione uma área</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label>Sentimento <span class="text-info">Opcional</span></label>
-                                <select class="form-control" name="sentimento" id="sentimento">
-                                    <option value="">Selecione um sentimento</option>
-                                    <option value="1">Positivo</option>
-                                    <option value="0">Neutro</option>
-                                    <option value="-1">Negativo</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-1">
-                            <div class="form-group mt-3">
-                                <button type="button" class="btn btn-success btn-add-cliente"><i class="fa fa-plus"></i></button>
-                            </div>
-                        </div>
-
-                        <div class="col-md-12">
-                            <ul class="list-unstyled metadados"></ul>
-                        </div>
-                    
                     <div class="col-md-12">
                         <h6>Dados da Notícia</h6>
                     </div>
                     <input type="hidden" name="clientes[]" id="clientes">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Cliente <span class="text-info add-clientes" data-toggle="modal" data-target="#modalCliente">Adicionar Clientes</span></label>
+                            <input hidden name="cliente_id" id="cliente_id" value="{{ ($dados and $dados->cliente) ? $dados->cliente->id : '' }}">
+                            <select class="form-control cliente select2" name="cd_cliente" id="cd_cliente">
+                                <option value="">Selecione um cliente</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Área do Cliente</label>
+                            <select class="form-control area select2" name="cd_area" id="cd_area" disabled>
+                                <option value="">Selecione uma área</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Sentimento </label>
+                            <select class="form-control" name="cd_sentimento" id="cd_sentimento">
+                                <option value="">Selecione um sentimento</option>
+                                <option value="1">Positivo</option>
+                                <option value="0">Neutro</option>
+                                <option value="-1">Negativo</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <ul class="list-unstyled metadados"></ul>
+                    </div>
                     <div class="col-md-2">
                         <div class="form-group">
                             <label>Data <span class="text-danger">Obrigatório</span></label>
@@ -181,6 +170,57 @@
         </div>
     {!! Form::close() !!}
 </div>
+<div class="modal fade" id="modalCliente" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-envelope"></i> Adicionar Endereço Eletrônico</h6>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Cliente <span class="text-danger">Obrigatório</span></label>
+                        <input hidden name="cliente_id" id="cliente_id" value="{{ ($dados and $dados->cliente) ? $dados->cliente->id : '' }}">
+                        <select class="form-control cliente select2" name="cliente" id="cliente">
+                            <option value="">Selecione um cliente</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Área do Cliente <span class="text-info">Opcional</span></label>
+                        <select class="form-control select2" name="area" id="area" disabled>
+                            <option value="">Selecione uma área</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Sentimento <span class="text-info">Opcional</span></label>
+                        <select class="form-control" name="sentimento" id="sentimento">
+                            <option value="">Selecione um sentimento</option>
+                            <option value="1">Positivo</option>
+                            <option value="0">Neutro</option>
+                            <option value="-1">Negativo</option>
+                        </select>
+                    </div>
+                </div>
+             
+                <div class="col-md-12 center">
+                    <div class="form-group mt-3">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
+                        <button type="button" class="btn btn-success btn-add-cliente"><i class="fa fa-plus"></i>Adicionar</button>
+                    </div>
+                </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 @endsection
 @section('script')    
     <script>
@@ -230,7 +270,7 @@
 
                     data.forEach(element => {
                         let option = new Option(element.text, element.id);
-                        $('#cliente').append(option);
+                        $('.cliente').append(option);
                     });
 
                 },
@@ -265,11 +305,11 @@
                 }
             });
 
-            $(document).on('change', '#cliente', function() {
+            $(document).on('change', '.cliente', function() {
 
                 if($(this).val() == '') {
-                    $('#area').attr('disabled', true);
-                    $('#area').append('<option value="">Cliente não possui áreas</option>').val('');
+                    $('.area').attr('disabled', true);
+                    $('.area').append('<option value="">Cliente não possui áreas</option>').val('');
                     return;
                 }
 
@@ -282,22 +322,22 @@
                     },
                     beforeSend: function() {
                         $('.content').loader('show');
-                        $('#area').append('<option value="">Carregando...</option>').val('');
+                        $('.area').append('<option value="">Carregando...</option>').val('');
                     },
                     success: function(data) {
 
-                        $('#area').find('option').remove();
-                        $('#area').attr('disabled', false);
+                        $('.area').find('option').remove();
+                        $('.area').attr('disabled', false);
 
                         if(data.length == 0) {                            
-                            $('#area').append('<option value="">Cliente não possui áreas vinculadas</option>').val('');
+                            $('.area').append('<option value="">Cliente não possui áreas vinculadas</option>').val('');
                             return;
                         }
                         
-                        $('#area').append('<option value="">Selecione uma área</option>').val('');
+                        $('.area').append('<option value="">Selecione uma área</option>').val('');
                         data.forEach(element => {
                             let option = new Option(element.descricao, element.id);
-                            $('#area').append(option);
+                            $('.area').append(option);
                         });
                                     
                     },
@@ -400,9 +440,11 @@
                 else
                     var sentimento = "Nenhum sentimento selecionado";
 
+                $("#modalCliente").modal('hide');
                 
                 var dados = { id_cliente: id_cliente, cliente: cliente, id_area: id_area, area: area, id_sentimento: id_sentimento, sentimento: sentimento };
                 inicializaClientes(dados);
+
             }else{
                 Swal.fire({
                     text: 'Obrigatório informar um cliente.',

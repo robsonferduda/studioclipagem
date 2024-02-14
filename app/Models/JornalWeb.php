@@ -16,4 +16,4 @@ class JornalWeb extends Model
     {
         return $this->hasOne(FonteWeb::class, 'id', 'id_fonte');
     }
-}
+} 
