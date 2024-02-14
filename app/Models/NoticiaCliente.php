@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class NoticiaCliente extends Model
 {
     use SoftDeletes;
-    
+
     protected $connection = 'pgsql';
     protected $table = 'noticia_cliente';
 
-    protected $fillable = ['cliente_id','tipo_id','noticia_id','monitoramento_id'];
+    protected $fillable = ['cliente_id','tipo_id','noticia_id','monitoramento_id','sentimento'];
 
     public function cliente()
     {
