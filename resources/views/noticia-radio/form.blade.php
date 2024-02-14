@@ -105,6 +105,7 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label>Cidade </label>
+                            <input type="hidden" name="cd_cidade" id="cd_cidade" value="{{ ($dados->cd_cidade) ? $dados->cd_cidade : 0  }}">
                             <select class="form-control select2" name="cidade" id="cidade" disabled="disabled">
                                 <option value="">Selecione uma cidade</option>
                             </select>
@@ -367,6 +368,8 @@
             var cd_programa = $("#cd_programa").val();
             var cd_area = $("#area_id").val();
             var cliente_id = $("#cliente_id").val();
+
+            $("#cd_estado").trigger('change');
 
             if(cd_emissora > 0)
                 buscarProgramas(cd_emissora);
