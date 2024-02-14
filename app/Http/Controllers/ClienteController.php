@@ -156,8 +156,8 @@ class ClienteController extends Controller
 
             EnderecoEletronico::where('pessoa_id', $cliente->pessoa->id)->delete();
 
-            $this->cadastrarEnderecoEletronico($request, $cliente);
-            $this->gerenciaClienteArea($request, $cliente);
+            //$this->cadastrarEnderecoEletronico($request, $cliente);
+            //$this->gerenciaClienteArea($request, $cliente);
 
             if($request->logo){
                 

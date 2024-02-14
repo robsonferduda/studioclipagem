@@ -49,7 +49,10 @@ class NoticiaRadioController extends Controller
                 $join->on('noticia_cliente.noticia_id', '=', 'noticia_radio.id');
                 $join->on('noticia_cliente.tipo_id','=', DB::raw(3));
                 $join->whereNull('noticia_cliente.deleted_at');
-            })->where('dt_noticia', $this->data_atual)->paginate(10);
+            })
+            ->where('dt_noticia', $this->data_atual)
+            ->orderBy('created_at', 'DESC')
+            ->paginate(10);
         }
 
         if($request->isMethod('POST')){
@@ -70,7 +73,7 @@ class NoticiaRadioController extends Controller
                 return $q->whereBetween('dt_noticia', [$dt_inicial, $dt_final]);
             });
 
-            $noticias = $noticia->paginate(10);
+            $noticias = $noticia->orderBy('created_at', 'DESC')->paginate(10);
 
         }
 
@@ -101,17 +104,20 @@ class NoticiaRadioController extends Controller
         $dados = new NoticiaRadio();
         $cidades = [];
         $areas = [];
+        $cliente = null;
 
         $estados = Estado::orderBy('nm_estado')->get();
         $tags = Tag::orderBy('nome')->get();
         $emissoras = Emissora::orderBy('ds_emissora')->get();
 
-        return view('noticia-radio/form', compact('dados', 'estados', 'cidades', 'areas','tags','emissoras'));
+        return view('noticia-radio/form', compact('cliente', 'dados', 'estados', 'cidades', 'areas','tags','emissoras'));
     }
 
-    public function editar(int $id)
+    public function editar(int $id, int $cliente = null)
     {
         $dados = NoticiaRadio::find($id);
+        $cliente = NoticiaCliente::where('noticia_id', $id)->where('cliente_id', $cliente)->first();
+        
         $estados = Estado::orderBy('nm_estado')->get();
         $cidades = Cidade::where(['cd_estado' => $dados->cd_estado])->orderBy('nm_cidade')->get();
         $areas = Area::select('area.id', 'area.descricao')
@@ -123,7 +129,7 @@ class NoticiaRadioController extends Controller
 
         $tags = Tag::orderBy('nome')->get();
 
-        return view('noticia-radio/form', compact('dados', 'estados', 'cidades', 'areas','tags'));
+        return view('noticia-radio/form', compact('dados', 'cliente', 'estados', 'cidades', 'areas','tags'));
     }
 
     public function inserir(Request $request)
@@ -152,7 +158,7 @@ class NoticiaRadioController extends Controller
                     $inserir = array('tipo_id' => 3,
                                         'noticia_id' => $noticia->id,
                                         'cliente_id' => $request->cd_cliente,
-                                        'area_id' => $request->cd_area,
+                                        'area' => $request->cd_area,
                                         'sentimento' => $request->cd_sentimento);
                             
                     NoticiaCliente::create($inserir);
@@ -172,7 +178,7 @@ class NoticiaRadioController extends Controller
                         $dados = array('tipo_id' => 3,
                                 'noticia_id' => $noticia->id,
                                 'cliente_id' => $clientes[$i]->id_cliente,
-                                'area_id' => $clientes[$i]->id_area,
+                                'area' => $clientes[$i]->id_area,
                                 'sentimento' => $clientes[$i]->id_sentimento);
                     
                         NoticiaCliente::create($dados);
@@ -231,6 +237,7 @@ class NoticiaRadioController extends Controller
         $carbon = new Carbon();
 
         try {
+
             $noticia = NoticiaRadio::find($id);
 
             if(empty($noticia)) {
@@ -252,6 +259,18 @@ class NoticiaRadioController extends Controller
             ); 
 
             if($noticia->update($dados)){
+
+                if($request->cd_cliente){
+
+                    $chave = array('tipo_id' => 3,
+                                    'noticia_id' => $noticia->id,
+                                    'cliente_id' => $request->cd_cliente);
+
+                    $atualizar = array('area' => $request->cd_area,
+                                       'sentimento' => $request->cd_sentimento);
+                            
+                    NoticiaCliente::updateOrCreate($chave, $atualizar);
+                }
 
                 $tags = collect($request->tags)->mapWithKeys(function($tag){
                     return [$tag => ['tipo_id' => 3]];

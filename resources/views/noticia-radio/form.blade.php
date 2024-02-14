@@ -48,7 +48,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Cliente <span class="text-info add-clientes" data-toggle="modal" data-target="#modalCliente">Adicionar Clientes</span></label>
-                            <input hidden name="cliente_id" id="cliente_id" value="{{ ($dados and $dados->cliente) ? $dados->cliente->id : '' }}">
+                            <input hidden name="cliente_id" id="cliente_id" value="{{ ($cliente) ? $cliente->cliente_id : '' }}">
                             <select class="form-control cliente select2" name="cd_cliente" id="cd_cliente">
                                 <option value="">Selecione um cliente</option>
                             </select>
@@ -57,6 +57,7 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label>Área do Cliente</label>
+                            <input hidden name="area_id" id="area_id" value="{{ ($cliente) ? $cliente->area : '' }}">
                             <select class="form-control area select2" name="cd_area" id="cd_area" disabled>
                                 <option value="">Selecione uma área</option>
                             </select>
@@ -67,9 +68,9 @@
                             <label>Sentimento </label>
                             <select class="form-control" name="cd_sentimento" id="cd_sentimento">
                                 <option value="">Selecione um sentimento</option>
-                                <option value="1">Positivo</option>
-                                <option value="0">Neutro</option>
-                                <option value="-1">Negativo</option>
+                                <option value="1" {{ ($cliente and $cliente->sentimento == 1) ? 'selected' : '' }}>Positivo</option>
+                                <option value="0" {{ ($cliente and $cliente->sentimento == 0) ? 'selected' : '' }}>Neutro</option>
+                                <option value="-1" {{ ($cliente and $cliente->sentimento == 11) ? 'selected' : '' }}>Negativo</option>
                             </select>
                         </div>
                     </div>
@@ -111,6 +112,7 @@
                     </div>
                     <div class="col-md-5">
                         <div class="form-group">
+                            <input type="hidden" name="cd_emissora" id="cd_emissora" value="{{ ($dados->emissora_id) ? $dados->emissora_id : 0  }}">
                             <label>Emissora <span class="text-danger">Obrigatório</span></label>
                             <select class="form-control select2" name="emissora" id="emissora" required>
                             <option value="">Selecione uma emissora</option>
@@ -120,12 +122,13 @@
                     <div class="col-md-2">
                         <div class="form-group">
                             <label>Horário</label>
-                            <input type="text" class="form-control horario" name="horario" id="horario" placeholder="Horário">
+                            <input type="text" class="form-control horario" name="horario" id="horario" value="{{ ($dados->horario) ? $dados->horario : 0  }}" placeholder="Horário">
                         </div>
                     </div>
                     <div class="col-md-5">
                         <div class="form-group">
                             <label>Programa</label>
+                            <input type="hidden" name="cd_programa" id="cd_programa" value="{{ ($dados->programa_id) ? $dados->programa_id : 0  }}">
                             <select class="form-control selector-select2" name="programa" id="programa" disabled>
                                 <option value="">Selecione um programa</option>
                             </select>
@@ -225,11 +228,13 @@
 @section('script')    
     <script>
         Dropzone.autoDiscover = false;
+        var host = $('meta[name="base-url"]').attr('content');
 
         $(document).ready(function(){
-
-            var host = $('meta[name="base-url"]').attr('content');
+            
             var token = $('meta[name="csrf-token"]').attr('content');
+            var cd_emissora = $("#cd_emissora").val();
+            var cliente_id = $("#cliente_id").val();
             
             $(".dropzone").dropzone({ 
                 acceptedFiles: ".mp3",
@@ -275,6 +280,8 @@
 
                 },
                 complete: function(){
+                    if(cliente_id > 0)
+                        $('#cd_cliente').val(cliente_id);
                     $('.content').loader('hide');
                 }
             });
@@ -301,85 +308,22 @@
                     });
                 },
                 complete: function(){
+                    if(cd_emissora > 0)
+                        $('#emissora').val(cd_emissora);
                     $('.content').loader('hide');
                 }
             });
 
             $(document).on('change', '.cliente', function() {
-
-                if($(this).val() == '') {
-                    $('.area').attr('disabled', true);
-                    $('.area').append('<option value="">Cliente não possui áreas</option>').val('');
-                    return;
-                }
-
-                $.ajax({
-                    url: host+'/api/cliente/getAreasCliente',
-                    type: 'GET',
-                    data: {
-                        "_token": $('meta[name="csrf-token"]').attr('content'),
-                        "cliente": $(this).val(),
-                    },
-                    beforeSend: function() {
-                        $('.content').loader('show');
-                        $('.area').append('<option value="">Carregando...</option>').val('');
-                    },
-                    success: function(data) {
-
-                        $('.area').find('option').remove();
-                        $('.area').attr('disabled', false);
-
-                        if(data.length == 0) {                            
-                            $('.area').append('<option value="">Cliente não possui áreas vinculadas</option>').val('');
-                            return;
-                        }
-                        
-                        $('.area').append('<option value="">Selecione uma área</option>').val('');
-                        data.forEach(element => {
-                            let option = new Option(element.descricao, element.id);
-                            $('.area').append(option);
-                        });
-                                    
-                    },
-                    complete: function(){
-                        $('.content').loader('hide');
-                    }
-                });
+                var cliente = $(this).val();
+                buscarAreas(cliente);
             });
 
             $(document).on('change', '#emissora', function() {
                 
                 var emissora = $(this).val();
 
-                $.ajax({
-                    url: host+'/api/programa/buscar-emissora/'+emissora,
-                    type: 'GET',
-                    beforeSend: function() {
-                        $('.content').loader('show');
-                        $('#programa').append('<option value="">Carregando...</option>').val('');
-                    },
-                    success: function(data) {
-
-                        $('#programa').find('option').remove();
-                        $('#programa').attr('disabled', false);
-
-                        if(data.length == 0) {                            
-                            $('#programa').append('<option value="">Emissora não possui programas cadastrados</option>').val('');
-                            return;
-                        }
-
-                        $('#programa').append('<option value="">Selecione um programa</option>').val('');
-
-                        data.forEach(element => {
-                            let option = new Option(element.text, element.id);
-                            $('#programa').append(option);
-                        });
-                        
-                    },
-                    complete: function(){
-                        $('.content').loader('hide');
-                    }
-                });
+                buscarProgramas(emissora);
 
 
                 return $('#programa').prop('disabled', false);
@@ -416,6 +360,21 @@
                 });
             });
         });
+
+        $(document).ready(function(){
+
+            var cd_emissora = $("#cd_emissora").val();
+            var cd_programa = $("#cd_programa").val();
+            var cd_area = $("#area_id").val();
+            var cliente_id = $("#cliente_id").val();
+
+            if(cd_emissora > 0)
+                buscarProgramas(cd_emissora);
+
+            if(cliente_id)
+                buscarAreas(cliente_id);
+        });
+        
 
         $(document).on("click", ".selecionar-arquivo", function() {
             $('#arquivo').trigger('click');
@@ -454,6 +413,91 @@
                 });
             }
         });
+
+        function buscarAreas(cliente){
+
+            var cd_area = $("#area_id").val();
+
+            if(cliente == '') {
+                    $('.area').attr('disabled', true);
+                    $('.area').append('<option value="">Cliente não possui áreas</option>').val('');
+                    return;
+                }
+
+                $.ajax({
+                    url: host+'/api/cliente/getAreasCliente',
+                    type: 'GET',
+                    data: {
+                        "_token": $('meta[name="csrf-token"]').attr('content'),
+                        "cliente": cliente,
+                    },
+                    beforeSend: function() {
+                        $('.content').loader('show');
+                        $('.area').append('<option value="">Carregando...</option>').val('');
+                    },
+                    success: function(data) {
+
+                        $('.area').find('option').remove();
+                        $('.area').attr('disabled', false);
+
+                        if(data.length == 0) {                            
+                            $('.area').append('<option value="">Cliente não possui áreas vinculadas</option>').val('');
+                            return;
+                        }
+                        
+                        $('.area').append('<option value="">Selecione uma área</option>').val('');
+                        data.forEach(element => {
+                            let option = new Option(element.descricao, element.id);
+                            $('.area').append(option);
+                        });
+                                    
+                    },
+                    complete: function(){
+                        if(cd_area > 0)
+                            $('#cd_area').val(cd_area);
+                        $('.content').loader('hide');
+                    }
+                });
+
+        }
+
+        function buscarProgramas(emissora){
+
+            var cd_programa = $("#cd_programa").val();
+
+            $.ajax({
+                    url: host+'/api/programa/buscar-emissora/'+emissora,
+                    type: 'GET',
+                    beforeSend: function() {
+                        $('.content').loader('show');
+                        $('#programa').append('<option value="">Carregando...</option>').val('');
+                    },
+                    success: function(data) {
+
+                        $('#programa').find('option').remove();
+                        $('#programa').attr('disabled', false);
+
+                        if(data.length == 0) {                            
+                            $('#programa').append('<option value="">Emissora não possui programas cadastrados</option>').val('');
+                            return;
+                        }
+
+                        $('#programa').append('<option value="">Selecione um programa</option>').val('');
+
+                        data.forEach(element => {
+                            let option = new Option(element.text, element.id);
+                            $('#programa').append(option);
+                        });
+                        
+                    },
+                    complete: function(){
+                        if(cd_programa > 0)
+                            $('#programa').val(cd_programa);
+                        $('.content').loader('hide');
+                    }
+                });
+
+        };
 
         function inicializaClientes(dados){
 

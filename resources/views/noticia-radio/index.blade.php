@@ -99,10 +99,11 @@
                                         @endswitch
                                     </div>
                                     <div style="position: absolute; bottom: 0px; right: 5px;">
-                                        <a title="Editar" href="{{ url('radio/noticias/'.$noticia->id.'/editar') }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
                                         @if($noticia->cliente)
+                                            <a title="Editar" href="{{ url('radio/noticias/'.$noticia->id.'/cliente/'.$noticia->cliente->id.'/editar') }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
                                             <a title="Excluir" href="{{ url('radio/noticias/'.$noticia->id.'/cliente/'.$noticia->cliente->id.'/remover') }}" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-trash fa-2x"></i></a>
                                         @else 
+                                            <a title="Editar" href="{{ url('radio/noticias/'.$noticia->id.'/editar') }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
                                             <a title="Excluir" href="{{ url('radio/noticias/'.$noticia->id.'/remover') }}" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-trash fa-2x"></i></a>
                                         @endif
                                     </div>
