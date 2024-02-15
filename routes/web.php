@@ -143,7 +143,8 @@ Route::get('tags','TagController@index');
 Route::get('tags/cadastrar','TagController@cadastrar');
 Route::get('tags/{id}/remover','TagController@destroy');
 
-Route::get('tv','NoticiaTvController@dashboard');
+Route::get('tv/estatisticas','NoticiaTvController@estatisticas');
+
 Route::get('tv/decupagem','NoticiaTvController@decupagem');
 Route::get('tv/noticias/estatisticas','NoticiaTvController@estatisticas');
 Route::get('tv/noticias/cadastrar','NoticiaTvController@cadastrar');

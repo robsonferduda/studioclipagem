@@ -74,9 +74,9 @@ class NoticiaTvController extends Controller
         return view('noticia-tv/index', compact('noticias','dt_inicial','dt_final','termo'));
     }
 
-    public function dashboard()
+    public function estatisticas()
     {
-        Session::put('sub-menu','tvs');
+        Session::put('sub-menu','tv-estatisticas');
 
         $data_final = date("Y-m-d");
         $data_inicial = Carbon::now()->subDays(7)->format('Y-m-d');
@@ -200,7 +200,7 @@ class NoticiaTvController extends Controller
         return view('noticia-tv/form', compact('dados', 'estados', 'cidades', 'areas','tags'));
     }
 
-    public function estatisticas()
+    public function getEestatisticas()
     {
         $dados = array();
         $totais = (new NoticiaTv())->getTotais();

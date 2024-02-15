@@ -203,11 +203,19 @@
                             <span class="sidebar-normal">Notícias</span>
                             </a>
                          </li>
-                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'tvs') ? 'active' : '' }}">
-                              <a href="{{ url('tv') }}">
-                              <span class="sidebar-normal">Dashboard</span>
-                              </a>
-                           </li>
+
+                         <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'radio-cadastrar') ? 'active' : '' }}">
+                          <a href="{{ url('tv/noticias/cadastrar') }}">
+                          <span class="sidebar-normal">Nova Notícia</span>
+                          </a>
+                       </li>
+
+                         <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'tv-decupagem') ? 'active' : '' }}">
+                          <a href="{{ url('tv/decupagem') }}">
+                          <span class="sidebar-normal">Decupagem</span>
+                          </a>
+                       </li>
+                           
                             <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'emissoras-tv') ? 'active' : '' }}">
                                 <a href="{{ url('emissoras/tv') }}">
                                 <span class="sidebar-normal">Emissoras</span>
@@ -218,11 +226,12 @@
                               <span class="sidebar-normal">Programas</span>
                               </a>
                            </li>
-                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'tv-decupagem') ? 'active' : '' }}">
-                            <a href="{{ url('tv/decupagem') }}">
-                            <span class="sidebar-normal">Decupagem</span>
-                            </a>
-                         </li>
+                           
+                         <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'tv-estatisticas') ? 'active' : '' }}">
+                          <a href="{{ url('tv/estatisticas') }}">
+                          <span class="sidebar-normal">Estatísticas</span>
+                          </a>
+                       </li>
                            
                         </ul>
                      </div>
