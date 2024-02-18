@@ -70,9 +70,9 @@
                                 <div class="col-lg-12 col-md-12 col-sm-12">  
                                     <div class="row">  
                                         <div class="col-lg-3 col-md-3 col-sm-12">                               
-                                            <video width="100%" height="240" controls>
-                                                <source src="{{ asset('noticias-radio/'. substr($noticia->arquivo, 0, 10).'/'.$noticia->arquivo) }}" type="video/mp4">
-                                                <source src="{{ asset('noticias-radio/'. substr($noticia->arquivo, 0, 10).'/'.$noticia->arquivo) }}" type="video/ogg">
+                                            <video width="100%" height="auto" controls>
+                                                <source src="{{ asset('noticias-tv/'. substr($noticia->arquivo, 0, 10).'/'.$noticia->arquivo) }}" type="video/mp4">
+                                                <source src="{{ asset('noticias-tv/'. substr($noticia->arquivo, 0, 10).'/'.$noticia->arquivo) }}" type="video/ogg">
                                                 Your browser does not support the video tag.
                                             </video>
                                         </div>

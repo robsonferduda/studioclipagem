@@ -158,7 +158,7 @@ Route::post('tv/noticias/inserir','NoticiaTvController@inserir');
 Route::post('tv/noticias/{id}/atualizar','NoticiaTvController@atualizar');
 Route::post('noticia_tv/decupagem/salvar','NoticiaTvController@salvarDecugem');
 Route::post('noticia_tv/decupagem/processar','NoticiaTvController@processar');
-Route::post('noticia_tv/upload','NoticiaTvController@upload');
+Route::post('tv/noticias/upload','NoticiaTvController@upload');
 
 Route::get('cliente/get/json','ClientController@json');
 Route::get('client/accounts/facebook/{cliente}','ClientController@getFacebookAccounts');

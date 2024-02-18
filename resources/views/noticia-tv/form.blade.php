@@ -238,9 +238,9 @@
             var cliente_id = $("#cliente_id").val();
             
             $(".dropzone").dropzone({ 
-                acceptedFiles: ".mp3",
+                acceptedFiles: ".mp4",
                 maxFiles: 1,
-                url: host+"/radio/noticias/upload",
+                url: host+"/tv/noticias/upload",
                 headers: {
                     'x-csrf-token': token,
                 },

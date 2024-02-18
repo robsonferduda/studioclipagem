@@ -403,15 +403,21 @@ class NoticiaTvController extends Controller
 
     public function upload(Request $request)
     {
-        $image = $request->file('file');
-        $fileInfo = $image->getClientOriginalName();
-        $filesize = $image->getSize()/1024/1024;
+        $arquivo = $request->file('file');
+        $fileInfo = $arquivo->getClientOriginalName();
         $filename = pathinfo($fileInfo, PATHINFO_FILENAME);
         $extension = pathinfo($fileInfo, PATHINFO_EXTENSION);
-        $file_name= $filename.'-'.time().'.'.$extension;
-        $image->move(public_path('noticias-tv/pendentes'),$file_name);
+        $file_name = date('Y-m-d-H-i-s').'.'.$extension;
 
-        return response()->json(['success'=>$file_name, 'msg' => 'Arquivo inserido com sucesso.']);
+        //$audio = new \wapmorgan\Mp3Info\Mp3Info($arquivo, true);
+        //$duracao = gmdate("H:i:s", $audio->duration);
+
+        $path = 'noticias-tv'.DIRECTORY_SEPARATOR.date('Y-m-d').DIRECTORY_SEPARATOR;
+        $arquivo->move(public_path($path), $file_name);
+
+        $dados = array('arquivo' => $file_name);
+
+        return response()->json($dados);
     }
 
     public function getEstatisticas()

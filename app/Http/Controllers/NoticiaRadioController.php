@@ -80,7 +80,7 @@ class NoticiaRadioController extends Controller
         return view('noticia-radio/index', compact('noticias','dt_inicial','dt_final','termo'));
     }
 
-    public function cadastrar()
+     public function cadastrar()
     {
         Session::put('sub-menu','radio-cadastrar');        
 
