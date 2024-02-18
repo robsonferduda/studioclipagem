@@ -23,7 +23,7 @@
             <div class="col-lg-12 col-md-3 mb-12">
                 <h6>Arraste ou solte os arquivos para realizar o processamento</h6>
                 <div class="form-group" style="">
-                    <div class='content'>
+                    <div class='content' style="padding-bottom: 0px;">
                         <span>Clique para buscar ou arraste os arquivos</span>
                         {{ Form::open(array('url' => 'noticia_tv/upload', 'method' => 'POST', 'name'=>'product_images', 'id'=>'dropzone', 'class'=>'dropzone', 'files' => true)) }}
 

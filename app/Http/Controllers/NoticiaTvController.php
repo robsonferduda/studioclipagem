@@ -45,18 +45,25 @@ class NoticiaTvController extends Controller
         $termo = $request->termo;
 
         if($request->isMethod('GET')){
-            $noticias = NoticiaTv::leftJoin('noticia_cliente', function($join){
+            $noticias = NoticiaTv::select('noticia_tv.*','noticia_cliente.cliente_id','noticia_cliente.sentimento')
+                ->leftJoin('noticia_cliente', function($join){
                 $join->on('noticia_cliente.noticia_id', '=', 'noticia_tv.id');
-                $join->on('noticia_cliente.tipo_id','=', DB::raw(4));
-            })->where('dt_noticia', $this->data_atual)->get();
+                $join->on('noticia_cliente.tipo_id','=', DB::raw(3));
+                $join->whereNull('noticia_cliente.deleted_at');
+            })
+            ->where('dt_noticia', $this->data_atual)
+            ->orderBy('created_at', 'DESC')
+            ->paginate(10);
         }
 
         if($request->isMethod('POST')){
 
             $noticia = NoticiaTv::query();
+            $noticia->select('noticia_tv.*','noticia_cliente.cliente_id','noticia_cliente.sentimento');
             $noticia->leftJoin('noticia_cliente', function($join){
                 $join->on('noticia_cliente.noticia_id', '=', 'noticia_tv.id');
-                $join->on('tipo_id','=', DB::raw(4));
+                $join->on('tipo_id','=', DB::raw(3));
+                $join->whereNull('noticia_cliente.deleted_at');
             }); 
 
             $noticia->when($termo, function ($q) use ($termo) {
@@ -67,7 +74,7 @@ class NoticiaTvController extends Controller
                 return $q->whereBetween('dt_noticia', [$dt_inicial, $dt_final]);
             });
 
-            $noticias = $noticia->get();
+            $noticias = $noticia->orderBy('created_at', 'DESC')->paginate(10);
 
         }
 
@@ -200,7 +207,7 @@ class NoticiaTvController extends Controller
         return view('noticia-tv/form', compact('dados', 'estados', 'cidades', 'areas','tags'));
     }
 
-    public function getEestatisticas()
+    public function getEstatisticas()
     {
         $dados = array();
         $totais = (new NoticiaTv())->getTotais();
