@@ -80,6 +80,22 @@ class NoticiaRadioController extends Controller
         return view('noticia-radio/index', compact('noticias','dt_inicial','dt_final','termo'));
     }
 
+    public function cadastrar()
+    {
+        Session::put('sub-menu','radio-cadastrar');        
+
+        $dados = new NoticiaRadio();
+        $cidades = [];
+        $areas = [];
+        $cliente = null;
+
+        $estados = Estado::orderBy('nm_estado')->get();
+        $tags = Tag::orderBy('nome')->get();
+        $emissoras = Emissora::orderBy('ds_emissora')->get();
+
+        return view('noticia-radio/form', compact('cliente', 'dados', 'estados', 'cidades', 'areas','tags','emissoras'));
+    }
+
     public function estatisticas()
     {
         Session::put('sub-menu','radio-estatisticas');
@@ -95,22 +111,6 @@ class NoticiaRadioController extends Controller
 
         $noticias = NoticiaRadio::paginate(10);
         return view('noticia-radio/estatisticas', compact('noticias','total_noticia_radio', 'total_emissora_radio', 'ultima_atualizacao','ultima_atualizacao_radio','data_final','data_inicial'));
-    }
-
-    public function cadastrar()
-    {
-        Session::put('sub-menu','radio-cadastrar');        
-
-        $dados = new NoticiaRadio();
-        $cidades = [];
-        $areas = [];
-        $cliente = null;
-
-        $estados = Estado::orderBy('nm_estado')->get();
-        $tags = Tag::orderBy('nome')->get();
-        $emissoras = Emissora::orderBy('ds_emissora')->get();
-
-        return view('noticia-radio/form', compact('cliente', 'dados', 'estados', 'cidades', 'areas','tags','emissoras'));
     }
 
     public function editar(int $id, int $cliente = null)

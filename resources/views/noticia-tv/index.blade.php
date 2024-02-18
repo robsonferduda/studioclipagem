@@ -11,8 +11,8 @@
                     </h4>
                 </div>
                 <div class="col-md-4">
-                    <a href="{{ url('radio/noticias/cadastrar') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-plus"></i> Cadastrar Notícia</a>
-                    <a href="{{ url('radio/estatisticas') }}" class="btn btn-warning pull-right mr-3"><i class="nc-icon nc-chart-pie-36"></i> Estatísticas</a>
+                    <a href="{{ url('tv/noticias/cadastrar') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-plus"></i> Cadastrar Notícia</a>
+                    <a href="{{ url('tv/estatisticas') }}" class="btn btn-warning pull-right mr-3"><i class="nc-icon nc-chart-pie-36"></i> Estatísticas</a>
                 </div>
             </div>
         </div>
@@ -66,45 +66,51 @@
                                     <span class="dt_noticia_box">{!! !empty($noticia->dt_noticia) ? date('d/m/Y', strtotime($noticia->dt_noticia)) : '' !!}</span>
                                     <h6>{!! ($noticia->cliente and $noticia->cliente->pessoa) ? $noticia->cliente->pessoa->nome : 'Nenhum cliente vinculado' !!}</h6>
                                     <p>{!! $noticia->emissora->ds_emissora ?? '' !!} - {!! $noticia->programa->nome ?? 'Nenhum Programa Vinculado' !!} {{ ($noticia->horario) ? ' - '.$noticia->horario : "" }}</p>
-                                    <p>{!! $noticia->sinopse !!}</p>
                                 </div>
-                                <div class="col-lg-12 col-md-12 col-sm-12">                                    
-                                    <audio controls>
-                                        <source src="{{ asset('noticias-radio/'. substr($noticia->arquivo, 0, 10).'/'.$noticia->arquivo) }}" type="audio/ogg">
-                                        <source src="{{ asset('noticias-radio/'. substr($noticia->arquivo, 0, 10).'/'.$noticia->arquivo) }}" type="audio/mpeg">
-                                      Your browser does not support the audio element.
-                                    </audio>
-                                    <div style="position: absolute; bottom: 15px; left: 330px;">
-                                        @switch($noticia->sentimento)
-                                            @case(0)
-                                                <span><i class="fa fa-smile-o fa-2x op-2"></i></span>                                                
-                                                <span><i class="fa fa-frown-o fa-2x op-2"></i></span>
-                                                <span><i class="fa fa-ban fa-2x text-info"></i></span>
-                                            @break
-                                            @case(-1)
-                                                <span><i class="fa fa-smile-o fa-2x op-2"></i></span>                                                
-                                                <span><i class="fa fa-frown-o fa-2x text-danger"></i></span>
-                                                <span><i class="fa fa-ban fa-2x op-2"></i></span>
-                                            @break
-                                            @case(1)
-                                                <span><i class="fa fa-smile-o fa-2x text-success"></i></span>                                                
-                                                <span><i class="fa fa-frown-o fa-2x op-2"></i></span>
-                                                <span><i class="fa fa-ban fa-2x op-2"></i></span>
-                                            @break  
-                                            @default
-                                                <span><i class="fa fa-smile-o fa-2x op-2"></i></span>                                                
-                                                <span><i class="fa fa-frown-o fa-2x op-2"></i></span>
-                                                <span><i class="fa fa-ban fa-2x op-2"></i></span>
-                                            @break                                           
-                                        @endswitch
-                                    </div>
+                                <div class="col-lg-12 col-md-12 col-sm-12">  
+                                    <div class="row">  
+                                        <div class="col-lg-3 col-md-3 col-sm-12">                               
+                                            <video width="100%" height="240" controls>
+                                                <source src="{{ asset('noticias-radio/'. substr($noticia->arquivo, 0, 10).'/'.$noticia->arquivo) }}" type="video/mp4">
+                                                <source src="{{ asset('noticias-radio/'. substr($noticia->arquivo, 0, 10).'/'.$noticia->arquivo) }}" type="video/ogg">
+                                                Your browser does not support the video tag.
+                                            </video>
+                                        </div>
+                                        <div class="col-lg-9 col-md-9 col-sm-12">
+                                            <p>{!! $noticia->sinopse !!}</p>
+                                            <div style="position: absolute; bottom: 15px; left: 0px;">
+                                                @switch($noticia->sentimento)
+                                                    @case(0)
+                                                        <span><i class="fa fa-smile-o fa-2x op-2"></i></span>                                                
+                                                        <span><i class="fa fa-frown-o fa-2x op-2"></i></span>
+                                                        <span><i class="fa fa-ban fa-2x text-info"></i></span>
+                                                    @break
+                                                    @case(-1)
+                                                        <span><i class="fa fa-smile-o fa-2x op-2"></i></span>                                                
+                                                        <span><i class="fa fa-frown-o fa-2x text-danger"></i></span>
+                                                        <span><i class="fa fa-ban fa-2x op-2"></i></span>
+                                                    @break
+                                                    @case(1)
+                                                        <span><i class="fa fa-smile-o fa-2x text-success"></i></span>                                                
+                                                        <span><i class="fa fa-frown-o fa-2x op-2"></i></span>
+                                                        <span><i class="fa fa-ban fa-2x op-2"></i></span>
+                                                    @break  
+                                                    @default
+                                                        <span><i class="fa fa-smile-o fa-2x op-2"></i></span>                                                
+                                                        <span><i class="fa fa-frown-o fa-2x op-2"></i></span>
+                                                        <span><i class="fa fa-ban fa-2x op-2"></i></span>
+                                                    @break                                           
+                                                @endswitch
+                                            </div>
+                                        </div>     
+                                    </div>                               
                                     <div style="position: absolute; bottom: 0px; right: 5px;">
                                         @if($noticia->cliente)
-                                            <a title="Editar" href="{{ url('radio/noticias/'.$noticia->id.'/cliente/'.$noticia->cliente->id.'/editar') }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
-                                            <a title="Excluir" href="{{ url('radio/noticias/'.$noticia->id.'/cliente/'.$noticia->cliente->id.'/remover') }}" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-trash fa-2x"></i></a>
+                                            <a title="Editar" href="{{ url('tv/noticias/'.$noticia->id.'/cliente/'.$noticia->cliente->id.'/editar') }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
+                                            <a title="Excluir" href="{{ url('tv/noticias/'.$noticia->id.'/cliente/'.$noticia->cliente->id.'/remover') }}" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-trash fa-2x"></i></a>
                                         @else 
-                                            <a title="Editar" href="{{ url('radio/noticias/'.$noticia->id.'/editar') }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
-                                            <a title="Excluir" href="{{ url('radio/noticias/'.$noticia->id.'/remover') }}" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-trash fa-2x"></i></a>
+                                            <a title="Editar" href="{{ url('tv/noticias/'.$noticia->id.'/editar') }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
+                                            <a title="Excluir" href="{{ url('tv/noticias/'.$noticia->id.'/remover') }}" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-trash fa-2x"></i></a>
                                         @endif
                                     </div>
                                 </div>

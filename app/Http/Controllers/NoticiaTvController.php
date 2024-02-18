@@ -11,6 +11,7 @@ use App\Models\Cidade;
 use App\Models\Emissora;
 use App\Models\Estado;
 use App\Models\NoticiaTv;
+use App\Models\NoticiaCliente;
 use App\Models\Tag;
 use PhpOffice\PhpWord\IOFactory;
 use Laracasts\Flash\Flash;
@@ -81,6 +82,223 @@ class NoticiaTvController extends Controller
         return view('noticia-tv/index', compact('noticias','dt_inicial','dt_final','termo'));
     }
 
+    public function cadastrar()
+    {
+        Session::put('sub-menu','tv-cadastrar');
+
+        $dados = new NoticiaTv();
+        $cidades = [];
+        $areas = [];
+        $cliente = null;
+
+        $estados = Estado::orderBy('nm_estado')->get();
+        $tags = Tag::orderBy('nome')->get();
+
+        return view('noticia-tv/form', compact('dados', 'estados', 'cidades', 'areas','tags','cliente'));
+    }
+
+    public function editar(int $id, int $cliente = null)
+    {
+        $dados = NoticiaTv::find($id);
+        $cliente = NoticiaCliente::where('noticia_id', $id)->where('cliente_id', $cliente)->first();
+        
+        $estados = Estado::orderBy('nm_estado')->get();
+        $cidades = Cidade::where(['cd_estado' => $dados->cd_estado])->orderBy('nm_cidade')->get();
+        $areas = Area::select('area.id', 'area.descricao')
+            ->join('area_cliente', 'area_cliente.area_id', '=', 'area.id')
+            ->where(['cliente_id' => $dados->cliente_id,])
+            ->where(['ativo' => true])
+            ->orderBy('area.descricao')
+            ->get();
+
+        $tags = Tag::orderBy('nome')->get();
+
+        return view('noticia-tv/form', compact('dados', 'cliente', 'estados', 'cidades', 'areas','tags'));
+    }
+
+    public function inserir(Request $request)
+    {
+        $carbon = new Carbon();
+        try {
+           
+            $emissora = Emissora::find($request->emissora);
+           
+            $dados = array('dt_noticia' => ($request->data) ? $carbon->createFromFormat('d/m/Y', $request->data)->format('Y-m-d') : date("Y-m-d"),
+                           'duracao' => $request->duracao,
+                           'horario' => $request->horario,
+                           'emissora_id' => $request->emissora,
+                           'programa_id' => $request->programa,
+                           'arquivo' => $request->arquivo,
+                           'sinopse' => $request->sinopse,
+                           'cd_estado' => $emissora->cd_estado,
+                           'cd_cidade' => $emissora->cd_cidade,
+                           'link' => $request->link
+                        ); 
+           
+            if($noticia = NoticiaTv::create($dados))
+            {
+                if($request->cd_cliente){
+
+                    $inserir = array('tipo_id' => 4,
+                                        'noticia_id' => $noticia->id,
+                                        'cliente_id' => $request->cd_cliente,
+                                        'area' => $request->cd_area,
+                                        'sentimento' => $request->cd_sentimento);
+                            
+                    NoticiaCliente::create($inserir);
+                }
+
+                $tags = collect($request->tags)->mapWithKeys(function($tag){
+                    return [$tag => ['tipo_id' => 4]];
+                })->toArray();
+
+                $noticia->tags()->sync($tags);
+
+                $clientes = json_decode($request->clientes[0]);
+                if($clientes){
+
+                    for ($i=0; $i < count($clientes); $i++) { 
+                        
+                        $dados = array('tipo_id' => 4,
+                                'noticia_id' => $noticia->id,
+                                'cliente_id' => $clientes[$i]->id_cliente,
+                                'area' => $clientes[$i]->id_area,
+                                'sentimento' => $clientes[$i]->id_sentimento);
+                    
+                        NoticiaCliente::create($dados);
+                    }
+                }
+            }
+
+            $retorno = array('flag' => true,
+                             'msg' => '<i class="fa fa-check"></i> Dados inseridos com sucesso');
+
+        } catch (\Illuminate\Database\QueryException $e) {
+
+            $retorno = array('flag' => false,
+                             'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
+
+        } catch (\Exception $e) {
+
+            $retorno = array('flag' => false,
+                             'msg' => "Ocorreu um erro ao inserir o registro");
+        }
+
+        switch ($request->btn_enviar) {
+            case 'salvar':
+                if ($retorno['flag']) {
+                    Flash::success($retorno['msg']);
+                    return redirect('tv/noticias')->withInput();
+                } else {
+                    Flash::error($retorno['msg']);
+                    return redirect('tv/noticias/cadastrar')->withInput();
+                }
+                break;
+
+            case 'salvar_e_copiar':
+
+                $dados = $noticia;
+                $estados = Estado::orderBy('nm_estado')->get();
+                $cidades = Cidade::where(['cd_estado' => $dados->cd_estado])->orderBy('nm_cidade')->get();
+                $areas = Area::select('area.id', 'area.descricao')
+                    ->join('area_cliente', 'area_cliente.area_id', '=', 'area.id')
+                    ->where(['cliente_id' => $dados->cliente_id,])
+                    ->where(['ativo' => true])
+                    ->orderBy('area.descricao')
+                    ->get();
+
+                $tags = Tag::orderBy('nome')->get();
+                
+                return view('noticia-radio/form', compact('dados', 'estados', 'cidades', 'areas','tags'));
+                break;
+        }
+    }
+
+    public function atualizar(Request $request, int $id)
+    {
+        $carbon = new Carbon();
+
+        try {
+
+            $noticia = NoticiaTv::find($id);
+
+            if(empty($noticia)) {
+                throw new \Exception('Notícia não encontrada');
+            }
+
+            $emissora = Emissora::find($request->emissora);
+            
+            $dados = array('dt_noticia' => ($request->data) ? $carbon->createFromFormat('d/m/Y', $request->data)->format('Y-m-d') : date("Y-m-d"),
+                            'duracao' => $request->duracao,
+                            'horario' => $request->horario,
+                            'emissora_id' => $request->emissora,
+                            'programa_id' => $request->programa,
+                            'arquivo' => ($request->arquivo) ? $request->arquivo : $noticia->arquivo,
+                            'sinopse' => $request->sinopse,
+                            'cd_estado' => $emissora->cd_estado,
+                            'cd_cidade' => $emissora->cd_cidade,
+                            'link' => $request->link
+            ); 
+
+            if($noticia->update($dados)){
+
+                if($request->cd_cliente){
+
+                    $chave = array('tipo_id' => 3,
+                                    'noticia_id' => $noticia->id,
+                                    'cliente_id' => $request->cd_cliente);
+
+                    $atualizar = array('area' => $request->cd_area,
+                                       'sentimento' => $request->cd_sentimento);
+                            
+                    NoticiaCliente::updateOrCreate($chave, $atualizar);
+                }
+
+                $tags = collect($request->tags)->mapWithKeys(function($tag){
+                    return [$tag => ['tipo_id' => 3]];
+                })->toArray();
+
+                $noticia->tags()->sync($tags);
+
+                $clientes = json_decode($request->clientes[0]);
+                if($clientes){
+
+                    for ($i=0; $i < count($clientes); $i++) { 
+                        
+                        $dados = array('tipo_id' => 3,
+                                'noticia_id' => $noticia->id,
+                                'cliente_id' => $clientes[$i]->id_cliente,
+                                'area_id' => $clientes[$i]->id_area,
+                                'sentimento' => $clientes[$i]->id_sentimento);
+                    
+                        NoticiaCliente::create($dados);
+                    }
+                }
+            }
+
+            $retorno = array('flag' => true,
+                             'msg' => '<i class="fa fa-check"></i> Dados atualizados com sucesso');
+
+        } catch (\Illuminate\Database\QueryException $e) {
+
+            $retorno = array('flag' => false,
+                             'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
+
+        } catch (\Exception $e) {
+
+            $retorno = array('flag' => false,
+                             'msg' => "Ocorreu um erro ao atualizar o registro");
+        }
+
+        if ($retorno['flag']) {
+            Flash::success($retorno['msg']);
+            return redirect('tv/noticias')->withInput();
+        } else {
+            Flash::error($retorno['msg']);
+            return redirect('tv/noticias/'.$id.'/editar')->withInput();
+        }
+    }
+
     public function estatisticas()
     {
         Session::put('sub-menu','tv-estatisticas');
@@ -100,7 +318,8 @@ class NoticiaTvController extends Controller
 
     public function decupagem()
     {
-        Session::put('sub-menu','tv/decupagem');
+        Session::put('sub-menu','tv-decupagem');
+
         return view('noticia-tv/decupagem');
     }
 
@@ -195,18 +414,6 @@ class NoticiaTvController extends Controller
         return response()->json(['success'=>$file_name, 'msg' => 'Arquivo inserido com sucesso.']);
     }
 
-    public function cadastrar()
-    {
-        $dados = new NoticiaTv();
-        $cidades = [];
-        $areas = [];
-
-        $estados = Estado::orderBy('nm_estado')->get();
-        $tags = Tag::orderBy('nome')->get();
-
-        return view('noticia-tv/form', compact('dados', 'estados', 'cidades', 'areas','tags'));
-    }
-
     public function getEstatisticas()
     {
         $dados = array();
@@ -218,5 +425,35 @@ class NoticiaTvController extends Controller
         }
 
         return response()->json($dados);
+    }
+
+    public function remover(int $id, $cliente = null)
+    {
+        $noticia = NoticiaTv::find($id);
+
+        if($cliente){
+
+            $noticia_cliente = NoticiaCliente::where('noticia_id', $id)->where('cliente_id', $cliente)->first();
+
+            if($noticia_cliente->delete()){
+
+                if(count($noticia->clientes) == 0){
+
+                    if($noticia->delete())
+                        Flash::success('<i class="fa fa-check"></i> Notícia <strong>'.$noticia->titulo.'</strong> excluída com sucesso');
+                }
+            }
+            else
+                Flash::error("Erro ao excluir o registro");
+
+        }else{
+
+            if($noticia->delete())
+                Flash::success('<i class="fa fa-check"></i> Notícia <strong>'.$noticia->titulo.'</strong> excluída com sucesso');
+            else
+                Flash::error("Erro ao excluir o registro");
+        }
+
+        return redirect('tv/noticias')->withInput();
     }
 }
