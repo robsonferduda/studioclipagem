@@ -29,7 +29,7 @@ class FonteWebController extends Controller
 
     public function listar(Request $request)
     {
-        Session::put('sub-menu','fontes');
+        Session::put('sub-menu','fonte-web');
 
         $cidades = Cidade::orderBy('nm_cidade')->get();
         $estados = Estado::orderBy('nm_estado')->get();

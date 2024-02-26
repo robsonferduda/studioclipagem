@@ -20,7 +20,7 @@
                 @include('layouts.mensagens')
             </div>
             <div class="row">
-                <div class="col-lg-9 col-sm-9">
+                <div class="col-lg-12 col-sm-12">
                     {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['buscar-web']]) !!}
                         <div class="form-group m-3 w-70">
                             <div class="row">
@@ -95,63 +95,6 @@
                             
                         </div>
                     @endforeach
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <div class="col-lg-12 col-md-12 col-sm-12">
-                        <div class="card card-stats">
-                            <div class="card-body ">
-                                <div class="row">
-                                    <div class="col-5 col-md-4">
-                                        <div class="icon-big text-center icon-warning">
-                                        <i class="nc-icon nc-globe text-warning"></i>
-                                        </div>
-                                    </div>
-                                    <div class="col-7 col-md-8">
-                                        <div class="numbers">
-                                        <p class="card-category">Sites</p>
-                                        <p class="card-title">{{ $total_sites }}</p>
-                                        <p></p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-footer ">
-                                <hr>
-                                <div class="stats">
-                                    <i class="fa fa-calendar"></i>
-                                    Última Atualização em {{ \Carbon\Carbon::parse($ultima_atualizacao_web)->format('d/m/Y H:i:s') }} 
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-12 col-md-12 col-sm-12">
-                        <div class="card card-stats">
-                            <div class="card-body ">
-                                <div class="row">
-                                    <div class="col-5 col-md-4">
-                                        <div class="icon-big text-center icon-warning">
-                                        <i class="nc-icon nc-chart-bar-32 text-primary"></i>
-                                        </div>
-                                    </div>
-                                    <div class="col-7 col-md-8">
-                                        <div class="numbers">
-                                        <p class="card-category">Notícias Coletadas</p>
-                                        <p class="card-title">{{ $total_noticias }}</p>
-                                        <p></p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-footer ">
-                                <hr>
-                                <div class="stats">
-                                    <i class="fa fa-calendar"></i>
-                                    Última Atualização em {{ \Carbon\Carbon::parse($ultima_atualizacao_noticia)->format('d/m/Y H:i:s') }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

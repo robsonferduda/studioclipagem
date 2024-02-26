@@ -349,47 +349,55 @@ class NoticiaTvController extends Controller
         return response()->json($files_info);
     }
 
-    public function processar()
+    public function processar(Request $request)
     {
+        $carbon = new Carbon();
+        $arquivo = $request->arquivo;
+        $data = $request->data;
+        $cd_emissora = $request->emissora; 
+        $programa = $request->programa;
 
-        $directory = 'noticias-tv/pendentes/';
-        $files_info = [];
-        $file_ext = array('doc','docx');
+        $directory = 'noticias-tv/decupagem/';
 
-        // Read files
-        foreach (File::allFiles(public_path($directory)) as $file) {
-           $extension = strtolower($file->getExtension());
+        $phpWord = IOFactory::createReader('Word2007')->load(public_path().'/'.$directory.$arquivo);
 
-            if(in_array($extension,$file_ext)){ // Check file extension
-                $filename = $file->getFilename();
-                $size = $file->getSize(); // Bytes
-                $sizeinMB = round($size / (1000 * 1024), 2);// MB
+        foreach($phpWord->getSections() as $section) {
+            foreach($section->getElements() as $element) {
 
-                $phpWord = IOFactory::createReader('Word2007')->load(public_path().'/'.$directory.$filename);
-
-                foreach($phpWord->getSections() as $section) {
-                    foreach($section->getElements() as $element) {
-        
-                        switch (get_class($element)) {
-                            case 'PhpOffice\PhpWord\Element\Text' :
-                                //$textos[] = $element->getText();
-                                break;
-                            case 'PhpOffice\PhpWord\Element\TextRun':
-                                $textRunElements = $element->getElements();
-                                foreach ($textRunElements as $textRunElement) {
-                                    if(strlen($textRunElement->getText()) > 5)
-                                        $textos[] = trim($textRunElement->getText());
-                                }
-                                break;
-                            case 'PhpOffice\PhpWord\Element\TextBreak':
-                                //$textos[] = " ";
-                                break;
-                            default:
-                                throw new Exception('Something went wrong...');
+                switch (get_class($element)) {
+                    case 'PhpOffice\PhpWord\Element\Text' :
+                        //$textos[] = $element->getText();
+                        break;
+                    case 'PhpOffice\PhpWord\Element\TextRun':
+                        $textRunElements = $element->getElements();
+                        foreach ($textRunElements as $textRunElement) {
+                            if(strlen($textRunElement->getText()) > 5)
+                                $textos[] = trim($textRunElement->getText());
                         }
-                    }
+                        break;
+                    case 'PhpOffice\PhpWord\Element\TextBreak':
+                        //$textos[] = " ";
+                        break;
+                    default:
+                        throw new Exception('Something went wrong...');
                 }
             }
+        }
+
+        for ($i=0; $i < count($textos); $i++) { 
+
+            $emissora = Emissora::find($cd_emissora);
+            
+            $dados = array('dt_noticia' => ($data) ? $carbon->createFromFormat('d/m/Y', $data)->format('Y-m-d') : date("Y-m-d"),
+                'emissora_id' => $cd_emissora,
+                'programa_id' => $programa,
+                'sinopse' => $textos[$i],
+                'cd_estado' => $emissora->cd_estado,
+                'cd_cidade' => $emissora->cd_cidade
+            ); 
+
+            $noticia = NoticiaTv::create($dados);
+
         }
 
         return view('noticia-tv/salvar', compact('textos'));
@@ -399,6 +407,25 @@ class NoticiaTvController extends Controller
     public function salvarDecugem(Request $request)
     {
         dd($request->all());
+    }
+
+    public function uploadWord(Request $request)
+    {
+        $arquivo = $request->file('file');
+        $fileInfo = $arquivo->getClientOriginalName();
+        $filename = pathinfo($fileInfo, PATHINFO_FILENAME);
+        $extension = pathinfo($fileInfo, PATHINFO_EXTENSION);
+        $file_name = date('Y-m-d-H-i-s').'.'.$extension;
+
+        //$audio = new \wapmorgan\Mp3Info\Mp3Info($arquivo, true);
+        //$duracao = gmdate("H:i:s", $audio->duration);
+
+        $path = 'noticias-tv'.DIRECTORY_SEPARATOR.'decupagem'.DIRECTORY_SEPARATOR;
+        $arquivo->move(public_path($path), $file_name);
+
+        $dados = array('arquivo' => $file_name);
+
+        return response()->json($dados);
     }
 
     public function upload(Request $request)

@@ -27,9 +27,6 @@ class JornalWebController extends Controller
         Session::put('sub-menu','jornal-web');
 
         $fontes = FonteWeb::orderBy('nome')->get();
-        $total_sites = FonteWeb::count();
-        $ultima_atualizacao_web = FonteWeb::max('created_at');
-        $ultima_atualizacao_noticia = JornalWeb::max('created_at');
 
         if($request->isMethod('POST')){
 
@@ -67,17 +64,21 @@ class JornalWebController extends Controller
 
         }
 
-        return view('jornal-web/index',compact('fontes','dados','dt_inicial','dt_final','total_sites','total_noticias','ultima_atualizacao_web','ultima_atualizacao_noticia'));
+        return view('jornal-web/index',compact('fontes','dados','dt_inicial','dt_final'));
     }
 
     public function fontes()
     {
+        Session::put('sub-menu','fonte-web');
+
         $fontes = FonteWeb::all();
         return view('jornal-web/fontes',compact('fontes'));
     }
 
     public function cadastrar()
     {
+        Session::put('sub-menu','web-cadastrar');
+
         $fontes = FonteWeb::all();
         return view('jornal-web/cadastrar',compact('fontes'));
     }
@@ -94,7 +95,23 @@ class JornalWebController extends Controller
         return view('jornal-web/detalhes',compact('noticia'));
     }
 
-    public function estatisticas($id)
+    public function estatisticas()
+    {
+        Session::put('sub-menu','web-estatisticas');
+
+        $total_sites = FonteWeb::count();
+        $ultima_atualizacao_web = FonteWeb::max('created_at');
+        $ultima_atualizacao_noticia = JornalWeb::max('created_at');
+        $fontes = FonteWeb::orderBy('nome')->get();
+        $data_final = date("Y-m-d");
+        $data_inicial = Carbon::now()->subDays(7)->format('Y-m-d');
+
+        $total_noticias = JornalWeb::whereBetween('created_at', [$data_inicial.' 00:00:00', $data_final.' 23:59:59'])->count();
+
+        return view('jornal-web/dashboard',compact('fontes','total_sites', 'total_noticias','ultima_atualizacao_web','ultima_atualizacao_noticia'));
+    }
+
+    public function getEstatisticas($id)
     {
         $noticia = JornalWeb::find($id);
         return view('jornal-web/estatisticas',compact('noticia'));

@@ -100,11 +100,12 @@ Route::match(array('GET', 'POST'),'buscar-impresso','JornalImpressoController@in
 Route::match(array('GET', 'POST'),'buscar-web','JornalWebController@index');
 
 Route::get('jornal-web','JornalWebController@index');
+Route::get('jornal-web/estatisticas','JornalWebController@estatisticas');
 Route::get('jornal-web/cadastrar','JornalWebController@cadastrar');
 Route::get('jornal-web/fontes','JornalWebController@fontes');
 Route::get('jornal-web/listar','JornalWebController@listar');
 Route::get('jornal-web/noticia/{id}','JornalWebController@detalhes');
-Route::get('jornal-web/noticia/estatisticas/{id}','JornalWebController@estatisticas');
+Route::get('jornal-web/noticia/estatisticas/{id}','JornalWebController@getEstatisticas');
 
 Route::match(array('GET', 'POST'),'monitoramento','MonitoramentoController@index');
 Route::match(array('GET', 'POST'),'monitoramento/listar','MonitoramentoController@listar');
@@ -159,6 +160,7 @@ Route::post('tv/noticias/{id}/atualizar','NoticiaTvController@atualizar');
 Route::post('noticia_tv/decupagem/salvar','NoticiaTvController@salvarDecugem');
 Route::post('noticia_tv/decupagem/processar','NoticiaTvController@processar');
 Route::post('tv/noticias/upload','NoticiaTvController@upload');
+Route::post('tv/decupagem/upload','NoticiaTvController@uploadWord');
 
 Route::get('cliente/get/json','ClientController@json');
 Route::get('client/accounts/facebook/{cliente}','ClientController@getFacebookAccounts');
