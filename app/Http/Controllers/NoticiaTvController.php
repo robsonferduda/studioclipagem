@@ -6,6 +6,7 @@ use DB;
 use File;
 use App\Utils;
 use Carbon\Carbon;
+use App\Models\Decupagem;
 use App\Models\Area;
 use App\Models\Cidade;
 use App\Models\Emissora;
@@ -319,8 +320,16 @@ class NoticiaTvController extends Controller
     public function decupagem()
     {
         Session::put('sub-menu','tv-decupagem');
+        $arquivos = Decupagem::all();
 
-        return view('noticia-tv/decupagem');
+        return view('noticia-tv/decupagem', compact('arquivos'));
+    }
+
+    public function decupar()
+    {
+        Session::put('sub-menu','tv-decupagem');
+
+        return view('noticia-tv/decupar');
     }
 
     public function listarArquivos()
@@ -359,6 +368,9 @@ class NoticiaTvController extends Controller
 
         $directory = 'noticias-tv/decupagem/';
 
+        $data_decupagem = array('arquivo' => $arquivo);
+        $decupagem = Decupagem::create($data_decupagem);
+
         $phpWord = IOFactory::createReader('Word2007')->load(public_path().'/'.$directory.$arquivo);
 
         foreach($phpWord->getSections() as $section) {
@@ -393,7 +405,8 @@ class NoticiaTvController extends Controller
                 'programa_id' => $programa,
                 'sinopse' => $textos[$i],
                 'cd_estado' => $emissora->cd_estado,
-                'cd_cidade' => $emissora->cd_cidade
+                'cd_cidade' => $emissora->cd_cidade,
+                'decupagem_id' => $decupagem->id
             ); 
 
             $noticia = NoticiaTv::create($dados);
@@ -406,7 +419,7 @@ class NoticiaTvController extends Controller
     
     public function salvarDecugem(Request $request)
     {
-        dd($request->all());
+        dd("teste");
     }
 
     public function uploadWord(Request $request)

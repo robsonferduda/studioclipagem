@@ -27,7 +27,8 @@ class NoticiaTv extends Model
         'sinopse',
         'link',
         'sentimento',
-        'duracao'
+        'duracao',
+        'decupagem_id'
     ];
 
     public function cliente()

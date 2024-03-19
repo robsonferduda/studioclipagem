@@ -204,7 +204,7 @@ class JornalImpressoController extends Controller
 
         FilaImpresso::create($dados);
 
-        JobProcessarImpressos::dispatch();
+        //JobProcessarImpressos::dispatch(); Chamada para processar impressos
 
         return response()->json(['success'=>$file_name, 'msg' => 'Arquivo inserido com sucesso.']);
     }
