@@ -214,7 +214,43 @@ class JornalImpressoController extends Controller
         JobProcessarImpressos::dispatch();
 
         /*
-        $process = new Process(['python3', base_path().'/read-pdf-convert-to-jpg.py']);
+        $command = escapeshellcmd("python3 ".base_path()."/read-pdf-convert-to-jpg.py");
+        $output = shell_exec($command);
+
+        dd($output);
+        
+        $cmd = "python3 ".base_path()."/read-pdf-convert-to-jpg.py";
+
+        $result = exec($cmd, $output, $return);
+
+        dd($return);
+        
+
+        dd($process->getErrorOutput());
+
+        $process->run(function ($type, $buffer){
+
+            if (Process::ERR === $type) {
+
+                $data['dados'] = $buffer;
+
+                Mail::send('notificacoes.impressos.processamento', $data, function($message){
+                    $message->to("robsonferduda@gmail.com")
+                            ->subject('Erro - Processamento de Jornais Impresso');
+                    $message->from('boletins@clipagens.com.br','Studio Clipagem');
+                }); 
+              
+            }else{
+                //Quando corre tudo bem
+
+                dd("asdasdasd");
+            }
+
+            dd("asdasdasd");
+
+        });
+
+        /*
 
         try {
             $process->start();
@@ -228,6 +264,8 @@ class JornalImpressoController extends Controller
         } catch (ProcessFailedException $exception) {
             echo $exception->getMessage();
         }
+
+
 
         /*
         $process->run(function ($type, $buffer){

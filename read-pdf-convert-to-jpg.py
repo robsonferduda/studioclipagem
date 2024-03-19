@@ -17,10 +17,10 @@ def create_path(img, txt):
     os.makedirs(img)
     os.makedirs(txt)
 
-pasta_pendentes = 'public/jornal-impresso/pendentes'
-pasta_andamento = 'public/jornal-impresso/andamento'
-pasta_falhas = 'public/jornal-impresso/falhas'
-pasta_processados = 'public/jornal-impresso/processados'
+pasta_pendentes = '/var/www/html/studioclipagem/public/jornal-impresso/pendentes'
+pasta_andamento = '/var/www/html/studioclipagem/public/jornal-impresso/andamento'
+pasta_falhas = '/var/www/html/studioclipagem/public/jornal-impresso/falhas'
+pasta_processados = '/var/www/html/studioclipagem/public/jornal-impresso/processados'
 
 host = config('DB_HOST')
 database = config('DB_DATABASE')
