@@ -15,4 +15,5 @@ yarn-error.log
 composer.lock
 __pycache__/
 /public/jornal-impresso
+/public/noticias-tv
 worker.log
