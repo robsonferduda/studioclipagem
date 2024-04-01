@@ -126,7 +126,7 @@ class FonteWebController extends Controller
 
         switch ($origem) {
             case 'studio':
-                $dados = JornalWeb::where('id_fonte', $id)->take(10)->orderBy('dt_noticia',"DESC")->get();
+                $dados = JornalWeb::where('id_fonte', $id)->take(10)->orderBy('dt_clipagem',"DESC")->get();
                 break;
             case 'knewin':
                 $dados = (new Noticia())->getNoticias($id);
