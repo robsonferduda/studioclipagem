@@ -110,7 +110,7 @@
                 $("#table_studio  > tbody > tr").remove();
                 if(result.length){
                     $.each(result, function( index, value ) {
-                        dt_data = formataData(value.dt_clipagem);
+                        dt_data = formataData(value.dt_noticia);
                         $("#table_studio").append('<tr><td>'+dt_data+'</td><td>'+value.titulo+'</td><td class="center"><a class="fa fa-eye" href="../../jornal-web/noticia/'+value.id+'"></a></td></tr>');
                     }); 
                 }else{

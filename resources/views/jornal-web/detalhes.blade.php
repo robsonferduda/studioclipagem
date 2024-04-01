@@ -23,7 +23,7 @@
                 </div>
                 <div class="col-lg-12 col-md-12">
                     <h6>{{ $noticia->titulo }}</h6>
-                    <p>{{ ($noticia->fonte) ? $noticia->fonte->nome : 'Não identificada' }} - {{ \Carbon\Carbon::parse($noticia->dt_clipagem)->format('d/m/Y') }}</p>
+                    <p>{{ ($noticia->fonte) ? $noticia->fonte->nome : 'Não identificada' }} - {{ \Carbon\Carbon::parse($noticia->dt_noticia)->format('d/m/Y') }}</p>
                     <p>
                         {!! nl2br($noticia->texto) !!}
                     </p>
