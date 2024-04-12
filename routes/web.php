@@ -63,6 +63,8 @@ Route::post('email/cliente/cadastrar','EmailController@cadastrar');
 
 Route::get('estado/{id}/cidades','EstadoController@getCidades');
 
+Route::match(array('GET', 'POST'),'exportar','ExportarController@index');
+
 Route::get('fonte-impresso/listar','FonteImpressoController@listar');
 Route::get('fonte-impresso/cadastrar','FonteImpressoController@cadastrar');
 Route::get('fonte-impresso/{id}/editar','FonteImpressoController@editar');

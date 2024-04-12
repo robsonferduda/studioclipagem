@@ -298,6 +298,14 @@
                     </a>
                   </li>
                 @endrole
+                @role('administradores')
+                  <li class="{{ (Session::has('url') and Session::get('url') == 'exportar') ? 'active' : '' }}">
+                    <a href="{{ url('exportar') }}">
+                    <i class="fa fa-upload"></i>
+                    <p>Exportação</p>
+                    </a>
+                  </li>
+                @endrole
                 <hr/>
                 @role('administradores')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'usuarios') ? 'active' : '' }}">
