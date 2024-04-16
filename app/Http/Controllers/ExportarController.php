@@ -59,7 +59,8 @@ class ExportarController extends Controller
                                     parte.titulo as INFO2,                                                                       
                                     cidade.titulo as cidade_titulo, 
                                     tv.uf as uf, 
-                                    CONCAT('','') as link
+                                    CONCAT('','') as link,
+                                    retornos_totais as retorno
                             FROM app_tv as tv 
                                     LEFT JOIN app_tv_emissora as veiculo ON veiculo.id = tv.id_emissora
                                     LEFT JOIN app_tv_programa as parte ON parte.id = tv.id_programa 
@@ -84,7 +85,8 @@ class ExportarController extends Controller
                                 parte.titulo as INFO2, 
                                 cidade.titulo as cidade_titulo, 
                                 radio.uf as uf, 
-                                radio.link as link
+                                radio.link as link,
+                                retornos_totais as retorno
                             FROM app_radio as radio 
                                 LEFT JOIN app_radio_emissora as veiculo ON veiculo.id = radio.id_emissora
                                 LEFT JOIN app_radio_programa as parte ON parte.id = radio.id_programa 
@@ -109,7 +111,8 @@ class ExportarController extends Controller
                                 parte.titulo as INFO2,
                                 cidade.titulo as cidade_titulo,
                                 jornal.uf as uf, 
-                                CONCAT('','') as link                               
+                                CONCAT('','') as link,
+                                retorno as retorno                               
                             FROM app_jornal as jornal 
                                 LEFT JOIN app_jornal_impresso as veiculo ON veiculo.id = jornal.id_jornalimpresso
                                 LEFT JOIN app_jornal_secao as parte ON parte.id = jornal.id_secao 
@@ -134,7 +137,8 @@ class ExportarController extends Controller
                                 parte.titulo as INFO2, 
                                 cidade.titulo as cidade_titulo,
                                 web.uf as uf, 
-                                web.link as link   
+                                web.link as link,
+                                retorno as retorno   
                             FROM app_web as web 
                                 LEFT JOIN app_web_sites as veiculo ON veiculo.id = web.id_site
                                 LEFT JOIN app_web_secao as parte ON parte.id = web.id_secao 
@@ -150,6 +154,40 @@ class ExportarController extends Controller
             $sql .= " ORDER BY clipagem DESC, data DESC";
             
             $dados = DB::connection('mysql')->select($sql);
+
+            foreach($dados as $key => $noticia){
+
+                if($noticia->clipagem != 'Web'){
+
+                    switch ($noticia->clipagem) {
+                        case 'TV':
+                            $url = env('FILE_URL').$noticia->clipagem.'/arquivo'.$noticia->id.'_1.mp4'; 
+                            break;
+
+                        case 'Rádio':
+
+                            $url = env('FILE_URL').$noticia->clipagem.'/arquivo'.$noticia->id.'_1.mp3';                                
+                            break;
+
+                        case 'Impresso':
+
+                            $url = env('FILE_URL').$noticia->clipagem.'/arquivo'.$noticia->id.'_1.jpg';
+                            $header_response = get_headers($url, 1);
+            
+                            if(strpos( $header_response[0], "404" ) !== false){
+                                $url = env('FILE_URL').$noticia->clipagem.'/arquivo'.$noticia->id.'_1.jpeg';
+                            } 
+                                
+                            break;
+                        
+                        default:
+                            
+                            break;
+                    }  
+                    
+                    $dados[$key]->link = $url;    
+                }       
+            }
 
             $fileName = "noticias.xlsx";
             return Excel::download(new OcorrenciasExport($dados), $fileName);
