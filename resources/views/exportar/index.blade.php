@@ -24,16 +24,39 @@
                     {!! Form::open(['id' => 'frm-pautas', 'class' => 'form-horizontal', 'url' => ['exportar']]) !!}
                         <div class="form-group m-3 w-70">
                             <div class="row">
-                                <div class="col-sm-6 col-md-2">
+                                <div class="col-md-12">
                                     <div class="form-group">
-                                        <label>Data Inicial <span class="text-danger">Obrigatório</span></label>
-                                        <input type="text" class="form-control datepicker" name="dt_noticia" required="true" value="{{ date("d/m/Y") }}" placeholder="__/__/____">
+                                        <label>Termo de busca</label>
+                                        <input type="text" class="form-control" name="termo" id="termo" placeholder="Termo" value="{{ old('nome') }}">
                                     </div>
                                 </div>
-                                <div class="col-sm-6 col-md-10">
+                                <div class="col-md-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label>Data Inicial</label>
+                                        <input type="text" class="form-control" name="dt_inicio" id="dt_inicio" placeholder="__/__/____" value="{{ date('d/m/Y') }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label>Data Final</label>
+                                        <input type="text" class="form-control" name="dt_fim" id="dt_fim" placeholder="__/__/____" value="{{ date('d/m/Y') }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-12">
+                                    <div class="form-group">
+                                        <label>Sentimento</label>
+                                        <select class="form-control select2" name="sentimento" id="sentimento">
+                                            <option value="0">Todos</option>
+                                            <option value="Positivo">Positivo</option>
+                                            <option value="Negativo">Negativo</option>
+                                            <option value="Neutro">Neutro</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-12">
                                     <div class="form-group">
                                         <label>Cliente <span class="text-danger">Obrigatório</span></label>
-                                        <select class="form-control select2" name="cliente" id="cliente">
+                                        <select class="form-control select2" name="cliente" id="cliente" required="required">
                                             <option value="">Selecione um cliente</option>
                                             @foreach($clientes as $cliente)
                                                 <option value="{!! $cliente->id_unico !!}">{!! $cliente->pessoa->nome !!}</option>

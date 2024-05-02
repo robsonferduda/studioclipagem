@@ -18,7 +18,8 @@ class OcorrenciasExport implements FromCollection, WithHeadings
 
         return [
             "Data",
-            "TIpo",
+            "Tipo",
+            "Sentimento",
             "Título",
             "Sinopse",
             "Veículo",

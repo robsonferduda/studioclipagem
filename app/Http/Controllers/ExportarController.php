@@ -36,7 +36,12 @@ class ExportarController extends Controller
 
         $dados = array();
         $id_cliente = ($request->cliente) ? $request->cliente : null;
-        $dt_noticia = ($request->dt_noticia) ? $carbon->createFromFormat('d/m/Y', $request->dt_noticia)->format('Y-m-d') : date("Y-m-d");
+        $dt_inicio = ($request->dt_inicio) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicio)->format('Y-m-d') : date("Y-m-d");
+        $dt_fim = ($request->dt_fim) ? $carbon->createFromFormat('d/m/Y', $request->dt_fim)->format('Y-m-d') : date("Y-m-d");
+        $termo = ($request->termo) ? $request->termo : "";
+
+        $complemento_termo = ($request->termo) ? " AND sinopse LIKE '%$request->termo%'" : "";
+        $complemento_sentimento = ($request->sentimento) ? " AND status = '$request->sentimento' " : "";
 
         $clientes = Cliente::select('clientes.*', 'clientes.id as id_unico')
                             ->with('pessoa')
@@ -53,7 +58,8 @@ class ExportarController extends Controller
                 $sql[] = "( SELECT 
                                     tv.data as data,
                                     CONCAT('TV','') as clipagem,
-                                    CONCAT('','') as titulo,                                     
+                                    CONCAT('','') as titulo, 
+                                    status as sentimento,                                    
                                     tv.sinopse as sinopse, 
                                     veiculo.titulo as INFO1,
                                     parte.titulo as INFO2,                                                                       
@@ -67,7 +73,9 @@ class ExportarController extends Controller
                                     LEFT JOIN app_cidades as cidade ON cidade.id = tv.id_cidade 
                                     LEFT JOIN app_areasmodalidade as area ON (tv.id_area = area.id)
                             WHERE 
-                                tv.data = '$dt_noticia' 
+                                tv.data BETWEEN '$dt_inicio 00:00:00' AND '$dt_fim 23:59:59'
+                                $complemento_termo
+                                $complemento_sentimento
                             AND id_cliente = $id_cliente
                         )";
             }
@@ -79,6 +87,7 @@ class ExportarController extends Controller
                 $sql[] = "(SELECT 
                                 radio.data as data, 
                                 CONCAT('Rádio','') as clipagem,
+                                status as sentimento,
                                 CONCAT('','') as titulo,                                 
                                 radio.sinopse as sinopse, 
                                 veiculo.titulo as INFO1,
@@ -93,7 +102,9 @@ class ExportarController extends Controller
                                 LEFT JOIN app_cidades as cidade ON cidade.id = radio.id_cidade 
                                 LEFT JOIN app_areasmodalidade as area ON (radio.id_area = area.id)
                             WHERE 
-                                radio.data = '$dt_noticia' 
+                                radio.data BETWEEN '$dt_inicio 00:00:00' AND '$dt_fim 23:59:59'
+                                $complemento_termo
+                                $complemento_sentimento
                             AND id_cliente = $id_cliente
                     )";
             }
@@ -105,6 +116,7 @@ class ExportarController extends Controller
                 $sql[] = "(SELECT
                                 jornal.data_clipping as data,
                                 CONCAT('Impresso','') as clipagem,
+                                status as sentimento,
                                 jornal.titulo as titulo,                                  
                                 jornal.sinopse as sinopse, 
                                 veiculo.titulo as INFO1,
@@ -119,7 +131,9 @@ class ExportarController extends Controller
                                 LEFT JOIN app_cidades as cidade ON cidade.id = jornal.id_cidade 
                                 LEFT JOIN app_areasmodalidade as area ON (jornal.id_area = area.id)
                             WHERE 
-                                jornal.data_clipping = '$dt_noticia' 
+                                jornal.data_clipping BETWEEN '$dt_inicio 00:00:00' AND '$dt_fim 23:59:59' 
+                                $complemento_termo
+                                $complemento_sentimento
                             AND id_cliente = $id_cliente
                     )";
             }
@@ -131,6 +145,7 @@ class ExportarController extends Controller
                 $sql[] = "(SELECT 
                                 web.data_clipping as data, 
                                 CONCAT('Web','') as clipagem,
+                                status as sentimento,
                                 web.titulo as titulo,                                 
                                 web.sinopse as sinopse, 
                                 veiculo.titulo as INFO1,
@@ -145,7 +160,9 @@ class ExportarController extends Controller
                                 LEFT JOIN app_cidades as cidade ON cidade.id = web.id_cidade 
                                 LEFT JOIN app_areasmodalidade as area ON (web.id_area = area.id)
                             WHERE 
-                                web.data_clipping =  '$dt_noticia' 
+                                web.data_clipping BETWEEN '$dt_inicio 00:00:00' AND '$dt_fim 23:59:59' 
+                                $complemento_termo
+                                $complemento_sentimento
                             AND id_cliente = $id_cliente
                     )";
             }
