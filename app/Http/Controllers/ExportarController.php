@@ -29,6 +29,39 @@ class ExportarController extends Controller
         Session::put('exportar','pautas');
     }
 
+    public function importar()
+    {
+        $sql = "SELECT
+                    jornal.id as id, 
+                    jornal.id_cliente, 
+                    jornal.titulo as titulo, 
+                    jornal.data_clipping as data, 
+                    '' as segundos,
+                    jornal.sinopse as sinopse, 
+                    jornal.uf as uf, 
+                    CONCAT('','') as link, 
+                    jornal.status as status, 
+                    jornal.printurl as printurl,
+                    cidade.titulo as cidade_titulo, 
+                    veiculo.titulo as INFO1,
+                    parte.titulo as INFO2,
+                    ''  as INFOHORA,
+                    CONCAT('jornal','') as clipagem,
+                    area.titulo as area,
+                    area.ordem as ordem  
+                FROM app_jornal as jornal 
+                    LEFT JOIN app_jornal_impresso as veiculo ON veiculo.id = jornal.id_jornalimpresso
+                    LEFT JOIN app_jornal_secao as parte ON parte.id = jornal.id_secao 
+                    LEFT JOIN app_cidades as cidade ON cidade.id = jornal.id_cidade 
+                    LEFT JOIN app_areasmodalidade as area ON (jornal.id_area = area.id)
+                WHERE data_clipping BETWEEN '2020-01-01 00:00:00' AND '2020-12-31 23:59:59'";
+
+        $dados = DB::connection('mysql')->select($sql);
+
+        
+
+    }
+
     public function index(Request $request)
     {
         Session::put('sub-menu','pautas');
@@ -48,6 +81,50 @@ class ExportarController extends Controller
                             ->join('pessoas', 'pessoas.id', '=', 'clientes.pessoa_id')
                             ->orderBy('nome')
                             ->get();
+
+        if($request->isMethod('POST')){
+
+            $sql = 'SELECT * 
+                    FROM base_knewin';
+                    
+            $dados = DB::connection('pgsql')->select($sql);
+
+            $fileName = "noticias.xlsx";
+            return Excel::download(new OcorrenciasExport($dados), $fileName);                  
+        }                    
+
+        return view('exportar/index', compact('clientes','dados'));
+    }
+
+    public function index_old(Request $request)
+    {
+        Session::put('sub-menu','pautas');
+        $carbon = new Carbon();
+
+        $dados = array();
+        $id_cliente = ($request->cliente) ? $request->cliente : null;
+        $dt_inicio = ($request->dt_inicio) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicio)->format('Y-m-d') : date("Y-m-d");
+        $dt_fim = ($request->dt_fim) ? $carbon->createFromFormat('d/m/Y', $request->dt_fim)->format('Y-m-d') : date("Y-m-d");
+        $termo = ($request->termo) ? $request->termo : "";
+
+        $complemento_termo = ($request->termo) ? " AND sinopse LIKE '%$request->termo%'" : "";
+        $complemento_sentimento = ($request->sentimento) ? " AND status = '$request->sentimento' " : "";
+
+        $clientes = Cliente::select('clientes.*', 'clientes.id as id_unico')
+                            ->with('pessoa')
+                            ->join('pessoas', 'pessoas.id', '=', 'clientes.pessoa_id')
+                            ->orderBy('nome')
+                            ->get();
+
+        if($request->isMethod('POST')){
+
+            $sql = 'SELECT * 
+                    FROM base_knewin';
+
+            $dados = DB::connection('pgsql')->select($sql);
+
+            dd($dados);
+        }
 
         if($request->isMethod('POST')){
         
