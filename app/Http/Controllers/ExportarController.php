@@ -107,12 +107,15 @@ class ExportarController extends Controller
         $dt_fim = ($request->dt_fim) ? $carbon->createFromFormat('d/m/Y', $request->dt_fim)->format('Y-m-d') : date("Y-m-d");
         $termo = ($request->termo) ? $request->termo : "";
 
-        $sql = 'SELECT * FROM base_knewin WHERE id > 63950';
+        $sql = "SELECT * 
+                    FROM base_knewin
+                    WHERE data BETWEEN '$dt_inicio 00:00:00' AND '$dt_fim 23:59:59'
+                    AND cliente_id = $id_cliente";
 
         $dados = DB::connection('pgsql')->select($sql);
 
         $fileName = "noticias.xlsx";
-        
+
         return Excel::download(new OcorrenciasExport($dados), $fileName);
 
     }
@@ -139,8 +142,10 @@ class ExportarController extends Controller
 
         if($request->isMethod('POST')){
 
-            $sql = 'SELECT * 
-                    FROM base_knewin';
+            $sql = "SELECT * 
+                    FROM base_knewin
+                    WHERE data BETWEEN '$dt_inicio 00:00:00' AND '$dt_fim 23:59:59'
+                    AND cliente_id = $id_cliente";
 
             $dados = DB::connection('pgsql')->select($sql);
 
