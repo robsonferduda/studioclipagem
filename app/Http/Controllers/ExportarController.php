@@ -89,6 +89,8 @@ class ExportarController extends Controller
                     
             $dados = DB::connection('pgsql')->select($sql);
 
+            dd($sql);
+
             $fileName = "noticias.xlsx";
             return Excel::download(new OcorrenciasExport($dados), $fileName);                  
         }                    
