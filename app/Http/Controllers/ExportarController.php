@@ -106,6 +106,15 @@ class ExportarController extends Controller
         $dt_inicio = ($request->dt_inicio) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicio)->format('Y-m-d') : date("Y-m-d");
         $dt_fim = ($request->dt_fim) ? $carbon->createFromFormat('d/m/Y', $request->dt_fim)->format('Y-m-d') : date("Y-m-d");
         $termo = ($request->termo) ? $request->termo : "";
+
+        $sql = 'SELECT * 
+                    FROM base_knewin';
+
+        $dados = DB::connection('pgsql')->select($sql);
+
+        dd($dados);
+
+
     }
 
     public function index_old(Request $request)
