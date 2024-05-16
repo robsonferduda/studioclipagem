@@ -110,6 +110,8 @@ class ExportarController extends Controller
         $sql = 'SELECT * 
                     FROM base_knewin';
 
+        dd($sql);
+
         $dados = DB::connection('pgsql')->select($sql);
 
         dd($dados);
