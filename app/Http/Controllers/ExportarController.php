@@ -107,10 +107,7 @@ class ExportarController extends Controller
         $dt_fim = ($request->dt_fim) ? $carbon->createFromFormat('d/m/Y', $request->dt_fim)->format('Y-m-d') : date("Y-m-d");
         $termo = ($request->termo) ? $request->termo : "";
 
-        $sql = 'SELECT * 
-                    FROM base_knewin';
-
-        dd($sql);
+        $sql = 'SELECT * FROM base_knewin WHERE id > 63950';
 
         $dados = DB::connection('pgsql')->select($sql);
 
