@@ -65,6 +65,7 @@ Route::get('estado/{id}/cidades','EstadoController@getCidades');
 
 Route::match(array('GET', 'POST'),'exportar','ExportarController@index');
 Route::match(array('GET', 'POST'),'importar','ExportarController@importar');
+Route::post('teste','ExportarController@teste');
 
 Route::get('fonte-impresso/listar','FonteImpressoController@listar');
 Route::get('fonte-impresso/cadastrar','FonteImpressoController@cadastrar');

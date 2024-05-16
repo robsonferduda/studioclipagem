@@ -89,6 +89,40 @@ class ExportarController extends Controller
                     
             $dados = DB::connection('pgsql')->select($sql);
 
+            $fileName = "noticias.xlsx";
+            return Excel::download(new OcorrenciasExport($dados), $fileName);                  
+        }                    
+
+        return view('exportar/index', compact('clientes','dados'));
+    }
+
+    public function teste(Request $request)
+    {
+        Session::put('sub-menu','pautas');
+        $carbon = new Carbon();
+
+        $dados = array();
+        $id_cliente = ($request->cliente) ? $request->cliente : null;
+        $dt_inicio = ($request->dt_inicio) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicio)->format('Y-m-d') : date("Y-m-d");
+        $dt_fim = ($request->dt_fim) ? $carbon->createFromFormat('d/m/Y', $request->dt_fim)->format('Y-m-d') : date("Y-m-d");
+        $termo = ($request->termo) ? $request->termo : "";
+
+        $complemento_termo = ($request->termo) ? " AND sinopse LIKE '%$request->termo%'" : "";
+        $complemento_sentimento = ($request->sentimento) ? " AND status = '$request->sentimento' " : "";
+
+        $clientes = Cliente::select('clientes.*', 'clientes.id as id_unico')
+                            ->with('pessoa')
+                            ->join('pessoas', 'pessoas.id', '=', 'clientes.pessoa_id')
+                            ->orderBy('nome')
+                            ->get();
+
+        if($request->isMethod('POST')){
+
+            $sql = 'SELECT * 
+                    FROM base_knewin';
+                    
+            $dados = DB::connection('pgsql')->select($sql);
+
             dd($sql);
 
             $fileName = "noticias.xlsx";
