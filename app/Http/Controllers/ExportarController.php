@@ -98,7 +98,14 @@ class ExportarController extends Controller
 
     public function teste(Request $request)
     {
-        dd($request);
+        Session::put('sub-menu','pautas');
+        $carbon = new Carbon();
+
+        $dados = array();
+        $id_cliente = ($request->cliente) ? $request->cliente : null;
+        $dt_inicio = ($request->dt_inicio) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicio)->format('Y-m-d') : date("Y-m-d");
+        $dt_fim = ($request->dt_fim) ? $carbon->createFromFormat('d/m/Y', $request->dt_fim)->format('Y-m-d') : date("Y-m-d");
+        $termo = ($request->termo) ? $request->termo : "";
     }
 
     public function index_old(Request $request)
