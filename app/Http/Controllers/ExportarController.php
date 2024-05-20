@@ -104,6 +104,8 @@ class ExportarController extends Controller
         $carbon = new Carbon();
 
         $dados = array();
+        $arquivo = null;
+
         $id_cliente = ($request->cliente) ? $request->cliente : null;
         $dt_inicio = ($request->dt_inicio) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicio)->format('Y-m-d') : date("Y-m-d");
         $dt_fim = ($request->dt_fim) ? $carbon->createFromFormat('d/m/Y', $request->dt_fim)->format('Y-m-d') : date("Y-m-d");
@@ -139,15 +141,30 @@ class ExportarController extends Controller
                 $complemento_termo
                 $complemento_sentimento
                 $complemento_tipo
-                AND cliente_id = $id_cliente";
+                ";
 
         $dados = DB::connection('pgsql')->select($sql);
 
-        $fileName = "noticias.xlsx";
+        if($dados){
+        
+            $fileName = date("Y-m-d-H-i-s").'_'.$id_cliente.'_'."noticias.xlsx";
+            $arquivo = Excel::store(new OcorrenciasExport($dados), $fileName, 'planilhas'); 
 
-        return Excel::store(new OcorrenciasExport($dados), $fileName, 'planilhas'); 
+            if($arquivo){
 
-        return Excel::download(new OcorrenciasExport($dados), $fileName);
+                Session::put('arquivo', $fileName);
+
+                Flash::success('<i class="fa fa-check"></i> Arquivo '.$fileName.' gerado com sucesso. Clique no link abaixo para fazer o download.');
+            }else{
+                Flash::error('<i class="fa fa-times"></i> Erro ao gerar o arquivo');
+            }
+
+        }else{
+
+            Flash::warning('<i class="fa fa-exclamation"></i> Nenhum dado disponível para a busca realizada');
+        }
+
+        return redirect('exportar')->withInput();
 
     }
 

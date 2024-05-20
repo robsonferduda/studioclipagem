@@ -120,6 +120,17 @@
                         </div>
                     {!! Form::close() !!}
                 </div>
+                <div class="col-lg-12 col-sm-12">
+                    @if(session('arquivo'))
+                        <div class="card w-100">
+                            <div class="card-body">
+                            <h6 class="card-title">Arquivo {{ session('arquivo') }}</h6>
+                            <p class="card-text">Arquivo gerado com sucesso, clique no botão abaixo para fazer download.</p>
+                            <a href="{{ url('planilhas/'.session('arquivo')) }}" class="btn btn-success mt-1"><i class="fa fa-file-excel-o"></i> Download</a>
+                            </div>
+                        </div>
+                    @endif
+                </div>
             </div>
         </div>
     </div>
