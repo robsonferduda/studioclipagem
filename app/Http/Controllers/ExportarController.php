@@ -123,6 +123,7 @@ class ExportarController extends Controller
 
         $sql = "SELECT data,
                         tipo,
+                        status,
                         titulo,
                         sinopse,
                         info1, 
