@@ -76,6 +76,13 @@ return [
             'visibility' => 'public',
         ],
 
+        'planilhas' => [
+            'driver' => 'local',
+            'root' => public_path('planilhas'),
+            'url' => env('APP_URL').'/planilhas',
+            'visibility' => 'public',
+        ],
+
         'hashtag-img' => [
             'driver' => 'local',
             'root' => storage_path('app/hashtag/files/images'),
