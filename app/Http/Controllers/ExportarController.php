@@ -142,6 +142,7 @@ class ExportarController extends Controller
                 $complemento_sentimento
                 $complemento_tipo
                 AND cliente_id = $id_cliente
+                ORDER BY tipo, uf
                 ";
 
         $dados = DB::connection('pgsql')->select($sql);
