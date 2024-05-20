@@ -148,7 +148,7 @@ class ExportarController extends Controller
 
         if($dados){
         
-            $fileName = date("Y-m-d-H-i-s").'_'.$id_cliente.'_'."noticias.xlsx";
+            $fileName = date("Y-m-d-H-i-s").'_cliente_'.$id_cliente.'_'."noticias.xlsx";
             $arquivo = Excel::store(new OcorrenciasExport($dados), $fileName, 'planilhas'); 
 
             if($arquivo){
