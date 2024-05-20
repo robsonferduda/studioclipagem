@@ -141,6 +141,7 @@ class ExportarController extends Controller
                 $complemento_termo
                 $complemento_sentimento
                 $complemento_tipo
+                AND id_cliente = $id_cliente
                 ";
 
         $dados = DB::connection('pgsql')->select($sql);
