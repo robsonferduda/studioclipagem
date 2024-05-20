@@ -115,9 +115,9 @@ class ExportarController extends Controller
         $complemento_sentimento = ($request->sentimento) ? " AND status = '$request->sentimento' " : "";
 
         $tipos = array();
-        ($request->check_tv) ? $tipos[] = (string) "'tv'" : "";
+        ($request->check_tv) ? $tipos[] = (string) "'TV'" : "";
         ($request->check_radio) ? $tipos[] = (string) "'radio'" : "";
-        ($request->check_web) ? $tipos[] = (string) "'web'" : "";
+        ($request->check_web) ? $tipos[] = (string) "'Web'" : "";
         ($request->check_jornal) ? $tipos[] = (string) "'jornal'" : "";
 
         $complemento_tipo = "";
