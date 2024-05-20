@@ -107,10 +107,36 @@ class ExportarController extends Controller
         $dt_fim = ($request->dt_fim) ? $carbon->createFromFormat('d/m/Y', $request->dt_fim)->format('Y-m-d') : date("Y-m-d");
         $termo = ($request->termo) ? $request->termo : "";
 
-        $sql = "SELECT * 
-                    FROM base_knewin
-                    WHERE data BETWEEN '$dt_inicio 00:00:00' AND '$dt_fim 23:59:59'
-                    AND cliente_id = $id_cliente";
+        $complemento_termo = ($request->termo) ? " AND sinopse LIKE '%$request->termo%' OR titulo LIKE '%$request->termo%' " : "";
+        $complemento_sentimento = ($request->sentimento) ? " AND status = '$request->sentimento' " : "";
+
+        $tipos = array();
+        ($request->check_tv) ? $tipos[] = (string) "'tv'" : "";
+        ($request->check_radio) ? $tipos[] = (string) "'radio'" : "";
+        ($request->check_web) ? $tipos[] = (string) "'web'" : "";
+        ($request->check_jornal) ? $tipos[] = (string) "'jornal'" : "";
+
+        $complemento_tipo = "";
+        $complemento_tipo .= ($request->check_tv OR $request->check_radio OR $request->check_web OR $request->check_jornal) ? " AND tipo IN(".implode(',', $tipos).")" : ""; 
+
+        //"Data","Tipo","Título","Sinopse","Veículo","Seção","Cidade","Estado","Link","Rotorno"
+
+        $sql = "SELECT data,
+                        tipo,
+                        titulo,
+                        sinopse,
+                        info1, 
+                        info2,
+                        cidade_titulo,
+                        uf,
+                        link,
+                        retorno 
+                FROM base_knewin
+                WHERE data BETWEEN '$dt_inicio 00:00:00' AND '$dt_fim 23:59:59'
+                $complemento_termo
+                $complemento_sentimento
+                $complemento_tipo
+                AND cliente_id = $id_cliente";
 
         $dados = DB::connection('pgsql')->select($sql);
 
