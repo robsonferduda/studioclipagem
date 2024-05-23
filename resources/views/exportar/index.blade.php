@@ -121,12 +121,19 @@
                     {!! Form::close() !!}
                 </div>
                 <div class="col-lg-12 col-sm-12">
-                    @if(session('arquivo'))
+                    @if($log_data)
                         <div class="card w-100">
                             <div class="card-body">
-                            <h6 class="card-title">Arquivo {{ session('arquivo') }}</h6>
-                            <p class="card-text">Arquivo gerado com sucesso, clique no botão abaixo para fazer download.</p>
-                            <a href="{{ url('planilhas/'.session('arquivo')) }}" class="btn btn-success mt-1"><i class="fa fa-file-excel-o"></i> Download</a>
+                                <div class="row"> 
+                                    <div class="col-lg-6 col-sm-6">
+                                        <h6 class="card-title">Arquivo {{ $log_data->arquivo }}</h6>                                    
+                                        <p class="card-text"><strong>Total Jornal</strong>: {{ $log_data->total_jornal }} | 
+                                                            <strong>Total Radio</strong>: {{ $log_data->total_radio }} |
+                                                            <strong>Total TV</strong>: {{ $log_data->total_tv }} |
+                                                            <strong>Total Web</strong>: {{ $log_data->total_web }}</p>
+                                        <a href="{{ url('planilhas/'.$log_data->arquivo) }}" class="btn btn-success mt-1"><i class="fa fa-file-excel-o"></i> Download</a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     @endif

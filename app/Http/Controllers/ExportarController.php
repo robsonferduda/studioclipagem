@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use DB;
 use Auth;
 use App\Boletim;
+use App\Models\LogBusca;
 use App\Utils;
 use App\Models\Cliente;
 use App\Models\Pauta;
@@ -62,7 +63,7 @@ class ExportarController extends Controller
 
     }
 
-    public function index(Request $request)
+    public function index(Request $request, $log = null)
     {
         Session::put('sub-menu','pautas');
         $carbon = new Carbon();
@@ -82,6 +83,12 @@ class ExportarController extends Controller
                             ->orderBy('nome')
                             ->get();
 
+        if($request->isMethod('GET')){
+
+            $log_data = LogBusca::find($log);
+
+        }
+
         if($request->isMethod('POST')){
 
             $sql = 'SELECT * 
@@ -95,7 +102,7 @@ class ExportarController extends Controller
             return Excel::download(new OcorrenciasExport($dados), $fileName);                  
         }                    
 
-        return view('exportar/index', compact('clientes','dados'));
+        return view('exportar/index', compact('clientes','dados','log_data'));
     }
 
     public function teste(Request $request)
@@ -146,11 +153,34 @@ class ExportarController extends Controller
                 ";
 
         $dados = DB::connection('pgsql')->select($sql);
+        $dados = collect($dados);
 
         if($dados){
         
             $fileName = date("Y-m-d-H-i-s").'_cliente_'.$id_cliente.'_'."noticias.xlsx";
             $arquivo = Excel::store(new OcorrenciasExport($dados), $fileName, 'planilhas'); 
+
+            $total_jornal = $dados->where("tipo","jornal")->count();
+            $total_web = $dados->where("tipo","Web")->count();
+            $total_radio = $dados->where("tipo","radio")->count();
+            $total_tv = $dados->where("tipo","TV")->count();
+
+            $log = array("total_tv" => $total_tv,
+                           "total_jornal" => $total_jornal,
+                           "total_web" => $total_web,
+                           "total_radio" => $total_radio,
+                           'fl_tv' => ($request->check_tv) ? true : false,
+                           'fl_jornal' => ($request->check_jornal) ? true : false,
+                           'fl_radio' => ($request->check_radio) ? true : false,
+                           'fl_web' => ($request->check_web) ? true : false,
+                           'cliente_id' =>  $id_cliente,
+                           'termo' => $termo,
+                           'sentimento' => $request->sentimento,
+                           'data_inicio' => $dt_inicio,
+                           'data_fim' => $dt_fim,
+                           'arquivo' => $fileName);
+
+            $id = LogBusca::create($log);
 
             if($arquivo){
 
@@ -166,7 +196,7 @@ class ExportarController extends Controller
             Flash::warning('<i class="fa fa-exclamation"></i> Nenhum dado disponível para a busca realizada');
         }
 
-        return redirect('exportar')->withInput();
+        return redirect('exportar/'.$id->id)->withInput();
 
     }
 
