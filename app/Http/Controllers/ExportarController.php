@@ -132,7 +132,7 @@ class ExportarController extends Controller
 
         //"Data","Tipo","Título","Sinopse","Veículo","Seção","Cidade","Estado","Link","Rotorno"
 
-        $sql = "SELECT data,
+        $sql = "SELECT data_clipping,
                         tipo,
                         status,
                         titulo,
@@ -149,7 +149,7 @@ class ExportarController extends Controller
                 $complemento_sentimento
                 $complemento_tipo
                 AND cliente_id = $id_cliente
-                ORDER BY tipo, uf
+                ORDER BY tipo, data_clipping, info1, uf
                 ";
 
         $dados = DB::connection('pgsql')->select($sql);
