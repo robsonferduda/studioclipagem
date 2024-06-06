@@ -166,13 +166,10 @@
                         },
                         plugins: {
                             datalabels: {
-                                display: true,
-                                align: 'bottom',
-                                backgroundColor: '#ccc',
-                                borderRadius: 3,
+                                color: 'white',
                                 font: {
-                                size: 18,
-                                },
+                                    weight: 'bold'
+                                }
                             },
                         },
                     }
