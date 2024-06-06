@@ -153,6 +153,7 @@
                     "data": {
                         "labels": ["Web", "Rádio", "Impresso", "TV"],
                         "datasets": [ {
+                            "fillColor": "#79D1CF",
                             "label": "Radar ODS",
                             "data": [ {{ $log_data->total_web }}, {{ $log_data->total_radio }}, {{ $log_data->total_jornal }}, {{ $log_data->total_tv }}],
                             "backgroundColor": ["#51cbce", "#ff9800", "#6bd098", "#9c27b0b3"]
