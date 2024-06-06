@@ -162,7 +162,14 @@
                         responsive: true,
                         legend: {
                             position: 'bottom',     
-                        }
+                        },
+                        plugins: {
+                            datalabels: {
+                                formatter: (value) => {
+                                return value + '%';
+                                },
+                            },
+                        },
                     }
                 });
             @endif
