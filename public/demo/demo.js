@@ -45,6 +45,7 @@ demo = {
     if ($(".datepicker").length != 0) {
       $('.datepicker').datetimepicker({
         format: 'DD/MM/YYYY',
+        locale: 'pt-br',
         icons: {
           time: "fa fa-clock-o",
           date: "fa fa-calendar",

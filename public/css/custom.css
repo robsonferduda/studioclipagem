@@ -243,3 +243,6 @@ input[type="checkbox"]:checked + label-check .fa{
 .box-knewin { display: none;}
 .btn-excluir-email:hover {cursor: pointer;}
 .add-clientes:hover{ cursor: pointer;}
+.bootstrap-datetimepicker-widget {
+    margin: 5px 0 !important;
+}

@@ -392,7 +392,10 @@
   <script src="{{ asset('js/core/jquery.min.js') }}"></script>
   <script src="{{ asset('js/core/popper.min.js') }}"></script>
   <script src="{{ asset('js/core/bootstrap.min.js') }}"></script>
-  <script src="{{ asset('js/core/moment.min.js') }}"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
+  <script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
+
   <script src="{{ asset('js/plugins/perfect-scrollbar.jquery.min.js') }}"></script>
  
   <!-- Chart JS -->
@@ -423,8 +426,7 @@
   <script src="{{ asset('js/select2.js') }}"></script>
 
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
-  <script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
+
   
   <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
   <script src="{{ asset('js/dropzone.js') }}"></script>

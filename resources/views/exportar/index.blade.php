@@ -33,13 +33,13 @@
                                 <div class="col-md-3 col-sm-12">
                                     <div class="form-group">
                                         <label>Data Inicial</label>
-                                        <input type="text" class="form-control" name="dt_inicio" id="dt_inicio" placeholder="__/__/____" value="{{ date('d/m/Y') }}">
+                                        <input type="text" class="form-control data datepicker" name="dt_inicio" id="dt_inicio" placeholder="__/__/____" value="{{ date('d/m/Y') }}">
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-12">
                                     <div class="form-group">
                                         <label>Data Final</label>
-                                        <input type="text" class="form-control" name="dt_fim" id="dt_fim" placeholder="__/__/____" value="{{ date('d/m/Y') }}">
+                                        <input type="text" class="form-control data datepicker" name="dt_fim" id="dt_fim" placeholder="__/__/____" value="{{ date('d/m/Y') }}">
                                     </div>
                                 </div>
                                 <div class="col-md-6 col-sm-12">
@@ -120,23 +120,21 @@
                         </div>
                     {!! Form::close() !!}
                 </div>
-                <div class="col-lg-12 col-sm-12">
+               
+                @if($log_data and ($log_data->total_jornal + $log_data->total_radio + $log_data->total_tv + $log_data->total_web) > 0)
+                    <div class="col-lg-2 col-sm-2">
+                        <canvas id="chartPreferences" width="100" height="100"></canvas>
+                    </div>
+                @endif                
+                <div class="col-lg-10 col-sm-10">
                     @if($log_data)
-                        <div class="card w-100">
-                            <div class="card-body">
-                                <div class="row"> 
-                                    <div class="col-lg-6 col-sm-6">
-                                        <h6 class="card-title">Arquivo {{ $log_data->arquivo }}</h6>                                    
-                                        <p class="card-text"><strong>Total Jornal</strong>: {{ $log_data->total_jornal }} | 
-                                                            <strong>Total Radio</strong>: {{ $log_data->total_radio }} |
-                                                            <strong>Total TV</strong>: {{ $log_data->total_tv }} |
-                                                            <strong>Total Web</strong>: {{ $log_data->total_web }}</p>
-                                        <a href="{{ url('planilhas/'.$log_data->arquivo) }}" class="btn btn-success mt-1"><i class="fa fa-file-excel-o"></i> Download</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
+                        <h6 class="card-title">Arquivo {{ $log_data->arquivo }}</h6>                                    
+                        <p class="card-text"><strong>Total Jornal</strong>: {{ $log_data->total_jornal }} | 
+                        <strong>Total Radio</strong>: {{ $log_data->total_radio }} |
+                        <strong>Total TV</strong>: {{ $log_data->total_tv }} |
+                        <strong>Total Web</strong>: {{ $log_data->total_web }}</p>
+                        <a href="{{ url('planilhas/'.$log_data->arquivo) }}" class="btn btn-success mt-1"><i class="fa fa-file-excel-o"></i> Download</a>
+                    @endif                    
                 </div>
             </div>
         </div>
@@ -149,6 +147,25 @@
 
             var host =  $('meta[name="base-url"]').attr('content');
 
+            @if($log_data and ($log_data->total_jornal + $log_data->total_radio + $log_data->total_tv + $log_data->total_web) > 0)
+                new Chart(document.getElementById("chartPreferences"), {
+                    "type": "pie",
+                    "data": {
+                        "labels": ["Web", "Rádio", "Impresso", "TV"],
+                        "datasets": [ {
+                            "label": "Radar ODS",
+                            "data": [ {{ $log_data->total_web }}, {{ $log_data->total_radio }}, {{ $log_data->total_jornal }}, {{ $log_data->total_tv }}],
+                            "backgroundColor": ["#0074D9", "#FF4136", "#2ECC40", "#FF851B"]
+                        }]
+                    },
+                    "options": {
+                        responsive: true,
+                        legend: {
+                            position: 'bottom',     
+                        }
+                    }
+                });
+            @endif
         });
     </script>
 @endsection

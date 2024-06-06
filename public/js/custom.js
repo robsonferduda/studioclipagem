@@ -1,6 +1,7 @@
 $(document).ready(function() {
 
     $('#nu_cpf_par').mask('000.000.000-00');
+    $('.data').mask('00/00/0000',{ "placeholder": "dd/mm/YYYY" });
     $('.dt_inicio').mask('00/00/0000',{ "placeholder": "dd/mm/YYYY" });
     $('.dt_termino').mask('00/00/0000',{ "placeholder": "dd/mm/YYYY" });
     $('.dt_inicial_relatorio').mask('00/00/0000',{ "placeholder": "dd/mm/YYYY" });
