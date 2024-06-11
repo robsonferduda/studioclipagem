@@ -189,7 +189,9 @@ Route::get('perfis','RoleController@index');
 Route::get('pdf','RelatorioController@pdf');
 
 Route::get('perfil','UserController@perfil');
+
 Route::get('usuarios','UserController@index');
+Route::get('usuarios/excluir/{id}','UserController@excluir');
 
 Route::get('role/permissions/{role}','RoleController@permissions');
 Route::post('role/permission/{role}','RoleController@addPermission');

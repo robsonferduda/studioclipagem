@@ -14,6 +14,18 @@ $(document).ready(function() {
     var host =  $('meta[name="base-url"]').attr('content');
     var token = $('meta[name="csrf-token"]').attr('content');
 
+    $('body').on("click", ".fa-eye", function(e) {
+
+        alert("sdfsdf");
+
+        var target = "#"+$(this).data('target');
+
+        $(target).attr('type','text');
+        $(this).removeClass('fa-eye');
+        $(this).addClass('fa-eye-slash');
+
+    });
+
     $(document).on('change', '#dt_inicial', function() {
         alert("sfsdfsdf");
     });

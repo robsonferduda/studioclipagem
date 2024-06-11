@@ -246,3 +246,4 @@ input[type="checkbox"]:checked + label-check .fa{
 .bootstrap-datetimepicker-widget {
     margin: 5px 0 !important;
 }
+.btn-usuario:hover{ cursor: pointer;}
