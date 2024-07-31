@@ -98,8 +98,7 @@ class ExportarController extends Controller
 
             $fileName = "noticias.xlsx";
             return Excel::download(new OcorrenciasExport($dados), $fileName); 
-
-            return Excel::download(new OcorrenciasExport($dados), $fileName);                  
+                 
         }                    
 
         return view('exportar/index', compact('clientes','dados','log_data'));
@@ -154,6 +153,8 @@ class ExportarController extends Controller
 
         $dados = DB::connection('pgsql')->select($sql);
         $dados = collect($dados);
+
+        dd($dados);
 
         if($dados){
         
@@ -355,6 +356,8 @@ class ExportarController extends Controller
             
             $dados = DB::connection('mysql')->select($sql);
 
+            dd($dados);
+
             foreach($dados as $key => $noticia){
 
                 if($noticia->clipagem != 'Web'){
@@ -395,5 +398,150 @@ class ExportarController extends Controller
         }
                     
         return view('exportar/index', compact('clientes','dados'));
+    }
+
+    public function atualizar()
+    {
+        $hoje = date("Y-m-d");
+
+        $sql = "SELECT 
+                    web.id as id_knewin,
+                    id_cliente as cliente_id,
+                    web.data_cadastro as data, 
+                    web.data_clipping as data_clipping,
+                    CONCAT('Web','') as tipo,
+                    CONCAT('Web','') as clipagem,
+                    web.titulo as titulo,  
+                    status as status,       
+                    web.sinopse as sinopse, 
+                    veiculo.titulo as INFO1,
+                    parte.titulo as INFO2, 
+                    '' as INFOHORA, 
+                    '' as segundos, 
+                    cidade.titulo as cidade_titulo,
+                    web.uf as uf, 
+                    web.link as link,
+                    area.titulo as area,
+                    area.ordem as ordem,
+                    retorno as retorno   
+                FROM app_web as web 
+                    LEFT JOIN app_web_sites as veiculo ON veiculo.id = web.id_site
+                    LEFT JOIN app_web_secao as parte ON parte.id = web.id_secao 
+                    LEFT JOIN app_cidades as cidade ON cidade.id = web.id_cidade 
+                    LEFT JOIN app_areasmodalidade as area ON (web.id_area = area.id)
+                WHERE data_cadastro BETWEEN '$hoje 00:00:00' AND '$hoje 23:59:59'
+                UNION
+                SELECT 
+                    web.id as id_knewin,
+                    id_cliente2 as cliente_id,
+                    web.data_cadastro as data, 
+                    web.data_clipping as data_clipping,
+                    CONCAT('Web','') as tipo,
+                    CONCAT('Web','') as clipagem,
+                    web.titulo as titulo,  
+                    status as status,       
+                    web.sinopse as sinopse, 
+                    veiculo.titulo as INFO1,
+                    parte.titulo as INFO2, 
+                    '' as INFOHORA, 
+                    '' as segundos, 
+                    cidade.titulo as cidade_titulo,
+                    web.uf as uf, 
+                    web.link as link,
+                    area.titulo as area,
+                    area.ordem as ordem,
+                    retorno as retorno   
+                FROM app_web as web 
+                    LEFT JOIN app_web_sites as veiculo ON veiculo.id = web.id_site
+                    LEFT JOIN app_web_secao as parte ON parte.id = web.id_secao 
+                    LEFT JOIN app_cidades as cidade ON cidade.id = web.id_cidade 
+                    LEFT JOIN app_areasmodalidade as area ON (web.id_area = area.id)
+                WHERE data_cadastro BETWEEN '$hoje 00:00:00' AND '$hoje 23:59:59' AND id_cliente2 != 0
+                UNION
+                SELECT 
+                    web.id as id_knewin,
+                    id_cliente3 as cliente_id,
+                    web.data_cadastro as data, 
+                    web.data_clipping as data_clipping,
+                    CONCAT('Web','') as tipo,
+                    CONCAT('Web','') as clipagem,
+                    web.titulo as titulo,  
+                    status as status,       
+                    web.sinopse as sinopse, 
+                    veiculo.titulo as INFO1,
+                    parte.titulo as INFO2, 
+                    '' as INFOHORA, 
+                    '' as segundos, 
+                    cidade.titulo as cidade_titulo,
+                    web.uf as uf, 
+                    web.link as link,
+                    area.titulo as area,
+                    area.ordem as ordem,
+                    retorno as retorno   
+                FROM app_web as web 
+                    LEFT JOIN app_web_sites as veiculo ON veiculo.id = web.id_site
+                    LEFT JOIN app_web_secao as parte ON parte.id = web.id_secao 
+                    LEFT JOIN app_cidades as cidade ON cidade.id = web.id_cidade 
+                    LEFT JOIN app_areasmodalidade as area ON (web.id_area = area.id)
+                WHERE data_cadastro BETWEEN '$hoje 00:00:00' AND '$hoje 23:59:59' AND id_cliente3 != 0
+                UNION
+                SELECT 
+                    web.id as id_knewin,
+                    id_cliente4 as cliente_id,
+                    web.data_cadastro as data, 
+                    web.data_clipping as data_clipping,
+                    CONCAT('Web','') as tipo,
+                    CONCAT('Web','') as clipagem,
+                    web.titulo as titulo,  
+                    status as status,       
+                    web.sinopse as sinopse, 
+                    veiculo.titulo as INFO1,
+                    parte.titulo as INFO2, 
+                    '' as INFOHORA, 
+                    '' as segundos, 
+                    cidade.titulo as cidade_titulo,
+                    web.uf as uf, 
+                    web.link as link,
+                    area.titulo as area,
+                    area.ordem as ordem,
+                    retorno as retorno   
+                FROM app_web as web 
+                    LEFT JOIN app_web_sites as veiculo ON veiculo.id = web.id_site
+                    LEFT JOIN app_web_secao as parte ON parte.id = web.id_secao 
+                    LEFT JOIN app_cidades as cidade ON cidade.id = web.id_cidade 
+                    LEFT JOIN app_areasmodalidade as area ON (web.id_area = area.id)
+                WHERE data_cadastro BETWEEN '$hoje 00:00:00' AND '$hoje 23:59:59' AND id_cliente4 != 0
+                UNION
+                SELECT 
+                    web.id as id_knewin,
+                    id_cliente5 as cliente_id,
+                    web.data_cadastro as data, 
+                    web.data_clipping as data_clipping,
+                    CONCAT('Web','') as tipo,
+                    CONCAT('Web','') as clipagem,
+                    web.titulo as titulo,  
+                    status as status,       
+                    web.sinopse as sinopse, 
+                    veiculo.titulo as INFO1,
+                    parte.titulo as INFO2, 
+                    '' as INFOHORA, 
+                    '' as segundos, 
+                    cidade.titulo as cidade_titulo,
+                    web.uf as uf, 
+                    web.link as link,
+                    area.titulo as area,
+                    area.ordem as ordem,
+                    retorno as retorno   
+                FROM app_web as web 
+                    LEFT JOIN app_web_sites as veiculo ON veiculo.id = web.id_site
+                    LEFT JOIN app_web_secao as parte ON parte.id = web.id_secao 
+                    LEFT JOIN app_cidades as cidade ON cidade.id = web.id_cidade 
+                    LEFT JOIN app_areasmodalidade as area ON (web.id_area = area.id)
+                WHERE data_cadastro BETWEEN '$hoje 00:00:00' AND '$hoje 23:59:59' AND id_cliente5 != 0";
+
+        $dados = DB::connection('mysql')->select($sql);
+
+        dd($dados);
+
     }
 }
