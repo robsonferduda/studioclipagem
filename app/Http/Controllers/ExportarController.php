@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use DB;
 use Auth;
 use App\Boletim;
+use App\Models\BaseKnewin;
 use App\Models\LogBusca;
+use App\Models\LogExportacao;
 use App\Utils;
 use App\Models\Cliente;
 use App\Models\Pauta;
@@ -541,7 +543,25 @@ class ExportarController extends Controller
 
         $dados = DB::connection('mysql')->select($sql);
 
-        dd($dados);
+        $total_inserido = 0;
 
+        foreach ($dados as $key => $noticia) {
+            
+            $flag = BaseKnewin::where('id_knewin', $noticia->id_knewin)->first();
+
+            if(!$flag){
+
+                $insert = array('id_knewin' => $noticia->id_knewin);
+
+                BaseKnewin::create($insert);
+
+                $total_inserido++;
+
+            }
+        }
+
+        $log = array('total_coletado' => $total_inserido);
+
+        LogExportacao::create($log);
     }
 }
