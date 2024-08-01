@@ -27,7 +27,7 @@ class ExportarController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth');
+        //$this->middleware('auth');
         $this->data_atual = session('data_atual');
         Session::put('exportar','pautas');
     }
