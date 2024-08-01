@@ -433,12 +433,12 @@ class ExportarController extends Controller
                     LEFT JOIN app_web_secao as parte ON parte.id = web.id_secao 
                     LEFT JOIN app_cidades as cidade ON cidade.id = web.id_cidade 
                     LEFT JOIN app_areasmodalidade as area ON (web.id_area = area.id)
-                WHERE data_cadastro BETWEEN '$hoje 00:00:00' AND '$hoje 23:59:59'
+                WHERE data_cadastro = '$hoje'
                 AND hora BETWEEN '$hora_inicio' AND '$hora_fim'";
 
-        dd($sql);
-
         $dados = DB::connection('mysql')->select($sql);
+
+        dd($dados);
 
         $total_inserido = 0;
 
