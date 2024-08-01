@@ -441,6 +441,8 @@ class ExportarController extends Controller
         }finally{
             echo "<br> Finalizado.";
         }
+
+        phpinfo();
         
         dd($dados);
 
