@@ -23,7 +23,7 @@ class Kernel extends ConsoleKernel
     {
         //$schedule->command('email:cron')->everyThreeHours();
 
-        $schedule->command('importacao:cron')->everyFiveMinutes();
+        $schedule->command('importacao:cron')->everyThirtyMinutes();
         
         $schedule->call(function () {
                           
