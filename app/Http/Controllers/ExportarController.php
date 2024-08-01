@@ -436,6 +436,8 @@ class ExportarController extends Controller
                 WHERE data_cadastro BETWEEN '$hoje 00:00:00' AND '$hoje 23:59:59'
                 AND hora BETWEEN '$hora_inicio' AND '$hora_fim'";
 
+        dd($sql);
+
         $dados = DB::connection('mysql')->select($sql);
 
         $total_inserido = 0;
