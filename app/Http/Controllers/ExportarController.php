@@ -435,7 +435,7 @@ class ExportarController extends Controller
                 AND hora BETWEEN '$hora_inicio' AND '$hora_fim'";
 
         try {
-            $dados = DB::connection('mysql')->select($sql);    
+            //$dados = DB::connection('mysql')->select($sql);    
         } catch (Exception $e) {
             echo 'Exceção capturada: ',  $e->getMessage(), "\n";
         }finally{
