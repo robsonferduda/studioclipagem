@@ -156,8 +156,6 @@ class ExportarController extends Controller
         $dados = DB::connection('pgsql')->select($sql);
         $dados = collect($dados);
 
-        dd($dados);
-
         if($dados){
         
             $fileName = date("Y-m-d-H-i-s").'_cliente_'.$id_cliente.'_'."noticias.xlsx";
