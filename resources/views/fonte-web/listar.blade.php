@@ -14,7 +14,7 @@
                 <div class="col-md-6">
                     <a href="{{ url('buscar-web') }}" class="btn btn-info pull-right" style="margin-right: 12px;"><i class="fa fa-globe"></i> Notícias Web</a>
                     <a href="{{ url('fonte-web/create') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-plus"></i> Novo</a>
-                    <a href="{{ url('fonte-web/importacao') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-plus"></i> Importar</a>
+                    <!--<a href="{{ url('fonte-web/importacao') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-plus"></i> Importar</a>-->
                     <button class="btn btn-warning pull-right" style="margin-right: 12px;" type="button" name="refresh" title="Refresh"  data-toggle="modal" data-target="#exampleModal"><i class="fa fa-edit"></i> Editar Seleção</button>
                 </div>
             </div>
@@ -30,7 +30,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Estado</label>
-                                    <select class="form-control select2" name="cd_estado" id="cd_estado">
+                                    <select class="form-control select2" name="cd_estado" id="cd_estado_filtro">
                                         <option value="">Selecione um estado</option>
                                         @foreach ($estados as $estado)
                                             <option value="{{ $estado->cd_estado }}">{{ $estado->nm_estado }}</option>
@@ -66,7 +66,7 @@
                     </div>
                 </div>
             </div>
-            <div>
+            <div class="row">
                 <div class="col-lg-12 col-sm-12 conteudo">                        
                     <table id="bootstrap-table" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
@@ -153,12 +153,13 @@
         var estado = 0;
         var cidade = 0;
         var nome = "";
-        var situacao = 2;
+        var situacao = "";
 
         var table = $('#bootstrap-table').DataTable({
                 "processing": true,
                 "paginate": true,
                 "serverSide": true,
+                "ordering": false,
                 "bFilter": true,
                 "ajax":{
                     "url": "{{ url('fonte-web/listar') }}",
@@ -185,7 +186,9 @@
                     {
                         'targets': 0,
                         'className': 'item',
-                        'checkboxes': true
+                        'checkboxes': true,
+                        'ordering': false,
+                        'sortable': false
                     }
                 ],
                 "stateSave": true
@@ -196,7 +199,7 @@
             table.draw();
         });
 
-        $(document).on('change', '#cd_estado', function() {     
+        $(document).on('change', '#cd_estado_filtro', function() {     
             estado = $(this).val();
             table.draw();
         });

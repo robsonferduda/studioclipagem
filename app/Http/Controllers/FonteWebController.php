@@ -10,6 +10,7 @@ use App\Models\JornalWeb;
 use App\Models\Estado;
 use App\Models\Cidade;
 use App\Models\FonteWeb;
+use App\Models\SituacaoFonteWeb;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
@@ -34,7 +35,6 @@ class FonteWebController extends Controller
         $cidades = Cidade::orderBy('nm_cidade')->get();
         $estados = Estado::orderBy('nm_estado')->get();
             
-        $fontes = FonteWeb::where('misc_data','=', 'mapeado')->get();
         $situacoes = (new FonteWeb())->getSituacoes();
 
         if($request->ajax()) {
@@ -61,6 +61,8 @@ class FonteWebController extends Controller
                 $fonte->when($nome, function ($q) use ($nome) {
                     return $q->where('nome', 'ILIKE', '%'.trim($nome).'%');
                 });
+
+                $fonte->orderBy('nome');
     
                 $fontes = $fonte->get();
 
@@ -96,7 +98,7 @@ class FonteWebController extends Controller
 
         }
 
-        return view('fonte-web/listar',compact('fontes','cidades','estados','situacoes'));
+        return view('fonte-web/listar',compact('cidades','estados','situacoes'));
     }
 
     public function importar()
