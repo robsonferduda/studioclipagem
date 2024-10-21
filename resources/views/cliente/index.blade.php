@@ -44,7 +44,6 @@
                     <thead>
                         <tr>
                             <th class="w-50">Nome</th>
-                            <th class="w-10">CPF/CNPJ</th>
                             <th class="w-10 disabled-sorting text-center">Situação</th>
                             <th class="w-10 disabled-sorting text-center">Ações</th>
                         </tr>
@@ -52,7 +51,6 @@
                     <tfoot>
                         <tr>
                             <th>Nome</th>
-                            <th>CPF/CNPJ</th>
                             <th class="disabled-sorting text-center">Situação</th>
                             <th class="disabled-sorting text-center">Ações</th>
                         </tr>
@@ -61,13 +59,12 @@
                         @foreach($clientes as $cliente)
                             <tr>
                                 <td>
-                                    {{ $cliente->pessoa->nome }} 
+                                    {{ $cliente->nome }} 
                                     @if($cliente->areas->count())
                                         <i title="Cliente possui áreas vinculadas" class="fa fa-tags text-primary"></i>
                                     @endif
                                 </td>
-                                <td>{{ $cliente->pessoa->cpf_cnpj }}</td>
-                                <td class="disabled-sorting text-center">{!! ($cliente->ativo) ? '<span class="badge badge-pill badge-success">ATIVO</span>' : '<span class="badge badge-pill badge-danger">INATIVO</span>' !!}</td>
+                                <td class="disabled-sorting text-center">{!! ($cliente->fl_ativo) ? '<span class="badge badge-pill badge-success">ATIVO</span>' : '<span class="badge badge-pill badge-danger">INATIVO</span>' !!}</td>
                                 <td class="text-center">
                                     <a title="Editar" href="{{ route('cliente.edit',$cliente->id) }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
                                 </td>

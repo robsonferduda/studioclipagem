@@ -11,15 +11,7 @@ class Cliente extends Model
 
     protected $connection = 'pgsql';
     protected $table = 'clientes';
-
-    protected $fillable = ['ativo', 'pessoa_id','logo','logo_expandida'];
-
-    public $timestamps = false; // Verificar se as colunas de log não vão existir realmente
-
-    public function pessoa()
-    {
-        return $this->hasOne(Pessoa::class, 'id', 'pessoa_id')->orderBy('nome');
-    }
+    protected $fillable = ['fl_ativo'];
 
     public function areas()
     {
