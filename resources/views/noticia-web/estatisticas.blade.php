@@ -13,7 +13,7 @@
                     </h4>
                 </div>
                 <div class="col-md-4">
-                    <a href="{{ url('jornal-web') }}" class="btn btn-warning pull-right" style="margin-right: 12px;"><i class="nc-icon nc-minimal-left"></i> Voltar</a>
+                    <a href="{{ url()->previous() }}" class="btn btn-warning pull-right" style="margin-right: 12px;"><i class="nc-icon nc-minimal-left"></i> Voltar</a>
                 </div>
             </div>
         </div>
