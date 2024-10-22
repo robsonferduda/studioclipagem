@@ -27,6 +27,7 @@
                     <p>
                         {!! nl2br($noticia->conteudo->conteudo) !!}
                     </p>
+                    <p><a href="{{ $noticia->url_noticia }}" target="_BLANK">Ver Original</a></p>
                 </div>   
             </div>
         </div>
