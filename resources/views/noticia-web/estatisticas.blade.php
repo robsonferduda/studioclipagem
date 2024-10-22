@@ -28,7 +28,7 @@
                     @forelse ($noticia->logs as $log)
                         <p><strong>{{ \Carbon\Carbon::parse($log->created_at)->format('d/m/Y H:i:s') }}</strong> acessado por <strong>{{ $log->user->name }}</strong></p>
                     @empty
-                        <p>Nenhum acesso registrado para essa notícia</p>
+                        <p class="text-danger">Nenhum acesso registrado para essa notícia</p>
                     @endforelse              
                 </div>   
             </div>
