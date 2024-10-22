@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use DB;
 use Auth;
 use Carbon\Carbon;
+use App\Models\LogAcesso;
 use App\Models\FonteWeb;
 use App\Models\NoticiaWeb;
 use Illuminate\Http\Request;
@@ -74,6 +75,19 @@ class NoticiaWebController extends Controller
         return view('noticia-web/index',compact('fontes','dados','dt_inicial','dt_final'));
     }
 
+    public function detalhes($id)
+    {
+        $noticia = NoticiaWeb::find($id);
+
+        $acesso = array('tipo' => 'web',
+                        'usuario' => Auth::user()->id,
+                        'id_noticia' => $noticia->id);
+
+        LogAcesso::create($acesso);
+
+        return view('noticia-web/detalhes',compact('noticia'));
+    }
+
     public function fontes()
     {
         Session::put('sub-menu','fonte-web');
@@ -94,13 +108,7 @@ class NoticiaWebController extends Controller
     {
         $sites = FonteWeb::all();
         return view('jornal-web/listar',compact('sites'));
-    }
-
-    public function detalhes($id)
-    {
-        $noticia = JornalWeb::find($id);
-        return view('jornal-web/detalhes',compact('noticia'));
-    }
+    }   
 
     public function estatisticas()
     {
@@ -120,7 +128,7 @@ class NoticiaWebController extends Controller
 
     public function getEstatisticas($id)
     {
-        $noticia = JornalWeb::find($id);
-        return view('jornal-web/estatisticas',compact('noticia'));
+        $noticia = NoticiaWeb::find($id);
+        return view('noticia-web/estatisticas',compact('noticia'));
     }
 }

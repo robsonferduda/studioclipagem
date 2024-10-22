@@ -87,8 +87,8 @@
                                         @endif
                                     </div>
                                     <div class="col-lg-4 col-sm-2">
-                                        <a class="btn btn-success btn-sm pull-right" href="{{ asset('jornal-web/noticia/'.$noticia->id) }}" role="button"><i class="fa fa-eye"> </i> Detalhes</a>
-                                        <a class="btn btn-info btn-sm pull-right" href="{{ asset('jornal-web/noticia/estatisticas/'.$noticia->id) }}" role="button"><i class="nc-icon nc-chart-bar-32"> </i> Estatísticas</a>
+                                        <a class="btn btn-success btn-sm pull-right" href="{{ asset('noticia/web/detalhes/'.$noticia->id) }}" role="button"><i class="fa fa-eye"> </i> Detalhes</a>
+                                        <a class="btn btn-info btn-sm pull-right" href="{{ asset('noticia/web/estatisticas/'.$noticia->id) }}" role="button"><i class="nc-icon nc-chart-bar-32"> </i> Estatísticas</a>
                                     </div>
                                 </div>                               
                             </div>
