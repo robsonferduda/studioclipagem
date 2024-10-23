@@ -39,7 +39,7 @@
                                 <div class="col-md-8 col-sm-12">
                                     <div class="form-group">
                                         <label>Buscar por <span class="text-primary">Digite o termo ou expressão de busca</span></label>
-                                        <input type="text" class="form-control" name="termo" id="termo" minlength="3" placeholder="Termo" value="">
+                                        <input type="text" class="form-control" name="termo" id="termo" minlength="3" placeholder="Termo" value="{{ Session::get('busca_termo') }}">
                                     </div>
                                 </div>
                             </div>
@@ -50,7 +50,7 @@
                                         <select class="form-control select2" name="fonte" id="fonte">
                                             <option value="">Selecione uma fonte</option>
                                             @foreach ($fontes as $fonte)
-                                                <option value="{{ $fonte->id }}" {{ ( Session::get('busca_termo') == $fonte->id ) ? 'selected' : '' }}>{{ $fonte->nome }}</option>
+                                                <option value="{{ $fonte->id }}" {{ ( Session::get('busca_fonte') == $fonte->id ) ? 'selected' : '' }}>{{ $fonte->nome }}</option>
                                             @endforeach
                                         </select>
                                     </div>
