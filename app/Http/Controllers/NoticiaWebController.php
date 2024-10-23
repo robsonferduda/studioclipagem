@@ -40,7 +40,7 @@ class NoticiaWebController extends Controller
             $fonte = $request->fonte;
 
             Session::put('busca_termo', $termo);
-            Session::put('burca_fonte', $fonte);
+            Session::put('busca_fonte', $fonte);
 
             $jornais = NoticiaWeb::query();
 
