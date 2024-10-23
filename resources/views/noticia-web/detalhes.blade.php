@@ -25,7 +25,7 @@
                     <p><strong>{{ $noticia->titulo_noticia }}</strong></p>
                     <p>{{ ($noticia->fonte) ? $noticia->fonte->nome : 'Não identificada' }} - {{ \Carbon\Carbon::parse($noticia->data_noticia)->format('d/m/Y') }} - Coletada em {{ \Carbon\Carbon::parse($noticia->data_insert)->format('d/m/Y H:i:s') }}</p>
                     <p>
-                        {!! nl2br($noticia->conteudo->conteudo) !!}
+                        {!! $noticia->conteudo->conteudo !!}
                     </p>
                     <p><a href="{{ $noticia->url_noticia }}" target="_BLANK">Ver Original</a></p>
                 </div>   

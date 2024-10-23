@@ -37,20 +37,31 @@ class NoticiaWebController extends Controller
             $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00" : date("Y-m-d")." 00:00:00";
             $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d")." 23:59:59";
             $termo = $request->termo;
+            $fonte = $request->fonte;
 
-            $jornais = JornalWeb::query();
+            Session::put('busca_termo', $termo);
+            Session::put('burca_fonte', $fonte);
 
-            $jornais->when($termo, function ($q) use ($termo) {
-                return $q->where('texto', 'ILIKE', '%'.trim($termo).'%');
+            $jornais = NoticiaWeb::query();
+
+            $jornais->when($fonte, function ($q) use ($fonte) {
+                return $q->where('id_fonte', $fonte);
             });
 
-            $dados = $jornais->whereBetween('dt_clipagem', [$dt_inicial, $dt_final])->orderBy('id_fonte')->orderBy('titulo')->paginate(10);
+            $jornais->when($termo, function ($q) use ($termo) {
+                $q->whereHas('conteudo', function($q) use($termo){
+                    return $q->where('conteudo', 'ILIKE', '%'.trim($termo).'%')->orWhere('titulo_noticia','ilike','%'.trim($termo).'%');
+                });
+            });
 
-            $total_noticias = JornalWeb::whereBetween('dt_clipagem', [$dt_inicial, $dt_final])->count();
+            $dados = $jornais->whereBetween('data_insert', [$dt_inicial, $dt_final])->orderBy('id_fonte')->orderBy('titulo_noticia')->paginate(10);
 
         }
 
         if($request->isMethod('GET')){
+
+            Session::forget('busca_termo');
+            Session::forget('burca_fonte');
 
             if($request->dt_inicial){
 
@@ -59,7 +70,6 @@ class NoticiaWebController extends Controller
                 $dt_final = ($request->dt_final) ? $request->dt_final : date("Y-m-d")." 23:59:59";
 
                 $dados = NoticiaWeb::whereBetween('data_insert', [$dt_inicial, $dt_final])->orderBy('data_noticia','DESC')->orderBy('id_fonte')->paginate(10);
-                $total_noticias = NoticiaWeb::whereBetween('data_insert', [$dt_inicial, $dt_final])->count();
 
             }else{
 
@@ -67,10 +77,11 @@ class NoticiaWebController extends Controller
                 $dt_final = date('Y-m-d')." 23:59:59";
 
                 $dados = NoticiaWeb::whereBetween('data_insert', [$dt_inicial, $dt_final])->orderBy('data_noticia','DESC')->orderBy('id_fonte')->paginate(10);
-                $total_noticias = NoticiaWeb::where('data_insert', $this->data_atual)->count();
             }
 
         }
+
+        $total_noticias = count($dados);
 
         return view('noticia-web/index',compact('fontes','dados','dt_inicial','dt_final'));
     }

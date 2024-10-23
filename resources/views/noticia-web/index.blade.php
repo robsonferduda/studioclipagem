@@ -47,10 +47,10 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label>Fonte</label>
-                                        <select class="form-control select2" name="regra" id="regra">
+                                        <select class="form-control select2" name="fonte" id="fonte">
                                             <option value="">Selecione uma fonte</option>
                                             @foreach ($fontes as $fonte)
-                                                <option value="{{ $fonte->id }}">{{ $fonte->nome }}</option>
+                                                <option value="{{ $fonte->id }}" {{ ( Session::get('busca_termo') == $fonte->id ) ? 'selected' : '' }}>{{ $fonte->nome }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -74,7 +74,13 @@
                                 <div class="row">
                                     <div class="col-lg-12 col-sm-12">
                                         <p><strong>{{ $noticia->titulo_noticia }}</strong></p>
-                                        <p>{{ ($noticia->fonte) ? $noticia->fonte->nome : 'Fonte desconhecida' }} - {{ \Carbon\Carbon::parse($noticia->data_noticia)->format('d/m/Y') }} - Coletada em {{ \Carbon\Carbon::parse($noticia->data_insert)->format('d/m/Y H:i:s') }} </p>
+                                        <p>
+                                            @if( \Carbon\Carbon::parse($noticia->data_noticia)->format('d/m/Y') == '01/01/1999')
+                                                <span class="badge badge-pill badge-warning"> {{ \Carbon\Carbon::parse($noticia->data_insert)->format('d/m/Y') }}</span>
+                                            @else
+                                                <span class="badge badge-pill badge-default"> {{ \Carbon\Carbon::parse($noticia->data_noticia)->format('d/m/Y') }}</span>
+                                            @endif
+                                            {{ ($noticia->fonte) ? $noticia->fonte->nome : 'Fonte desconhecida' }} - Coletada em {{ \Carbon\Carbon::parse($noticia->data_insert)->format('d/m/Y H:i:s') }} </p>
                                         <p>
                                             {{ ($noticia->conteudo) ? Str::limit($noticia->conteudo->conteudo, 450, " ...") : 'Nenhum conteúdo coletado' }}
                                         </p>
@@ -88,6 +94,7 @@
                                     </div>
                                     <div class="col-lg-4 col-sm-2">
                                         <a class="btn btn-success btn-sm pull-right" href="{{ asset('noticia/web/detalhes/'.$noticia->id) }}" role="button"><i class="fa fa-eye"> </i> Detalhes</a>
+                                        <a class="btn btn-warning btn-sm pull-right" href="{{ $noticia->url_noticia }}" target="_BLANK" role="button"><i class="fa fa-globe"> </i> Ver Original</a>
                                         <a class="btn btn-info btn-sm pull-right" href="{{ asset('noticia/web/estatisticas/'.$noticia->id) }}" role="button"><i class="nc-icon nc-chart-bar-32"> </i> Estatísticas</a>
                                     </div>
                                 </div>                               
