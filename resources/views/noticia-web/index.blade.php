@@ -88,11 +88,11 @@
                                                 @php $paragraphs = explode('<p>', $noticia->conteudo->conteudo); @endphp
                                                 {!! $paragraphs[1] !!}
                                             </div>
-                                            <div class="panel-heading">
-                                                <h3 class="panel-title"><span class="btn-show">Mostrar Mais</span></h3>
-                                            </div>
                                             <div class="panel-body">
                                                 {!! ($noticia->conteudo) ? $noticia->conteudo->conteudo : 'Nenhum conteúdo coletado' !!}
+                                            </div>
+                                            <div class="panel-heading">
+                                                <h3 class="panel-title"><span class="btn-show">Mostrar Mais</span></h3>
                                             </div>
                                         </div>
                                     </div>
