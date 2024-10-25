@@ -6,6 +6,8 @@ use DB;
 use Auth;
 use Carbon\Carbon;
 use App\Noticia;
+use App\Models\NoticiaWeb;
+use App\Models\ConteudoNoticiaWeb;
 use App\Models\JornalWeb;
 use App\Models\Estado;
 use App\Models\Cidade;
@@ -103,17 +105,33 @@ class FonteWebController extends Controller
 
     public function importar()
     {
-        $fontes = FonteWeb::where('id_situacao', 1)->get();
+        $fontes = FonteWeb::where('id_situacao', null)->get();
         
         foreach ($fontes as $key => $fonte) {
 
             $noticia = (new Noticia())->getNoticiaByFonte($fonte->id_knewin);
+            $noticia_web = NoticiaWeb::where('id_fonte', $fonte->id)->first();
 
-            dd($noticia);
-            
+            if(!$noticia_web){
+               
+                //Insere em notícia
+                $dados_noticia = array('id_fonte' => $fonte->id,
+                                        'data_insert' => $noticia[0]->data_clipping,
+                                        'data_noticia' => $noticia[0]->data_cadastro,
+                                        'titulo_noticia' => $noticia[0]->titulo,
+                                        'url_noticia' => $noticia[0]->link);
+
+                $nova = NoticiaWeb::create($dados_noticia);
+
+                //Insere em conteúdo
+                $dados_conteudo = array('id_noticia_web' => $nova->id,
+                                        'conteudo' => $noticia[0]->conteudo);
+
+                ConteudoNoticiaWeb::create($dados_conteudo);
+
+                dd($dados_conteudo);
+            }            
         }
-
-
     }
 
     public function coletas($id)
