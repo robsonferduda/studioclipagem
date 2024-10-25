@@ -72,18 +72,29 @@
                         <div class="card">
                             <div class="card-body">                           
                                 <div class="row">
-                                    <div class="col-lg-12 col-sm-12">
+                                    <div class="col-lg-12 col-sm-12 mb-3">
                                         <p><strong>{{ $noticia->titulo_noticia }}</strong></p>
-                                        <p>
+                                        <div>
                                             @if( \Carbon\Carbon::parse($noticia->data_noticia)->format('d/m/Y') == '01/01/1999')
                                                 <span class="badge badge-pill badge-warning"> {{ \Carbon\Carbon::parse($noticia->data_insert)->format('d/m/Y') }}</span>
                                             @else
                                                 <span class="badge badge-pill badge-default"> {{ \Carbon\Carbon::parse($noticia->data_noticia)->format('d/m/Y') }}</span>
                                             @endif
-                                            {{ ($noticia->fonte) ? $noticia->fonte->nome : 'Fonte desconhecida' }} - Coletada em {{ \Carbon\Carbon::parse($noticia->data_insert)->format('d/m/Y H:i:s') }} </p>
-                                        <p>
-                                            {{ ($noticia->conteudo) ? Str::limit($noticia->conteudo->conteudo, 450, " ...") : 'Nenhum conteúdo coletado' }}
-                                        </p>
+                                            {{ ($noticia->fonte) ? $noticia->fonte->nome : 'Fonte desconhecida' }} - Coletada em {{ \Carbon\Carbon::parse($noticia->data_insert)->format('d/m/Y H:i:s') }} 
+                                        </div>
+                                        
+                                        <div class="panel panel-success">
+                                            <div class="conteudo-noticia">
+                                                @php $paragraphs = explode('<p>', $noticia->conteudo->conteudo); @endphp
+                                                {!! $paragraphs[1] !!}
+                                            </div>
+                                            <div class="panel-heading">
+                                                <h3 class="panel-title"><span class="btn-show">Mostrar Mais</span></h3>
+                                            </div>
+                                            <div class="panel-body">
+                                                {!! ($noticia->conteudo) ? $noticia->conteudo->conteudo : 'Nenhum conteúdo coletado' !!}
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="col-lg-8 col-sm-10">
                                         @if($noticia->categoria)
@@ -107,4 +118,34 @@
         </div>
     </div>
 </div> 
+@endsection
+@section('script')
+<script>
+    $( document ).ready(function() {
+
+        $(".panel-heading").click(function() {
+            $(this).parent().addClass('active').find('.panel-body').slideToggle('fast');
+            $(".panel-heading").not(this).parent().removeClass('active').find('.panel-body').slideUp('fast');
+        });
+
+        $(".btn-show").click(function(){
+
+            var texto = $(this).text();
+
+            if(texto == 'Mostrar Mais'){
+
+                $(this).closest('.panel').find('.conteudo-noticia').addClass('d-none');
+                $(this).html("Mostrar Menos");
+
+            }
+            
+            if(texto == 'Mostrar Menos'){
+                $(this).closest('.panel').find('.conteudo-noticia').removeClass('d-none');
+                $(this).html("Mostrar Mais");
+            }
+
+        });
+
+    });
+</script>
 @endsection
