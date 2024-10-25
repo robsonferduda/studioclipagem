@@ -23,4 +23,9 @@ class NoticiaWeb extends Model
     {
         return $this->hasOne(ConteudoNoticiaWeb::class, 'id_noticia_web', 'id');
     }
+
+    public function logs()
+    {
+        return $this->hasMany(LogAcesso::class, 'id_noticia', 'id')->where('tipo','web');
+    }
 }

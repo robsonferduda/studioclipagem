@@ -39,7 +39,7 @@
                                 <div class="col-md-8 col-sm-12">
                                     <div class="form-group">
                                         <label>Buscar por <span class="text-primary">Digite o termo ou expressão de busca</span></label>
-                                        <input type="text" class="form-control" name="termo" id="termo" minlength="3" placeholder="Termo" value="">
+                                        <input type="text" class="form-control" name="termo" id="termo" minlength="3" placeholder="Termo" value="{{ Session::get('busca_termo') }}">
                                     </div>
                                 </div>
                             </div>
@@ -47,10 +47,10 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label>Fonte</label>
-                                        <select class="form-control select2" name="regra" id="regra">
+                                        <select class="form-control select2" name="fonte" id="fonte">
                                             <option value="">Selecione uma fonte</option>
                                             @foreach ($fontes as $fonte)
-                                                <option value="{{ $fonte->id }}">{{ $fonte->nome }}</option>
+                                                <option value="{{ $fonte->id }}" {{ ( Session::get('busca_fonte') == $fonte->id ) ? 'selected' : '' }}>{{ $fonte->nome }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -72,12 +72,29 @@
                         <div class="card">
                             <div class="card-body">                           
                                 <div class="row">
-                                    <div class="col-lg-12 col-sm-12">
+                                    <div class="col-lg-12 col-sm-12 mb-1">
                                         <p><strong>{{ $noticia->titulo_noticia }}</strong></p>
-                                        <p>{{ ($noticia->fonte) ? $noticia->fonte->nome : 'Fonte desconhecida' }} - {{ \Carbon\Carbon::parse($noticia->data_noticia)->format('d/m/Y') }} - Coletada em {{ \Carbon\Carbon::parse($noticia->data_insert)->format('d/m/Y H:i:s') }} </p>
-                                        <p>
-                                            {{ ($noticia->conteudo) ? Str::limit($noticia->conteudo->conteudo, 450, " ...") : 'Nenhum conteúdo coletado' }}
-                                        </p>
+                                        <div>
+                                            @if( \Carbon\Carbon::parse($noticia->data_noticia)->format('d/m/Y') == '01/01/1999')
+                                                <span class="badge badge-pill badge-warning"> {{ \Carbon\Carbon::parse($noticia->data_insert)->format('d/m/Y') }}</span>
+                                            @else
+                                                <span class="badge badge-pill badge-default"> {{ \Carbon\Carbon::parse($noticia->data_noticia)->format('d/m/Y') }}</span>
+                                            @endif
+                                            {{ ($noticia->fonte) ? $noticia->fonte->nome : 'Fonte desconhecida' }} - Coletada em {{ \Carbon\Carbon::parse($noticia->data_insert)->format('d/m/Y H:i:s') }} 
+                                        </div>
+                                        
+                                        <div class="panel panel-success">
+                                            <div class="conteudo-noticia">
+                                                @php $paragraphs = explode('<p>', $noticia->conteudo->conteudo); @endphp
+                                                {!! $paragraphs[1] !!}
+                                            </div>
+                                            <div class="panel-body">
+                                                {!! ($noticia->conteudo) ? $noticia->conteudo->conteudo : 'Nenhum conteúdo coletado' !!}
+                                            </div>
+                                            <div class="panel-heading">
+                                                <h3 class="panel-title"><span class="btn-show">Mostrar Mais</span></h3>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="col-lg-8 col-sm-10">
                                         @if($noticia->categoria)
@@ -87,8 +104,9 @@
                                         @endif
                                     </div>
                                     <div class="col-lg-4 col-sm-2">
-                                        <a class="btn btn-success btn-sm pull-right" href="{{ asset('jornal-web/noticia/'.$noticia->id) }}" role="button"><i class="fa fa-eye"> </i> Detalhes</a>
-                                        <a class="btn btn-info btn-sm pull-right" href="{{ asset('jornal-web/noticia/estatisticas/'.$noticia->id) }}" role="button"><i class="nc-icon nc-chart-bar-32"> </i> Estatísticas</a>
+                                        <a class="btn btn-success btn-sm pull-right" href="{{ asset('noticia/web/detalhes/'.$noticia->id) }}" role="button"><i class="fa fa-eye"> </i> Detalhes</a>
+                                        <a class="btn btn-warning btn-sm pull-right" href="{{ $noticia->url_noticia }}" target="_BLANK" role="button"><i class="fa fa-globe"> </i> Ver Original</a>
+                                        <a class="btn btn-info btn-sm pull-right" href="{{ asset('noticia/web/estatisticas/'.$noticia->id) }}" role="button"><i class="nc-icon nc-chart-bar-32"> </i> Estatísticas</a>
                                     </div>
                                 </div>                               
                             </div>
@@ -100,4 +118,34 @@
         </div>
     </div>
 </div> 
+@endsection
+@section('script')
+<script>
+    $( document ).ready(function() {
+
+        $(".panel-heading").click(function() {
+            $(this).parent().addClass('active').find('.panel-body').slideToggle('fast');
+            $(".panel-heading").not(this).parent().removeClass('active').find('.panel-body').slideUp('fast');
+        });
+
+        $(".btn-show").click(function(){
+
+            var texto = $(this).text();
+
+            if(texto == 'Mostrar Mais'){
+
+                $(this).closest('.panel').find('.conteudo-noticia').addClass('d-none');
+                $(this).html("Mostrar Menos");
+
+            }
+            
+            if(texto == 'Mostrar Menos'){
+                $(this).closest('.panel').find('.conteudo-noticia').removeClass('d-none');
+                $(this).html("Mostrar Mais");
+            }
+
+        });
+
+    });
+</script>
 @endsection
