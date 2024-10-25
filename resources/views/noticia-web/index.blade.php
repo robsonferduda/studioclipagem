@@ -72,7 +72,7 @@
                         <div class="card">
                             <div class="card-body">                           
                                 <div class="row">
-                                    <div class="col-lg-12 col-sm-12 mb-3">
+                                    <div class="col-lg-12 col-sm-12 mb-1">
                                         <p><strong>{{ $noticia->titulo_noticia }}</strong></p>
                                         <div>
                                             @if( \Carbon\Carbon::parse($noticia->data_noticia)->format('d/m/Y') == '01/01/1999')

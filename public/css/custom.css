@@ -254,4 +254,4 @@ input[type="checkbox"]:checked + label-check .fa{
     color: inherit;}
 
 .panel-body {display: none;}
-.conteudo-noticia{display: block; margin-top: 5px;}
+.conteudo-noticia{display: block; margin-top: 5px; margin-bottom: -10px;}
