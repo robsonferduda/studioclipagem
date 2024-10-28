@@ -12,6 +12,7 @@
                             @if($top_sites)
                                 <ul class="list-unstyled team-members ml-3 mr-3">
                                     @foreach ($top_sites as $key => $site)
+                                        @if($site->total == 0) @php break 1; @endphp @endif
                                         <li style="border-bottom: 1px solid #ebebeb; margin-bottom: 3px;">
                                             <div class="row">                                            
                                                 <div class="col-md-9">
@@ -23,8 +24,7 @@
                                                     <p class="mt-2">{{ $site->total }}</p>
                                                 </div>             
                                             </div>
-                                        </li>
-                                        @if($site->total == 0) @php break 1; @endphp @endif
+                                        </li>                                        
                                     @endforeach                                
                                 </ul>
                             @else
