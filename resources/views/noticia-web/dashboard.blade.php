@@ -37,7 +37,7 @@
                 <div class="col-lg-6 col-md-6 col-sm-6">
                     <div class="card">
                         <div class="card-header">
-                            <h6 class="card-title"><i class="fa fa-ban" aria-hidden="true"></i> Sem Coleta <strong>{{ count($sem_coleta) }}</strong></h6>
+                            <h6 class="card-title"><i class="fa fa-ban" aria-hidden="true"></i> Sem Coleta - <strong class="text-danger">{{ count($sem_coleta) }} Sites</strong></h6>
                         </div>
                         <div class="card-content">
                             @if($sem_coleta)
