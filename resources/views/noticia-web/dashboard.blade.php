@@ -52,7 +52,7 @@
                                                         <span class="text-muted"><small>{{ $site->url }}</small></span>
                                                     </div>   
                                                     <div class="col-md-2 text-right">
-                                                    
+                                                        <p class="mt-2">{{ $site->total }}</p>
                                                     </div>             
                                                 </div>
                                             </li>
