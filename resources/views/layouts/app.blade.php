@@ -130,6 +130,11 @@
                     </a>
                     <div class="collapse {{ (Session::has('url') and Session::get('url') == 'jornal-web') ? 'show' : '' }}" id="submenu-web" aria-expanded="false">
                        <ul class="nav ml-5">
+                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'web-dashboard') ? 'active' : '' }}">
+                          <a href="{{ url('noticia/web/dashboard') }}">
+                          <span class="sidebar-normal">Dashboard</span>
+                          </a>
+                       </li>
                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'jornal-web') ? 'active' : '' }}">
                           <a href="{{ url('noticia/web') }}">
                           <span class="sidebar-normal">Notícias</span>

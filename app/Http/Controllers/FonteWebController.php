@@ -105,11 +105,28 @@ class FonteWebController extends Controller
 
     public function importar()
     {
+        $total_fontes = 0;
+        $data_base = '2024-10-26';
+
+        //Fontes para inserção
+        $fontes = (new Noticia())->getFontes($data_base);
+
+        foreach ($fontes as $key => $fonte) {
+            
+            $find = FonteWeb::where('id_knewin', $fonte->id_knewin)->first();
+
+            if(!$find){
+
+                $new_noticia = array('nome' => $fonte->titulo, 'url' => $fonte->dominio, 'id_knewin' => $fonte->id_knewin);
+                FonteWeb::create($new_noticia);
+            }
+        }
+
         $fontes = FonteWeb::where('id_situacao', null)->get();
         
         foreach ($fontes as $key => $fonte) {
 
-            $noticia = (new Noticia())->getNoticiaByFonte($fonte->id_knewin);
+            $noticia = (new Noticia())->getNoticiaByFonte($fonte->id_knewin, $data_base);
             $noticia_web = NoticiaWeb::where('id_fonte', $fonte->id)->first();
 
             if(!$noticia_web){
@@ -129,9 +146,16 @@ class FonteWebController extends Controller
 
                 ConteudoNoticiaWeb::create($dados_conteudo);
 
-                dd($dados_conteudo);
-            }            
+            }    
+
+            $fonte->id_situacao = 1;
+            $fonte->id_prioridade = 1;
+            $fonte->save();
+            
+            $total_fontes++;        
         }
+
+        dd("Total de fontes novas inseridas ".$total_fontes);
     }
 
     public function coletas($id)

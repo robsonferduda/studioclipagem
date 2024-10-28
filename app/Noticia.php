@@ -21,10 +21,21 @@ class Noticia extends Model
         return DB::connection('mysql')->select($sql);
     }
 
-    public function getNoticiaByFonte($id_fonte)
+    public function getNoticiaByFonte($id_fonte, $data)
     {
-        $sql = "SELECT * FROM app_web WHERE data_cadastro > '2023-01-01' AND veiculoid = $id_fonte ORDER BY data_cadastro DESC LIMIT 1";
+        $sql = "SELECT * FROM app_web WHERE data_cadastro = '$data' AND veiculoid = $id_fonte ORDER BY data_cadastro DESC LIMIT 1";
 
+        return DB::connection('mysql')->select($sql);
+    }
+
+    public function getFontes($data)
+    {
+        $sql = "SELECT t2.titulo, t2.dominio, t2.id_knewin, count(*) 
+                FROM app_web t1
+                JOIN app_importacaoveiculos t2 ON t2.id_knewin = t1.veiculoid 
+                WHERE t1.data_clipping = '$data'
+                GROUP BY t2.titulo, t2.dominio, t2.id_knewin";
+        
         return DB::connection('mysql')->select($sql);
     }
 }
