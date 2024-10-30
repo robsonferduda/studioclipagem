@@ -86,6 +86,32 @@ class NoticiaWebController extends Controller
         return view('noticia-web/index',compact('fontes','dados','dt_inicial','dt_final'));
     }
 
+    public function dashboard()
+    {
+        $totais = array();
+        $execucoes = array();
+        $coletas = array();
+        $top_sites = array();
+        $total_sem_area = array();
+        $sem_coleta = array();
+
+        /*
+        $totais = array('impresso' => JornalImpresso::where('dt_clipagem', $this->data_atual)->count(),
+                        'web' => JornalWeb::where('dt_clipagem', $this->data_atual)->count(),
+                        'radio' => 0,
+                        'tv' => 0);
+        */
+
+        //$total_sem_area = JornalWeb::where('dt_clipagem', $this->data_atual)->where('categoria','')->count(); 
+        //$coletas = ColetaWeb::whereBetween('created_at', [$this->data_atual.' 00:00:00', $this->data_atual.' 23:59:59'])->get();
+        ////$execucoes = MonitoramentoExecucao::whereBetween('created_at', [$this->data_atual.' 00:00:00', $this->data_atual.' 23:59:59'])->orderBy('created_at', 'DESC')->take(5)->get();
+
+        $top_sites = (new FonteWeb())->getTopColetas();
+        $sem_coleta = (new FonteWeb())->getSemColetas();
+
+        return view('noticia-web/dashboard', compact('totais','coletas','total_sem_area','execucoes','top_sites','sem_coleta'));
+    }
+
     public function detalhes($id)
     {
         $noticia = NoticiaWeb::find($id);

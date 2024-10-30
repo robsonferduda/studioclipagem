@@ -6,6 +6,8 @@ use DB;
 use Auth;
 use Carbon\Carbon;
 use App\Noticia;
+use App\Models\NoticiaWeb;
+use App\Models\ConteudoNoticiaWeb;
 use App\Models\JornalWeb;
 use App\Models\Estado;
 use App\Models\Cidade;
@@ -89,7 +91,7 @@ class FonteWebController extends Controller
                     return '<div class="text-center">
                                 <a title="Coletas" href="../fonte-web/coletas/'.$fonte->id.'" class="btn btn-info btn-link btn-icon"> <i class="fa fa-area-chart fa-2x "></i></a>
                                 <a title="Estatísticas" href="../fonte-web/estatisticas/'.$fonte->id.'" class="btn btn-warning btn-link btn-icon"> <i class="fa fa-bar-chart fa-2x"></i></a>
-                                <a title="Editar" href="" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
+                                <a title="Editar" href="../fonte-web/editar/'.$fonte->id.'" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
                                 <a title="Excluir" href="" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-times fa-2x"></i></a>
                             </div>';
                 })   
@@ -103,22 +105,68 @@ class FonteWebController extends Controller
 
     public function importar()
     {
-        $fontes = FonteWeb::where('id_situacao', 1)->get();
+        $total_fontes = 0;
+        $data_base = '2024-10-26';
+
+        //Fontes para inserção
+        $fontes = (new Noticia())->getFontes($data_base);
+
+        foreach ($fontes as $key => $fonte) {
+            
+            $find = FonteWeb::where('id_knewin', $fonte->id_knewin)->first();
+
+            if(!$find){
+
+                $new_noticia = array('nome' => $fonte->titulo, 'url' => $fonte->dominio, 'id_knewin' => $fonte->id_knewin);
+                FonteWeb::create($new_noticia);
+            }
+        }
+
+        $fontes = FonteWeb::where('id_situacao', null)->get();
         
         foreach ($fontes as $key => $fonte) {
 
-            $noticia = (new Noticia())->getNoticiaByFonte($fonte->id_knewin);
+            $noticia = (new Noticia())->getNoticiaByFonte($fonte->id_knewin, $data_base);
+            $noticia_web = NoticiaWeb::where('id_fonte', $fonte->id)->first();
 
-            dd($noticia);
+            if(!$noticia_web){
+               
+                //Insere em notícia
+                $dados_noticia = array('id_fonte' => $fonte->id,
+                                        'data_insert' => $noticia[0]->data_clipping,
+                                        'data_noticia' => $noticia[0]->data_cadastro,
+                                        'titulo_noticia' => $noticia[0]->titulo,
+                                        'url_noticia' => $noticia[0]->link);
+
+                $nova = NoticiaWeb::create($dados_noticia);
+
+                //Insere em conteúdo
+                $dados_conteudo = array('id_noticia_web' => $nova->id,
+                                        'conteudo' => $noticia[0]->conteudo);
+
+                ConteudoNoticiaWeb::create($dados_conteudo);
+
+            }    
+
+            $fonte->id_situacao = 1;
+            $fonte->id_prioridade = 1;
+            $fonte->save();
             
+            $total_fontes++;        
         }
 
-
+        dd("Total de fontes novas inseridas ".$total_fontes);
     }
 
     public function inconsistencias()
     {
-        
+        $sql = "SELECT id, id_knewin, nome, url 
+                FROM fonte_web 
+                WHERE (length(url) - length(replace(url, '/', '')) )::int/length('/') > 3";
+
+        $dados = DB::connection('pgsql')->select($sql);
+
+        return view('fonte-web/inconsistencias',compact('dados'));
     }
 
     public function coletas($id)

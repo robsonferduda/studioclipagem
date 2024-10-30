@@ -79,6 +79,7 @@ Route::get('fontes','FonteController@index');
 Route::get('fonte-web/coletas/{origem}/listar/{id_fonte}','FonteWebController@listarColetas');
 Route::get('fonte-web/coletas/{id}','FonteWebController@coletas');
 Route::get('fonte-web/relatorios','FonteWebController@relatorios');
+Route::get('fonte-web/editar/{id}','FonteWebController@edit');
 Route::get('fonte-web/importar','FonteWebController@importar');
 Route::get('fonte-web/inconsistencias','FonteWebController@inconsistencias');
 Route::get('fonte-web/estatisticas/{id}','FonteWebController@estatisticas');
@@ -107,6 +108,7 @@ Route::match(array('GET', 'POST'),'buscar-web','JornalWebController@index');
 
 Route::match(array('GET', 'POST'),'buscar-web','NoticiaWebController@index');
 Route::get('noticia/web','NoticiaWebController@index');
+Route::get('noticia/web/dashboard','NoticiaWebController@dashboard');
 Route::get('noticia/web/detalhes/{id}','NoticiaWebController@detalhes');
 Route::get('noticia/web/estatisticas/{id}','NoticiaWebController@getEstatisticas');
 

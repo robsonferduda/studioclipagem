@@ -10,7 +10,7 @@ class FonteWeb extends Model
     protected $connection = 'pgsql';
     protected $table = 'fonte_web';
 
-    protected $fillable = ['codigo', 'nome', 'url', 'fl_coleta', 'cd_cidade', 'cd_estado'];
+    protected $fillable = ['codigo', 'id_knewin', 'nome', 'url', 'fl_coleta', 'cd_cidade', 'cd_estado', 'id_situacao','id_prioridade'];
 
     public $timestamps = false;
 
@@ -54,14 +54,11 @@ class FonteWeb extends Model
         $data_inicio = date("Y-m-d")." 00:00:00";
         $data_fim = date("Y-m-d")." 23:59:59";
 
-        $sql = "SELECT t2.id, t2.nome, t2.url, count(*) AS total
-                FROM noticia_web t1,
-                    fonte_web t2
-                WHERE t1.id_fonte = t2.id 
-                AND dt_clipagem BETWEEN '$data_inicio' AND '$data_fim'
-                GROUP BY t2.id, t2.nome, t2.url
-                ORDER BY total DESC
-                LIMIT 10";
+        $sql = "SELECT t1.id, t1.nome, t1.url, count(t2.id) as total 
+                FROM fonte_web t1
+                LEFT JOIN noticias_web t2 ON t2.id_fonte = t1.id AND data_insert between '$data_inicio' AND '$data_fim'
+                GROUP BY t1.id, t1.nome, t1.url
+                ORDER BY total DESC";
 
         return DB::select($sql);
     }
@@ -71,9 +68,11 @@ class FonteWeb extends Model
         $data_inicio = date("Y-m-d")." 00:00:00";
         $data_fim = date("Y-m-d")." 23:59:59";
 
-        $sql = "SELECT * 
-                FROM fonte_web 
-                WHERE id NOT IN (SELECT DISTINCT id_fonte FROM noticia_web WHERE dt_clipagem BETWEEN '$data_inicio' AND '$data_fim')";
+        $sql = "SELECT t1.id, t1.nome, t1.url, count(t2.id) as total 
+                FROM fonte_web t1
+                LEFT JOIN noticias_web t2 ON t2.id_fonte = t1.id AND data_insert between '$data_inicio' AND '$data_fim'
+                GROUP BY t1.id, t1.nome, t1.url
+                HAVING count(t2.id) = 0";
 
         return DB::select($sql);
     }
