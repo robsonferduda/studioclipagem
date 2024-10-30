@@ -116,6 +116,11 @@ class FonteWebController extends Controller
 
     }
 
+    public function inconsistencias()
+    {
+        
+    }
+
     public function coletas($id)
     {
         $fonte = FonteWeb::where('id', $id)->first();

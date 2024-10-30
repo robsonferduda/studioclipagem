@@ -80,6 +80,7 @@ Route::get('fonte-web/coletas/{origem}/listar/{id_fonte}','FonteWebController@li
 Route::get('fonte-web/coletas/{id}','FonteWebController@coletas');
 Route::get('fonte-web/relatorios','FonteWebController@relatorios');
 Route::get('fonte-web/importar','FonteWebController@importar');
+Route::get('fonte-web/inconsistencias','FonteWebController@inconsistencias');
 Route::get('fonte-web/estatisticas/{id}','FonteWebController@estatisticas');
 Route::get('fonte-web/totais/semana/{id}','FonteWebController@getSemanaColetas');
 Route::match(array('GET', 'POST'),'fonte-web/listar','FonteWebController@listar');
