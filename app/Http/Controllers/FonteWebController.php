@@ -106,7 +106,7 @@ class FonteWebController extends Controller
     public function importar()
     {
         $total_fontes = 0;
-        $data_base = '2024-10-26';
+        $data_base = '2024-10-01';
 
         //Fontes para inserção
         $fontes = (new Noticia())->getFontes($data_base);
