@@ -106,19 +106,22 @@ class FonteWebController extends Controller
     public function importar()
     {
         $total_fontes = 0;
-        $data_base = '2024-10-01';
+        $data_base = '2024-09-01';
 
         //Fontes para inserção
         $fontes = (new Noticia())->getFontes($data_base);
 
         foreach ($fontes as $key => $fonte) {
+
+            if($fonte->id_knewin){
             
-            $find = FonteWeb::where('id_knewin', $fonte->id_knewin)->first();
+                $find = FonteWeb::where('id_knewin', $fonte->id_knewin)->first();
 
-            if(!$find){
+                if(!$find){
 
-                $new_noticia = array('nome' => $fonte->titulo, 'url' => $fonte->dominio, 'id_knewin' => $fonte->id_knewin);
-                FonteWeb::create($new_noticia);
+                    $new_noticia = array('nome' => $fonte->titulo, 'url' => $fonte->dominio, 'id_knewin' => $fonte->id_knewin, 'id_situacao' => 1, 'id_prioridade' => 1);
+                    FonteWeb::create($new_noticia);
+                }
             }
         }
 
@@ -126,33 +129,36 @@ class FonteWebController extends Controller
         
         foreach ($fontes as $key => $fonte) {
 
-            $noticia = (new Noticia())->getNoticiaByFonte($fonte->id_knewin, $data_base);
-            $noticia_web = NoticiaWeb::where('id_fonte', $fonte->id)->first();
+            if($fonte->id_knewin){
+                
+                $noticia = (new Noticia())->getNoticiaByFonte($fonte->id_knewin, $data_base);
+                $noticia_web = NoticiaWeb::where('id_fonte', $fonte->id)->first();
 
-            if(!$noticia_web){
-               
-                //Insere em notícia
-                $dados_noticia = array('id_fonte' => $fonte->id,
-                                        'data_insert' => $noticia[0]->data_clipping,
-                                        'data_noticia' => $noticia[0]->data_cadastro,
-                                        'titulo_noticia' => $noticia[0]->titulo,
-                                        'url_noticia' => $noticia[0]->link);
+                if(!$noticia_web and $noticia){
+                
+                    //Insere em notícia
+                    $dados_noticia = array('id_fonte' => $fonte->id,
+                                            'data_insert' => $noticia[0]->data_clipping,
+                                            'data_noticia' => $noticia[0]->data_cadastro,
+                                            'titulo_noticia' => $noticia[0]->titulo,
+                                            'url_noticia' => $noticia[0]->link);
 
-                $nova = NoticiaWeb::create($dados_noticia);
+                    $nova = NoticiaWeb::create($dados_noticia);
 
-                //Insere em conteúdo
-                $dados_conteudo = array('id_noticia_web' => $nova->id,
-                                        'conteudo' => $noticia[0]->conteudo);
+                    //Insere em conteúdo
+                    $dados_conteudo = array('id_noticia_web' => $nova->id,
+                                            'conteudo' => $noticia[0]->conteudo);
 
-                ConteudoNoticiaWeb::create($dados_conteudo);
+                    ConteudoNoticiaWeb::create($dados_conteudo);
 
-            }    
+                }    
 
-            $fonte->id_situacao = 1;
-            $fonte->id_prioridade = 1;
-            $fonte->save();
-            
-            $total_fontes++;        
+                $fonte->id_situacao = 1;
+                $fonte->id_prioridade = 1;
+                $fonte->save();
+                
+                $total_fontes++;      
+            }  
         }
 
         dd("Total de fontes novas inseridas ".$total_fontes);

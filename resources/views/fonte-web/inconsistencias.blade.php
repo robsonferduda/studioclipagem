@@ -9,6 +9,7 @@
                         <i class="fa fa-globe"></i> Jornal Web
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Fontes
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Inconsistências
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> {{ count($dados) }}
                     </h4>
                 </div>
                 <div class="col-md-6">
