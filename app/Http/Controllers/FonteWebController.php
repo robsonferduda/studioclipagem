@@ -160,9 +160,13 @@ class FonteWebController extends Controller
 
     public function inconsistencias()
     {
-        $sql = "SELECT id, id_knewin, nome, url 
+        $sql = "SELECT id, id_knewin, nome, url, 'url' as situacao 
                 FROM fonte_web 
-                WHERE (length(url) - length(replace(url, '/', '')) )::int/length('/') > 3";
+                WHERE (length(url) - length(replace(url, '/', '')) )::int/length('/') > 3
+                UNION 
+                SELECT id, id_knewin, nome, url, 'noticia' as noticia 
+                FROM fonte_web
+                WHERE id_situacao = 3";
 
         $dados = DB::connection('pgsql')->select($sql);
 

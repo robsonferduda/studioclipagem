@@ -85,11 +85,10 @@
                                         
                                         <div class="panel panel-success">
                                             <div class="conteudo-noticia">
-                                                @php $paragraphs = explode('<p>', $noticia->conteudo->conteudo); @endphp
-                                                {!! $paragraphs[1] !!}
+                                                {!! ($noticia->conteudo) ?  Str::limit($noticia->conteudo->conteudo, 300, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
                                             </div>
                                             <div class="panel-body">
-                                                {!! ($noticia->conteudo) ? $noticia->conteudo->conteudo : 'Nenhum conteúdo coletado' !!}
+                                                {!! ($noticia->conteudo) ? $noticia->conteudo->conteudo : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
                                             </div>
                                             <div class="panel-heading">
                                                 <h3 class="panel-title"><span class="btn-show">Mostrar Mais</span></h3>
