@@ -36,13 +36,18 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label>Nome <span class="text-danger">Obrigatório</span></label>
-                                    <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome" required value="{{ $cliente->pessoa->nome }}">
+                                    <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome" required value="{{ $cliente->nome }}">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>CPF/CNPJ </label>
-                                    <input type="text" class="form-control" name="cpf_cnpj" id="cpf_cnpj" placeholder="CPF/CNPJ" value="{{ $cliente->pessoa->cpf_cnpj }}">
+                                    <div class="form-check mt-4">
+                                        <label class="form-check-label mt-2">
+                                            <input class="form-check-input" {{ ($cliente->fl_print) ? 'checked' : '' }} type="checkbox" name="fl_print" value="true">
+                                            NOTÍCIAS COM PRINT
+                                            <span class="form-check-sign"></span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-6">

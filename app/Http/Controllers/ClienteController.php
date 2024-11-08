@@ -128,9 +128,10 @@ class ClienteController extends Controller
 
     public function edit($id): View
     {
-        $cliente = Cliente::with(['pessoa', 'areas'])->find($id);
+        $cliente = Cliente::with(['areas'])->find($id);
         $areas  = Area::all();
-        $emails = EnderecoEletronico::where('pessoa_id', $cliente->pessoa->id)->get();
+        //$emails = EnderecoEletronico::where('pessoa_id', $cliente->pessoa->id)->get();
+        $emails = array();
 
         //$emails = json_decode($emails);
 

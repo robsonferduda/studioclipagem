@@ -91,7 +91,7 @@ class FonteWebController extends Controller
                     return '<div class="text-center">
                                 <a title="Coletas" href="../fonte-web/coletas/'.$fonte->id.'" class="btn btn-info btn-link btn-icon"> <i class="fa fa-area-chart fa-2x "></i></a>
                                 <a title="Estatísticas" href="../fonte-web/estatisticas/'.$fonte->id.'" class="btn btn-warning btn-link btn-icon"> <i class="fa fa-bar-chart fa-2x"></i></a>
-                                <a title="Editar" href="" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
+                                <a title="Editar" href="../fonte-web/editar/'.$fonte->id.'" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
                                 <a title="Excluir" href="" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-times fa-2x"></i></a>
                             </div>';
                 })   
@@ -156,6 +156,17 @@ class FonteWebController extends Controller
         }
 
         dd("Total de fontes novas inseridas ".$total_fontes);
+    }
+
+    public function inconsistencias()
+    {
+        $sql = "SELECT id, id_knewin, nome, url 
+                FROM fonte_web 
+                WHERE (length(url) - length(replace(url, '/', '')) )::int/length('/') > 3";
+
+        $dados = DB::connection('pgsql')->select($sql);
+
+        return view('fonte-web/inconsistencias',compact('dados'));
     }
 
     public function coletas($id)
