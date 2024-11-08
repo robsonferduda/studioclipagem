@@ -30,6 +30,7 @@
                                 <th>Código</th>
                                 <th>Fonte</th>
                                 <th>URL</th>
+                                <th>Situação</th>
                                 <th class="disabled-sorting text-center">Ações</th>
                             </tr>
                         </thead>
@@ -39,6 +40,13 @@
                                     <td class="text-center">{{ $dados[$i]->id_knewin }}</td>
                                     <td>{{ $dados[$i]->nome }}</td>
                                     <td>{{ $dados[$i]->url }}</td>
+                                    <td>
+                                        @if($dados[$i]->situacao == 'url')
+                                            <span>URL Inconsistente</span>
+                                        @else
+                                            <span>Notícia Inconsistente</span>
+                                        @endif
+                                    </td>
                                     <td class="text-center">
                                         <a title="Coletas" href="{{ url('fonte-web/coletas/'.$dados[$i]->id) }}" class="btn btn-info btn-link btn-icon"> <i class="fa fa-area-chart fa-2x "></i></a>
                                         <a title="Estatísticas" href="{{ url('fonte-web/estatisticas/'.$dados[$i]->id) }}" class="btn btn-warning btn-link btn-icon"> <i class="fa fa-bar-chart fa-2x"></i></a>
@@ -52,6 +60,7 @@
                                 <th>Código</th>
                                 <th>Fonte</th>
                                 <th>URL</th>
+                                <th>Situação</th>
                                 <th class="disabled-sorting text-center">Ações</th>
                             </tr>
                         </tfoot>
