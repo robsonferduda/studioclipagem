@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use Laravel\Scout\Searchable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class NoticiaWeb extends Model
 {
     use SoftDeletes;
+    use Searchable;
 
     protected $connection = 'pgsql';
     protected $table = 'noticias_web';
