@@ -92,10 +92,10 @@ return [
 
         's3' => [
             'driver' => 's3',
-            'key' => 'AKIAXH7FCUIUMZ7NFM5Q',
-            'secret' => '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',
-            'region' => 'us-east-1',
-            'bucket' => 'docmidia-files',
+            'key' => env('AWS_ACCESS_KEY_ID'),
+            'secret' => env('AWS_SECRET_ACCESS_KEY'),
+            'region' => env('AWS_DEFAULT_REGION'),
+            'bucket' => env('docmidia-files'),
             'url' => env('AWS_URL',''),
             'endpoint' => env('AWS_ENDPOINT',''),
         ],
