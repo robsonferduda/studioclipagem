@@ -16,4 +16,14 @@ class EmissoraWeb extends Model
 
     protected $fillable = ['id_fonte'];
 
+    public function getScoutKey(): string
+    {
+        return $this->nome_emissora;
+    }
+
+    public function getScoutKeyName(): string
+    {
+        return 'nome_emissora';
+    }
+
 }
