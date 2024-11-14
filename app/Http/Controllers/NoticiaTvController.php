@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use DB;
 use File;
+use Storage;
 use App\Utils;
 use Carbon\Carbon;
 use App\Models\Decupagem;
@@ -12,6 +13,7 @@ use App\Models\Cidade;
 use App\Models\Emissora;
 use App\Models\Estado;
 use App\Models\NoticiaTv;
+use App\Models\VideoEmissoraWeb;
 use App\Models\NoticiaCliente;
 use App\Models\Tag;
 use PhpOffice\PhpWord\IOFactory;
@@ -42,10 +44,28 @@ class NoticiaTvController extends Controller
         Session::put('sub-menu','tv-noticias');
 
         $carbon = new Carbon();
-        $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
-        $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
+        $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d "."00:00:00");
+        $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d "."23:59:59");
         $termo = $request->termo;
+        $noticias = null;
 
+        if($request->isMethod('GET')){
+
+            /*
+            $storage = Storage::disk('s3')->allFiles();
+
+            $arquivo = Storage::disk('s3')->url('app/files/streams/379798884_20241104_092035.mp4');
+          
+            $arquivo = Storage::disk('s3')->get('app/files/streams/379798884_20241104_092035.mp4');
+
+            dd($arquivo);
+            */
+
+            $tv = VideoEmissoraWeb::query();
+            $noticias = $tv->whereBetween('horario_start_gravacao', [$dt_inicial, $dt_final])->orderBy('id_emissora_web')->paginate(10);
+        }
+
+        /*
         if($request->isMethod('GET')){
             $noticias = NoticiaTv::select('noticia_tv.*','noticia_cliente.cliente_id','noticia_cliente.sentimento')
                 ->leftJoin('noticia_cliente', function($join){
@@ -78,7 +98,7 @@ class NoticiaTvController extends Controller
 
             $noticias = $noticia->orderBy('created_at', 'DESC')->paginate(10);
 
-        }
+        }*/
 
         return view('noticia-tv/index', compact('noticias','dt_inicial','dt_final','termo'));
     }

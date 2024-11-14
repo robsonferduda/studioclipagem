@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use DB;
 use Auth;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use App\Noticia;
 use App\Models\NoticiaWeb;
 use App\Models\ConteudoNoticiaWeb;
@@ -106,59 +107,71 @@ class FonteWebController extends Controller
     public function importar()
     {
         $total_fontes = 0;
-        $data_base = '2024-09-01';
+        $data_base = '2024-10-22';
 
-        //Fontes para inserção
-        $fontes = (new Noticia())->getFontes($data_base);
+        $period = CarbonPeriod::create('2024-09-01', '2024-09-10');
 
-        foreach ($fontes as $key => $fonte) {
+        // Iterate over the period
+        foreach ($period as $date) {
 
-            if($fonte->id_knewin){
-            
-                $find = FonteWeb::where('id_knewin', $fonte->id_knewin)->first();
+            $data_base = $date->format('Y-m-d');
 
-                if(!$find){
+            //Fontes para inserção
+            $fontes = (new Noticia())->getFontes($data_base);
 
-                    $new_noticia = array('nome' => $fonte->titulo, 'url' => $fonte->dominio, 'id_knewin' => $fonte->id_knewin, 'id_situacao' => 1, 'id_prioridade' => 1);
-                    FonteWeb::create($new_noticia);
+            foreach ($fontes as $key => $fonte) {
+
+                if($fonte->id_knewin){
+                
+                    $find = FonteWeb::where('id_knewin', $fonte->id_knewin)->first();
+
+                    if(!$find){
+
+                        $new_noticia = array('nome' => $fonte->titulo, 'url' => $fonte->dominio, 'id_knewin' => $fonte->id_knewin, 'id_situacao' => 5, 'id_prioridade' => 1);
+                        FonteWeb::create($new_noticia);
+                    }
                 }
             }
-        }
 
-        $fontes = FonteWeb::where('id_situacao', null)->get();
+            $fontes = FonteWeb::where('id_situacao', 5)->get();
         
-        foreach ($fontes as $key => $fonte) {
+            foreach ($fontes as $key => $fonte) {
+    
+                if($fonte->id_knewin){
+                    
+                    $noticia_web = NoticiaWeb::where('id_fonte', $fonte->id)->first();
+    
+                    if(!$noticia_web){
+    
+                        $noticia = (new Noticia())->getNoticiaByFonte($fonte->id_knewin, $data_base);
+    
+                        if($noticia){
+    
+                             //Insere em notícia
+                            $dados_noticia = array('id_fonte' => $fonte->id,
+                            'data_insert' => $noticia[0]->data_clipping,
+                            'data_noticia' => $noticia[0]->data_cadastro,
+                            'titulo_noticia' => $noticia[0]->titulo,
+                            'url_noticia' => $noticia[0]->link);
+    
+                            $nova = NoticiaWeb::create($dados_noticia);
+    
+                            //Insere em conteúdo
+                            $dados_conteudo = array('id_noticia_web' => $nova->id,
+                                                'conteudo' => $noticia[0]->conteudo);
+    
+                            ConteudoNoticiaWeb::create($dados_conteudo);
+    
+                            $fonte->id_situacao = 1;
+                            $fonte->id_prioridade = 1;
+                            $fonte->save();
+                            
+                            $total_fontes++;   
+                        }
+                    }       
+                }  
+            }
 
-            if($fonte->id_knewin){
-                
-                $noticia = (new Noticia())->getNoticiaByFonte($fonte->id_knewin, $data_base);
-                $noticia_web = NoticiaWeb::where('id_fonte', $fonte->id)->first();
-
-                if(!$noticia_web and $noticia){
-                
-                    //Insere em notícia
-                    $dados_noticia = array('id_fonte' => $fonte->id,
-                                            'data_insert' => $noticia[0]->data_clipping,
-                                            'data_noticia' => $noticia[0]->data_cadastro,
-                                            'titulo_noticia' => $noticia[0]->titulo,
-                                            'url_noticia' => $noticia[0]->link);
-
-                    $nova = NoticiaWeb::create($dados_noticia);
-
-                    //Insere em conteúdo
-                    $dados_conteudo = array('id_noticia_web' => $nova->id,
-                                            'conteudo' => $noticia[0]->conteudo);
-
-                    ConteudoNoticiaWeb::create($dados_conteudo);
-
-                }    
-
-                $fonte->id_situacao = 1;
-                $fonte->id_prioridade = 1;
-                $fonte->save();
-                
-                $total_fontes++;      
-            }  
         }
 
         dd("Total de fontes novas inseridas ".$total_fontes);

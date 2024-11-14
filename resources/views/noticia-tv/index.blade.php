@@ -65,19 +65,21 @@
                                 <div class="col-lg-12 col-md-12 col-sm-12">
                                     <span class="dt_noticia_box">{!! !empty($noticia->dt_noticia) ? date('d/m/Y', strtotime($noticia->dt_noticia)) : '' !!}</span>
                                     <h6>{!! ($noticia->cliente and $noticia->cliente->pessoa) ? $noticia->cliente->pessoa->nome : 'Nenhum cliente vinculado' !!}</h6>
-                                    <p>{!! $noticia->emissora->ds_emissora ?? '' !!} - {!! $noticia->programa->nome ?? 'Nenhum Programa Vinculado' !!} {{ ($noticia->horario) ? ' - '.$noticia->horario : "" }}</p>
+                                    <p>{!! $noticia->emissora->nome_emissora ?? '' !!} {{ ($noticia->horario) ? ' - '.$noticia->horario : "" }}</p>
                                 </div>
                                 <div class="col-lg-12 col-md-12 col-sm-12">  
                                     <div class="row">  
                                         <div class="col-lg-3 col-md-3 col-sm-12">                               
                                             <video width="100%" height="auto" controls>
-                                                <source src="{{ asset('noticias-tv/'. substr($noticia->arquivo, 0, 10).'/'.$noticia->arquivo) }}" type="video/mp4">
-                                                <source src="{{ asset('noticias-tv/'. substr($noticia->arquivo, 0, 10).'/'.$noticia->arquivo) }}" type="video/ogg">
+                                                <source src="https://docmidia-files.s3.us-east-1.amazonaws.com/app/files/streams/479516717_20241108_163711.mp4" type="video/mp4">
+                                                <source src="https://docmidia-files.s3.us-east-1.amazonaws.com/app/files/streams/479516717_20241108_163711.mp4" type="video/ogg">
                                                 Your browser does not support the video tag.
                                             </video>
                                         </div>
                                         <div class="col-lg-9 col-md-9 col-sm-12">
-                                            <p>{!! $noticia->sinopse !!}</p>
+                                            <div style="margin-bottom: 15px;">
+                                                {!! ($noticia->transcricao) ?  Str::limit($noticia->transcricao, 700, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                            </div>
                                             <div style="position: absolute; bottom: 15px; left: 0px;">
                                                 @switch($noticia->sentimento)
                                                     @case(0)
