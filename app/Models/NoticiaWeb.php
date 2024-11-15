@@ -30,4 +30,14 @@ class NoticiaWeb extends Model
     {
         return $this->hasMany(LogAcesso::class, 'id_noticia', 'id')->where('tipo','web');
     }
+
+    public function getScoutKey(): string
+    {
+        return $this->titulo_noticia;
+    }
+
+    public function getScoutKeyName(): string
+    {
+        return 'titulo_noticia';
+    }
 }
