@@ -12,8 +12,7 @@
                 </div>
                 <div class="col-md-4">
                     <a href="{{ url('/') }}" class="btn btn-primary pull-right mr-3"><i class="nc-icon nc-chart-pie-36"></i> Dashboard</a>
-                    <button class="btn btn-primary pull-right mr-3"><i class="fa fa-plus"></i> Novo</button>
-                    <a href="{{ url('monitoramento/executar') }}" class="btn btn-warning pull-right mr-3"><i class="fa fa-bolt"></i> Executar</a>
+                    <a href="{{ url('monitoramento/novo') }}" class="btn btn-info pull-right mr-3"><i class="fa fa-plus"></i> Cadastrar Monitoramento</a>
                 </div>
             </div>
         </div>

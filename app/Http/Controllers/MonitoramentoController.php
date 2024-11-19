@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use DB;
 use Auth;
 use Mail;
+use App\Models\Periodo;
 use App\Models\Cliente;
 use App\Models\Monitoramento;
 use App\Models\MonitoramentoExecucao;
@@ -38,6 +39,14 @@ class MonitoramentoController extends Controller
         //$monitoramentos = Monitoramento::with('cliente')->orderBy('id','DESC')->paginate(10);
 
         return view('monitoramento/index', compact('monitoramentos','clientes'));
+    }
+
+    public function novo()
+    {
+        $periodos = Periodo::orderBy('ordem')->get();
+        $clientes = Cliente::orderBy('nome')->get();
+
+        return view('monitoramento/novo', compact('clientes','periodos'));
     }
 
     public function noticias($id)
