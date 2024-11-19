@@ -36,23 +36,19 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @for ($i = 0; $i < count($dados); $i++)
+                            @foreach($dados as $key => $fonte)
                                 <tr>
-                                    <td class="text-center">{{ $dados[$i]->id_knewin }}</td>
-                                    <td>{{ $dados[$i]->nome }}</td>
-                                    <td>{{ $dados[$i]->url }}</td>
+                                    <td class="text-center">{{ $fonte->id_knewin }}</td>
+                                    <td>{{ $fonte->nome }}</td>
+                                    <td>{{ $fonte->url }}</td>
                                     <td>
-                                        @if($dados[$i]->situacao == 'url')
-                                            <span>URL Inconsistente</span>
-                                        @else
-                                            <span>Notícia Inconsistente</span>
-                                        @endif
+                                        <span class="badge badge-default" style="background: {{ $fonte->situacao->ds_color }} !important; border-color: {{ $fonte->situacao->ds_color }} !important;">{{ $fonte->situacao->ds_situacao }}</span>
                                     </td>
                                     <td class="text-center">
-                                        <a title="Editar" href="{{ url('fonte-web/editar/'.$dados[$i]->id) }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
+                                        <a title="Editar" href="{{ url('fonte-web/editar/'.$fonte->id) }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
                                     </td>
                                 </tr>
-                            @endfor
+                            @endforeach
                         </tbody>
                         <tfoot>
                             <tr>
