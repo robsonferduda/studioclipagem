@@ -65,7 +65,7 @@ class FonteWebController extends Controller
                     return $q->where('nome', 'ILIKE', '%'.trim($nome).'%');
                 });
 
-                $fonte->orderBy('nome');
+                $fonte->whereNotIn('id_situacao', [127,112,103,137])->orderBy('nome');
     
                 $fontes = $fonte->get();
 

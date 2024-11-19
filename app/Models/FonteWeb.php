@@ -29,6 +29,7 @@ class FonteWeb extends Model
         $sql = "SELECT id_situacao, ds_situacao, ds_color, count(*) AS total  
                 FROM fonte_web t1
                 LEFT JOIN situacao_fonte_web t2 ON t2.id_situacao_fonte_web = t1.id_situacao 
+                WHERE id_situacao NOT IN(127,112,103,137)
                 GROUP BY id_situacao, ds_situacao, ds_color 
                 ORDER BY ds_situacao";
 
