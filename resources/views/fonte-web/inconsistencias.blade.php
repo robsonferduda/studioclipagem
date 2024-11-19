@@ -49,8 +49,6 @@
                                         @endif
                                     </td>
                                     <td class="text-center">
-                                        <a title="Coletas" href="{{ url('fonte-web/coletas/'.$dados[$i]->id) }}" class="btn btn-info btn-link btn-icon"> <i class="fa fa-area-chart fa-2x "></i></a>
-                                        <a title="Estatísticas" href="{{ url('fonte-web/estatisticas/'.$dados[$i]->id) }}" class="btn btn-warning btn-link btn-icon"> <i class="fa fa-bar-chart fa-2x"></i></a>
                                         <a title="Editar" href="{{ url('fonte-web/editar/'.$dados[$i]->id) }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
                                     </td>
                                 </tr>

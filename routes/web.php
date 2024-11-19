@@ -122,6 +122,7 @@ Route::get('jornal-web/noticia/estatisticas/{id}','JornalWebController@getEstati
 
 Route::match(array('GET', 'POST'),'monitoramento','MonitoramentoController@index');
 Route::match(array('GET', 'POST'),'monitoramento/listar','MonitoramentoController@listar');
+Route::get('monitoramento/cliente/{cliente}','MonitoramentoController@buscar');
 Route::get('monitoramento/adicionar','MonitoramentoController@adicionar');
 Route::get('monitoramento/executar','MonitoramentoController@executar');
 Route::get('monitoramento/{id}/atualizar-status','MonitoramentoController@atualizarStatus');

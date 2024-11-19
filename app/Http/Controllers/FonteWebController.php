@@ -109,7 +109,7 @@ class FonteWebController extends Controller
         $total_fontes = 0;
         $data_base = '2024-10-22';
 
-        $period = CarbonPeriod::create('2024-08-21', '2024-08-30');
+        $period = CarbonPeriod::create('2024-02-21', '2024-02-25');
 
         // Iterate over the period
         foreach ($period as $date) {
@@ -179,15 +179,9 @@ class FonteWebController extends Controller
 
     public function inconsistencias()
     {
-        $sql = "SELECT id, id_knewin, nome, url, 'url' as situacao 
-                FROM fonte_web 
-                WHERE (length(url) - length(replace(url, '/', '')) )::int/length('/') > 3
-                UNION 
-                SELECT id, id_knewin, nome, url, 'noticia' as noticia 
-                FROM fonte_web
-                WHERE id_situacao = 3";
-
-        $dados = DB::connection('pgsql')->select($sql);
+        $fonte = FonteWeb::query();
+        $fonte->whereIn('id_situacao', [127,112,103,137])->orderBy('nome');
+        $dados = $fonte->get();
 
         return view('fonte-web/inconsistencias',compact('dados'));
     }
