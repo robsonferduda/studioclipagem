@@ -180,7 +180,7 @@ class FonteWebController extends Controller
     public function inconsistencias()
     {
         $fonte = FonteWeb::query();
-        $fonte->whereIn('id_situacao', [127,112,103,137])->orderBy('nome');
+        $fonte->whereIn('id_situacao',[23,33,13])->orderBy('nome');
         $dados = $fonte->get();
 
         return view('fonte-web/inconsistencias',compact('dados'));
