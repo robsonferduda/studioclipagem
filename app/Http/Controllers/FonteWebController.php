@@ -109,7 +109,7 @@ class FonteWebController extends Controller
         $total_fontes = 0;
         $data_base = '2024-10-22';
 
-        $period = CarbonPeriod::create('2024-09-01', '2024-09-10');
+        $period = CarbonPeriod::create('2024-08-21', '2024-08-30');
 
         // Iterate over the period
         foreach ($period as $date) {

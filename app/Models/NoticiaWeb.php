@@ -2,15 +2,13 @@
 
 namespace App\Models;
 
-use Laravel\Scout\Searchable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class NoticiaWeb extends Model
 {
     use SoftDeletes;
-    use Searchable;
-
+    
     protected $connection = 'pgsql';
     protected $table = 'noticias_web';
 
@@ -29,15 +27,5 @@ class NoticiaWeb extends Model
     public function logs()
     {
         return $this->hasMany(LogAcesso::class, 'id_noticia', 'id')->where('tipo','web');
-    }
-
-    public function getScoutKey(): string
-    {
-        return $this->titulo_noticia;
-    }
-
-    public function getScoutKeyName(): string
-    {
-        return 'titulo_noticia';
     }
 }
