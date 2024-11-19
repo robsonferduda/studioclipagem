@@ -21,19 +21,19 @@
             </div>
             <div class="row">
                 <div class="col-lg-12 col-sm-12">
-                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['buscar-web']]) !!}
+                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['noticia-web']]) !!}
                         <div class="form-group m-3 w-70">
                             <div class="row">
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
-                                        <label>Data Clipagem</label>
-                                        <input type="text" class="form-control datepicker" name="dt_inicial" required="true" value="{{ date("d/m/Y") }}" placeholder="__/__/____">
+                                        <label>Data Clipagem <span class="text-danger">Campo Obrigatório</span></label>
+                                        <input type="text" class="form-control datepicker" name="data_insert" required="true" value="{{ date("d/m/Y") }}" placeholder="__/__/____">
                                     </div>
                                 </div>
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
-                                        <label>Data Noticia</label>
-                                        <input type="text" class="form-control datepicker" name="dt_final" required="true" value="{{ date("d/m/Y") }}" placeholder="__/__/____">
+                                        <label>Data Noticia <span class="text-danger">Campo Obrigatório</span></label>
+                                        <input type="text" class="form-control datepicker" name="data_noticia" required="true" value="{{ date("d/m/Y") }}" placeholder="__/__/____">
                                     </div>
                                 </div>
                                 <div class="col-md-4 col-sm-4">
@@ -41,19 +41,16 @@
                                         <label>Categoria</label>
                                         <select class="form-control select2" name="regra" id="regra">
                                             <option value="">Selecione uma categoria</option>
-                                            @foreach ($fontes as $fonte)
-                                                <option value="{{ $fonte->id }}">{{ $fonte->nome }}</option>
-                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                         <div class="form-group">
-                                            <label>Fonte</label>
-                                            <select class="form-control select2" name="regra" id="regra">
+                                            <label>Fonte <span class="text-danger">Campo Obrigatório</span></label>
+                                            <select class="form-control select2" name="id_fonte" id="id_fonte">
                                                 <option value="">Selecione uma fonte</option>
                                                 @foreach ($fontes as $fonte)
-                                                    <option value="{{ $fonte->id }}">{{ $fonte->nome }}</option>
+                                                    <option value="{{ $fonte->id }}" {{ (old('id_fonte') == $fonte->id) ? 'selected' : ''  }}>{{ $fonte->nome }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -63,7 +60,7 @@
                                 <div class="col-md-12 col-sm-12">
                                     <div class="form-group">
                                         <label>Título</label>
-                                        <input type="text" class="form-control" name="termo" id="termo" minlength="3" placeholder="Termo" value="">
+                                        <input type="text" class="form-control" name="titulo_noticia" id="titulo_noticia" minlength="3" placeholder="Título" value="{{ old('titulo_noticia') }}">
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -72,15 +69,15 @@
                                     <input type="hidden" name="arquivo" id="arquivo">
                                 </div>
                                 <div class="col-md-9">
-                                    <label for="sinopse">Texto</label>
+                                    <label for="sinopse">Texto <span class="text-danger">Campo Obrigatório</span></label>
                                     <div class="form-group">
-                                        <textarea class="form-control" name="sinopse" id="sinopse" rows="10"></textarea>
+                                        <textarea class="form-control" name="conteudo" id="conteudo" rows="10"></textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label>Link da Notícia</label>
-                                        <input type="text" class="form-control" name="link" id="link" placeholder="Link" value="">
+                                        <label>URL da Notícia <span class="text-danger">Campo Obrigatório</span></label>
+                                        <input type="text" class="form-control" name="url_noticia" id="url_noticia" placeholder="URL Notícia" value="{{ old('url_noticia') }}">
                                     </div>
                                 </div>                                
                             </div>     

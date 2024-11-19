@@ -108,9 +108,11 @@ Route::match(array('GET', 'POST'),'buscar-web','JornalWebController@index');
 
 Route::match(array('GET', 'POST'),'buscar-web','NoticiaWebController@index');
 Route::get('noticia/web','NoticiaWebController@index');
+Route::get('noticia/web/cadastrar','NoticiaWebController@cadastrar');
 Route::get('noticia/web/dashboard','NoticiaWebController@dashboard');
 Route::get('noticia/web/detalhes/{id}','NoticiaWebController@detalhes');
 Route::get('noticia/web/estatisticas/{id}','NoticiaWebController@getEstatisticas');
+Route::resource('noticia-web','NoticiaWebController');
 
 Route::get('jornal-web','JornalWebController@index');
 Route::get('jornal-web/estatisticas','JornalWebController@estatisticas');

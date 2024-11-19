@@ -141,7 +141,7 @@
                           </a>
                        </li>
                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'web-cadastrar') ? 'active' : '' }}">
-                          <a href="{{ url('jornal-web/cadastrar') }}">
+                          <a href="{{ url('noticia/web/cadastrar') }}">
                           <span class="sidebar-normal">Nova Notícia</span>
                           </a>
                        </li>
