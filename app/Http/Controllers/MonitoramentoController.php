@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use DB;
 use Auth;
 use Mail;
+use App\Models\Periodo;
 use App\Models\Cliente;
 use App\Models\Monitoramento;
 use App\Models\MonitoramentoExecucao;
@@ -32,10 +33,20 @@ class MonitoramentoController extends Controller
 
     public function index()
     {
-        $fontes = Fonte::where('tipo_fonte_id',1)->orderBy('ds_fonte')->get();
-        $monitoramentos = Monitoramento::with('cliente')->orderBy('id','DESC')->paginate(10);
+        $clientes = Cliente::orderBy('nome')->get();
+        $monitoramentos = array();
+        //$fontes = Fonte::where('tipo_fonte_id',1)->orderBy('ds_fonte')->get();
+        //$monitoramentos = Monitoramento::with('cliente')->orderBy('id','DESC')->paginate(10);
 
-        return view('monitoramento/index', compact('monitoramentos','fontes'));
+        return view('monitoramento/index', compact('monitoramentos','clientes'));
+    }
+
+    public function novo()
+    {
+        $periodos = Periodo::orderBy('ordem')->get();
+        $clientes = Cliente::orderBy('nome')->get();
+
+        return view('monitoramento/novo', compact('clientes','periodos'));
     }
 
     public function noticias($id)
@@ -53,6 +64,13 @@ class MonitoramentoController extends Controller
         $monitoramentos = Monitoramento::with('cliente')->where('id_cliente', $id_cliente)->orderBy('id','DESC')->get();
 
         return view('monitoramento/detalhes', compact('monitoramentos','cliente'));
+    }
+
+    public function buscar($cliente)
+    {
+        $dados = Monitoramento::with('cliente')->where('id_cliente', $cliente)->orderBy('id','DESC')->get();
+        
+        return response()->json($dados);
     }
 
     public function executar()

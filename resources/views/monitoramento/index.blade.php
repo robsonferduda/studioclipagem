@@ -12,8 +12,7 @@
                 </div>
                 <div class="col-md-4">
                     <a href="{{ url('/') }}" class="btn btn-primary pull-right mr-3"><i class="nc-icon nc-chart-pie-36"></i> Dashboard</a>
-                    <button class="btn btn-primary pull-right mr-3"><i class="fa fa-plus"></i> Novo</button>
-                    <a href="{{ url('monitoramento/executar') }}" class="btn btn-warning pull-right mr-3"><i class="fa fa-bolt"></i> Executar</a>
+                    <a href="{{ url('monitoramento/novo') }}" class="btn btn-info pull-right mr-3"><i class="fa fa-plus"></i> Cadastrar Monitoramento</a>
                 </div>
             </div>
         </div>
@@ -22,7 +21,34 @@
                 @include('layouts.mensagens')
             </div>
             <div class="row">
-                <div class="col-lg-12 col-sm-12">
+                <div class="col-sm-12 col-md-3 col-lg-3">
+                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['buscar-monitoramento']]) !!}
+                        <div class="form-group m-3">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Buscar Monitoramento</label>
+                                        <select class="form-control select2" name="buscar_monitoramento" id="buscar_monitoramento">
+                                            <option value="">Selecione um cliente</option>
+                                            @foreach ($clientes as $cliente)
+                                                <option value="{{ $cliente->id }}">{{ $cliente->nome }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>     
+                        </div>
+                    {!! Form::close() !!}
+
+                    <div class="card m-3">
+                        <div class="card-body">
+                            <div id="accordion" role="tablist" aria-multiselectable="true" class="card-collapse">
+                                
+                            </div>
+                        </div>
+                      </div>
+                </div>   
+                <div class="col-sm-12 col-md-9 col-lg-9">
                     {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['buscar-monitoramento']]) !!}
                         <div class="form-group m-3 w-70">
                             <div class="row">
@@ -31,8 +57,8 @@
                                         <label>Buscar Monitoramento</label>
                                         <select class="form-control select2" name="regra" id="regra">
                                             <option value="">Selecione um cliente</option>
-                                            @foreach ($fontes as $fonte)
-                                                <option value="{{ $fonte->id }}">{{ $fonte->ds_fonte }}</option>
+                                            @foreach ($clientes as $cliente)
+                                                <option value="{{ $cliente->id }}">{{ $cliente->nome }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -40,7 +66,11 @@
                             </div>     
                         </div>
                     {!! Form::close() !!}
-                </div>               
+
+                    
+                </div> 
+                
+                
                     @foreach ($monitoramentos as $key => $monitoramento)
                         
                             <div class="col-lg-12 col-md-12 col-sm-12">
@@ -89,4 +119,52 @@
         </div>
     </div>
 </div> 
+@endsection
+@section('script')
+<script>
+    $( document ).ready(function() {
+
+        var host =  $('meta[name="base-url"]').attr('content');
+
+        $("#buscar_monitoramento").change(function(){
+
+            var cliente = $(this).val();
+
+            $.ajax({url: host+'/monitoramento/cliente/'+cliente,
+                    type: 'GET',
+                    beforeSend: function() {
+                        
+                    },
+                    success: function(data) {
+
+                        $("#accordion").empty();
+
+                        $.each(data, function(k, v) {
+                        
+                            $("#accordion").append('<div class="card card-plain">'+
+                                    '<div class="card-header" role="tab" id="headingOne">'+
+                                        '<a data-toggle="collapse" data-parent="#accordion" href="#collapse_'+k+'" aria-expanded="false" aria-controls="collapse_'+k+'" class="collapsed">'+
+                                        'Monitoramento'+
+                                       ' <i class="nc-icon nc-minimal-down"></i>'+
+                                       ' </a>'+
+                                    '</div>'+
+                                    '<div id="collapse_'+k+'" class="collapse" role="tabpanel" aria-labelledby="headingOne" style="">'+
+                                        '<div class="card-body">'+
+                                        ' tic synth nesciunt you probably haven heard of them accusamus labore sustainable VHS.'+
+                                        '</div>'+
+                                    '</div>'+
+                                '</div>');
+
+                        });
+                            
+                    },
+                    complete: function(){
+                        
+                    }
+            });
+
+        });
+
+    });
+</script>
 @endsection
