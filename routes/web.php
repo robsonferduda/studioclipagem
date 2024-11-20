@@ -130,6 +130,7 @@ Route::get('monitoramento/executar','MonitoramentoController@executar');
 Route::get('monitoramento/{id}/atualizar-status','MonitoramentoController@atualizarStatus');
 Route::get('monitoramento/{id}/noticias','MonitoramentoController@noticias');
 Route::get('monitoramento/cliente/{id}','MonitoramentoController@getMonitoramentoCliente');
+Route::post('monitoramento/filtrar','MonitoramentoController@filtrar');
 
 Route::match(array('GET', 'POST'),'emissoras','EmissoraController@index');
 Route::get('emissoras/{tipo}/novo','EmissoraController@novo');
