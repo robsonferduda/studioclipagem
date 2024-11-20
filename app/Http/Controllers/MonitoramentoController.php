@@ -68,8 +68,15 @@ class MonitoramentoController extends Controller
                                 to_tsvector(conteudo) as document 
                             FROM noticias_web t1
                             JOIN conteudo_noticia_web t2 ON t2.id_noticia_web = t1.id 
-                            WHERE t1.created_at between '2024-11-01 00:00:00' AND '2024-11-19 23:59:59') as texto_busca
+                            WHERE t1.created_at between '2024-11-01 00:00:00' AND '2024-11-01 23:59:59') as texto_busca
                             WHERE texto_busca.document @@ to_tsquery('$request->expressao')";
+
+        $sql = "SELECT id 
+                FROM
+                (SELECT id, to_tsvector(conteudo) as document 
+                FROM conteudo_noticia_web 
+                WHERE created_at between '2024-11-01 00:00:00' AND '2024-11-01 23:59:59') as texto_busca
+                WHERE texto_busca.document @@ to_tsquery('$request->expressao')";
 
         $dados = DB::select($sql);
 

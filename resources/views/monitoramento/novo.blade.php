@@ -101,7 +101,7 @@
 
                         }else{
                             $.each(data, function(k, v) {
-                                $(".resultados").append('<p>'+v.titulo_noticia+'</p>');
+                                $(".resultados").append('<p>'+v.id+'</p>');
                             });
                         }                            
                     },
