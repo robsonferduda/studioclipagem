@@ -6,14 +6,14 @@
         <div class="card">
             <div class="card-header">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-9">
                         <h4 class="card-title">
                             <i class="fa fa-newspaper-o"></i> Jornal Impresso
                             <i class="fa fa-angle-double-right" aria-hidden="true"></i> Editar
                             <i class="fa fa-angle-double-right" aria-hidden="true"></i> {{ $fonte->nome }}
                         </h4>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-3">
                         <a href="{{ url('fonte-web/listar') }}" class="btn btn-warning pull-right"><i class="nc-icon nc-minimal-left"></i> Voltar</a>
                     </div>
                 </div>
@@ -62,6 +62,20 @@
                         </div>
                     </div>
                 </div>  
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-check mt-3">
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox" name="resetar_situacao" value="true">
+                                    Resetar Situação 
+                                    <span class="form-check-sign"></span>
+                                </label>
+                            </div>
+                            <span>Coloca a situação da fonte para <strong>Normal</strong>, retornando para a fila de processamento</span>
+                        </div>
+                    </div>
+                </div> 
             </div>
             <div class="card-footer text-center mb-3">
                 <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Salvar</button>

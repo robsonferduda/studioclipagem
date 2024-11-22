@@ -302,12 +302,17 @@ class FonteWebController extends Controller
     public function update(Request $request, $id)
     {
         $fonte = FonteWeb::find($id);
+
+        if($request->resetar_situacao){
+            $request->merge(['id_situacao' => 1]);
+        }
     
         try{
         
             $fonte->update($request->all());
             $retorno = array('flag' => true,
                              'msg' => '<i class="fa fa-check"></i> Dados atualizados com sucesso');
+
         } catch (\Illuminate\Database\QueryException $e) {
             $retorno = array('flag' => false,
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
