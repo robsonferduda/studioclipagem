@@ -29,6 +29,11 @@ class FonteWeb extends Model
         return $this->hasOne(SituacaoFonteWeb::class, 'id_situacao_fonte_web', 'id_situacao');
     }  
 
+    public function noticias()
+    {
+        return $this->hasMany(NoticiaWeb::class, 'id_fonte', 'id');
+    }
+
     public function getSituacoes()
     {
         $sql = "SELECT id_situacao, ds_situacao, ds_color, count(*) AS total  
