@@ -93,7 +93,7 @@ class FonteWebController extends Controller
                                 <a title="Coletas" href="../fonte-web/coletas/'.$fonte->id.'" class="btn btn-info btn-link btn-icon"> <i class="fa fa-area-chart fa-2x "></i></a>
                                 <a title="Estatísticas" href="../fonte-web/estatisticas/'.$fonte->id.'" class="btn btn-warning btn-link btn-icon"> <i class="fa fa-bar-chart fa-2x"></i></a>
                                 <a title="Editar" href="../fonte-web/editar/'.$fonte->id.'" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
-                                <a title="Excluir" href="" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-times fa-2x"></i></a>
+                                <a title="Excluir" href="../fonte-web/excluir/'.$fonte->id.'" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-times fa-2x"></i></a>
                             </div>';
                 })   
                 ->rawColumns(['id','acoes'])         
@@ -179,6 +179,8 @@ class FonteWebController extends Controller
 
     public function inconsistencias()
     {
+        Session::put('sub-menu','fonte-web-inconsistencias');
+        
         $fonte = FonteWeb::query();
         $fonte->whereIn('id_situacao', [127,112,103,137])->orderBy('nome');
         $dados = $fonte->get();
@@ -321,5 +323,17 @@ class FonteWebController extends Controller
             Flash::error($retorno['msg']);
             return redirect()->route('font-web.edit', $fonte->id)->withInput();
         }
+    }
+
+    public function destroy($id)
+    {
+        $fonte = FonteWeb::find($id);
+
+        if($fonte->delete())
+            Flash::success('<i class="fa fa-check"></i> Fonte <strong>'.$fonte->name.'</strong> excluída com sucesso');
+        else
+            Flash::error("Erro ao excluir o registro");
+
+        return redirect('fonte-web/listar')->withInput();
     }
 }

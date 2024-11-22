@@ -50,6 +50,7 @@
                                     </td>
                                     <td class="text-center">
                                         <a title="Editar" href="{{ url('fonte-web/editar/'.$dados[$i]->id) }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
+                                        <a title="Excluir" href="{{ url('fonte-web/excluir/'.$dados[$i]->id) }}" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-times fa-2x"></i></a>
                                     </td>
                                 </tr>
                             @endfor
