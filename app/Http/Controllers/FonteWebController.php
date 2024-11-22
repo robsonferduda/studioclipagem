@@ -329,10 +329,6 @@ class FonteWebController extends Controller
     {
         $fonte = FonteWeb::find($id);
 
-        if(count($fonte->noticias)){
-            NoticiaWeb::where('id_fonte',$fonte->id)->forceDelete();
-        }
-
         if($fonte->delete())
             Flash::success('<i class="fa fa-check"></i> Fonte <strong>'.$fonte->name.'</strong> excluída com sucesso');
         else

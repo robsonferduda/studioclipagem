@@ -12,4 +12,5 @@ class ConteudoNoticiaWeb extends Model
     protected $connection = 'pgsql';
     protected $table = 'conteudo_noticia_web';
     protected $fillable = ['id_noticia_web','conteudo'];
+
 }

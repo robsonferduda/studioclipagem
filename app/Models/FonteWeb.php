@@ -4,15 +4,16 @@ namespace App\Models;
 
 use DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class FonteWeb extends Model
 {
+    use SoftDeletes;
+
     protected $connection = 'pgsql';
     protected $table = 'fonte_web';
 
     protected $fillable = ['codigo', 'id_knewin', 'nome', 'url', 'fl_coleta', 'cd_cidade', 'cd_estado', 'id_situacao','id_prioridade'];
-
-    public $timestamps = false;
 
     public function estado()
     {
@@ -32,6 +33,12 @@ class FonteWeb extends Model
     public function noticias()
     {
         return $this->hasMany(NoticiaWeb::class, 'id_fonte', 'id');
+    }
+
+    protected static function booted () {
+        static::deleting(function(FonteWeb $fonte) { 
+            $fonte->noticias()->delete();
+        });
     }
 
     public function getSituacoes()

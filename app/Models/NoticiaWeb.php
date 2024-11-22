@@ -28,4 +28,10 @@ class NoticiaWeb extends Model
     {
         return $this->hasMany(LogAcesso::class, 'id_noticia', 'id')->where('tipo','web');
     }
+
+    protected static function booted () {
+        static::deleting(function(NoticiaWeb $noticia) { 
+            $noticia->conteudo()->delete();
+        });
+    }  
 }
