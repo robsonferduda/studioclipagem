@@ -85,7 +85,7 @@
                   <li class="{{ (Session::has('url') and Session::get('url') == 'impresso') ? 'active' : '' }}">
                       <a data-toggle="collapse" href="#submenu-impresso" class="{{ (Session::has('url') and Session::get('url') == 'impresso') ? '' : 'collapsed' }}" aria-expanded="{{ (Session::has('url') and Session::get('url') == 'impresso') ? 'true' : 'false' }}">
                         <i class="fa fa-newspaper-o"></i>
-                        <p>Jornal Impresso
+                        <p>Impressos
                           <b class="caret"></b>
                         </p>
                       </a>
@@ -98,7 +98,7 @@
                          </li> 
                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'fonte-impressa') ? 'active' : '' }}">
                             <a href="{{ url('fonte-impresso/listar') }}">
-                            <span class="sidebar-normal">Fontes</span>
+                            <span class="sidebar-normal">Fontes Impressas</span>
                             </a>
                           </li>
                             <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'upload') ? 'active' : '' }}">
@@ -141,7 +141,7 @@
                           </a>
                        </li>
                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'web-cadastrar') ? 'active' : '' }}">
-                          <a href="{{ url('jornal-web/cadastrar') }}">
+                          <a href="{{ url('noticia/web/cadastrar') }}">
                           <span class="sidebar-normal">Nova Notícia</span>
                           </a>
                        </li>

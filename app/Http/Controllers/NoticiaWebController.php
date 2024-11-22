@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use DB;
 use Auth;
+use App\Utils;
 use Carbon\Carbon;
+use Laracasts\Flash\Flash;
 use App\Models\LogAcesso;
 use App\Models\FonteWeb;
 use App\Models\NoticiaWeb;
+use App\Models\ConteudoNoticiaWeb;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -137,8 +140,8 @@ class NoticiaWebController extends Controller
     {
         Session::put('sub-menu','web-cadastrar');
 
-        $fontes = FonteWeb::all();
-        return view('jornal-web/cadastrar',compact('fontes'));
+        $fontes = FonteWeb::orderBy('nome')->get();
+        return view('noticia-web/cadastrar',compact('fontes'));
     }
 
     public function listar()
@@ -167,5 +170,40 @@ class NoticiaWebController extends Controller
     {
         $noticia = NoticiaWeb::find($id);
         return view('noticia-web/estatisticas',compact('noticia'));
+    }
+
+    public function store(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $noticia = NoticiaWeb::create($request->all());
+
+            if($noticia){
+                $request->merge(['id_noticia_web' => $noticia->id]);
+                ConteudoNoticiaWeb::create($request->all());
+            }
+
+            DB::commit();
+            $retorno = array('flag' => true,
+                             'msg' => "Dados inseridos com sucesso");
+
+        } catch (\Illuminate\Database\QueryException $e) {
+            DB::rollback();
+            $retorno = array('flag' => false,
+                             'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
+
+        } catch (Exception $e) {
+            DB::rollback();
+            $retorno = array('flag' => true,
+                             'msg' => "Ocorreu um erro ao inserir o registro");
+        }
+
+        if ($retorno['flag']) {
+            Flash::success($retorno['msg']);
+            return redirect('noticia/web')->withInput();
+        } else {
+            Flash::error($retorno['msg']);
+            return redirect('noticia/web/cadastrar')->withInput();
+        }
     }
 }

@@ -58,6 +58,33 @@ class MonitoramentoController extends Controller
         return view('monitoramento/noticias', compact('noticias','monitoramento'));
     }
 
+    public function filtrar(Request $request)
+    {
+        $sql = "SELECT id, titulo_noticia 
+                            FROM
+                            (SELECT 
+                                t1.id, 
+                                t1.titulo_noticia,
+                                to_tsvector(conteudo) as document 
+                            FROM noticias_web t1
+                            JOIN conteudo_noticia_web t2 ON t2.id_noticia_web = t1.id 
+                            WHERE t1.created_at between '2024-11-01 00:00:00' AND '2024-11-01 23:59:59') as texto_busca
+                            WHERE texto_busca.document @@ to_tsquery('$request->expressao')";
+
+        $sql = "SELECT titulo_noticia 
+                FROM noticias_web 
+                WHERE id IN(SELECT id_noticia_web 
+                            FROM
+                            (SELECT id_noticia_web 
+                            FROM conteudo_noticia_web 
+                            WHERE documento @@ to_tsquery('portuguese','$request->expressao')
+                            AND created_at between '2024-11-01 00:00:00' AND '2024-11-30 23:59:59') as dados_busca) ";
+
+        $dados = DB::select($sql);
+
+        return response()->json($dados);
+    }
+
     public function getMonitoramentoCliente($id_cliente)
     {
         $cliente = Cliente::find($id_cliente);

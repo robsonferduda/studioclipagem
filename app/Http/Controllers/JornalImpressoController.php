@@ -151,11 +151,7 @@ class JornalImpressoController extends Controller
         
         $cliente = session('cliente_monitoramento') ? session('cliente_monitoramento') : 0;
 
-        $clientes = Cliente::select('clientes.*','pessoas.nome')
-                    ->with('pessoa')
-                    ->join('pessoas', 'pessoas.id', '=', 'clientes.pessoa_id')
-                    ->orderBy('nome')
-                    ->get();
+        $clientes = Cliente::orderBy('nome')->get();
 
         $noticias = NoticiaCliente::where('tipo_id', 1)->where('cliente_id', $cliente)->whereBetween('created_at', [date('Y-m-d')." 00:00:00", date('Y-m-d')." 23:59:59"])->get();
         $noticias = NoticiaCliente::where('tipo_id', 1)->where('cliente_id', $cliente)->orderBy('id')->get();

@@ -109,9 +109,11 @@ Route::match(array('GET', 'POST'),'buscar-web','JornalWebController@index');
 
 Route::match(array('GET', 'POST'),'buscar-web','NoticiaWebController@index');
 Route::get('noticia/web','NoticiaWebController@index');
+Route::get('noticia/web/cadastrar','NoticiaWebController@cadastrar');
 Route::get('noticia/web/dashboard','NoticiaWebController@dashboard');
 Route::get('noticia/web/detalhes/{id}','NoticiaWebController@detalhes');
 Route::get('noticia/web/estatisticas/{id}','NoticiaWebController@getEstatisticas');
+Route::resource('noticia-web','NoticiaWebController');
 
 Route::get('jornal-web','JornalWebController@index');
 Route::get('jornal-web/estatisticas','JornalWebController@estatisticas');
@@ -129,6 +131,7 @@ Route::get('monitoramento/executar','MonitoramentoController@executar');
 Route::get('monitoramento/{id}/atualizar-status','MonitoramentoController@atualizarStatus');
 Route::get('monitoramento/{id}/noticias','MonitoramentoController@noticias');
 Route::get('monitoramento/cliente/{id}','MonitoramentoController@getMonitoramentoCliente');
+Route::post('monitoramento/filtrar','MonitoramentoController@filtrar');
 
 Route::match(array('GET', 'POST'),'emissoras','EmissoraController@index');
 Route::get('emissoras/{tipo}/novo','EmissoraController@novo');

@@ -10,7 +10,7 @@ class FonteImpressa extends Model
     use SoftDeletes;
 
     protected $connection = 'pgsql';
-    protected $table = 'fonte_impressa';
+    protected $table = 'jornal_online';
 
     protected $fillable = ['codigo', 'nome', 'cd_cidade', 'cd_estado'];
 
