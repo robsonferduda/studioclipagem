@@ -47,6 +47,7 @@
                                     <td>{{ $jornal->nome }}</td>
                                     <td>{!! $jornal->cidade->nm_cidade ?? '' !!}</td>
                                     <td class="text-center">
+                                        <a title="Capturar Sessão" href="{{ url('fonte-impresso/'.$jornal->id.'/sessao') }}" class="btn btn-warning btn-link btn-icon"><i class="fa fa-globe fa-2x"></i></a>
                                         <a title="Editar" href="{{ url('fonte-impresso/'.$jornal->id.'/editar') }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
                                         <a title="Excluir" href="{{ url('fonte-impresso/'.$jornal->id.'/excluir') }}" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-trash fa-2x"></i></a>
                                     </td>

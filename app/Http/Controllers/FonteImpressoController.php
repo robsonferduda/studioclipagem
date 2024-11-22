@@ -37,6 +37,7 @@ class FonteImpressoController extends Controller
     {
         Session::put('sub-menu','fonte-impressa');
         $jornais = FonteImpressa::orderBy('nome')->get();
+
         return view('fonte-impresso/listar',compact('jornais'));
     }
 
@@ -46,6 +47,11 @@ class FonteImpressoController extends Controller
         $estados = Estado::orderBy('nm_estado')->get();
 
         return view('fonte-impresso/novo', compact('estados'));
+    }
+
+    public function sessao(int $id)
+    {
+        
     }
 
     public function editar(int $id)

@@ -72,6 +72,7 @@ Route::get('fonte-impresso/listar','FonteImpressoController@listar');
 Route::get('fonte-impresso/cadastrar','FonteImpressoController@cadastrar');
 Route::get('fonte-impresso/{id}/editar','FonteImpressoController@editar');
 Route::get('fonte-impresso/{id}/excluir','FonteImpressoController@excluir');
+Route::get('fonte-impresso/{id}/sessao','FonteImpressoController@sessao');
 Route::post('fonte-impresso/inserir','FonteImpressoController@inserir');
 Route::post('fonte-impresso/{id}/atualizar','FonteImpressoController@atualizar');
 
