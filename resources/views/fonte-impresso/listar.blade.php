@@ -43,7 +43,7 @@
                         <tbody>
                             @foreach($jornais as $jornal)
                                 <tr>
-                                    <td>{{ $jornal->codigo }}</td>
+                                    <td>{!! ($jornal->codigo) ? $jornal->codigo : 'Não Informado' !!}</td>
                                     <td>{{ $jornal->nome }}</td>
                                     <td>{!! $jornal->cidade->nm_cidade ?? '' !!}</td>
                                     <td class="text-center">
