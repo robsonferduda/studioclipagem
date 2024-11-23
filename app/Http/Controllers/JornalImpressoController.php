@@ -90,12 +90,14 @@ class JornalImpressoController extends Controller
 
     public function web(Request $request)
     {
+        Session::put('sub-menu','arquivos-web');
+
+        $carbon = new Carbon();
         $fontes = FonteImpressa::where('tipo', 1)->orderBy("nome")->get();
         $dados = array();
 
         if($request->isMethod('POST')){
-
-            $carbon = new Carbon();
+            
             $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
             $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
 
@@ -108,10 +110,10 @@ class JornalImpressoController extends Controller
 
             if($request->dt_inicial){
                
-                $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
-                $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
+                $dt_inicial = ($request->dt_inicial) ? $request->dt_inicial : date("Y-m-d")." 00:00:00";
+                $dt_final = ($request->dt_final) ? $request->dt_final : date("Y-m-d H:i:s");
 
-                $dados = EdicaoJornalImpresso::with('fonte')->whereBetween('dt_coleta', [$dt_inicial, $dt_final])->orderBy('id_jornal_online')->paginate(10);
+                $dados = EdicaoJornalImpresso::with('fonte')->with('paginas')->whereBetween('dt_coleta', [$dt_inicial, $dt_final])->orderBy('dt_coleta','DESC')->paginate(10);
 
             }else{
                
@@ -121,13 +123,6 @@ class JornalImpressoController extends Controller
             }
 
         }
-
-        //dd($dados[0]->paginas[0]->path_pagina_s3);
-
-       
-
-        //return (string) $request->getUri();
-
 
         return view('jornal-impresso/web', compact("fontes", "dados", 'dt_inicial','dt_final'));
     }
