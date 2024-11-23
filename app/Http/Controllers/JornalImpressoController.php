@@ -92,18 +92,24 @@ class JornalImpressoController extends Controller
     {
         Session::put('sub-menu','arquivos-web');
 
+        $fonte = ($request->fonte) ? $request->fonte : null;
+
         $carbon = new Carbon();
         $fontes = FonteImpressa::where('tipo', 1)->orderBy("nome")->get();
         $dados = array();
 
         if($request->isMethod('POST')){
             
-            $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
-            $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
+            $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00" : date("Y-m-d")." 00:00:00";
+            $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d H:i:s");
 
             $jornais = EdicaoJornalImpresso::query();
 
-            $dados = $jornais->whereBetween('dt_coleta', [$dt_inicial, $dt_final])->orderBy('id_jornal_online')->orderBy('nu_pagina_atual')->paginate(10);
+            $jornais->when($fonte, function ($q) use ($fonte) {
+                return $q->where('id_jornal_online', $fonte);
+            });
+
+            $dados = $jornais->whereBetween('dt_coleta', [$dt_inicial, $dt_final])->orderBy('dt_coleta','DESC')->paginate(10);
         }
 
         if($request->isMethod('GET')){
