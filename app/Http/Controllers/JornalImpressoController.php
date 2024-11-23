@@ -117,7 +117,7 @@ class JornalImpressoController extends Controller
                
                 $dt_inicial = "2024-11-01 00:00:00";
                 $dt_final = date('Y-m-d H:i:s');
-                $dados = EdicaoJornalImpresso::with('fonte')->with('paginas')->whereBetween('dt_coleta', [$dt_inicial, $dt_final])->orderBy('id_jornal_online')->paginate(10);
+                $dados = EdicaoJornalImpresso::with('fonte')->with('paginas')->whereBetween('dt_coleta', [$dt_inicial, $dt_final])->orderBy('dt_coleta','DESC')->paginate(10);
             }
 
         }
