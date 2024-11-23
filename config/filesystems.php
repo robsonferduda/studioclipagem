@@ -98,6 +98,7 @@ return [
             'bucket' => env('AWS_BUCKET'),
             'url' => env('AWS_URL',''),
             'endpoint' => env('AWS_ENDPOINT',''),
+            'suppress_php_deprecation_warning' => true,
         ],
 
     ],
