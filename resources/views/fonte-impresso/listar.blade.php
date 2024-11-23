@@ -27,25 +27,31 @@
                         <thead>
                             <tr>
                                 <th>Código</th>
-                                <th>Nome</th>
+                                <th>Tipo</th>
+                                <th>Estado</th>
                                 <th>Cidade</th>
+                                <th>Nome</th>
                                 <th class="disabled-sorting text-center">Ações</th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
                                 <th>Código</th>
-                                <th>Nome</th>
+                                <th>Tipo</th>
+                                <th>Estado</th>
                                 <th>Cidade</th>
+                                <th>Nome</th>
                                 <th class="disabled-sorting text-center">Ações</th>
                             </tr>
                         </tfoot>
                         <tbody>
                             @foreach($jornais as $jornal)
                                 <tr>
-                                    <td>{!! ($jornal->codigo) ? $jornal->codigo : 'Não Informado' !!}</td>
+                                    <td>{!! ($jornal->codigo) ? $jornal->codigo : '<span class="text-danger">Não Informado</span>' !!}</td>
+                                    <td>{{ ($jornal->tipos) ? $jornal->tipos->ds_tipo_impresso : '' }}</td>
+                                    <td>{!! ($jornal->cidade) ? $jornal->cidade->estado->nm_estado : '<span class="text-danger">Não Informado</span>' !!}</td>
+                                    <td>{!! $jornal->cidade->nm_cidade ?? '<span class="text-danger">Não Informado</span>' !!}</td>
                                     <td>{{ $jornal->nome }}</td>
-                                    <td>{!! $jornal->cidade->nm_cidade ?? '' !!}</td>
                                     <td class="text-center">
                                         <a title="Capturar Sessão" href="{{ url('fonte-impresso/'.$jornal->id.'/sessao') }}" class="btn btn-warning btn-link btn-icon"><i class="fa fa-globe fa-2x"></i></a>
                                         <a title="Editar" href="{{ url('fonte-impresso/'.$jornal->id.'/editar') }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>

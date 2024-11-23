@@ -76,6 +76,9 @@ Route::get('fonte-impresso/{id}/sessao','FonteImpressoController@sessao');
 Route::post('fonte-impresso/inserir','FonteImpressoController@inserir');
 Route::post('fonte-impresso/{id}/atualizar','FonteImpressoController@atualizar');
 
+
+Route::get('jornal-impresso/edicao/{edicao}/paginas','JornalImpressoController@paginas');
+
 Route::get('fontes','FonteController@index');
 Route::get('fonte-web/coletas/{origem}/listar/{id_fonte}','FonteWebController@listarColetas');
 Route::get('fonte-web/coletas/{id}','FonteWebController@coletas');
@@ -90,6 +93,7 @@ Route::match(array('GET', 'POST'),'fonte-web/listar','FonteWebController@listar'
 Route::resource('fonte-web','FonteWebController');
 
 Route::get('impresso','JornalImpressoController@index');
+Route::match(array('GET', 'POST'),'jornal-impresso/web','JornalImpressoController@web');
 Route::match(array('GET', 'POST'),'jornal-impresso/processamento','JornalImpressoController@processamento');
 Route::match(array('GET', 'POST'),'jornal-impresso/monitoramento','JornalImpressoController@monitoramento');
 Route::post('jornal-impresso/monitoramento/{cliente}/listar','JornalImpressoController@listarMonitoramento');

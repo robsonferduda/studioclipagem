@@ -101,12 +101,17 @@
                             <span class="sidebar-normal">Fontes Impressas</span>
                             </a>
                           </li>
-                            <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'upload') ? 'active' : '' }}">
+                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'upload') ? 'active' : '' }}">
                             <a href="{{ url('jornal-impresso/upload') }}">
                               <span class="sidebar-normal">Arquivos Impressos</span>
                               </a>
                           </li> 
-                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'monitoramento') ? 'active' : '' }}">
+                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'arquivos-web') ? 'active' : '' }}">
+                            <a href="{{ url('jornal-impresso/web') }}">
+                              <span class="sidebar-normal">Arquivos Web</span>
+                              </a>
+                          </li>
+                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'monitoramento') ? 'active' : '' }}">
                             <a href="{{ url('jornal-impresso/monitoramento') }}">
                               <span class="sidebar-normal">Monitoramento</span>
                               </a>

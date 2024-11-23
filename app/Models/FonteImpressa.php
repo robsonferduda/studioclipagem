@@ -12,12 +12,7 @@ class FonteImpressa extends Model
     protected $connection = 'pgsql';
     protected $table = 'jornal_online';
 
-    protected $fillable = ['codigo', 'nome', 'cd_cidade', 'cd_estado'];
-
-    public function noticias()
-    {
-        return $this->belongsTo(JornalImpresso::class, 'id_fonte', 'id');
-    }
+    protected $fillable = ['codigo', 'nome', 'cd_cidade', 'tipo', 'url', 'with_login'];
 
     public function estado()
     {
@@ -27,5 +22,15 @@ class FonteImpressa extends Model
     public function cidade()
     {
         return $this->belongsTo(Cidade::class, 'cd_cidade', 'cd_cidade');
+    }
+
+    public function tipos()
+    {
+        return $this->hasOne(TipoImpresso::class, 'id', 'tipo');
+    }
+
+    public function edicoes()
+    {
+        return $this->hasMany(EdicaoJornalImpresso::class);
     }
 }

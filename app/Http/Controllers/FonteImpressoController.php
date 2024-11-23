@@ -56,15 +56,15 @@ class FonteImpressoController extends Controller
 
     public function editar(int $id)
     {
-        $jornal = FonteImpressa::find($id);
+        $fonte = FonteImpressa::find($id);
         $estados = Estado::orderBy('nm_estado')->get();
 
         $cidades = null;
-        if($jornal->cd_estado) {
-            $cidades = Cidade::where(['cd_estado' => $jornal->cd_estado])->orderBy('nm_cidade')->get();
+        if($fonte->cd_estado) {
+            $cidades = Cidade::where(['cd_estado' => $fonte->cd_estado])->orderBy('nm_cidade')->get();
         }
 
-        return view('fonte-impresso/editar')->with('jornal', $jornal)->with('estados', $estados)->with('cidades', $cidades);
+        return view('fonte-impresso/editar')->with('fonte', $fonte)->with('estados', $estados)->with('cidades', $cidades);
     }
 
     public function detalhes($id)
@@ -123,7 +123,7 @@ class FonteImpressoController extends Controller
                 'codigo'    => $request->codigo,
                 'nome'      => $request->nome,
                 'cd_cidade' => $request->cidade,
-                'cd_estado' => $request->cd_estado
+                'tipo' => $request->tipo
             ]);
 
             $retorno = array(
@@ -148,7 +148,7 @@ class FonteImpressoController extends Controller
             return redirect('fonte-impresso/listar')->withInput();
         } else {
             Flash::error($retorno['msg']);
-            return redirect()->route('fonte-impresso.editar', $jornal->id)->withInput();
+            return redirect('fonte-impresso/'.$jornal->id.'/editar')->withInput();
         }
     }
 

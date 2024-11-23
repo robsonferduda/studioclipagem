@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use DB;
 use Auth;
 use File;
+use Storage;
 use Carbon\Carbon;
 use App\Models\Cliente;
+use App\Models\EdicaoJornalImpresso;
 use App\Models\NoticiaCliente;
+use App\Models\PaginaJornalImpresso;
 use App\Models\FonteImpressa;
 use App\Models\FilaImpresso;
 use App\Models\JornalImpresso;
@@ -83,6 +86,72 @@ class JornalImpressoController extends Controller
     {
         $noticia = JornalImpresso::find($id);
         return view('jornal-impresso/detalhes',compact('noticia'));
+    }
+
+    public function web(Request $request)
+    {
+        $fontes = FonteImpressa::where('tipo', 1)->orderBy("nome")->get();
+        $dados = array();
+
+        if($request->isMethod('POST')){
+
+            $carbon = new Carbon();
+            $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
+            $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
+
+            $jornais = EdicaoJornalImpresso::query();
+
+            $dados = $jornais->whereBetween('dt_coleta', [$dt_inicial, $dt_final])->orderBy('id_jornal_online')->orderBy('nu_pagina_atual')->paginate(10);
+        }
+
+        if($request->isMethod('GET')){
+
+            if($request->dt_inicial){
+               
+                $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
+                $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
+
+                $dados = EdicaoJornalImpresso::with('fonte')->whereBetween('dt_coleta', [$dt_inicial, $dt_final])->orderBy('id_jornal_online')->paginate(10);
+
+            }else{
+               
+                $dt_inicial = "2024-11-01 00:00:00";
+                $dt_final = date('Y-m-d H:i:s');
+                $dados = EdicaoJornalImpresso::with('fonte')->with('paginas')->whereBetween('dt_coleta', [$dt_inicial, $dt_final])->orderBy('id_jornal_online')->paginate(10);
+            }
+
+        }
+
+        //dd($dados[0]->paginas[0]->path_pagina_s3);
+
+       
+
+        //return (string) $request->getUri();
+
+
+        return view('jornal-impresso/web', compact("fontes", "dados", 'dt_inicial','dt_final'));
+    }
+
+    public function paginas($edicao)
+    {
+        $paginas = PaginaJornalImpresso::where('id_edicao_jornal_online', $edicao)->get();
+
+        foreach ($paginas as $key => $pagina) {
+            
+            //dd($this->getImage($pagina->path_pagina_s3));
+
+        }
+
+        return view('jornal-impresso/paginas', compact('paginas'));
+    }
+
+    public function getImage($path)
+    {
+        return response()->make(
+            Storage::disk('s3')->get($path),
+            200,
+            ['Content-Type' => 'image/jpeg']
+        );
     }
 
     public function upload()
