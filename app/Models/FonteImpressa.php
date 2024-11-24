@@ -24,9 +24,14 @@ class FonteImpressa extends Model
         return $this->belongsTo(Cidade::class, 'cd_cidade', 'cd_cidade');
     }
 
-    public function tipos()
+    public function tipoImpresso()
     {
         return $this->hasOne(TipoImpresso::class, 'id', 'tipo');
+    }
+
+    public function tipoColeta()
+    {
+        return $this->hasOne(TipoColeta::class, 'id', 'coleta');
     }
 
     public function edicoes()

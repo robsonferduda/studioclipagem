@@ -6,7 +6,7 @@
             <div class="row">
                 <div class="col-md-8">
                     <h4 class="card-title ml-3">
-                        <i class="fa fa-newspaper-o"></i> Jornal Impresso
+                        <i class="fa fa-newspaper-o"></i> Impressos
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Fontes
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Listar
                     </h4>
@@ -28,6 +28,7 @@
                             <tr>
                                 <th>Código</th>
                                 <th>Tipo</th>
+                                <th>Coleta</th>
                                 <th>Estado</th>
                                 <th>Cidade</th>
                                 <th>Nome</th>
@@ -38,6 +39,7 @@
                             <tr>
                                 <th>Código</th>
                                 <th>Tipo</th>
+                                <th>Coleta</th>
                                 <th>Estado</th>
                                 <th>Cidade</th>
                                 <th>Nome</th>
@@ -48,10 +50,16 @@
                             @foreach($jornais as $jornal)
                                 <tr>
                                     <td>{!! ($jornal->codigo) ? $jornal->codigo : '<span class="text-danger">Não Informado</span>' !!}</td>
-                                    <td>{{ ($jornal->tipos) ? $jornal->tipos->ds_tipo_impresso : '' }}</td>
+                                    <td>{{ ($jornal->tipoImpresso) ? $jornal->tipoImpresso->ds_tipo_impresso : '' }}</td>
+                                    <td>{{ ($jornal->tipoColeta) ? $jornal->tipoColeta->ds_tipo_coleta : '' }}</td>
                                     <td>{!! ($jornal->cidade) ? $jornal->cidade->estado->nm_estado : '<span class="text-danger">Não Informado</span>' !!}</td>
                                     <td>{!! $jornal->cidade->nm_cidade ?? '<span class="text-danger">Não Informado</span>' !!}</td>
-                                    <td>{{ $jornal->nome }}</td>
+                                    <td>
+                                        {{ $jornal->nome }}
+                                        @if($jornal->tipoColeta->id == 1)
+                                            <p><a href="{{ $jornal->url }}" target="_BLANK">{{ $jornal->url }}</a></p>
+                                        @endif
+                                    </td>
                                     <td class="text-center">
                                         <a title="Capturar Sessão" href="{{ url('fonte-impresso/'.$jornal->id.'/sessao') }}" class="btn btn-warning btn-link btn-icon"><i class="fa fa-globe fa-2x"></i></a>
                                         <a title="Editar" href="{{ url('fonte-impresso/'.$jornal->id.'/editar') }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
