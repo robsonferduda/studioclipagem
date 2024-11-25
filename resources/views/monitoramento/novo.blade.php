@@ -27,7 +27,7 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label>Cliente</label>
-                                        <select class="form-control select2" name="buscar_monitoramento" id="buscar_monitoramento">
+                                        <select class="form-control select2" name="cliente" id="cliente">
                                             <option value="">Selecione um cliente</option>
                                             @foreach ($clientes as $cliente)
                                                 <option value="{{ $cliente->id }}">{{ $cliente->nome }}</option>
@@ -38,20 +38,35 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label>Período</label>
-                                        <select class="form-control" name="buscar_monitoramento" id="buscar_monitoramento">
-                                            <option value="">Selecione um cliente</option>
+                                        <select class="form-control periodo" name="periodo" id="periodo">
+                                            <option value="">Selecione um período</option>
                                             @foreach ($periodos as $periodo)
                                                 <option value="{{ $periodo->slug }}">{{ $periodo->periodo }}</option>
                                             @endforeach
                                         </select>
                                     </div>
                                 </div>
-
+                                <div class="col-lg-6 col-md-6 mb-2">
+                                    <div class="form-group">
+                                        <label>Data Inicial</label>
+                                        <input type="text" class="form-control dt_inicial_relatorio dt_periodo">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-6 mb-2">
+                                    <div class="form-group">
+                                        <label>Data Final</label>
+                                        <input type="text" class="form-control dt_final_relatorio dt_periodo">
+                                    </div>
+                                </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="expressao" class="form-label">Expressão de Busca</label>
                                         <textarea class="form-control" id="expressao" rows="3"></textarea>
                                     </div>
+                                    <p class="mb-1"><strong>Observações</strong></p>
+                                    <p class="mt-1 mb-1"><strong>&</strong>: operador de busca equivalente ao "E"</p>
+                                    <p class="mt-1 mb-1"><strong>|</strong>: operador de busca equivalente ao "OU"</p>
+                                    <p class="mt-1 mb-1"><strong><-></strong>: operador de distância entre palavras, onde o - é a distãncia entre elas</p>
                                 </div>
                                 
                                 <div class="col-md-12 checkbox-radios mb-0">
@@ -78,6 +93,38 @@
 
         var host =  $('meta[name="base-url"]').attr('content');
         var token = $('meta[name="csrf-token"]').attr('content');
+
+        $(".periodo").change(function(){
+            var periodo = $(this).val();
+            inicializaDatas(periodo);        
+        });
+
+        function inicializaDatas(periodo)
+        {
+            var dataFinal = new Date();
+            var dataInicial = new Date();    
+                
+            if(periodo != 'personalizado'){
+                dataInicial.setDate(dataFinal.getDate() - (periodo - 1));
+            }else{
+                $(".dt_inicial_relatorio").focus();
+            }
+
+            $(".dt_inicial_relatorio").val(formataData(dataInicial));
+            $(".dt_final_relatorio").val(formataData(dataFinal));
+
+            $(".label_data_inicial").html(formataData(dataInicial));
+            $(".label_data_final").html(formataData(dataFinal));   
+        }
+
+        function formataData(data)
+        {
+            var dia = String(data.getDate()).padStart(2, '0');
+            var mes = String(data.getMonth() + 1).padStart(2, '0');
+            var ano = data.getFullYear();
+
+            return dia + '/' + mes + '/' + ano;
+        }
 
         $("#btn-find").click(function(){
 
@@ -107,6 +154,7 @@
                         }                            
                     },
                     error: function(){
+                        $(".resultados").empty();
                         $(".resultados").append('<span class="text-danger">Erro ao executar o string de busca</span>');
                     },
                     complete: function(){
