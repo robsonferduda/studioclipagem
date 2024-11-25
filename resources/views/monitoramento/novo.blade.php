@@ -64,7 +64,7 @@
             </div>
             <div class="row">
                 <div class="col col-sm-12 col-md-12 col-lg-12">
-                    <h6 class="m-3">Resultados da Busca</h6>
+                    <h6 class="m-3 label-resultado">Resultados da Busca</h6>
                     <div class="resultados m-3"></div>
                 </div>
             </div>
@@ -93,6 +93,7 @@
                     },
                     success: function(data) {
 
+                        $(".label-resultado").css("display","block");
                         $(".resultados").empty();
 
                         if(data.length == 0){
@@ -104,6 +105,9 @@
                                 $(".resultados").append('<p>'+v.titulo_noticia+'</p>');
                             });
                         }                            
+                    },
+                    error: function(){
+                        $(".resultados").append('<span class="text-danger">Erro ao executar o string de busca</span>');
                     },
                     complete: function(){
                         
