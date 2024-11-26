@@ -92,8 +92,8 @@ class MonitoramentoController extends Controller
                     There are many different database types, each with their own advantages and limitations.
                     The relational model, which organizes data into cross-referenced tables, rows, and columns, is often considered to be the default paradigm.',
                     to_tsquery('english', 'data & type'),
-                    'HighlightAll=true, StartSel=<mark>, StopSel=</mark>, MaxFragments=2,FragmentDelimiter=💩'";
-                    
+                    'HighlightAll=true, StartSel=<mark>, StopSel=</mark>'";
+
         return DB::select($sql);
     }
 
