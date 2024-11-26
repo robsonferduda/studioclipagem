@@ -184,8 +184,7 @@
                         
                     },
                     success: function(data) {
-                        console.log(data[0].texto);
-                        $(chave).html(data);                                         
+                        $(chave).html(data[0].texto);                                         
                     },
                     error: function(){
                         
