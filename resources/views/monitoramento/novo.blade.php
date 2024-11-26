@@ -178,6 +178,8 @@
             
             $.ajax({url: host+'/monitoramento/filtrar/conteudo/'+id,
                     type: 'GET',
+                    contentType: "application/json",
+                    dataType: "json",
                     beforeSend: function() {
                         
                     },
