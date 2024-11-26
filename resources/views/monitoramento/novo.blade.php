@@ -184,7 +184,7 @@
                         
                     },
                     success: function(data) {
-                        console.log(data);
+                        console.log(data[0]);
                         $(chave).html(data);                                         
                     },
                     error: function(){
