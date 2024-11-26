@@ -111,12 +111,7 @@
                               <span class="sidebar-normal">Arquivos Web</span>
                               </a>
                           </li>
-                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'monitoramento') ? 'active' : '' }}">
-                            <a href="{{ url('jornal-impresso/monitoramento') }}">
-                              <span class="sidebar-normal">Monitoramento</span>
-                              </a>
-                          </li> 
-                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'noticia-impressa-cadastrar') ? 'active' : '' }}">
+                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'noticia-impressa-cadastrar') ? 'active' : '' }}">
                               <a href="{{ url('noticia-impressa/cadastrar') }}">
                               <span class="sidebar-normal">Cadastrar Notícia</span>
                               </a>
