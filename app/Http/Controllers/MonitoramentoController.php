@@ -83,6 +83,20 @@ class MonitoramentoController extends Controller
         return response()->json($dados);
     }
 
+    public function getConteudo($id)
+    {
+        $sql = "SELECT
+                    ts_headline('english',
+                    'Database management systems are typically designed to organize data according to a specific pattern.
+                    These patterns, called database types or database models, are the logical and structural foundations that determine how individual pieces of data are stored and managed.
+                    There are many different database types, each with their own advantages and limitations.
+                    The relational model, which organizes data into cross-referenced tables, rows, and columns, is often considered to be the default paradigm.',
+                    to_tsquery('english', 'data & type'),
+                    'HighlightAll=true, StartSel=<mark>, StopSel=</mark>, MaxFragments=2,FragmentDelimiter=💩'";
+                    
+        return DB::select($sql);
+    }
+
     public function getMonitoramentoCliente($id_cliente)
     {
         $cliente = Cliente::find($id_cliente);

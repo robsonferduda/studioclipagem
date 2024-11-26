@@ -154,7 +154,7 @@
 
                             $.each(data, function(k, v) {
                                // $(".resultados").append('<p><a href="'+v.url_noticia+'" target="BLANK">'+v.titulo_noticia+'</a></p>');
-                                $(".resultados").append('<div><p class="fts_detalhes" data-id="txt-'+k+'">'+v.titulo_noticia+'</p><div id="txt-'+k+'"></div></div>');
+                                $(".resultados").append('<div><p class="fts_detalhes" data-chave="txt-'+k+'" data-id="'+v.id+'">'+v.titulo_noticia+'</p><div id="txt-'+k+'"></div></div>');
                             });
                         }                            
                     },
@@ -172,7 +172,22 @@
         $('body').on('click', '.fts_detalhes', function() {
 
             var id = $(this).data("id");
-            alert(id);
+            
+            $.ajax({url: host+'/monitoramento/filtrar/conteudo/'+id,
+                    type: 'GET',
+                    beforeSend: function() {
+                        
+                    },
+                    success: function(data) {
+                                                                 
+                    },
+                    error: function(){
+                        
+                    },
+                    complete: function(){
+                        
+                    }
+            });
 
         });
         
