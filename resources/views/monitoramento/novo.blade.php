@@ -173,8 +173,6 @@
 
             var id = $(this).data("id");
             var chave = "#"+$(this).data("chave");
-
-            alert(chave);
             
             $.ajax({url: host+'/monitoramento/filtrar/conteudo/'+id,
                     type: 'GET',
