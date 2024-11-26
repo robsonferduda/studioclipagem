@@ -173,9 +173,14 @@
 
             var id = $(this).data("id");
             var chave = "#"+$(this).data("chave");
+            var expressao = $("#expressao").val();
             
-            $.ajax({url: host+'/monitoramento/filtrar/conteudo/'+id,
-                    type: 'GET',
+            $.ajax({url: host+'/monitoramento/filtrar/conteudo',
+                    type: 'POST',
+                    data: {"_token": $('meta[name="csrf-token"]').attr('content'),
+                            "expressao": expressao,
+                            "id": id
+                    },
                     contentType: "application/json",
                     dataType: "json",
                     beforeSend: function() {
