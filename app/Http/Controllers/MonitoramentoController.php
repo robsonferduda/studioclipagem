@@ -87,7 +87,7 @@ class MonitoramentoController extends Controller
 
     public function getConteudo(Request $request)
     {
-        $sql = "SELECT ts_headline('portuguese',fts_noticia_web.conteudo , to_tsquery('portuguese', 'sebrae | empretec | (semana<->do<->mei)'), 'HighlightAll=true, StartSel=<mark>, StopSel=</mark>')
+        $sql = "SELECT ts_headline('portuguese',fts_noticia_web.conteudo , to_tsquery('portuguese', '$request->expressao'), 'HighlightAll=true, StartSel=<mark>, StopSel=</mark>') as texto
                 FROM fts_noticia_web 
                 WHERE id_noticia_web = ".$request->id;
 
