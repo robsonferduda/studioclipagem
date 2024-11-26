@@ -86,8 +86,13 @@ class MonitoramentoController extends Controller
     public function getConteudo($id)
     {
         $sql = "SELECT ts_headline('english','Management systems are typically designed to organize data according to a specific pattern', to_tsquery('english', 'data & type'), 'HighlightAll=true, StartSel=<mark>, StopSel=</mark>')";
+        $dados = DB::select($sql);
 
-        return DB::select($sql);
+        if($dados){
+            return $dados[0];
+        }else{
+            return "";
+        } 
     }
 
     public function getMonitoramentoCliente($id_cliente)
