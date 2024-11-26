@@ -148,6 +148,8 @@
                             $(".resultados").append('<span class="text-danger">Nenhum resultado encontrado</span>');
 
                         }else{
+                            $(".label-resultado").append("Resultados da Busca"+" - Foram encontrados "+data.length+" registros");
+                            
                             $.each(data, function(k, v) {
                                 $(".resultados").append('<p><a href="'+v.url_noticia+'" target="BLANK">'+v.titulo_noticia+'</p></a>');
                             });
