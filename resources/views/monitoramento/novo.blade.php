@@ -169,7 +169,7 @@
 
         });
 
-        $(".fts_detalhes").click(function(){
+        $('body').on('click', '.fts_detalhes', function() {
 
             var id = $(this).data("id");
             alert(id);
