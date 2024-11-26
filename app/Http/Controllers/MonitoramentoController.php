@@ -11,6 +11,8 @@ use App\Models\Monitoramento;
 use App\Models\MonitoramentoExecucao;
 use App\Models\JornalImpresso;
 use App\Models\JornalWeb;
+use App\Models\NoticiaWeb;
+use App\Models\ConteudoNoticiaWeb;
 use App\Models\Fonte;
 use App\Models\NoticiaCliente;
 use Carbon\Carbon;
@@ -85,7 +87,9 @@ class MonitoramentoController extends Controller
 
     public function getConteudo(Request $request)
     {
-        $sql = "SELECT ts_headline('portuguese','Eu visitei a praia de Copacabana e achei muito bonita.', to_tsquery('portuguese', '$request->expressao'), 'HighlightAll=true, StartSel=<mark>, StopSel=</mark>') as texto";
+        $noticia = ConteudoNoticiaWeb::where('id_noticia_web', $request->id)->first();
+
+        $sql = "SELECT ts_headline('portuguese','$noticia->conteudo', to_tsquery('portuguese', '$request->expressao'), 'HighlightAll=true, StartSel=<mark>, StopSel=</mark>') as texto";
         $dados = DB::select($sql);
 
         return response()->json($dados); 
