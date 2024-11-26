@@ -181,8 +181,6 @@
                             "expressao": expressao,
                             "id": id
                     },
-                    contentType: "application/json",
-                    dataType: "json",
                     beforeSend: function() {
                         
                     },
