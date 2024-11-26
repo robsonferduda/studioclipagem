@@ -258,3 +258,4 @@ input[type="checkbox"]:checked + label-check .fa{
 .label-resultado { display: none;}
 .mt-1 { padding-top: 1px;}
 .mb-1 { padding-bottom: 1px;}
+mark{background: #009688 !important; color: white; border-radius: 5px;}
