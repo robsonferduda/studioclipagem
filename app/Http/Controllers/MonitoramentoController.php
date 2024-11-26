@@ -85,7 +85,7 @@ class MonitoramentoController extends Controller
 
     public function getConteudo($id)
     {
-        $sql = "SELECT ts_headline('portuguese','Eu visitei a praia de Copacabana e achei muito bonita.', to_tsquery('portuguese', 'Copacabana'), 'HighlightAll=true, StartSel=<mark>, StopSel=</mark>')";
+        $sql = "SELECT ts_headline('portuguese','Eu visitei a praia de Copacabana e achei muito bonita.', to_tsquery('portuguese', 'Copacabana'), 'HighlightAll=true, StartSel=<mark>, StopSel=</mark>') as texto";
         $dados = DB::select($sql);
 
         return response()->json($dados); 
