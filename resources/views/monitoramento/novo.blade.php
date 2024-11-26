@@ -172,6 +172,7 @@
         $('body').on('click', '.fts_detalhes', function() {
 
             var id = $(this).data("id");
+            var chave = $(this).data("chave");
             
             $.ajax({url: host+'/monitoramento/filtrar/conteudo/'+id,
                     type: 'GET',
@@ -179,7 +180,7 @@
                         
                     },
                     success: function(data) {
-                                                                 
+                        $("#"+chave).html(data);                                         
                     },
                     error: function(){
                         
