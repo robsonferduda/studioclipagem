@@ -148,10 +148,13 @@
                             $(".resultados").append('<span class="text-danger">Nenhum resultado encontrado</span>');
 
                         }else{
+
+                            $(".label-resultado").empty();
                             $(".label-resultado").append("Resultados da Busca"+" - Foram encontrados "+data.length+" registros");
-                            
+
                             $.each(data, function(k, v) {
-                                $(".resultados").append('<p><a href="'+v.url_noticia+'" target="BLANK">'+v.titulo_noticia+'</p></a>');
+                               // $(".resultados").append('<p><a href="'+v.url_noticia+'" target="BLANK">'+v.titulo_noticia+'</a></p>');
+                                $(".resultados").append('<div><p class="fts_detalhes" data-id="txt-'+k+'">'+v.titulo_noticia+'</p><div id="txt-'+k+'"></div></div>');
                             });
                         }                            
                     },
@@ -166,6 +169,13 @@
 
         });
 
+        $(".fts_detalhes").click(function(){
+
+            var id = $(this).data("id");
+            alert(id);
+
+        });
+        
     });
 </script>
 @endsection
