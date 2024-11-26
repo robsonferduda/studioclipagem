@@ -66,7 +66,7 @@
                                     <p class="mb-1"><strong>Observações</strong></p>
                                     <p class="mt-1 mb-1"><strong>&</strong>: operador de busca equivalente ao "E"</p>
                                     <p class="mt-1 mb-1"><strong>|</strong>: operador de busca equivalente ao "OU"</p>
-                                    <p class="mt-1 mb-1"><strong><-></strong>: operador de distância entre palavras, onde o - é a distãncia entre elas</p>
+                                    <p class="mt-1 mb-1"><strong><-></strong>: operador de distância entre palavras, onde o - é a distância entre elas</p>
                                 </div>
                                 
                                 <div class="col-md-12 checkbox-radios mb-0">
@@ -149,7 +149,7 @@
 
                         }else{
                             $.each(data, function(k, v) {
-                                $(".resultados").append('<p>'+v.titulo_noticia+'</p>');
+                                $(".resultados").append('<p><a href="'+v.url_noticia+'" target="BLANK">'+v.titulo_noticia+'</p></a>');
                             });
                         }                            
                     },
