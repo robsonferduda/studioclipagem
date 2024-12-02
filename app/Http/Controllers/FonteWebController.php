@@ -272,6 +272,16 @@ class FonteWebController extends Controller
         return view('fonte-web/editar', compact('fonte','estados','cidades'));
     }
 
+    public function editarInconsistencia(Request $request)
+    {
+        $fonte = FonteWeb::find($request->id);
+
+        if($fonte){
+            $fonte->url = $request->url;
+            $fonte->save();
+        }
+    }
+
     public function store(FontWebRequest $request)
     {
         try {
@@ -304,7 +314,7 @@ class FonteWebController extends Controller
         $fonte = FonteWeb::find($id);
 
         if($request->resetar_situacao){
-            $request->merge(['id_situacao' => 1]);
+            $request->merge(['id_situacao' => 0]);
         }
     
         try{

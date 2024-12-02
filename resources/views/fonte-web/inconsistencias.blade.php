@@ -14,7 +14,6 @@
                 </div>
                 <div class="col-md-6">
                     <a href="{{ url('buscar-web') }}" class="btn btn-info pull-right" style="margin-right: 12px;"><i class="fa fa-globe"></i> Notícias Web</a>
-                    <a href="{{ url('fonte-web/create') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-plus"></i> Novo</a>
                 </div>
             </div>
         </div>
@@ -40,7 +39,9 @@
                                 <tr>
                                     <td class="text-center">{{ $fonte->id_knewin }}</td>
                                     <td>{{ $fonte->nome }}</td>
-                                    <td>{{ $fonte->url }}</td>
+                                    <td>
+                                        <input type="text" tabindex="{{ $key }}" class="form-control edit-url-fonte" name="nome" id="nome" data-id="{{ $fonte->id }}" placeholder="URL" value="{{ $fonte->url }}">
+                                    </td>
                                     <td>
                                         <span class="badge badge-default" style="background: {{ $fonte->situacao->ds_color }} !important; border-color: {{ $fonte->situacao->ds_color }} !important;">{{ $fonte->situacao->ds_situacao }}</span>
                                     </td>
@@ -75,8 +76,36 @@
 <script>
     $(document).ready(function() {
 
+        var host =  $('meta[name="base-url"]').attr('content');
 
+        $(document).on('change', '.edit-url-fonte', function() {     
 
+            var id = $(this).data("id");
+            var url = $(this).val();
+
+            $(this).addClass("label-edit-fonte");
+            
+            $.ajax({
+                    url: host+'/fonte-web/inconsistencias/editar',
+                    type: 'POST',
+                    data: {
+                        "_token": $('meta[name="csrf-token"]').attr('content'),
+                        "id": id,
+                        "url": url,
+                },
+                beforeSend: function() {
+                            
+                },
+                success: function(data) {
+                        
+                },
+                complete: function(){
+                            
+                }
+            }); 
+
+        });
+    
     });
 </script>
 @endsection

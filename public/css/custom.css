@@ -263,3 +263,5 @@ mark{background: #009688 !important; color: white; border-radius: 5px;}
 .btn-extrair-noticia { position: absolute; bottom: 0px; }
 canvas { width: 100% !important;}
 .input-impresso{ font-weight: 600; }
+.edit-url-fonte { cursor: pointer; }
+.label-edit-fonte { background: #b7e9ff; }
