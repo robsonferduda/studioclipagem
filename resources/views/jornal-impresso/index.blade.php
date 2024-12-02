@@ -6,15 +6,14 @@
             <div class="row">
                 <div class="col-md-6">
                     <h4 class="card-title ml-3">
-                        <i class="fa fa-newspaper-o"></i> Jornal Impresso
-                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Dashboard
+                        <i class="fa fa-newspaper-o"></i> Impressos
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Notícias
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Listar
                     </h4>
                 </div>
                 <div class="col-md-6">
+                    <a href="{{ url('impresso') }}" class="btn btn-warning pull-right mr-3"><i class="nc-icon nc-chart-pie-36"></i> Dashboard</a>
                     <a href="{{ url('fonte-impresso/listar') }}" class="btn btn-primary pull-right mr-3"><i class="fa fa-newspaper-o"></i> Fontes de Impresso</a>
-                    <a href="{{ url('jornal-impresso/upload') }}" class="btn btn-info pull-right mr-1"><i class="fa fa-upload"></i> Upload</a>
-                    <a href="{{ url('jornal-impresso/processamento') }}" class="btn btn-info pull-right mr-1"><i class="fa fa-list"></i> Fila</a>
-                    <a href="{{ url('jornal-impresso/monitoramento') }}" class="btn btn-success pull-right mr-1"><i class="nc-icon nc-sound-wave"></i> Monitoramento</a>
                 </div>
             </div>
         </div>
@@ -23,8 +22,8 @@
                 @include('layouts.mensagens')
             </div>
             <div class="row">
-                <div class="col-lg-9 col-sm-9">
-                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['buscar-impresso']]) !!}
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['jornal-impresso/noticias']]) !!}
                         <div class="form-group m-3 w-70">
                             <div class="row">
                                 <div class="col-md-2 col-sm-6">
@@ -53,7 +52,7 @@
                                         <select class="form-control select2" name="regra" id="regra">
                                             <option value="">Selecione uma fonte</option>
                                             @foreach ($fontes as $fonte)
-                                                <option value="{{ $fonte->id }}">{{ $fonte->ds_fonte }}</option>
+                                                <option value="{{ $fonte->id }}">{{ $fonte->nome }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -77,7 +76,7 @@
                                 <div class="row">
                                     <div class="col-lg-2 col-sm-12">
                                         @if($noticia->fonte)
-                                            <img src="{{ asset('jornal-impresso/'.$noticia->fonte->codigo.'/'.\Carbon\Carbon::parse($noticia->dt_clipagem)->format('Ymd').'/img/pagina_'.$noticia->nu_pagina_atual.'.png') }}" alt="..." class="img-thumbnail">
+                                            <img src="{{ asset('img/noticia-impressa/'.$noticia->ds_caminho_img) }}" alt="..." class="img-thumbnail">
                                         @else
 
                                         @endif
@@ -93,7 +92,9 @@
                                         @else
                                             <p>Página <strong>{{ $noticia->nu_pagina_atual }}</strong> de <strong>{{ $noticia->nu_paginas_total }}</strong></p>
                                         @endif
+                                        <p><strong>Retorno de Mídia</strong>: {!! ($noticia->valor_retorno) ? "R$ ".$noticia->valor_retorno : '<span class="text-danger">Não calculado</span>' !!}</p>
                                         <div>
+                                            <a class="btn btn-success btn-sm" href="{{ asset('jornal-impresso/noticia/editar/'.$noticia->id) }}"><i class="fa fa-edit"> </i> Editar Notícia</a>
                                             <a class="btn btn-danger btn-sm" download target="_blank" href="{{ asset('jornal-impresso/processados/'.($noticia->fila) ? $noticia->fila : '') }}" role="button"><i class="fa fa-file-pdf-o"> </i> Documento Original</a>
                                             <a class="btn btn-primary btn-sm" download target="_blank" href="{{ asset('jornal-impresso/'.$noticia->fonte->codigo.'/'.\Carbon\Carbon::parse($noticia->dt_clipagem)->format('Ymd').'/img/pagina_'.$noticia->nu_pagina_atual.'.png') }}" role="button"><i class="fa fa-file-image-o"> </i> Página Atual</a>
                                             <a class="btn btn-success btn-sm" href="{{ asset('jornal-impresso/noticia/'.$noticia->id) }}" role="button"><i class="fa fa-eye"> </i> Detalhes</a>
@@ -103,63 +104,6 @@
                             </div>
                         </div>
                     @endforeach
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <div class="col-lg-12 col-md-12 col-sm-12">
-                        <div class="card card-stats">
-                            <div class="card-body ">
-                                <div class="row">
-                                    <div class="col-5 col-md-4">
-                                        <div class="icon-big text-center icon-warning">
-                                        <i class="fa fa-newspaper-o text-warning"></i>
-                                        </div>
-                                    </div>
-                                    <div class="col-7 col-md-8">
-                                        <div class="numbers">
-                                        <p class="card-category">Jornal Impresso</p>
-                                        <p class="card-title">{{ $total_impresso }}</p>
-                                        <p></p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-footer ">
-                                <hr>
-                                <div class="stats">
-                                    <i class="fa fa-calendar"></i>
-                                    Última Atualização em {{ \Carbon\Carbon::parse($ultima_atualizacao_impresso)->format('d/m/Y H:i:s') }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-12 col-md-12 col-sm-12">
-                        <div class="card card-stats">
-                            <div class="card-body ">
-                                <div class="row">
-                                    <div class="col-5 col-md-4">
-                                        <div class="icon-big text-center icon-warning">
-                                        <i class="nc-icon nc-chart-bar-32 text-primary"></i>
-                                        </div>
-                                    </div>
-                                    <div class="col-7 col-md-8">
-                                        <div class="numbers">
-                                        <p class="card-category">Páginas Coletadas</p>
-                                        <p class="card-title">{{ $total_noticias }}</p>
-                                        <p></p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-footer ">
-                                <hr>
-                                <div class="stats">
-                                    <i class="fa fa-calendar"></i>
-                                    Última Atualização em {{ \Carbon\Carbon::parse($ultima_atualizacao_noticia)->format('d/m/Y H:i:s') }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

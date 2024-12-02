@@ -11,6 +11,7 @@ use App\Models\NoticiaCliente;
 use App\Models\FonteImpressa;
 use App\Models\FilaImpresso;
 use App\Models\JornalImpresso;
+use App\Models\NoticiaImpresso;
 use App\Models\Fonte;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
@@ -93,13 +94,18 @@ class NoticiaImpressaController extends Controller
 
     public function update(Request $request, $id)
     {
-        $noticia = JornalImpresso::find($id);
-        
+        $noticia = NoticiaImpresso::find($id);
+
         try {
-        
+
+            $valor_retorno = $request->nu_altura * $request->nu_colunas * $noticia->fonte->retorno_midia;
+
+            $request->merge(['valor_retorno' => $valor_retorno]);
+            
             $noticia->update($request->all());
             $retorno = array('flag' => true,
                              'msg' => '<i class="fa fa-check"></i> Dados atualizados com sucesso');
+
         } catch (\Illuminate\Database\QueryException $e) {
             $retorno = array('flag' => false,
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
@@ -110,28 +116,27 @@ class NoticiaImpressaController extends Controller
 
         if ($retorno['flag']) {
             Flash::success($retorno['msg']);
-            return redirect('jornal-impresso/monitoramento')->withInput();
+            return redirect('jornal-impresso/noticias')->withInput();
         } else {
             Flash::error($retorno['msg']);
             return redirect()->route('')->withInput();
         }
     }
 
+    //Upload do CROP da imagem
     public function upload(Request $request)
     {
-        //dd($request->picture);
-
         $image = $request->file('picture');
         $fileInfo = $image->getClientOriginalName();
         $filesize = $image->getSize()/1024/1024;
         $filename = pathinfo($fileInfo, PATHINFO_FILENAME);
         $extension = "jpeg";
         $file_name= $filename.'-'.time().'.'.$extension;
-        $image->move(public_path('jornal-impresso/noticias'),$file_name);
+        $image->move(public_path('img/noticia-impressa/recorte'),$file_name);
 
-        $noticia = JornalImpresso::find($request->id);
-        $noticia->print = $file_name;
-        $noticia->save();
+        //$noticia = JornalImpresso::find($request->id);
+        //$noticia->print = $file_name;
+        //$noticia->save();
 
         return $file_name;
     }

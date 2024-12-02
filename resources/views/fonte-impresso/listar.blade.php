@@ -28,10 +28,10 @@
                             <tr>
                                 <th>Código</th>
                                 <th>Tipo</th>
-                                <th>Coleta</th>
                                 <th>Estado</th>
                                 <th>Cidade</th>
                                 <th>Nome</th>
+                                <th>Retorno de Mídia</th>
                                 <th class="disabled-sorting text-center">Ações</th>
                             </tr>
                         </thead>
@@ -39,10 +39,10 @@
                             <tr>
                                 <th>Código</th>
                                 <th>Tipo</th>
-                                <th>Coleta</th>
                                 <th>Estado</th>
                                 <th>Cidade</th>
                                 <th>Nome</th>
+                                <th>Retorno de Mídia</th>
                                 <th class="disabled-sorting text-center">Ações</th>
                             </tr>
                         </tfoot>
@@ -50,7 +50,6 @@
                             @foreach($jornais as $jornal)
                                 <tr>
                                     <td>{!! ($jornal->codigo) ? $jornal->codigo : '<span class="text-danger">Não Informado</span>' !!}</td>
-                                    <td>{{ ($jornal->tipoImpresso) ? $jornal->tipoImpresso->ds_tipo_impresso : '' }}</td>
                                     <td>{{ ($jornal->tipoColeta) ? $jornal->tipoColeta->ds_tipo_coleta : '' }}</td>
                                     <td>{!! ($jornal->cidade) ? $jornal->cidade->estado->nm_estado : '<span class="text-danger">Não Informado</span>' !!}</td>
                                     <td>{!! $jornal->cidade->nm_cidade ?? '<span class="text-danger">Não Informado</span>' !!}</td>
@@ -59,6 +58,9 @@
                                         @if($jornal->tipoColeta->id == 1)
                                             <p><a href="{{ $jornal->url }}" target="_BLANK">{{ $jornal->url }}</a></p>
                                         @endif
+                                    </td>
+                                    <td>
+                                        {!! ($jornal->retorno_midia) ? "R$ ".$jornal->retorno_midia : '<span class="text-danger">Não informado</span>' !!}
                                     </td>
                                     <td class="text-center">
                                         <a title="Capturar Sessão" href="{{ url('fonte-impresso/'.$jornal->id.'/sessao') }}" class="btn btn-warning btn-link btn-icon"><i class="fa fa-globe fa-2x"></i></a>

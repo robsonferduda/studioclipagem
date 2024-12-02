@@ -116,6 +116,11 @@
                               <span class="sidebar-normal">Cadastrar Notícia</span>
                               </a>
                           </li> 
+                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'impresso/noticias') ? 'active' : '' }}">
+                            <a href="{{ url('jornal-impresso/noticias') }}">
+                              <span class="sidebar-normal">Notícias</span>
+                              </a>
+                          </li>
                         </ul>
                      </div>
                   </li>
@@ -447,6 +452,7 @@
   <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
   <script src="{{ asset('js/dropzone.js') }}"></script>
   <script src="{{ asset('js/cropper.js') }}"></script>
+  <script src="{{ asset('js/cropper-main.js') }}"></script>
   <script src="{{ asset('js/plugins/chartist.min.js') }}"></script>
   <script src="{{ asset('js/dataTables.checkboxes.min.js') }}"></script>
   @yield('script')

@@ -36,9 +36,7 @@ class MonitoramentoController extends Controller
     public function index()
     {
         $clientes = Cliente::orderBy('nome')->get();
-        $monitoramentos = array();
-        //$fontes = Fonte::where('tipo_fonte_id',1)->orderBy('ds_fonte')->get();
-        //$monitoramentos = Monitoramento::with('cliente')->orderBy('id','DESC')->paginate(10);
+        $monitoramentos = Monitoramento::with('cliente')->orderBy('id','DESC')->paginate(10);
 
         return view('monitoramento/index', compact('monitoramentos','clientes'));
     }

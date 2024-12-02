@@ -41,7 +41,8 @@
                                         <div class="panel-heading">
                                             <h3 class="panel-title"><span class="btn-show">Mostrar Mais</span></h3>
                                         </div>
-                                    </div>                             
+                                    </div> 
+                                    <a href="{{ url('jornal-impresso/noticia/extrair/web',$pagina->id) }}" class="btn btn-success btn-extrair-noticia"><i class="fa fa-database"></i> Extrair Notícia</a>                
                                 </div>
                             </div>                               
                         </div>                            

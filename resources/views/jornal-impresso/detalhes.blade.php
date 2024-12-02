@@ -6,13 +6,13 @@
             <div class="row">
                 <div class="col-md-8">
                     <h4 class="card-title">
-                        <i class="fa fa-newspaper-o"></i> Jornal Impresso 
+                        <i class="fa fa-newspaper-o"></i> Impressos 
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Detalhes 
                     </h4>
                 </div>
                 <div class="col-md-4">
-                    <a href="{{ url('impresso') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-newspaper-o"></i> Dashboard</a>
-                    <a href="{{ url('jornal-impresso/processamento') }}" class="btn btn-warning pull-right" style="margin-right: 12px;"><i class="fa fa-cogs"></i> Processamento</a>
+                    <a href="{{ url('impresso') }}" class="btn btn-warning pull-right" style="margin-right: 12px;"><i class="nc-icon nc-chart-pie-36"></i> Dashboard</a>
+                    <a href="{{ url('jornal-impresso/noticias') }}" class="btn btn-info pull-right" style="margin-right: 12px;"><i class="fa fa-newspaper-o"></i> Notícias</a>
                 </div>
             </div>
         </div>
@@ -23,11 +23,7 @@
                 </div>
 
                 <div class="col-lg-3 col-md-3">
-                    @if($noticia->fonte)
-                        <img src="{{ asset('jornal-impresso/'.$noticia->fonte->codigo.'/'.\Carbon\Carbon::parse($noticia->dt_clipagem)->format('Ymd').'/img/pagina_'.$noticia->nu_pagina_atual.'.png') }}" alt="..." class="img-thumbnail">
-                    @else
-
-                    @endif
+                    <img src="{{ asset('img/noticia-impressa/'.$noticia->ds_caminho_img) }}" alt="..." class="img-thumbnail">
                 </div>
 
                 <div class="col-lg-9 col-md-9">
@@ -41,6 +37,7 @@
                     <p>
                         {!! nl2br($noticia->texto) !!}
                     </p>
+                    <p><strong>Retorno de Mídia</strong>: {!! ($noticia->valor_retorno) ? "R$ ".$noticia->valor_retorno : '<span class="text-danger">Não calculado</span>' !!}</p>
                 </div>   
             </div>
         </div>

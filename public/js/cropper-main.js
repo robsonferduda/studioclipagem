@@ -197,7 +197,7 @@ $(function () {
         case 'getCroppedCanvas':
           if (result) {
             // Bootstrap's Modal
-            //$('#getCroppedCanvasModal').modal().find('.modal-body').html(result);
+            $('#getCroppedCanvasModal').modal().find('.modal-body').html(result);
 
               var host =  $('meta[name="base-url"]').attr('content');
               var img = result.toDataURL(uploadedImageType);
@@ -236,13 +236,10 @@ $(function () {
                 },
                 success: function(data) {
 
-                    var img = host+"/jornal-impresso/noticias/"+data;
+                  var img = host+"/img/noticia-impressa/recorte/"+data;                    
                     
-                    
-                    $(".img-container").remove();
-                    $(".box-img").append('<img id="image" src="'+img+'">');
-                    
-
+                  //$(".img-container img").remove();
+                  //$(".img-container").append('<img id="image" src="'+img+'">');
                 },
                 complete: function(){
                     

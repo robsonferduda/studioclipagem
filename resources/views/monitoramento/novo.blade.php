@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
 <div class="col-md-12">
-    <div class="card">
+    <div class="card load-busca">
         <div class="card-header">
             <div class="row">
                 <div class="col-md-8">
@@ -66,7 +66,9 @@
                                     <p class="mb-1"><strong>Observações</strong></p>
                                     <p class="mt-1 mb-1"><strong>&</strong>: operador de busca equivalente ao "E"</p>
                                     <p class="mt-1 mb-1"><strong>|</strong>: operador de busca equivalente ao "OU"</p>
+                                    <p class="mt-1 mb-1"><strong>!</strong>: operador de busca equivalente ao "NÃO"</p>
                                     <p class="mt-1 mb-1"><strong><-></strong>: operador de distância entre palavras, onde o - é a distância entre elas</p>
+                                    <p class="mt-1 mb-1"><strong>Exemplo de busca</strong>: <span>queda<2>energia & Celesc & !Jaguaruna</span>: Todas as notícias relacionadas à queda de energia que citam a Celesc, exceto em Jaguaruna</p>
                                 </div>
                                 
                                 <div class="col-md-12 checkbox-radios mb-0">
@@ -136,7 +138,7 @@
                             "expressao": expressao
                     },
                     beforeSend: function() {
-                        
+                        $('.load-busca').loader('show');
                     },
                     success: function(data) {
 
@@ -163,7 +165,7 @@
                         $(".resultados").append('<span class="text-danger">Erro ao executar o string de busca</span>');
                     },
                     complete: function(){
-                        
+                        $('.load-busca').loader('hide');
                     }
             });
 

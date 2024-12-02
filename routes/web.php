@@ -76,7 +76,6 @@ Route::get('fonte-impresso/{id}/sessao','FonteImpressoController@sessao');
 Route::post('fonte-impresso/inserir','FonteImpressoController@inserir');
 Route::post('fonte-impresso/{id}/atualizar','FonteImpressoController@atualizar');
 
-
 Route::get('jornal-impresso/edicao/{edicao}/paginas','JornalImpressoController@paginas');
 
 Route::get('fontes','FonteController@index');
@@ -96,20 +95,28 @@ Route::get('impresso','JornalImpressoController@index');
 Route::match(array('GET', 'POST'),'jornal-impresso/web','JornalImpressoController@web');
 Route::match(array('GET', 'POST'),'jornal-impresso/processamento','JornalImpressoController@processamento');
 Route::match(array('GET', 'POST'),'jornal-impresso/monitoramento','JornalImpressoController@monitoramento');
+Route::match(array('GET', 'POST'),'jornal-impresso/noticias','JornalImpressoController@index');
+
 Route::post('jornal-impresso/monitoramento/{cliente}/listar','JornalImpressoController@listarMonitoramento');
 Route::get('jornal-impresso/processar','JornalImpressoController@processar');
+Route::get('jornal-impresso/noticia/extrair/{tipo}/{id}','JornalImpressoController@extrair');
+Route::get('jornal-impresso/noticia/editar/{id}','JornalImpressoController@editar');
+
 Route::get('jornal-impresso/pendentes/listar','JornalImpressoController@listarPendentes');
 Route::get('jornal-impresso/upload','JornalImpressoController@upload');
 Route::get('jornal-impresso/noticia/{id}','JornalImpressoController@detalhes');
 Route::post('jornal-impresso/upload','JornalImpressoController@uploadFiles');
 
-//Route::resource('noticia-impressa','NoticiaImpressaController');
-Route::get('noticia-impressa/cadastrar','NoticiaImpressaController@cadastrar');
-Route::get('noticia-impressa/cliente/{cliente}/copiar/{id}','NoticiaImpressaController@copiar');
-Route::get('noticia-impressa/cliente/{cliente}/editar/{id}','NoticiaImpressaController@editar');
-Route::post('noticia-impressa/upload','NoticiaImpressaController@upload');
+Route::post('noticia-impressa/upload','NoticiaImpressaController@upload'); 
+Route::resource('noticia-impressa','NoticiaImpressaController');
 
-Route::match(array('GET', 'POST'),'buscar-impresso','JornalImpressoController@index');
+//Route::resource('noticia-impressa','NoticiaImpressaController');
+Route::get('noticia-impressa/cadastrar','NoticiaImpressaController@cadastrar');  // Rota Antiga
+Route::get('noticia-impressa/cliente/{cliente}/copiar/{id}','NoticiaImpressaController@copiar'); // Rota Antiga
+Route::get('noticia-impressa/cliente/{cliente}/editar/{id}','NoticiaImpressaController@editar'); // Rota Antiga
+Route::post('noticia-impressa/upload','NoticiaImpressaController@upload'); 
+
+
 Route::match(array('GET', 'POST'),'buscar-web','JornalWebController@index');
 
 Route::match(array('GET', 'POST'),'buscar-web','NoticiaWebController@index');

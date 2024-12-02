@@ -83,10 +83,10 @@ return [
             'visibility' => 'public',
         ],
 
-        'hashtag-img' => [
+        'impresso-img' => [
             'driver' => 'local',
-            'root' => storage_path('app/hashtag/files/images'),
-            'url' => env('APP_URL').'/storage',
+            'root' => public_path('img/noticia-impressa'),
+            'url' => env('APP_URL').'/impressos',
             'visibility' => 'public',
         ],
 

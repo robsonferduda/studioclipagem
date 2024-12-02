@@ -12,7 +12,7 @@ class FonteImpressa extends Model
     protected $connection = 'pgsql';
     protected $table = 'jornal_online';
 
-    protected $fillable = ['codigo', 'nome', 'cd_cidade', 'tipo', 'url', 'with_login'];
+    protected $fillable = ['codigo', 'nome', 'cd_cidade', 'tipo', 'url', 'with_login','retorno_midia'];
 
     public function estado()
     {

@@ -21,34 +21,7 @@
                 @include('layouts.mensagens')
             </div>
             <div class="row">
-                <div class="col-sm-12 col-md-3 col-lg-3">
-                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['buscar-monitoramento']]) !!}
-                        <div class="form-group m-3">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label>Buscar Monitoramento</label>
-                                        <select class="form-control select2" name="buscar_monitoramento" id="buscar_monitoramento">
-                                            <option value="">Selecione um cliente</option>
-                                            @foreach ($clientes as $cliente)
-                                                <option value="{{ $cliente->id }}">{{ $cliente->nome }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>     
-                        </div>
-                    {!! Form::close() !!}
-
-                    <div class="card m-3">
-                        <div class="card-body">
-                            <div id="accordion" role="tablist" aria-multiselectable="true" class="card-collapse">
-                                
-                            </div>
-                        </div>
-                      </div>
-                </div>   
-                <div class="col-sm-12 col-md-9 col-lg-9">
+                <div class="col-sm-12 col-md-12 col-lg-12">
                     {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['buscar-monitoramento']]) !!}
                         <div class="form-group m-3 w-70">
                             <div class="row">
@@ -66,12 +39,8 @@
                             </div>     
                         </div>
                     {!! Form::close() !!}
-
-                    
                 </div> 
-                
-                
-                    @foreach ($monitoramentos as $key => $monitoramento)
+                @foreach ($monitoramentos as $key => $monitoramento)
                         
                             <div class="col-lg-12 col-md-12 col-sm-12">
                                 <div class="card card-stats ml-3 mr-3" style="border: 1px solid #f1f1f1;">
@@ -80,7 +49,7 @@
                                             <div class="col-12 col-md-12">                                           
                                                 <p>
                                                     <h6>
-                                                        {{ $monitoramento->cliente->pessoa->nome }} 
+                                                        {{ $monitoramento->cliente->nome }} 
                                                         <span class="pull-right">
                                                         @if($monitoramento->fl_ativo)
                                                         <i class="fa fa-circle text-success mr-1"></i><a href="{{ url('monitoramento/'.$monitoramento->id.'/atualizar-status') }}">Ativo </a>
@@ -114,7 +83,7 @@
                                     </div>
                                 </div>
                             </div>
-                    @endforeach                        
+                @endforeach                        
             </div>
         </div>
     </div>

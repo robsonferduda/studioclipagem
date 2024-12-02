@@ -8,6 +8,7 @@ use File;
 use Storage;
 use Carbon\Carbon;
 use App\Models\Cliente;
+use App\Models\NoticiaImpresso;
 use App\Models\EdicaoJornalImpresso;
 use App\Models\NoticiaCliente;
 use App\Models\PaginaJornalImpresso;
@@ -41,12 +42,7 @@ class JornalImpressoController extends Controller
         Session::put('sub-menu','impresso');
 
         $fontes = FonteImpressa::orderBy('nome')->get();
-        $total_impresso = FonteImpressa::count();
-        $ultima_atualizacao_impresso = FonteImpressa::max('created_at');
-
-        $total_noticias = JornalImpresso::where('dt_clipagem', $this->data_atual)->count();
-        $ultima_atualizacao_noticia = JornalImpresso::max('created_at');
-
+      
         if($request->isMethod('POST')){
 
             $carbon = new Carbon();
@@ -79,7 +75,7 @@ class JornalImpressoController extends Controller
 
         }
 
-        return view('jornal-impresso/index',compact('fontes','dados','dt_inicial','dt_final','total_impresso','ultima_atualizacao_impresso', 'total_noticias','ultima_atualizacao_noticia'));
+        return view('jornal-impresso/index',compact('fontes','dados','dt_inicial','dt_final'));
     }
 
     public function detalhes($id)
@@ -136,14 +132,46 @@ class JornalImpressoController extends Controller
     public function paginas($edicao)
     {
         $paginas = PaginaJornalImpresso::where('id_edicao_jornal_online', $edicao)->get();
-
-        foreach ($paginas as $key => $pagina) {
-            
-            //dd($this->getImage($pagina->path_pagina_s3));
-
-        }
-
+    
         return view('jornal-impresso/paginas', compact('paginas'));
+    }
+
+    public function editar($id)
+    {
+        $clientes = Cliente::orderBy('nome')->get();
+        $noticia = NoticiaImpresso::find($id);
+    
+        return view('jornal-impresso/editar', compact('noticia','clientes'));
+    }
+
+    public function extrair($tipo, $id)
+    {
+        switch ($tipo) {
+            case 'web':
+                $conteudo = PaginaJornalImpresso::find($id);
+
+                $arquivo = Storage::disk('s3')->get($conteudo->path_pagina_s3);
+                $filename = $id.".jpg";
+
+                $nova_noticia = array("id_fonte" => $conteudo->edicao->id_jornal_online,
+                                      "dt_clipagem" => $conteudo->edicao->dt_coleta,
+                                      "texto" => $conteudo->texto_extraido,
+                                      "nu_paginas_total" => $conteudo->edicao->paginas->count(),
+                                      "nu_pagina_atual" => $conteudo->n_pagina,
+                                      "ds_caminho_img" => $filename);
+
+                $noticia = NoticiaImpresso::create($nova_noticia);
+
+                Storage::disk('impresso-img')->put($filename, $arquivo);
+
+                return redirect('jornal-impresso/noticia/editar/'.$noticia->id);
+
+                break;
+            
+            case 'impresso':
+                # code...
+                break;                
+        }
     }
 
     public function getImage($path)
@@ -155,7 +183,7 @@ class JornalImpressoController extends Controller
         );
     }
 
-    public function upload()
+    public function uploadf()
     {
         Session::put('sub-menu','upload');
 
