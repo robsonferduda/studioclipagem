@@ -193,7 +193,11 @@
                         'className': 'item',
                         'checkboxes': true,
                         'ordering': false,
-                        'sortable': false
+                        'sortable': false,
+                        'render': function(data, type, row, meta){
+                            data = '<label style="display: inline; color: black; font-weight: 600;"><input style="width: 50%;" type="checkbox" class="dt-checkboxes">'+data+'</label>'
+                            return data;
+                        }
                     }
                 ],
                 "stateSave": true
