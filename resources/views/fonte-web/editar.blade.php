@@ -25,6 +25,7 @@
                     </div>
                 </div>
                 <div class="row">
+                    <input type="hidden" name="flag_inconsistencia" id="flag_inconsistencia" value="{{ $flag_inconsistencia }}">
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Estado <span class="text-danger">Obrigatório</span></label>
@@ -67,15 +68,49 @@
                         <div class="form-check mt-3">
                             <div class="form-check">
                                 <label class="form-check-label">
-                                    <input class="form-check-input" type="checkbox" name="resetar_situacao" value="true">
+                                    <input class="form-check-input" type="checkbox" name="resetar_situacao" value="true" {{ ($fonte->id_situacao == 173 or $fonte->id_situacao == 174) ? 'checked' : '' }}>
                                     Resetar Situação 
                                     <span class="form-check-sign"></span>
                                 </label>
                             </div>
-                            <span>Coloca a situação da fonte para <strong>Normal</strong>, retornando para a fila de processamento</span>
+                            <span>A opção <strong>Resetar Situação</strong> coloca a situação da fonte para <strong>Aguardando</strong>, retornando para a fila de processamento.</span>
                         </div>
                     </div>
+                    <div class="col-md-12">
+                        <span class="text-info"><strong>Atenção! </strong>Os campos para edição de notícia são disponibilizados apenas para as fontes com inconsistência de estrutura e mapeamento.</span>
+                    </div>
                 </div> 
+                @if($fonte->id_situacao == 173 or $fonte->id_situacao == 174)
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <h6>Dados de Mapeamento</h6>
+                        </div> 
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Título <span class="text-danger">Obrigatório</span></label>
+                                <input type="text" class="form-control" name="titulo" id="titulo" placeholder="Título" value="">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Data Notícia <span class="text-danger">Obrigatório</span></label>
+                                <input type="text" class="form-control datepicker" name="dt_clipagem" required="true" value="{{ date("d/m/Y") }}" placeholder="__/__/____">
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="form-group">
+                                <label>Link da Notícia <span class="text-danger">Obrigatório</span></label>
+                                <input type="text" class="form-control" name="link" id="link" placeholder="Link da Notícia" value="">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <label for="sinopse">Texto <span class="text-danger">Obrigatório</span></label>
+                            <div class="form-group">
+                                <textarea class="form-control" name="texto" id="texto" rows="10"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                @endif
             </div>
             <div class="card-footer text-center mb-3">
                 <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Salvar</button>

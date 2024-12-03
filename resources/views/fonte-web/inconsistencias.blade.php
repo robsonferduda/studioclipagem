@@ -46,7 +46,7 @@
                                         <span class="badge badge-default" style="background: {{ $fonte->situacao->ds_color }} !important; border-color: {{ $fonte->situacao->ds_color }} !important;">{{ $fonte->situacao->ds_situacao }}</span>
                                     </td>
                                     <td class="text-center" style="min-width: 100px;">
-                                        <a title="Editar" href="{{ url('fonte-web/editar/'.$fonte->id) }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
+                                        <a title="Editar" href="{{ url('fonte-web/editar/inconsistencia/'.$fonte->id) }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
                                         <a title="Excluir" href="{{ url('fonte-web/excluir/'.$fonte->id) }}" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-times fa-2x"></i></a>
                                     </td>
                                 </tr>

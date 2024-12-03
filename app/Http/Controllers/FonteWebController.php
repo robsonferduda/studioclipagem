@@ -273,8 +273,19 @@ class FonteWebController extends Controller
         $cidades = Cidade::orderBy('nm_cidade')->get();
         $estados = Estado::orderBy('nm_estado')->get();
         $fonte = FonteWeb::find($id);
+        $flag_inconsistencia = false;
 
-        return view('fonte-web/editar', compact('fonte','estados','cidades'));
+        return view('fonte-web/editar', compact('fonte','estados','cidades','flag_inconsistencia'));
+    }
+
+    public function editInconsistencia(FonteWeb $fonte, $id)
+    {
+        $cidades = Cidade::orderBy('nm_cidade')->get();
+        $estados = Estado::orderBy('nm_estado')->get();
+        $fonte = FonteWeb::find($id);
+        $flag_inconsistencia = true;
+
+        return view('fonte-web/editar', compact('fonte','estados','cidades','flag_inconsistencia'));
     }
 
     public function atualizarEstado()
@@ -346,7 +357,7 @@ class FonteWebController extends Controller
         }
     
         try{
-        
+                        
             $fonte->update($request->all());
             $retorno = array('flag' => true,
                              'msg' => '<i class="fa fa-check"></i> Dados atualizados com sucesso');
@@ -361,7 +372,12 @@ class FonteWebController extends Controller
 
         if ($retorno['flag']) {
             Flash::success($retorno['msg']);
-            return redirect('fonte-web/listar')->withInput();
+
+            if($request->flag_inconsistencia)
+                return redirect('fonte-web/inconsistencias')->withInput();
+            else
+                return redirect('fonte-web/listar')->withInput();
+
         } else {
             Flash::error($retorno['msg']);
             return redirect()->route('font-web.edit', $fonte->id)->withInput();

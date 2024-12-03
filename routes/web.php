@@ -83,6 +83,7 @@ Route::get('fonte-web/coletas/{origem}/listar/{id_fonte}','FonteWebController@li
 Route::get('fonte-web/coletas/{id}','FonteWebController@coletas');
 Route::get('fonte-web/relatorios','FonteWebController@relatorios');
 Route::get('fonte-web/editar/{id}','FonteWebController@edit');
+Route::get('fonte-web/editar/inconsistencia/{id}','FonteWebController@editInconsistencia');
 Route::get('fonte-web/excluir/{id}','FonteWebController@destroy');
 Route::get('fonte-web/importar','FonteWebController@importar');
 Route::get('fonte-web/inconsistencias','FonteWebController@inconsistencias');
