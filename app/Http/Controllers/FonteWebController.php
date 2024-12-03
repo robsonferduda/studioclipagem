@@ -272,12 +272,35 @@ class FonteWebController extends Controller
         return view('fonte-web/editar', compact('fonte','estados','cidades'));
     }
 
+    public function atualizarEstado()
+    {
+        $fontes = FonteWeb::whereNull('cd_estado')->get();
+
+        $count = 0;
+        foreach ($fontes as $key => $fonte) {
+            
+            $fontes_with_estado = (new Noticia())->getEstado($fonte->id_knewin);
+
+            if(isset($fontes_with_estado[0]) AND $fontes_with_estado[0]->estado){
+
+                $estado = Estado::where('nm_estado', $fontes_with_estado[0]->estado)->first();
+
+                $fonte->cd_estado = $estado->cd_estado;
+                $fonte->save();
+                $count += 1;
+            }
+
+        }
+        dd($count);
+    }
+
     public function editarInconsistencia(Request $request)
     {
         $fonte = FonteWeb::find($request->id);
 
         if($fonte){
             $fonte->url = $request->url;
+            $fonte->id_situacao = 0;
             $fonte->save();
         }
     }

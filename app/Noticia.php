@@ -38,4 +38,11 @@ class Noticia extends Model
         
         return DB::connection('mysql')->select($sql);
     }
+
+    public function getEstado($estado)
+    {
+        $sql = "SELECT * FROM app_importacaoveiculos where id_knewin = '$estado'";
+        
+        return DB::connection('mysql')->select($sql);
+    }
 }

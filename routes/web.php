@@ -87,6 +87,9 @@ Route::get('fonte-web/excluir/{id}','FonteWebController@destroy');
 Route::get('fonte-web/importar','FonteWebController@importar');
 Route::get('fonte-web/inconsistencias','FonteWebController@inconsistencias');
 Route::get('fonte-web/estatisticas/{id}','FonteWebController@estatisticas');
+
+Route::get('fonte-web/atualizar-estado','FonteWebController@atualizarEstado');
+
 Route::get('fonte-web/totais/semana/{id}','FonteWebController@getSemanaColetas');
 ROute::post('fonte-web/inconsistencias/editar','FonteWebController@editarInconsistencia');
 Route::match(array('GET', 'POST'),'fonte-web/listar','FonteWebController@listar');

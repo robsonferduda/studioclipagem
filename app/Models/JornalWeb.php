@@ -10,7 +10,7 @@ class JornalWeb extends Model
     protected $connection = 'pgsql';
     protected $table = 'noticia_web';
 
-    protected $fillable = [''];     
+    protected $fillable = ['cd_estado'];     
     
     public function fonte()
     {

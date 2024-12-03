@@ -4,7 +4,7 @@
     <div class="card">
         <div class="card-header">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-9">
                     <h4 class="card-title">
                         <i class="fa fa-globe"></i> Jornal Web
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Fontes
@@ -12,7 +12,7 @@
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> {{ count($dados) }} correções
                     </h4>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-3">
                     <a href="{{ url('buscar-web') }}" class="btn btn-info pull-right" style="margin-right: 12px;"><i class="fa fa-globe"></i> Notícias Web</a>
                 </div>
             </div>
@@ -27,11 +27,11 @@
                     <table id="bootstrap-table" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
-                                <th>Código</th>
-                                <th>Fonte</th>
-                                <th>URL</th>
-                                <th>Situação</th>
-                                <th class="disabled-sorting text-center">Ações</th>
+                                <th style="width: 8%">Código</th>
+                                <th style="width: 18%">Fonte</th>
+                                <th style="width: 56%">URL</th>
+                                <th style="width: 10%">Situação</th>
+                                <th style="width: 8%" class="disabled-sorting text-center">Ações</th>
                             </tr>
                         </thead>
                         <tbody>
