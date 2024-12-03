@@ -79,6 +79,7 @@
                                 <th>Cidade</th>
                                 <th>Nome</th>
                                 <th>URL</th>
+                                <th>Valor cm/col</th>
                                 <th>Situação</th>
                                 <th class="disabled-sorting text-center">Ações</th>
                             </tr>
@@ -90,6 +91,7 @@
                                 <th>Cidade</th>
                                 <th>Nome</th>
                                 <th>URL</th>
+                                <th>Valor cm/col</th>
                                 <th>Situação</th>
                                 <th class="disabled-sorting text-center">Ações</th>
                             </tr>
@@ -184,6 +186,7 @@
                     { data: "cidade" },
                     { data: "nome" },
                     { data: "url" },
+                    { data: "valor" },
                     { data: "situacao" },
                     { data: "acoes" },
                 ],

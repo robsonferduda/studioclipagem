@@ -17,7 +17,7 @@
                 </div>
             </div>
         </div>
-        <div class="card-body">
+        <div class="card-body mr-3 ml-2">
             <div class="col-md-12">
                 @include('layouts.mensagens')
             </div>

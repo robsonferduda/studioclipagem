@@ -45,4 +45,11 @@ class Noticia extends Model
         
         return DB::connection('mysql')->select($sql);
     }
+
+    public function getValor($fonte)
+    {
+        $sql = "SELECT * FROM app_web_sites WHERE id_knewin = $fonte";
+        
+        return DB::connection('mysql')->select($sql);
+    }
 }

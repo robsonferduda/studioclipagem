@@ -13,7 +13,7 @@ class FonteWeb extends Model
     protected $connection = 'pgsql';
     protected $table = 'fonte_web';
 
-    protected $fillable = ['codigo', 'id_knewin', 'nome', 'url', 'fl_coleta', 'cd_cidade', 'cd_estado', 'id_situacao','id_prioridade'];
+    protected $fillable = ['codigo', 'id_knewin', 'nome', 'url', 'fl_coleta', 'cd_cidade', 'cd_estado', 'id_situacao','id_prioridade','nu_valor'];
 
     public function estado()
     {

@@ -7,6 +7,7 @@ use Auth;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use App\Noticia;
+use App\Models\Pais;
 use App\Models\NoticiaWeb;
 use App\Models\ConteudoNoticiaWeb;
 use App\Models\JornalWeb;
@@ -90,6 +91,9 @@ class FonteWebController extends Controller
                 ->addColumn('nome', function ($fonte) {
                     return $fonte->nome;
                 })  
+                ->addColumn('valor', function ($fonte) {
+                    return number_format($fonte->nu_valor, 2, ".","");
+                }) 
                 ->addColumn('url', function ($fonte) {
                     return $fonte->url;
                 })    
@@ -264,8 +268,9 @@ class FonteWebController extends Controller
 
         $cidades = Cidade::orderBy('nm_cidade')->get();
         $estados = Estado::orderBy('nm_estado')->get();
+        $paises = Pais::all();
 
-        return view('fonte-web/novo', compact('estados','cidades'));
+        return view('fonte-web/novo', compact('estados','cidades','paises'));
     }
 
     public function edit(FonteWeb $fonte, $id)
@@ -273,9 +278,10 @@ class FonteWebController extends Controller
         $cidades = Cidade::orderBy('nm_cidade')->get();
         $estados = Estado::orderBy('nm_estado')->get();
         $fonte = FonteWeb::find($id);
+        $paises = Pais::all();
         $flag_inconsistencia = false;
 
-        return view('fonte-web/editar', compact('fonte','estados','cidades','flag_inconsistencia'));
+        return view('fonte-web/editar', compact('fonte','estados','cidades','flag_inconsistencia','paises'));
     }
 
     public function editInconsistencia(FonteWeb $fonte, $id)
@@ -302,6 +308,26 @@ class FonteWebController extends Controller
                 $estado = Estado::where('nm_estado', $fontes_with_estado[0]->estado)->first();
 
                 $fonte->cd_estado = $estado->cd_estado;
+                $fonte->save();
+                $count += 1;
+            }
+
+        }
+        dd($count);
+    }
+
+    public function atualizarValor()
+    {
+        $fontes = FonteWeb::whereNull('nu_valor')->get();
+
+        $count = 0;
+        foreach ($fontes as $key => $fonte) {
+            
+            $fontes_with_estado = (new Noticia())->getValor($fonte->id_knewin);
+
+            if(isset($fontes_with_estado[0]) AND $fontes_with_estado[0]->valor_cm){
+
+                $fonte->nu_valor = $fontes_with_estado[0]->valor_cm;
                 $fonte->save();
                 $count += 1;
             }
@@ -363,6 +389,7 @@ class FonteWebController extends Controller
                              'msg' => '<i class="fa fa-check"></i> Dados atualizados com sucesso');
 
         } catch (\Illuminate\Database\QueryException $e) {
+
             $retorno = array('flag' => false,
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
         } catch (Exception $e) {

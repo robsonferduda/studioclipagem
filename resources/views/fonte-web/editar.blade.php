@@ -26,7 +26,18 @@
                 </div>
                 <div class="row">
                     <input type="hidden" name="flag_inconsistencia" id="flag_inconsistencia" value="{{ $flag_inconsistencia }}">
-                    <div class="col-md-6">
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>País <span class="text-danger">Obrigatório</span></label>
+                            <select class="form-control select2" name="cd_pais" id="cd_pais">
+                                <option value="">Selecione um país</option>
+                                @foreach ($paises as $pais)
+                                    <option value="{{ $pais->id }}" {{ ($fonte->cd_pais == $pais->id) ? 'selected' : '' }}>{{ $pais->ds_pais }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label>Estado <span class="text-danger">Obrigatório</span></label>
                             <select class="form-control select2" name="cd_estado" id="cd_estado">
@@ -40,7 +51,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Cidade <span class="text-danger">Obrigatório</span></label>
-                            <select class="form-control select2" name="cd_cidade" id="cd_cidade">
+                            <select class="form-control select2" name="cd_cidade" id="cidade" disabled="disabled">
                                 <option value="">Selecione uma cidade</option>
                                 @foreach ($cidades as $cidade)
                                     <option value="{{ $cidade->cd_cidade }}" {{ ($fonte->cd_cidade == $cidade->cd_cidade) ? 'selected' : '' }}>{{ $cidade->nm_cidade }}</option>
@@ -50,7 +61,7 @@
                     </div>                   
                 </div>
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label>Nome <span class="text-danger">Obrigatório</span></label>
                             <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome" value="{{ $fonte->nome }}">
@@ -60,6 +71,12 @@
                         <div class="form-group">
                             <label>URL</label>
                             <input type="text" class="form-control" name="url" id="url" placeholder="URL" value="{{ $fonte->url }}">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Valor</label>
+                            <input type="text" class="form-control" name="nu_valor" id="nu_valor" placeholder="0,00" value="{{ number_format($fonte->nu_valor, 2, ".","") }}">
                         </div>
                     </div>
                 </div>  
