@@ -27,10 +27,10 @@
                 <div class="col-lg-12 col-md-12 col-sm-12">
                     <div class="form-group m-3 w-70">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label>Estado</label>
-                                    <select class="form-control select2" name="cd_estado" id="cd_estado_filtro">
+                                    <select class="form-control select2" name="cd_estado" id="cd_estado">
                                         <option value="">Selecione um estado</option>
                                         @foreach ($estados as $estado)
                                             <option value="{{ $estado->cd_estado }}">{{ $estado->nm_estado }}</option>
@@ -41,20 +41,23 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Cidade</label>
-                                    <select class="form-control select2" name="cd_cidade" id="cd_cidade">
+                                    <select class="form-control select2" name="cd_cidade" id="cidade" disabled="disabled">
                                         <option value="">Selecione uma cidade</option>
-                                        @foreach ($cidades as $cidade)
-                                            <option value="{{ $cidade->cd_cidade }}">{{ $cidade->nm_cidade }}</option>
-                                        @endforeach
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label>Nome</label>
                                     <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome" value="">
                                 </div>
-                            </div>             
+                            </div>    
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label>Código</label>
+                                    <input type="text" class="form-control" name="codigo" id="codigo" placeholder="Nome" value="">
+                                </div>
+                            </div>           
                         </div>
                         <div class="row">
                             <div class="col-md-12 mb-0">
@@ -73,10 +76,10 @@
                             <tr>
                                 <th>Selecionar</th>
                                 <th>Estado</th>
-                                <th>Regional</th>
                                 <th>Cidade</th>
                                 <th>Nome</th>
                                 <th>URL</th>
+                                <th>Situação</th>
                                 <th class="disabled-sorting text-center">Ações</th>
                             </tr>
                         </thead>
@@ -84,10 +87,10 @@
                             <tr>
                                 <th>Selecionar</th>
                                 <th>Estado</th>
-                                <th>Regional</th>
                                 <th>Cidade</th>
                                 <th>Nome</th>
                                 <th>URL</th>
+                                <th>Situação</th>
                                 <th class="disabled-sorting text-center">Ações</th>
                             </tr>
                         </tfoot>
@@ -154,6 +157,7 @@
         var cidade = 0;
         var nome = "";
         var situacao = "";
+        var id = "";
 
         var table = $('#bootstrap-table').DataTable({
                 "processing": true,
@@ -171,15 +175,16 @@
                         d.estado   = estado;
                         d.cidade   = cidade;
                         d.nome     = nome;
+                        d.id       = id;
                     }
                 },
                 "columns": [
                     { data: "id" },
                     { data: "estado" },
-                    { data: "regional" },
                     { data: "cidade" },
                     { data: "nome" },
                     { data: "url" },
+                    { data: "situacao" },
                     { data: "acoes" },
                 ],
                 'columnDefs': [
@@ -199,18 +204,23 @@
             table.draw();
         });
 
-        $(document).on('change', '#cd_estado_filtro', function() {     
+        $(document).on('change', '#cd_estado', function() {     
             estado = $(this).val();
             table.draw();
         });
 
-        $(document).on('change', '#cd_cidade', function() {     
+        $(document).on('change', '#cidade', function() {     
             cidade = $(this).val();
             table.draw();
         });
 
-        $(document).on('change', '#nome', function() {     
+        $(document).on('input', '#nome', function() {     
             nome = $(this).val();
+            table.draw();
+        });
+
+        $(document).on('input', '#codigo', function() {     
+            id = $(this).val();
             table.draw();
         });
 

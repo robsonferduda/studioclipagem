@@ -46,6 +46,7 @@ class FonteWebController extends Controller
             $nome = ($request->nome) ? $request->nome : "";
             $estado = ($request->estado) ? $request->estado : "";
             $cidade = ($request->cidade) ? $request->cidade : "";
+            $id = ($request->id) ? $request->id : "";
     
                 $fonte = FonteWeb::query();
     
@@ -59,6 +60,10 @@ class FonteWebController extends Controller
 
                 $fonte->when($cidade, function ($q) use ($cidade) {
                     return $q->where('cd_cidade', $cidade);
+                });
+
+                $fonte->when($id, function ($q) use ($id) {
+                    return $q->where('id', $id);
                 });
     
                 $fonte->when($nome, function ($q) use ($nome) {
@@ -76,8 +81,8 @@ class FonteWebController extends Controller
                 ->addColumn('estado', function ($fonte) {
                     return ($fonte->estado) ? $fonte->estado->nm_estado : "Não informado";
                 }) 
-                ->addColumn('regional', function ($fonte) {
-                    return ($fonte->cidade and $fonte->cidade->regional) ? $fonte->cidade->regional->descricao : "Não informado";
+                ->addColumn('situacao', function ($fonte) {
+                    return '<span class="badge badge-default" style="background: '.$fonte->situacao->ds_color.' !important; border-color: '.$fonte->situacao->ds_color.' !important;">'.$fonte->situacao->ds_situacao.'</span>';
                 })
                 ->addColumn('cidade', function ($fonte) {
                     return ($fonte->cidade) ? $fonte->cidade->nm_cidade : "Não informado";
@@ -96,7 +101,7 @@ class FonteWebController extends Controller
                                 <a title="Excluir" href="../fonte-web/excluir/'.$fonte->id.'" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-times fa-2x"></i></a>
                             </div>';
                 })   
-                ->rawColumns(['id','acoes'])         
+                ->rawColumns(['id','acoes','situacao'])         
                 ->make(true);
 
         }
