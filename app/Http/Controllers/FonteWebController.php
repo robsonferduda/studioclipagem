@@ -423,8 +423,8 @@ class FonteWebController extends Controller
                                 ConteudoNoticiaWeb::create($dados_conteudo);
 
             }
-            $fonte->id_situacao == 0;
-            $fonte->save();
+
+            $fonte->update(['id_situacao' => 0]);
         }
 
         if($request->resetar_situacao){
