@@ -290,11 +290,12 @@ class FonteWebController extends Controller
         $cidades = Cidade::orderBy('nm_cidade')->get();
         $estados = Estado::orderBy('nm_estado')->get();
         $fonte = FonteWeb::find($id);
+        $paises = Pais::all();
         $flag_inconsistencia = true;
 
         $noticia = NoticiaWeb::where('id_fonte', $id)->orderBy('created_at')->first();
 
-        return view('fonte-web/editar', compact('fonte','estados','cidades','flag_inconsistencia','noticia'));
+        return view('fonte-web/editar', compact('fonte','estados','cidades','flag_inconsistencia','paises','noticia'));
     }
 
     public function atualizarEstado()
