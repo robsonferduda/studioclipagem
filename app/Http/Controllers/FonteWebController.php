@@ -384,6 +384,7 @@ class FonteWebController extends Controller
         $fonte = FonteWeb::find($id);
 
         if($fonte->id_situacao == 173 or $fonte->id_situacao == 174 or $fonte->id_situacao == 47){
+
             if($request->id_noticia_referencia){
 
                 $noticia = NoticiaWeb::find($request->id_noticia_referencia);
@@ -422,6 +423,8 @@ class FonteWebController extends Controller
                                 ConteudoNoticiaWeb::create($dados_conteudo);
 
             }
+            $fonte->id_situacao == 0;
+            $fonte->save();
         }
 
         if($request->resetar_situacao){
