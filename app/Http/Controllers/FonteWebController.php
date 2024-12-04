@@ -280,7 +280,9 @@ class FonteWebController extends Controller
         $paises = Pais::all();
         $flag_inconsistencia = false;
 
-        return view('fonte-web/editar', compact('fonte','estados','cidades','flag_inconsistencia','paises'));
+        $noticia = NoticiaWeb::where('id_fonte', $id)->orderBy('created_at')->first();
+
+        return view('fonte-web/editar', compact('fonte','estados','cidades','flag_inconsistencia','paises','noticia'));
     }
 
     public function editInconsistencia(FonteWeb $fonte, $id)
@@ -290,7 +292,9 @@ class FonteWebController extends Controller
         $fonte = FonteWeb::find($id);
         $flag_inconsistencia = true;
 
-        return view('fonte-web/editar', compact('fonte','estados','cidades','flag_inconsistencia'));
+        $noticia = NoticiaWeb::where('id_fonte', $id)->orderBy('created_at')->first();
+
+        return view('fonte-web/editar', compact('fonte','estados','cidades','flag_inconsistencia','noticia'));
     }
 
     public function atualizarEstado()
@@ -375,7 +379,49 @@ class FonteWebController extends Controller
 
     public function update(Request $request, $id)
     {
+        $carbon = new Carbon();
         $fonte = FonteWeb::find($id);
+
+        if($fonte->id_situacao == 173 or $fonte->id_situacao == 174 or $fonte->id_situacao == 47){
+            if($request->id_noticia_referencia){
+
+                $noticia = NoticiaWeb::find($request->id_noticia_referencia);
+                $noticia->data_noticia = $carbon->createFromFormat('d/m/Y', $request->data_noticia)->format('Y-m-d')." 00:00:00";
+                $noticia->titulo_noticia = $request->titulo;
+                $noticia->url_noticia = $request->url_noticia;
+                
+                $noticia->save();
+
+                $conteudo = ConteudoNoticiaWeb::where('id_noticia_web', $noticia->id)->first();
+
+                if($conteudo){
+                    $conteudo->conteudo = $request->conteudo;
+                    $conteudo->save();
+                }else{
+                    $dados_conteudo = array('id_noticia_web' => $noticia->id,
+                    'conteudo' => $request->conteudo);
+
+                        ConteudoNoticiaWeb::create($dados_conteudo);
+                }
+                
+
+            }else{
+
+                $dados_noticia = array('id_fonte' => $id,
+                                'data_noticia' => $carbon->createFromFormat('d/m/Y', $request->data_noticia)->format('Y-m-d')." 00:00:00",
+                                'titulo_noticia' => $request->titulo,
+                                'url_noticia' => $request->url_noticia);
+        
+                                $nova = NoticiaWeb::create($dados_noticia);
+        
+                                //Insere em conteúdo
+                                $dados_conteudo = array('id_noticia_web' => $nova->id,
+                                                        'conteudo' => $request->conteudo);
+        
+                                ConteudoNoticiaWeb::create($dados_conteudo);
+
+            }
+        }
 
         if($request->resetar_situacao){
             $request->merge(['id_situacao' => 0]);

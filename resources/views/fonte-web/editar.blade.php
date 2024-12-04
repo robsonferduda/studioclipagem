@@ -97,33 +97,34 @@
                         <span class="text-info"><strong>Atenção! </strong>Os campos para edição de notícia são disponibilizados apenas para as fontes com inconsistência de estrutura e mapeamento.</span>
                     </div>
                 </div> 
-                @if($fonte->id_situacao == 173 or $fonte->id_situacao == 174)
+                @if($fonte->id_situacao == 173 or $fonte->id_situacao == 174 or $fonte->id_situacao == 47)
                     <div class="row mt-3">
                         <div class="col-md-12">
                             <h6>Dados de Mapeamento</h6>
                         </div> 
+                        <input type="hidden" name="id_noticia_referencia" value="{{ ($noticia) ? $noticia->id : 0 }}">
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Título <span class="text-danger">Obrigatório</span></label>
-                                <input type="text" class="form-control" name="titulo" id="titulo" placeholder="Título" value="">
+                                <input type="text" class="form-control" name="titulo" id="titulo" placeholder="Título" value="{{ ($noticia) ? $noticia->titulo_noticia : '' }}">
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>Data Notícia <span class="text-danger">Obrigatório</span></label>
-                                <input type="text" class="form-control datepicker" name="dt_clipagem" required="true" value="{{ date("d/m/Y") }}" placeholder="__/__/____">
+                                <input type="text" class="form-control datepicker" name="data_noticia" required="true" value="{{ ($noticia) ? \Carbon\Carbon::parse($noticia->data_noticia)->format('d/m/Y') : '' }} " placeholder="__/__/____">
                             </div>
                         </div>
                         <div class="col-md-9">
                             <div class="form-group">
                                 <label>Link da Notícia <span class="text-danger">Obrigatório</span></label>
-                                <input type="text" class="form-control" name="link" id="link" placeholder="Link da Notícia" value="">
+                                <input type="text" class="form-control" name="url_noticia" id="url_noticia" placeholder="Link da Notícia" value="{{ ($noticia) ? $noticia->url_noticia : '' }}">
                             </div>
                         </div>
                         <div class="col-md-12">
                             <label for="sinopse">Texto <span class="text-danger">Obrigatório</span></label>
                             <div class="form-group">
-                                <textarea class="form-control" name="texto" id="texto" rows="10"></textarea>
+                                <textarea class="form-control" name="conteudo" id="conteudo" rows="10">{{ ($noticia) ? $noticia->conteudo->conteudo : '' }}</textarea>
                             </div>
                         </div>
                     </div>
