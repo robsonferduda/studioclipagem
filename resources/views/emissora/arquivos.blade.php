@@ -84,8 +84,8 @@
                                         </div>
                                     </div>
                                     <div class="col-lg-9 col-sm-12">
-                                        <h6><strong>{{ $noticia->titulo }}</strong></h6>
-                                        <p>{{ ($noticia->emissora) ? $noticia->emissora->nome_emissora : 'Não identificada' }} - {{ \Carbon\Carbon::parse($noticia->dt_clipagem)->format('d/m/Y') }}</p>
+                                        <p><strong>{{ ($noticia->emissora) ? $noticia->emissora->nome_emissora : 'Não identificada' }}</strong></p>
+                                        <p> {{ \Carbon\Carbon::parse($noticia->dt_clipagem)->format('d/m/Y') }} - De {{ \Carbon\Carbon::parse($noticia->data_hora_inicio)->format('H:i:s') }} às {{ \Carbon\Carbon::parse($noticia->data_hora_fim)->format('H:i:s') }}</p>
                                         <p>
                                             {!! Str::limit($noticia->transcricao, 700, '<a href=""><strong> Veja Mais</strong></a>') !!}
                                         </p>                                        
