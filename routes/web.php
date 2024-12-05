@@ -155,6 +155,7 @@ Route::post('monitoramento/filtrar','MonitoramentoController@filtrar');
 Route::match(array('GET', 'POST'),'emissoras','EmissoraController@index');
 Route::get('emissoras/{tipo}/novo','EmissoraController@novo');
 Route::get('radio/emissora/{id}/horarios','EmissoraController@horarios');
+Route::get('radio/arquivos','EmissoraController@arquivos');
 
 Route::post('pauta','PautaController@store');
 Route::match(array('GET', 'POST'),'pautas','PautaController@index');
@@ -166,6 +167,10 @@ Route::post('pauta/desvincular','PautaController@desvincularNoticia');
 
 Route::get('radio/estatisticas','NoticiaRadioController@estatisticas');
 Route::match(array('GET', 'POST'),'radios','NoticiaRadioController@index');
+
+
+
+
 Route::get('radio/noticias/cadastrar','NoticiaRadioController@cadastrar');
 Route::get('radio/noticias/{id}/editar','NoticiaRadioController@editar');
 Route::get('radio/noticias/{id}/remover','NoticiaRadioController@remover');

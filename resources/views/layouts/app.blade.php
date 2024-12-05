@@ -184,11 +184,16 @@
                            <span class="sidebar-normal">Notícias</span>
                            </a>
                         </li>
+                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'radio-arquivos') ? 'active' : '' }}">
+                          <a href="{{ url('radio/arquivos') }}">
+                          <span class="sidebar-normal">Arquivos Rádio</span>
+                          </a>
+                        </li>
                         <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'radio-cadastrar') ? 'active' : '' }}">
                           <a href="{{ url('radio/noticias/cadastrar') }}">
                           <span class="sidebar-normal">Nova Notícia</span>
                           </a>
-                       </li>
+                        </li>
                         <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'emissoras-radio') ? 'active' : '' }}">
                            <a href="{{ url('emissoras/radio') }}">
                            <span class="sidebar-normal">Emissoras</span>

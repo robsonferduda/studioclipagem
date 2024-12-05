@@ -49,11 +49,16 @@ class EmissoraController extends Controller
         return view('emissora/index', compact('emissoras','codigo','descricao','estados'));
     }
 
+    public function arquivos()
+    {
+        Session::put('url', 'radio');
+        Session::put('sub-menu', "radio-arquivos");
+    }
+
     public function listar(Request $request, $tipo)
     {
-        
-        Session::put('url', $tipo);
-        Session::put('sub-menu', "emissoras-".$tipo);
+        Session::put('url', 'radio');
+        Session::put('sub-menu', "emissoras-radio");
 
         $estados = Estado::orderBy('nm_estado')->get();
 
