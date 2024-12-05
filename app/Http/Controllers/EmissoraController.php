@@ -7,6 +7,7 @@ use Auth;
 use App\Utils;
 use App\Models\Emissora;
 use App\Models\EmissoraHorario;
+use App\Models\EmissoraGravacao;
 use App\Models\Estado;
 use Carbon\Carbon;
 use Laracasts\Flash\Flash;
@@ -49,15 +50,27 @@ class EmissoraController extends Controller
         return view('emissora/index', compact('emissoras','codigo','descricao','estados'));
     }
 
-    public function arquivos()
+    public function arquivos(Request $request)
     {
         Session::put('url', 'radio');
         Session::put('sub-menu', "radio-arquivos");
 
         $emissoras = Emissora::orderBy('nome_emissora')->get();
-        $dados = array();
 
-        return view('emissora/arquivos', compact('dados','emissoras'));
+        if($request->isMethod('GET')){
+
+            $dt_inicial = date('Y-m-d H:i:s');
+            $dt_final = date('Y-m-d H:i:s');
+
+            $fila = EmissoraGravacao::whereBetween('data_hora_inicio', [$dt_inicial, $dt_final])->paginate(10);
+        }
+
+        $emissora = EmissoraGravacao::query();
+
+        
+        $arquivos = $emissora->orderBy('data_hora_fim')->paginate(10);
+
+        return view('emissora/arquivos', compact('arquivos','emissoras','dt_inicial','dt_final'));
     }
 
     public function listar(Request $request, $tipo)
