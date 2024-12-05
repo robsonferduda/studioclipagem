@@ -6,6 +6,7 @@ use DB;
 use Auth;
 use App\Utils;
 use App\Models\Emissora;
+use App\Models\EmissoraHorario;
 use App\Models\Estado;
 use Carbon\Carbon;
 use Laracasts\Flash\Flash;
@@ -130,6 +131,42 @@ class EmissoraController extends Controller
         $emissora = $request->id_emissora;
         $hora_inicial = $request->hora_inicial;
         $hora_final = $request->hora_final;
+        $dias_da_semana = '';
+
+        if($request->dia_0) $dias_da_semana .= '0,';
+        if($request->dia_1) $dias_da_semana .= '1,';
+        if($request->dia_2) $dias_da_semana .= '2,';
+        if($request->dia_3) $dias_da_semana .= '3,';
+        if($request->dia_4) $dias_da_semana .= '4,';
+        if($request->dia_5) $dias_da_semana .= '5,';
+        if($request->dia_6) $dias_da_semana .= '6,';
+
+        $dias_da_semana = substr($dias_da_semana, -0, -1);
+
+        $dados_insercao = array('id_emissora' => $emissora,
+                                'horario_start' => $hora_inicial,
+                                'horario_end' => $hora_final,
+                                'dias_da_semana' => $dias_da_semana);
+
+        try {
+            EmissoraHorario::create($dados_insercao);
+            $retorno = array('flag' => true,
+            'msg' => "Dados inseridos com sucesso");
+        } catch (\Throwable $th) {
+            $retorno = array('flag' => true,
+                             'msg' => "Ocorreu um erro ao inserir o registro");
+        } catch (\Exception $e) {
+            $retorno = array('flag' => true,
+                             'msg' => "Ocorreu um erro ao inserir o registro");
+        }       
+        
+        if ($retorno['flag']) {
+            Flash::success($retorno['msg']);
+        } else {
+            Flash::error($retorno['msg']);
+        }
+       
+        return redirect('radio/emissora/'.$request->id_emissora.'/horarios')->withInput();
     }
 
     public function store(Request $request)

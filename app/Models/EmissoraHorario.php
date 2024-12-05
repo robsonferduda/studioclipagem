@@ -9,5 +9,5 @@ class EmissoraHorario extends Model
     protected $connection = 'pgsql';
     protected $table = 'horarios_emissora_radio';
 
-    protected $fillable = [];
+    protected $fillable = ['id_emissora','horario_start','horario_end','dias_da_semana'];
 }
