@@ -53,6 +53,11 @@ class EmissoraController extends Controller
     {
         Session::put('url', 'radio');
         Session::put('sub-menu', "radio-arquivos");
+
+        $emissoras = Emissora::orderBy('nome_emissora')->get();
+        $dados = array();
+
+        return view('emissora/arquivos', compact('dados','emissoras'));
     }
 
     public function listar(Request $request, $tipo)
