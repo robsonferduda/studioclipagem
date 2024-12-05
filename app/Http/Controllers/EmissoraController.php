@@ -50,9 +50,7 @@ class EmissoraController extends Controller
 
     public function listar(Request $request, $tipo)
     {
-        $tipo = ($tipo == 'tv') ? 'tv' : 'radio';
-        $id_tipo = ($tipo == 'tv') ? 2 : 1;
-
+        
         Session::put('url', $tipo);
         Session::put('sub-menu', "emissoras-".$tipo);
 
@@ -81,7 +79,7 @@ class EmissoraController extends Controller
                 return $q->where('ds_emissora','ilike','%'.$descricao.'%');
             });
 
-            $emissoras = $emissora->where('tipo_id', $id_tipo)->orderBy('ds_emissora')->paginate(10);
+            $emissoras = $emissora->orderBy('nome_emissora')->paginate(10);
         
 
         return view('emissora/index', compact('emissoras','codigo','descricao','estados','tipo','cd_estado','cd_cidade'));
@@ -105,10 +103,11 @@ class EmissoraController extends Controller
         return view('emissora/form',compact('estados','emissora','tipo'));
     }
 
-    public function horarios($emissora)
+    public function horarios($id_emissora)
     {
-        $id_emissora = $emissora;
-        $horarios = array();
+        $emissora = Emissora::find($id_emissora);
+        $horarios = $emissora->horarios;
+
         return view('emissora/horarios',compact('horarios','id_emissora'));
     }
 

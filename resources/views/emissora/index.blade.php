@@ -19,21 +19,15 @@
             <div class="col-md-12">
                 @include('layouts.mensagens')
             </div>
-            <div class="row mr-1 ml-1">
-                <div class="col-md-12 px-0">
+            
+                <div class="col-md-12">
                     {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['emissoras/'.$tipo]]) !!}
-                        <div class="form-group m-3 w-70">
+                        <div class="form-group w-70">
                             <div class="row">
                                 <div class="col-md-2 col-sm-12">
                                     <div class="form-group">
-                                        <label>Código</label>
-                                        <input type="text" class="form-control" name="codigo" id="codigo" placeholder="Código" value="{{ $codigo }}">
-                                    </div>
-                                </div>
-                                <div class="col-md-2 col-sm-12">
-                                    <div class="form-group">
                                         <label>Estado</label>
-                                        <select class="form-control" name="cd_estado" id="estado">
+                                        <select class="form-control select2" name="cd_estado" id="cd_estado">
                                             <option value="">Selecione um estado</option>
                                             @foreach($estados as $estado)
                                                 <option value="{{ $estado->cd_estado }}" {{ ($cd_estado == $estado->cd_estado) ? 'selected' : '' }}>{{ $estado->nm_estado }}</option>
@@ -44,7 +38,7 @@
                                 <div class="col-md-2 col-sm-12">
                                     <div class="form-group">
                                         <label>Cidade</label>
-                                        <select class="form-control" name="cd_cidade" id="cidade">
+                                        <select class="form-control select2" name="cd_cidade" id="cidade" disabled="disabled">
                                             <option value="">Selecione uma cidade</option>
                                             
                                         </select>
@@ -63,7 +57,7 @@
                         </div>
                     {!! Form::close() !!} 
                 </div>
-            </div>
+            
             <div class="col-md-12">
                 <p><strong>Total de registros</strong>: {{ $emissoras->total() }} </p>
                 @if($emissoras->total())
@@ -72,9 +66,9 @@
                             <tr>
                                 <th>Estado</th>
                                 <th>Cidade</th>
-                                <th>Código</th>
                                 <th>Emissora</th>
-                                <th class="disabled-sorting text-center">Transcrição</th>
+                                <th>URL</th>
+                                <th class="disabled-sorting text-center">Gravação</th>
                                 <th class="disabled-sorting text-center">Ações</th>
                             </tr>
                         </thead>
@@ -82,25 +76,31 @@
                             <tr>
                                 <th>Estado</th>
                                 <th>Cidade</th>
-                                <th>Código</th>
                                 <th>Emissora</th>
-                                <th class="disabled-sorting text-center">Transcrição</th>
+                                <th>URL</th>
+                                <th class="disabled-sorting text-center">Gravação</th>
                                 <th class="disabled-sorting text-center">Ações</th>
                             </tr>
                         </tfoot>
                         <tbody>
                             @foreach($emissoras as $emissora)
                                 <tr>
-                                    <td>{{ $emissora->estado->sg_estado }}</td>
-                                    <td>{{ $emissora->cidade->nm_cidade }}</td>
-                                    <td>{{ $emissora->codigo }}</td>
-                                    <td>{{ $emissora->ds_emissora }}</td>
+                                    <td>{{ ($emissora->estado) ? $emissora->estado->sg_estado : 'Não Informado' }}</td>
+                                    <td>{{ ($emissora->cidade) ? $emissora->cidade->nm_cidade : 'Não Informado' }}</td>
+                                    <td>{{ $emissora->nome_emissora }}</td>
+                                    <td>{{ $emissora->url_stream }}</td>
                                     <td class="center">
-                                        <a href="{{ url('emissora/'.$emissora->id.'/transcricao/atualiza') }}">{!! ($emissora->fl_transcricao) ? '<span class="badge badge-pill badge-success">ATIVA</span>' : '<span class="badge badge-pill badge-danger">INATIVA</span>' !!}</a>
+                                        <a href="{{ url('emissora/'.$emissora->id.'/transcricao/atualiza') }}">{!! ($emissora->gravar) ? '<span class="badge badge-pill badge-success">SIM</span>' : '<span class="badge badge-pill badge-danger">NÃO</span>' !!}</a>
                                     </td>
                                     <td class="center">
                                         <a title="Editar" href="{{ route('emissora.edit',$emissora->id) }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
-                                        <a title="Horários de Coleta" href="{{ url('radio/emissora/'.$emissora->id.'/horarios') }}" class="btn btn-warning btn-link btn-icon"><i class="nc-icon nc-time-alarm font-25"></i></a>
+                                        @if(count($emissora->horarios))
+                                            <a title="Horários de Coleta" href="{{ url('radio/emissora/'.$emissora->id.'/horarios') }}" class="btn btn-warning btn-link btn-icon"><i class="nc-icon nc-time-alarm font-25"></i></a>
+                                        @else
+                                            <a title="Horários de Coleta" href="{{ url('radio/emissora/'.$emissora->id.'/horarios') }}" class="btn btn-default btn-link btn-icon"><i class="nc-icon nc-time-alarm font-25"></i></a>
+                                        @endif
+                                        
+                                        
                                         <form class="form-delete" style="display: inline;" action="{{ route('emissora.destroy',$emissora->id) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
@@ -127,37 +127,9 @@
         $(document).ready(function() {
 
             var host =  $('meta[name="base-url"]').attr('content');
-            
-            $("#estado").change(function(){
 
-                id = $(this).val();
-
-                $.ajax({
-                    url: host+'/estado/'+id+'/cidades',
-                    type: 'GET',        
-                    success: function(data) {
-
-                        $('#cidade').empty();
-                        $('#cidade').append($('<option>', { 
-                                value: "",
-                                text : "Selecione uma cidade" 
-                        }));
-
-                        $.each(data, function(index, value) {
-
-                            $('#cidade').append($('<option>', { 
-                                value: value.cd_cidade,
-                                text : value.nm_cidade 
-                            }));
-                        });                        
-                    },
-                    error: function(xhr, status, error){
-                        
-                    }
-                });    
-
-            });
         });
+
         $(function() {
             var estado = $("#estado").val();
             

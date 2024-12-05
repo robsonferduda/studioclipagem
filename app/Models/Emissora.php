@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Emissora extends Model
 {
     protected $connection = 'pgsql';
-    protected $table = 'emissora';
+    protected $table = 'emissora_radio';
 
-    protected $fillable = ['ds_emissora','cd_estado','cd_cidade','codigo','fl_transicao','tipo_id'];
+    protected $fillable = [];
 
     public function estado()
     {
@@ -21,8 +21,8 @@ class Emissora extends Model
         return $this->hasOne(Cidade::class, 'cd_cidade', 'cd_cidade');
     }
 
-    public function noticiaRadio()
+    public function horarios()
     {
-        return $this->hasMany(NoticiaRadio::class, 'id', 'emissora_id');
+        return $this->hasMany(EmissoraHorario::class, 'id_emissora', 'id');
     }
 }
