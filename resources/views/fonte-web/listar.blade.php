@@ -165,7 +165,7 @@
                 "processing": true,
                 "paginate": true,
                 "serverSide": true,
-                "ordering": false,
+                "ordering": true,
                 "bFilter": true,
                 "ajax":{
                     "url": "{{ url('fonte-web/listar') }}",
@@ -205,6 +205,32 @@
                 ],
                 "stateSave": true
             });
+
+        $(document).on('click', '.btn-prioridade', function() {   
+
+            fonte = $(this).data("fonte");
+            prioridade = $(this).data("id");
+            
+            $.ajax({
+                url: '../fonte-web/prioridade/atualizar',
+                type: 'POST',
+                data: { "_token": token,
+                        "fonte": fonte,
+                        "prioridade":prioridade
+                                },
+                success: function(result) {
+                              
+                },
+                error: function(response){
+
+                },
+                complete: function(response) {
+                   
+                }
+            });  
+
+            table.draw();
+        });
         
         $(document).on('click', '.filtro-situacao', function() {     
             situacao = $(this).data("valor");

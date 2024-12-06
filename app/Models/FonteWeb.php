@@ -30,6 +30,11 @@ class FonteWeb extends Model
         return $this->hasOne(SituacaoFonteWeb::class, 'id_situacao_fonte_web', 'id_situacao');
     }  
 
+    public function prioridade()
+    {
+        return $this->hasOne(Prioridade::class, 'id', 'id_prioridade');
+    }  
+    
     public function noticias()
     {
         return $this->hasMany(NoticiaWeb::class, 'id_fonte', 'id');

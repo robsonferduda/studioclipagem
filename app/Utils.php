@@ -108,6 +108,10 @@ class Utils
                 return '<i class="fa fa-times"></i> Data com formato inválido';
                 break;
 
+            case '42703':
+                return '<i class="fa fa-times"></i> Coluna não existente no banco de dados';
+                break;
+                
             default:
                 return '<i class="fa fa-times"></i> Código de erro desconhecido: '.$errorCode;
                 break;

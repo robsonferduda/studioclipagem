@@ -79,6 +79,7 @@ Route::post('fonte-impresso/{id}/atualizar','FonteImpressoController@atualizar')
 Route::get('jornal-impresso/edicao/{edicao}/paginas','JornalImpressoController@paginas');
 
 Route::get('fontes','FonteController@index');
+Route::post('fonte-web/prioridade/atualizar','FonteWebController@atualizarPrioridade');
 Route::get('fonte-web/coletas/{origem}/listar/{id_fonte}','FonteWebController@listarColetas');
 Route::get('fonte-web/coletas/{id}','FonteWebController@coletas');
 Route::get('fonte-web/relatorios','FonteWebController@relatorios');

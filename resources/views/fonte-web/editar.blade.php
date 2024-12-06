@@ -81,6 +81,19 @@
                     </div>
                 </div>  
                 <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Prioridade</label>
+                            <select class="form-control select2" name="id_prioridade" id="id_prioridade">
+                                <option value="">Selecione uma prioridade</option>
+                                @foreach ($prioridades as $prioridade)
+                                    <option value="{{ $prioridade->id }}" {{ ($prioridade->id == $fonte->id_prioridade) ? 'selected' : '' }}>{{ $prioridade->ds_prioridade }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col-md-6">
                         <div class="form-check mt-3">
                             <div class="form-check">

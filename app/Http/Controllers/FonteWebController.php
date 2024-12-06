@@ -6,11 +6,13 @@ use DB;
 use Auth;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
+use App\Utils;
 use App\Noticia;
 use App\Models\Pais;
 use App\Models\NoticiaWeb;
 use App\Models\ConteudoNoticiaWeb;
 use App\Models\JornalWeb;
+use App\Models\Prioridade;
 use App\Models\Estado;
 use App\Models\Cidade;
 use App\Models\FonteWeb;
@@ -71,7 +73,7 @@ class FonteWebController extends Controller
                     return $q->where('nome', 'ILIKE', '%'.trim($nome).'%');
                 });
 
-                $fonte->whereNotIn('id_situacao', [127,112,103,137])->orderBy('nome');
+                $fonte->whereNotIn('id_situacao', [127,112,103,137])->orderBy('id');
     
                 $fontes = $fonte->get();
 
@@ -89,7 +91,14 @@ class FonteWebController extends Controller
                     return ($fonte->cidade) ? $fonte->cidade->nm_cidade : "Não informado";
                 })
                 ->addColumn('nome', function ($fonte) {
-                    return $fonte->nome;
+
+                    if($fonte->id_prioridade){
+                        $prioridade = '<button data-fonte="'.$fonte->id.'" data-id="'.$fonte->prioridade->id.'" class="btn btn-'.$fonte->prioridade->ds_color.' btn-round btn-icon btn-sm btn-prioridade" style="height: 0.875rem; min-width: 0.6rem; width: 0.6rem;"></button>';
+                    }else{
+                        $prioridade = '<button data-fonte="'.$fonte->id.'" data-id="0" class="btn btn-default btn-round btn-icon btn-sm btn-prioridade" style="height: 0.875rem; min-width: 0.6rem; width: 0.6rem;"></button>';
+                    }
+
+                    return $fonte->nome.' '.$prioridade;
                 })  
                 ->addColumn('valor', function ($fonte) {
                     return number_format($fonte->nu_valor, 2, ".","");
@@ -104,12 +113,27 @@ class FonteWebController extends Controller
                                 <a title="Excluir" href="../fonte-web/excluir/'.$fonte->id.'" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-times fa-2x"></i></a>
                             </div>';
                 })   
-                ->rawColumns(['id','acoes','situacao'])         
+                ->rawColumns(['id','acoes','situacao','nome'])         
                 ->make(true);
 
         }
 
         return view('fonte-web/listar',compact('cidades','estados','situacoes'));
+    }
+
+    public function atualizarPrioridade(Request $request)
+    {
+        $prioridade = $request->prioridade;
+
+        if($prioridade == 3){
+            $prioridade = 0;
+        }else{
+            $prioridade += 1;
+        }
+
+        $fonte = FonteWeb::find($request->fonte);
+        $fonte->id_prioridade = $prioridade;
+        $fonte->save();
     }
 
     public function importar()
@@ -268,8 +292,9 @@ class FonteWebController extends Controller
         $cidades = Cidade::orderBy('nm_cidade')->get();
         $estados = Estado::orderBy('nm_estado')->get();
         $paises = Pais::all();
+        $prioridades = Prioridade::orderBy('id')->get();
 
-        return view('fonte-web/novo', compact('estados','cidades','paises'));
+        return view('fonte-web/novo', compact('estados','cidades','paises','prioridades'));
     }
 
     public function edit(FonteWeb $fonte, $id)
@@ -278,11 +303,12 @@ class FonteWebController extends Controller
         $estados = Estado::orderBy('nm_estado')->get();
         $fonte = FonteWeb::find($id);
         $paises = Pais::all();
+        $prioridades = Prioridade::orderBy('id')->get();
         $flag_inconsistencia = false;
 
         $noticia = NoticiaWeb::where('id_fonte', $id)->orderBy('created_at')->first();
 
-        return view('fonte-web/editar', compact('fonte','estados','cidades','flag_inconsistencia','paises','noticia'));
+        return view('fonte-web/editar', compact('fonte','estados','cidades','flag_inconsistencia','paises','noticia','prioridades'));
     }
 
     public function editInconsistencia(FonteWeb $fonte, $id)
@@ -291,11 +317,12 @@ class FonteWebController extends Controller
         $estados = Estado::orderBy('nm_estado')->get();
         $fonte = FonteWeb::find($id);
         $paises = Pais::all();
+        $prioridades = Prioridade::orderBy('id')->get();
         $flag_inconsistencia = true;
 
         $noticia = NoticiaWeb::where('id_fonte', $id)->orderBy('created_at')->first();
 
-        return view('fonte-web/editar', compact('fonte','estados','cidades','flag_inconsistencia','paises','noticia'));
+        return view('fonte-web/editar', compact('fonte','estados','cidades','flag_inconsistencia','paises','noticia','prioridades'));
     }
 
     public function atualizarEstado()
@@ -439,6 +466,8 @@ class FonteWebController extends Controller
 
         } catch (\Illuminate\Database\QueryException $e) {
 
+            dd($e);
+
             $retorno = array('flag' => false,
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
         } catch (Exception $e) {
@@ -456,7 +485,7 @@ class FonteWebController extends Controller
 
         } else {
             Flash::error($retorno['msg']);
-            return redirect()->route('font-web.edit', $fonte->id)->withInput();
+            return redirect('fonte-web/editar/'.$fonte->id)->withInput();
         }
     }
 
