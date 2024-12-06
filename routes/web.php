@@ -156,6 +156,7 @@ Route::match(array('GET', 'POST'),'emissoras','EmissoraController@index');
 Route::match(array('GET', 'POST'),'radio/arquivos','EmissoraController@arquivos');
 Route::get('emissoras/{tipo}/novo','EmissoraController@novo');
 Route::get('radio/emissora/{id}/horarios','EmissoraController@horarios');
+Route::get('radio/arquivos/detalhes/{id}','EmissoraController@detalhes');
 
 Route::post('pauta','PautaController@store');
 Route::match(array('GET', 'POST'),'pautas','PautaController@index');

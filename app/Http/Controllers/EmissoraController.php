@@ -109,6 +109,16 @@ class EmissoraController extends Controller
         return view('emissora/index', compact('emissoras','codigo','descricao','estados','tipo','cd_estado','cd_cidade'));
     }
 
+    public function detalhes($id)
+    {
+        $estados = Estado::orderBy('nm_estado')->get();
+        $emissora = Emissora::find($id);
+
+        $gravacao = EmissoraGravacao::find($id);
+
+        return view('emissora/detalhes',compact('estados','emissora','gravacao'));
+    }
+
     public function novo($tipo)
     {
         $estados = Estado::orderBy('nm_estado')->get();

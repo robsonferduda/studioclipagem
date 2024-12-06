@@ -87,7 +87,7 @@
                                         <p><strong>{{ ($noticia->emissora) ? $noticia->emissora->nome_emissora : 'Não identificada' }}</strong></p>
                                         <p> {{ \Carbon\Carbon::parse($noticia->dt_clipagem)->format('d/m/Y') }} - De {{ \Carbon\Carbon::parse($noticia->data_hora_inicio)->format('H:i:s') }} às {{ \Carbon\Carbon::parse($noticia->data_hora_fim)->format('H:i:s') }}</p>
                                         <p>
-                                            {!! Str::limit($noticia->transcricao, 700, '<a href=""><strong> Veja Mais</strong></a>') !!}
+                                            {!! Str::limit($noticia->transcricao, 700, '<a href="../radio/arquivos/detalhes/'.$noticia->id.'"><strong> Veja Mais</strong></a>') !!}
                                         </p>                                        
                                         <p class="mb-2"><strong>Retorno de Mídia</strong>: {!! ($noticia->valor_retorno) ? "R$ ".$noticia->valor_retorno : '<span class="text-danger">Não calculado</span>' !!}</p>
                                         <div>
