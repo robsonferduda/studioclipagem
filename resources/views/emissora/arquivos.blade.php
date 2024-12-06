@@ -52,7 +52,7 @@
                                         <select class="form-control select2" name="regra" id="regra">
                                             <option value="">Selecione uma fonte</option>
                                             @foreach ($emissoras as $emissora)
-                                                <option value="{{ $emissora->id }}">{{ $emissora }}</option>
+                                                <option value="{{ $emissora->id }}">{{ $emissora->nome_emissora }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -64,40 +64,34 @@
                         </div>
                     {!! Form::close() !!}
 
-                    @if(count($dados) > 0)
-                        <h6 class="px-3">Mostrando {{ $dados->count() }} de {{ $dados->total() }} Páginas</h6>
+                    @if(count($arquivos) > 0)
+                        <h6 class="px-3">Mostrando {{ $arquivos->count() }} de {{ $arquivos->total() }} Páginas</h6>
 
-                        {{ $dados->onEachSide(1)->appends(['dt_inicial' => $dt_inicial, 'dt_final' => $dt_final])->links('vendor.pagination.bootstrap-4') }}
+                        {{ $arquivos->onEachSide(1)->appends(['dt_inicial' => $dt_inicial, 'dt_final' => $dt_final])->links('vendor.pagination.bootstrap-4') }}
                     @endif
 
-                    @foreach ($dados as $key => $noticia)
+                    @foreach ($arquivos as $key => $noticia)
                         <div class="card">
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-lg-2 col-sm-12">
-                                        @if($noticia->fonte)
-                                            <img src="{{ asset('img/noticia-impressa/'.$noticia->ds_caminho_img) }}" alt="..." class="img-thumbnail">
-                                        @else
-
-                                        @endif
+                                    <div class="col-lg-3 col-sm-12">
+                                        <div style="text-align: center;">
+                                            <img src="{{ asset('img/emissoras/'.$noticia->emissora->logo) }}" alt="Logo {{ ($noticia->emissora) ? $noticia->emissora->nome_emissora : 'Não identificada' }}" style="width: 90%; padding: 25px;">
+                                            <audio width="100%" controls style="width: 100%;">
+                                                <source src="{{ Storage::disk('s3')->temporaryUrl($noticia->path_s3, '+30 minutes') }}" type="audio/mpeg">
+                                                Seu navegador não suporta a execução de áudios, faça o download para poder ouvir.
+                                            </audio>
+                                        </div>
                                     </div>
-                                    <div class="col-lg-10 col-sm-12">
-                                        <h6>{{ $noticia->titulo }}</h6>
-                                        <p>{{ ($noticia->fonte) ? $noticia->fonte->nome : 'Não identificada' }} - {{ \Carbon\Carbon::parse($noticia->dt_clipagem)->format('d/m/Y') }}</p>
+                                    <div class="col-lg-9 col-sm-12">
+                                        <p><strong>{{ ($noticia->emissora) ? $noticia->emissora->nome_emissora : 'Não identificada' }}</strong></p>
+                                        <p> {{ \Carbon\Carbon::parse($noticia->dt_clipagem)->format('d/m/Y') }} - De {{ \Carbon\Carbon::parse($noticia->data_hora_inicio)->format('H:i:s') }} às {{ \Carbon\Carbon::parse($noticia->data_hora_fim)->format('H:i:s') }}</p>
                                         <p>
-                                            {{ Str::limit($noticia->texto, 800, " ...") }}
-                                        </p>
-                                        @if($noticia->nu_pagina_atual == 1)
-                                            <p>Primeira Página</p>
-                                        @else
-                                            <p>Página <strong>{{ $noticia->nu_pagina_atual }}</strong> de <strong>{{ $noticia->nu_paginas_total }}</strong></p>
-                                        @endif
-                                        <p><strong>Retorno de Mídia</strong>: {!! ($noticia->valor_retorno) ? "R$ ".$noticia->valor_retorno : '<span class="text-danger">Não calculado</span>' !!}</p>
+                                            {!! Str::limit($noticia->transcricao, 700, '<a href="../radio/arquivos/detalhes/'.$noticia->id.'"><strong> Veja Mais</strong></a>') !!}
+                                        </p>                                        
+                                        <p class="mb-2"><strong>Retorno de Mídia</strong>: {!! ($noticia->valor_retorno) ? "R$ ".$noticia->valor_retorno : '<span class="text-danger">Não calculado</span>' !!}</p>
                                         <div>
-                                            <a class="btn btn-success btn-sm" href="{{ asset('jornal-impresso/noticia/editar/'.$noticia->id) }}"><i class="fa fa-edit"> </i> Editar Notícia</a>
-                                            <a class="btn btn-danger btn-sm" download target="_blank" href="{{ asset('jornal-impresso/processados/'.($noticia->fila) ? $noticia->fila : '') }}" role="button"><i class="fa fa-file-pdf-o"> </i> Documento Original</a>
-                                            <a class="btn btn-primary btn-sm" download target="_blank" href="{{ asset('jornal-impresso/'.$noticia->fonte->codigo.'/'.\Carbon\Carbon::parse($noticia->dt_clipagem)->format('Ymd').'/img/pagina_'.$noticia->nu_pagina_atual.'.png') }}" role="button"><i class="fa fa-file-image-o"> </i> Página Atual</a>
-                                            <a class="btn btn-success btn-sm" href="{{ asset('jornal-impresso/noticia/'.$noticia->id) }}" role="button"><i class="fa fa-eye"> </i> Detalhes</a>
+                                            <a href="{{ url('jornal-impresso/noticia/extrair/web',$noticia->id) }}" class="btn btn-success btn-sm"><i class="fa fa-database"></i> Extrair Notícia</a> 
                                         </div>
                                     </div>
                                 </div>
