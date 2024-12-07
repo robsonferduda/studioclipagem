@@ -179,13 +179,13 @@
                   </a>
                   <div class="collapse {{ (Session::has('url') and Session::get('url') == 'radio') ? 'show' : '' }}" id="submenu-radio" aria-expanded="false">
                      <ul class="nav ml-5">
-                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'web-dashboard') ? 'active' : '' }}">
+                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'radio-dashboard') ? 'active' : '' }}">
                           <a href="{{ url('radio/dashboard') }}">
                           <span class="sidebar-normal">Dashboard</span>
                           </a>
                         </li>
                         <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'radios') ? 'active' : '' }}">
-                           <a href="{{ url('radios') }}">
+                           <a href="{{ url('radio/noticias') }}">
                            <span class="sidebar-normal">Notícias</span>
                            </a>
                         </li>

@@ -153,13 +153,6 @@ Route::get('monitoramento/cliente/{id}','MonitoramentoController@getMonitorament
 Route::post('monitoramento/filtrar/conteudo','MonitoramentoController@getConteudo');
 Route::post('monitoramento/filtrar','MonitoramentoController@filtrar');
 
-Route::match(array('GET', 'POST'),'emissoras','EmissoraController@index');
-Route::match(array('GET', 'POST'),'radio/arquivos','EmissoraController@arquivos');
-Route::get('emissoras/{tipo}/novo','EmissoraController@novo');
-Route::get('radio/emissora/{id}/horarios','EmissoraController@horarios');
-Route::get('radio/arquivos/detalhes/{id}','EmissoraController@detalhes');
-Route::get('radio/dashboard','EmissoraController@dashboard');
-
 Route::post('pauta','PautaController@store');
 Route::match(array('GET', 'POST'),'pautas','PautaController@index');
 Route::get('pauta/cadastrar','PautaController@cadastrar');
@@ -168,11 +161,16 @@ Route::get('pauta/{id}/remover','PautaController@remover');
 Route::post('pauta/vincular','PautaController@vincularNoticia');
 Route::post('pauta/desvincular','PautaController@desvincularNoticia');
 
+Route::match(array('GET', 'POST'),'emissoras','EmissoraController@index');
+Route::match(array('GET', 'POST'),'radio/arquivos','EmissoraController@arquivos');
+Route::match(array('GET', 'POST'),'radio/noticias','NoticiaRadioController@index');
+Route::get('emissoras/{tipo}/novo','EmissoraController@novo');
+Route::get('radio/emissora/{id}/horarios','EmissoraController@horarios');
+Route::get('radio/arquivos/detalhes/{id}','EmissoraController@detalhes');
+Route::get('radio/dashboard','NoticiaRadioController@dashboard');
+
 Route::get('radio/estatisticas','NoticiaRadioController@estatisticas');
 Route::match(array('GET', 'POST'),'radios','NoticiaRadioController@index');
-
-
-
 
 Route::get('radio/noticias/cadastrar','NoticiaRadioController@cadastrar');
 Route::get('radio/noticias/{id}/editar','NoticiaRadioController@editar');

@@ -32,13 +32,9 @@ class ProgramaController extends Controller
         $emissora = $request->emissora_id;
         $programa = $request->nome;
 
-        $emissoras = Emissora::where('tipo_id', $id_tipo)->orderBy('ds_emissora')->get();
+        $emissoras = Emissora::orderBy('nome_emissora')->get();
 
         $prog = Programa::query();
-
-        $prog->whereHas('emissora', function($q) use($id_tipo){
-            $q->where('tipo_id', '=', $id_tipo);
-        });
 
         $prog->when($emissora, function ($q) use ($emissora) {
             return $q->where('emissora_id', $emissora);
