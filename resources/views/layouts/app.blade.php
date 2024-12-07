@@ -139,7 +139,7 @@
                           <a href="{{ url('noticia/web/dashboard') }}">
                           <span class="sidebar-normal">Dashboard</span>
                           </a>
-                       </li>
+                        </li>
                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'jornal-web') ? 'active' : '' }}">
                           <a href="{{ url('noticia/web') }}">
                           <span class="sidebar-normal">Notícias</span>
@@ -179,21 +179,26 @@
                   </a>
                   <div class="collapse {{ (Session::has('url') and Session::get('url') == 'radio') ? 'show' : '' }}" id="submenu-radio" aria-expanded="false">
                      <ul class="nav ml-5">
+                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'web-dashboard') ? 'active' : '' }}">
+                          <a href="{{ url('radio/dashboard') }}">
+                          <span class="sidebar-normal">Dashboard</span>
+                          </a>
+                        </li>
                         <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'radios') ? 'active' : '' }}">
                            <a href="{{ url('radios') }}">
                            <span class="sidebar-normal">Notícias</span>
                            </a>
-                        </li>
-                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'radio-arquivos') ? 'active' : '' }}">
-                          <a href="{{ url('radio/arquivos') }}">
-                          <span class="sidebar-normal">Arquivos Rádio</span>
-                          </a>
                         </li>
                         <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'radio-cadastrar') ? 'active' : '' }}">
                           <a href="{{ url('radio/noticias/cadastrar') }}">
                           <span class="sidebar-normal">Nova Notícia</span>
                           </a>
                         </li>
+                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'radio-arquivos') ? 'active' : '' }}">
+                          <a href="{{ url('radio/arquivos') }}">
+                          <span class="sidebar-normal">Arquivos Rádio</span>
+                          </a>
+                        </li>                        
                         <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'emissoras-radio') ? 'active' : '' }}">
                            <a href="{{ url('emissoras/radio') }}">
                            <span class="sidebar-normal">Emissoras</span>
