@@ -48,9 +48,8 @@
                         </div>
                         <div class="col-md-7">
                             <div class="form-group">
-                                <input type="hidden" name="cd_cidade" id="cd_cidade" value="{{ ($emissora->cd_cidade) ? $emissora->cd_cidade : 0  }}">
                                 <label>Cidade</label>
-                                <select class="form-control select2" name="cidade" id="cidade" disabled="disabled">
+                                <select class="form-control select2" name="cd_cidade" id="cidade" disabled="disabled">
                                     <option value="">Selecione uma cidade</option>                                    
                                 </select>
                             </div>
@@ -66,7 +65,7 @@
                         <div class="col-md-8">
                             <div class="form-group">
                                 <label>URL</label>
-                                <input type="text" class="form-control" name="url_stream" id="url_stream" placeholder="Nome" value="{{ ($emissora) ? $emissora->url_stream : old('url_stream') }}">
+                                <input type="text" class="form-control" name="url_stream" id="url_stream" placeholder="URL" value="{{ ($emissora) ? $emissora->url_stream : old('url_stream') }}">
                             </div>
                         </div>
                     </div>  
