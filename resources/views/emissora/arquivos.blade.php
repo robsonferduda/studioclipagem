@@ -76,7 +76,7 @@
                                 <div class="row">
                                     <div class="col-lg-3 col-sm-12">
                                         <div style="text-align: center;">
-                                            @if($noticia->emissora->logo)
+                                            @if($noticia->emissora and $noticia->emissora->logo)
                                                 <img src="{{ asset('img/emissoras/'.$noticia->emissora->logo) }}" alt="Logo {{ ($noticia->emissora) ? $noticia->emissora->nome_emissora : 'Não identificada' }}" style="width: 90%; padding: 25px;">
                                             @endif
                                             <audio width="100%" controls style="width: 100%;">
