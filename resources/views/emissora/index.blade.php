@@ -59,7 +59,8 @@
                 </div>
             
             <div class="col-md-12">
-                <p><strong>Total de registros</strong>: {{ $emissoras->total() }} </p>
+                <p class="mb-0"><strong>Total de registros</strong>: {{ $emissoras->total() }} </p>
+                <p class="mt-0 mb-1 text-info">Clique sobre o ícone de <strong>Gravação</strong> para pausar/continuar a gravação</p>
                 @if($emissoras->total())
                     <table id="" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
@@ -68,6 +69,7 @@
                                 <th>Cidade</th>
                                 <th>Emissora</th>
                                 <th>URL</th>
+                                <th>Valor</th>
                                 <th class="disabled-sorting text-center">Gravação</th>
                                 <th class="disabled-sorting text-center">Ações</th>
                             </tr>
@@ -78,6 +80,7 @@
                                 <th>Cidade</th>
                                 <th>Emissora</th>
                                 <th>URL</th>
+                                <th>Valor</th>
                                 <th class="disabled-sorting text-center">Gravação</th>
                                 <th class="disabled-sorting text-center">Ações</th>
                             </tr>
@@ -89,8 +92,9 @@
                                     <td>{{ ($emissora->cidade) ? $emissora->cidade->nm_cidade : 'Não Informado' }}</td>
                                     <td>{{ $emissora->nome_emissora }}</td>
                                     <td>{{ $emissora->url_stream }}</td>
+                                    <td>{{ number_format($emissora->nu_valor, 2, ".","") }}</td>
                                     <td class="center">
-                                        <a href="{{ url('emissora/'.$emissora->id.'/transcricao/atualiza') }}">{!! ($emissora->gravar) ? '<span class="badge badge-pill badge-success">SIM</span>' : '<span class="badge badge-pill badge-danger">NÃO</span>' !!}</a>
+                                        <a href="{{ url('emissora/'.$emissora->id.'/gravacao/atualiza') }}">{!! ($emissora->gravar) ? '<span class="badge badge-pill badge-success">SIM</span>' : '<span class="badge badge-pill badge-danger">NÃO</span>' !!}</a>
                                     </td>
                                     <td class="center">
                                         <a title="Editar" href="{{ route('emissora.edit',$emissora->id) }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
@@ -98,10 +102,9 @@
                                             <a title="Horários de Coleta" href="{{ url('radio/emissora/'.$emissora->id.'/horarios') }}" class="btn btn-warning btn-link btn-icon"><i class="nc-icon nc-time-alarm font-25"></i></a>
                                         @else
                                             <a title="Horários de Coleta" href="{{ url('radio/emissora/'.$emissora->id.'/horarios') }}" class="btn btn-default btn-link btn-icon"><i class="nc-icon nc-time-alarm font-25"></i></a>
-                                        @endif
+                                        @endif                                        
                                         
-                                        
-                                        <form class="form-delete" style="display: inline;" action="{{ route('emissora.destroy',$emissora->id) }}" method="POST">
+                                        <form class="form-delete" style="display: inline;" action="{{ route('emissora.destroy', $emissora->id) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
                                             <button title="Excluir" type="submit" class="btn btn-danger btn-link btn-icon button-remove" title="Delete">

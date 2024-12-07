@@ -6,14 +6,14 @@
             <div class="row">
                 <div class="col-md-6">
                     <h4 class="card-title ml-3">
-                        <i class="fa fa-newspaper-o"></i> Impressos
-                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Notícias
+                        <i class="fa fa-volume-up"></i> Rádio
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Arquivos
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Listar
                     </h4>
                 </div>
                 <div class="col-md-6">
-                    <a href="{{ url('impresso') }}" class="btn btn-warning pull-right mr-3"><i class="nc-icon nc-chart-pie-36"></i> Dashboard</a>
-                    <a href="{{ url('fonte-impresso/listar') }}" class="btn btn-primary pull-right mr-3"><i class="fa fa-newspaper-o"></i> Fontes de Impresso</a>
+                    <a href="{{ url('radio') }}" class="btn btn-warning pull-right mr-3"><i class="nc-icon nc-chart-pie-36"></i> Dashboard</a>
+                    <a href="{{ url('emissoras/radio') }}" class="btn btn-primary pull-right mr-3"><i class="fa fa-volume-up"></i> Emissoras de Rádio</a>
                 </div>
             </div>
         </div>

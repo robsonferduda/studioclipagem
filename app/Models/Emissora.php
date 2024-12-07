@@ -9,7 +9,7 @@ class Emissora extends Model
     protected $connection = 'pgsql';
     protected $table = 'emissora_radio';
 
-    protected $fillable = [];
+    protected $fillable = ['cd_pais','cd_estado','cd_cidade', 'nome_emissora', 'url_stream', 'gravar', 'logo', 'nu_valor'];
 
     public function estado()
     {

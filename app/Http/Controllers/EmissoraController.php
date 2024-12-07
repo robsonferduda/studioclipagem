@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use DB;
 use Auth;
 use App\Utils;
+use App\Models\Pais;
 use App\Models\Emissora;
 use App\Models\EmissoraHorario;
 use App\Models\EmissoraGravacao;
@@ -123,18 +124,20 @@ class EmissoraController extends Controller
     {
         $estados = Estado::orderBy('nm_estado')->get();
         $emissora = new Emissora();
+        $paises = Pais::all();
         
-        return view('emissora/form',compact('estados','emissora','tipo'));
+        return view('emissora/form',compact('estados','emissora','tipo','paises'));
     }
 
     public function edit($id)
     {
         $estados = Estado::orderBy('nm_estado')->get();
         $emissora = Emissora::find($id);
+        $paises = Pais::all();
 
         $tipo = ($emissora->tipo_id == 1) ? 'radio' : 'tv';
 
-        return view('emissora/form',compact('estados','emissora','tipo'));
+        return view('emissora/form',compact('estados','emissora','tipo','paises'));
     }
 
     public function horarios($id_emissora)
@@ -143,6 +146,17 @@ class EmissoraController extends Controller
         $horarios = $emissora->horarios;
 
         return view('emissora/horarios',compact('horarios','id_emissora'));
+    }
+
+    public function atualizaGravacao($id)
+    {
+        $emissora = Emissora::find($id);
+        $emissora->gravar = !$emissora->gravar;
+        $emissora->save();
+
+        Flash::success('<i class="fa fa-check"></i> Gravação da emissora atualizada com sucesso');
+
+        return redirect('emissoras/radio')->withInput();
     }
 
     public function atualizaTranscricao($id)
