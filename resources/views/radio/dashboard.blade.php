@@ -102,7 +102,7 @@
             var dados = null;
 
             $.ajax({
-                url: host+'/tv/noticias/estatisticas',
+                url: host+'/radio/noticias/estatisticas',
                 type: 'GET',
                 success: function(response) {
                     dados = response;
