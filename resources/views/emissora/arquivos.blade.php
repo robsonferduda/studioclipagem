@@ -76,7 +76,9 @@
                                 <div class="row">
                                     <div class="col-lg-3 col-sm-12">
                                         <div style="text-align: center;">
-                                            <img src="{{ asset('img/emissoras/'.$noticia->emissora->logo) }}" alt="Logo {{ ($noticia->emissora) ? $noticia->emissora->nome_emissora : 'Não identificada' }}" style="width: 90%; padding: 25px;">
+                                            @if($noticia->emissora->logo)
+                                                <img src="{{ asset('img/emissoras/'.$noticia->emissora->logo) }}" alt="Logo {{ ($noticia->emissora) ? $noticia->emissora->nome_emissora : 'Não identificada' }}" style="width: 90%; padding: 25px;">
+                                            @endif
                                             <audio width="100%" controls style="width: 100%;">
                                                 <source src="{{ Storage::disk('s3')->temporaryUrl($noticia->path_s3, '+30 minutes') }}" type="audio/mpeg">
                                                 Seu navegador não suporta a execução de áudios, faça o download para poder ouvir.
