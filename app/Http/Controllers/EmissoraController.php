@@ -200,7 +200,9 @@ class EmissoraController extends Controller
             $retorno = array('flag' => true,
             'msg' => "Dados inseridos com sucesso");
         } catch (\Throwable $th) {
-            $retorno = array('flag' => true,
+
+            dd($th);
+            $retorno = array('flag' => false,
                              'msg' => "Ocorreu um erro ao inserir o registro");
         } catch (\Exception $e) {
             $retorno = array('flag' => true,
@@ -234,7 +236,7 @@ class EmissoraController extends Controller
 
         } catch (\Exception $e) {
 
-            $retorno = array('flag' => true,
+            $retorno = array('flag' => false,
                              'msg' => "Ocorreu um erro ao inserir o registro");
         }
 

@@ -80,6 +80,7 @@
                         @endfor
                     </div>
                     <div class="clear"></div>
+                    <a title="Excluir" href="{{ url('emissoras/radio/horario/'.$horario->id.'/excluir') }}" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-trash fa-2x"></i></a>
                     @if($key < (count($horarios) -1))
                         <hr/>
                     @endif
