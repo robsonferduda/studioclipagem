@@ -92,11 +92,11 @@
                                     <td>{{ ($emissora->cidade) ? $emissora->cidade->nm_cidade : 'Não Informado' }}</td>
                                     <td>{{ $emissora->nome_emissora }}</td>
                                     <td>{{ $emissora->url_stream }}</td>
-                                    <td>{{ number_format($emissora->nu_valor, 2, ".","") }}</td>
+                                    <td class="right">{{ number_format($emissora->nu_valor, 2, ".","") }}</td>
                                     <td class="center">
                                         <a href="{{ url('emissora/'.$emissora->id.'/gravacao/atualiza') }}">{!! ($emissora->gravar) ? '<span class="badge badge-pill badge-success">SIM</span>' : '<span class="badge badge-pill badge-danger">NÃO</span>' !!}</a>
                                     </td>
-                                    <td class="center">
+                                    <td class="center acoes-3">
                                         <a title="Editar" href="{{ route('emissora.edit',$emissora->id) }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
                                         @if(count($emissora->horarios))
                                             <a title="Horários de Coleta" href="{{ url('radio/emissora/'.$emissora->id.'/horarios') }}" class="btn btn-warning btn-link btn-icon"><i class="nc-icon nc-time-alarm font-25"></i></a>

@@ -74,6 +74,40 @@ class EmissoraController extends Controller
         return view('emissora/arquivos', compact('arquivos','emissoras','dt_inicial','dt_final'));
     }
 
+    public function atualizarHorarios(Request $request)
+    {
+        $emissora = EmissoraHorario::find($request->horario);
+
+        $dias_da_semana = $emissora->dias_da_semana;
+
+        if($dias_da_semana != ""){
+            $dias = explode(',',trim($dias_da_semana));
+
+            if(in_array($request->dia, $dias)){
+
+                if (($key = array_search($request->dia, $dias)) !== false) {
+                    unset($dias[$key]);
+                }
+
+            }else{
+                $dias[] = $request->dia;
+            }
+        }else{
+            $dias[] = $request->dia;
+        }
+   
+        sort($dias);
+
+        if(count($dias))
+            $str_dias = implode(",",$dias);
+        else 
+            $str_dias = "";
+
+        $emissora->dias_da_semana = $str_dias;
+        $emissora->save();
+
+    }
+
     public function listar(Request $request, $tipo)
     {
         Session::put('url', 'radio');
@@ -143,7 +177,7 @@ class EmissoraController extends Controller
     public function horarios($id_emissora)
     {
         $emissora = Emissora::find($id_emissora);
-        $horarios = $emissora->horarios;
+        $horarios = $emissora->horarios->sortBy('horario_start');
 
         return view('emissora/horarios',compact('horarios','id_emissora'));
     }
@@ -172,7 +206,6 @@ class EmissoraController extends Controller
         return redirect('emissoras/'.$tipo)->withInput();
     }
 
-    
     public function adicionarHorarios(Request $request)
     {
         $emissora = $request->id_emissora;
@@ -277,13 +310,25 @@ class EmissoraController extends Controller
         }
     }
 
+    public function excluirHorario($id)
+    {
+        $horario = EmissoraHorario::find($id);
+
+        if($horario->delete())
+            Flash::success('<i class="fa fa-check"></i> Horário excluído com sucesso');
+        else
+            Flash::error("Erro ao excluir o registro");
+
+        return redirect('radio/emissora/'.$horario->id_emissora.'/horarios')->withInput();
+    }
+
     public function destroy($id)
     {
         $emissora = Emissora::find($id);
         $tipo = ($emissora->tipo_id == 1) ? 'radio' : 'tv';
 
         if($emissora->delete())
-            Flash::success('<i class="fa fa-check"></i> Emissora <strong>'.$emissora->ds_emissora.'</strong> excluída com sucesso');
+            Flash::success('<i class="fa fa-check"></i> Emissora <strong>'.$emissora->nome_emissora.'</strong> excluída com sucesso');
         else
             Flash::error("Erro ao excluir o registro");
 

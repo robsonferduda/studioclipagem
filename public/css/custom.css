@@ -271,3 +271,9 @@ canvas { width: 100% !important;}
     margin-bottom: 8px;
     border-radius: 5px;}
 .clear {clear: both;}
+.acoes-3{ width: 140px; }
+.right{ text-align: right;}
+div .box-horario:not(:last-child) {
+    border-bottom: 1px solid #dddddd;
+    margin-bottom: 5px;
+}
