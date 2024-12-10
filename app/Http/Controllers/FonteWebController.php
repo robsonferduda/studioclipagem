@@ -7,6 +7,7 @@ use Auth;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use App\Utils;
+use App\Models\FonteTemp;
 use App\Noticia;
 use App\Models\Pais;
 use App\Models\NoticiaWeb;
@@ -134,6 +135,41 @@ class FonteWebController extends Controller
         $fonte = FonteWeb::find($request->fonte);
         $fonte->id_prioridade = $prioridade;
         $fonte->save();
+    }
+
+    public function importacaoNova()
+    {
+        $n = 0;
+        $s = 0;
+        $temporarias = FonteTemp::all();
+
+        foreach ($temporarias as $key => $temp) {
+           
+            $fonte = FonteWeb::where('id_knewin', $temp->id_knewin)->first();
+
+            if($fonte){
+                $s += 1;
+
+            }else{
+                $n += 1;
+                $estado = Estado::where('nm_estado', $temp->estado)->first();
+                
+                
+                $est = ($estado) ? $estado->cd_estado : null;
+
+                $new_fonte = array('nome' => (string) $temp->titulo, 
+                                    'url' => $temp->url, 
+                                    'id_knewin' => $temp->id_knewin, 
+                                    'id_situacao' => 0, 
+                                    'id_prioridade' => 1, 
+                                    'nu_valor' => $temp->nu_valor, 
+                                    'cd_estado' => $est);
+                
+                FonteWeb::create($new_fonte);
+            }
+
+        }
+        dd($n);
     }
 
     public function importar()
