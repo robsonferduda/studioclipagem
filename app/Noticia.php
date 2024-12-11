@@ -28,12 +28,12 @@ class Noticia extends Model
         return DB::connection('mysql')->select($sql);
     }
 
-    public function getFontes($data)
+    public function getFontes($d1, $d2)
     {
         $sql = "SELECT t2.titulo, t2.dominio, t2.id_knewin, count(*) 
                 FROM app_web t1
                 JOIN app_importacaoveiculos t2 ON t2.id_knewin = t1.veiculoid 
-                WHERE t1.data_clipping = '$data'
+                WHERE t1.data_clipping BETWEEN '$d1' AND '$d2'
                 GROUP BY t2.titulo, t2.dominio, t2.id_knewin";
         
         return DB::connection('mysql')->select($sql);

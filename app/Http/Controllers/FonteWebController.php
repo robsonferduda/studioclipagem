@@ -172,15 +172,40 @@ class FonteWebController extends Controller
         dd($n);
     }
 
+    public function importarNoticia()
+    {
+
+    }
+
     public function importar()
     {
         $total_fontes = 0;
         $data_base = '2024-10-22';
 
-        $period = CarbonPeriod::create('2023-01-01', '2024-01-15');
+        $period = CarbonPeriod::create('2023-10-01', '2023-10-30');
+
+        //Fontes para inserção
+        $fontes = (new Noticia())->getFontes('2023-10-01','2023-10-30');
+
+        foreach ($fontes as $key => $fonte) {
+
+            if($fonte->id_knewin){
+            
+                $find = FonteWeb::where('id_knewin', $fonte->id_knewin)->first();
+
+                if(!$find){
+
+                    $new_noticia = array('nome' => $fonte->titulo, 'url' => $fonte->dominio, 'id_knewin' => $fonte->id_knewin, 'id_situacao' => 0, 'id_prioridade' => 1);
+                    FonteWeb::create($new_noticia);
+                }
+            }
+        }
+
 
         // Iterate over the period
         foreach ($period as $date) {
+
+            /*
 
             $data_base = $date->format('Y-m-d');
 
@@ -195,13 +220,15 @@ class FonteWebController extends Controller
 
                     if(!$find){
 
-                        $new_noticia = array('nome' => $fonte->titulo, 'url' => $fonte->dominio, 'id_knewin' => $fonte->id_knewin, 'id_situacao' => 5, 'id_prioridade' => 1);
+                        $new_noticia = array('nome' => $fonte->titulo, 'url' => $fonte->dominio, 'id_knewin' => $fonte->id_knewin, 'id_situacao' => 0, 'id_prioridade' => 1);
                         FonteWeb::create($new_noticia);
                     }
                 }
             }
 
-            $fontes = FonteWeb::where('id_situacao', 5)->get();
+            /*
+
+            $fontes = FonteWeb::where('id_situacao', 0)->get();
         
             foreach ($fontes as $key => $fonte) {
     
@@ -239,6 +266,7 @@ class FonteWebController extends Controller
                     }       
                 }  
             }
+                */
 
         }
 
