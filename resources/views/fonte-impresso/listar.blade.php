@@ -23,7 +23,7 @@
             </div>
             <div class="row">
                 <div class="col-lg-12 col-sm-12">
-                    <table id="datatable" class="table table-striped table-bordered table-responsive" cellspacing="0" width="100%">
+                    <table id="datatable" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
                                 <th>Código</th>

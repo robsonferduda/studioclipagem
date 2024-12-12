@@ -79,8 +79,10 @@
                                         @endif
                                     </div>
                                     <div class="col-lg-10 col-sm-10 mb-1">
-                                        <p>{{ $noticia->fonte->nome }}</p>
+                                        <p><strong>{{ $noticia->fonte->nome }}</strong></p>
+                                        <p>{{ ($noticia->titulo) ? $noticia->titulo : '' }}</p>
                                         <p><a href="{{ url('jornal-impresso/edicao/'.$noticia->id.'/paginas') }}">{{ $noticia->paginas->count() }} Páginas</a></p>
+                                        <p>Publicado em: {{ ($noticia->dt_pub) ? \Carbon\Carbon::parse($noticia->dt_pub)->format('d/m/Y H:i:s') : 'Não informado' }}</p>
                                         <p>Coletado em {{ \Carbon\Carbon::parse($noticia->dt_coleta)->format('d/m/Y H:i:s')  }}</p>                        
                                     </div>
                                 </div>                               
