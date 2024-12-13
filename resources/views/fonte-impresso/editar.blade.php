@@ -68,7 +68,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label>Estado {{ $fonte->cd_estado }}</label>
+                            <label>Estado</label>
                             <select class="form-control" name="cd_estado" id="cd_estado">
                                 <option value="">Selecione</option>
                                 @foreach ($estados as $estado)
@@ -147,9 +147,10 @@
     <script src="{{ asset('js/cropper-main.js') }}"></script>
     <script>
         $(document).ready(function(){
-            $("#cd_estado").trigger("change");
 
             let host =  $('meta[name="base-url"]').attr('content');
+
+            $("#cd_estado").trigger("change");
 
             $(".btn-salvar-secao").click(function(){
 
