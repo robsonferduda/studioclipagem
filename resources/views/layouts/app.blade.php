@@ -339,6 +339,22 @@
                 @endrole
                 <hr/>
                 @role('administradores')
+                  <li class="{{ (Session::has('url') and Session::get('url') == 'perfis') ? 'active' : '' }}">
+                      <a href="{{ url('perfis') }}">
+                      <i class="fa fa-group"></i>
+                      <p>Perfis</p>
+                      </a>
+                  </li>
+                @endrole
+                @role('administradores')
+                  <li class="{{ (Session::has('url') and Session::get('url') == 'permissoes') ? 'active' : '' }}">
+                      <a href="{{ url('permissoes') }}">
+                      <i class="nc-icon nc-lock-circle-open"></i>
+                      <p>Permissões</p>
+                      </a>
+                  </li>
+                @endrole
+                @role('administradores')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'usuarios') ? 'active' : '' }}">
                       <a href="{{ url('usuarios') }}">
                       <i class="nc-icon nc-circle-10"></i>
