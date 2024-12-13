@@ -23,7 +23,7 @@
             </div>
             <div class="row">
                 <div class="col-lg-12 col-sm-12">
-                    <table id="datatable" class="table table-striped table-bordered table-responsive" cellspacing="0" width="100%">
+                    <table id="datatable" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
                                 <th>Código</th>
@@ -51,19 +51,18 @@
                                 <tr>
                                     <td>{!! ($jornal->codigo) ? $jornal->codigo : '<span class="text-danger">Não Informado</span>' !!}</td>
                                     <td>{{ ($jornal->tipoColeta) ? $jornal->tipoColeta->ds_tipo_coleta : '' }}</td>
-                                    <td>{!! ($jornal->cidade) ? $jornal->cidade->estado->nm_estado : '<span class="text-danger">Não Informado</span>' !!}</td>
+                                    <td>{!! ($jornal->estado) ? $jornal->estado->nm_estado : '<span class="text-danger">Não Informado</span>' !!}</td>
                                     <td>{!! $jornal->cidade->nm_cidade ?? '<span class="text-danger">Não Informado</span>' !!}</td>
                                     <td>
                                         {{ $jornal->nome }}
                                         @if($jornal->tipoColeta->id == 1)
-                                            <p><a href="{{ $jornal->url }}" target="_BLANK">{{ $jornal->url }}</a></p>
+                                            <p class="mb-0"><a href="{{ $jornal->url }}" target="_BLANK">{{ $jornal->url }}</a></p>
                                         @endif
                                     </td>
                                     <td>
                                         {!! ($jornal->retorno_midia) ? "R$ ".$jornal->retorno_midia : '<span class="text-danger">Não informado</span>' !!}
                                     </td>
                                     <td class="text-center">
-                                        <a title="Capturar Sessão" href="{{ url('fonte-impresso/'.$jornal->id.'/sessao') }}" class="btn btn-warning btn-link btn-icon"><i class="fa fa-globe fa-2x"></i></a>
                                         <a title="Editar" href="{{ url('fonte-impresso/'.$jornal->id.'/editar') }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
                                         <a title="Excluir" href="{{ url('fonte-impresso/'.$jornal->id.'/excluir') }}" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-trash fa-2x"></i></a>
                                     </td>

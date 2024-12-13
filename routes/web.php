@@ -76,7 +76,9 @@ Route::get('fonte-impresso/cadastrar','FonteImpressoController@cadastrar');
 Route::get('fonte-impresso/{id}/editar','FonteImpressoController@editar');
 Route::get('fonte-impresso/{id}/excluir','FonteImpressoController@excluir');
 Route::get('fonte-impresso/{id}/sessao','FonteImpressoController@sessao');
+Route::get('fonte-impresso/secao/excluir/{id}','FonteImpressoController@excluirSecao');
 Route::post('fonte-impresso/inserir','FonteImpressoController@inserir');
+Route::post('fonte-impresso/secao','FonteImpressoController@secao');
 Route::post('fonte-impresso/{id}/atualizar','FonteImpressoController@atualizar');
 
 Route::get('jornal-impresso/edicao/{edicao}/paginas','JornalImpressoController@paginas');

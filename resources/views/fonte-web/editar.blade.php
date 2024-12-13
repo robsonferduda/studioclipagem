@@ -153,6 +153,10 @@
 @endsection
 @section('script')
     <script>
+        $(document).ready(function(){
+            
+            $("#cd_estado").trigger("change");
 
+        });
     </script>
 @endsection
