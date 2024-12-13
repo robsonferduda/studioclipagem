@@ -11,6 +11,7 @@ $(document).ready(function() {
     $('.swal2-input').mask('00/00/0000',{ "placeholder": "dd/mm/YYYY" });
     $('.monetario').mask("###0.00" , {reverse: true});
     $('#nu_valor').mask("###0.00" , {reverse: true});
+    $('#retorno_midia').mask("###0.00" , {reverse: true});
     
     var host =  $('meta[name="base-url"]').attr('content');
     var token = $('meta[name="csrf-token"]').attr('content');
@@ -297,6 +298,28 @@ $(document).ready(function() {
         var id =  $(this).data("id");
 
         url = host+'/email/cliente/excluir/'+id
+
+        Swal.fire({
+            title: "Tem certeza que deseja excluir?",
+            text: "Você não poderá recuperar o registro excluído",
+            type: "warning",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#28a745",
+            confirmButtonText: "Sim, excluir!",
+            cancelButtonText: "Cancelar"
+        }).then(function(result) {
+            if (result.value) {
+                window.location.href = url;
+            }
+        });
+    });
+
+    $('body').on("click", ".btn-excluir-generico", function(e) {
+        
+        e.preventDefault();
+
+        url = $(this).attr('href');
 
         Swal.fire({
             title: "Tem certeza que deseja excluir?",

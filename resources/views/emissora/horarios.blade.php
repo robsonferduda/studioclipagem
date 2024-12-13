@@ -22,7 +22,7 @@
             </div>
             <div class="col-md-12">
                 @php 
-                    $label_dias = array('DOM','SEG','TER','QUA','QUI','SEX','SAB');
+                    $label_dias = array('SEG','TER','QUA','QUI','SEX','SAB','DOM');
                 @endphp
                 {!! Form::open(['id' => 'frm_emissora_horarios', 'class' => 'form-horizontal', 'url' => ['emissoras/horario/adicionar']]) !!}
                     <input type="hidden" name="id_emissora" value="{{ $id_emissora }}" />

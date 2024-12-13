@@ -12,7 +12,7 @@ class FonteImpressa extends Model
     protected $connection = 'pgsql';
     protected $table = 'jornal_online';
 
-    protected $fillable = ['codigo', 'nome', 'cd_cidade', 'tipo', 'url', 'with_login','retorno_midia'];
+    protected $fillable = ['codigo', 'nome','cd_estado', 'cd_cidade', 'tipo', 'coleta','modelo', 'url', 'with_login','retorno_midia'];
 
     public function estado()
     {
@@ -37,5 +37,10 @@ class FonteImpressa extends Model
     public function edicoes()
     {
         return $this->hasMany(EdicaoJornalImpresso::class);
+    }
+
+    public function secoes()
+    {
+        return $this->hasMany(SecaoImpresso::class,'id_jornal_online','id');
     }
 }

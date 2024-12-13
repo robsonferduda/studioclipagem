@@ -49,7 +49,7 @@
                             <label>Coleta <span class="text-danger">Obrigatório</span></label>
                             <select class="form-control" name="coleta" id="coleta">
                                 <option value="">Selecione a coleta</option>
-                                <option value="1" {{ ($fonte->coleta == 2) ? 'selected' : '' }}> Automática</option>
+                                <option value="1" {{ ($fonte->coleta == 1) ? 'selected' : '' }}>Coleta Web</option>
                                 <option value="2" {{ ($fonte->coleta == 2) ? 'selected' : '' }}>Upload</option>
                             </select>
                         </div>
@@ -86,15 +86,50 @@
                             </select>
                         </div>
                     </div>
-                    
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Valor</label>
+                            <input type="text" class="form-control" name="retorno_midia" id="retorno_midia" placeholder="0,00" value="{{ number_format($fonte->retorno_midia, 2, ".","") }}">
+                        </div>
+                    </div>
                     <div class="col-md-6">
-                        <div class="form-check mt-3">
+                        <div class="form-check" style="margin-top: 30px;">
                             <div class="form-check">
                                 <label class="form-check-label">
                                     <input class="form-check-input" {{ ($fonte->with_login) ? 'checked' : '' }} type="checkbox" name="with_login" value="true">
-                                        Exige Login
+                                        EXIGE LOGIN
                                     <span class="form-check-sign"></span>
                                 </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <p class="mb-1 mt-3 text-info">
+                            <i class="fa fa-envelope"></i> Seções 
+                        </p>
+                        <div class="row">
+                            <div class="col-md-3 col-sm-12">
+                                <div class="form-group">
+                                    <label>Nome da Seção</label>
+                                    <input type="text" class="form-control" name="ds_sessao" id="ds_sessao">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group mt-3 ">
+                                    <button type="button" class="btn btn-success btn-salvar-secao"><i class="fa fa-plus"></i> Adicionar Seção</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-0">
+                            <div class="col-md-12">
+                                <h6>Seções Cadastradas</h6>
+                                @if(count($fonte->secoes))
+                                    @foreach($fonte->secoes as $secao)                                        
+                                        <span data-id="{{ $secao->id_sessao_impresso }}">{{ $secao->ds_sessao }}<a title="Remover" class="btn-excluir-generico" href="{{ url('fonte-impresso/secao/excluir', $secao->id_sessao_impresso) }}"><i class="fa fa-trash text-danger ml-1 mr-3"></i></a></span>
+                                    @endforeach
+                                @else
+                                    <p class="text-danger">Nenhuma seção cadastrada</p>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -113,6 +148,29 @@
     <script>
         $(document).ready(function(){
             $("#cd_estado").trigger("change");
+
+            let host =  $('meta[name="base-url"]').attr('content');
+
+            $(".btn-salvar-secao").click(function(){
+
+                var ds_sessao = $("#ds_sessao").val();
+
+                $.ajax({
+                        url: host+'/fonte-impresso/secao',
+                        type: 'POST',
+                        data: {
+                                "_token": $('meta[name="csrf-token"]').attr('content'),
+                                "ds_sessao": ds_sessao,
+                                "font_id": {{ $fonte->id }}
+                        },
+                        success: function(response) {
+                            location.reload();                    
+                        },
+                        error: function(response){
+                            
+                        }
+                    });
+            });
         });
     </script>
 @endsection

@@ -6,6 +6,7 @@ use DB;
 use Auth;
 use File;
 use Carbon\Carbon;
+use App\Models\SecaoImpresso;
 use App\Models\Cliente;
 use App\Models\NoticiaCliente;
 use App\Models\FonteImpressa;
@@ -52,6 +53,24 @@ class FonteImpressoController extends Controller
     public function sessao(int $id)
     {
         
+    }
+
+    public function secao(Request $request)
+    {
+        $dados_insert = array('id_jornal_online' => $request->font_id,
+                              'ds_sessao' => $request->ds_sessao);
+
+        SecaoImpresso::create($dados_insert);
+    }
+
+    public function excluirSecao($id)
+    {
+        $secao = SecaoImpresso::find($id);
+        $id_jornal_online = $secao->id_jornal_online;
+
+        $secao->delete();
+
+        return redirect('fonte-impresso/'.$id_jornal_online.'/editar')->withInput();
     }
 
     public function editar(int $id)
@@ -122,8 +141,12 @@ class FonteImpressoController extends Controller
             $jornal->update([
                 'codigo'    => $request->codigo,
                 'nome'      => $request->nome,
+                'cd_estado' => $request->cd_estado,
                 'cd_cidade' => $request->cidade,
-                'tipo' => $request->tipo
+                'retorno_midia' => $request->retorno_midia,
+                'tipo' => $request->tipo,
+                'coleta' => $request->coleta,
+                'url' => $request->url
             ]);
 
             $retorno = array(
@@ -132,6 +155,7 @@ class FonteImpressoController extends Controller
             );
 
         } catch (\Illuminate\Database\QueryException $e) {
+
             $retorno = array(
                 'flag' => false,
                 'msg' => Utils::getDatabaseMessageByCode($e->getCode())
