@@ -34,12 +34,47 @@ class FonteImpressoController extends Controller
         Session::put('url','impresso');
     }
 
-    public function listar()
+    public function listar(Request $request)
     {
         Session::put('sub-menu','fonte-impressa');
-        $jornais = FonteImpressa::orderBy('nome')->get();
 
-        return view('fonte-impresso/listar',compact('jornais'));
+        $cidades = Cidade::orderBy('nm_cidade')->get();
+        $estados = Estado::orderBy('nm_estado')->get();
+        $fontes = array();
+
+        $codigo = ($request->codigo) ? trim($request->codigo) : null;
+        $cd_estado = ($request->cd_estado) ? trim($request->cd_estado) : null;
+        $cd_cidade = ($request->cd_cidade) ? trim($request->cd_cidade) : null;
+        $nome = ($request->codigo) ? trim($request->nome) : null;
+
+        $fonte = FonteImpressa::query();
+
+        if($request->isMethod('GET')){
+            $fontes = $fonte->orderBy('nome')->paginate(10);
+        }
+
+        if($request->isMethod('POST')){
+            
+            $fonte->when($codigo, function ($q) use ($codigo) {
+                return $q->where('codigo', $codigo);
+            });
+
+            $fonte->when($cd_estado, function ($q) use ($cd_estado) {
+                return $q->where('cd_estado', $cd_estado);
+            });
+
+            $fonte->when($cd_cidade, function ($q) use ($cd_cidade) {
+                return $q->where('cd_cidade', $cd_cidade);
+            });
+
+            $fonte->when($nome, function ($q) use ($nome) {
+                return $q->where('codigo', $nome);
+            });
+
+            $fontes = $fonte->orderBy('nome')->paginate(10);
+        }
+
+        return view('fonte-impresso/listar',compact('cidades','estados','fontes'));
     }
 
     public function cadastrar()

@@ -71,7 +71,8 @@ Route::match(array('GET', 'POST'),'exportar/{log?}','ExportarController@index');
 Route::match(array('GET', 'POST'),'importar','ExportarController@importar');
 Route::post('teste','ExportarController@teste');
 
-Route::get('fonte-impresso/listar','FonteImpressoController@listar');
+Route::match(array('GET', 'POST'),'fonte-impresso/listar','FonteImpressoController@listar');
+
 Route::get('fonte-impresso/cadastrar','FonteImpressoController@cadastrar');
 Route::get('fonte-impresso/{id}/editar','FonteImpressoController@editar');
 Route::get('fonte-impresso/{id}/excluir','FonteImpressoController@excluir');
