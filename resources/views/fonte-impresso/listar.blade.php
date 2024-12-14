@@ -142,7 +142,7 @@
 <script>
     $(document).ready(function() {
 
-        $('#fontes_impressas').DataTable({
+        $('#fontes_impressas_off').DataTable({
             "pagingType": "full_numbers",
             "bPaginate": false,
             "searching": false, 

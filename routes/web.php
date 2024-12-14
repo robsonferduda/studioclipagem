@@ -83,6 +83,7 @@ Route::post('fonte-impresso/secao','FonteImpressoController@secao');
 Route::post('fonte-impresso/{id}/atualizar','FonteImpressoController@atualizar');
 
 Route::get('jornal-impresso/edicao/{edicao}/paginas','JornalImpressoController@paginas');
+Route::match(array('GET', 'POST'),'jornal-impresso/paginas','JornalImpressoController@todasPaginas');
 
 Route::get('fontes','FonteController@index');
 Route::post('fonte-web/prioridade/atualizar','FonteWebController@atualizarPrioridade');
@@ -128,6 +129,8 @@ Route::get('noticia-impressa/cadastrar','NoticiaImpressaController@cadastrar'); 
 Route::get('noticia-impressa/cliente/{cliente}/copiar/{id}','NoticiaImpressaController@copiar'); // Rota Antiga
 Route::get('noticia-impressa/cliente/{cliente}/editar/{id}','NoticiaImpressaController@editar'); // Rota Antiga
 Route::post('noticia-impressa/upload','NoticiaImpressaController@upload'); 
+
+Route::get('noticia/impresso/cadastrar','NoticiaImpressaController@cadastrar');
 
 
 Route::match(array('GET', 'POST'),'buscar-web','JornalWebController@index');
