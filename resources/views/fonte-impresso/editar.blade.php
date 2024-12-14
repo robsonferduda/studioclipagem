@@ -17,7 +17,7 @@
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Atualizar</h4>
                     </div>
                     <div class="col-md-4">
-                        <a href="{{ url('fonte-impresso/listar') }}" class="btn btn-primary pull-right mr-3"><i class="fa fa-table"></i> Jornal Impresso</a>
+                        <a href="{{ url('fonte-impresso/listar') }}" class="btn btn-primary pull-right mr-3"><i class="fa fa-table"></i> Fontes Impressos</a>
                     </div>
                 </div>
             </div>
@@ -88,32 +88,32 @@
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label>Valor</label>
-                            <input type="text" class="form-control" name="valor_cm_capa_semana" id="valor_cm_capa_semana" placeholder="0,00" value="{{ number_format($fonte->valor_cm_capa_semana, 2, ".","") }}">
+                            <label>Valor Capa Semana</label>
+                            <input type="text" class="form-control retorno_midia" name="valor_cm_capa_semana" id="valor_cm_capa_semana" placeholder="0,00" value="{{ number_format($fonte->valor_cm_capa_semana, 2, ".","") }}">
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label>Valor</label>
-                            <input type="text" class="form-control" name="valor_cm_capa_fim_semana" id="valor_cm_capa_fim_semana" placeholder="0,00" value="{{ number_format($fonte->valor_cm_capa_fim_semana, 2, ".","") }}">
+                            <label>Valor Capa FDS</label>
+                            <input type="text" class="form-control retorno_midia" name="valor_cm_capa_fim_semana" id="valor_cm_capa_fim_semana" placeholder="0,00" value="{{ number_format($fonte->valor_cm_capa_fim_semana, 2, ".","") }}">
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label>Valor</label>
-                            <input type="text" class="form-control" name="valor_cm_contracapa" id="valor_cm_contracapa" placeholder="0,00" value="{{ number_format($fonte->valor_cm_contracapa, 2, ".","") }}">
+                            <label>Valor Contracapa</label>
+                            <input type="text" class="form-control retorno_midia" name="valor_cm_contracapa" id="valor_cm_contracapa" placeholder="0,00" value="{{ number_format($fonte->valor_cm_contracapa, 2, ".","") }}">
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label>Valor</label>
-                            <input type="text" class="form-control" name="valor_cm_demais_fim_semana" id="valor_cm_demais_fim_semana" placeholder="0,00" value="{{ number_format($fonte->valor_cm_demais_fim_semana, 2, ".","") }}">
+                            <label>Valor Demais Semana</label>
+                            <input type="text" class="form-control retorno_midia" name="valor_cm_demais_semana" id="valor_cm_demais_semana" placeholder="0,00" value="{{ number_format($fonte->valor_cm_demais_semana, 2, ".","") }}">
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label>Valor</label>
-                            <input type="text" class="form-control" name="retorno_midia" id="retorno_midia" placeholder="0,00" value="{{ number_format($fonte->retorno_midia, 2, ".","") }}">
+                            <label>Valor Demais FDS</label>
+                            <input type="text" class="form-control retorno_midia" name="valor_cm_demais_fim_semana" id="valor_cm_demais_fim_semana" placeholder="0,00" value="{{ number_format($fonte->valor_cm_demais_fim_semana, 2, ".","") }}">
                         </div>
                     </div>
                     <div class="col-md-2">

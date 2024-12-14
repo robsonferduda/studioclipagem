@@ -173,12 +173,17 @@ class FonteImpressoController extends Controller
         $jornal = FonteImpressa::find($id);
 
         try {
+            
             $jornal->update([
                 'codigo'    => $request->codigo,
                 'nome'      => $request->nome,
                 'cd_estado' => $request->cd_estado,
                 'cd_cidade' => $request->cidade,
-                'retorno_midia' => $request->retorno_midia,
+                'valor_cm_capa_semana' => $request->valor_cm_capa_semana,
+                'valor_cm_capa_fim_semana' => $request->valor_cm_capa_fim_semana,
+                'valor_cm_contracapa' => $request->valor_cm_contracapa,
+                'valor_cm_demais_semana' => $request->valor_cm_demais_semana,
+                'valor_cm_demais_fim_semana' => $request->valor_cm_demais_fim_semana,
                 'tipo' => $request->tipo,
                 'coleta' => $request->coleta,
                 'url' => $request->url
