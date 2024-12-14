@@ -70,7 +70,13 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-12 col-sm-12 conteudo">                        
+                    <div class="col-lg-12 col-sm-12 conteudo">      
+                        @if($fontes->count())
+                        <h6 class="px-3">Mostrando {{ $fontes->count() }} de {{ $fontes->total() }} fontes</h6>
+                    @endif
+
+                    {{ $fontes->onEachSide(1)->appends([''])->links('vendor.pagination.bootstrap-4') }} 
+
                     <table id="bootstrap-table" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
@@ -97,7 +103,24 @@
                             </tr>
                         </tfoot>
                         <tbody>
-                            <tr></tr>
+                            @foreach ($fontes as $fonte)
+                                <tr>
+                                    <td>
+                                        
+                                    </td>
+                                    <td>
+                                        {{ ($fonte->estado) ? $fonte->estado->nm_estado: 'Não informado' }}
+                                    </td>
+                                    <td></td>
+                                    <td>
+                                        {{ $fonte->nome }}
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                    
@@ -161,6 +184,7 @@
         var situacao = "";
         var id = "";
 
+        /*
         var table = $('#bootstrap-table').DataTable({
                 "processing": true,
                 "paginate": true,
@@ -205,6 +229,7 @@
                 ],
                 "stateSave": true
             });
+        */
 
         $(document).on('click', '.btn-prioridade', function() {   
 

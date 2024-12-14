@@ -35,13 +35,38 @@ class FonteWebController extends Controller
         Session::put('url','jornal-web');
     }
 
+    public function index(Request $request)
+    {
+        Session::put('sub-menu','fonte-web');
+
+        $cidades = Cidade::orderBy('nm_cidade')->get();
+        $estados = Estado::orderBy('nm_estado')->get();
+        $situacoes = (new FonteWeb())->getSituacoes();
+
+        $fonte = FonteWeb::query();
+
+        if($request->isMethod('POST')){
+            
+
+        }
+
+        if($request->isMethod('GET')){
+
+            $fonte->whereNotIn('id_situacao', [127,112,103,137])->orderBy('id');
+            $fontes = $fonte->paginate(10);
+
+        }
+
+        return view('fonte-web/listar',compact('cidades','estados','situacoes','fontes'));
+    }
+
     public function listar(Request $request)
     {
         Session::put('sub-menu','fonte-web');
 
         $cidades = Cidade::orderBy('nm_cidade')->get();
         $estados = Estado::orderBy('nm_estado')->get();
-            
+
         $situacoes = (new FonteWeb())->getSituacoes();
 
         if($request->ajax()) {
