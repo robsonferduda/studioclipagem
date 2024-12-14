@@ -62,8 +62,8 @@
                     </div>
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label>URL de Coleta <span class="text-danger">Obrigatório</span></label>
-                            <input type="text" class="form-control" name="url" id="url" placeholder="Nome" required value="{{ $fonte->url }}">
+                            <label>URL de Coleta <span class="text-danger">Obrigatório para fontes de <strong>Coleta Web</strong></span></label>
+                            <input type="text" class="form-control" name="url" id="url" placeholder="URL de Coleta" {{ ($fonte->coleta == 2) ? 'disabled' : '' }} value="{{ $fonte->url }}">
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -89,10 +89,34 @@
                     <div class="col-md-2">
                         <div class="form-group">
                             <label>Valor</label>
+                            <input type="text" class="form-control" name="valor_cm_capa_semana" id="valor_cm_capa_semana" placeholder="0,00" value="{{ number_format($fonte->valor_cm_capa_semana, 2, ".","") }}">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Valor</label>
+                            <input type="text" class="form-control" name="valor_cm_capa_fim_semana" id="valor_cm_capa_fim_semana" placeholder="0,00" value="{{ number_format($fonte->valor_cm_capa_fim_semana, 2, ".","") }}">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Valor</label>
+                            <input type="text" class="form-control" name="valor_cm_contracapa" id="valor_cm_contracapa" placeholder="0,00" value="{{ number_format($fonte->valor_cm_contracapa, 2, ".","") }}">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Valor</label>
+                            <input type="text" class="form-control" name="valor_cm_demais_fim_semana" id="valor_cm_demais_fim_semana" placeholder="0,00" value="{{ number_format($fonte->valor_cm_demais_fim_semana, 2, ".","") }}">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Valor</label>
                             <input type="text" class="form-control" name="retorno_midia" id="retorno_midia" placeholder="0,00" value="{{ number_format($fonte->retorno_midia, 2, ".","") }}">
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-2">
                         <div class="form-check" style="margin-top: 30px;">
                             <div class="form-check">
                                 <label class="form-check-label">
@@ -151,6 +175,18 @@
             let host =  $('meta[name="base-url"]').attr('content');
 
             $("#cd_estado").trigger("change");
+
+            $("#coleta").change(function(){
+
+                var coleta = $(this).val();
+
+                if(coleta == 1){
+                    $("#url").attr("disabled",false);
+                }else{
+                    $("#url").attr("disabled",true);
+                    $("#url").val("");
+                }
+            });
 
             $(".btn-salvar-secao").click(function(){
 
