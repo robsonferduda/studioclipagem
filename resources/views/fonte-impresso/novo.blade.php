@@ -25,10 +25,8 @@
                 </div>
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col-md-12">
-                        @include('layouts.mensagens')
-                    </div>
+                <div class="col-md-12">
+                    @include('layouts.mensagens')
                 </div>
                 <div class="row mr-1 ml-1">
                     <div class="col-md-2">

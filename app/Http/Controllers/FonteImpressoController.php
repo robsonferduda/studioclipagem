@@ -45,7 +45,7 @@ class FonteImpressoController extends Controller
         $codigo = ($request->codigo) ? trim($request->codigo) : null;
         $cd_estado = ($request->cd_estado) ? trim($request->cd_estado) : null;
         $cd_cidade = ($request->cd_cidade) ? trim($request->cd_cidade) : null;
-        $nome = ($request->codigo) ? trim($request->nome) : null;
+        $nome = ($request->nome) ? trim($request->nome) : null;
 
         $fonte = FonteImpressa::query();
 
@@ -68,7 +68,7 @@ class FonteImpressoController extends Controller
             });
 
             $fonte->when($nome, function ($q) use ($nome) {
-                return $q->where('codigo', $nome);
+                return $q->where('nome', 'ILIKE', '%'.trim($nome).'%');
             });
 
             $fontes = $fonte->orderBy('nome')->paginate(10);
@@ -129,22 +129,34 @@ class FonteImpressoController extends Controller
 
     public function inserir(Request $request)
     {
-        $fonte = FonteImpressa::where('codigo', $request->codigo)->first();
+        if($request->codigo){
 
-        if($fonte){
-            $retorno = array('flag' => true,
-                             'msg' => '<i class="fa fa-exclamation"></i> Já existe uma fonte cadastrada com esse código');
+            $fonte = FonteImpressa::where('codigo', $request->codigo)->first();
 
-            Flash::warning($retorno['msg']);
-            return redirect('fonte-impresso/cadastrar')->withInput();
+            if($fonte){
+
+                $retorno = array('flag' => true,
+                                'msg' => '<i class="fa fa-exclamation"></i> Já existe uma fonte cadastrada com esse código');
+
+                Flash::warning($retorno['msg']);
+                return redirect('fonte-impresso/cadastrar')->withInput();
+            }
         }
 
         try {
             FonteImpressa::create([
+                'codigo' => $request->codigo ?? null,
                 'nome' => $request->nome,
-                'cd_cidade' => $request->cidade,
                 'cd_estado' => $request->cd_estado,
-                'codigo' => $request->codigo ?? null
+                'cd_cidade' => $request->cidade,
+                'valor_cm_capa_semana' => $request->valor_cm_capa_semana,
+                'valor_cm_capa_fim_semana' => $request->valor_cm_capa_fim_semana,
+                'valor_cm_contracapa' => $request->valor_cm_contracapa,
+                'valor_cm_demais_semana' => $request->valor_cm_demais_semana,
+                'valor_cm_demais_fim_semana' => $request->valor_cm_demais_fim_semana,
+                'tipo' => $request->tipo,
+                'coleta' => $request->coleta,
+                'url' => $request->url                
             ]);
 
             $retorno = array('flag' => true,
@@ -173,7 +185,7 @@ class FonteImpressoController extends Controller
         $jornal = FonteImpressa::find($id);
 
         try {
-            
+
             $jornal->update([
                 'codigo'    => $request->codigo,
                 'nome'      => $request->nome,

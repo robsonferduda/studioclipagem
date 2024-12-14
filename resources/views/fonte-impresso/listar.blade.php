@@ -109,13 +109,13 @@
                         @foreach($fontes as $fonte)
                             <tr>
                                 <td>{!! ($fonte->codigo) ? $fonte->codigo : '<span class="text-danger">Não Informado</span>' !!}</td>
-                                <td>{{ ($fonte->tipoImpresso) ? $fonte->tipoImpresso->ds_tipo_impresso : '' }}</td>
-                                <td>{{ ($fonte->tipoColeta) ? $fonte->tipoColeta->ds_tipo_coleta : '' }}</td>
+                                <td>{!! ($fonte->tipoImpresso) ? $fonte->tipoImpresso->ds_tipo_impresso : '<span class="text-danger">Não Informado</span>' !!}</td>
+                                <td>{!! ($fonte->tipoColeta) ? $fonte->tipoColeta->ds_tipo_coleta : '<span class="text-danger">Não Informado</span>' !!}</td>
                                 <td>{!! ($fonte->estado) ? $fonte->estado->nm_estado : '<span class="text-danger">Não Informado</span>' !!}</td>
                                 <td>{!! $fonte->cidade->nm_cidade ?? '<span class="text-danger">Não Informado</span>' !!}</td>
                                 <td>
                                     {{ $fonte->nome }}
-                                    @if($fonte->tipoColeta->id == 1)
+                                    @if($fonte->tipoColeta and $fonte->tipoColeta->id == 1)
                                         <p class="mb-0"><a href="{{ $fonte->url }}" target="_BLANK">{{ $fonte->url }}</a></p>
                                     @endif
                                 </td>
