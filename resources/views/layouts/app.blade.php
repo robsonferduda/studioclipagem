@@ -151,7 +151,7 @@
                           </a>
                        </li>
                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'fonte-web') ? 'active' : '' }}">
-                        <a href="{{ url('fonte-web/listar') }}">
+                        <a href="{{ url('fonte-web') }}">
                         <span class="sidebar-normal">Fontes</span>
                         </a>
                      </li>

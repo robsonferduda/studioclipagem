@@ -70,6 +70,7 @@
                 </div>
             </div>
             <div class="row">
+                    
                     <div class="col-lg-12 col-sm-12 conteudo">      
                         @if($fontes->count())
                         <h6 class="px-3">Mostrando {{ $fontes->count() }} de {{ $fontes->total() }} fontes</h6>
@@ -109,20 +110,30 @@
                                         
                                     </td>
                                     <td>
-                                        {{ ($fonte->estado) ? $fonte->estado->nm_estado: 'Não informado' }}
+                                        {!! ($fonte->estado) ? $fonte->estado->nm_estado: 'Não informado' !!}
                                     </td>
-                                    <td></td>
+                                    <td>
+                                        {!! ($fonte->cidade) ? $fonte->cidade->nm_cidade: 'Não informado' !!}
+                                    </td>
                                     <td>
                                         {{ $fonte->nome }}
                                     </td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                    <td>
+                                        {{ $fonte->url }}
+                                    </td>
+                                    <td>
+                                        {{ number_format($fonte->nu_valor, 2, ".","") }}
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-default" style="background: {{ $fonte->situacao->ds_color }} !important; border-color:  {{ $fonte->situacao->ds_color }} !important;">{{ $fonte->situacao->ds_situacao }}</span>
+                                    </td>
                                     <td></td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
+
+                    {{ $fontes->onEachSide(1)->appends([''])->links('vendor.pagination.bootstrap-4') }} 
                    
                 </div>
             </div>
