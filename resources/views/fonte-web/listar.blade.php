@@ -120,7 +120,11 @@
                                     </td>
                                     <td>
                                         <p class="mb-0">{{ $fonte->url }}</p>
-                                        <span class="text-danger">Última coleta em {{ ($fonte->crawlead_at) ? \Carbon\Carbon::parse($fonte->crawlead_at)->format('d/m/Y H:i:s') : '' }}</span>
+                                        @if($fonte->id_situacao_sit > 0)
+                                            <span class="text-success">Última coleta em {{ ($fonte->crawlead_at) ? \Carbon\Carbon::parse($fonte->crawlead_at)->format('d/m/Y H:i:s') : '' }}</span>
+                                        @else
+                                            <span class="text-danger">Nenhuma tentativa de coleta realizada</span>
+                                        @endif
                                     </td>
                                     <td>
                                         {{ number_format($fonte->nu_valor, 2, ".","") }}

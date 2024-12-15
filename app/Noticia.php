@@ -28,6 +28,15 @@ class Noticia extends Model
         return DB::connection('mysql')->select($sql);
     }
 
+    public function getNoticiaBySite($id_site, $data)
+    {
+        $sql = "SELECT data_cadastro, link, titulo, conteudo FROM app_web where data_clipping > '$data' AND id_site = ".$id_site;
+
+        return DB::connection('mysql')->select($sql);
+    }
+
+    
+
     public function getFontes($d1, $d2)
     {
         $sql = "SELECT t2.titulo, t2.dominio, t2.id_knewin, count(*) 
