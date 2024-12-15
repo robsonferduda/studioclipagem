@@ -81,7 +81,7 @@
                     <table id="bootstrap-table" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
-                                <th>Selecionar</th>
+                                <th><label style="display: inline; color: black; font-weight: 600; font-size: 14px;"><input style="width: 30%;" type="checkbox" class="dt-checkboxes"></label></th>
                                 <th>Estado</th>
                                 <th>Cidade</th>
                                 <th>Nome</th>
@@ -93,7 +93,7 @@
                         </thead>
                         <tfoot>
                             <tr>
-                                <th>Selecionar</th>
+                                <th></th>
                                 <th>Estado</th>
                                 <th>Cidade</th>
                                 <th>Nome</th>
