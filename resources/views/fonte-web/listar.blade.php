@@ -107,7 +107,7 @@
                             @foreach ($fontes as $fonte)
                                 <tr>
                                     <td>
-                                        
+                                        <label style="display: inline; color: black; font-weight: 600;"><input style="width: 50%;" type="checkbox" class="dt-checkboxes">{{ $fonte->id }}</label>
                                     </td>
                                     <td>
                                         {!! ($fonte->estado) ? $fonte->estado->nm_estado: 'Não informado' !!}
@@ -120,8 +120,8 @@
                                     </td>
                                     <td>
                                         <p class="mb-0">{{ $fonte->url }}</p>
-                                        @if($fonte->id_situacao_sit > 0)
-                                            <span class="text-success">Última coleta em {{ ($fonte->crawlead_at) ? \Carbon\Carbon::parse($fonte->crawlead_at)->format('d/m/Y H:i:s') : '' }}</span>
+                                        @if($fonte->id_situacao > 0)
+                                            <span class="text-success">Última tentativa de coleta em {{ ($fonte->crawlead_at) ? \Carbon\Carbon::parse($fonte->crawlead_at)->format('d/m/Y H:i:s') : '' }}</span>
                                         @else
                                             <span class="text-danger">Nenhuma tentativa de coleta realizada</span>
                                         @endif
