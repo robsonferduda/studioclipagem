@@ -106,7 +106,7 @@
                         <tbody>
                             @foreach ($fontes as $fonte)
                                 <tr>
-                                    <td>
+                                    <td style="min-width: 100px;">
                                         <label style="display: inline; color: black; font-weight: 600; font-size: 14px;"><input style="width: 30%;" type="checkbox" class="dt-checkboxes">{{ $fonte->id }}</label>
                                     </td>
                                     <td>
