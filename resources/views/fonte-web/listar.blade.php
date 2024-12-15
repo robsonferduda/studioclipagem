@@ -119,7 +119,8 @@
                                         {{ $fonte->nome }}
                                     </td>
                                     <td>
-                                        {{ $fonte->url }}
+                                        <p class="mb-0">{{ $fonte->url }}</p>
+                                        <span class="text-danger">Última coleta em {{ ($fonte->crawlead_at) ? \Carbon\Carbon::parse($fonte->crawlead_at)->format('d/m/Y H:i:s') : '' }}</span>
                                     </td>
                                     <td>
                                         {{ number_format($fonte->nu_valor, 2, ".","") }}

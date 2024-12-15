@@ -52,7 +52,7 @@ class FonteWebController extends Controller
 
         if($request->isMethod('GET')){
 
-            $fonte->whereNotIn('id_situacao', [127,112,103,137])->orderBy('id');
+            $fonte->whereNotIn('id_situacao', [127,112,103,137])->orderByRaw("CASE WHEN crawlead_at IS NULL THEN 1 ELSE 0 END ASC")->orderBy('crawlead_at','DESC');
             $fontes = $fonte->paginate(10);
 
         }
@@ -170,10 +170,12 @@ class FonteWebController extends Controller
 
         foreach ($temporarias as $key => $temp) {
            
-            $fonte = FonteWeb::where('id_knewin', $temp->id_knewin)->first();
+            $fonte = FonteWeb::where('id_knewin', $temp->id_knewin)->orWhere('url', $temp->url)->first();
 
             if($fonte){
+
                 $s += 1;
+                echo "Fonte já existe <br/>";
 
             }else{
                 $n += 1;
@@ -187,6 +189,7 @@ class FonteWebController extends Controller
                                     'id_knewin' => $temp->id_knewin, 
                                     'id_situacao' => 0, 
                                     'id_prioridade' => 1, 
+                                    'cd_pais' => 55,
                                     'nu_valor' => $temp->nu_valor, 
                                     'cd_estado' => $est);
                 
@@ -199,7 +202,47 @@ class FonteWebController extends Controller
 
     public function importarNoticia()
     {
+        $controle = 0;
+        $fontes = DB::select("select * from fonte_web where id not in (select id_fonte from noticias_web group by id_fonte)");
 
+        foreach ($fontes as $key => $fonte) {
+
+            $noticia = (new Noticia())->getNoticiaByFonte($fonte->id_knewin, '2022-01-01');
+    
+            if($noticia){
+    
+                             //Insere em notícia
+                            $dados_noticia = array('id_fonte' => $fonte->id,
+                            'data_insert' => $noticia[0]->data_clipping,
+                            'data_noticia' => $noticia[0]->data_cadastro,
+                            'titulo_noticia' => $noticia[0]->titulo,
+                            'url_noticia' => $noticia[0]->link);
+    
+                            $nova = NoticiaWeb::create($dados_noticia);
+    
+                            //Insere em conteúdo
+                            $dados_conteudo = array('id_noticia_web' => $nova->id,
+                                                'conteudo' => $noticia[0]->conteudo);
+    
+                            ConteudoNoticiaWeb::create($dados_conteudo);
+    
+                            $fonte->id_situacao = 1;
+                            $fonte->id_prioridade = 1;
+                            $fonte->save();
+
+                echo "Inseriu notícia da fonte ".$fonte->id_knewin."<br/>";
+
+            }else{
+
+                echo "Não inseriu notícia da fonte ".$fonte->id_knewin."<br/>";
+            }
+
+            $controle++;
+           
+            if($controle == 1){
+                dd("Fim da coleta");
+            }
+        }
     }
 
     public function importar()
