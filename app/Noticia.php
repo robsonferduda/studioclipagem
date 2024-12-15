@@ -30,7 +30,7 @@ class Noticia extends Model
 
     public function getNoticiaBySite($id_site, $data)
     {
-        $sql = "SELECT data_cadastro, link, titulo, conteudo FROM app_web where data_clipping > '$data' AND id_site = ".$id_site;
+        $sql = "SELECT data_cadastro, link, titulo, conteudo FROM app_web where data_clipping > '$data' AND id_site = ".$id_site."  ORDER BY data_cadastro DESC LIMIT 1";
 
         return DB::connection('mysql')->select($sql);
     }

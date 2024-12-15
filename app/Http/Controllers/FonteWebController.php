@@ -222,11 +222,19 @@ class FonteWebController extends Controller
     public function importarNoticia()
     {
         $controle = 0;
+
+        /*
         $fontes = DB::select("select t1.id, t2.id_site 
                             from fonte_web t1 
                             JOIN fonte_tmp t2 ON t2.id_knewin = t1.id_knewin 
                             where t1.id not in (select id_fonte from noticias_web group by id_fonte)");
+                            */
 
+                            $fontes = DB::select("select t1.id, t2.id_site 
+                            from fonte_web t1 
+                            JOIN fonte_tmp t2 ON t2.url = t1.url 
+                            where t1.id not in (select id_fonte from noticias_web group by id_fonte)");
+                                                        
         foreach ($fontes as $key => $fonte) {
 
             $noticia = (new Noticia())->getNoticiaBySite($fonte->id_site, '2022-01-01');
@@ -259,6 +267,10 @@ class FonteWebController extends Controller
             }
 
             $controle++;
+
+            if($controle == 150){
+                dd("Parou");
+            }
         }
 
         dd("FIM! Inseridas $controle notícias");

@@ -70,7 +70,7 @@
                 </div>
             </div>
             <div class="row">
-                    
+                <div class="col-lg-12 col-md-12 col-sm-12">   
                     <div class="col-lg-12 col-sm-12 conteudo">      
                         @if($fontes->count())
                         <h6 class="px-3">Mostrando {{ $fontes->count() }} de {{ $fontes->total() }} fontes</h6>
@@ -121,7 +121,7 @@
                                     <td>
                                         <p class="mb-0">{{ $fonte->url }}</p>
                                         @if($fonte->id_situacao > 0)
-                                            <span class="text-success">Última tentativa de coleta em {{ ($fonte->crawlead_at) ? \Carbon\Carbon::parse($fonte->crawlead_at)->format('d/m/Y H:i:s') : '' }}</span>
+                                            <span class="text-info">Última tentativa de coleta em {{ ($fonte->crawlead_at) ? \Carbon\Carbon::parse($fonte->crawlead_at)->format('d/m/Y H:i:s') : '' }}</span>
                                         @else
                                             <span class="text-danger">Nenhuma tentativa de coleta realizada</span>
                                         @endif
@@ -132,14 +132,20 @@
                                     <td>
                                         <span class="badge badge-default" style="background: {{ $fonte->situacao->ds_color }} !important; border-color:  {{ $fonte->situacao->ds_color }} !important;">{{ $fonte->situacao->ds_situacao }}</span>
                                     </td>
-                                    <td></td>
+                                    <td>
+                                        <div class="text-center">
+                                            <a title="Estatísticas" href="{{ url('fonte-web/estatisticas', $fonte->id) }}" class="btn btn-warning btn-link btn-icon"> <i class="fa fa-bar-chart fa-2x"></i></a>
+                                            <a title="Editar" href="{{ url('fonte-web/editar', $fonte->id) }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
+                                            <a title="Excluir" href="{{ url('fonte-web/excluir', $fonte->id) }}" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-times fa-2x"></i></a>
+                                        </div>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
 
                     {{ $fontes->onEachSide(1)->appends([''])->links('vendor.pagination.bootstrap-4') }} 
-                   
+                    </div>
                 </div>
             </div>
         </div>
