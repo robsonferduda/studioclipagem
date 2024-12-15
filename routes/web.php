@@ -102,7 +102,7 @@ Route::get('fonte-web/atualizar-valor','FonteWebController@atualizarValor');
 
 Route::get('fonte-web/totais/semana/{id}','FonteWebController@getSemanaColetas');
 ROute::post('fonte-web/inconsistencias/editar','FonteWebController@editarInconsistencia');
-Route::match(array('GET', 'POST'),'fonte-web/listar','FonteWebController@listar');
+Route::match(array('GET', 'POST'),'fonte-web/listar','FonteWebController@index');
 Route::resource('fonte-web','FonteWebController');
 
 Route::get('impresso','JornalImpressoController@index');

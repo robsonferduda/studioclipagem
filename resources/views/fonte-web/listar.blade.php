@@ -275,7 +275,25 @@
         
         $(document).on('click', '.filtro-situacao', function() {     
             situacao = $(this).data("valor");
-            table.draw();
+            
+            $.ajax({
+                url: '../fonte-web',
+                type: 'POST',
+                data: { "_token": token,
+                        "fonte": fonte,
+                        "prioridade":prioridade
+                                },
+                success: function(result) {
+                              
+                },
+                error: function(response){
+
+                },
+                complete: function(response) {
+                   
+                }
+            });  
+
         });
 
         $(document).on('change', '#cd_estado', function() {     
