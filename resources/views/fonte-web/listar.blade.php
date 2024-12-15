@@ -107,7 +107,7 @@
                             @foreach ($fontes as $fonte)
                                 <tr>
                                     <td>
-                                        <label style="display: inline; color: black; font-weight: 600;"><input style="width: 50%;" type="checkbox" class="dt-checkboxes">{{ $fonte->id }}</label>
+                                        <label style="display: inline; color: black; font-weight: 600; font-size: 14px;"><input style="width: 30%;" type="checkbox" class="dt-checkboxes">{{ $fonte->id }}</label>
                                     </td>
                                     <td>
                                         {!! ($fonte->estado) ? $fonte->estado->nm_estado: 'Não informado' !!}
