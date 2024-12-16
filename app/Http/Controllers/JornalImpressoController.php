@@ -180,6 +180,7 @@ class JornalImpressoController extends Controller
             $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d H:i:s");
             $busca_fonte = $request->fonte;
             $termo = $request->termo;
+            $ids = [];
 
             $jornais = PaginaJornalImpresso::query();
 

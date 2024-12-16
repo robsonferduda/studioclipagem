@@ -96,6 +96,7 @@ Route::get('fonte-web/excluir/{id}','FonteWebController@destroy');
 Route::get('fonte-web/importar','FonteWebController@importarNoticia');
 Route::get('fonte-web/inconsistencias','FonteWebController@inconsistencias');
 Route::get('fonte-web/estatisticas/{id}','FonteWebController@estatisticas');
+Route::get('fonte-web/estatisticas/coleta','FonteWebController@estatisticasColeta');
 
 Route::get('fonte-web/atualizar-estado','FonteWebController@atualizarEstado');
 Route::get('fonte-web/atualizar-valor','FonteWebController@atualizarValor');
