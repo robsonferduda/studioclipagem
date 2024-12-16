@@ -6,7 +6,7 @@
             <div class="row">
                 <div class="col-md-8">
                     <h4 class="card-title ml-3">
-                        <i class="fa fa-newspaper-o"></i> Jornal Impresso 
+                        <i class="fa fa-newspaper-o"></i> Impressos 
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Cadastrar Notícia
                     </h4>
                 </div>
@@ -46,6 +46,17 @@
                                                 @endforeach
                                             </select>
                                         </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Seção</label>
+                                        <select class="form-control select2" name="regra" id="regra">
+                                            <option value="">Selecione uma fonte</option>
+                                            @foreach ($fontes as $fonte)
+                                                <option value="{{ $fonte->id }}">{{ $fonte->nome }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row">

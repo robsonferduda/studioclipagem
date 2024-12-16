@@ -34,12 +34,47 @@ class FonteImpressoController extends Controller
         Session::put('url','impresso');
     }
 
-    public function listar()
+    public function listar(Request $request)
     {
         Session::put('sub-menu','fonte-impressa');
-        $jornais = FonteImpressa::orderBy('nome')->get();
 
-        return view('fonte-impresso/listar',compact('jornais'));
+        $cidades = Cidade::orderBy('nm_cidade')->get();
+        $estados = Estado::orderBy('nm_estado')->get();
+        $fontes = array();
+
+        $codigo = ($request->codigo) ? trim($request->codigo) : null;
+        $cd_estado = ($request->cd_estado) ? trim($request->cd_estado) : null;
+        $cd_cidade = ($request->cd_cidade) ? trim($request->cd_cidade) : null;
+        $nome = ($request->nome) ? trim($request->nome) : null;
+
+        $fonte = FonteImpressa::query();
+
+        if($request->isMethod('GET')){
+            $fontes = $fonte->orderBy('nome')->paginate(10);
+        }
+
+        if($request->isMethod('POST')){
+            
+            $fonte->when($codigo, function ($q) use ($codigo) {
+                return $q->where('codigo', $codigo);
+            });
+
+            $fonte->when($cd_estado, function ($q) use ($cd_estado) {
+                return $q->where('cd_estado', $cd_estado);
+            });
+
+            $fonte->when($cd_cidade, function ($q) use ($cd_cidade) {
+                return $q->where('cd_cidade', $cd_cidade);
+            });
+
+            $fonte->when($nome, function ($q) use ($nome) {
+                return $q->where('nome', 'ILIKE', '%'.trim($nome).'%');
+            });
+
+            $fontes = $fonte->orderBy('nome')->paginate(10);
+        }
+
+        return view('fonte-impresso/listar',compact('cidades','estados','fontes'));
     }
 
     public function cadastrar()
@@ -94,22 +129,34 @@ class FonteImpressoController extends Controller
 
     public function inserir(Request $request)
     {
-        $fonte = FonteImpressa::where('codigo', $request->codigo)->first();
+        if($request->codigo){
 
-        if($fonte){
-            $retorno = array('flag' => true,
-                             'msg' => '<i class="fa fa-exclamation"></i> Já existe uma fonte cadastrada com esse código');
+            $fonte = FonteImpressa::where('codigo', $request->codigo)->first();
 
-            Flash::warning($retorno['msg']);
-            return redirect('fonte-impresso/cadastrar')->withInput();
+            if($fonte){
+
+                $retorno = array('flag' => true,
+                                'msg' => '<i class="fa fa-exclamation"></i> Já existe uma fonte cadastrada com esse código');
+
+                Flash::warning($retorno['msg']);
+                return redirect('fonte-impresso/cadastrar')->withInput();
+            }
         }
 
         try {
             FonteImpressa::create([
+                'codigo' => $request->codigo ?? null,
                 'nome' => $request->nome,
-                'cd_cidade' => $request->cidade,
                 'cd_estado' => $request->cd_estado,
-                'codigo' => $request->codigo ?? null
+                'cd_cidade' => $request->cidade,
+                'valor_cm_capa_semana' => $request->valor_cm_capa_semana,
+                'valor_cm_capa_fim_semana' => $request->valor_cm_capa_fim_semana,
+                'valor_cm_contracapa' => $request->valor_cm_contracapa,
+                'valor_cm_demais_semana' => $request->valor_cm_demais_semana,
+                'valor_cm_demais_fim_semana' => $request->valor_cm_demais_fim_semana,
+                'tipo' => $request->tipo,
+                'coleta' => $request->coleta,
+                'url' => $request->url                
             ]);
 
             $retorno = array('flag' => true,
@@ -138,12 +185,17 @@ class FonteImpressoController extends Controller
         $jornal = FonteImpressa::find($id);
 
         try {
+
             $jornal->update([
                 'codigo'    => $request->codigo,
                 'nome'      => $request->nome,
                 'cd_estado' => $request->cd_estado,
                 'cd_cidade' => $request->cidade,
-                'retorno_midia' => $request->retorno_midia,
+                'valor_cm_capa_semana' => $request->valor_cm_capa_semana,
+                'valor_cm_capa_fim_semana' => $request->valor_cm_capa_fim_semana,
+                'valor_cm_contracapa' => $request->valor_cm_contracapa,
+                'valor_cm_demais_semana' => $request->valor_cm_demais_semana,
+                'valor_cm_demais_fim_semana' => $request->valor_cm_demais_fim_semana,
                 'tipo' => $request->tipo,
                 'coleta' => $request->coleta,
                 'url' => $request->url

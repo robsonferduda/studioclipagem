@@ -70,11 +70,18 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-12 col-sm-12 conteudo">                        
+                <div class="col-lg-12 col-md-12 col-sm-12">   
+                    <div class="col-lg-12 col-sm-12 conteudo">      
+                        @if($fontes->count())
+                        <h6 class="px-3">Mostrando {{ $fontes->count() }} de {{ $fontes->total() }} fontes</h6>
+                    @endif
+
+                    {{ $fontes->onEachSide(1)->appends([''])->links('vendor.pagination.bootstrap-4') }} 
+
                     <table id="bootstrap-table" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
-                                <th>Selecionar</th>
+                                <th><label style="display: inline; color: black; font-weight: 600; font-size: 14px;"><input style="width: 30%;" type="checkbox" class="dt-checkboxes"></label></th>
                                 <th>Estado</th>
                                 <th>Cidade</th>
                                 <th>Nome</th>
@@ -86,7 +93,7 @@
                         </thead>
                         <tfoot>
                             <tr>
-                                <th>Selecionar</th>
+                                <th></th>
                                 <th>Estado</th>
                                 <th>Cidade</th>
                                 <th>Nome</th>
@@ -97,10 +104,48 @@
                             </tr>
                         </tfoot>
                         <tbody>
-                            <tr></tr>
+                            @foreach ($fontes as $fonte)
+                                <tr>
+                                    <td style="min-width: 100px;">
+                                        <label style="display: inline; color: black; font-weight: 600; font-size: 14px;"><input style="width: 30%;" type="checkbox" class="dt-checkboxes">{{ $fonte->id }}</label>
+                                    </td>
+                                    <td>
+                                        {!! ($fonte->estado) ? $fonte->estado->nm_estado: 'Não informado' !!}
+                                    </td>
+                                    <td>
+                                        {!! ($fonte->cidade) ? $fonte->cidade->nm_cidade: 'Não informado' !!}
+                                    </td>
+                                    <td>
+                                        {{ $fonte->nome }}
+                                    </td>
+                                    <td>
+                                        <p class="mb-0">{{ $fonte->url }}</p>
+                                        @if($fonte->id_situacao > 0)
+                                            <span class="text-info">Última tentativa de coleta em {{ ($fonte->crawlead_at) ? \Carbon\Carbon::parse($fonte->crawlead_at)->format('d/m/Y H:i:s') : '' }}</span>
+                                        @else
+                                            <span class="text-danger">Nenhuma tentativa de coleta realizada</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        {{ number_format($fonte->nu_valor, 2, ".","") }}
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-default" style="background: {{ $fonte->situacao->ds_color }} !important; border-color:  {{ $fonte->situacao->ds_color }} !important;">{{ $fonte->situacao->ds_situacao }}</span>
+                                    </td>
+                                    <td>
+                                        <div class="text-center">
+                                            <a title="Estatísticas" href="{{ url('fonte-web/estatisticas', $fonte->id) }}" class="btn btn-warning btn-link btn-icon"> <i class="fa fa-bar-chart fa-2x"></i></a>
+                                            <a title="Editar" href="{{ url('fonte-web/editar', $fonte->id) }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
+                                            <a title="Excluir" href="{{ url('fonte-web/excluir', $fonte->id) }}" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-times fa-2x"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
-                   
+
+                    {{ $fontes->onEachSide(1)->appends([''])->links('vendor.pagination.bootstrap-4') }} 
+                    </div>
                 </div>
             </div>
         </div>
@@ -161,6 +206,7 @@
         var situacao = "";
         var id = "";
 
+        /*
         var table = $('#bootstrap-table').DataTable({
                 "processing": true,
                 "paginate": true,
@@ -205,6 +251,7 @@
                 ],
                 "stateSave": true
             });
+        */
 
         $(document).on('click', '.btn-prioridade', function() {   
 
@@ -234,7 +281,25 @@
         
         $(document).on('click', '.filtro-situacao', function() {     
             situacao = $(this).data("valor");
-            table.draw();
+            
+            $.ajax({
+                url: '../fonte-web',
+                type: 'POST',
+                data: { "_token": token,
+                        "fonte": fonte,
+                        "prioridade":prioridade
+                                },
+                success: function(result) {
+                              
+                },
+                error: function(response){
+
+                },
+                complete: function(response) {
+                   
+                }
+            });  
+
         });
 
         $(document).on('change', '#cd_estado', function() {     

@@ -8,11 +8,11 @@
                     <h4 class="card-title ml-3">
                         <i class="fa fa-newspaper-o"></i> Impressos
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Arquivos Web 
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Páginas
                     </h4>
                 </div>
                 <div class="col-md-6">
                     <a href="{{ url('fonte-impresso/listar') }}" class="btn btn-info pull-right mr-3"><i class="fa fa-database"></i> Fontes Impressos</a>
-                    <a href="{{ url('noticia-impressa/cadastrar') }}" class="btn btn-primary pull-right mr-3"><i class="fa fa-plus"></i> Cadastrar Notícia</a>
                 </div>
             </div>
         </div>
@@ -22,7 +22,7 @@
             </div>
             <div class="row">
                 <div class="col-lg-12 col-sm-12">
-                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['jornal-impresso/web']]) !!}
+                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['jornal-impresso/paginas']]) !!}
                         <div class="form-group m-3 w-70">
                             <div class="row">
                                 <div class="col-md-2 col-sm-6">
@@ -62,34 +62,36 @@
                             </div>     
                         </div>
                     {!! Form::close() !!} 
-
-                    @if($dados->count())
-                        <h6 class="px-3">Mostrando {{ $dados->count() }} de {{ $dados->total() }} Arquivos Coletados</h6>
-                    @endif
-
-                    {{ $dados->onEachSide(1)->appends(['dt_inicial' => $dt_inicial, 'dt_final' => $dt_final])->links('vendor.pagination.bootstrap-4') }}    
-
-                    @foreach ($dados as $key => $noticia)
-                        <div class="card">
-                            <div class="card-body">                           
-                                <div class="row">
-                                    <div class="col-lg-2 col-sm-12 mb-1">
-                                        @if($noticia->primeiraPagina)
-                                            <img src="{{ Storage::disk('s3')->temporaryUrl($noticia->primeiraPagina->path_pagina_s3, '+2 minutes') }}" alt="Girl in a jacket">
-                                        @endif
-                                    </div>
-                                    <div class="col-lg-10 col-sm-10 mb-1">
-                                        <p><strong>{{ ($noticia->fonte) ? $noticia->fonte->nome : 'Não Identificado' }}</strong></p>
-                                        <p>{{ ($noticia->titulo) ? $noticia->titulo : '' }}</p>
-                                        <p><a href="{{ url('jornal-impresso/edicao/'.$noticia->id.'/paginas') }}">{{ $noticia->paginas->count() }} Páginas</a></p>
-                                        <p>Publicado em: {{ ($noticia->dt_pub) ? \Carbon\Carbon::parse($noticia->dt_pub)->format('d/m/Y H:i:s') : 'Não informado' }}</p>
-                                        <p>Coletado em {{ \Carbon\Carbon::parse($noticia->dt_coleta)->format('d/m/Y H:i:s')  }}</p>                        
-                                    </div>
-                                </div>                               
-                            </div>                            
-                        </div>
-                    @endforeach
                 </div>
+            </div>
+            <div class="row">
+                @foreach ($paginas as $key => $pagina)
+                    <div class="card">
+                        <div class="card-body">                           
+                            <div class="row">
+                                <div class="col-lg-2 col-md-2 col-sm-12 mb-1">
+                                    <img src="{{ Storage::disk('s3')->temporaryUrl($pagina->path_pagina_s3, '+2 minutes') }}" alt="Girl in a jacket">
+                                </div>
+                                <div class="col-lg-10 col-sm-10 mb-1"> 
+                                    <h6>{{ ($pagina->edicao->fonte) ? $pagina->edicao->fonte->nome : '' }}</h6>  
+                                    <p>Página <strong>{{ $pagina->n_pagina }}</strong>/<strong>{{ count($pagina->edicao->paginas) }}</strong></p>  
+                                    <div class="panel panel-success">
+                                        <div class="conteudo-noticia mb-1">
+                                            {!! ($pagina->texto_extraido) ?  Str::limit($pagina->texto_extraido, 1000, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                        </div>
+                                        <div class="panel-body">
+                                            {!! ($pagina->texto_extraido) ?  $pagina->texto_extraido  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                        </div>
+                                        <div class="panel-heading">
+                                            <h3 class="panel-title"><span class="btn-show">Mostrar Mais</span></h3>
+                                        </div>
+                                    </div> 
+                                    <a href="{{ url('jornal-impresso/noticia/extrair/web',$pagina->id) }}" class="btn btn-success btn-extrair-noticia"><i class="fa fa-database"></i> Extrair Notícia</a>                
+                                </div>
+                            </div>                               
+                        </div>                            
+                    </div>
+                @endforeach
             </div>
         </div>
     </div>
@@ -99,7 +101,28 @@
 <script>
     $( document ).ready(function() {
 
-       
+        $(".panel-heading").click(function() {
+            $(this).parent().addClass('active').find('.panel-body').slideToggle('fast');
+            $(".panel-heading").not(this).parent().removeClass('active').find('.panel-body').slideUp('fast');
+        });
+
+        $(".btn-show").click(function(){
+
+            var texto = $(this).text();
+
+            if(texto == 'Mostrar Mais'){
+
+                $(this).closest('.panel').find('.conteudo-noticia').addClass('d-none');
+                $(this).html("Mostrar Menos");
+
+            }
+            
+            if(texto == 'Mostrar Menos'){
+                $(this).closest('.panel').find('.conteudo-noticia').removeClass('d-none');
+                $(this).html("Mostrar Mais");
+            }
+
+        });
 
     });
 </script>

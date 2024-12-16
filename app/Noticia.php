@@ -23,10 +23,19 @@ class Noticia extends Model
 
     public function getNoticiaByFonte($id_fonte, $data)
     {
-        $sql = "SELECT * FROM app_web WHERE data_cadastro = '$data' AND veiculoid = $id_fonte ORDER BY data_cadastro DESC LIMIT 1";
+        $sql = "SELECT * FROM app_web WHERE data_cadastro > '$data' AND veiculoid = $id_fonte ORDER BY data_cadastro DESC LIMIT 1";
 
         return DB::connection('mysql')->select($sql);
     }
+
+    public function getNoticiaBySite($id_site, $data)
+    {
+        $sql = "SELECT data_cadastro, link, titulo, conteudo FROM app_web where data_clipping > '$data' AND id_site = ".$id_site."  ORDER BY data_cadastro DESC LIMIT 1";
+
+        return DB::connection('mysql')->select($sql);
+    }
+
+    
 
     public function getFontes($d1, $d2)
     {

@@ -110,7 +110,7 @@
                         <span class="text-info"><strong>Atenção! </strong>Os campos para edição de notícia são disponibilizados apenas para as fontes com inconsistência de estrutura e mapeamento.</span>
                     </div>
                 </div> 
-                @if($fonte->id_situacao == 173 or $fonte->id_situacao == 174 or $fonte->id_situacao == 47)
+                @if($fonte->id_situacao == 173 or $fonte->id_situacao == 174 or $fonte->id_situacao == 47 or $fonte->id_situacao == 13)
                     <div class="row mt-3">
                         <div class="col-md-12">
                             <h6>Dados de Mapeamento</h6>

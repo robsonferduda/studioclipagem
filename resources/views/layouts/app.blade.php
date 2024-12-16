@@ -108,11 +108,16 @@
                           </li> 
                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'arquivos-web') ? 'active' : '' }}">
                             <a href="{{ url('jornal-impresso/web') }}">
-                              <span class="sidebar-normal">Arquivos Web</span>
+                              <span class="sidebar-normal">Edições Web</span>
+                              </a>
+                          </li>
+                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'arquivos-paginas') ? 'active' : '' }}">
+                            <a href="{{ url('jornal-impresso/paginas') }}">
+                              <span class="sidebar-normal">Páginas Web</span>
                               </a>
                           </li>
                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'noticia-impressa-cadastrar') ? 'active' : '' }}">
-                              <a href="{{ url('noticia-impressa/cadastrar') }}">
+                              <a href="{{ url('noticia/impresso/cadastrar') }}">
                               <span class="sidebar-normal">Cadastrar Notícia</span>
                               </a>
                           </li> 
@@ -528,7 +533,7 @@
         
         "lengthMenu": [
           [10, 25, 50, -1],
-          [10, 25, 50, "All"]
+          [10, 25, 50, "Todos"]
         ],
         responsive: true,
         language: {
