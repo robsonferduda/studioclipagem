@@ -33,7 +33,7 @@
                                         <select class="form-control select2" name="cliente" id="cliente">
                                             <option value="">Selecione um cliente</option>
                                             @foreach ($clientes as $cliente)
-                                                <option value="{{ $cliente->id }}" {{ ($cliente->id == $vinculo->cliente_id) ? 'selected' : '' }}>{{ $cliente->pessoa->nome }}</option>
+                                                <option value="{{ $cliente->id }}">{{ $cliente->pessoa->nome }}</option>
                                             @endforeach
                                         </select>
                                     </div>
