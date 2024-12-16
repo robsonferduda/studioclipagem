@@ -259,7 +259,7 @@ class JornalImpressoController extends Controller
         );
     }
 
-    public function uploadf()
+    public function upload()
     {
         Session::put('sub-menu','upload');
 
