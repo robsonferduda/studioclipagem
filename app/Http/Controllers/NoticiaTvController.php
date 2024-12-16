@@ -103,6 +103,19 @@ class NoticiaTvController extends Controller
         return view('noticia-tv/index', compact('noticias','dt_inicial','dt_final','termo'));
     }
 
+    public function dashboard()
+    {
+        Session::put('sub-menu','tv-dashboard');
+
+        $carbon = new Carbon();
+        $dt_inicial = (false) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d "."00:00:00");
+        $dt_final = (false) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d "."23:59:59");
+        $termo = "";
+        $noticias = null;
+
+        return view('noticia-tv/dashboard', compact('noticias','dt_inicial','dt_final','termo'));
+    }
+
     public function cadastrar()
     {
         Session::put('sub-menu','tv-cadastrar');

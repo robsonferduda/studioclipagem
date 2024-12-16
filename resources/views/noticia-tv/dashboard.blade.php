@@ -24,7 +24,7 @@
                 <div class="col-lg-9 col-md-6 col-sm-6">
                     <div class="card car-chart">
                         <div class="card-header">
-                          <p class="">Total de notícias diárias cadastradas no período de {{ \Carbon\Carbon::parse($data_inicial)->format('d/m/Y') }} a {{ \Carbon\Carbon::parse($data_final)->format('d/m/Y') }}</p>
+                          <p class="">Total de notícias diárias cadastradas no período de {{ \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y') }} a {{ \Carbon\Carbon::parse($dt_final)->format('d/m/Y') }}</p>
                         </div>
                         <div class="card-body">
                             <canvas id="chartjs-0" class="chartjs">
@@ -44,7 +44,7 @@
                                     <div class="col-7 col-md-8">
                                         <div class="numbers">
                                         <p class="card-category">Emissoras</p>
-                                        <p class="card-title">{{ $total_emissora_tv }}</p>
+                                        <p class="card-title"></p>
                                         <p></p>
                                         </div>
                                     </div>
@@ -54,7 +54,7 @@
                                 <hr>
                                 <div class="stats">
                                     <i class="fa fa-calendar"></i>
-                                    Última Atualização em {{ \Carbon\Carbon::parse($ultima_atualizacao_tv)->format('d/m/Y H:i:s') }}
+                                    Última Atualização em 
                                 </div>
                             </div>
                         </div>
@@ -72,7 +72,7 @@
                                     <div class="col-7 col-md-8">
                                         <div class="numbers">
                                         <p class="card-category">Notícias de Hoje</p>
-                                        <p class="card-title">{{ $total_noticia_tv }}</p>
+                                        <p class="card-title"></p>
                                         <p></p>
                                         </div>
                                     </div>
@@ -82,7 +82,7 @@
                                 <hr>
                                 <div class="stats">
                                     <i class="fa fa-calendar"></i>
-                                    Última Atualização em {{ \Carbon\Carbon::parse($ultima_atualizacao)->format('d/m/Y H:i:s') }}
+                                    Última Atualização em
                                 </div>
                             </div>
                         </div>

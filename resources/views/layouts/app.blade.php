@@ -233,6 +233,13 @@
                      </a>
                      <div class="collapse {{ (Session::has('url') and Session::get('url') == 'tv') ? 'show' : '' }}" id="submenu-tv" aria-expanded="false">
                         <ul class="nav ml-5">
+                          
+                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'tv-dashboard') ? 'active' : '' }}">
+                            <a href="{{ url('tv/dashboard') }}">
+                            <span class="sidebar-normal">Dashboard</span>
+                            </a>
+                         </li>
+
                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'tv-noticias') ? 'active' : '' }}">
                             <a href="{{ url('tv/noticias') }}">
                             <span class="sidebar-normal">Notícias</span>

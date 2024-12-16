@@ -96,22 +96,8 @@
                         </div>
                         <div class="card-content">
                             @if($top_sites)
-                                <ul class="list-unstyled team-members ml-3 mr-3">
-                                    @foreach ($top_sites as $key => $site)
-                                        <li style="border-bottom: 1px solid #ebebeb; margin-bottom: 3px;">
-                                            <div class="row">                                            
-                                                <div class="col-md-9">
-                                                    {{ $site->nome }}
-                                                    <br>
-                                                    <span class="text-muted"><small>{{ $site->url }}</small></span>
-                                                </div>   
-                                                <div class="col-md-2 text-right">
-                                                    <p class="mt-2">{{ $site->total }}</p>
-                                                </div>             
-                                            </div>
-                                        </li>
-                                        @if($key > 10) @php break 1; @endphp @endif
-                                    @endforeach                                
+                                <ul class="list-unstyled team-members ml-3 mr-3 maiores-coletas">
+                                                                
                                 </ul>
                             @else
                                 <p class="mr-2 ml-3"><i class="fa fa-hourglass-start mr-1"></i>Nenhuma coleta realizada no dia de hoje</p>
@@ -127,23 +113,8 @@
                         </div>
                         <div class="card-content">
                             @if($sem_coleta)
-                                <ul class="list-unstyled team-members ml-3 mr-3">
-                                    @foreach ($sem_coleta as $key => $site)
-                                        @if($key < 9)
-                                            <li style="border-bottom: 1px solid #ebebeb; margin-bottom: 3px;">
-                                                <div class="row">                                            
-                                                    <div class="col-md-9">
-                                                        {{ $site->nome }}
-                                                        <br>
-                                                        <span class="text-muted"><small>{{ $site->url }}</small></span>
-                                                    </div>   
-                                                    <div class="col-md-2 text-right">
-                                                    
-                                                    </div>             
-                                                </div>
-                                            </li>
-                                        @endif
-                                    @endforeach                                
+                                <ul class="list-unstyled team-members ml-3 mr-3 sem-coleta">
+                                                              
                                 </ul>
                             @else
                                 <p class="mr-2 ml-3"><i class="fa fa-hourglass-start mr-1"></i>Nenhuma coleta realizada no dia de hoje</p>
@@ -269,6 +240,31 @@
         var host =  $('meta[name="base-url"]').attr('content');
 
         $.ajax({
+            url: host+'/fonte-web/estatisticas/coleta',
+            type: 'GET',
+            beforeSend: function() {               
+                
+            },
+            success: function(data) {
+
+                data.forEach(element => {
+                    
+                    $(".maiores-coletas").append('<li style="border-bottom: 1px solid #ebebeb; margin-bottom: 3px;"><div class="row"><div class="col-md-9"> NOME SITE <br><span class="text-muted"><small>URL SITE}</small></span></div> <div class="col-md-2 text-right"><p class="mt-2">TOTAL</p></div></div></li>');
+
+                });
+
+            },
+            error: function(){
+
+            },
+            complete: function(){
+                
+            }
+        });
+
+        
+
+        $.ajax({
             url: host+'/inicio/estatisticas',
             type: 'GET',
             beforeSend: function() {
@@ -280,10 +276,10 @@
                 $(".total_jornal > .fa-spin").remove();
                 $(".total_web > .fa-spin").remove();
 
-                $(".total_jornal").append('<a href="https://studioclipagem.com/impresso">'+data.impresso+'</a>');
-                $(".total_tv").append('<a href="https://studioclipagem.com/impresso">'+data.tv+'</a>');
-                $(".total_radio").append('<a href="https://studioclipagem.com/radios">'+data.radio+'</a>');
-                $(".total_web").append('<a href="https://studioclipagem.com/jornal-web">'+data.web+'</a>');
+                $(".total_jornal").append('<a href="'+host+'/impresso">'+data.impresso+'</a>');
+                $(".total_tv").append('<a href="'+host+'/tv/dashboard">'+data.tv+'</a>');
+                $(".total_radio").append('<a href="'+host+'/radio/dashboard">'+data.radio+'</a>');
+                $(".total_web").append('<a href="'+host+'/noticia/web/dashboard">'+data.web+'</a>');
             },
             error: function(){
                 $(".total_radio").text('Erro ao carregar').css('color','#dc3545').css('font-size', '18px');
@@ -295,8 +291,6 @@
                 
             }
         });
-
-        inicio/estatisticas
 
         $(".btn-refresh").click(function(){
             
