@@ -207,8 +207,7 @@ class FonteWebController extends Controller
                                     'id_knewin' => $temp->id_knewin, 
                                     'id_situacao' => 0, 
                                     'id_prioridade' => 1, 
-                                    'cd_pais' => 55,
-                                    'nu_valor' => $temp->nu_valor, 
+                                    'nu_valor' => $temp->valor_cm, 
                                     'cd_estado' => $est);
                 
                 FonteWeb::create($new_fonte);
