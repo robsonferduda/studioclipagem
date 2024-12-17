@@ -215,7 +215,7 @@ class JornalImpressoController extends Controller
            
         }
 
-        return view('jornal-impresso/todas-paginas', compact("fontes", "paginas", 'dt_inicial','dt_final','termo','busca_fonte'))->withInput();
+        return view('jornal-impresso/todas-paginas', compact("fontes", "paginas", 'dt_inicial','dt_final','termo','busca_fonte'));
     }
 
     public function paginas($edicao)
