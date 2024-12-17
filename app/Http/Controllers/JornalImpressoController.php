@@ -184,26 +184,38 @@ class JornalImpressoController extends Controller
 
             $jornais = PaginaJornalImpresso::query();
 
-            $sql = "SELECT id 
-							FROM (SELECT id, to_tsvector(texto_extraido) as document 
-								  FROM pagina_edicao_jornal_online) p_search 
-								  WHERE p_search.document @@ plainto_tsquery('$termo')";
-
-            $resultado = DB::select($sql);
-
-            for ($i=0; $i < count($resultado); $i++) { 
-                $ids[] = $resultado[$i]->id;
-            }
-
             $jornais->when($fonte, function ($q) use ($fonte) {
                 return $q->where('id_jornal_online', $fonte);
             });
 
-            $paginas = $jornais->whereIn('id', $ids)->paginate(10);
+            if($termo)
+            {
+                $sql = "SELECT id 
+                FROM (SELECT id, to_tsvector(texto_extraido) as document 
+                      FROM pagina_edicao_jornal_online) p_search 
+                      WHERE p_search.document @@ plainto_tsquery('$termo')";
+
+                $resultado = DB::select($sql);
+
+                for ($i=0; $i < count($resultado); $i++) { 
+                    $ids[] = $resultado[$i]->id;
+                }
+
+                if(!count($ids)){
+                    Flash::warning('<i class="fa fa-exclamation"></i> Não foram encontrados termos para essa busca');
+                }
+
+                $paginas = $jornais->whereIn('id', $ids)->paginate(10);
+
+            }else{
+
+                $paginas = $jornais->paginate(10);
+
+            }
+           
         }
 
-
-        return view('jornal-impresso/todas-paginas', compact("fontes", "paginas", 'dt_inicial','dt_final','termo','busca_fonte'));
+        return view('jornal-impresso/todas-paginas', compact("fontes", "paginas", 'dt_inicial','dt_final','termo','busca_fonte'))->withInput();
     }
 
     public function paginas($edicao)
