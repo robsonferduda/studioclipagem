@@ -65,7 +65,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-12 mb-0">
-                                    <span data-valor="0" class="badge badge-default filtro-situacao" style="background: #66615b !important; border-color: #66615b !important;">Todas</span>
+                                    <span data-valor="-1" class="badge badge-default filtro-situacao" style="background: #66615b !important; border-color: #66615b !important;">Todas</span>
                                     @foreach($situacoes as $situacao)
                                         <span data-valor="{{ $situacao->id_situacao }}" class="badge badge-default filtro-situacao" style="background: {{ $situacao->ds_color }} !important; border-color: {{ $situacao->ds_color }} !important;">{{ $situacao->ds_situacao }} ({{ $situacao->total }})</span>
                                     @endforeach

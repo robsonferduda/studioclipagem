@@ -52,7 +52,7 @@ class FonteWebController extends Controller
             else
                 Session::forget('filtro_estado');
             
-            if($request->situacao and $request->situacao > 0){
+            if($request->situacao and $request->situacao >= 0){
                 Session::put('filtro_situacao', $request->situacao);
             }else{
                 Session::forget('filtro_situacao');
