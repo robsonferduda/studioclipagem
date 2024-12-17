@@ -47,14 +47,21 @@ class FonteWebController extends Controller
 
         if($request->isMethod('POST')){
 
-            if($request->situacao and $request->situacao > 0){
+            if($request->cd_estado != "")
+                Session::put('filtro_estado', $request->cd_estado);
+            else
+                Session::forget('filtro_estado');
+            
+            if($request->situacao){
                 Session::put('filtro_situacao', $request->situacao);
-            }else{
-                Session::forget('filtro_situacao');
             }
 
             $fonte->when(Session::get('filtro_situacao'), function ($q) {
                 return $q->where('id_situacao', Session::get('filtro_situacao'));
+            });
+
+            $fonte->when(Session::get('filtro_estado'), function ($q) {
+                return $q->where('cd_estado', Session::get('filtro_estado'));
             });
             
             $fonte->whereNotIn('id_situacao', [127,112,103,137])->orderByRaw("CASE WHEN crawlead_at IS NULL THEN 1 ELSE 0 END ASC")->orderBy('crawlead_at','DESC');
@@ -62,6 +69,10 @@ class FonteWebController extends Controller
         }
 
         if($request->isMethod('GET')){
+
+            $fonte->when(Session::get('filtro_estado'), function ($q) {
+                return $q->where('cd_estado', Session::get('filtro_estado'));
+            });
 
             $fonte->when(Session::get('filtro_situacao'), function ($q) {
                 return $q->where('id_situacao', Session::get('filtro_situacao'));

@@ -25,48 +25,53 @@
             </div>
             <div class="row">
                 <div class="col-lg-12 col-md-12 col-sm-12">
-                    <div class="form-group m-3 w-70">
-                        <div class="row">
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label>Estado</label>
-                                    <select class="form-control select2" name="cd_estado" id="cd_estado">
-                                        <option value="">Selecione um estado</option>
-                                        @foreach ($estados as $estado)
-                                            <option value="{{ $estado->cd_estado }}">{{ $estado->nm_estado }}</option>
-                                        @endforeach
-                                    </select>
+                    {!! Form::open(['id' => 'frm_fonte_impressa', 'class' => 'form-horizontal', 'url' => ['fonte-web/listar']]) !!}
+                        <div class="form-group m-3 w-70">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Estado</label>
+                                        <select class="form-control select2" name="cd_estado" id="cd_estado">
+                                            <option value="">Selecione um estado</option>
+                                            @foreach ($estados as $estado)
+                                                <option value="{{ $estado->cd_estado }}" {{ (Session::get('filtro_estado') and Session::get('filtro_estado') == $estado->cd_estado ) ? 'selected' : '' }}>{{ $estado->nm_estado }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Cidade</label>
+                                        <select class="form-control select2" name="cd_cidade" id="cidade" disabled="disabled">
+                                            <option value="">Selecione uma cidade</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Nome</label>
+                                        <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome" value="">
+                                    </div>
+                                </div>    
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Código</label>
+                                        <input type="text" class="form-control" name="codigo" id="codigo" placeholder="Nome" value="">
+                                    </div>
+                                </div>   
+                                <div class="col-md-12 checkbox-radios mb-0">
+                                    <button type="submit" id="btn-find" class="btn btn-primary mb-3"><i class="fa fa-search"></i> Buscar</button>
+                                </div>            
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>Cidade</label>
-                                    <select class="form-control select2" name="cd_cidade" id="cidade" disabled="disabled">
-                                        <option value="">Selecione uma cidade</option>
-                                    </select>
+                            <div class="row">
+                                <div class="col-md-12 mb-0">
+                                    <span data-valor="0" class="badge badge-default filtro-situacao" style="background: #66615b !important; border-color: #66615b !important;">Todas</span>
+                                    @foreach($situacoes as $situacao)
+                                        <span data-valor="{{ $situacao->id_situacao }}" class="badge badge-default filtro-situacao" style="background: {{ $situacao->ds_color }} !important; border-color: {{ $situacao->ds_color }} !important;">{{ $situacao->ds_situacao }} ({{ $situacao->total }})</span>
+                                    @endforeach
                                 </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label>Nome</label>
-                                    <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome" value="">
-                                </div>
-                            </div>    
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label>Código</label>
-                                    <input type="text" class="form-control" name="codigo" id="codigo" placeholder="Nome" value="">
-                                </div>
-                            </div>           
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 mb-0">
-                                <span data-valor="0" class="badge badge-default filtro-situacao" style="background: #66615b !important; border-color: #66615b !important;">Todas</span>
-                                @foreach($situacoes as $situacao)
-                                    <span data-valor="{{ $situacao->id_situacao }}" class="badge badge-default filtro-situacao" style="background: {{ $situacao->ds_color }} !important; border-color: {{ $situacao->ds_color }} !important;">{{ $situacao->ds_situacao }} ({{ $situacao->total }})</span>
-                                @endforeach
-                            </div>
-                        </div>     
+                            </div>   
+                        {!! Form::close() !!}   
                     </div>
                 </div>
             </div>
@@ -206,6 +211,7 @@
         var nome = "";
         var situacao = "";
         var id = "";
+        
 
         /*
         var table = $('#bootstrap-table').DataTable({
@@ -283,12 +289,14 @@
         $(document).on('click', '.filtro-situacao', function() {     
             
             situacao = $(this).data("valor");
+            estado = $("#cd_estado").val();
             
             $.ajax({
                 url: '../fonte-web/listar',
                 type: 'POST',
                 data: { "_token": token,
-                        "situacao": situacao
+                        "situacao": situacao,
+                        "estado": estado
                 },
                 success: function(result) {
                     window.location.reload();   
@@ -305,22 +313,22 @@
 
         $(document).on('change', '#cd_estado', function() {     
             estado = $(this).val();
-            table.draw();
+            //table.draw();
         });
 
         $(document).on('change', '#cidade', function() {     
             cidade = $(this).val();
-            table.draw();
+            //table.draw();
         });
 
         $(document).on('input', '#nome', function() {     
             nome = $(this).val();
-            table.draw();
+            //table.draw();
         });
 
         $(document).on('input', '#codigo', function() {     
             id = $(this).val();
-            table.draw();
+            //table.draw();
         });
 
         $(document).on('click', '.btn-selecao', function() {     
