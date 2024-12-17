@@ -46,16 +46,32 @@ class FonteWebController extends Controller
         $fonte = FonteWeb::query();
 
         if($request->isMethod('POST')){
+
+            if($request->situacao and $request->situacao > 0){
+                Session::put('filtro_situacao', $request->situacao);
+            }else{
+                Session::forget('filtro_situacao');
+            }
+
+            $fonte->when(Session::get('filtro_situacao'), function ($q) {
+                return $q->where('id_situacao', Session::get('filtro_situacao'));
+            });
             
+            $fonte->whereNotIn('id_situacao', [127,112,103,137])->orderByRaw("CASE WHEN crawlead_at IS NULL THEN 1 ELSE 0 END ASC")->orderBy('crawlead_at','DESC');
 
         }
 
         if($request->isMethod('GET')){
 
+            $fonte->when(Session::get('filtro_situacao'), function ($q) {
+                return $q->where('id_situacao', Session::get('filtro_situacao'));
+            });
+
             $fonte->whereNotIn('id_situacao', [127,112,103,137])->orderByRaw("CASE WHEN crawlead_at IS NULL THEN 1 ELSE 0 END ASC")->orderBy('crawlead_at','DESC');
-            $fontes = $fonte->paginate(10);
 
         }
+
+        $fontes = $fonte->paginate(10);
 
         return view('fonte-web/listar',compact('cidades','estados','situacoes','fontes'));
     }
