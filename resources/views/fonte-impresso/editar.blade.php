@@ -187,7 +187,7 @@
             let host =  $('meta[name="base-url"]').attr('content');
 
             var cd_pais = $("#cd_pais").val();
-            $('#cd_pais').val(cd_pais).change();
+            $('#pais').val(cd_pais).change();
 
             $("#cd_estado").trigger("change");
 
