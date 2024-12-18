@@ -67,7 +67,18 @@
                             <input type="text" class="form-control" name="url" id="url" placeholder="URL de Coleta" {{ (old('coleta') == 2) ? 'disabled' : '' }} value="{{ old('url') }}">
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>País</label>
+                            <select class="form-control" name="pais" id="pais">
+                                <option value="">Selecione</option>
+                                @foreach ($paises as $pais)
+                                    <option value="{{ $pais->cd_pais }}" {!! old('cd_pais') == $pais->cd_pais ? " selected" : '' !!}>{{ $pais->ds_pais }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label>Estado</label>
                             <select class="form-control" name="cd_estado" id="cd_estado">

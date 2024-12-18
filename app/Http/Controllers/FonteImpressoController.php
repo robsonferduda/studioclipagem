@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 use App\Jobs\ProcessarImpressos as JobProcessarImpressos;
 use App\Models\Cidade;
 use App\Models\Estado;
+use App\Models\Pais;
 use App\Utils;
 use Illuminate\Support\Facades\Session;
 use Symfony\Component\Process\Process;
@@ -81,8 +82,9 @@ class FonteImpressoController extends Controller
     {
         Session::put('sub-menu','fonte-impressa');
         $estados = Estado::orderBy('nm_estado')->get();
+        $paises = Pais::all();
 
-        return view('fonte-impresso/novo', compact('estados'));
+        return view('fonte-impresso/novo', compact('estados','paises'));
     }
 
     public function sessao(int $id)
@@ -112,13 +114,14 @@ class FonteImpressoController extends Controller
     {
         $fonte = FonteImpressa::find($id);
         $estados = Estado::orderBy('nm_estado')->get();
+        $paises = Pais::all();
 
         $cidades = null;
         if($fonte->cd_estado) {
             $cidades = Cidade::where(['cd_estado' => $fonte->cd_estado])->orderBy('nm_cidade')->get();
         }
 
-        return view('fonte-impresso/editar')->with('fonte', $fonte)->with('estados', $estados)->with('cidades', $cidades);
+        return view('fonte-impresso/editar')->with('paises', $paises)->with('fonte', $fonte)->with('estados', $estados)->with('cidades', $cidades);
     }
 
     public function detalhes($id)
@@ -147,6 +150,7 @@ class FonteImpressoController extends Controller
             FonteImpressa::create([
                 'codigo' => $request->codigo ?? null,
                 'nome' => $request->nome,
+                'cd_pais' => $request->pais,
                 'cd_estado' => $request->cd_estado,
                 'cd_cidade' => $request->cidade,
                 'valor_cm_capa_semana' => $request->valor_cm_capa_semana,
@@ -163,6 +167,9 @@ class FonteImpressoController extends Controller
                              'msg' => '<i class="fa fa-check"></i> Dados inseridos com sucesso');
 
         } catch (\Illuminate\Database\QueryException $e) {
+
+            dd($e);
+
             $retorno = array('flag' => false,
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
 
@@ -191,6 +198,7 @@ class FonteImpressoController extends Controller
                 'nome'      => $request->nome,
                 'cd_estado' => $request->cd_estado,
                 'cd_cidade' => $request->cidade,
+                'cd_pais' => $request->pais,
                 'valor_cm_capa_semana' => $request->valor_cm_capa_semana,
                 'valor_cm_capa_fim_semana' => $request->valor_cm_capa_fim_semana,
                 'valor_cm_contracapa' => $request->valor_cm_contracapa,

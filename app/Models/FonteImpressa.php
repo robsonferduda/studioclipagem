@@ -14,6 +14,7 @@ class FonteImpressa extends Model
 
     protected $fillable = ['codigo', 
                             'nome',
+                            'cd_pais',
                             'cd_estado', 
                             'cd_cidade', 
                             'tipo', 
