@@ -70,7 +70,7 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <label>País</label>
-                            <select class="form-control" name="pais" id="pais">
+                            <select class="form-control select2" name="pais" id="pais">
                                 <option value="">Selecione</option>
                                 @foreach ($paises as $pais)
                                     <option value="{{ $pais->cd_pais }}" {!! old('cd_pais') == $pais->cd_pais ? " selected" : '' !!}>{{ $pais->ds_pais }}</option>
@@ -81,7 +81,7 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <label>Estado</label>
-                            <select class="form-control" name="cd_estado" id="cd_estado">
+                            <select class="form-control select2" name="cd_estado" id="cd_estado">
                                 <option value="">Selecione</option>
                                 @foreach ($estados as $estado)
                                     <option value="{{ $estado->cd_estado }}" {!! old('cd_estado') == $estado->cd_estado ? " selected" : '' !!}>{{ $estado->nm_estado }}</option>
