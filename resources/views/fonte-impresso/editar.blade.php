@@ -69,6 +69,7 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <label>País</label>
+                            <input type="hidden" name="cd_pais" id="cd_pais" value="{{ $fonte->cd_pais }}">
                             <select class="form-control select2" name="pais" id="pais">
                                 <option value="">Selecione</option>
                                 @foreach ($paises as $pais)
@@ -184,6 +185,9 @@
         $(document).ready(function(){
 
             let host =  $('meta[name="base-url"]').attr('content');
+
+            var cd_pais = $("#cd_pais").val();
+            $('#cd_pais').val(cd_pais).change();
 
             $("#cd_estado").trigger("change");
 
