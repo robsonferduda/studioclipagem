@@ -106,11 +106,12 @@ ROute::post('fonte-web/inconsistencias/editar','FonteWebController@editarInconsi
 Route::match(array('GET', 'POST'),'fonte-web/listar','FonteWebController@index');
 Route::resource('fonte-web','FonteWebController');
 
-Route::get('impresso','JornalImpressoController@index');
+Route::get('impresso','JornalImpressoController@dashboard');
 Route::match(array('GET', 'POST'),'jornal-impresso/web','JornalImpressoController@web');
 Route::match(array('GET', 'POST'),'jornal-impresso/processamento','JornalImpressoController@processamento');
 Route::match(array('GET', 'POST'),'jornal-impresso/monitoramento','JornalImpressoController@monitoramento');
 Route::match(array('GET', 'POST'),'jornal-impresso/noticias','JornalImpressoController@index');
+Route::match(array('GET', 'POST'),'impresso/noticias','JornalImpressoController@index');
 
 Route::post('jornal-impresso/monitoramento/{cliente}/listar','JornalImpressoController@listarMonitoramento');
 Route::get('jornal-impresso/processar','JornalImpressoController@processar');

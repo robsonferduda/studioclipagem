@@ -83,6 +83,17 @@ class JornalImpressoController extends Controller
         return view('jornal-impresso/index',compact('fontes','dados','dt_inicial','dt_final','termo','busca_fonte'));
     }
 
+    public function dashboard(Request $request)
+    {
+        Session::put('sub-menu','impresso');
+
+        $dt_inicial = date('Y-m-d');
+        $dt_final = date('Y-m-d');
+
+        return view('jornal-impresso/dashboard', compact('dt_inicial','dt_final'));
+
+    }
+
     public function detalhes($id)
     {
         $noticia = JornalImpresso::find($id);
