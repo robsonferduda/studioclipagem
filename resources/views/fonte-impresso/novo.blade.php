@@ -35,7 +35,7 @@
                             <input type="text" class="form-control" name="codigo" id="codigo" placeholder="Código" value="{{ old('codigo') }}">
                         </div>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label>Tipo <span class="text-danger">Obrigatório</span></label>
                             <select class="form-control" name="tipo" id="tipo">
@@ -45,13 +45,24 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label>Coleta <span class="text-danger">Obrigatório</span></label>
                             <select class="form-control" name="coleta" id="coleta">
                                 <option value="">Selecione a coleta</option>
                                 <option value="1" {{ (old('coleta') == 1) ? 'selected' : '' }}>Coleta Web</option>
                                 <option value="2" {{ (old('coleta') == 2) ? 'selected' : '' }}>Upload</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Modelo <span class="text-info">Somente para <strong>Coleta Web</strong></span></label>
+                            <select class="form-control" name="modelo" id="modelo" disabled="disabled">
+                                <option value="">Selecione a modelo</option>
+                                @foreach ($modelos as $modelo)
+                                    <option value="{{ $modelo->modelo }}" {!! old('modelo') == $modelo->modelo ? 'selected' : '' !!}>{{ $modelo->descricao }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
@@ -64,7 +75,7 @@
                     <div class="col-md-12">
                         <div class="form-group">
                             <label>URL de Coleta <span class="text-danger">Obrigatório para fontes de <strong>Coleta Web</strong></span></label>
-                            <input type="text" class="form-control" name="url" id="url" placeholder="URL de Coleta" {{ (old('coleta') == 2) ? 'disabled' : '' }} value="{{ old('url') }}">
+                            <input type="text" class="form-control" name="url" id="url" disabled="disabled" placeholder="URL de Coleta" {{ (old('coleta') == 2) ? 'disabled' : '' }} value="{{ old('url') }}">
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -164,8 +175,10 @@
 
                 if(coleta == 1){
                     $("#url").attr("disabled",false);
+                    $("#modelo").attr("disabled",false);
                 }else{
                     $("#url").attr("disabled",true);
+                    $("#modelo").attr("disabled",true);
                     $("#url").val("");
                 }
             });

@@ -12,6 +12,7 @@ use App\Models\NoticiaCliente;
 use App\Models\FonteImpressa;
 use App\Models\FilaImpresso;
 use App\Models\JornalImpresso;
+use App\Models\ModeloImpresso;
 use App\Models\Fonte;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
@@ -83,8 +84,9 @@ class FonteImpressoController extends Controller
         Session::put('sub-menu','fonte-impressa');
         $estados = Estado::orderBy('nm_estado')->get();
         $paises = Pais::all();
+        $modelos = ModeloImpresso::all();
 
-        return view('fonte-impresso/novo', compact('estados','paises'));
+        return view('fonte-impresso/novo', compact('estados','paises','modelos'));
     }
 
     public function sessao(int $id)
@@ -115,13 +117,14 @@ class FonteImpressoController extends Controller
         $fonte = FonteImpressa::find($id);
         $estados = Estado::orderBy('nm_estado')->get();
         $paises = Pais::all();
+        $modelos = ModeloImpresso::all();
 
         $cidades = null;
         if($fonte->cd_estado) {
             $cidades = Cidade::where(['cd_estado' => $fonte->cd_estado])->orderBy('nm_cidade')->get();
         }
 
-        return view('fonte-impresso/editar')->with('paises', $paises)->with('fonte', $fonte)->with('estados', $estados)->with('cidades', $cidades);
+        return view('fonte-impresso/editar')->with('modelos', $modelos)->with('paises', $paises)->with('fonte', $fonte)->with('estados', $estados)->with('cidades', $cidades);
     }
 
     public function detalhes($id)
@@ -160,6 +163,7 @@ class FonteImpressoController extends Controller
                 'valor_cm_demais_fim_semana' => $request->valor_cm_demais_fim_semana,
                 'tipo' => $request->tipo,
                 'coleta' => $request->coleta,
+                'modelo' => $request->modelo,
                 'url' => $request->url                
             ]);
 
@@ -206,6 +210,7 @@ class FonteImpressoController extends Controller
                 'valor_cm_demais_fim_semana' => $request->valor_cm_demais_fim_semana,
                 'tipo' => $request->tipo,
                 'coleta' => $request->coleta,
+                'modelo' => $request->modelo,
                 'url' => $request->url
             ]);
 
@@ -215,6 +220,8 @@ class FonteImpressoController extends Controller
             );
 
         } catch (\Illuminate\Database\QueryException $e) {
+
+            dd($e);
 
             $retorno = array(
                 'flag' => false,

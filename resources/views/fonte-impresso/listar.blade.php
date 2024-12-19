@@ -72,6 +72,8 @@
                     <h6 class="px-3">Mostrando {{ $fontes->count() }} de {{ $fontes->total() }} fontes</h6>
                 @endif
 
+                <div class="col-lg-12 col-sm-12 conteudo"> 
+
                 <table id="fontes_impressas" class="table table-striped table-bordered" cellspacing="0" width="100%">
                     <thead>
                         <tr>
@@ -133,6 +135,7 @@
                     </tbody>
                 </table>
                 {{ $fontes->onEachSide(1)->appends([''])->links('vendor.pagination.bootstrap-4') }} 
+                </div>
             </div>
         </div>
     </div>

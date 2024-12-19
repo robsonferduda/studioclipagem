@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class JornalWeb extends Model
 {    
     protected $connection = 'pgsql';
-    protected $table = 'noticia_web';
+    protected $table = 'noticias_web';
 
     protected $fillable = ['cd_estado'];     
     

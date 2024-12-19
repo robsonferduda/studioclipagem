@@ -441,7 +441,7 @@ class FonteWebController extends Controller
         $fonte = FonteWeb::find($id);
         $hoje = $this->data_atual;
         $data_inicial = Carbon::parse($hoje)->subDays(7)->format('Y-m-d');
-        $total_dia = JornalWeb::where("id_fonte", $id)->where('dt_clipagem', $hoje)->count();  
+        $total_dia = JornalWeb::where("id_fonte", $id)->where('data_insert', $hoje)->count();  
 
         $clientes = $fonte->getColetasByFonte($id, $data_inicial, $hoje);
         
