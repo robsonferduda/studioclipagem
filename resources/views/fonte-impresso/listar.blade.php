@@ -58,6 +58,7 @@
                                 </div>
                             </div>     
                             <div class="col-md-12 checkbox-radios mb-0">
+                                <button type="button" id="btn-find" class="btn btn-warning btn-limpar mb-3"><i class="fa fa-refresh"></i> Limpar</button>
                                 <button type="submit" id="btn-find" class="btn btn-primary mb-3"><i class="fa fa-search"></i> Buscar</button>
                             </div>    
                         </div>
@@ -145,6 +146,8 @@
 <script>
     $(document).ready(function() {
 
+        let host =  $('meta[name="base-url"]').attr('content');
+
         $('#fontes_impressas_off').DataTable({
             "pagingType": "full_numbers",
             "bPaginate": false,
@@ -159,6 +162,24 @@
             search: "_INPUT_",
             searchPlaceholder: "Filtrar",
             }
+        });
+
+        $(document).on('click', '.btn-limpar', function() {     
+                        
+            $.ajax({
+                url: host+'/impresso/limpar',
+                type: 'GET',
+                success: function(result) {
+                    window.location.reload();   
+                },
+                error: function(response){
+
+                },
+                complete: function(response) {
+                   
+                }
+            });  
+
         });
 
     });

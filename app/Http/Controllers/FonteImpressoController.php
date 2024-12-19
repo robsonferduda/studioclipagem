@@ -56,6 +56,8 @@ class FonteImpressoController extends Controller
         }
 
         if($request->isMethod('POST')){
+
+            Session::put('filtro_estado', $cd_estado);
             
             $fonte->when($codigo, function ($q) use ($codigo) {
                 return $q->where('codigo', $codigo);
@@ -77,6 +79,11 @@ class FonteImpressoController extends Controller
         }
 
         return view('fonte-impresso/listar',compact('cidades','estados','fontes'));
+    }
+
+    public function limpar()
+    {
+        Session::forget('filtro_estado');
     }
 
     public function cadastrar()

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -56,5 +57,15 @@ class FonteImpressa extends Model
     public function secoes()
     {
         return $this->hasMany(SecaoImpresso::class,'id_jornal_online','id');
+    }
+
+    public function getTotais()
+    {
+        $sql = "SELECT created_at, count(*) AS total 
+                FROM pagina_edicao_jornal_online 
+                WHERE deleted_at IS NULL 
+                GROUP BY created_at";
+
+        return DB::select($sql);
     }
 }

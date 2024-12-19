@@ -107,6 +107,8 @@ Route::match(array('GET', 'POST'),'fonte-web/listar','FonteWebController@index')
 Route::resource('fonte-web','FonteWebController');
 
 Route::get('impresso','JornalImpressoController@dashboard');
+Route::get('impresso/limpar','FonteImpressoController@limpar');
+Route::get('impresso/coleta/estatisticas','JornalImpressoController@estatisticas');
 Route::match(array('GET', 'POST'),'jornal-impresso/web','JornalImpressoController@web');
 Route::match(array('GET', 'POST'),'jornal-impresso/processamento','JornalImpressoController@processamento');
 Route::match(array('GET', 'POST'),'jornal-impresso/monitoramento','JornalImpressoController@monitoramento');

@@ -8,6 +8,7 @@ use File;
 use Storage;
 use Carbon\Carbon;
 use App\Models\Cliente;
+use App\Models\JornalWeb;
 use App\Models\NoticiaImpresso;
 use App\Models\EdicaoJornalImpresso;
 use App\Models\NoticiaCliente;
@@ -87,10 +88,13 @@ class JornalImpressoController extends Controller
     {
         Session::put('sub-menu','impresso');
 
-        $dt_inicial = date('Y-m-d');
+        $dt_inicial = Carbon::now()->subDays(7);
         $dt_final = date('Y-m-d');
+       
+        $total_fonte_impressos = FonteImpressa::count();
+        $total_noticias_impressas = count(PaginaJornalImpresso::whereBetween('created_at', [$dt_final." 00:00:00", $dt_final." 23:59:59"])->get());
 
-        return view('jornal-impresso/dashboard', compact('dt_inicial','dt_final'));
+        return view('jornal-impresso/dashboard', compact('dt_inicial','dt_final','total_fonte_impressos','total_noticias_impressas'));
 
     }
 
@@ -341,6 +345,25 @@ class JornalImpressoController extends Controller
         }
 
         return view('jornal-impresso/processamento', compact('fila','fontes'));
+    }
+
+    public function estatisticas()
+    {
+        $dados = array();
+
+        $totais = (new FonteImpressa())->getTotais();
+
+        for ($i=0; $i < count($totais); $i++) { 
+            $dados['label'][] = date('d/m/Y', strtotime($totais[$i]->created_at));
+            $dados['totais'][] = $totais[$i]->total;
+        }
+
+        return response()->json($dados);
+    }
+
+    public function limpar()
+    {
+        Session::forget('filtro_estado');
     }
 
     public function monitoramento(Request $request)

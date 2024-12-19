@@ -45,7 +45,7 @@
                                         <div class="numbers">
                                         <p class="card-category">Fontes Disponíveis</p>
                                         <p class="card-title"></p>
-                                        <p></p>
+                                        <p>{{ $total_fonte_impressos }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -73,7 +73,7 @@
                                         <div class="numbers">
                                         <p class="card-category">Notícias de Hoje</p>
                                         <p class="card-title"></p>
-                                        <p></p>
+                                        <p>{{ $total_noticias_impressas }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -92,4 +92,49 @@
         </div>
     </div>
 </div>
+@endsection
+@section('script')
+    <script>
+        $(document).ready(function() { 
+
+            var host =  $('meta[name="base-url"]').attr('content');
+
+            var dados = null;
+
+            $.ajax({
+                url: host+'/impresso/coleta/estatisticas',
+                type: 'GET',
+                success: function(response) {
+                    dados = response;
+                    initDashboardPageCharts();
+                },
+                error: function(){
+                    alert("Erro");
+                }
+            }); 
+
+            function initDashboardPageCharts() {
+        
+        new Chart(document.getElementById("chartjs-0"), {
+            "type": "line",
+            "data": {
+                "labels": dados.label,
+                "datasets": [{
+                    "label": "Notícias por dia",
+                    "data": dados.totais,
+                    "fill": true,
+                    "borderColor": "rgb(75, 192, 192)",
+                    "lineTension": 0.1
+                }]
+            },
+            "options": {
+                legend: {
+                    display: true,
+                    position: 'bottom'
+                }
+            }
+        });
+    }
+        });
+    </script>
 @endsection
