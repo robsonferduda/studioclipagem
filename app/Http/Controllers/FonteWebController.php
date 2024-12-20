@@ -195,7 +195,7 @@ class FonteWebController extends Controller
     {
         $n = 0;
         $s = 0;
-        $temporarias = DB::select("SELECT * from fonte_tmp WHERE id_knewin IS NULL and url != '' AND url NOT IN(SELECT url FROM fonte_web)");       
+        $temporarias = DB::select("SELECT * from fonte_tmp WHERE url NOT IN(SELECT url FROM fonte_web)");       
 
         foreach ($temporarias as $key => $temp) {
 
@@ -296,7 +296,7 @@ class FonteWebController extends Controller
 
             $controle++;
 
-            if($controle == 230){
+            if($controle == 100){
                 dd("Parou");
             }
         }
