@@ -74,7 +74,7 @@
                 @endif
 
                 <div class="col-lg-12 col-sm-12 conteudo"> 
-
+                {{ $fontes->onEachSide(1)->appends([''])->links('vendor.pagination.bootstrap-4') }} 
                 <table id="fontes_impressas" class="table table-striped table-bordered" cellspacing="0" width="100%">
                     <thead>
                         <tr>

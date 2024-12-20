@@ -171,16 +171,16 @@ class JornalImpressoController extends Controller
             if($request->dt_inicial){
                
                 $dt_inicial = ($request->dt_inicial) ? $request->dt_inicial : date("Y-m-d")." 00:00:00";
-                $dt_final = ($request->dt_final) ? $request->dt_final : date("Y-m-d H:i:s");
+                $dt_final = ($request->dt_final) ? $request->dt_final : date("Y-m-d"." 23:59:59");
 
                 $paginas = PaginaJornalImpresso::whereHas('edicao', function ($q){
                                 return $q->whereBetween('dt_coleta', [$dt_inicial, $dt_final])->orderBy('dt_coleta','DESC');
-                            })->with('fonte')->with('paginas')->paginate(10);
+                           })->with('fonte')->with('paginas')->paginate(10);
 
             }else{
                
-                $dt_inicial = "2024-11-01 00:00:00";
-                $dt_final = date('Y-m-d H:i:s');
+                $dt_inicial = ($request->dt_inicial) ? $request->dt_inicial : date("Y-m-d")." 00:00:00";
+                $dt_final = ($request->dt_final) ? $request->dt_final : date("Y-m-d"." 23:59:59");
 
                 $paginas =  PaginaJornalImpresso::whereHas('edicao', function ($q) use($dt_inicial, $dt_final){
                     return $q->whereBetween('dt_coleta', [$dt_inicial, $dt_final])->orderBy('dt_coleta','DESC');
