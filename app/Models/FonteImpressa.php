@@ -59,12 +59,14 @@ class FonteImpressa extends Model
         return $this->hasMany(SecaoImpresso::class,'id_jornal_online','id');
     }
 
-    public function getTotais()
+    public function getTotais($dt_inicio, $dt_fim)
     {
-        $sql = "SELECT created_at, count(*) AS total 
+        $sql = "SELECT created_at::date, count(*) AS total 
                 FROM pagina_edicao_jornal_online 
                 WHERE deleted_at IS NULL 
-                GROUP BY created_at";
+                AND created_at between '$dt_inicio' AND '$dt_fim'
+                GROUP BY created_at::date
+                ORDER BY created_at ";
 
         return DB::select($sql);
     }

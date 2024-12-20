@@ -350,8 +350,10 @@ class JornalImpressoController extends Controller
     public function estatisticas()
     {
         $dados = array();
+        $dt_inicial = Carbon::now()->subDays(7);
+        $dt_final = date('Y-m-d');
 
-        $totais = (new FonteImpressa())->getTotais();
+        $totais = (new FonteImpressa())->getTotais($dt_inicial, $dt_final);
 
         for ($i=0; $i < count($totais); $i++) { 
             $dados['label'][] = date('d/m/Y', strtotime($totais[$i]->created_at));
