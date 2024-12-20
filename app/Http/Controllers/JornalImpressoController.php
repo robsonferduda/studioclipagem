@@ -351,7 +351,7 @@ class JornalImpressoController extends Controller
     {
         $dados = array();
         $dt_inicial = Carbon::now()->subDays(7);
-        $dt_final = date('Y-m-d');
+        $dt_final = date('Y-m-d')." 23:59:59";
 
         $totais = (new FonteImpressa())->getTotais($dt_inicial, $dt_final);
 
