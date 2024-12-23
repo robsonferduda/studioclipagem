@@ -632,7 +632,6 @@ class FonteWebController extends Controller
         $carbon = new Carbon();
         $fonte = FonteWeb::find($id);
 
-        if($fonte->id_situacao == 173 or $fonte->id_situacao == 174 or $fonte->id_situacao == 47){
 
             if($request->id_noticia_referencia){
 
@@ -674,7 +673,7 @@ class FonteWebController extends Controller
             }
 
             $fonte->update(['id_situacao' => 0]);
-        }
+        
 
         if($request->resetar_situacao){
             $request->merge(['id_situacao' => 0]);
