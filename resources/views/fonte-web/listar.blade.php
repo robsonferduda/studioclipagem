@@ -56,7 +56,7 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Código</label>
-                                        <input type="text" class="form-control" name="codigo" id="codigo" placeholder="Código" value="">
+                                        <input type="text" class="form-control" name="codigo" id="codigo" placeholder="Código" value="{{ (Session::get('filtro_codigo')) ? Session::get('filtro_codigo') : '' }}">
                                     </div>
                                 </div>   
                                 <div class="col-md-12 checkbox-radios mb-0">

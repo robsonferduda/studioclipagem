@@ -48,6 +48,7 @@ class FonteWebController extends Controller
         if($request->isMethod('POST')){
 
             $nome = ($request->nome) ? $request->nome : "";
+            $codigo = ($request->codigo) ? $request->codigo : "";
 
             if($request->cd_estado != "")
                 Session::put('filtro_estado', $request->cd_estado);
@@ -72,8 +73,13 @@ class FonteWebController extends Controller
                 Session::put('filtro_nome', $nome);
                 return $q->where('nome', 'ILIKE', '%'.trim($nome).'%');
             });
+
+            $fonte->when($codigo, function ($q) use ($codigo) {
+                Session::put('filtro_codigo', $codigo);
+                return $q->where('id', $codigo);
+            });
             
-            $fonte->whereNotIn('id_situacao', [127,112,103,137])->orderByRaw("CASE WHEN crawlead_at IS NULL THEN 1 ELSE 0 END ASC")->orderBy('crawlead_at','DESC');
+            $fonte->orderByRaw("CASE WHEN crawlead_at IS NULL THEN 1 ELSE 0 END ASC")->orderBy('crawlead_at','DESC');
 
         }
 
@@ -90,8 +96,12 @@ class FonteWebController extends Controller
             $fonte->when(Session::get('filtro_nome'), function ($q) {
                 return $q->where('nome', 'ILIKE', '%'.trim(Session::get('filtro_nome')).'%');
             });
+
+            $fonte->when(Session::get('filtro_codigo'), function ($q) {
+                return $q->where('id', Session::get('filtro_codigo'));
+            });
             
-            $fonte->whereNotIn('id_situacao', [127,112,103,137])->orderByRaw("CASE WHEN crawlead_at IS NULL THEN 1 ELSE 0 END ASC")->orderBy('crawlead_at','DESC');
+            $fonte->orderByRaw("CASE WHEN crawlead_at IS NULL THEN 1 ELSE 0 END ASC")->orderBy('crawlead_at','DESC');
 
         }
 
@@ -191,6 +201,7 @@ class FonteWebController extends Controller
     {
         Session::forget('filtro_estado');
         Session::forget('filtro_nome');
+        Session::forget('filtro_codigo');
 
         return redirect('fonte-web/listar');
 
