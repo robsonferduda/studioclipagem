@@ -10,13 +10,12 @@ class VideoEmissoraWeb extends Model
     use SoftDeletes;
 
     protected $connection = 'pgsql';
-    protected $table = 'videos_emissora_web';
+    protected $table = 'videos_programa_emissora_web';
 
     protected $fillable = ['id'];
 
-    public function emissora()
+    public function programa()
     {
-        return $this->hasOne(EmissoraWeb::class, 'id', 'id_emissora_web');
+        return $this->hasOne(ProgramaEmissoraWeb::class, 'id', 'id_programa_emissora_web');
     }
-
 }

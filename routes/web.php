@@ -210,6 +210,7 @@ Route::get('tv/estatisticas','NoticiaTvController@estatisticas');
 
 Route::match(array('GET', 'POST'),'tv/noticias','NoticiaTvController@index');
 Route::get('tv/decupagem','NoticiaTvController@decupagem');
+
 Route::get('tv/decupar','NoticiaTvController@decupar');
 Route::get('tv/noticias/estatisticas','NoticiaTvController@getEstatisticas');
 Route::get('tv/noticias/cadastrar','NoticiaTvController@cadastrar');
@@ -224,6 +225,9 @@ Route::post('noticia_tv/decupagem/salvar','NoticiaTvController@salvarDecugem');
 Route::post('noticia_tv/decupagem/processar','NoticiaTvController@processar');
 Route::post('tv/noticias/upload','NoticiaTvController@upload');
 Route::post('tv/decupagem/upload','NoticiaTvController@uploadWord');
+
+Route::match(array('GET', 'POST'),'tv/videos','VideosController@index');
+Route::get('tv/video/detalhes/{id}','VideosController@detalhes');
 
 Route::get('cliente/get/json','ClientController@json');
 Route::get('client/accounts/facebook/{cliente}','ClientController@getFacebookAccounts');

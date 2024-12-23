@@ -227,7 +227,7 @@
                   <li class="{{ (Session::has('url') and Session::get('url') == 'tv') ? 'active' : '' }}">
                       <a data-toggle="collapse" href="#submenu-tv" class="{{ (Session::has('url') and Session::get('url') == 'tv') ? '' : 'collapsed' }}" aria-expanded="{{ (Session::has('url') and Session::get('url') == 'tv') ? 'true' : 'false' }}">
                         <i class="fa fa-tv"></i>
-                        <p>Televisão
+                        <p>TV
                            <b class="caret"></b>
                         </p>
                      </a>
@@ -239,6 +239,12 @@
                             <span class="sidebar-normal">Dashboard</span>
                             </a>
                          </li>
+
+                         <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'tv-videos') ? 'active' : '' }}">
+                          <a href="{{ url('tv/videos') }}">
+                          <span class="sidebar-normal">Vídeos TV</span>
+                          </a>
+                       </li>
 
                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'tv-noticias') ? 'active' : '' }}">
                             <a href="{{ url('tv/noticias') }}">
