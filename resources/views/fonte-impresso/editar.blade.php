@@ -139,14 +139,29 @@
                             <input type="text" class="form-control retorno_midia" name="valor_cm_demais_fim_semana" id="valor_cm_demais_fim_semana" placeholder="0,00" value="{{ number_format($fonte->valor_cm_demais_fim_semana, 2, ".","") }}">
                         </div>
                     </div>
-                    <div class="col-md-2">
-                        <div class="form-check" style="margin-top: 30px;">
-                            <div class="form-check">
-                                <label class="form-check-label">
-                                    <input class="form-check-input" {{ ($fonte->with_login) ? 'checked' : '' }} type="checkbox" name="with_login" value="true">
-                                        EXIGE LOGIN
-                                    <span class="form-check-sign"></span>
-                                </label>
+                    <div class="col-md-12">
+                        <div class="row">                        
+                            <div class="col-md-2">
+                                <div class="form-check" style="margin-top: 15px;">
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" {{ ($fonte->with_login) ? 'checked' : '' }} type="checkbox" name="with_login" value="true">
+                                                EXIGE LOGIN
+                                            <span class="form-check-sign"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-check" style="margin-top: 15px;">
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" {{ ($fonte->fl_ativo) ? 'checked' : '' }} type="checkbox" name="fl_ativo" value="true">
+                                                ATIVO
+                                            <span class="form-check-sign"></span>
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -50,16 +50,17 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Nome</label>
-                                        <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome" value="">
+                                        <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome" value="{{ (Session::get('filtro_nome')) ? Session::get('filtro_nome') : '' }}">
                                     </div>
                                 </div>    
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Código</label>
-                                        <input type="text" class="form-control" name="codigo" id="codigo" placeholder="Nome" value="">
+                                        <input type="text" class="form-control" name="codigo" id="codigo" placeholder="Código" value="">
                                     </div>
                                 </div>   
                                 <div class="col-md-12 checkbox-radios mb-0">
+                                    <a href="{{ url('fonte-web/limpar') }}" class="btn btn-warning btn-limpar mb-3"><i class="fa fa-refresh"></i> Limpar</a>
                                     <button type="submit" id="btn-find" class="btn btn-primary mb-3"><i class="fa fa-search"></i> Buscar</button>
                                 </div>            
                             </div>

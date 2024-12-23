@@ -32,7 +32,7 @@
                                     <select class="form-control select2" name="cd_estado" id="cd_estado">
                                         <option value="">Selecione um estado</option>
                                         @foreach ($estados as $estado)
-                                            <option value="{{ $estado->cd_estado }}">{{ $estado->nm_estado }}</option>
+                                            <option value="{{ $estado->cd_estado }}" {{ (Session::get('filtro_estado') == $estado->cd_estado) ? 'selected' : '' }}>{{ $estado->nm_estado }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -54,11 +54,11 @@
                             <div class="col-md-2">
                                 <div class="form-group">
                                     <label>Código</label>
-                                    <input type="text" class="form-control" name="codigo" id="codigo" placeholder="Nome" value="">
+                                    <input type="text" class="form-control" name="codigo" id="codigo" placeholder="Código" value="">
                                 </div>
                             </div>     
                             <div class="col-md-12 checkbox-radios mb-0">
-                                <button type="button" id="btn-find" class="btn btn-warning btn-limpar mb-3"><i class="fa fa-refresh"></i> Limpar</button>
+                                <a href="{{ url('impresso/limpar') }}" class="btn btn-warning btn-limpar mb-3"><i class="fa fa-refresh"></i> Limpar</a>
                                 <button type="submit" id="btn-find" class="btn btn-primary mb-3"><i class="fa fa-search"></i> Buscar</button>
                             </div>    
                         </div>
@@ -67,76 +67,86 @@
                 </div>
             </div>
             <div class="row">
+                @if(count($fontes))
 
-                <div class="col-lg-12 col-sm-12 conteudo">      
-                    @if($fontes->count())
-                    <h6 class="px-3">Mostrando {{ $fontes->count() }} de {{ $fontes->total() }} fontes</h6>
-                @endif
+                    <div class="col-lg-12 col-sm-12 conteudo">      
+                        @if($fontes->count())
+                        <h6 class="px-3">Mostrando {{ $fontes->count() }} de {{ $fontes->total() }} fontes</h6>
+                    @endif
 
-                <div class="col-lg-12 col-sm-12 conteudo"> 
-                {{ $fontes->onEachSide(1)->appends([''])->links('vendor.pagination.bootstrap-4') }} 
-                <table id="fontes_impressas" class="table table-striped table-bordered" cellspacing="0" width="100%">
-                    <thead>
-                        <tr>
-                            <th>Código</th>
-                            <th>Tipo</th>
-                            <th>Coleta</th>
-                            <th>Estado</th>
-                            <th>Cidade</th>
-                            <th>Nome</th>
-                            <th>CAPA</th>
-                            <th>CAPA FDS</th>
-                            <th>CONTRACAPA</th>
-                            <th>DEMAIS</th>
-                            <th>DEMAIS FDS</th>
-                            <th class="disabled-sorting text-center">Ações</th>
-                        </tr>
-                    </thead>
-                    <tfoot>
-                        <tr>
-                            <th>Código</th>
-                            <th>Tipo</th>
-                            <th>Coleta</th>
-                            <th>Estado</th>
-                            <th>Cidade</th>
-                            <th>Nome</th>
-                            <th>CAPA</th>
-                            <th>CAPA FDS</th>
-                            <th>CONTRACAPA</th>
-                            <th>DEMAIS</th>
-                            <th>DEMAIS FDS</th>
-                            <th class="disabled-sorting text-center">Ações</th>
-                        </tr>
-                    </tfoot>
-                    <tbody>
-                        @foreach($fontes as $fonte)
+                    <div class="col-lg-12 col-sm-12 conteudo"> 
+                    
+                    {{ $fontes->onEachSide(1)->appends([''])->links('vendor.pagination.bootstrap-4') }} 
+
+                    <table id="fontes_impressas" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                        <thead>
                             <tr>
-                                <td>{!! ($fonte->codigo) ? $fonte->codigo : '<span class="text-danger">Não Informado</span>' !!}</td>
-                                <td>{!! ($fonte->tipoImpresso) ? $fonte->tipoImpresso->ds_tipo_impresso : '<span class="text-danger">Não Informado</span>' !!}</td>
-                                <td>{!! ($fonte->tipoColeta) ? $fonte->tipoColeta->ds_tipo_coleta : '<span class="text-danger">Não Informado</span>' !!}</td>
-                                <td>{!! ($fonte->estado) ? $fonte->estado->nm_estado : '<span class="text-danger">Não Informado</span>' !!}</td>
-                                <td>{!! $fonte->cidade->nm_cidade ?? '<span class="text-danger">Não Informado</span>' !!}</td>
-                                <td>
-                                    {{ $fonte->nome }}
-                                    @if($fonte->tipoColeta and $fonte->tipoColeta->id == 1)
-                                        <p class="mb-0"><a href="{{ $fonte->url }}" target="_BLANK">{{ $fonte->url }}</a></p>
-                                    @endif
-                                </td>
-                                <td>R$ {!! $fonte->valor_cm_capa_semana  !!}</td>
-                                <td>R$ {!! $fonte->valor_cm_capa_fim_semana !!}</td>
-                                <td>R$ {!! $fonte->valor_cm_contracapa !!}</td>
-                                <td>R$ {!! $fonte->valor_cm_demais_semana !!}</td>
-                                <td>R$ {!! $fonte->valor_cm_demais_fim_semana !!}</td>
-                                <td class="text-center acoes-2">
-                                    <a title="Editar" href="{{ url('fonte-impresso/'.$fonte->id.'/editar') }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
-                                    <a title="Excluir" href="{{ url('fonte-impresso/'.$fonte->id.'/excluir') }}" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-trash fa-2x"></i></a>
-                                </td>
+                                <th>Código</th>
+                                <th>Tipo</th>
+                                <th>Coleta</th>
+                                <th>Estado</th>
+                                <th>Cidade</th>
+                                <th>Nome</th>
+                                <th>CAPA</th>
+                                <th>CAPA FDS</th>
+                                <th>CONTRACAPA</th>
+                                <th>DEMAIS</th>
+                                <th>DEMAIS FDS</th>
+                                <th class="disabled-sorting text-center">Situação</th>
+                                <th class="disabled-sorting text-center">Ações</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-                {{ $fontes->onEachSide(1)->appends([''])->links('vendor.pagination.bootstrap-4') }} 
-                </div>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>Código</th>
+                                <th>Tipo</th>
+                                <th>Coleta</th>
+                                <th>Estado</th>
+                                <th>Cidade</th>
+                                <th>Nome</th>
+                                <th>CAPA</th>
+                                <th>CAPA FDS</th>
+                                <th>CONTRACAPA</th>
+                                <th>DEMAIS</th>
+                                <th>DEMAIS FDS</th>
+                                <th class="disabled-sorting text-center">Ações</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            @foreach($fontes as $fonte)
+                                <tr>
+                                    <td>{!! ($fonte->codigo) ? $fonte->codigo : '<span class="text-danger">Não Informado</span>' !!}</td>
+                                    <td>{!! ($fonte->tipoImpresso) ? $fonte->tipoImpresso->ds_tipo_impresso : '<span class="text-danger">Não Informado</span>' !!}</td>
+                                    <td>{!! ($fonte->tipoColeta) ? $fonte->tipoColeta->ds_tipo_coleta : '<span class="text-danger">Não Informado</span>' !!}</td>
+                                    <td>{!! ($fonte->estado) ? $fonte->estado->nm_estado : '<span class="text-danger">Não Informado</span>' !!}</td>
+                                    <td>{!! $fonte->cidade->nm_cidade ?? '<span class="text-danger">Não Informado</span>' !!}</td>
+                                    <td>
+                                        {{ $fonte->nome }}
+                                        @if($fonte->tipoColeta and $fonte->tipoColeta->id == 1)
+                                            <p class="mb-0"><a href="{{ $fonte->url }}" target="_BLANK">{{ $fonte->url }}</a></p>
+                                        @endif
+                                    </td>
+                                    <td>R$ {!! $fonte->valor_cm_capa_semana  !!}</td>
+                                    <td>R$ {!! $fonte->valor_cm_capa_fim_semana !!}</td>
+                                    <td>R$ {!! $fonte->valor_cm_contracapa !!}</td>
+                                    <td>R$ {!! $fonte->valor_cm_demais_semana !!}</td>
+                                    <td>R$ {!! $fonte->valor_cm_demais_fim_semana !!}</td>
+                                    <td class="disabled-sorting text-center">{!! ($fonte->fl_ativo) ? '<span class="badge badge-pill badge-success">ATIVO</span>' : '<span class="badge badge-pill badge-danger">INATIVO</span>' !!}</td>
+                                    <td class="text-center acoes-2">
+                                        <a title="Editar" href="{{ url('fonte-impresso/'.$fonte->id.'/editar') }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
+                                        <a title="Excluir" href="{{ url('fonte-impresso/'.$fonte->id.'/excluir') }}" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-trash fa-2x"></i></a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    {{ $fontes->onEachSide(1)->appends([''])->links('vendor.pagination.bootstrap-4') }} 
+                    </div>
+                @else 
+                    <div class="col-lg-12 col-sm-12 ml-3"> 
+                        <p class="text-danger">Não existem fontes para os termos de busca selecionados.</p>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
@@ -163,25 +173,6 @@
             searchPlaceholder: "Filtrar",
             }
         });
-
-        $(document).on('click', '.btn-limpar', function() {     
-                        
-            $.ajax({
-                url: host+'/impresso/limpar',
-                type: 'GET',
-                success: function(result) {
-                    window.location.reload();   
-                },
-                error: function(response){
-
-                },
-                complete: function(response) {
-                   
-                }
-            });  
-
-        });
-
     });
 </script>
 @endsection

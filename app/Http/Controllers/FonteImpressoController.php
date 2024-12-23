@@ -52,7 +52,8 @@ class FonteImpressoController extends Controller
         $fonte = FonteImpressa::query();
 
         if($request->isMethod('GET')){
-            $fontes = $fonte->orderBy('nome')->paginate(10);
+
+            $fontes = $fonte->orderBy('created_at', 'DESC')->paginate(10);
         }
 
         if($request->isMethod('POST')){
@@ -75,7 +76,7 @@ class FonteImpressoController extends Controller
                 return $q->where('nome', 'ILIKE', '%'.trim($nome).'%');
             });
 
-            $fontes = $fonte->orderBy('nome')->paginate(10);
+            $fontes = $fonte->orderBy('created_at','DESC')->paginate(10);
         }
 
         return view('fonte-impresso/listar',compact('cidades','estados','fontes'));
@@ -84,6 +85,9 @@ class FonteImpressoController extends Controller
     public function limpar()
     {
         Session::forget('filtro_estado');
+
+        return redirect('fonte-impresso/listar');
+
     }
 
     public function cadastrar()
@@ -157,6 +161,9 @@ class FonteImpressoController extends Controller
         }
 
         try {
+
+            $flag = $request->fl_ativo == true ? true : false;
+
             FonteImpressa::create([
                 'codigo' => $request->codigo ?? null,
                 'nome' => $request->nome,
@@ -171,6 +178,7 @@ class FonteImpressoController extends Controller
                 'tipo' => $request->tipo,
                 'coleta' => $request->coleta,
                 'modelo' => $request->modelo,
+                'fl_ativo' => $flag,
                 'url' => $request->url                
             ]);
 
@@ -204,6 +212,8 @@ class FonteImpressoController extends Controller
 
         try {
 
+            $flag = $request->fl_ativo == true ? true : false;
+
             $jornal->update([
                 'codigo'    => $request->codigo,
                 'nome'      => $request->nome,
@@ -218,6 +228,7 @@ class FonteImpressoController extends Controller
                 'tipo' => $request->tipo,
                 'coleta' => $request->coleta,
                 'modelo' => $request->modelo,
+                'fl_ativo' => $flag,
                 'url' => $request->url
             ]);
 

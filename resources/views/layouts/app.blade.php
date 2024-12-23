@@ -98,7 +98,7 @@
                          </li> 
                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'fonte-impressa') ? 'active' : '' }}">
                             <a href="{{ url('fonte-impresso/listar') }}">
-                            <span class="sidebar-normal">Fontes Impressas</span>
+                            <span class="sidebar-normal">Fontes Impressos</span>
                             </a>
                           </li>
                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'upload') ? 'active' : '' }}">

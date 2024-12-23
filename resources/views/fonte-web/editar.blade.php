@@ -1,7 +1,6 @@
 @extends('layouts.app')
 @section('content')
 <div class="col-md-12">
-
     {!! Form::open(['id' => 'frm_cliente_edit', 'url' => ['fonte-web', $fonte->id], 'method' => 'patch']) !!}
         <div class="card">
             <div class="card-header">
@@ -98,7 +97,7 @@
                         <div class="form-check mt-3">
                             <div class="form-check">
                                 <label class="form-check-label">
-                                    <input class="form-check-input" type="checkbox" name="resetar_situacao" value="true" {{ ($fonte->id_situacao == 173 or $fonte->id_situacao == 174) ? 'checked' : '' }}>
+                                    <input class="form-check-input" type="checkbox" name="resetar_situacao" value="true" checked>
                                     Resetar Situação 
                                     <span class="form-check-sign"></span>
                                 </label>
@@ -110,7 +109,7 @@
                         <span class="text-info"><strong>Atenção! </strong>Os campos para edição de notícia são disponibilizados apenas para as fontes com inconsistência de estrutura e mapeamento.</span>
                     </div>
                 </div> 
-                @if($fonte->id_situacao == 173 or $fonte->id_situacao == 174 or $fonte->id_situacao == 47 or $fonte->id_situacao == 13)
+                @if(true)
                     <div class="row mt-3">
                         <div class="col-md-12">
                             <h6>Dados de Mapeamento</h6>
