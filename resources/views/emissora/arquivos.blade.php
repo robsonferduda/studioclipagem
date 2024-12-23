@@ -38,15 +38,7 @@
                                         <input type="text" class="form-control datepicker" name="dt_final" required="true" value="{{ date('d/m/Y') }}" placeholder="__/__/____">
                                     </div>
                                 </div>
-                                <div class="col-md-8 col-sm-12">
-                                    <div class="form-group">
-                                        <label>Buscar por <span class="text-primary">Digite o termo ou expressão de busca</span></label>
-                                        <input type="text" class="form-control" name="termo" id="termo" minlength="3" placeholder="Termo" value="">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
+                                <div class="col-md-8">
                                     <div class="form-group">
                                         <label>Fonte</label>
                                         <select class="form-control select2" name="regra" id="regra">
@@ -55,6 +47,14 @@
                                                 <option value="{{ $emissora->id }}">{{ $emissora->nome_emissora }}</option>
                                             @endforeach
                                         </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12">
+                                    <div class="form-group">
+                                        <label>Buscar por <span class="text-primary">Digite o termo ou expressão de busca</span></label>
+                                        <input type="text" class="form-control" name="termo" id="termo" minlength="3" placeholder="Termo" value="">
                                     </div>
                                 </div>
                                 <div class="col-md-12 checkbox-radios mb-0">
