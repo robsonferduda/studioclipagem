@@ -136,7 +136,7 @@
                         <div class="col-md-12">
                             <label for="sinopse">Texto <span class="text-danger">Obrigatório</span></label>
                             <div class="form-group">
-                                <textarea class="form-control" name="conteudo" id="conteudo" rows="10">{{ ($noticia) ? $noticia->conteudo->conteudo : '' }}</textarea>
+                                <textarea class="form-control" name="conteudo" id="conteudo" rows="10">{{ ($noticia and $noticia->conteudo) ? $noticia->conteudo->conteudo : '' }}</textarea>
                             </div>
                         </div>
                     </div>

@@ -528,7 +528,7 @@ class FonteWebController extends Controller
         $prioridades = Prioridade::orderBy('id')->get();
         $flag_inconsistencia = false;
 
-        $noticia = NoticiaWeb::where('id_fonte', $id)->orderBy('created_at')->first();
+        $noticia = NoticiaWeb::where('id_fonte', $id)->orderBy('created_at','DESC')->first();
 
         return view('fonte-web/editar', compact('fonte','estados','cidades','flag_inconsistencia','paises','noticia','prioridades'));
     }
