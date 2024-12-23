@@ -69,7 +69,7 @@ class EmissoraController extends Controller
         $emissora = EmissoraGravacao::query();
 
         
-        $arquivos = $emissora->orderBy('data_hora_fim')->paginate(10);
+        $arquivos = $emissora->orderBy('data_hora_inicio','DESC')->paginate(10);
 
         return view('emissora/arquivos', compact('arquivos','emissoras','dt_inicial','dt_final'));
     }

@@ -64,7 +64,7 @@
             <div class="col-md-12">
                 @if(count($videos) > 0)
                     <h6 class="px-3">Mostrando {{ $videos->count() }} de {{ $videos->total() }} vídeos coletados</h6>
-                    {{ $videos->onEachSide(1)->links('vendor.pagination.bootstrap-4') }}
+                    {{ $videos->onEachSide(1)->appends(['dt_inicial' => $dt_inicial, 'dt_final' => $dt_final])->links('vendor.pagination.bootstrap-4') }}
                 @endif
 
                 @foreach ($videos as $key => $video)
