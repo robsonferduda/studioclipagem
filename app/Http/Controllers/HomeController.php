@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use DB;
 use Auth;
-use App\Models\FonteWeb;
+use App\Models\EmissoraGravacao;
 use App\Models\JornalImpresso;
 use App\Models\JornalWeb;
+use App\Models\FonteImpressa;
+use App\Models\VideoEmissoraWeb;
 use App\Models\NoticiaRadio;
 use App\Models\NoticiaWeb;
 use App\Models\NoticiaTv;
@@ -78,10 +80,13 @@ class HomeController extends Controller
 
     public function estatisticas()
     {
-        $totais = array('impresso' => JornalImpresso::where('dt_clipagem', $this->data_atual)->count(),
-                        'web' => JornalWeb::where('dt_clipagem', $this->data_atual)->count(),
-                        'radio' => NoticiaRadio::where('dt_noticia', $this->data_atual)->count(),
-                        'tv' => NoticiaTv::where('dt_noticia', $this->data_atual)->count());
+        $dt_inicial = date("Y-m-d")." 00:00:00";
+        $dt_final = date("Y-m-d")." 23:59:59";
+
+        $totais = array('impresso' => ((new FonteImpressa)->getTotais($dt_inicial,$dt_final)) ? (new FonteImpressa)->getTotais($dt_inicial,$dt_final)[0]->total : 0,
+                        'web' => JornalWeb::whereBetween('data_insert', [$dt_inicial, $dt_final])->count(),
+                        'radio' => EmissoraGravacao::whereBetween('created_at', [$dt_inicial, $dt_final])->count(),
+                        'tv' => VideoEmissoraWeb::whereBetween('created_at', [$dt_inicial, $dt_final])->count());
 
         return response()->json($totais);
     }
