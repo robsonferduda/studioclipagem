@@ -109,8 +109,8 @@ class NoticiaWebController extends Controller
         //$coletas = ColetaWeb::whereBetween('created_at', [$this->data_atual.' 00:00:00', $this->data_atual.' 23:59:59'])->get();
         ////$execucoes = MonitoramentoExecucao::whereBetween('created_at', [$this->data_atual.' 00:00:00', $this->data_atual.' 23:59:59'])->orderBy('created_at', 'DESC')->take(5)->get();
 
-        $top_sites = (new FonteWeb())->getTopColetas();
-        $sem_coleta = (new FonteWeb())->getSemColetas();
+        $top_sites = (new FonteWeb())->getTopColetas(10);
+        $sem_coleta = (new FonteWeb())->getSemColetas(10);
 
         return view('noticia-web/dashboard', compact('totais','coletas','total_sem_area','execucoes','top_sites','sem_coleta'));
     }

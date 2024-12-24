@@ -721,4 +721,18 @@ class FonteWebController extends Controller
 
         return redirect('fonte-web/listar')->withInput();
     }
+
+    public function getTopColetas($n)
+    {
+        $dados = (new FonteWeb())->getTopColetas($n);
+
+        return response()->json($dados);
+    }
+
+    public function getSemColetas($n)
+    {
+        $dados = (new FonteWeb())->getSemColetas($n);
+
+        return response()->json($dados);
+    }
 }

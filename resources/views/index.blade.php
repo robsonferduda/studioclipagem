@@ -95,13 +95,8 @@
                             <h6 class="card-title"><i class="fa fa-line-chart" aria-hidden="true"></i> Maiores Coletas</h6>
                         </div>
                         <div class="card-content">
-                            @if($top_sites)
-                                <ul class="list-unstyled team-members ml-3 mr-3 maiores-coletas">
-                                                                
-                                </ul>
-                            @else
-                                <p class="mr-2 ml-3"><i class="fa fa-hourglass-start mr-1"></i>Nenhuma coleta realizada no dia de hoje</p>
-                            @endif
+                            <ul class="list-unstyled team-members ml-3 mr-3 maiores-coletas"></ul>
+                            <p class="mr-2 ml-3 text-danger text-maiores-coletas"><i class="fa fa-hourglass-start mr-1"></i>Nenhuma coleta realizada no dia de hoje</p>
                         </div>
                     </div>
                 </div>
@@ -112,13 +107,8 @@
                             <h6 class="card-title"><i class="fa fa-ban" aria-hidden="true"></i> Sem Coleta</h6>
                         </div>
                         <div class="card-content">
-                            @if($sem_coleta)
-                                <ul class="list-unstyled team-members ml-3 mr-3 sem-coleta">
-                                                              
-                                </ul>
-                            @else
-                                <p class="mr-2 ml-3"><i class="fa fa-hourglass-start mr-1"></i>Nenhuma coleta realizada no dia de hoje</p>
-                            @endif
+                            <ul class="list-unstyled team-members ml-3 mr-3 sem-coleta"></ul>
+                            <p class="mr-2 ml-3 text-danger text-sem-coleta"><i class="fa fa-hourglass-start mr-1"></i>Nenhuma coleta realizada no dia de hoje</p>
                         </div>
                     </div>
                 </div>
@@ -240,17 +230,21 @@
         var host =  $('meta[name="base-url"]').attr('content');
 
         $.ajax({
-            url: host+'/fonte-web/estatisticas/coleta',
+            url: host+'/fonte-web/estatisticas/top/10',
             type: 'GET',
             beforeSend: function() {               
                 
             },
             success: function(data) {
 
-                data.forEach(element => {
-                    
-                    $(".maiores-coletas").append('<li style="border-bottom: 1px solid #ebebeb; margin-bottom: 3px;"><div class="row"><div class="col-md-9"> NOME SITE <br><span class="text-muted"><small>URL SITE}</small></span></div> <div class="col-md-2 text-right"><p class="mt-2">TOTAL</p></div></div></li>');
+                if(data.length){
+                    $(".text-maiores-coletas").addClass("d-none");
+                }else{
+                    $(".text-maiores-coletas").removeClass("d-none");
+                }
 
+                data.forEach(element => {                    
+                    $(".maiores-coletas").append('<li style="border-bottom: 1px solid #ebebeb; margin-bottom: 3px;"><div class="row"><div class="col-md-9">'+element.nome+'<br><span class="text-muted"><small>'+element.url+'</small></span></div> <div class="col-md-2 text-right"><p class="mt-2">'+element.total+'</p></div></div></li>');
                 });
 
             },
@@ -262,7 +256,34 @@
             }
         });
 
-        
+        $.ajax({
+            url: host+'/fonte-web/estatisticas/sem/10',
+            type: 'GET',
+            beforeSend: function() {               
+                
+            },
+            success: function(data) {
+
+                if(data.length){
+                    $(".text-sem-coleta").addClass("d-none");
+                }else{
+                    $(".text-sem-coleta").removeClass("d-none");
+                }
+                
+                data.forEach(element => {
+                    
+                    $(".sem-coleta").append('<li style="border-bottom: 1px solid #ebebeb; margin-bottom: 3px;"><div class="row"><div class="col-md-9">'+element.nome+'<br><span class="text-muted"><small>'+element.url+'</small></span></div> <div class="col-md-2 text-right"><p class="mt-2">'+element.total+'</p></div></div></li>');
+
+                });
+
+            },
+            error: function(){
+
+            },
+            complete: function(){
+                
+            }
+        });
 
         $.ajax({
             url: host+'/inicio/estatisticas',

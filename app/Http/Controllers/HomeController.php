@@ -65,7 +65,7 @@ class HomeController extends Controller
        // $top_sites = (new FonteWeb())->getTopColetas();
         //$sem_coleta = (new FonteWeb())->getSemColetas();
 
-        return view('index', compact('totais','coletas','total_sem_area','execucoes','top_sites','sem_coleta'));
+        return view('index', compact('totais','coletas','total_sem_area','execucoes'));
     }
 
     public function atualizarData(Request $request)

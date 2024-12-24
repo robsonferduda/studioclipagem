@@ -69,21 +69,24 @@ class FonteWeb extends Model
         return DB::select($sql);
     }
 
-    public function getTopColetas()
+    public function getTopColetas($n)
     {
         $data_inicio = date("Y-m-d")." 00:00:00";
         $data_fim = date("Y-m-d")." 23:59:59";
 
-        $sql = "SELECT t1.id, t1.nome, t1.url, count(t2.id) as total 
-                FROM fonte_web t1
-                LEFT JOIN noticias_web t2 ON t2.id_fonte = t1.id AND data_insert between '$data_inicio' AND '$data_fim'
-                GROUP BY t1.id, t1.nome, t1.url
+        $sql = "SELECT t2.id, t2.nome, t2.url, count(*) as total 
+                FROM noticias_web t1
+                JOIN fonte_web t2 ON t2.id = t1.id_fonte 
+                WHERE data_insert between '$data_inicio' AND '$data_fim'
+                GROUP BY t2.id, t2.nome, t2.url  
                 ORDER BY total DESC";
+
+            if($n > 0) $sql .= " LIMIT $n";
 
         return DB::select($sql);
     }
 
-    public function getSemColetas()
+    public function getSemColetas($n)
     {
         $data_inicio = date("Y-m-d")." 00:00:00";
         $data_fim = date("Y-m-d")." 23:59:59";
@@ -93,6 +96,8 @@ class FonteWeb extends Model
                 LEFT JOIN noticias_web t2 ON t2.id_fonte = t1.id AND data_insert between '$data_inicio' AND '$data_fim'
                 GROUP BY t1.id, t1.nome, t1.url
                 HAVING count(t2.id) = 0";
+
+            if($n > 0) $sql .= " LIMIT $n";
 
         return DB::select($sql);
     }
