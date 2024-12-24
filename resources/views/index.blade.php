@@ -142,7 +142,7 @@
                         </div>
                         <div class="timeline-panel">
                             <div class="timeline-heading">
-                                <h6>COLETAS WEB <span class="badge badge-pill badge-warning pull-right">0 coletas</span></h6>
+                                <h6>COLETAS WEB <span class="badge badge-pill badge-warning pull-right">{{ $total_coletas }} coletas</span></h6>
                             </div>
                             <div class="timeline-body">
                                 @if(count($coletas))
@@ -160,7 +160,9 @@
                                                     <td>{{ \Carbon\Carbon::parse($fonte->crawlead_at)->format('d/m/Y H:i:s') }}</td>
                                                     <td>{{ $fonte->nome }} <br/>{{ $fonte->url }}</td>
                                                     <td class="center">
-                                                        {{  }}
+                                                        <span class="total-coletas" data-id="{{ $fonte->id }}">
+                                                            <i class="fa fa-circle-o-notch fa-spin fa-fw text-gray"></i>
+                                                        </span>
                                                     </td>
                                                 </tr>   
                                             @endforeach                                   

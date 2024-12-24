@@ -42,6 +42,9 @@ class HomeController extends Controller
 
     public function index()
     {
+        $dt_inicial = date("Y-m-d")." 00:00:00";
+        $dt_final = date("Y-m-d")." 23:59:59";
+
         $totais = array();
         $execucoes = array();
         $coletas = array();
@@ -49,9 +52,10 @@ class HomeController extends Controller
         $total_sem_area = array();
         $sem_coleta = array();
 
+        $total_coletas = FonteWeb::whereBetween('crawlead_at', [$dt_inicial, $dt_final])->count();
         $coletas = FonteWeb::orderBy('crawlead_at','DESC')->take(5)->get();
 
-        return view('index', compact('totais','coletas','total_sem_area','execucoes','coletas'));
+        return view('index', compact('totais','coletas','total_sem_area','execucoes','coletas','total_coletas'));
     }
 
     public function atualizarData(Request $request)
