@@ -49,7 +49,7 @@ class HomeController extends Controller
         $total_sem_area = array();
         $sem_coleta = array();
 
-        $coletas = FonteWeb::orderBy('crawlead_at','ASC')->take(5)->get();
+        $coletas = FonteWeb::orderBy('crawlead_at','DESC')->take(5)->get();
 
         return view('index', compact('totais','coletas','total_sem_area','execucoes','coletas'));
     }

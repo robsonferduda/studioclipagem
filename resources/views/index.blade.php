@@ -159,12 +159,13 @@
                                                 <tr>
                                                     <td>{{ \Carbon\Carbon::parse($fonte->crawlead_at)->format('d/m/Y H:i:s') }}</td>
                                                     <td>{{ $fonte->nome }} <br/>{{ $fonte->url }}</td>
-                                                    <td class="center"></td>
+                                                    <td class="center">
+                                                        {{  }}
+                                                    </td>
                                                 </tr>   
                                             @endforeach                                   
                                         </tbody>
                                     </table>
-                                    <a href="{{ url('coletas') }}">Ver Mais</a>
                                 @else
                                     <p><i class="fa fa-hourglass-start mr-1"></i>Nenhuma coleta realizada no dia de hoje</p>
                                 @endif
