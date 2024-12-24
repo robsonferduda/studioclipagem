@@ -729,6 +729,13 @@ class FonteWebController extends Controller
         return response()->json($dados);
     }
 
+    public function getColetasByFonte($id)
+    {
+        $dados = (new FonteWeb())->getColetasByFonte($id);
+
+        return response()->json($dados);
+    }
+
     public function getSemColetas($n)
     {
         $dados = (new FonteWeb())->getSemColetas($n);

@@ -118,24 +118,7 @@
             <div class="card card-timeline card-plain">
                 <h6>{{ \Carbon\Carbon::parse(Session::get('data_atual'))->format('d/m/Y') }}</h6>
                 <div class="card-content">
-                  <ul class="timeline timeline-simple">
-                     <li class="timeline-inverted">
-                        <div class="timeline-badge success">
-                           <i class="fa fa-tags fa-2x mt-1"></i>
-                        </div>
-                        <div class="timeline-panel">
-                            <div class="timeline-heading">
-                                <h6>CATEGORIAS <span class="badge badge-pill badge-success pull-right"> NOTÍCIAS</span></h6>
-                            </div>
-                            <div class="timeline-body">
-                                @if(false)
-                                    <p>Existem  notícias sem identificação de categoria.</p>
-                                @else
-                                    <p><i class="fa fa-hourglass-start mr-1"></i>Nenhuma coleta realizada no dia de hoje</p>
-                                @endif
-                            </div>
-                        </div>
-                     </li>
+                    <ul class="timeline timeline-simple">
                     <li class="timeline-inverted">
                         <div class="timeline-badge warning">
                            <i class="fa fa-globe fa-2x mt-0"></i>
@@ -160,7 +143,7 @@
                                                     <td>{{ \Carbon\Carbon::parse($fonte->crawlead_at)->format('d/m/Y H:i:s') }}</td>
                                                     <td>{{ $fonte->nome }} <br/>{{ $fonte->url }}</td>
                                                     <td class="center">
-                                                        <span class="total-coletas" data-id="{{ $fonte->id }}">
+                                                        <span class="total-coletas" id="total_coletas_{{ $fonte->id }}" data-id="{{ $fonte->id }}">
                                                             <i class="fa fa-circle-o-notch fa-spin fa-fw text-gray"></i>
                                                         </span>
                                                     </td>
@@ -218,6 +201,23 @@
                             
                         </div>
                     </li>
+                    <li class="timeline-inverted">
+                        <div class="timeline-badge success">
+                           <i class="fa fa-tags fa-2x mt-1"></i>
+                        </div>
+                        <div class="timeline-panel">
+                            <div class="timeline-heading">
+                                <h6>CATEGORIAS <span class="badge badge-pill badge-success pull-right"> NOTÍCIAS</span></h6>
+                            </div>
+                            <div class="timeline-body">
+                                @if(false)
+                                    <p>Existem  notícias sem identificação de categoria.</p>
+                                @else
+                                    <p><i class="fa fa-hourglass-start mr-1"></i>Nenhuma coleta realizada no dia de hoje</p>
+                                @endif
+                            </div>
+                        </div>
+                     </li>
                   </ul>
                </div>
             </div>
@@ -229,6 +229,29 @@
     $(document).ready(function() {
 
         var host =  $('meta[name="base-url"]').attr('content');
+
+        $('.total-coletas').each(function(i, obj) {
+            
+            var id_fonte = $(this).data("id");
+            
+            $.ajax({
+                url: host+'/fonte-web/estatisticas/coletas/'+id_fonte,
+                type: 'GET',
+                success: function(data) {
+                            
+                },
+                error: function(response){
+                
+                },
+                complete: function(){
+                    
+                }
+            }).done(function (data) {
+                var chave = "#total_coletas_"+id_fonte;
+                $(chave).text(data[0].total);
+            });
+            
+        });
 
         $.ajax({
             url: host+'/fonte-web/estatisticas/top/10',

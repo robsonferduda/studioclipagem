@@ -58,13 +58,26 @@ class FonteWeb extends Model
         return DB::select($sql);
     }
 
-    public function getColetasByFonte($id_fonte, $dt_inicial,$dt_final)
+    public function getColetasByDataFonte($id_fonte, $dt_inicial,$dt_final)
     {
         $sql = "SELECT data_insert::date, count(*) as total   
                 FROM noticias_web 
-                where data_insert between '2024-12-11' AND '2024-12-18'
-                AND id_fonte = 2
+                where data_insert between '$dt_inicial' AND '$dt_final'
+                AND id_fonte = $id_fonte
                 GROUP BY data_insert::date";
+
+        return DB::select($sql);
+    }
+
+    public function getColetasByFonte($id_fonte)
+    {
+        $data_inicio = date("Y-m-d")." 00:00:00";
+        $data_fim = date("Y-m-d")." 23:59:59";
+
+        $sql = "SELECT count(*) as total   
+                FROM noticias_web 
+                WHERE id_fonte = $id_fonte
+                AND data_insert between '$data_inicio' AND '$data_fim'";
 
         return DB::select($sql);
     }

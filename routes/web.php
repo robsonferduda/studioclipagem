@@ -100,6 +100,7 @@ Route::get('fonte-web/estatisticas/coleta','FonteWebController@estatisticasColet
 Route::get('fonte-web/limpar','FonteWebController@limpar');
 Route::get('fonte-web/estatisticas/top/{top}','FonteWebController@getTopColetas');
 Route::get('fonte-web/estatisticas/sem/{top}','FonteWebController@getSemColetas');
+Route::get('fonte-web/estatisticas/coletas/{fonte}','FonteWebController@getColetasByFonte');
 
 Route::get('fonte-web/atualizar-estado','FonteWebController@atualizarEstado');
 Route::get('fonte-web/atualizar-valor','FonteWebController@atualizarValor');
