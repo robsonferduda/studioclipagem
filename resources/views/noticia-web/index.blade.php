@@ -37,15 +37,7 @@
                                         <input type="text" class="form-control datepicker" name="dt_final" required="true" value="{{ date("d/m/Y") }}" placeholder="__/__/____">
                                     </div>
                                 </div>
-                                <div class="col-md-8 col-sm-12">
-                                    <div class="form-group">
-                                        <label>Buscar por <span class="text-primary">Digite o termo ou expressão de busca</span></label>
-                                        <input type="text" class="form-control" name="termo" id="termo" minlength="3" placeholder="Termo" value="{{ Session::get('busca_termo') }}">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
+                                <div class="col-md-8">
                                     <div class="form-group">
                                         <label>Fonte</label>
                                         <select class="form-control select2" name="fonte" id="fonte">
@@ -54,6 +46,14 @@
                                                 <option value="{{ $fonte->id }}" {{ ( Session::get('busca_fonte') == $fonte->id ) ? 'selected' : '' }}>{{ $fonte->nome }}</option>
                                             @endforeach
                                         </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12">
+                                    <div class="form-group">
+                                        <label for="termo" class="form-label">Expressão de Busca <span class="text-primary">Digite o termo ou expressão de busca baseado em regex</span></label>
+                                        <textarea class="form-control" name="termo" id="termo" rows="3"></textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-12 checkbox-radios mb-0">
@@ -113,6 +113,8 @@
                             
                         </div>
                     @endforeach
+
+                    {{ $dados->onEachSide(1)->appends(['dt_inicial' => $dt_inicial, 'dt_final' => $dt_final])->links('vendor.pagination.bootstrap-4') }} 
                 </div>
             </div>
         </div>

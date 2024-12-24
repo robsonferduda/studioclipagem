@@ -53,7 +53,7 @@ class NoticiaWebController extends Controller
 
             $jornais->when($termo, function ($q) use ($termo) {
                 $q->whereHas('conteudo', function($q) use($termo){
-                    return $q->where('conteudo', 'ILIKE', '%'.trim($termo).'%')->orWhere('titulo_noticia','ilike','%'.trim($termo).'%');
+                    return $q->whereRaw("conteudo  ~* '$termo' ");
                 });
             });
 
