@@ -11,7 +11,7 @@ use App\Models\FonteImpressa;
 use App\Models\VideoEmissoraWeb;
 use App\Models\NoticiaRadio;
 use App\Models\NoticiaWeb;
-use App\Models\NoticiaTv;
+use App\Models\FonteWeb;
 use App\Models\ColetaWeb;
 use App\Models\MonitoramentoExecucao;
 use Carbon\Carbon;
@@ -38,8 +38,6 @@ class HomeController extends Controller
         $this->data_atual = session('data_atual');
         
         Session::put('url','home');
-
-        $this->periodo_padrao = 7;
     }
 
     public function index()
@@ -51,21 +49,9 @@ class HomeController extends Controller
         $total_sem_area = array();
         $sem_coleta = array();
 
-        /*
-        $totais = array('impresso' => JornalImpresso::where('dt_clipagem', $this->data_atual)->count(),
-                        'web' => JornalWeb::where('dt_clipagem', $this->data_atual)->count(),
-                        'radio' => 0,
-                        'tv' => 0);
-        */
+        $coletas = FonteWeb::orderBy('crawlead_at','ASC')->take(5)->get();
 
-        //$total_sem_area = JornalWeb::where('dt_clipagem', $this->data_atual)->where('categoria','')->count(); 
-        //$coletas = ColetaWeb::whereBetween('created_at', [$this->data_atual.' 00:00:00', $this->data_atual.' 23:59:59'])->get();
-        ////$execucoes = MonitoramentoExecucao::whereBetween('created_at', [$this->data_atual.' 00:00:00', $this->data_atual.' 23:59:59'])->orderBy('created_at', 'DESC')->take(5)->get();
-
-       // $top_sites = (new FonteWeb())->getTopColetas();
-        //$sem_coleta = (new FonteWeb())->getSemColetas();
-
-        return view('index', compact('totais','coletas','total_sem_area','execucoes'));
+        return view('index', compact('totais','coletas','total_sem_area','execucoes','coletas'));
     }
 
     public function atualizarData(Request $request)

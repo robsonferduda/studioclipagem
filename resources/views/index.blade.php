@@ -142,26 +142,24 @@
                         </div>
                         <div class="timeline-panel">
                             <div class="timeline-heading">
-                                <h6>COLETAS EXECUTADAS <span class="badge badge-pill badge-warning pull-right">0 coletas</span></h6>
+                                <h6>COLETAS WEB <span class="badge badge-pill badge-warning pull-right">0 coletas</span></h6>
                             </div>
                             <div class="timeline-body">
-                                @if(false)
+                                @if(count($coletas))
                                     <table id="bootstrap-table" class="table table-hover">
                                         <thead>
                                             <tr>
                                                 <th>Início</th>
-                                                <th>Término</th>
-                                                <th>Duração</th>
-                                                <th class="center">Total</th>
+                                                <th>Fonte</th>
+                                                <th class="center">Total Coletado</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($coletas as $coleta)
+                                            @foreach ($coletas as $fonte)
                                                 <tr>
-                                                    <td>{{ \Carbon\Carbon::parse($coleta->created_at)->format('d/m/Y H:i:s') }}</td>
-                                                    <td>{{ \Carbon\Carbon::parse($coleta->updated_at)->format('d/m/Y H:i:s') }}</td>
-                                                    <td>{{ \Carbon\Carbon::create($coleta->updated_at)->diffInMinutes(\Carbon\Carbon::create($coleta->created_at)) }} minutos</td>
-                                                    <td class="center">{{ $coleta->total_coletas }} </td>
+                                                    <td>{{ \Carbon\Carbon::parse($fonte->crawlead_at)->format('d/m/Y H:i:s') }}</td>
+                                                    <td>{{ $fonte->nome }} <br/>{{ $fonte->url }}</td>
+                                                    <td class="center"></td>
                                                 </tr>   
                                             @endforeach                                   
                                         </tbody>
