@@ -82,7 +82,7 @@
                                         <p><strong>{{ ($noticia->fonte) ? $noticia->fonte->nome : 'Não Identificado' }}</strong></p>
                                         <p>{{ ($noticia->titulo) ? $noticia->titulo : '' }}</p>
                                         <p><a href="{{ url('jornal-impresso/edicao/'.$noticia->id.'/paginas') }}">{{ $noticia->paginas->count() }} Páginas</a></p>
-                                        <a class="btn btn-danger btn-sm" href="{{ url('jornal-impresso/web/download/'.$noticia->id) }}"><i class="fa fa-file-pdf-o"> </i> Documento Original</a>
+                                        
                                         <p>Publicado em: {{ ($noticia->dt_pub) ? \Carbon\Carbon::parse($noticia->dt_pub)->format('d/m/Y H:i:s') : 'Não informado' }}</p>
                                         <p>Coletado em {{ \Carbon\Carbon::parse($noticia->dt_coleta)->format('d/m/Y H:i:s')  }}</p>                        
                                     </div>
