@@ -141,7 +141,10 @@
                                             @foreach ($coletas as $fonte)
                                                 <tr>
                                                     <td>{{ \Carbon\Carbon::parse($fonte->crawlead_at)->format('d/m/Y H:i:s') }}</td>
-                                                    <td>{{ $fonte->nome }} <br/>{{ $fonte->url }}</td>
+                                                    <td>
+                                                        {{ $fonte->nome }} <br/>
+                                                        <a href="https://{{ $fonte->url }}"  target="_blank">{{ $fonte->url }}</a>
+                                                    </td>
                                                     <td class="center">
                                                         <span class="total-coletas" id="total_coletas_{{ $fonte->id }}" data-id="{{ $fonte->id }}">
                                                             <i class="fa fa-circle-o-notch fa-spin fa-fw text-gray"></i>
