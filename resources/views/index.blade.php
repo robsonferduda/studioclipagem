@@ -96,7 +96,7 @@
                         </div>
                         <div class="card-content">
                             <ul class="list-unstyled team-members ml-3 mr-3 maiores-coletas"></ul>
-                            <p class="mr-2 ml-3 text-danger text-maiores-coletas"><i class="fa fa-hourglass-start mr-1"></i>Nenhuma coleta realizada no dia de hoje</p>
+                            <p class="mr-2 ml-3 text-danger text-maiores-coletas d-none"><i class="fa fa-hourglass-start mr-1"></i>Nenhuma coleta realizada no dia de hoje</p>
                         </div>
                     </div>
                 </div>
@@ -108,7 +108,7 @@
                         </div>
                         <div class="card-content">
                             <ul class="list-unstyled team-members ml-3 mr-3 sem-coleta"></ul>
-                            <p class="mr-2 ml-3 text-danger text-sem-coleta"><i class="fa fa-hourglass-start mr-1"></i>Nenhuma coleta realizada no dia de hoje</p>
+                            <p class="mr-2 ml-3 text-danger text-sem-coleta d-none"><i class="fa fa-hourglass-start mr-1"></i>Nenhuma coleta realizada no dia de hoje</p>
                         </div>
                     </div>
                 </div>
