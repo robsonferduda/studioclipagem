@@ -87,11 +87,14 @@ class FonteWeb extends Model
         $data_inicio = date("Y-m-d")." 00:00:00";
         $data_fim = date("Y-m-d")." 23:59:59";
 
-        $sql = "SELECT t2.id, t2.nome, t2.url, count(*) as total 
-                FROM noticias_web t1
-                JOIN fonte_web t2 ON t2.id = t1.id_fonte 
-                WHERE data_insert between '$data_inicio' AND '$data_fim'
-                GROUP BY t2.id, t2.nome, t2.url  
+        $sql = "SELECT t2.id, t2.nome, t2.url, COUNT(t2.id) AS total
+                FROM (
+                    SELECT id_fonte
+                    FROM noticias_web
+                    WHERE data_insert BETWEEN '$data_inicio' AND '$data_fim'
+                ) t1
+                JOIN fonte_web t2 ON t2.id = t1.id_fonte
+                GROUP BY t2.id, t2.nome, t2.url
                 ORDER BY total DESC";
 
             if($n > 0) $sql .= " LIMIT $n";
