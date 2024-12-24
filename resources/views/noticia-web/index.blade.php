@@ -42,8 +42,8 @@
                                         <label>Fonte</label>
                                         <select class="form-control select2" name="fonte" id="fonte">
                                             <option value="">Selecione uma fonte</option>
-                                            @foreach ($fontes as $fonte)
-                                                <option value="{{ $fonte->id }}" {{ ( Session::get('busca_fonte') == $fonte->id ) ? 'selected' : '' }}>{{ $fonte->nome }}</option>
+                                            @foreach ($fontes as $f)
+                                                <option value="{{ $f->id }}" {{ ($fonte == $f->id ) ? 'selected' : '' }}>{{ $f->nome }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -53,7 +53,7 @@
                                 <div class="col-md-12 col-sm-12">
                                     <div class="form-group">
                                         <label for="termo" class="form-label">Expressão de Busca <span class="text-primary">Digite o termo ou expressão de busca baseado em regex</span></label>
-                                        <textarea class="form-control" name="termo" id="termo" rows="3"></textarea>
+                                        <textarea class="form-control" name="termo" id="termo" rows="3">{{ $termo }}</textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-12 checkbox-radios mb-0">

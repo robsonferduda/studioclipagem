@@ -31,6 +31,8 @@ class NoticiaWebController extends Controller
 
         $dt_inicial = date('Y-m-d')." 00:00:00";
         $dt_final = date('Y-m-d')." 23:59:59";
+        $termo = "";
+        $fonte = 0;
 
         $fontes = FonteWeb::orderBy('nome')->get();
 
@@ -86,7 +88,7 @@ class NoticiaWebController extends Controller
 
         $total_noticias = count($dados);
 
-        return view('noticia-web/index',compact('fontes','dados','dt_inicial','dt_final'));
+        return view('noticia-web/index',compact('fontes','dados','dt_inicial','dt_final','termo','fonte'));
     }
 
     public function dashboard()
