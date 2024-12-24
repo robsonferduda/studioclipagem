@@ -90,7 +90,7 @@
             </div>
             <div class="row">
                 <div class="col-lg-12 col-md-12 col-sm-12">
-                    <div class="card">
+                    <div class="card card-maiores-coletas">
                         <div class="card-header">
                             <h6 class="card-title"><i class="fa fa-line-chart" aria-hidden="true"></i> Maiores Coletas</h6>
                         </div>
@@ -102,7 +102,7 @@
                 </div>
 
                 <div class="col-lg-12 col-md-12 col-sm-12">
-                    <div class="card">
+                    <div class="card card-sem-coleta">
                         <div class="card-header">
                             <h6 class="card-title"><i class="fa fa-ban" aria-hidden="true"></i> Sem Coleta</h6>
                         </div>
@@ -233,7 +233,7 @@
             url: host+'/fonte-web/estatisticas/top/10',
             type: 'GET',
             beforeSend: function() {               
-                
+                $('.card-maiores-coletas').loader('show');
             },
             success: function(data) {
 
@@ -252,7 +252,7 @@
 
             },
             complete: function(){
-                
+                $('.card-maiores-coletas').loader('hide');
             }
         });
 
@@ -260,7 +260,7 @@
             url: host+'/fonte-web/estatisticas/sem/10',
             type: 'GET',
             beforeSend: function() {               
-                
+                $('.card-sem-coleta').loader('show');
             },
             success: function(data) {
 
@@ -281,7 +281,7 @@
 
             },
             complete: function(){
-                
+                $('.card-sem-coleta').loader('hide');
             }
         });
 
