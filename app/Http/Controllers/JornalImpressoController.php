@@ -287,6 +287,31 @@ class JornalImpressoController extends Controller
         );
     }
 
+    public function getPdf($id)
+    {
+        $edicao = EdicaoJornalImpresso::find($id);
+
+        if( Storage::disk('s3')->exists($edicao->link_pdf) ) {
+
+            $file =  Storage::disk('s3')->get($edicao->link_pdf);
+      
+            $headers = [
+              'Content-Type' => 'your_content_type', 
+              'Content-Description' => 'File Transfer',
+              'Content-Disposition' => "attachment; filename=arquivo",
+              'filename'=> 'dsfsdf'
+           ];
+      
+        return response($file, 200, $headers);
+        }
+
+        return response()->make(
+            Storage::disk('s3')->get($edicao->link_pdf),
+            200,
+            ['Content-Type' => 'pdf']
+        );
+    }
+
     public function upload()
     {
         Session::put('sub-menu','upload');
