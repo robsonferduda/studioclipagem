@@ -158,7 +158,7 @@ class EmissoraController extends Controller
     {
         $estados = Estado::orderBy('nm_estado')->get();
         $emissora = new Emissora();
-        $paises = Pais::all();
+        $paises = Pais::orderBy('nu_ordem','DESC')->orderBY('ds_pais')->get();
         
         return view('emissora/form',compact('estados','emissora','tipo','paises'));
     }
@@ -167,7 +167,7 @@ class EmissoraController extends Controller
     {
         $estados = Estado::orderBy('nm_estado')->get();
         $emissora = Emissora::find($id);
-        $paises = Pais::all();
+        $paises = Pais::orderBy('nu_ordem','DESC')->orderBY('ds_pais')->get();
 
         $tipo = ($emissora->tipo_id == 1) ? 'radio' : 'tv';
 

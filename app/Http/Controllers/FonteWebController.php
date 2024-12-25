@@ -513,7 +513,7 @@ class FonteWebController extends Controller
 
         $cidades = Cidade::orderBy('nm_cidade')->get();
         $estados = Estado::orderBy('nm_estado')->get();
-        $paises = Pais::all();
+        $paises = Pais::orderBy('nu_ordem','DESC')->orderBY('ds_pais')->get();
         $prioridades = Prioridade::orderBy('id')->get();
 
         return view('fonte-web/novo', compact('estados','cidades','paises','prioridades'));
@@ -524,7 +524,7 @@ class FonteWebController extends Controller
         $cidades = Cidade::orderBy('nm_cidade')->get();
         $estados = Estado::orderBy('nm_estado')->get();
         $fonte = FonteWeb::find($id);
-        $paises = Pais::all();
+        $paises = Pais::orderBy('nu_ordem','DESC')->orderBY('ds_pais')->get();
         $prioridades = Prioridade::orderBy('id')->get();
         $flag_inconsistencia = false;
 
@@ -680,14 +680,14 @@ class FonteWebController extends Controller
         }
     
         try{
+
+            dd($request->all());
                         
             $fonte->update($request->all());
             $retorno = array('flag' => true,
                              'msg' => '<i class="fa fa-check"></i> Dados atualizados com sucesso');
 
         } catch (\Illuminate\Database\QueryException $e) {
-
-            dd($e);
 
             $retorno = array('flag' => false,
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));

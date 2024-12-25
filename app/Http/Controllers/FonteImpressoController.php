@@ -94,7 +94,7 @@ class FonteImpressoController extends Controller
     {
         Session::put('sub-menu','fonte-impressa');
         $estados = Estado::orderBy('nm_estado')->get();
-        $paises = Pais::all();
+        $paises = Pais::orderBy('nu_ordem','DESC')->orderBY('ds_pais')->get();
         $modelos = ModeloImpresso::all();
 
         return view('fonte-impresso/novo', compact('estados','paises','modelos'));
@@ -127,7 +127,7 @@ class FonteImpressoController extends Controller
     {
         $fonte = FonteImpressa::find($id);
         $estados = Estado::orderBy('nm_estado')->get();
-        $paises = Pais::all();
+        $paises = Pais::orderBy('nu_ordem','DESC')->orderBY('ds_pais')->get();
         $modelos = ModeloImpresso::all();
 
         $cidades = null;
