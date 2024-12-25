@@ -680,8 +680,6 @@ class FonteWebController extends Controller
         }
     
         try{
-
-            dd($request->all());
                         
             $fonte->update($request->all());
             $retorno = array('flag' => true,
