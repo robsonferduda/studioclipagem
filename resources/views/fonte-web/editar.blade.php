@@ -31,7 +31,7 @@
                             <select class="form-control select2" name="cd_pais" id="cd_pais">
                                 <option value="">Selecione um país</option>
                                 @foreach ($paises as $pais)
-                                    <option value="{{ $pais->cd_pais }}" {{ ($fonte->cd_pais == $pais->id) ? 'selected' : '' }}>{{ $pais->ds_pais }}</option>
+                                    <option value="{{ $pais->cd_pais }}" {{ ($fonte->cd_pais == $pais->cd_pais) ? 'selected' : '' }}>{{ $pais->ds_pais }}</option>
                                 @endforeach
                             </select>
                         </div>
