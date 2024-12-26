@@ -60,7 +60,13 @@ class NoticiaWebController extends Controller
                 });
             });
 
-            $dados = $jornais->whereBetween('data_insert', [$dt_inicial, $dt_final])->orderBy('id_fonte')->orderBy('titulo_noticia')->get();
+            //$dados = $jornais->whereBetween('data_insert', [$dt_inicial, $dt_final])->orderBy('id_fonte')->orderBy('titulo_noticia')->get();
+
+            $dados = DB::select("SELECT * FROM consulta_fontes_web(
+                                    '(OAB-SC)',
+                                    '2024-11-17 00:00:00'::DATE,
+                                    '2024-12-17 23:59:59'::DATE 
+                                )");
 
             return response()->json($dados);
 
