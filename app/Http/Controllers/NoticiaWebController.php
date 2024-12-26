@@ -60,7 +60,9 @@ class NoticiaWebController extends Controller
                 });
             });
 
-            $dados = $jornais->whereBetween('data_insert', [$dt_inicial, $dt_final])->orderBy('id_fonte')->orderBy('titulo_noticia')->paginate(10);
+            $dados = $jornais->whereBetween('data_insert', [$dt_inicial, $dt_final])->orderBy('id_fonte')->orderBy('titulo_noticia')->get();
+
+            return response()->json($dados);
 
         }
 
