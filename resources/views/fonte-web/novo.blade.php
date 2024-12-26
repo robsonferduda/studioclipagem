@@ -5,7 +5,7 @@
     {!! Form::open(['id' => 'frm_cliente_edit', 'url' => ['fonte-web'], 'method' => 'post']) !!}
         <div class="card">
             <div class="card-header">
-                <div class="row">
+                <div class="row ml-1 mr-1">
                     <div class="col-md-6">
                         <h4 class="card-title">
                             <i class="fa fa-globe"></i> Web
@@ -18,7 +18,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card-body">
+            <div class="card-body ml-3 mr-3">
                 <div class="row">
                     <div class="col-md-12">
                         @include('layouts.mensagens')

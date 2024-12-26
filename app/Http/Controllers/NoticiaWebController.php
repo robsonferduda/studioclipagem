@@ -76,12 +76,6 @@ class NoticiaWebController extends Controller
 
                 $dados = NoticiaWeb::whereBetween('data_insert', [$dt_inicial, $dt_final])->orderBy('data_noticia','DESC')->orderBy('id_fonte')->paginate(10);
 
-            }else{
-
-                $dt_inicial = date('Y-m-d')." 00:00:00";
-                $dt_final = date('Y-m-d')." 23:59:59";
-
-                $dados = NoticiaWeb::whereBetween('data_insert', [$dt_inicial, $dt_final])->orderBy('data_noticia','DESC')->orderBy('id_fonte')->paginate(10);
             }
 
         }

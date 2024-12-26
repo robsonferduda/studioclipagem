@@ -436,7 +436,7 @@ class FonteWebController extends Controller
         Session::put('sub-menu','fonte-web-inconsistencias');
         
         $fonte = FonteWeb::query();
-        $fonte->whereNotIn('id_situacao',[1,0])->orderBy('nome');
+        $fonte->whereNotIn('id_situacao',[1,0])->orderBy('id_situacao')->orderBy('nome');
         $dados = $fonte->get();
 
         return view('fonte-web/inconsistencias',compact('dados'));

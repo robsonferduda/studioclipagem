@@ -144,7 +144,7 @@ Route::post('noticia-impressa/upload','NoticiaImpressaController@upload');
 Route::get('noticia/impresso/cadastrar','NoticiaImpressaController@cadastrar');
 
 
-Route::match(array('GET', 'POST'),'buscar-web','JornalWebController@index');
+//Route::match(array('GET', 'POST'),'buscar-web','JornalWebController@index');
 
 Route::match(array('GET', 'POST'),'buscar-web','NoticiaWebController@index');
 Route::get('noticia/web','NoticiaWebController@index');
