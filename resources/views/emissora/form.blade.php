@@ -5,7 +5,11 @@
             <div class="card-header">
                 <div class="row">
                     <div class="col-md-6">
-                        <h4 class="card-title ml-2"><i class="fa fa-signal"></i> Emissoras > {{ empty($emissora->id) ? 'Novo' :'Editar' }}</h4>
+                        <h4 class="card-title ml-2">
+                            <i class="fa fa-volume-up"></i> Rádio 
+                            <i class="fa fa-angle-double-right" aria-hidden="true"></i> Emissoras
+                            <i class="fa fa-angle-double-right" aria-hidden="true"></i> {{ empty($emissora->id) ? 'Novo' :'Editar' }}
+                        </h4>
                     </div>
                     <div class="col-md-6">
                         <a href="{{ url('emissoras/radio') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-signal"></i> Emissoras</a>
@@ -30,7 +34,7 @@
                                 <select class="form-control select2" name="cd_pais" id="cd_pais">
                                     <option value="">Selecione um país</option>
                                     @foreach ($paises as $pais)
-                                        <option value="{{ $pais->id }}" {{ ($emissora->cd_pais == $pais->id) ? 'selected' : '' }}>{{ $pais->ds_pais }}</option>
+                                        <option value="{{ $pais->cd_pais }}" {{ ($emissora->cd_pais == $pais->cd_pais) ? 'selected' : '' }}>{{ $pais->ds_pais }}</option>
                                     @endforeach
                                 </select>
                             </div>

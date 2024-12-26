@@ -19,7 +19,7 @@ use Yajra\DataTables\DataTables;
 use App\Http\Requests\FontWebRequest;
 use Illuminate\Support\Facades\Session;
 
-class EmissoraWebController extends Controller
+class EmissoraTvController extends Controller
 {
     private $data_atual;
 
@@ -75,6 +75,6 @@ class EmissoraWebController extends Controller
 
         }
 
-        return view('emissora-web/index',compact('cidades','estados'));
+        return view('emissora-tv/index',compact('cidades','estados'));
     }
 }

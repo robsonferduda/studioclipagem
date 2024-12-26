@@ -8,7 +8,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <h4 class="card-title">
-                            <i class="fa fa-globe"></i> Jornal Web
+                            <i class="fa fa-globe"></i> Web
                             <i class="fa fa-angle-double-right" aria-hidden="true"></i> Fontes
                             <i class="fa fa-angle-double-right" aria-hidden="true"></i> Novo
                         </h4>
@@ -25,10 +25,18 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-12">
-                        <h6>Dados da Fonte</h6>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>País <span class="text-danger">Obrigatório</span></label>
+                            <select class="form-control select2" name="cd_pais" id="cd_pais">
+                                <option value="">Selecione um país</option>
+                                @foreach ($paises as $pais)
+                                    <option value="{{ $pais->cd_pais }}" {{ ( old('cd_pais') == $pais->cd_pais) ? 'selected' : '' }}>{{ $pais->ds_pais }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label>Estado <span class="text-danger">Obrigatório</span></label>
                             <select class="form-control select2" name="cd_estado" id="cd_estado">
@@ -52,7 +60,7 @@
                     </div>                   
                 </div>
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label>Nome <span class="text-danger">Obrigatório</span></label>
                             <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome" value="">
@@ -62,6 +70,25 @@
                         <div class="form-group">
                             <label>URL <span class="text-danger">Obrigatório</span></label>
                             <input type="text" class="form-control" name="url" id="url" placeholder="URL" value="">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Valor</label>
+                            <input type="text" class="form-control" name="nu_valor" id="nu_valor" placeholder="0,00" value="{{ number_format(old('nu_valor'), 2, ".","") }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Prioridade</label>
+                            <select class="form-control select2" name="id_prioridade" id="id_prioridade">
+                                <option value="">Selecione uma prioridade</option>
+                                @foreach ($prioridades as $prioridade)
+                                    <option value="{{ $prioridade->id }}" {{ ($prioridade->id == old('id_prioridade')) ? 'selected' : '' }}>{{ $prioridade->ds_prioridade }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                 </div>

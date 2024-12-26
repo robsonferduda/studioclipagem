@@ -157,7 +157,7 @@
                        </li>
                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'fonte-web') ? 'active' : '' }}">
                         <a href="{{ url('fonte-web/listar') }}">
-                        <span class="sidebar-normal">Fontes</span>
+                        <span class="sidebar-normal">Fontes Web</span>
                         </a>
                      </li>
                      <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'fonte-web-inconsistencias') ? 'active' : '' }}">
@@ -260,7 +260,7 @@
 
                         <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'tv-emissoras') ? 'active' : '' }}">
                           <a href="{{ url('tv/emissoras') }}">
-                          <span class="sidebar-normal">Emissora Web</span>
+                          <span class="sidebar-normal">Emissoras</span>
                           </a>
                         </li>
 

@@ -6,9 +6,8 @@
             <div class="row">
                 <div class="col-md-6">
                     <h4 class="card-title">
-                        <i class="fa fa-globe"></i> Jornal Web
+                        <i class="fa fa-tv"></i> TV
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Emissoras
-                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Listar
                     </h4>
                 </div>
                 <div class="col-md-6">

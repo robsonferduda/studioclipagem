@@ -210,7 +210,7 @@ Route::get('tags/cadastrar','TagController@cadastrar');
 Route::get('tags/{id}/remover','TagController@destroy');
 
 Route::get('tv/dashboard','NoticiaTvController@dashboard');
-Route::get('tv/emissoras','EmissoraWebController@index');
+Route::get('tv/emissoras','EmissoraTvController@index');
 
 Route::get('tv/estatisticas','NoticiaTvController@estatisticas');
 
