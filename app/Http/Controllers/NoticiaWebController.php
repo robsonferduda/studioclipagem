@@ -70,8 +70,7 @@ class NoticiaWebController extends Controller
                         'conteudo_noticia_web' AS origem,
                         n.id_noticia_web::TEXT AS id_referencia,
                         n.created_at AS data_hora,
-                        nw.titulo_noticia as titulo, 
-                        n.conteudo AS conteudo
+                        nw.titulo_noticia as titulo
                     FROM public.conteudo_noticia_web n
                     JOIN public.noticias_web nw ON nw.id = n.id_noticia_web 
                     WHERE n.created_at::DATE BETWEEN '$dt_inicial' AND '$dt_final'

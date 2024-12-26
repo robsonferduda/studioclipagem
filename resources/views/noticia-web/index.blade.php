@@ -140,14 +140,15 @@
                         $(".label-resultado").css("display","block");
                         $(".resultados").empty();
 
+                        var totalTime = millisToMinutesAndSeconds(new Date().getTime() - ajaxTime);
+
                         if(data.length == 0){
 
-                            $(".resultados").append('<span class="text-danger">Nenhum resultado encontrado</span>');
+                            $(".resultados").append('<span class="text-danger">Consulta realizada em <strong>'+totalTime+'</strong> não encontrou nenhum registro</span>');
 
                         }else{
 
-                            $(".label-resultado").empty();
-                            $(".label-resultado").append("Resultados da Busca"+" - Foram encontrados "+data.length+" registros");
+                            $(".resultados").append('<span class="mb-3">Consulta realizada em <strong>'+totalTime+'</strong> encontrou '+data.length+' registros</span><br/><br/>');
 
                             $.each(data, function(k, v) {
                             // $(".resultados").append('<p><a href="'+v.url_noticia+'" target="BLANK">'+v.titulo_noticia+'</a></p>');
@@ -161,8 +162,6 @@
                     },
                     complete: function(){
                         $('.load-busca').loader('hide');
-                        var totalTime = new Date().getTime()-ajaxTime;
-                        alert(millisToMinutesAndSeconds(totalTime));
                     }
             });
 
