@@ -20,21 +20,21 @@
             <div class="col-md-12">
                 @include('layouts.mensagens')
             </div>
-            <div class="row">
-                <div class="col-lg-12 col-sm-12">
+            <div class="row mb-0">
+                <div class="col-lg-12 col-sm-12 mb-0">
                     {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['buscar-web']]) !!}
                         <div class="form-group m-3 w-70">
                             <div class="row">
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
                                         <label>Data Inicial</label>
-                                        <input type="text" class="form-control datepicker" name="dt_inicial" required="true" value="{{ date("d/m/Y") }}" placeholder="__/__/____">
+                                        <input type="text" class="form-control datepicker" name="dt_inicial" id="dt_inicial" required="true" value="{{ date("d/m/Y") }}" placeholder="__/__/____">
                                     </div>
                                 </div>
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
                                         <label>Data Final</label>
-                                        <input type="text" class="form-control datepicker" name="dt_final" required="true" value="{{ date("d/m/Y") }}" placeholder="__/__/____">
+                                        <input type="text" class="form-control datepicker" name="dt_final" id="dt_final" required="true" value="{{ date("d/m/Y") }}" placeholder="__/__/____">
                                     </div>
                                 </div>
                                 <div class="col-md-8">
@@ -64,10 +64,12 @@
                     {!! Form::close() !!} 
                 </div>
             </div>
-            <div class="row">
+            <div class="row mt-0">
                 <div class="col col-sm-12 col-md-12 col-lg-12">
-                    <h6 class="m-3 label-resultado">Resultados da Busca</h6>
-                    <div class="resultados m-3"></div>
+                    <div class="load-busca" style="min-height: 200px;" >
+                        <h6 class="label-resultado ml-3">Resultados da Busca</h6>
+                        <div class="resultados m-3"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -116,10 +118,18 @@
         $("#btn-find").click(function(){
 
             var expressao = $("#expressao").val();
+            var dt_inicial = $("#dt_inicial").val();
+            var dt_final = $("#dt_final").val();
+            var fonte = $("#fonte").val();
+
+            var ajaxTime = new Date().getTime();
 
             $.ajax({url: host+'/buscar-web',
                     type: 'POST',
                     data: {"_token": $('meta[name="csrf-token"]').attr('content'),
+                            "dt_inicial": dt_inicial,
+                            "dt_final": dt_final,
+                            "fonte": fonte,
                             "expressao": expressao
                     },
                     beforeSend: function() {
@@ -151,10 +161,18 @@
                     },
                     complete: function(){
                         $('.load-busca').loader('hide');
+                        var totalTime = new Date().getTime()-ajaxTime;
+                        alert(millisToMinutesAndSeconds(totalTime));
                     }
             });
 
         });
+
+        function millisToMinutesAndSeconds(millis) {
+            var minutes = Math.floor(millis / 60000);
+            var seconds = ((millis % 60000) / 1000).toFixed(0);
+            return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
+        }
 
         $(".panel-heading").click(function() {
             $(this).parent().addClass('active').find('.panel-body').slideToggle('fast');

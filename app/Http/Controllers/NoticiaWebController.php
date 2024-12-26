@@ -42,11 +42,11 @@ class NoticiaWebController extends Controller
             $carbon = new Carbon();
             $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00" : date("Y-m-d")." 00:00:00";
             $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d")." 23:59:59";
-            $termo = $request->termo;
+            $expressao = $request->expressao;
             $fonte = $request->fonte;
 
-            Session::put('busca_termo', $termo);
-            Session::put('busca_fonte', $fonte);
+            $filtro_fonte = '';
+            $filtro_expressao = '';
 
             $jornais = NoticiaWeb::query();
 
@@ -62,11 +62,23 @@ class NoticiaWebController extends Controller
 
             //$dados = $jornais->whereBetween('data_insert', [$dt_inicial, $dt_final])->orderBy('id_fonte')->orderBy('titulo_noticia')->get();
 
-            $dados = DB::select("SELECT * FROM consulta_fontes_web(
-                                    '(OAB-SC)',
-                                    '2024-11-17 00:00:00'::DATE,
-                                    '2024-12-17 23:59:59'::DATE 
-                                )");
+            if($fonte) $filtro_fonte = " AND nw.id_fonte = $fonte";
+            if($expressao) $filtro_expressao = " AND n.conteudo ~* '$expressao'";
+
+            $sql = "SELECT 
+                        n.id AS id,
+                        'conteudo_noticia_web' AS origem,
+                        n.id_noticia_web::TEXT AS id_referencia,
+                        n.created_at AS data_hora,
+                        nw.titulo_noticia as titulo, 
+                        n.conteudo AS conteudo
+                    FROM public.conteudo_noticia_web n
+                    JOIN public.noticias_web nw ON nw.id = n.id_noticia_web 
+                    WHERE n.created_at::DATE BETWEEN '$dt_inicial' AND '$dt_final'
+                    $filtro_fonte
+                    $filtro_expressao";
+
+            $dados = DB::select($sql);
 
             return response()->json($dados);
 
