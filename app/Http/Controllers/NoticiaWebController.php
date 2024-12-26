@@ -33,6 +33,7 @@ class NoticiaWebController extends Controller
         $dt_final = date('Y-m-d')." 23:59:59";
         $termo = "";
         $fonte = 0;
+        $dados = array();
 
         $fontes = FonteWeb::orderBy('nome')->get();
 
