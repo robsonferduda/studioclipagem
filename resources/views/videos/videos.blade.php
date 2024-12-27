@@ -45,16 +45,16 @@
                                         @endforeach
                                     </select>
                                 </div>
-                            </div>
-                            <div class="col-md-12 col-sm-12">
-                                <div class="form-group">
-                                    <label>Buscar por <span class="text-primary">Digite o termo ou expressão de busca na transcrição</span></label>
-                                    <input type="text" class="form-control" name="termo" id="termo" minlength="3" placeholder="Termo" value="{{ $termo }}">
-                                </div>
                             </div>                            
                         </div>
                         <div class="row">
-                            <div class="col-md-12 checkbox-radios mb-0">
+                            <div class="col-md-12 col-sm-12">
+                                <div class="form-group">
+                                    <label for="expressao" class="form-label">Expressão de Busca <span class="text-primary">Digite o termo ou expressão de busca baseado em regex</span></label>
+                                    <textarea class="form-control" name="expressao" id="expressao" rows="3">{{ $termo }}</textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
                                 <button type="submit" id="btn-find" class="btn btn-primary mt-4 btn-search"><i class="fa fa-search"></i> Buscar</button>
                             </div>
                         </div>
