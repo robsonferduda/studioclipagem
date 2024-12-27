@@ -24,6 +24,7 @@ class VideosController extends Controller
         $emissoras = EmissoraWeb::orderBy('nome_emissora')->get();
 
         $carbon = new Carbon();
+        
         $termo = $request->termo;
         $videos = null;
         $expressao = "";
@@ -32,6 +33,9 @@ class VideosController extends Controller
         $video = VideoEmissoraWeb::query();
 
         if($request->isMethod('GET')){
+
+            $dt_inicial = ($request->dt_inicial) ? $request->dt_inicial : date("Y-m-d "."00:00:00");
+            $dt_final = ($request->dt_final) ? $request->dt_final : date("Y-m-d "."23:59:59");
 
             $video->when($dt_inicial, function ($q) use ($dt_inicial, $dt_final) {
                 return $q->whereBetween('horario_start_gravacao', [$dt_inicial, $dt_final]);
