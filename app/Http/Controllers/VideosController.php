@@ -24,8 +24,6 @@ class VideosController extends Controller
         $emissoras = EmissoraWeb::orderBy('nome_emissora')->get();
 
         $carbon = new Carbon();
-        $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d "."00:00:00");
-        $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d "."23:59:59");
         $termo = $request->termo;
         $videos = null;
         $expressao = "";
