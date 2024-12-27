@@ -35,23 +35,34 @@
                                     <input type="text" class="form-control datepicker dt-search" name="dt_final" required="true" value="{{ ($dt_final) ? date('d/m/Y', strtotime($dt_final)) : date('d/m/Y') }}" placeholder="__/__/____">
                                 </div>
                             </div>
-                            <div class="col-md-8">
+                            <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>Fonte</label>
-                                    <select class="form-control select2" name="regra" id="regra">
-                                        <option value="">Selecione uma fonte</option>
+                                    <label>Emissora</label>
+                                    <select class="form-control select2" name="fonte" id="fonte">
+                                        <option value="">Selecione uma emissora</option>
                                         @foreach ($emissoras as $emissora)
-                                            <option value="{{ $emissora->id }}">{{ $emissora->nome_emissora }}</option>
+                                            <option value="{{ $emissora->id }}" {{ ($emissora->id == $fonte) ? 'selected' : '' }}>{{ $emissora->nome_emissora }}</option>
                                         @endforeach
                                     </select>
                                 </div>
-                            </div>                            
+                            </div>   
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Programa</label>
+                                    <select class="form-control select2" name="programa" id="programa">
+                                        <option value="">Selecione um programa</option>
+                                        @foreach ($programas as $prog)
+                                            <option value="{{ $prog->id }}" {{ ($prog->id == $programa) ? 'selected' : '' }}>{{ $prog->nome_programa }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>                             
                         </div>
                         <div class="row">
                             <div class="col-md-12 col-sm-12">
                                 <div class="form-group">
                                     <label for="expressao" class="form-label">Expressão de Busca <span class="text-primary">Digite o termo ou expressão de busca baseado em regex</span></label>
-                                    <textarea class="form-control" name="expressao" id="expressao" rows="3">{{ $termo }}</textarea>
+                                    <textarea class="form-control" name="expressao" id="expressao" rows="3">{{ $expressao }}</textarea>
                                 </div>
                             </div>
                             <div class="col-md-12">
@@ -64,7 +75,7 @@
             <div class="col-md-12">
                 @if(count($videos) > 0)
                     <h6 class="px-3">Mostrando {{ $videos->count() }} de {{ $videos->total() }} vídeos coletados</h6>
-                    {{ $videos->onEachSide(1)->appends(['dt_inicial' => $dt_inicial, 'dt_final' => $dt_final])->links('vendor.pagination.bootstrap-4') }}
+                    {{ $videos->onEachSide(1)->appends(['dt_inicial' => $dt_inicial, 'dt_final' => $dt_final, 'programa' => $programa ])->links('vendor.pagination.bootstrap-4') }}
                 @endif
 
                 @foreach ($videos as $key => $video)

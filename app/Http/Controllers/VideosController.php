@@ -6,6 +6,7 @@ use DB;
 use Auth;
 use Carbon\Carbon;
 use App\Models\EmissoraWeb;
+use App\Models\ProgramaEmissoraWeb;
 use App\Models\VideoEmissoraWeb;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -22,6 +23,7 @@ class VideosController extends Controller
     {
         Session::put('sub-menu','tv-videos');
         $emissoras = EmissoraWeb::orderBy('nome_emissora')->get();
+        $programas = ProgramaEmissoraWeb::all();
 
         $carbon = new Carbon();
         
@@ -29,6 +31,7 @@ class VideosController extends Controller
         $videos = null;
         $expressao = "";
         $fonte = 0;
+        $programa = 0;
 
         $video = VideoEmissoraWeb::query();
 
@@ -36,9 +39,20 @@ class VideosController extends Controller
 
             $dt_inicial = ($request->dt_inicial) ? $request->dt_inicial : date("Y-m-d "."00:00:00");
             $dt_final = ($request->dt_final) ? $request->dt_final : date("Y-m-d "."23:59:59");
+            $expressao = $request->expressao;
+            $fonte = $request->fonte;
+            $programa = $request->programa;
 
             $video->when($dt_inicial, function ($q) use ($dt_inicial, $dt_final) {
                 return $q->whereBetween('horario_start_gravacao', [$dt_inicial, $dt_final]);
+            });
+
+            $video->when($fonte, function ($q) use ($fonte) {
+                return $q->where('id_programa_emissora_web', $fonte);
+            });
+
+            $video->when($expressao, function ($q) use ($expressao) {
+                return $q->whereRaw("transcricao  ~* '$expressao' ");
             });
 
         }
@@ -47,6 +61,7 @@ class VideosController extends Controller
 
             $expressao = $request->expressao;
             $fonte = $request->fonte;
+            $programa = $request->programa;
 
             $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00" : date("Y-m-d")." 00:00:00";
             $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d")." 23:59:59";
@@ -56,7 +71,7 @@ class VideosController extends Controller
             });
 
             $video->when($fonte, function ($q) use ($fonte) {
-                return $q->where('id_fonte', $fonte);
+                return $q->where('id_programa_emissora_web', $fonte);
             });
 
             $video->when($expressao, function ($q) use ($expressao) {
@@ -66,7 +81,7 @@ class VideosController extends Controller
 
         $videos = $video->orderBy('created_at','DESC')->paginate(10);
         
-        return view('videos/videos', compact('dt_inicial','dt_final','termo','emissoras','videos'));
+        return view('videos/videos', compact('dt_inicial','dt_final','expressao','fonte','programa','emissoras','videos','programas'));
     }
 
     public function detalhes($id)
