@@ -9,6 +9,7 @@ use App\Noticia;
 use App\Models\NoticiaWeb;
 use App\Models\ConteudoNoticiaWeb;
 use App\Models\EmissoraWeb;
+use App\Models\ProgramaEmissoraWeb;
 use App\Models\Estado;
 use App\Models\Cidade;
 use App\Models\FonteWeb;
@@ -19,7 +20,7 @@ use Yajra\DataTables\DataTables;
 use App\Http\Requests\FontWebRequest;
 use Illuminate\Support\Facades\Session;
 
-class EmissoraTvController extends Controller
+class ProgramaTvController extends Controller
 {
     private $data_atual;
 
@@ -32,7 +33,7 @@ class EmissoraTvController extends Controller
 
     public function index(Request $request)
     {
-        Session::put('sub-menu','tv-emissoras');
+        Session::put('sub-menu','programas-tv');
 
         $cidades = Cidade::orderBy('nm_cidade')->get();
         $estados = Estado::orderBy('nm_estado')->get();
@@ -44,31 +45,37 @@ class EmissoraTvController extends Controller
             $estado = ($request->estado) ? $request->estado : "";
             $cidade = ($request->cidade) ? $request->cidade : "";
     
-            $fonte = EmissoraWeb::query();
+            $programa = ProgramaEmissoraWeb::query();
     
-            $fonte->orderBy('nome_emissora');
+            $programa->orderBy('nome_programa');
     
-            $fontes = $fonte->get();
+            $programas = $programa->get();
 
-            return DataTables::of($fontes)  
-                ->addColumn('nome', function ($fonte) {
-                    return $fonte->nome_emissora;
+            return DataTables::of($programas)  
+                ->addColumn('emissora', function ($programa) {
+                    return ($programa->emissora) ? $programa->emissora->nome_emissora : 'Não informada';
+                }) 
+                ->addColumn('nome', function ($programa) {
+                    return $programa->nome_programa;
                 })  
-                ->addColumn('url', function ($fonte) {
-                    return ($fonte->url_stream) ? $fonte->url_stream : '<span class="text-danger">Não informado</span>';
+                ->addColumn('tipo', function ($programa) {
+                    return ($programa->tipo) ? '<span class="badge badge-primary" style="background: '.$programa->tipo->ds_color.'; border-color: '.$programa->tipo->ds_color.';">'.$programa->tipo->nome.'</span>' : 'Nenhum';
+                })  
+                ->addColumn('url', function ($programa) {
+                    return ($programa->url) ? $programa->url : '<span class="text-danger">Não informado</span>';
                 })    
-                ->addColumn('acoes', function ($fonte) {
+                ->addColumn('acoes', function ($programa) {
                     return '<div class="text-center">
-                                <a title="Editar" href="../tv/emissoras/editar/'.$fonte->id.'" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
+                                <a title="Editar" href="../tv/emissoras/editar/'.$programa->id.'" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
                                 <a title="Excluir" href="" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-times fa-2x"></i></a>
                             </div>';
                 })   
-                ->rawColumns(['url','acoes'])         
+                ->rawColumns(['tipo','url','acoes'])         
                 ->make(true);
 
         }
 
-        return view('emissora-tv/index',compact('cidades','estados'));
+        return view('programa-tv/index', compact('cidades','estados'));
     }
 
     public function novo()

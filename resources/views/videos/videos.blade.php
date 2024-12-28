@@ -3,7 +3,7 @@
 <div class="col-md-12">
     <div class="card">
         <div class="card-header">
-            <div class="row">
+            <div class="row ml-1">
                 <div class="col-md-8">
                     <h4 class="card-title">
                         <i class="fa fa-tv ml-3"></i> TV
@@ -11,7 +11,7 @@
                     </h4>
                 </div>
                 <div class="col-md-4">
-                   
+                    <a href="{{ url('tv/emissoras') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-tv"></i> Emissoras</a>
                 </div>
             </div>
         </div>

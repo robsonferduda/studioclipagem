@@ -15,4 +15,9 @@ class ProgramaEmissoraWeb extends Model
     {
         return $this->hasOne(EmissoraWeb::class, 'id', 'id_emissora');
     }
+
+    public function tipo()
+    {
+        return $this->hasOne(TipoProgramaEmissoraWeb::class, 'id', 'tipo_programa');
+    }
 }

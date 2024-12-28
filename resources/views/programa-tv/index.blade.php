@@ -8,6 +8,7 @@
                     <h4 class="card-title">
                         <i class="fa fa-tv"></i> TV
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Emissoras
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Programas
                     </h4>
                 </div>
                 <div class="col-md-6">
@@ -25,14 +26,18 @@
                     <table id="bootstrap-table" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
+                                <th>Emissora</th>
                                 <th>Nome</th>
+                                <th>Tipo</th>
                                 <th>URL</th>
                                 <th class="disabled-sorting text-center">Ações</th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
+                                <th>Emissora</th>
                                 <th>Nome</th>
+                                <th>Tipo</th>
                                 <th>URL</th>
                                 <th class="disabled-sorting text-center">Ações</th>
                             </tr>
@@ -65,7 +70,7 @@
                 "ordering": false,
                 "bFilter": true,
                 "ajax":{
-                    "url": "{{ url('tv/emissoras') }}",
+                    "url": "{{ url('tv/emissoras/programas') }}",
                     "dataType": "json",
                     "type": "GET",
                     "data": function (d) {
@@ -73,7 +78,9 @@
                     }
                 },
                 "columns": [
+                    { data: "emissora" },
                     { data: "nome" },
+                    { data: "tipo" },
                     { data: "url" },
                     { data: "acoes" },
                 ],

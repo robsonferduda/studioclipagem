@@ -211,6 +211,10 @@ Route::get('tags/{id}/remover','TagController@destroy');
 
 Route::get('tv/dashboard','NoticiaTvController@dashboard');
 Route::get('tv/emissoras','EmissoraTvController@index');
+Route::get('tv/emissoras/editar/{id}','EmissoraTvController@editar');
+Route::get('tv/emissoras/novo','EmissoraTvController@novo');
+
+Route::get('tv/emissoras/programas','ProgramaTvController@index');
 
 Route::get('tv/estatisticas','NoticiaTvController@estatisticas');
 
