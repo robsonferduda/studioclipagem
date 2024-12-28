@@ -83,6 +83,17 @@
                 <div class="row">
                     <div class="col-md-3">
                         <div class="form-group">
+                            <label>Situação</label>
+                            <select class="form-control select2" name="id_situacao" id="id_situacao">
+                                <option value="">Selecione uma situação</option>
+                                @foreach ($situacoes as $situacao)
+                                    <option value="{{ $situacao->id_situacao_fonte_web }}" {{ ($situacao->id_situacao_fonte_web == $fonte->id_situacao) ? 'selected' : '' }}>{{ $situacao->ds_situacao }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
                             <label>Prioridade</label>
                             <select class="form-control select2" name="id_prioridade" id="id_prioridade">
                                 <option value="">Selecione uma prioridade</option>
@@ -96,9 +107,10 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-check mt-3">
+                            <input type="hidden" name="id_situacao_atual" id="id_situacao_atual" value="{{ $fonte->id_situacao }}">
                             <div class="form-check">
                                 <label class="form-check-label">
-                                    <input class="form-check-input" type="checkbox" name="resetar_situacao" value="true" checked>
+                                    <input class="form-check-input" type="checkbox" name="resetar_situacao" id="resetar_situacao" value="true">
                                     Resetar Situação 
                                     <span class="form-check-sign"></span>
                                 </label>
@@ -156,6 +168,30 @@
         $(document).ready(function(){
             
             $("#cd_estado").trigger("change");
+            $("#resetar_situacao").trigger("click");
+            $("#id_situacao").val(0).change();
+
+            $(document).on('click', '#resetar_situacao', function() {
+
+                var id_situacao_atual = $("#id_situacao_atual").val();
+
+                if($("#resetar_situacao").is(':checked')) {
+                    $("#id_situacao").val(0).change();
+                }else{
+                    $("#id_situacao").val(id_situacao_atual).change();
+                }
+
+            });
+
+            $(document).on('change', '#id_situacao', function() {
+
+                var situacao = $(this).val();
+
+                if(situacao != 0) 
+                    $("#resetar_situacao").prop('checked', false);
+                else
+                    $("#resetar_situacao").prop('checked', true);
+            });
 
         });
     </script>

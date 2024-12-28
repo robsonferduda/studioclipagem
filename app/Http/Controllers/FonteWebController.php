@@ -14,6 +14,7 @@ use App\Models\NoticiaWeb;
 use App\Models\ConteudoNoticiaWeb;
 use App\Models\JornalWeb;
 use App\Models\Prioridade;
+use App\Models\Situacao;
 use App\Models\Estado;
 use App\Models\Cidade;
 use App\Models\FonteWeb;
@@ -526,11 +527,12 @@ class FonteWebController extends Controller
         $fonte = FonteWeb::find($id);
         $paises = Pais::orderBy('nu_ordem','DESC')->orderBY('ds_pais')->get();
         $prioridades = Prioridade::orderBy('id')->get();
+        $situacoes = SituacaoFonteWeb::orderBy('id_situacao_fonte_web')->get();
         $flag_inconsistencia = false;
 
         $noticia = NoticiaWeb::where('id_fonte', $id)->orderBy('created_at','DESC')->first();
 
-        return view('fonte-web/editar', compact('fonte','estados','cidades','flag_inconsistencia','paises','noticia','prioridades'));
+        return view('fonte-web/editar', compact('fonte','estados','cidades','flag_inconsistencia','paises','noticia','prioridades','situacoes'));
     }
 
     public function editInconsistencia(FonteWeb $fonte, $id)
@@ -540,11 +542,12 @@ class FonteWebController extends Controller
         $fonte = FonteWeb::find($id);
         $paises = Pais::all();
         $prioridades = Prioridade::orderBy('id')->get();
+        $situacoes = SituacaoFonteWeb::orderBy('id_situacao_fonte_web')->get();
         $flag_inconsistencia = true;
 
         $noticia = NoticiaWeb::where('id_fonte', $id)->orderBy('created_at')->first();
 
-        return view('fonte-web/editar', compact('fonte','estados','cidades','flag_inconsistencia','paises','noticia','prioridades'));
+        return view('fonte-web/editar', compact('fonte','estados','cidades','flag_inconsistencia','paises','noticia','prioridades','situacoes'));
     }
 
     public function atualizarEstado()
