@@ -215,6 +215,10 @@ Route::get('tv/emissoras/editar/{id}','EmissoraTvController@editar');
 Route::get('tv/emissoras/novo','EmissoraTvController@novo');
 
 Route::get('tv/emissoras/programas','ProgramaTvController@index');
+Route::get('tv/emissoras/programas/novo','ProgramaTvController@novo');
+Route::get('tv/emissoras/programas/editar/{id}','ProgramaTvController@editar');
+Route::post('tv/emissoras/programas/adicionar','ProgramaTvController@adicionar');
+Route::post('tv/emissoras/programas/atualizar','ProgramaTvController@atualizar');
 
 Route::get('tv/estatisticas','NoticiaTvController@estatisticas');
 

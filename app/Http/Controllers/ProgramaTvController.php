@@ -5,15 +5,12 @@ namespace App\Http\Controllers;
 use DB;
 use Auth;
 use Carbon\Carbon;
-use App\Noticia;
-use App\Models\NoticiaWeb;
-use App\Models\ConteudoNoticiaWeb;
+use App\Models\Pais;
+use App\Models\Cidade;
+use App\Models\Estado;
 use App\Models\EmissoraWeb;
 use App\Models\ProgramaEmissoraWeb;
-use App\Models\Estado;
-use App\Models\Cidade;
-use App\Models\FonteWeb;
-use App\Models\SituacaoFonteWeb;
+use App\Models\TipoProgramaEmissoraWeb;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
@@ -66,7 +63,7 @@ class ProgramaTvController extends Controller
                 })    
                 ->addColumn('acoes', function ($programa) {
                     return '<div class="text-center">
-                                <a title="Editar" href="../tv/emissoras/editar/'.$programa->id.'" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
+                                <a title="Editar" href="../emissoras/programas/editar/'.$programa->id.'" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
                                 <a title="Excluir" href="" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-times fa-2x"></i></a>
                             </div>';
                 })   
@@ -80,15 +77,36 @@ class ProgramaTvController extends Controller
 
     public function novo()
     {
-        $emissora = null;
+        $cidades = Cidade::orderBy('nm_cidade')->get();
+        $estados = Estado::orderBy('nm_estado')->get();
+        $paises = Pais::orderBy('nu_ordem','DESC')->orderBY('ds_pais')->get();
+        $tipos = TipoProgramaEmissoraWeb::orderBy("nome")->get();
+        $emissoras = EmissoraWeb::orderBy("nome_emissora")->get();
+        $programa = null;
 
-        return view('emissora-tv/form', compact('emissora'));
+        return view('programa-tv/form', compact('paises','estados','cidades','tipos','emissoras','programa'));
     }
 
     public function editar($id)
     {
-        $emissora = EmissoraWeb::find($id);
+        $cidades = Cidade::orderBy('nm_cidade')->get();
+        $estados = Estado::orderBy('nm_estado')->get();
+        $paises = Pais::orderBy('nu_ordem','DESC')->orderBY('ds_pais')->get();
+        $tipos = TipoProgramaEmissoraWeb::orderBy("nome")->get();
+        $emissoras = EmissoraWeb::orderBy("nome_emissora")->get();
 
-        return view('emissora-tv/form', compact('emissora'));
+        $programa = ProgramaEmissoraWeb::find($id);
+
+        return view('programa-tv/form', compact('paises','estados','cidades','tipos','emissoras','programa'));
+    }
+
+    public function adicionar(Request $request)
+    {
+        
+    }
+
+    public function atualizar(Request $request)
+    {
+        
     }
 }
