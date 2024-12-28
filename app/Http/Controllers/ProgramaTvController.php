@@ -11,6 +11,7 @@ use App\Models\Cidade;
 use App\Models\Estado;
 use App\Models\EmissoraWeb;
 use App\Models\ProgramaEmissoraWeb;
+use App\Models\EmissoraWebHorario;
 use App\Models\TipoProgramaEmissoraWeb;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
@@ -75,10 +76,20 @@ class ProgramaTvController extends Controller
                     return ($programa->url) ? $programa->url : '<span class="text-danger">Não informado</span>';
                 })    
                 ->addColumn('acoes', function ($programa) {
-                    return '<div class="text-center">
-                                <a title="Editar" href="../emissoras/programas/editar/'.$programa->id.'" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
-                                <a title="Excluir" href="" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-times fa-2x"></i></a>
-                            </div>';
+
+                    $acoes = '<div class="text-center">';
+
+                    if(count($programa->horarios))
+                        $acoes .= '<a title="Horários de Coleta" href="../emissora/programas/'.$programa->id.'/horarios" class="btn btn-warning btn-link btn-icon"><i class="nc-icon nc-time-alarm font-25"></i></a>';
+                    else
+                        $acoes .= '<a title="Horários de Coleta" href="../emissora/programas/'.$programa->id.'/horarios" class="btn btn-default btn-link btn-icon"><i class="nc-icon nc-time-alarm font-25"></i></a>';
+
+                    $acoes .= ' <a title="Editar" href="../emissoras/programas/editar/'.$programa->id.'" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
+                                <a title="Excluir" href="" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-times fa-2x"></i></a>';
+
+                    $acoes .= '</div>';
+
+                    return $acoes;
                 })   
                 ->rawColumns(['estado','cidade','emissora','tipo','url','acoes'])         
                 ->make(true);
@@ -111,6 +122,93 @@ class ProgramaTvController extends Controller
         $programa = ProgramaEmissoraWeb::find($id);
 
         return view('programa-tv/form', compact('paises','estados','cidades','tipos','emissoras','programa'));
+    }
+
+    public function horarios($id_programa)
+    {
+        $emissora = ProgramaEmissoraWeb::find($id_programa);
+        $horarios = $emissora->horarios->sortBy('horario_start');
+
+        return view('programa-tv/horarios',compact('horarios','id_programa'));
+    }
+
+    public function adicionarHorarios(Request $request)
+    {
+        $emissora = $request->id_programa;
+        $hora_inicial = $request->hora_inicial;
+        $hora_final = $request->hora_final;
+        $dias_da_semana = '';
+
+        if($request->dia_0) $dias_da_semana .= '0,';
+        if($request->dia_1) $dias_da_semana .= '1,';
+        if($request->dia_2) $dias_da_semana .= '2,';
+        if($request->dia_3) $dias_da_semana .= '3,';
+        if($request->dia_4) $dias_da_semana .= '4,';
+        if($request->dia_5) $dias_da_semana .= '5,';
+        if($request->dia_6) $dias_da_semana .= '6,';
+
+        $dias_da_semana = substr($dias_da_semana, -0, -1);
+
+        $dados_insercao = array('id_programa' => $emissora,
+                                'horario_start' => $hora_inicial,
+                                'horario_end' => $hora_final,
+                                'dias_da_semana' => $dias_da_semana);
+
+        try {
+            EmissoraWebHorario::create($dados_insercao);
+            $retorno = array('flag' => true,
+            'msg' => "Dados inseridos com sucesso");
+        } catch (\Throwable $th) {
+
+            dd($th);
+            $retorno = array('flag' => false,
+                             'msg' => "Ocorreu um erro ao inserir o registro");
+        } catch (\Exception $e) {
+            $retorno = array('flag' => true,
+                             'msg' => "Ocorreu um erro ao inserir o registro");
+        }       
+        
+        if ($retorno['flag']) {
+            Flash::success($retorno['msg']);
+        } else {
+            Flash::error($retorno['msg']);
+        }
+       
+        return redirect('tv/emissora/programas/'.$request->id_programa.'/horarios')->withInput();
+    }
+
+    public function atualizarHorarios(Request $request)
+    {
+        $emissora = EmissoraWebHorario::find($request->horario);
+
+        $dias_da_semana = $emissora->dias_da_semana;
+
+        if($dias_da_semana != ""){
+            $dias = explode(',',trim($dias_da_semana));
+
+            if(in_array($request->dia, $dias)){
+
+                if (($key = array_search($request->dia, $dias)) !== false) {
+                    unset($dias[$key]);
+                }
+
+            }else{
+                $dias[] = $request->dia;
+            }
+        }else{
+            $dias[] = $request->dia;
+        }
+   
+        sort($dias);
+
+        if(count($dias))
+            $str_dias = implode(",",$dias);
+        else 
+            $str_dias = "";
+
+        $emissora->dias_da_semana = $str_dias;
+        $emissora->save();
+
     }
 
     public function adicionar(Request $request)

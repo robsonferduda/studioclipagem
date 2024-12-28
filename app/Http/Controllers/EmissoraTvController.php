@@ -59,11 +59,16 @@ class EmissoraTvController extends Controller
                     return ($fonte->url_stream) ? $fonte->url_stream : '<span class="text-danger">Não informado</span>';
                 })    
                 ->addColumn('acoes', function ($fonte) {
-                    return '<div class="text-center">
-                                <a title="Programas" href="../tv/emissoras/programas/'.$fonte->id.'" class="btn btn-warning btn-link btn-icon"><i class="fa fa-tv fa-2x"></i></a>
+                      
+                    $acoes = '<div class="text-center">';
+
+                    $acoes .= '<a title="Programas" href="../tv/emissoras/programas/'.$fonte->id.'" class="btn btn-warning btn-link btn-icon"><i class="fa fa-tv fa-2x"></i></a>
                                 <a title="Editar" href="../tv/emissoras/editar/'.$fonte->id.'" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
-                                <a title="Excluir" href="" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-times fa-2x"></i></a>
-                            </div>';
+                                <a title="Excluir" href="" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-times fa-2x"></i></a>';
+
+                    $acoes .= '</div>';
+
+                    return $acoes;
                 })   
                 ->rawColumns(['url','acoes'])         
                 ->make(true);
