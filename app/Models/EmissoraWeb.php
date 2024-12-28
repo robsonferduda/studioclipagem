@@ -13,6 +13,6 @@ class EmissoraWeb extends Model
     protected $connection = 'pgsql';
     protected $table = 'emissora_web';
 
-    protected $fillable = ['id_fonte'];
+    protected $fillable = ['nome_emissora','url_stream'];
 
 }

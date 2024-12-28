@@ -22,9 +22,10 @@
                 </div>
                 <div class="col-md-12">
                     @if(empty($emissora->id))
-                        {!! Form::open(['id' => 'frm_user_create', 'url' => ['emissora/tv/adicionar']]) !!}
+                        {!! Form::open(['id' => 'frm_user_create', 'url' => ['tv/emissoras/adicionar']]) !!}
                     @else
-                        {!! Form::open(['id' => 'frm_noticia_radio_editar', 'url' => ['emissora/tv/atualizar'], 'method' => 'post']) !!}
+                        {!! Form::open(['id' => 'frm_noticia_radio_editar', 'url' => ['tv/emissoras/atualizar'], 'method' => 'post']) !!}
+                        <input type="hidden" name="id" value="{{ $emissora->id }}">
                     @endif
                                        
                     <div class="row">

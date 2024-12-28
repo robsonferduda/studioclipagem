@@ -79,11 +79,8 @@
                 ],
                 'columnDefs': [
                     {
-                        /*'targets': 0,
-                        'className': 'item',
-                        'checkboxes': true,*/
-                        'ordering': false,
-                        'sortable': false
+                        'targets': 2,
+                        'className': 'text-center'
                     }
                 ],
                 "stateSave": true

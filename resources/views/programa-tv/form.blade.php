@@ -9,7 +9,7 @@
                             <i class="fa fa-tv"></i> TV 
                             <i class="fa fa-angle-double-right" aria-hidden="true"></i> Emissoras
                             <i class="fa fa-angle-double-right" aria-hidden="true"></i> Programas
-                            <i class="fa fa-angle-double-right" aria-hidden="true"></i> {{ empty($emissora->id) ? 'Novo' :'Editar' }}
+                            <i class="fa fa-angle-double-right" aria-hidden="true"></i> {{ empty($programa->id) ? 'Novo' :'Editar' }}
                         </h4>
                     </div>
                     <div class="col-md-6">
@@ -22,15 +22,16 @@
                     @include('layouts.mensagens')
                 </div>
                 <div class="col-md-12">
-                    @if(empty($emissora->id))
+                    @if(empty($programa->id))
                         {!! Form::open(['id' => 'frm_user_create', 'url' => ['tv/emissoras/programas/adicionar']]) !!}
                     @else
                         {!! Form::open(['id' => 'frm_noticia_radio_editar', 'url' => ['tv/emissoras/programas/atualizar'], 'method' => 'post']) !!}
                     @endif
+                    <input type="hidden" name="id" value="{{ ($programa) ? $programa->id : '' }}">
                     <div class="row">
                         <div class="col-md-2">
                             <div class="form-group">
-                                <label>País <span class="text-danger">Obrigatório</span></label>
+                                <label>País</label>
                                 <select class="form-control select2" name="cd_pais" id="cd_pais">
                                     <option value="">Selecione um país</option>
                                     @foreach ($paises as $pais)
@@ -41,7 +42,7 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label>Estado <span class="text-danger">Obrigatório</span></label>
+                                <label>Estado</label>
                                 <select class="form-control select2" name="cd_estado" id="cd_estado">
                                     <option value="">Selecione um estado</option>
                                     @foreach ($estados as $estado)
@@ -52,7 +53,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Cidade <span class="text-danger">Obrigatório</span></label>
+                                <label>Cidade</label>
                                 <select class="form-control select2" name="cd_cidade" id="cidade" disabled="disabled">
                                     <option value="">Selecione uma cidade</option>
                                     @foreach ($cidades as $cidade)
@@ -66,10 +67,10 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>Emissora <span class="text-danger">Obrigatório</span></label>
-                                <select class="form-control" name="id_emissora" id="id_emissora">
+                                <select class="form-control" name="id_emissora" id="id_emissora" required>
                                     <option value="">Selecione uma emissora</option>
                                     @foreach ($emissoras as $emi)
-                                        <option value="{{ $estado->cd_estado }}" {{ ($programa and $programa->id_emissora == $emi->id) ? 'selected' : '' }}>{{ $emi->nome_emissora }}</option>
+                                        <option value="{{ $emi->id }}" {{ ($programa and $programa->id_emissora == $emi->id) ? 'selected' : '' }}>{{ $emi->nome_emissora }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -77,10 +78,10 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>Tipo de Programa <span class="text-danger">Obrigatório</span></label>
-                                <select class="form-control" name="tipo_programa" id="tipo_programa">
+                                <select class="form-control" name="tipo_programa" id="tipo_programa" required>
                                     <option value="">Selecione um tipo</option>
                                     @foreach ($tipos as $tipo)
-                                        <option value="{{ $estado->cd_estado }}" {{ ($programa and $programa->tipo_programa == $tipo->id) ? 'selected' : '' }}>{{ $tipo->nome }}</option>
+                                        <option value="{{ $tipo->id }}" {{ ($programa and $programa->tipo_programa == $tipo->id) ? 'selected' : '' }}>{{ $tipo->nome }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -88,13 +89,19 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Nome <span class="text-danger">Obrigatório</span></label>
-                                <input type="text" class="form-control" name="nome_emissora" id="nome_emissora" placeholder="Nome" value="{{ ($programa) ? $programa->nome_programa : old('nome_emissora') }}" required="required">
+                                <input type="text" class="form-control" name="nome_programa" id="nome_programa" placeholder="Nome" value="{{ ($programa) ? $programa->nome_programa : old('nome_programa') }}" required="required">
                             </div>
                         </div>
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>URL</label>
-                                <input type="text" class="form-control" name="url_stream" id="url_stream" placeholder="URL" value="{{ ($programa) ? $programa->url : old('url_stream') }}">
+                                <input type="text" class="form-control" name="url" id="url" placeholder="URL" value="{{ ($programa) ? $programa->url : old('url') }}">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>IP Local</label>
+                                <input type="text" class="form-control" name="ip_local" id="ip_local" placeholder="IP Local" value="{{ ($programa) ? $programa->ip_local : old('ip_local') }}">
                             </div>
                         </div>
                     </div>    

@@ -13,6 +13,7 @@
                 </div>
                 <div class="col-md-6">
                     <a href="{{ url('tv/videos') }}" class="btn btn-info pull-right" style="margin-right: 12px;"><i class="fa fa-tv"></i> Vídeos TV</a>
+                    <a href="{{ url('tv/emissoras') }}" class="btn btn-info pull-right" style="margin-right: 12px;"><i class="fa fa-tv"></i> Emissoras</a>
                     <a href="{{ url('tv/emissoras/programas/novo') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-plus"></i> Novo</a>
                 </div>
             </div>
@@ -26,6 +27,8 @@
                     <table id="bootstrap-table" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
+                                <th>Estado</th>
+                                <th>Cidade</th>
                                 <th>Emissora</th>
                                 <th>Nome</th>
                                 <th>Tipo</th>
@@ -35,6 +38,8 @@
                         </thead>
                         <tfoot>
                             <tr>
+                                <th>Estado</th>
+                                <th>Cidade</th>
                                 <th>Emissora</th>
                                 <th>Nome</th>
                                 <th>Tipo</th>
@@ -78,6 +83,8 @@
                     }
                 },
                 "columns": [
+                    { data: "estado" },
+                    { data: "cidade" },
                     { data: "emissora" },
                     { data: "nome" },
                     { data: "tipo" },

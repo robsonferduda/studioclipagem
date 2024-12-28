@@ -213,6 +213,9 @@ Route::get('tv/dashboard','NoticiaTvController@dashboard');
 Route::get('tv/emissoras','EmissoraTvController@index');
 Route::get('tv/emissoras/editar/{id}','EmissoraTvController@editar');
 Route::get('tv/emissoras/novo','EmissoraTvController@novo');
+Route::get('tv/emissoras/programas/{id}','EmissoraTvController@programas');
+Route::post('tv/emissoras/adicionar','EmissoraTvController@adicionar');
+Route::post('tv/emissoras/atualizar','EmissoraTvController@atualizar');
 
 Route::get('tv/emissoras/programas','ProgramaTvController@index');
 Route::get('tv/emissoras/programas/novo','ProgramaTvController@novo');

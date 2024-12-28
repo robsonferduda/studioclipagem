@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use DB;
 use Auth;
+use App\Utils;
 use Carbon\Carbon;
 use App\Noticia;
 use App\Models\NoticiaWeb;
@@ -59,6 +60,7 @@ class EmissoraTvController extends Controller
                 })    
                 ->addColumn('acoes', function ($fonte) {
                     return '<div class="text-center">
+                                <a title="Programas" href="../tv/emissoras/programas/'.$fonte->id.'" class="btn btn-warning btn-link btn-icon"><i class="fa fa-tv fa-2x"></i></a>
                                 <a title="Editar" href="../tv/emissoras/editar/'.$fonte->id.'" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
                                 <a title="Excluir" href="" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-times fa-2x"></i></a>
                             </div>';
@@ -83,5 +85,67 @@ class EmissoraTvController extends Controller
         $emissora = EmissoraWeb::find($id);
 
         return view('emissora-tv/form', compact('emissora'));
+    }
+
+    public function programas($id)
+    {
+        Session::put('filtro-emissora', $id);
+
+        return redirect('tv/emissoras/programas');
+    }
+
+    public function adicionar(Request $request)
+    {
+        try {
+            EmissoraWeb::create($request->all());
+            $retorno = array('flag' => true,
+                             'msg' => "Dados inseridos com sucesso");
+
+        } catch (\Illuminate\Database\QueryException $e) {
+
+            $retorno = array('flag' => false,
+                             'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
+
+        } catch (Exception $e) {
+            
+            $retorno = array('flag' => true,
+                             'msg' => "Ocorreu um erro ao inserir o registro");
+        }
+
+        if ($retorno['flag']) {
+            Flash::success($retorno['msg']);
+            return redirect('tv/emissoras')->withInput();
+        } else {
+            Flash::error($retorno['msg']);
+            return redirect('tv/emissoras/novo')->withInput();
+        }
+    }
+
+    public function atualizar(Request $request)
+    {
+        $emissora = EmissoraWeb::where('id', $request->id)->first();
+
+        try{
+                        
+            $emissora->update($request->all());
+            $retorno = array('flag' => true,
+                             'msg' => '<i class="fa fa-check"></i> Dados atualizados com sucesso');
+
+        } catch (\Illuminate\Database\QueryException $e) {
+
+            $retorno = array('flag' => false,
+                             'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
+        } catch (Exception $e) {
+            $retorno = array('flag' => true,
+                             'msg' => "Ocorreu um erro ao atualizar o registro");
+        }
+
+        if ($retorno['flag']) {
+            Flash::success($retorno['msg']);
+            return redirect('tv/emissoras')->withInput();
+        } else {
+            Flash::error($retorno['msg']);
+            return redirect('tv/emissoras/editar/'.$request->id)->withInput();
+        }
     }
 }
