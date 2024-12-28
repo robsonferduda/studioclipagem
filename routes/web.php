@@ -222,6 +222,7 @@ Route::get('tv/emissoras/programas/novo','ProgramaTvController@novo');
 Route::get('tv/emissoras/programas/editar/{id}','ProgramaTvController@editar');
 Route::get('tv/emissora/programas/{id}/horarios','ProgramaTvController@horarios');
 Route::post('tv/emissoras/horario/adicionar','ProgramaTvController@adicionarHorarios');
+Route::post('tv/emissora/horario/atualizar','ProgramaTvController@atualizarHorarios');
 Route::post('tv/emissoras/programas/adicionar','ProgramaTvController@adicionar');
 Route::post('tv/emissoras/programas/atualizar','ProgramaTvController@atualizar');
 

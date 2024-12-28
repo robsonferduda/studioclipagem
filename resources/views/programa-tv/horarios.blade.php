@@ -12,7 +12,7 @@
                     </h4>
                 </div>
                 <div class="col-md-4">
-                    
+                    <a href="{{ url('tv/emissoras/programas') }}" class="btn btn-info pull-right" style="margin-right: 12px;"><i class="fa fa-tv"></i> Programas</a>
                 </div>
             </div>
         </div>
@@ -121,7 +121,7 @@
                 var box = ".box-horario-"+horario;
 
                 $.ajax({
-                        url: host+'/radio/emissora/horario/atualizar',
+                        url: host+'/tv/emissora/horario/atualizar',
                         type: 'POST',
                         data: { "_token": token,
                                 "horario": horario,
