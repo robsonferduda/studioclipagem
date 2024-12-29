@@ -6,13 +6,13 @@
             <div class="row">
                 <div class="col-md-8">
                     <h4 class="card-title">
-                        <i class="fa fa-tv ml-3"></i> Televisão
+                        <i class="fa fa-tv ml-3"></i> TV
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Notícias
                     </h4>
                 </div>
                 <div class="col-md-4">
+                    <a href="{{ url('tv/dashboard') }}" class="btn btn-warning pull-right mr-3"><i class="nc-icon nc-chart-pie-36"></i> Dashboard</a>
                     <a href="{{ url('tv/noticias/cadastrar') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-plus"></i> Cadastrar Notícia</a>
-                    <a href="{{ url('tv/estatisticas') }}" class="btn btn-warning pull-right mr-3"><i class="nc-icon nc-chart-pie-36"></i> Estatísticas</a>
                 </div>
             </div>
         </div>

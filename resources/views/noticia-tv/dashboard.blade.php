@@ -11,8 +11,7 @@
                     </h4>
                 </div>
                 <div class="col-md-4">
-                    <a href="{{ url('tv/noticias/cadastrar') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-plus"></i> Cadastrar Notícia</a>
-                    <a href="{{ url('tv/noticias') }}" class="btn btn-info pull-right mr-3"><i class="fa fa-table"></i> Notícias</a>
+                    <a href="{{ url('tv/noticias') }}" class="btn btn-info pull-right mr-3"><i class="fa fa-tv"></i> Notícias</a>
                 </div>
             </div>
         </div>
@@ -24,9 +23,10 @@
                 <div class="col-lg-9 col-md-6 col-sm-6">
                     <div class="card car-chart">
                         <div class="card-header">
-                          <p class="">Total de notícias diárias cadastradas no período de {{ \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y') }} a {{ \Carbon\Carbon::parse($dt_final)->format('d/m/Y') }}</p>
+                          <p class="">Total de vídeos coletados no período de {{ \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y') }} a {{ \Carbon\Carbon::parse($dt_final)->format('d/m/Y') }}</p>
                         </div>
                         <div class="card-body">
+                            <div class="erro-grafico"></div>
                             <canvas id="chartjs-0" class="chartjs">
                         </div>
                     </div>
@@ -38,14 +38,42 @@
                                 <div class="row">
                                     <div class="col-5 col-md-4">
                                         <div class="icon-big text-center icon-warning">
-                                        <i class="fa fa-volume-up text-warning"></i>
+                                        <i class="fa fa-tv text-warning"></i>
                                         </div>
                                     </div>
                                     <div class="col-7 col-md-8">
                                         <div class="numbers">
                                         <p class="card-category">Emissoras</p>
                                         <p class="card-title"></p>
-                                        <p></p>
+                                        <p><a href="{{ url('tv/emissoras') }}">{{ $total_emissoras }}</a></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer ">
+                                <hr>
+                                <div class="stats">
+                                    <i class="fa fa-calendar"></i>
+                                    Última Atualização em 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="card card-stats">
+                            <div class="card-body ">
+                                <div class="row">
+                                    <div class="col-5 col-md-4">
+                                        <div class="icon-big text-center icon-danger">
+                                        <i class="fa fa-tags text-danger"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-7 col-md-8">
+                                        <div class="numbers">
+                                        <p class="card-category">Programas</p>
+                                        <p class="card-title"></p>
+                                        <p><a href="{{ url('tv/emissoras/programas') }}">{{ $total_programas }}</a></p>
                                         </div>
                                     </div>
                                 </div>
@@ -71,9 +99,37 @@
                                     </div>
                                     <div class="col-7 col-md-8">
                                         <div class="numbers">
+                                        <p class="card-category">Vídeos de Hoje</p>
+                                        <p class="card-title"></p>
+                                        <p><a href="{{ url('tv/videos') }}">{{ $total_videos_tv }}</a></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer ">
+                                <hr>
+                                <div class="stats">
+                                    <i class="fa fa-calendar"></i>
+                                    Última Atualização em
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="card card-stats">
+                            <div class="card-body ">
+                                <div class="row">
+                                    <div class="col-5 col-md-4">
+                                        <div class="icon-big text-center icon-success">
+                                        <i class="nc-icon nc-chart-bar-32 text-success"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-7 col-md-8">
+                                        <div class="numbers">
                                         <p class="card-category">Notícias de Hoje</p>
                                         <p class="card-title"></p>
-                                        <p></p>
+                                        <p><a href="{{ url('tv/noticias') }}">{{ $total_noticias_tv }}</a></p>
                                         </div>
                                     </div>
                                 </div>
@@ -102,14 +158,14 @@
             var dados = null;
 
             $.ajax({
-                url: host+'/tv/noticias/estatisticas',
+                url: host+'/tv/videos/estatisticas',
                 type: 'GET',
                 success: function(response) {
                     dados = response;
                     initDashboardPageCharts();
                 },
                 error: function(){
-                    alert("Erro");
+                    $(".erro-grafico").html('<span class="text-danger">Erro ao carregar estatísticas</span>');
                 }
             }); 
 
@@ -120,7 +176,7 @@
                     "data": {
                         "labels": dados.label,
                         "datasets": [{
-                            "label": "Notícias por dia",
+                            "label": "Vídeos coletados por dia",
                             "data": dados.totais,
                             "fill": true,
                             "borderColor": "rgb(75, 192, 192)",
@@ -136,14 +192,6 @@
                 });
             }
             
-            $.notify({
-                icon: 'fa fa-bell',
-                message: "<b>Mensagem do Sistema</b><br/> Os dados de TV foram atualizados com sucesso."
-            },{
-                type: 'info',
-                timer: 1000
-            });
-
         });
     </script>
 @endsection

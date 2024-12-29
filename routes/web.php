@@ -110,8 +110,6 @@ ROute::post('fonte-web/inconsistencias/editar','FonteWebController@editarInconsi
 Route::match(array('GET', 'POST'),'fonte-web/listar','FonteWebController@index');
 Route::resource('fonte-web','FonteWebController');
 
-
-
 Route::get('jornal-impresso/web/download/{id}','JornalImpressoController@getPdf');
 Route::get('impresso','JornalImpressoController@dashboard');
 Route::get('impresso/limpar','FonteImpressoController@limpar');
@@ -232,6 +230,7 @@ Route::match(array('GET', 'POST'),'tv/noticias','NoticiaTvController@index');
 Route::get('tv/decupagem','NoticiaTvController@decupagem');
 
 Route::get('tv/decupar','NoticiaTvController@decupar');
+Route::get('tv/videos/estatisticas','VideosController@getEstatisticas');
 Route::get('tv/noticias/estatisticas','NoticiaTvController@getEstatisticas');
 Route::get('tv/noticias/cadastrar','NoticiaTvController@cadastrar');
 Route::get('noticia-tv/decupagem/listar','NoticiaTvController@listarArquivos');

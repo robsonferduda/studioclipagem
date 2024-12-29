@@ -49,9 +49,21 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Fonte</label>
+                                        <label>Cliente</label>
                                         <select class="form-control select2" name="regra" id="regra">
-                                            <option value="">Selecione uma fonte</option>
+                                            <option value="">Selecione um cliente</option>
+                                            @foreach ($clientes as $cliente)
+                                                <option value="{{ $cliente->id }}">{{ $cliente->nome }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12">
+                                    <label>Fontes</label>
+                                    <div class="form-group">
+                                        <select multiple="multiple" size="10" name="fontes[]" class="demo1 form-control">
                                             @foreach ($fontes as $fonte)
                                                 <option value="{{ $fonte->id }}">{{ $fonte->nome }}</option>
                                             @endforeach
@@ -105,7 +117,7 @@
                                         <div>
                                             <a class="btn btn-success btn-sm" href="{{ asset('jornal-impresso/noticia/editar/'.$noticia->id) }}"><i class="fa fa-edit"> </i> Editar Notícia</a>
                                             <a class="btn btn-danger btn-sm" download target="_blank" href="{{ asset('jornal-impresso/processados/'.($noticia->fila) ? $noticia->fila : '') }}" role="button"><i class="fa fa-file-pdf-o"> </i> Documento Original</a>
-                                            <a class="btn btn-primary btn-sm" download target="_blank" href="{{ asset('jornal-impresso/'.$noticia->fonte->codigo.'/'.\Carbon\Carbon::parse($noticia->dt_clipagem)->format('Ymd').'/img/pagina_'.$noticia->nu_pagina_atual.'.png') }}" role="button"><i class="fa fa-file-image-o"> </i> Página Atual</a>
+                                            <a class="btn btn-primary btn-sm" download target="_blank" href="{{ asset('jornal-impresso/'.$noticia->fonte.'/'.\Carbon\Carbon::parse($noticia->dt_clipagem)->format('Ymd').'/img/pagina_'.$noticia->nu_pagina_atual.'.png') }}" role="button"><i class="fa fa-file-image-o"> </i> Página Atual</a>
                                             <a class="btn btn-success btn-sm" href="{{ asset('jornal-impresso/noticia/'.$noticia->id) }}" role="button"><i class="fa fa-eye"> </i> Detalhes</a>
                                         </div>
                                     </div>
@@ -118,4 +130,19 @@
         </div>
     </div>
 </div>
+@endsection
+@section('script')
+    <script>
+        $(document).ready(function(){
+
+            var host =  $('meta[name="base-url"]').attr('content');
+
+            var demo2 = $('.demo1').bootstrapDualListbox({
+                nonSelectedListLabel: 'Disponíveis',
+                selectedListLabel: 'Selecionadas',
+               
+            });
+           
+        })
+    </script>
 @endsection

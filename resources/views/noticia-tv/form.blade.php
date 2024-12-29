@@ -24,13 +24,13 @@
             <div class="card-header">
                 <div class="row">
                     <div class="col-md-6">
-                        <h4 class="card-title ml-2"><i class="fa fa-tv"></i> Televisão
+                        <h4 class="card-title ml-2"><i class="fa fa-tv"></i> TV
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Notícias
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> {!! empty($dados->id) ? 'Cadastrar' : 'Atualizar' !!}</h4>
                     </div>
                     <div class="col-md-6">
-                        <a href="{{ url('tv/noticias') }}" class="btn btn-info pull-right mr-3"><i class="fa fa-table"></i> Notícias</a>
-                        <a href="{{ url('tv/estatisticas') }}" class="btn btn-warning pull-right mr-3"><i class="nc-icon nc-chart-pie-36"></i> Estatísticas</a>
+                        <a href="{{ url('tv/dashboard') }}" class="btn btn-warning pull-right mr-3"><i class="nc-icon nc-chart-pie-36"></i> Dashboard</a>
+                        <a href="{{ url('tv/noticias') }}" class="btn btn-info pull-right mr-3"><i class="fa fa-tv"></i> Notícias</a>
                     </div>
                 </div>
             </div>

@@ -10,10 +10,11 @@ use Carbon\Carbon;
 use App\Models\Decupagem;
 use App\Models\Area;
 use App\Models\Cidade;
-use App\Models\Emissora;
+use App\Models\EmissoraWeb;
 use App\Models\Estado;
 use App\Models\NoticiaTv;
 use App\Models\VideoEmissoraWeb;
+use App\Models\ProgramaEmissoraWeb;
 use App\Models\NoticiaCliente;
 use App\Models\Tag;
 use PhpOffice\PhpWord\IOFactory;
@@ -107,13 +108,15 @@ class NoticiaTvController extends Controller
     {
         Session::put('sub-menu','tv-dashboard');
 
-        $carbon = new Carbon();
-        $dt_inicial = (false) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d "."00:00:00");
-        $dt_final = (false) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d "."23:59:59");
-        $termo = "";
-        $noticias = null;
+        $dt_inicial = Carbon::now()->subDays(7);
+        $dt_final = date('Y-m-d');
 
-        return view('noticia-tv/dashboard', compact('noticias','dt_inicial','dt_final','termo'));
+        $total_emissoras = EmissoraWeb::count();
+        $total_programas = ProgramaEmissoraWeb::count();
+        $total_videos_tv = count(VideoEmissoraWeb::whereBetween('created_at', [$dt_final." 00:00:00", $dt_final." 23:59:59"])->get());
+        $total_noticias_tv = count(NoticiaTv::whereBetween('dt_noticia', [$dt_final." 00:00:00", $dt_final." 23:59:59"])->get());
+
+        return view('noticia-tv/dashboard', compact('dt_inicial','dt_final','total_emissoras','total_programas','total_videos_tv','total_noticias_tv'));
     }
 
     public function cadastrar()

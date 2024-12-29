@@ -474,14 +474,7 @@
   <script src="{{ asset('js/jquery.validate.min.js') }}"></script>
   <script src="{{ asset('js/bootstrap-multiselect.js') }}"></script>
   <script src="{{ asset('js/jquery.bootstrap-duallistbox.min.js') }}"></script>
-
-
-  
   <script src="{{ asset('js/select2.js') }}"></script>
-
-
-
-  
   <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
   <script src="{{ asset('js/dropzone.js') }}"></script>
   <script src="{{ asset('js/cropper.js') }}"></script>

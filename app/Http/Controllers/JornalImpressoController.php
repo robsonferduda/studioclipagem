@@ -46,6 +46,7 @@ class JornalImpressoController extends Controller
 
         $carbon = new Carbon();
         $fontes = FonteImpressa::orderBy('nome')->get();
+        $clientes = Cliente::all();
         $busca_fonte = "";
         $termo = "";
 
@@ -81,7 +82,7 @@ class JornalImpressoController extends Controller
 
         }
 
-        return view('jornal-impresso/index',compact('fontes','dados','dt_inicial','dt_final','termo','busca_fonte'));
+        return view('jornal-impresso/index',compact('clientes','fontes','dados','dt_inicial','dt_final','termo','busca_fonte'));
     }
 
     public function dashboard(Request $request)
