@@ -177,17 +177,7 @@ class NoticiaTvController extends Controller
            
             if($noticia = NoticiaTv::create($dados))
             {
-                if($request->cd_cliente){
-
-                    $inserir = array('tipo_id' => 4,
-                                        'noticia_id' => $noticia->id,
-                                        'cliente_id' => $request->cd_cliente,
-                                        'area' => $request->cd_area,
-                                        'sentimento' => $request->cd_sentimento);
-                            
-                    NoticiaCliente::create($inserir);
-                }
-
+               
                 $tags = collect($request->tags)->mapWithKeys(function($tag){
                     return [$tag => ['tipo_id' => 4]];
                 })->toArray();
@@ -195,17 +185,19 @@ class NoticiaTvController extends Controller
                 $noticia->tags()->sync($tags);
 
                 $clientes = json_decode($request->clientes[0]);
+
                 if($clientes){
 
                     for ($i=0; $i < count($clientes); $i++) { 
                         
                         $dados = array('tipo_id' => 4,
                                 'noticia_id' => $noticia->id,
-                                'cliente_id' => $clientes[$i]->id_cliente,
-                                'area' => $clientes[$i]->id_area,
-                                'sentimento' => $clientes[$i]->id_sentimento);
-                    
-                        NoticiaCliente::create($dados);
+                                'cliente_id' => (int) $clientes[$i]->id_cliente,
+                                'area' => (int) $clientes[$i]->id_area,
+                                'sentimento' => (int) $clientes[$i]->id_sentimento);
+
+                        $noticia_cliente = NoticiaCliente::create($dados);
+
                     }
                 }
             }
@@ -214,8 +206,6 @@ class NoticiaTvController extends Controller
                              'msg' => '<i class="fa fa-check"></i> Dados inseridos com sucesso');
 
         } catch (\Illuminate\Database\QueryException $e) {
-
-            dd($e);
 
             $retorno = array('flag' => false,
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
@@ -268,7 +258,7 @@ class NoticiaTvController extends Controller
                 throw new \Exception('Notícia não encontrada');
             }
 
-            $emissora = Emissora::find($request->emissora);
+            $emissora = EmissoraWeb::find($request->emissora);
             
             $dados = array('dt_noticia' => ($request->data) ? $carbon->createFromFormat('d/m/Y', $request->data)->format('Y-m-d') : date("Y-m-d"),
                             'duracao' => $request->duracao,

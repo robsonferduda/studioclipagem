@@ -279,3 +279,4 @@ div .box-horario:not(:last-child) {
     border-bottom: 1px solid #dddddd;
     margin-bottom: 5px;
 }
+.add-area:hover{ cursor: pointer;}

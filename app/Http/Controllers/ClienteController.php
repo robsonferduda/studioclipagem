@@ -285,6 +285,25 @@ class ClienteController extends Controller
         }
     }
 
+    public function adicionarArea(Request $request)
+    {
+        $area = Area::where('descricao', 'ILIKE', '%'.trim($request->ds_area).'%')->first();
+
+        if(!$area){
+            $area = Area::create(['descricao' => $request->ds_area]);
+        }
+
+        $cliente_area = ClienteArea::where('cliente_id', $request->id_cliente)->where('area_id', $area->id)->first();
+
+        if(!$cliente_area){
+            $created = ClienteArea::create([
+                'cliente_id' => $request->id_cliente,
+                'area_id' => $area->id,
+                'ativo' => true
+            ]);
+        }
+    }
+
     private function gerenciaClienteArea(Request $request, Cliente $cliente): void
     {
         $id = [];

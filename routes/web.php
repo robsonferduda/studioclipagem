@@ -255,6 +255,8 @@ Route::get('client/emails/{cliente}','ClientController@emails');
 Route::post('cliente/selecionar','ClientController@selecionar');
 Route::get('cliente/paginas-associadas/{client}','ClientController@connectedtPages');
 
+Route::post('cliente/area/adicionar','ClienteController@adicionarArea');
+
 Route::get('configuracoes','ConfiguracoesController@index');
 Route::post('configuracoes/flag-regras/atualizar','ConfiguracoesController@atualizarFlag');
 Route::post('configuracoes/cliente/selecionar','ConfiguracoesController@selecionarCliente');

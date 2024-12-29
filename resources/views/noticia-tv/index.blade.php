@@ -94,7 +94,7 @@
                             <div class="row">
                                 <div class="col-lg-12 col-md-12 col-sm-12">
                                     <span class="dt_noticia_box">{!! !empty($noticia->dt_noticia) ? date('d/m/Y', strtotime($noticia->dt_noticia)) : '' !!}</span>
-                                    <h6>{!! ($noticia->cliente and $noticia->cliente->pessoa) ? $noticia->cliente->pessoa->nome : 'Nenhum cliente vinculado' !!}</h6>
+                                    <h6>{!! ($noticia->cliente) ? $noticia->cliente->nome : 'Nenhum cliente vinculado' !!}</h6>
                                     <p>{!! $noticia->emissora->nome_emissora ?? '' !!} {{ ($noticia->horario) ? ' - '.$noticia->horario : "" }}</p>
                                 </div>
                                 <div class="col-lg-12 col-md-12 col-sm-12">  

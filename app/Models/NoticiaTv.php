@@ -33,7 +33,7 @@ class NoticiaTv extends Model
 
     public function cliente()
     {
-        return $this->hasOne(Cliente::class, 'id', 'cliente_id');
+        return $this->hasOne(NoticiaCliente::class, 'id', 'cliente_id');
     }
 
     public function area()

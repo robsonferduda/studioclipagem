@@ -47,7 +47,7 @@
                     <input type="hidden" name="clientes[]" id="clientes">
                     <div class="col-md-5">
                         <div class="form-group">
-                            <label>Cliente <span class="text-info add-clientes" data-toggle="modal" data-target="#modalCliente">Adicionar Clientes</span></label>
+                            <label>Cliente</label>
                             <input hidden name="cliente_id" id="cliente_id" value="{{ ($cliente) ? $cliente->id : '' }}">
                             <select class="form-control cliente select2" name="cd_cliente" id="cd_cliente">
                                 <option value="">Selecione um cliente</option>
@@ -56,7 +56,7 @@
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label>Área do Cliente</label>
+                            <label>Área do Cliente <span class="text-info add-area" data-toggle="modal" data-target="#modalArea">Adicionar Área</span></label>
                             <input hidden name="area_id" id="area_id" value="{{ ($cliente) ? $cliente->area : '' }}">
                             <select class="form-control area select2" name="cd_area" id="cd_area" disabled>
                                 <option value="">Selecione uma área</option>
@@ -165,9 +165,7 @@
                             <label>Link</label>
                             <input type="text" class="form-control" name="link" id="link" placeholder="Link" value="{{ $dados->link }}">
                         </div>
-                    </div>
-                    
-                    
+                    </div>                 
                 </div>
             </div>
             <div class="card-footer text-center mb-2">
@@ -178,6 +176,36 @@
         </div>
     {!! Form::close() !!}
 </div>
+
+<div class="modal fade" id="modalArea" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-tags"></i> Adicionar Área</h6>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Área</label>
+                        <input type="text" class="form-control" name="ds_area" id="ds_area" placeholder="Descrição">
+                    </div>
+                </div>             
+            <div class="col-md-12 center">
+                <div class="form-group mt-3">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
+                    <button type="button" class="btn btn-success btn-add-area"><i class="fa fa-plus"></i> Adicionar</button>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="modal fade" id="modalCliente" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -330,7 +358,6 @@
 
                 buscarProgramas(emissora);
 
-
                 return $('#programa').prop('disabled', false);
             });
 
@@ -380,8 +407,7 @@
 
             if(cliente_id)
                 buscarAreas(cliente_id);
-        });
-        
+        });        
 
         $(document).on("click", ".selecionar-arquivo", function() {
             $('#arquivo').trigger('click');
@@ -417,6 +443,46 @@
                     icon: "warning",
                     confirmButtonText: '<i class="fa fa-check"></i> Ok',
                 });
+            }
+        });
+
+        $(document).on("click", ".btn-add-area", function() {
+
+            var ds_area = $("#ds_area").val();
+            var id_cliente = $("#cd_cliente").val();
+
+            if(!id_cliente){
+
+                Swal.fire({
+                    text: 'Obrigatório informar um cliente.',
+                    type: "warning",
+                    icon: "warning",
+                    confirmButtonText: '<i class="fa fa-check"></i> Ok',
+                });
+
+            }else{
+
+                $.ajax({url: host+'/cliente/area/adicionar',
+                    type: 'POST',
+                    data: {"_token": $('meta[name="csrf-token"]').attr('content'),
+                            "ds_area": ds_area,
+                            "id_cliente": id_cliente
+                    },
+                    beforeSend: function() {
+            
+                    },
+                    success: function(data) {
+                        $("#cd_cliente").trigger('change');                           
+                    },
+                    error: function(){
+                        
+                    },
+                    complete: function(){
+                        $('#modalArea').modal('hide');
+                        $("#ds_area").val("");
+                    }
+                });
+
             }
         });
 
