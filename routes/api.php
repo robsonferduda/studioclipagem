@@ -23,6 +23,7 @@ Route::get('cliente/buscarClientes', 'ClienteController@buscarClientes');
 Route::get('cliente/getAreasCliente', 'ClienteController@getAreasCliente');
 
 Route::get('emissora/buscarEmissoras', 'EmissoraController@buscarEmissoras');
+Route::get('tv/emissora/buscar', 'EmissoraTvController@buscarEmissoras');
 
 Route::get('estado/{id_estado}/cidades', 'EstadoController@getCidades');
 

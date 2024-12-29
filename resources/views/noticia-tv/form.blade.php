@@ -45,16 +45,16 @@
                         <h6>Dados da Notícia</h6>
                     </div>
                     <input type="hidden" name="clientes[]" id="clientes">
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                         <div class="form-group">
                             <label>Cliente <span class="text-info add-clientes" data-toggle="modal" data-target="#modalCliente">Adicionar Clientes</span></label>
-                            <input hidden name="cliente_id" id="cliente_id" value="{{ ($cliente) ? $cliente->cliente_id : '' }}">
+                            <input hidden name="cliente_id" id="cliente_id" value="{{ ($cliente) ? $cliente->id : '' }}">
                             <select class="form-control cliente select2" name="cd_cliente" id="cd_cliente">
                                 <option value="">Selecione um cliente</option>
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label>Área do Cliente</label>
                             <input hidden name="area_id" id="area_id" value="{{ ($cliente) ? $cliente->area : '' }}">
@@ -63,7 +63,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label>Sentimento </label>
                             <select class="form-control" name="cd_sentimento" id="cd_sentimento">
@@ -72,8 +72,12 @@
                                 <option value="0" {{ ($cliente and $cliente->sentimento == 0) ? 'selected' : '' }}>Neutro</option>
                                 <option value="-1" {{ ($cliente and $cliente->sentimento == 11) ? 'selected' : '' }}>Negativo</option>
                             </select>
-                        </div>
+                        </div>                        
                     </div>
+                    <div class="col-md-1">
+                        <button type="button" class="btn btn-success btn-add-cliente mt-4 w-100"><i class="fa fa-plus"></i></button>
+                    </div>
+                    
                     <div class="col-md-12">
                         <ul class="list-unstyled metadados"></ul>
                     </div>
@@ -288,7 +292,7 @@
             });
 
             $.ajax({
-                url: host+'/api/emissora/buscarEmissoras',
+                url: host+'/api/tv/emissora/buscar',
                 type: 'GET',
                 beforeSend: function() {
                     $('.content').loader('show');
@@ -385,24 +389,23 @@
 
         $(document).on("click", ".btn-add-cliente", function(clientes) {
 
-            
-            var id_cliente = $("#cliente").val();
-            if(id_cliente){
-                var cliente = $("#cliente option:selected").text();
+            var id_cliente = $("#cd_cliente").val();
 
-                var id_area = $("#area").val();
+            if(id_cliente){
+                
+                var cliente = $("#cd_cliente option:selected").text();
+
+                var id_area = $("#cd_area").val();
                 if(id_area)
-                    var area = $("#area option:selected").text();
+                    var area = $("#cd_area option:selected").text();
                 else
                     var area = 'Nenhuma área selecionada';
 
-                var id_sentimento = $("#sentimento").val();
+                var id_sentimento = $("#cd_sentimento").val();
                 if(id_sentimento)
-                    var sentimento = $("#sentimento option:selected").text();
+                    var sentimento = $("#cd_sentimento option:selected").text();
                 else
                     var sentimento = "Nenhum sentimento selecionado";
-
-                $("#modalCliente").modal('hide');
                 
                 var dados = { id_cliente: id_cliente, cliente: cliente, id_area: id_area, area: area, id_sentimento: id_sentimento, sentimento: sentimento };
                 inicializaClientes(dados);

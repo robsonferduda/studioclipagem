@@ -243,18 +243,17 @@ class ClienteController extends Controller
 
     public function buscarClientes(Request $request)
     {
-        $clientes = Cliente::select('clientes.id', 'pessoas.nome as text');
-        $clientes->join('pessoas', 'pessoas.id', '=', 'clientes.pessoa_id');
+        $clientes = Cliente::select('clientes.id', 'nome as text');
 
-        $clientes->where('ativo', true);
+        $clientes->where('fl_ativo', true);
+
         if(!empty($request->query('q'))) {
             $replace = preg_replace('!\s+!', ' ', $request->query('q'));
             $busca = str_replace(' ', '%', $replace);
-            $clientes->whereRaw('pessoas.nome ILIKE ?', ['%' . strtolower($busca) . '%']);
+            $clientes->whereRaw('nome ILIKE ?', ['%' . strtolower($busca) . '%']);
         }
 
-
-        $result = $clientes->orderBy('pessoas.nome', 'asc')->get();
+        $result = $clientes->orderBy('nome', 'asc')->get();
         return response()->json($result);
     }
 

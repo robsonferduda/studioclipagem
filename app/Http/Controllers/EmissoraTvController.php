@@ -153,4 +153,12 @@ class EmissoraTvController extends Controller
             return redirect('tv/emissoras/editar/'.$request->id)->withInput();
         }
     }
+
+    public function buscarEmissoras(Request $request)
+    {
+        $emissoras = EmissoraWeb::select('id', 'nome_emissora as text');
+        $result = $emissoras->orderBy('nome_emissora', 'asc')->get();
+
+        return response()->json($result);
+    }
 }

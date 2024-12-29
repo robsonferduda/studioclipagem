@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use App\Models\Decupagem;
 use App\Models\Area;
 use App\Models\Cidade;
+use App\Models\Cliente;
 use App\Models\EmissoraWeb;
 use App\Models\Estado;
 use App\Models\NoticiaTv;
@@ -48,7 +49,9 @@ class NoticiaTvController extends Controller
         $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d "."00:00:00");
         $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d "."23:59:59");
         $termo = $request->termo;
-        $noticias = null;
+        $noticias = array();
+        $clientes = Cliente::all();
+        $emissoras = EmissoraWeb::orderBy('nome_emissora')->get();
 
         if($request->isMethod('GET')){
 
@@ -101,7 +104,7 @@ class NoticiaTvController extends Controller
 
         }*/
 
-        return view('noticia-tv/index', compact('noticias','dt_inicial','dt_final','termo'));
+        return view('noticia-tv/index', compact('noticias','dt_inicial','dt_final','termo','clientes','emissoras'));
     }
 
     public function dashboard()
