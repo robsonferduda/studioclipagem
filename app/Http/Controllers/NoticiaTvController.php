@@ -161,7 +161,7 @@ class NoticiaTvController extends Controller
         $carbon = new Carbon();
         try {
            
-            $emissora = Emissora::find($request->emissora);
+            $emissora = EmissoraWeb::find($request->emissora);
            
             $dados = array('dt_noticia' => ($request->data) ? $carbon->createFromFormat('d/m/Y', $request->data)->format('Y-m-d') : date("Y-m-d"),
                            'duracao' => $request->duracao,
@@ -170,8 +170,8 @@ class NoticiaTvController extends Controller
                            'programa_id' => $request->programa,
                            'arquivo' => $request->arquivo,
                            'sinopse' => $request->sinopse,
-                           'cd_estado' => $emissora->cd_estado,
-                           'cd_cidade' => $emissora->cd_cidade,
+                           'cd_estado' => $request->cd_estado,
+                           'cd_cidade' => $request->cd_cidade,
                            'link' => $request->link
                         ); 
            
@@ -214,6 +214,8 @@ class NoticiaTvController extends Controller
                              'msg' => '<i class="fa fa-check"></i> Dados inseridos com sucesso');
 
         } catch (\Illuminate\Database\QueryException $e) {
+
+            dd($e);
 
             $retorno = array('flag' => false,
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
