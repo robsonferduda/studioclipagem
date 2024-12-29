@@ -62,8 +62,8 @@ class NoticiaTvController extends Controller
             dd($arquivo);
             */
 
-            $tv = VideoEmissoraWeb::query();
-            $noticias = $tv->whereBetween('horario_start_gravacao', [$dt_inicial, $dt_final])->orderBy('id_emissora_web')->paginate(10);
+            $tv = NoticiaTv::query();
+            $noticias = $tv->whereBetween('dt_noticia', [$dt_inicial, $dt_final])->paginate(10);
         }
 
         /*
