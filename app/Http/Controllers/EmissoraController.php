@@ -192,7 +192,7 @@ class EmissoraController extends Controller
 
         Flash::success('<i class="fa fa-check"></i> Gravação da emissora atualizada com sucesso');
 
-        return redirect('emissoras/radio')->withInput();
+        return redirect()->back()->withInput();
     }
 
     public function atualizaTranscricao($id)
