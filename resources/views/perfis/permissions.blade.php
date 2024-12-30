@@ -23,20 +23,27 @@
                 <span class="mb-5"><i class="fa fa-check"></i> Marque as permissões que deseja adicionar e desmarque as que deseja remover</span>
                 <div class="mt-3" style="font-size: 16px;">
                     {!! Form::open(['id' => 'basic-form', 'url' => ['role/permission', $role->id]]) !!}
-                                                        
-                        @foreach($permissions as $key => $p)               
-                            <label class="fancy-checkbox parsley-success">
-                                <input type="checkbox" name="permission[]" value="{{ $p->id }}" {{ (in_array($p->id, old('permission', [])) || isset($role) && $role->permissions->contains($p->id)) ? 'checked' : '' }}>
-                                <span style="color: #484848;"> {{ $p->display_name }} ({{ $p->name }})</span>
-                            </label><br/>          
-                        @endforeach
+                        <div class="row">                          
+                            @foreach($permissions as $key => $p) 
+                                <div class="col-md-12">
+                                    <div class="form-check mt-1">
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                                <input type="checkbox" name="permission[]" value="{{ $p->id }}" {{ (in_array($p->id, old('permission', [])) || isset($role) && $role->permissions->contains($p->id)) ? 'checked' : '' }}>
+                                                {{ $p->display_name }} ({{ $p->name }})
+                                                <span class="form-check-sign"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
 
                         <div class="mt-2">
                             <hr/>
                             <button type="submit" class="btn btn-success" title="Salvar"><i class="fa fa-save"></i> Salvar</button>
                             <a href="{{ url('perfis') }}" class="btn btn-danger" title="Cancelar"><i class="fa fa-times"></i> Cancelar</a>
-                        </div>
-                                    
+                        </div>                                    
                     {!! Form::close() !!}
                 </div>
             </div>                     
