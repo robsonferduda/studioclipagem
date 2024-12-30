@@ -27,13 +27,13 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label>Nome <span class="text-danger">Obrigatório</span></label>
-                            <input type="text" class="form-control" name="name" id="name" placeholder="Nome" value="{{ old('name') }}">
+                            <input type="text" class="form-control" name="display_name" id="display_name" placeholder="Nome" value="{{ old('name') }}">
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label>Chave <span class="text-danger">Obrigatório</span></label>
-                            <input type="text" class="form-control" name="display_name" id="display_name" placeholder="Chave" value="{{ old('display_name') }}">
+                            <input type="text" class="form-control" name="name" id="name" placeholder="Chave" value="{{ old('display_name') }}">
                         </div>
                     </div>
                     <div class="col-md-4">
