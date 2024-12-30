@@ -27,7 +27,7 @@ class RoleController extends Controller
     public function create()
     {
         $permissions = Permission::get()->pluck('name', 'name');
-        return view('roles/create', compact('permissions'));
+        return view('perfis/cadastro', compact('permissions'));
     }
 
     public function store(Request $request)
@@ -47,17 +47,17 @@ class RoleController extends Controller
 
         if ($retorno['flag']) {
             Flash::success($retorno['msg']);
-            return redirect('roles')->withInput();
+            return redirect('perfis')->withInput();
         } else {
             Flash::error($retorno['msg']);
-            return redirect('roles/create')->withInput();
+            return redirect('perfil/novo')->withInput();
         }
     }
 
     public function edit($id)
     {
         $role = Role::findOrFail($id);
-        return view('roles/edit', compact('role'));
+        return view('perfis/editar', compact('role'));
     }
 
     public function update(Request $request, $id)
@@ -86,10 +86,10 @@ class RoleController extends Controller
 
         if ($retorno['flag']) {
             Flash::success($retorno['msg']);
-            return redirect('roles')->withInput();
+            return redirect('perfis')->withInput();
         } else {
             Flash::error($retorno['msg']);
-            return redirect()->route('role.edit', $role->id)->withInput();
+            return redirect('perfis/'.$role->id.'/edit')->withInput();
         }
     }
 

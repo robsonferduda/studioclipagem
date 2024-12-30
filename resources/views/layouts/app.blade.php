@@ -49,14 +49,14 @@
                     <p>Dashboard</p>
                     </a>
                 </li>
-                @role('administradores')
+                @permission('menu_clientes')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'cliente') ? 'active' : '' }}">
                     <a href="{{ url('cliente') }}">
                     <i class="nc-icon nc-briefcase-24"></i>
                     <p>Clientes</p>
                     </a>
                   </li>
-                @endrole
+                @endpermission
                 @role('administradores')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'areas') ? 'active' : '' }}">
                     <a href="{{ url('areas') }}">

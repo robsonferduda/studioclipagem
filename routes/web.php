@@ -18,6 +18,7 @@ Auth::routes();
 Route::resource('tag', 'TagController');
 Route::resource('notification', 'NotificacaoController');
 Route::resource('usuario', 'UserController');
+Route::resource('perfis','RoleController');
 Route::resource('email', 'EmailController');
 Route::resource('emissora', 'EmissoraController');
 Route::resource('programa', 'ProgramaController');
@@ -268,7 +269,9 @@ Route::get('email/situacao/{id}','EmailController@atualizarSituacao');
 Route::get('permissoes','PermissaoController@index');
 Route::get('permissoes/{id}/users','PermissaoController@users');
 Route::get('permissoes/{id}/perfis','PermissaoController@perfis');
+
 Route::get('perfis','RoleController@index');
+Route::get('perfil/novo','RoleController@create');
 
 Route::get('pdf','RelatorioController@pdf');
 
