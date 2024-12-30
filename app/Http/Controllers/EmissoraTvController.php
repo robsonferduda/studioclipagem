@@ -55,6 +55,12 @@ class EmissoraTvController extends Controller
                 ->addColumn('nome', function ($fonte) {
                     return $fonte->nome_emissora;
                 })  
+                ->addColumn('programas', function ($fonte) {
+
+                    $programas = count($fonte->programas);
+
+                    return $programas;
+                })
                 ->addColumn('url', function ($fonte) {
                     return ($fonte->url_stream) ? $fonte->url_stream : '<span class="text-danger">Não informado</span>';
                 })    
@@ -62,9 +68,14 @@ class EmissoraTvController extends Controller
                       
                     $acoes = '<div class="text-center">';
 
-                    $acoes .= '<a title="Programas" href="../tv/emissoras/programas/'.$fonte->id.'" class="btn btn-warning btn-link btn-icon"><i class="fa fa-tv fa-2x"></i></a>
-                                <a title="Editar" href="../tv/emissoras/editar/'.$fonte->id.'" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
-                                <a title="Excluir" href="" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-times fa-2x"></i></a>';
+                    if(count($fonte->programas)){
+                        $acoes .= '<a title="Programas" href="../tv/emissora/'.$fonte->id.'/programas" class="btn btn-warning btn-link btn-icon"><i class="fa fa-tv fa-2x"></i></a>';
+                    }else{
+                        $acoes .= '<a title="Programas" href="../tv/emissora/'.$fonte->id.'/programas" class="btn btn-default btn-link btn-icon"><i class="fa fa-tv fa-2x"></i></a>';
+                    }
+
+                    $acoes .= '<a title="Editar" href="../tv/emissoras/editar/'.$fonte->id.'" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
+                               <a title="Excluir" href="" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-times fa-2x"></i></a>';
 
                     $acoes .= '</div>';
 

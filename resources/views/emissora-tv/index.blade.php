@@ -12,7 +12,8 @@
                 </div>
                 <div class="col-md-6">
                     <a href="{{ url('tv/videos') }}" class="btn btn-info pull-right" style="margin-right: 12px;"><i class="fa fa-tv"></i> Vídeos TV</a>
-                    <a href="{{ url('tv/emissoras/novo') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-plus"></i> Novo</a>
+                    <a href="{{ url('tv/emissoras/novo') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-plus"></i> Nova Emissora</a>
+                    <a href="{{ url('tv/emissoras/programas/novo') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-plus"></i> Novo Programa</a>
                 </div>
             </div>
         </div>
@@ -27,6 +28,7 @@
                             <tr>
                                 <th>Nome</th>
                                 <th>URL</th>
+                                <th>Programas</th>
                                 <th class="disabled-sorting text-center">Ações</th>
                             </tr>
                         </thead>
@@ -34,6 +36,7 @@
                             <tr>
                                 <th>Nome</th>
                                 <th>URL</th>
+                                <th>Programas</th>
                                 <th class="disabled-sorting text-center">Ações</th>
                             </tr>
                         </tfoot>
@@ -75,6 +78,7 @@
                 "columns": [
                     { data: "nome" },
                     { data: "url" },
+                    { data: "programas" },
                     { data: "acoes" },
                 ],
                 'columnDefs': [

@@ -164,6 +164,13 @@ class MonitoramentoController extends Controller
         return redirect('monitoramento');
     }
 
+    public function executarIndividual($id)
+    {
+        Flash::success('<i class="fa fa-check"></i> Monitoramento individual realizado com sucesso');
+
+        return redirect('monitoramento');
+    }
+
     public function atualizarStatus($id)
     {
         $monitoramento = Monitoramento::find($id);

@@ -15,4 +15,8 @@ class EmissoraWeb extends Model
 
     protected $fillable = ['nome_emissora','url_stream'];
 
+    public function programas()
+    {
+        return $this->hasMany(ProgramaEmissoraWeb::class, 'id_emissora', 'id');
+    }
 }

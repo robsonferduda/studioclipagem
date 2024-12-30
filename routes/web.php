@@ -165,6 +165,7 @@ Route::match(array('GET', 'POST'),'monitoramento/listar','MonitoramentoControlle
 Route::get('monitoramento/cliente/{cliente}','MonitoramentoController@buscar');
 Route::get('monitoramento/novo','MonitoramentoController@novo');
 Route::get('monitoramento/executar','MonitoramentoController@executar');
+Route::get('monitoramento/{id}/executar','MonitoramentoController@executar');
 Route::get('monitoramento/{id}/atualizar-status','MonitoramentoController@atualizarStatus');
 Route::get('monitoramento/{id}/noticias','MonitoramentoController@noticias');
 Route::get('monitoramento/cliente/{id}','MonitoramentoController@getMonitoramentoCliente');
@@ -211,7 +212,7 @@ Route::get('tv/dashboard','NoticiaTvController@dashboard');
 Route::get('tv/emissoras','EmissoraTvController@index');
 Route::get('tv/emissoras/editar/{id}','EmissoraTvController@editar');
 Route::get('tv/emissoras/novo','EmissoraTvController@novo');
-Route::get('tv/emissoras/programas/{id}','EmissoraTvController@programas');
+Route::get('tv/emissora/{id}/programas','EmissoraTvController@programas');
 Route::post('tv/emissoras/adicionar','EmissoraTvController@adicionar');
 Route::post('tv/emissoras/atualizar','EmissoraTvController@atualizar');
 
