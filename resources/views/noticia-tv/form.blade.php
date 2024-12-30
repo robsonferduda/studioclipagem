@@ -264,6 +264,11 @@
         var host = $('meta[name="base-url"]').attr('content');
 
         $(document).ready(function(){
+
+            $('#modalArea').on('shown.bs.modal', function () {
+                $("#ds_area").val("");
+                $("#ds_area").focus();
+            });
             
             var token = $('meta[name="csrf-token"]').attr('content');
             var cd_emissora = $("#cd_emissora").val();

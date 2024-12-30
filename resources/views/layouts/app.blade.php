@@ -481,6 +481,9 @@
   <script src="{{ asset('js/cropper-main.js') }}"></script>
   <script src="{{ asset('js/plugins/chartist.min.js') }}"></script>
   <script src="{{ asset('js/dataTables.checkboxes.min.js') }}"></script>
+  <script src="{{ asset('js/mark.min.js') }}"></script>
+  
+  
   @yield('script')
   <script>
     function setFormValidation(id) {

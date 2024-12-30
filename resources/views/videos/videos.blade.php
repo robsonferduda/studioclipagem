@@ -90,15 +90,24 @@
                                       </video>   
                                 </div>
                                 <div class="col-lg-8 col-sm-12">
-                                    <p class="mb-1"><strong>{{ $video->programa->emissora->nome_emissora }}</strong> - <strong>{{ $video->programa->nome_programa }}</strong></p>
+                                    <p class="mb-1"><strong>{{ ($video->programa and $video->programa->emissora) ? $video->programa->emissora->nome_emissora : '' }}</strong> - <strong>{{ ($video->programa) ? $video->programa->nome_programa : '' }}</strong></p>
                                     <p class="mb-1">
                                         {{ date('d/m/Y', strtotime($video->horario_start_gravacao)) }} - Das 
                                         {{ date('H:i:s', strtotime($video->horario_start_gravacao)) }} às 
                                         {{ date('H:i:s', strtotime($video->horario_end_gravacao)) }}
                                     </p>
-                                    <p>
-                                        {!! Str::limit($video->transcricao, 700, '<a href="../tv/video/detalhes/'.$video->id.'"><strong> Veja Mais</strong></a>') !!}
-                                    </p> 
+
+                                    <div class="panel panel-success">
+                                        <div class="conteudo-noticia mb-1 transcricao">
+                                            {!! ($video->transcricao) ?  Str::limit($video->transcricao, 700, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                        </div>
+                                        <div class="panel-body transcricao-total">
+                                            {!! ($video->transcricao) ?  $video->transcricao  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                        </div>
+                                        <div class="panel-heading">
+                                            <h3 class="panel-title"><span class="btn-show">Mostrar Mais</span></h3>
+                                        </div>
+                                    </div> 
                                 </div>
                             </div>
                         </div>
@@ -108,4 +117,61 @@
         </div>
     </div>
 </div>
+@endsection
+@section('script')    
+    <script>
+      
+        var host = $('meta[name="base-url"]').attr('content');
+
+        $(document).ready(function(){ 
+
+            $(".panel-heading").click(function() {
+                $(this).parent().addClass('active').find('.panel-body').slideToggle('fast');
+                $(".panel-heading").not(this).parent().removeClass('active').find('.panel-body').slideUp('fast');
+            });
+
+            $(".btn-show").click(function(){
+
+                var texto = $(this).text();
+
+                if(texto == 'Mostrar Mais'){
+
+                    $(this).closest('.panel').find('.conteudo-noticia').addClass('d-none');
+                    $(this).html("Mostrar Menos");                   
+
+                }
+                
+                if(texto == 'Mostrar Menos'){
+
+                    $(this).closest('.panel').find('.conteudo-noticia').removeClass('d-none');
+                    $(this).html("Mostrar Mais");
+                }
+
+                destacaTexto();
+
+            });
+
+            destacaTexto();
+
+            function destacaTexto(){
+
+                var expressao = "{{ $expressao }}";
+                var context = document.querySelector("body");
+                var instance_ods = new Mark(context);
+                
+                var options = {"element": "mark",
+                            "separateWordSearch": false,
+                            "accuracy": {
+                                    "value": "exactly",
+                                    "limiters": [",", "."]
+                                },
+                                "diacritics": true
+                            };
+
+                instance_ods.mark(expressao, options); 
+            }
+
+        });
+
+    </script>
 @endsection

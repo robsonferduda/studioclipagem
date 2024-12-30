@@ -155,3 +155,31 @@
     </div>
 </div>
 @endsection
+@section('script')    
+    <script>
+      
+        var host = $('meta[name="base-url"]').attr('content');
+
+        $(document).ready(function(){ 
+
+            var lista_ods = [["memória"]];
+
+            var instance_ods = new Mark(context);
+                              
+
+                              var options = {
+                                 "element": "mark",
+                                 "separateWordSearch": false,
+                                 "accuracy": {
+                                    "value": "exactly",
+                                    "limiters": [",", "."]
+                                 },
+                                 "diacritics": true
+                              };
+
+                              instance_ods.mark(lista_ods[0], options); 
+
+        });
+
+    </script>
+@endsection

@@ -29,7 +29,7 @@
                                       </video>   
                                 </div>
                                 <div class="col-lg-8 col-sm-12">
-                                    <p class="mb-1"><strong>{{ $video->programa->emissora->nome_emissora }}</strong> - <strong>{{ $video->programa->nome_programa }}</strong></p>
+                                    <p class="mb-1"><strong>{{ ($video->programa and $video->programa->emissora) ? $video->programa->emissora->nome_emissora : '' }}</strong> - <strong>{{ $video->programa->nome_programa }}</strong></p>
                                     <p class="mb-1">
                                         {{ date('d/m/Y', strtotime($video->horario_start_gravacao)) }} - Das 
                                         {{ date('H:i:s', strtotime($video->horario_start_gravacao)) }} às 
