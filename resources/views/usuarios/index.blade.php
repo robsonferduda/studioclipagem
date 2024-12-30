@@ -5,7 +5,10 @@
         <div class="card-header">
             <div class="row">
                 <div class="col-md-6">
-                    <h4 class="card-title ml-2"><i class="nc-icon nc-circle-10"></i> Usuários</h4>
+                    <h4 class="card-title ml-2">
+                        <i class="nc-icon nc-circle-10"></i> Usuários
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Listar
+                    </h4>
                 </div>
                 <div class="col-md-6">
                     <a href="{{ url('usuario/create') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-plus"></i> Novo</a>
@@ -16,7 +19,7 @@
             <div class="col-md-12">
                 @include('layouts.mensagens')
             </div>
-            <table id="datatable" class="table table-striped table-bordered" cellspacing="0" width="100%">
+            <table id="datatable_users" class="table table-striped table-bordered" cellspacing="0" width="100%">
                 <thead>
                     <tr>
                         <th>Nome</th>
@@ -44,7 +47,7 @@
                                 @forelse($u->roles as $role)
                                     <span class="badge badge-{{ $role->display_color }}">{{ $role->display_name }}</span>
                                 @empty
-                                    Nenhum perfil associado
+                                    <span class="text-danger">Nenhum perfil associado</span>
                                 @endforelse
                             </td>
                             <td class="disabled-sorting text-center">{!! ($u->is_active) ? '<span class="badge badge-pill badge-success">ATIVO</span>' : '<span class="badge badge-pill badge-danger">INATIVO</span>' !!}</td>
@@ -66,4 +69,31 @@
         </div>
     </div>
 </div> 
+@endsection
+@section('script')
+    <script>
+        $(document).ready(function() {
+
+            var host =  $('meta[name="base-url"]').attr('content');
+
+            $('#datatable_users').DataTable({
+                "pagingType": "full_numbers",  
+                "ordering": true,              
+                "lengthMenu": [
+                [10, 25, 50, -1],
+                [10, 25, 50, "Todos"]
+                ],
+                responsive: true,
+                language: {
+                search: "_INPUT_",
+                searchPlaceholder: "Filtrar",
+                },
+                columnDefs: [
+                    { type: 'chinese-string', targets: 0 }
+                ]
+
+            });
+            
+        });
+    </script>
 @endsection

@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use DB;
 use Hash;
 use App\User;
+use App\Role;
+use App\Models\RoleUser;
 use App\Utils;
 use App\Models\Pessoa;
 use Laracasts\Flash\Flash;
@@ -15,15 +18,16 @@ class UserController extends Controller
 {
     public function __construct()
     {
-        //$this->middleware('auth');
+        $this->middleware('auth');
         Session::put('url','usuarios');
     }
 
     public function index()
     {
-       // $usuarios = User::whereNull('client_id')->orderBy('name')->get();
-        $usuarios = User::all();
-        return view('usuarios/index', compact('usuarios'));
+        $usuarios = User::orderBy("name")->get();
+        $perfis = Role::orderBy("display_name")->get();
+
+        return view('usuarios/index', compact('usuarios','perfis'));
     }
 
     public function show(User $user, $id)
@@ -39,41 +43,54 @@ class UserController extends Controller
 
     public function create()
     {
-        return view('usuarios/novo');
+        $perfis = Role::orderBy("display_name")->get();
+
+        return view('usuarios/novo',compact('perfis'));
     }
 
     public function edit($id)
     {
+        $perfis = Role::orderBy("display_name")->get();
         $user = User::find($id);
-        return view('usuarios/editar',compact('user'));
+
+        return view('usuarios/editar',compact('user','perfis'));
     }
 
     public function store(UserRequest $request)
     {
-        try {
+        $flag = $request->is_active == true ? true : false;
 
-            $pessoa = Pessoa::create([
-                'nome' => $request->name
-            ]);
+        DB::beginTransaction();
+        try {
 
             $user = array('name' => $request->name,
                           'email' => $request->email,
                           'password' => \Hash::make($request->password),
-                          'pessoa_id' => $pessoa->id);
+                          'is_active' => $flag);
 
-            User::create($user);
+            $user = User::create($user);
+
+            if($user){
+
+                $user_role = array('role_id' => $request->role, 'user_id' => $user->id);
+
+                RoleUser::create($user_role);
+            }
+
+            DB::commit();
+
             $retorno = array('flag' => true,
                              'msg' => "Dados inseridos com sucesso");
 
         } catch (\Illuminate\Database\QueryException $e) {
 
-            dd($e);
-
+            DB::rollback();
             $retorno = array('flag' => false,
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
 
         } catch (Exception $e) {
             
+            DB::rollback();
             $retorno = array('flag' => true,
                              'msg' => "Ocorreu um erro ao inserir o registro");
         }
@@ -90,6 +107,7 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $user = User::find($id);
+
         $flag = $request->is_active == true ? true : false;
         $flag_senha = $request->is_password == true ? true : false;
         $request->merge(['is_active' => $flag]);
@@ -102,8 +120,25 @@ class UserController extends Controller
         try {
         
             $user->update($request->all());
+
+            if($user->role){
+
+                $role_user = RoleUser::where('role_id', $user->role->role_id)->where('user_id', $user->id)->first();
+
+                $role_user->role_id = $request->role;
+                $role_user->save();
+                
+            }else{
+
+                $user_role = array('role_id' => $request->role, 'user_id' => $user->id);
+
+                RoleUser::create($user_role);
+
+            }
+
             $retorno = array('flag' => true,
                              'msg' => '<i class="fa fa-check"></i> Dados atualizados com sucesso');
+
         } catch (\Illuminate\Database\QueryException $e) {
             $retorno = array('flag' => false,
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));

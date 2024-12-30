@@ -6,7 +6,10 @@
             <div class="card-header">
                 <div class="row">
                     <div class="col-md-6">
-                        <h4 class="card-title ml-2"><i class="nc-icon nc-circle-10"></i> Usuários > Editar</h4>
+                        <h4 class="card-title ml-2">
+                            <i class="nc-icon nc-circle-10"></i> Usuários
+                            <i class="fa fa-angle-double-right" aria-hidden="true"></i> Editar
+                        </h4>
                     </div>
                     <div class="col-md-6">
                         <a href="{{ url('usuarios') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-table"></i> Usuários</a>
@@ -34,10 +37,21 @@
                     </div>
                 </div>  
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Perfil <span class="text-danger">Obrigatório</span></label>
+                            <select class="form-control" name="role" id="role" required>
+                                <option value="">Selecione um perfil</option>
+                                @foreach ($perfis as $perfil)
+                                    <option value="{{ $perfil->id }}" {{ ($user->role and $user->role->role_id == $perfil->id) ? 'selected' : '' }}>{{ $perfil->display_name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
                         <div class="form-check mt-3">
                             <div class="form-check">
-                                <label class="form-check-label">
+                                <label class="form-check-label" style="margin-top: 15px;">
                                     <input class="form-check-input" {{ ($user->is_active) ? 'checked' : '' }} type="checkbox" name="is_active" value="true">
                                     CADASTRO ATIVO
                                     <span class="form-check-sign"></span>
@@ -45,9 +59,9 @@
                             </div>
                         </div>
                     </div>
-                </div> 
+                </div>
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="form-check mt-3">
                             <div class="form-check">
                                 <label class="form-check-label">
@@ -76,7 +90,7 @@
                     </div> 
                 </div>          
             </div>
-            <div class="card-footer text-right">
+            <div class="card-footer text-center mb-3">
                 <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Salvar</button>
                 <a href="{{ url('usuarios') }}" class="btn btn-danger"><i class="fa fa-times"></i> Cancelar</a>
             </div>

@@ -27,6 +27,7 @@ class UserRequest extends FormRequest
             'name' => 'required',
             'email' => 'required',
             'password' => 'required',
+            'role' => 'required',
             'confirm_password' => 'required|same:password'
         ];
     }
@@ -37,6 +38,7 @@ class UserRequest extends FormRequest
             'name.required' => 'Campo <strong>Nome</strong> é obrigatório',
             'email.required' => 'Campo <strong>Email</strong> é obrigatório',
             'password.required' => 'Campo <strong>Senha</strong> é obrigatório',
+            'role.required' => 'Campo <strong>Perfil</strong> é obrigatório',
             'confirm_password.required' => 'Campo <strong>Confirmar Senha</strong> é obrigatório',
             'confirm_password.same' => 'Campos <strong>Senha</strong> e <strong>Confirmação de Senha</strong> devem ser iguais'
         ];

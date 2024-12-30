@@ -482,6 +482,8 @@
   <script src="{{ asset('js/plugins/chartist.min.js') }}"></script>
   <script src="{{ asset('js/dataTables.checkboxes.min.js') }}"></script>
   <script src="{{ asset('js/mark.min.js') }}"></script>
+  <script src="{{ asset('js/chinese-string.js') }}"></script>
+  
   
   
   @yield('script')

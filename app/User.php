@@ -22,7 +22,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','pessoa_id','is_active','client_id'
+        'name', 'email', 'password','is_active','client_id'
     ];
 
     /**
@@ -46,5 +46,10 @@ class User extends Authenticatable
     public function cliente()
     {
         return $this->belongsTo('App\Client', 'client_id', 'client_id');
+    }
+
+    public function role()
+    {
+        return $this->belongsTo('App\Models\RoleUser', 'id', 'user_id');
     }
 }
