@@ -120,25 +120,25 @@ class EmissoraController extends Controller
         $cd_cidade = ($request->cd_cidade) ? $request->cd_cidade : null;    
         $cd_estado = ($request->cd_estado) ? $request->cd_estado : null;   
 
-            $emissora = Emissora::query();
+        $emissora = Emissora::query();
 
-            $emissora->when($codigo, function ($q) use ($codigo) {
-                return $q->where('codigo', $codigo);
-            });
+        $emissora->when($codigo, function ($q) use ($codigo) {
+            return $q->where('codigo', $codigo);
+        });
 
-            $emissora->when($cd_cidade, function ($q) use ($cd_cidade) {
-                return $q->where('cd_cidade', $cd_cidade);
-            });
+        $emissora->when($cd_cidade, function ($q) use ($cd_cidade) {
+            return $q->where('cd_cidade', $cd_cidade);
+        });
 
-            $emissora->when($cd_estado, function ($q) use ($cd_estado) {
-                return $q->where('cd_estado', $cd_estado);
-            });
+        $emissora->when($cd_estado, function ($q) use ($cd_estado) {
+            return $q->where('cd_estado', $cd_estado);
+        });
 
-            $emissora->when($descricao, function ($q) use ($descricao) {
-                return $q->where('ds_emissora','ilike','%'.$descricao.'%');
-            });
+        $emissora->when($descricao, function ($q) use ($descricao) {
+            return $q->where('nome_emissora','ilike','%'.$descricao.'%');
+        });
 
-            $emissoras = $emissora->orderBy('nome_emissora')->paginate(10);
+        $emissoras = $emissora->orderBy('nome_emissora')->paginate(10);
         
 
         return view('emissora/index', compact('emissoras','codigo','descricao','estados','tipo','cd_estado','cd_cidade'));
@@ -236,7 +236,6 @@ class EmissoraController extends Controller
             'msg' => "Dados inseridos com sucesso");
         } catch (\Throwable $th) {
 
-            dd($th);
             $retorno = array('flag' => false,
                              'msg' => "Ocorreu um erro ao inserir o registro");
         } catch (\Exception $e) {
