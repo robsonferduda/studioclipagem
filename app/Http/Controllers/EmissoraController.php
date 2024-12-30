@@ -163,8 +163,10 @@ class EmissoraController extends Controller
         return view('emissora/form',compact('estados','emissora','tipo','paises'));
     }
 
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
+        Session::put('url_anterior', url()->previous());
+
         $estados = Estado::orderBy('nm_estado')->get();
         $emissora = Emissora::find($id);
         $paises = Pais::orderBy('nu_ordem','DESC')->orderBY('ds_pais')->get();
@@ -305,10 +307,15 @@ class EmissoraController extends Controller
 
         if ($retorno['flag']) {
             Flash::success($retorno['msg']);
-            return redirect('emissoras/'.$tipo)->withInput();
+
+            if(Session::get('url_anterior')){
+                return redirect(Session::get('url_anterior'))->withInput();
+            }else{
+                return redirect('emissoras/radio')->withInput();
+            }
         } else {
             Flash::error($retorno['msg']);
-            return redirect('emissoras/'.$tipo.'/atualizar')->withInput();
+            return redirect('emissoras/radio/atualizar')->withInput();
         }
     }
 
