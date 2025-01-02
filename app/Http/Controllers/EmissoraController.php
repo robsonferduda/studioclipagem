@@ -138,8 +138,6 @@ class EmissoraController extends Controller
 
             $flag = (Session::get('filtro_gravar') == 1) ? true : false;
 
-            dd($flag);
-
             return $q->where('gravar', $flag);
         });
 
