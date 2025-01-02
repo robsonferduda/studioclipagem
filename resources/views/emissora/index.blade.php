@@ -130,7 +130,7 @@
                             @endforeach
                         </tbody>
                     </table>
-                    {{ $emissoras->onEachSide(1)->links('vendor.pagination.bootstrap-4') }}
+                    {{ $emissoras->onEachSide(1)->appends(['gravar' => $gravar, 'cd_estado' => $cd_estado, 'cd_cidade' => $cd_cidade, 'descricao' => $descricao])->links('vendor.pagination.bootstrap-4') }}
                 @else
                     <p>Não existem registros para os termos de busca selecionados.</p>
                 @endif

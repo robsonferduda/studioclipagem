@@ -156,7 +156,7 @@ class EmissoraController extends Controller
         $emissoras = $emissora->orderBy('nome_emissora')->paginate(10);
         
 
-        return view('emissora/index', compact('emissoras','descricao','estados','tipo','cd_estado','cd_cidade'));
+        return view('emissora/index', compact('emissoras','descricao','estados','tipo','cd_estado','cd_cidade','gravar'));
     }
 
     public function limpar()

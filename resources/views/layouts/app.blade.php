@@ -304,14 +304,6 @@
                   </div>
                </li>                  
               @endrole
-              @role('administradores')
-                <li class="{{ (Session::has('url') and Session::get('url') == 'coleta') ? 'active' : '' }}">
-                  <a href="{{ url('coletas') }}">
-                  <i class="fa fa-database"></i>
-                  <p>Coletas</p>
-                  </a>
-                </li>
-              @endrole
                 @role('administradores')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'monitoramento') ? 'active' : '' }}">
                     <a href="{{ url('monitoramento') }}">
@@ -336,14 +328,7 @@
                     </a>
                   </li>
                 @endrole
-                @role('administradores')
-                  <li class="{{ (Session::has('url') and Session::get('url') == 'exportar') ? 'active' : '' }}">
-                    <a href="{{ url('exportar') }}">
-                    <i class="fa fa-upload"></i>
-                    <p>Exportação</p>
-                    </a>
-                  </li>
-                @endrole
+              
                 <hr/>
                 @role('administradores')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'perfis') ? 'active' : '' }}">
