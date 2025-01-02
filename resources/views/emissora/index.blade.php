@@ -30,12 +30,12 @@
                                         <select class="form-control select2" name="cd_estado" id="cd_estado">
                                             <option value="">Selecione um estado</option>
                                             @foreach($estados as $estado)
-                                                <option value="{{ $estado->cd_estado }}" {{ ($cd_estado == $estado->cd_estado) ? 'selected' : '' }}>{{ $estado->nm_estado }}</option>
+                                                <option value="{{ $estado->cd_estado }}" {{ (Session::get('filtro_estado') == $estado->cd_estado) ? 'selected' : '' }}>{{ $estado->nm_estado }}</option>
                                             @endforeach
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-2 col-sm-12">
+                                <div class="col-md-3 col-sm-12">
                                     <div class="form-group">
                                         <label>Cidade</label>
                                         <select class="form-control select2" name="cd_cidade" id="cidade" disabled="disabled">
@@ -44,10 +44,10 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-4 col-sm-12">
+                                <div class="col-md-5 col-sm-12">
                                     <div class="form-group">
                                         <label>Emissora</label>
-                                        <input type="text" class="form-control" name="descricao" id="descricao" placeholder="Emissora" value="{{ $descricao }}">
+                                        <input type="text" class="form-control" name="descricao" id="descricao" placeholder="Emissora" value="{{ Session::get('filtro_nome') }}">
                                     </div>
                                 </div>
                                 <div class="col-md-2 col-sm-12">
@@ -55,21 +55,25 @@
                                         <label>Gravação</label>
                                         <select class="form-control select2" name="fl_gravacao" id="fl_gravacao">
                                             <option value="">Selecione uma situação</option>
-                                            <option value="1">Gravando</option>
-                                            <option value="0">Não Gravando</option>
+                                            <option value="gravando" {{ (Session::get('filtro_gravar') === 1) ? 'selected' : '' }}>Gravando</option>
+                                            <option value="nao-gravando" {{ (Session::get('filtro_gravar') === 2) ? 'selected' : '' }}>Não Gravando</option>
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-2 checkbox-radios mb-0">
-                                    <button type="submit" id="btn-find" class="btn btn-primary mt-4"><i class="fa fa-search"></i> Buscar</button>
-                                </div>
+                                <div class="col-md-12 checkbox-radios mb-0">
+                                    <a href="{{ url('emissoras/radio/limpar') }}" class="btn btn-warning btn-limpar"><i class="fa fa-refresh"></i> Limpar</a>
+                                    <button type="submit" id="btn-find" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                </div>                                   
                             </div>    
                         </div>
                     {!! Form::close() !!} 
                 </div>
             
             <div class="col-md-12">
-                <p class="mb-0"><strong>Total de registros</strong>: {{ $emissoras->total() }} </p>
+                <input type="hidden" name="cd_cidade_selecionada" id="cd_cidade_selecionada" value="{{ Session::get('filtro_cidade') }}">
+                @if(count($emissoras))
+                    <p class="mb-0">Mostrando <strong>{{ $emissoras->count() }}</strong> de <strong>{{ $emissoras->total() }}</strong> emissoras</p>
+                @endif
                 <p class="mt-0 mb-1 text-info">Clique sobre o ícone de <strong>Gravação</strong> para pausar/continuar a gravação</p>
                 @if($emissoras->total())
                     <table id="" class="table table-striped table-bordered" cellspacing="0" width="100%">
@@ -126,7 +130,7 @@
                             @endforeach
                         </tbody>
                     </table>
-                    {{ $emissoras->onEachSide(1)->appends(['descricao' => $descricao, 'codigo' => $codigo])->links('vendor.pagination.bootstrap-4') }}
+                    {{ $emissoras->onEachSide(1)->links('vendor.pagination.bootstrap-4') }}
                 @else
                     <p>Não existem registros para os termos de busca selecionados.</p>
                 @endif
@@ -141,14 +145,8 @@
 
             var host =  $('meta[name="base-url"]').attr('content');
 
-        });
+            $("#cd_estado").trigger('change');
 
-        $(function() {
-            var estado = $("#estado").val();
-            
-            if(estado){
-                $("#estado").trigger('change');
-            }
         });
     </script>
 @endsection

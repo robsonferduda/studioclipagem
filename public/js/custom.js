@@ -55,7 +55,7 @@ $(document).ready(function() {
                 "estado": $(this).val(),
             },
             beforeSend: function() {
-                $('.content').loader('show');
+                //$('.content').loader('show');
             },
             success: function(data) {
                 if(!data) {
@@ -81,7 +81,7 @@ $(document).ready(function() {
                 $('#cidade').val(cd_cidade).change(); //Seta a cidade selecionada, caso exista
             },
             complete: function(){
-                $('.content').loader('hide');
+                //$('.content').loader('hide');
             }
         });
     });

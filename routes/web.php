@@ -185,6 +185,7 @@ Route::match(array('GET', 'POST'),'emissoras','EmissoraController@index');
 Route::match(array('GET', 'POST'),'radio/arquivos','EmissoraController@arquivos');
 Route::match(array('GET', 'POST'),'radio/noticias','NoticiaRadioController@index');
 Route::get('emissoras/{tipo}/novo','EmissoraController@novo');
+Route::get('emissoras/radio/limpar','EmissoraController@limpar');
 Route::get('radio/emissora/{id}/horarios','EmissoraController@horarios');
 Route::post('radio/emissora/horario/atualizar','EmissoraController@atualizarHorarios');
 Route::get('radio/emissora/horario/excluir/{horario}','EmissoraController@excluirHorario');
