@@ -649,25 +649,28 @@ class FonteWebController extends Controller
 
             if($request->id_noticia_referencia){
 
-                $noticia = NoticiaWeb::find($request->id_noticia_referencia);
-                $noticia->data_noticia = $carbon->createFromFormat('d/m/Y', $request->data_noticia)->format('Y-m-d')." 00:00:00";
-                $noticia->titulo_noticia = $request->titulo;
-                $noticia->url_noticia = $request->url_noticia;
-                
-                $noticia->save();
+                if($request->data_noticia and $request->titulo and $request->url_noticia)
+                {
 
-                $conteudo = ConteudoNoticiaWeb::where('id_noticia_web', $noticia->id)->first();
+                    $noticia = NoticiaWeb::find($request->id_noticia_referencia);
+                    $noticia->data_noticia = $carbon->createFromFormat('d/m/Y', $request->data_noticia)->format('Y-m-d')." 00:00:00";
+                    $noticia->titulo_noticia = $request->titulo;
+                    $noticia->url_noticia = $request->url_noticia;
+                    
+                    $noticia->save();
 
-                if($conteudo){
-                    $conteudo->conteudo = $request->conteudo;
-                    $conteudo->save();
-                }else{
-                    $dados_conteudo = array('id_noticia_web' => $noticia->id,
-                    'conteudo' => $request->conteudo);
+                    $conteudo = ConteudoNoticiaWeb::where('id_noticia_web', $noticia->id)->first();
 
-                        ConteudoNoticiaWeb::create($dados_conteudo);
+                    if($conteudo){
+                        $conteudo->conteudo = $request->conteudo;
+                        $conteudo->save();
+                    }else{
+                        $dados_conteudo = array('id_noticia_web' => $noticia->id,
+                        'conteudo' => $request->conteudo);
+
+                            ConteudoNoticiaWeb::create($dados_conteudo);
+                    }
                 }
-                
 
             }else{
 
