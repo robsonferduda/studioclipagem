@@ -50,6 +50,16 @@
                                         <input type="text" class="form-control" name="descricao" id="descricao" placeholder="Emissora" value="{{ $descricao }}">
                                     </div>
                                 </div>
+                                <div class="col-md-2 col-sm-12">
+                                    <div class="form-group">
+                                        <label>Gravação</label>
+                                        <select class="form-control select2" name="fl_gravacao" id="fl_gravacao">
+                                            <option value="">Selecione uma situação</option>
+                                            <option value="1">Gravando</option>
+                                            <option value="0">Não Gravando</option>
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="col-md-2 checkbox-radios mb-0">
                                     <button type="submit" id="btn-find" class="btn btn-primary mt-4"><i class="fa fa-search"></i> Buscar</button>
                                 </div>

@@ -42,14 +42,14 @@
                             <select class="form-control select2" name="cd_estado" id="cd_estado">
                                 <option value="">Selecione um estado</option>
                                 @foreach ($estados as $estado)
-                                    <option value="{{ $estado->cd_estado }}">{{ $estado->nm_estado }}</option>
+                                    <option value="{{ $estado->cd_estado }}" {{ ( old('cd_estado') == $estado->cd_estado) ? 'selected' : '' }}>{{ $estado->nm_estado }}</option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label>Cidade <span class="text-danger">Obrigatório</span></label>
+                            <label>Cidade</label>
                             <select class="form-control select2" name="cd_cidade" id="cd_cidade">
                                 <option value="">Selecione uma cidade</option>
                                 @foreach ($cidades as $cidade)
@@ -63,13 +63,13 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label>Nome <span class="text-danger">Obrigatório</span></label>
-                            <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome" value="">
+                            <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome" value="{{ old("nome") }}">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>URL <span class="text-danger">Obrigatório</span></label>
-                            <input type="text" class="form-control" name="url" id="url" placeholder="URL" value="">
+                            <input type="text" class="form-control" name="url" id="url" placeholder="URL" value="{{ old("url") }}">
                         </div>
                     </div>
                     <div class="col-md-2">

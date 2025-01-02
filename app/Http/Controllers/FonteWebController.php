@@ -605,6 +605,17 @@ class FonteWebController extends Controller
 
     public function store(FontWebRequest $request)
     {
+        $request->merge(['id_situacao' => 0]); //Inicia sempre com situação = 0 - Aguardando
+
+        $fonte_existe = FonteWeb::where('url', $request->url)->first();
+
+        if($fonte_existe)
+        {
+            Flash::warning('<i class="fa fa-exclamation"></i> Existe uma fonte cadastrada com a URL <strong>'.$fonte_existe->url.'</strong>');
+
+            return redirect('fonte-web/create')->withInput();
+        }
+
         try {
             FonteWeb::create($request->all());
             $retorno = array('flag' => true,

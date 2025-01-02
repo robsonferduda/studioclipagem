@@ -24,18 +24,20 @@ class FontWebRequest extends FormRequest
     public function rules()
     {
         return [
+            'cd_pais' => 'required',
             'cd_estado' => 'required',
-            'cd_cidade' => 'required',
-            'nome' => 'required'
+            'nome' => 'required',
+            'url' => 'required'
         ];
     }
 
     public function messages()
     {
         return [
+            'cd_pais.required' => 'Campo <strong>País</strong> é obrigatório',
             'cd_estado.required' => 'Campo <strong>Estado</strong> é obrigatório',
-            'cd_cidade.required' => 'Campo <strong>Cidade</strong> é obrigatório',
-            'nome.required' => 'Campo <strong>Nome</strong> é obrigatório'
+            'nome.required' => 'Campo <strong>Nome</strong> é obrigatório',
+            'url.required' => 'Campo <strong>URL</strong> é obrigatório'
         ];
     }
 }
