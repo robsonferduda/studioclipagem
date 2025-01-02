@@ -111,6 +111,10 @@ class Utils
             case '42703':
                 return '<i class="fa fa-times"></i> Coluna não existente no banco de dados';
                 break;
+
+            case '42601':
+                return '<i class="fa fa-times"></i> Erro de sintaxe na consulta de expressão';
+                break;               
                 
             default:
                 return '<i class="fa fa-times"></i> Código de erro desconhecido: '.$errorCode;

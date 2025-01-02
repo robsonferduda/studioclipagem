@@ -12,7 +12,7 @@
                     </h4>
                 </div>
                 <div class="col-md-6">
-                    <a href="{{ url('radio') }}" class="btn btn-warning pull-right mr-3"><i class="nc-icon nc-chart-pie-36"></i> Dashboard</a>
+                    <a href="{{ url('radio/dashboard') }}" class="btn btn-warning pull-right mr-3"><i class="nc-icon nc-chart-pie-36"></i> Dashboard</a>
                     <a href="{{ url('emissoras/radio') }}" class="btn btn-primary pull-right mr-3"><i class="fa fa-volume-up"></i> Emissoras de Rádio</a>
                 </div>
             </div>
@@ -23,7 +23,7 @@
             </div>
             <div class="row">
                 <div class="col-lg-12 col-md-12 col-sm-12">
-                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['jornal-impresso/noticias']]) !!}
+                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['radio/arquivos']]) !!}
                         <div class="form-group m-3 w-70">
                             <div class="row">
                                 <div class="col-md-2 col-sm-6">
@@ -41,10 +41,10 @@
                                 <div class="col-md-8">
                                     <div class="form-group">
                                         <label>Fonte</label>
-                                        <select class="form-control select2" name="regra" id="regra">
+                                        <select class="form-control select2" name="fonte" id="fonte">
                                             <option value="">Selecione uma fonte</option>
                                             @foreach ($emissoras as $emissora)
-                                                <option value="{{ $emissora->id }}">{{ $emissora->nome_emissora }}</option>
+                                                <option value="{{ $emissora->id }}" {{ ($emissora->id == $fonte) ? 'selected' : '' }}>{{ $emissora->nome_emissora }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -53,8 +53,8 @@
                             <div class="row">
                                 <div class="col-md-12 col-sm-12">
                                     <div class="form-group">
-                                        <label>Buscar por <span class="text-primary">Digite o termo ou expressão de busca</span></label>
-                                        <input type="text" class="form-control" name="termo" id="termo" minlength="3" placeholder="Termo" value="">
+                                        <label for="expressao" class="form-label">Expressão de Busca <span class="text-primary">Digite o termo ou expressão de busca</span></label>
+                                        <textarea class="form-control" name="expressao" id="expressao" rows="3">{{ $expressao }}</textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-12 checkbox-radios mb-0">
@@ -67,7 +67,7 @@
                     @if(count($arquivos) > 0)
                         <h6 class="px-3">Mostrando {{ $arquivos->count() }} de {{ $arquivos->total() }} Páginas</h6>
 
-                        {{ $arquivos->onEachSide(1)->appends(['dt_inicial' => $dt_inicial, 'dt_final' => $dt_final])->links('vendor.pagination.bootstrap-4') }}
+                        {{ $arquivos->onEachSide(1)->appends(['dt_inicial' => $dt_inicial, 'dt_final' => $dt_final, 'fonte' => $fonte, 'expressao' => $expressao])->links('vendor.pagination.bootstrap-4') }}
                     @endif
 
                     @foreach ($arquivos as $key => $noticia)

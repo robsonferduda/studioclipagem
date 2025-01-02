@@ -32,7 +32,11 @@ class EmissoraController extends Controller
         Session::put('sub-menu','emissoras');
         $estados = Estado::orderBy('nm_estado')->get();
 
-        dd("sdfsdfsdf");
+        $dt_inicial = date('Y-m-d')." 00:00:00";
+        $dt_final = date('Y-m-d')." 23:59:59";
+        $expressao = "";
+        $fonte = 0;
+        $arquivos = array();
 
         $codigo = ($request->codigo) ? $request->codigo : null;
         $descricao = ($request->descricao) ? $request->descricao : null;       
@@ -58,22 +62,104 @@ class EmissoraController extends Controller
         Session::put('url', 'radio');
         Session::put('sub-menu', "radio-arquivos");
 
+        $dt_inicial = date('Y-m-d')." 00:00:00";
+        $dt_final = date('Y-m-d')." 23:59:59";
+        $expressao = "";
+        $fonte = 0;
+        $arquivos = array();
+
         $emissoras = Emissora::orderBy('nome_emissora')->get();
+
+        $emissora = EmissoraGravacao::query();
 
         if($request->isMethod('GET')){
 
             $dt_inicial = date('Y-m-d H:i:s');
             $dt_final = date('Y-m-d H:i:s');
 
+            if($request->page){
+
+                $carbon = new Carbon();
+                $dt_inicial = ($request->dt_inicial) ? $request->dt_inicial : date("Y-m-d")." 00:00:00";
+                $dt_final = ($request->dt_final) ? $request->dt_final : date("Y-m-d")." 23:59:59";
+                $expressao = $request->expressao;
+                $fonte = $request->fonte;
+
+                $filtro_fonte = '';
+                $filtro_expressao = '';
+
+                if($fonte) $filtro_fonte = " AND nw.id_fonte = $fonte";
+                if($expressao) $filtro_expressao = " AND n.conteudo ~* '$expressao'";
+
+                $emissora->when($expressao, function ($q) use ($expressao) {
+                    return $q->whereRaw('transcricao_tsv @@ to_tsquery(\'portuguese\', ?)', [$expressao]);
+                });
+
+                try {                
+
+                    $arquivos = $emissora->orderBy('data_hora_inicio','DESC')->paginate(10);
+
+                } catch (\Illuminate\Database\QueryException $e) {
+
+                    $retorno = array('flag' => false,
+                                    'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
+                    
+                    Flash::warning($retorno['msg']);
+        
+                } catch (Exception $e) {
+                    
+                    $retorno = array('flag' => true,
+                                    'msg' => "Ocorreu um erro ao inserir o registro");
+
+                    Flash::warning($retorno['msg']);
+                }          
+
+            }
+
             $fila = EmissoraGravacao::whereBetween('data_hora_inicio', [$dt_inicial, $dt_final])->paginate(10);
         }
 
-        $emissora = EmissoraGravacao::query();
+        if($request->isMethod('POST')){
 
-        
-        $arquivos = $emissora->orderBy('data_hora_inicio','DESC')->paginate(10);
+            $carbon = new Carbon();
+            $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00" : date("Y-m-d")." 00:00:00";
+            $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d")." 23:59:59";
+            $expressao = $request->expressao;
+            $fonte = $request->fonte;
 
-        return view('emissora/arquivos', compact('arquivos','emissoras','dt_inicial','dt_final'));
+            $emissora->when($fonte, function ($q) use ($fonte) {
+                $q->whereHas('emissora', function($q) use($fonte){
+                    return $q->where('id_emissora', $fonte);
+                });
+            });
+
+            $emissora->when($expressao, function ($q) use ($expressao) {
+                return $q->whereRaw('transcricao_tsv @@ to_tsquery(\'portuguese\', ?)', [$expressao]);
+            });
+
+            $emissora->whereBetween('data_hora_inicio', [$dt_inicial, $dt_final]);
+
+            try {                
+
+                $arquivos = $emissora->orderBy('data_hora_inicio','DESC')->paginate(10);
+
+            } catch (\Illuminate\Database\QueryException $e) {
+
+                $retorno = array('flag' => false,
+                                 'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
+                
+                Flash::warning($retorno['msg']);
+    
+            } catch (Exception $e) {
+                
+                $retorno = array('flag' => true,
+                                 'msg' => "Ocorreu um erro ao inserir o registro");
+
+                Flash::warning($retorno['msg']);
+            }          
+        }
+
+        return view('emissora/arquivos', compact('arquivos','emissoras','dt_inicial','dt_final','fonte','expressao'));
     }
 
     public function atualizarHorarios(Request $request)
