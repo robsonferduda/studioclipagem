@@ -35,7 +35,7 @@ $(document).ready(function() {
     $(document).on('change', '#cd_estado', function() {
 
         var estado = $(this).val();
-        var cd_cidade = $("#cd_cidade").val();
+        var cd_cidade = $("#cd_cidade_selecionada").val();
         
         $('#cidade').find('option').remove().end();
 
@@ -78,7 +78,7 @@ $(document).ready(function() {
                 $('#cidade').select2('destroy');
                 $('#cidade').select2({placeholder: 'Selecione uma cidade', allowClear: true});
 
-                $('#cidade').val(cd_cidade).change();
+                $('#cidade').val(cd_cidade).change(); //Seta a cidade selecionada, caso exista
             },
             complete: function(){
                 $('.content').loader('hide');

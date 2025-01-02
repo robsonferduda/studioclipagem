@@ -99,7 +99,7 @@
                     <div class="col-md-12">
                         <div class="form-group">
                             <label>Título <span class="text-danger">Obrigatório</span></label>
-                            <input type="text" class="form-control" name="titulo" id="titulo" placeholder="Título" value="">
+                            <input type="text" class="form-control" name="titulo" id="titulo" placeholder="Título" value="{{ old("titulo") }}">
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -111,13 +111,13 @@
                     <div class="col-md-9">
                         <div class="form-group">
                             <label>Link da Notícia <span class="text-danger">Obrigatório</span></label>
-                            <input type="text" class="form-control" name="link" id="link" placeholder="Link da Notícia" value="">
+                            <input type="text" class="form-control" name="link" id="link" placeholder="Link da Notícia" value="{{ old("link") }}">
                         </div>
                     </div>
                     <div class="col-md-12">
                         <label for="sinopse">Texto <span class="text-danger">Obrigatório</span></label>
                         <div class="form-group">
-                            <textarea class="form-control" name="texto" id="texto" rows="10"></textarea>
+                            <textarea class="form-control" name="texto" id="texto" rows="10">{{ old("texto") }}</textarea>
                         </div>
                     </div>
                 </div> 

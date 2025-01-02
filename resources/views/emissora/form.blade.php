@@ -53,6 +53,7 @@
                         <div class="col-md-7">
                             <div class="form-group">
                                 <label>Cidade</label>
+                                <input type="hidden" name="cd_cidade_selecionada" id="cd_cidade_selecionada" value="{{ $emissora->cd_cidade }}">
                                 <select class="form-control select2" name="cd_cidade" id="cidade" disabled="disabled">
                                     <option value="">Selecione uma cidade</option>                                    
                                 </select>
@@ -108,6 +109,8 @@
             var host =  $('meta[name="base-url"]').attr('content');
 
             $("#cd_estado").trigger('change');
+
+            
             
         });
     </script>
