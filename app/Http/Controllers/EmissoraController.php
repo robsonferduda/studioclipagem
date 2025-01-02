@@ -85,15 +85,17 @@ class EmissoraController extends Controller
                 $expressao = $request->expressao;
                 $fonte = $request->fonte;
 
-                $filtro_fonte = '';
-                $filtro_expressao = '';
-
-                if($fonte) $filtro_fonte = " AND nw.id_fonte = $fonte";
-                if($expressao) $filtro_expressao = " AND n.conteudo ~* '$expressao'";
-
+                $emissora->when($fonte, function ($q) use ($fonte) {
+                    $q->whereHas('emissora', function($q) use($fonte){
+                        return $q->where('id_emissora', $fonte);
+                    });
+                });
+    
                 $emissora->when($expressao, function ($q) use ($expressao) {
                     return $q->whereRaw('transcricao_tsv @@ to_tsquery(\'portuguese\', ?)', [$expressao]);
                 });
+    
+                $emissora->whereBetween('data_hora_inicio', [$dt_inicial, $dt_final]);
 
                 try {                
 
