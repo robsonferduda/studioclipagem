@@ -94,7 +94,7 @@
                                     <div class="col-lg-8 col-sm-12">
                                         
                                         <p class="mb-1">
-                                            {{ dd(json_decode($video->misc_data, true)) }}
+                                            {{ dd($video->misc_data->data_publicacao) }}
                                             @if($video->programa and $video->programa->tipo and in_array($video->programa->tipo->id, [4,5]))
                                                 <i class="fa fa-youtube text-danger" aria-hidden="true" style="font-size: 30px;"></i>
                                             @endif
