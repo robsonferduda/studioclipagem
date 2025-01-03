@@ -70,37 +70,78 @@
                     </div>
                 {!! Form::close() !!} 
             </div>
-            <div class="row">
-                <div class="col-lg-12 col-sm-12 conteudo">                        
-                    <table id="bootstrap-table" class="table table-striped table-bordered" cellspacing="0" width="100%">
-                        <thead>
-                            <tr>
-                                <th>Estado</th>
-                                <th>Cidade</th>
-                                <th>Emissora</th>
-                                <th>Programa</th>
-                                <th>Tipo</th>
-                                <th>URL</th>
-                                <th class="disabled-sorting text-center">Ações</th>
-                            </tr>
-                        </thead>
-                        <tfoot>
-                            <tr>
-                                <th>Estado</th>
-                                <th>Cidade</th>
-                                <th>Emissora</th>
-                                <th>Programa</th>
-                                <th>Tipo</th>
-                                <th>URL</th>
-                                <th class="disabled-sorting text-center">Ações</th>
-                            </tr>
-                        </tfoot>
-                        <tbody>
-                            <tr></tr>
-                        </tbody>
-                    </table>                   
+           
+                <div class="col-lg-12 col-sm-12 conteudo">  
+                    <input type="hidden" name="cd_cidade_selecionada" id="cd_cidade_selecionada" value="{{ Session::get('filtro_cidade') }}">
+                    @if(count($programas))
+                        <p class="mb-0">Mostrando <strong>{{ $programas->count() }}</strong> de <strong>{{ $programas->total() }}</strong> programas</p>
+                    @endif
+                    <p class="mt-0 mb-1 text-info">Clique sobre o ícone de <strong>Gravação</strong> para pausar/continuar a gravação</p>
+                    @if($programas->total())                      
+                        <table id="bootstrap-table" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>Estado</th>
+                                    <th>Cidade</th>
+                                    <th>Emissora</th>
+                                    <th>Programa</th>
+                                    <th>Tipo</th>
+                                    <th>Valor</th>
+                                    <th class="disabled-sorting text-center">Gravação</th>
+                                    <th class="disabled-sorting text-center">Ações</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>Estado</th>
+                                    <th>Cidade</th>
+                                    <th>Emissora</th>
+                                    <th>Programa</th>
+                                    <th>Tipo</th>
+                                    <th>Valor</th>
+                                    <th class="disabled-sorting text-center">Gravação</th>
+                                    <th class="disabled-sorting text-center">Ações</th>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                @foreach($programas as $programa)
+                                <tr>
+                                    <td>{{ ($programa->estado) ? $programa->estado->sg_estado : 'Não Informado' }}</td>
+                                    <td>{{ ($programa->cidade) ? $programa->cidade->nm_cidade : 'Não Informado' }}</td>
+                                    <td>{{ $programa->emissora->nome_emissora }}</td>
+                                    <td>{{ $programa->nome_programa }}</td>
+                                    <td>
+                                        @if($programa->tipo)
+                                            <span class="badge badge-primary" style="background: '.$programa->tipo->ds_color.'; border-color: '.$programa->tipo->ds_color.';"> {{ $programa->tipo->nome }}</span>
+                                        @else
+                                            <span class="text-danger">Não informado</span>
+                                        @endif
+                                        <p class="mb-0">{{ $programa->url }}</p>
+                                    </td>
+                                    <td class="right">{{ number_format($programa->nu_valor, 2, ".","") }}</td>
+                                    <td class="center">
+                                        <a href="{{ url('tv/emissora/programa/'.$programa->id.'/gravacao/atualiza') }}">{!! ($programa->gravar) ? '<span class="badge badge-pill badge-success">SIM</span>' : '<span class="badge badge-pill badge-danger">NÃO</span>' !!}</a>
+                                    </td>
+                                    <td class="center acoes-3">
+                                        
+                                        @if(count($programa->horarios))
+                                            <a title="Horários de Coleta" href="{{ url('tv/emissora/programas/'.$programa->id.'/horarios') }}" class="btn btn-warning btn-link btn-icon"><i class="nc-icon nc-time-alarm font-25"></i></a>
+                                        @else
+                                            <a title="Horários de Coleta" href="{{ url('tv/emissora/programas/'.$programa->id.'/horarios') }}" class="btn btn-default btn-link btn-icon"><i class="nc-icon nc-time-alarm font-25"></i></a>
+                                        @endif                                        
+                                        <a title="Editar" href="{{ url('tv/emissoras/programas/editar',$programa->id) }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
+                                        <a title="Excluir" href="" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-times fa-2x"></i></a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table> 
+                        {{ $programas->onEachSide(1)->appends(['gravar' => $gravar, 'cd_estado' => $cd_estado, 'cd_cidade' => $cd_cidade, 'descricao' => $descricao])->links('vendor.pagination.bootstrap-4') }}
+                    @else
+                        <p>Não existem registros para os termos de busca selecionados.</p>
+                    @endif                  
                 </div>
-            </div>
+            
         </div>
     </div>
 </div>
@@ -111,11 +152,10 @@
 
         var host =  $('meta[name="base-url"]').attr('content');
         var token = $('meta[name="csrf-token"]').attr('content');
-        var estado = 0;
-        var cidade = 0;
-        var nome = "";
-        var situacao = "";
+       
+        $("#cd_estado").trigger('change');
 
+        /*
         var table = $('#bootstrap-table').DataTable({
                 "processing": true,
                 "paginate": true,
@@ -141,15 +181,15 @@
                 ],
                 'columnDefs': [
                     {
-                        /*'targets': 0,
+                        'targets': 0,
                         'className': 'item',
-                        'checkboxes': true,*/
+                        'checkboxes': true,
                         'ordering': false,
                         'sortable': false
                     }
                 ],
                 "stateSave": true
-            });
+            }); */
     });
 </script>
 @endsection

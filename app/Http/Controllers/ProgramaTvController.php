@@ -32,6 +32,55 @@ class ProgramaTvController extends Controller
 
     public function index(Request $request)
     {
+        Session::put('url', 'tv');
+        Session::put('sub-menu','programas-tv');
+
+        $cidades = Cidade::orderBy('nm_cidade')->get();
+        $estados = Estado::orderBy('nm_estado')->get();
+
+        if($request->fl_gravacao){
+            $gravar = ($request->fl_gravacao == 'gravando') ? 1 : 2;
+        }else{
+            $gravar = null;
+        }
+
+        $descricao = ($request->descricao) ? $request->descricao : null;  
+        $cd_cidade = ($request->cd_cidade) ? $request->cd_cidade : null;    
+        $cd_estado = ($request->cd_estado) ? $request->cd_estado : null;   
+
+        Session::put('filtro_estado', $cd_estado);
+        Session::put('filtro_cidade', $cd_cidade);
+        Session::put('filtro_gravar', $gravar);
+        Session::put('filtro_nome', $descricao);
+
+        $programa = ProgramaEmissoraWeb::query();
+
+        $programa->when($gravar, function ($q) use ($gravar) {
+
+            $flag = (Session::get('filtro_gravar') == 1) ? true : false;
+
+            return $q->where('gravar', $flag);
+        });
+
+        $programa->when($cd_cidade, function ($q) use ($cd_cidade) {
+            return $q->where('cd_cidade', Session::get('filtro_cidade'));
+        });
+
+        $programa->when($cd_estado, function ($q) use ($cd_estado) {
+            return $q->where('cd_estado', Session::get('filtro_estado'));
+        });
+
+        $programa->when($descricao, function ($q) use ($descricao) {
+            return $q->where('nome_programa','ilike','%'.$descricao.'%');
+        });
+
+        $programas = $programa->orderBy('nome_programa')->paginate(10);
+        
+        return view('programa-tv/index', compact('programas','descricao','cidades','estados','cd_estado','cd_cidade','gravar'));
+
+        return view('emissora/index', compact('emissoras','descricao','estados','tipo','cd_estado','cd_cidade','gravar'));
+
+        /*
         Session::put('sub-menu','programas-tv');
 
         $cidades = Cidade::orderBy('nm_cidade')->get();
@@ -97,6 +146,7 @@ class ProgramaTvController extends Controller
         }
 
         return view('programa-tv/index', compact('cidades','estados'));
+        */
     }
 
     public function novo()
@@ -140,6 +190,18 @@ class ProgramaTvController extends Controller
 
         return redirect('tv/emissoras/programas');
     }
+
+    public function atualizaGravacao($id){
+
+        $emissora = ProgramaEmissoraWeb::find($id);
+        $emissora->gravar = !$emissora->gravar;
+        $emissora->save();
+
+        Flash::success('<i class="fa fa-check"></i> Gravação do programa atualizada com sucesso');
+
+        return redirect()->back()->withInput();
+    }
+
     public function adicionarHorarios(Request $request)
     {
         $emissora = $request->id_programa;
