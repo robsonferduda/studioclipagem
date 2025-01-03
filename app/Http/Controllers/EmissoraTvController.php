@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use App\Noticia;
 use App\Models\NoticiaWeb;
 use App\Models\ConteudoNoticiaWeb;
+use App\Models\ProgramaEmissoraWeb;
 use App\Models\EmissoraWeb;
 use App\Models\Estado;
 use App\Models\Cidade;
@@ -169,6 +170,15 @@ class EmissoraTvController extends Controller
     {
         $emissoras = EmissoraWeb::select('id', 'nome_emissora as text');
         $result = $emissoras->orderBy('nome_emissora', 'asc')->get();
+
+        return response()->json($result);
+    }
+
+    public function buscarProgramas($id)
+    {
+
+        $programas = ProgramaEmissoraWeb::select('id', 'nome_programa as text')->where('id_emissora', $id);
+        $result = $programas->orderBy('nome_programa', 'asc')->get();
 
         return response()->json($result);
     }

@@ -402,6 +402,7 @@ class ExportarController extends Controller
 
     public function atualizar()
     {
+        /*
         $hoje = date("Y-m-d");
         $hora_inicio = date("H:i:s", strtotime(date("H:i:s")) - 3600);
         $hora_fim = date("H:i:s");
@@ -464,5 +465,5 @@ class ExportarController extends Controller
         $log = array('total_coletado' => $total_inserido);
 
         LogExportacao::create($log);
-    }
+    }*/
 }

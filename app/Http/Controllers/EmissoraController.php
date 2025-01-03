@@ -118,7 +118,6 @@ class EmissoraController extends Controller
 
             }
 
-            $fila = EmissoraGravacao::whereBetween('data_hora_inicio', [$dt_inicial, $dt_final])->paginate(10);
         }
 
         if($request->isMethod('POST')){

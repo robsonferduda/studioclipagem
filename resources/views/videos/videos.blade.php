@@ -49,7 +49,8 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Programa</label>
-                                    <select class="form-control select2" name="programa" id="programa">
+                                    <input type="hidden" name="cd_programa_selecionado" id="cd_programa_selecionado" value="{{ $programa }}">
+                                    <select class="form-control select2" name="programa" id="programa" disabled>
                                         <option value="">Selecione um programa</option>
                                         @foreach ($programas as $prog)
                                             <option value="{{ $prog->id }}" {{ ($prog->id == $programa) ? 'selected' : '' }}>{{ $prog->nome_programa }}</option>
@@ -75,44 +76,47 @@
             <div class="col-md-12">
                 @if(count($videos) > 0)
                     <h6 class="px-3">Mostrando {{ $videos->count() }} de {{ $videos->total() }} vídeos coletados</h6>
-                    {{ $videos->onEachSide(1)->appends(['dt_inicial' => $dt_inicial, 'dt_final' => $dt_final, 'programa' => $programa ])->links('vendor.pagination.bootstrap-4') }}
+                    {{ $videos->onEachSide(1)->appends(['dt_inicial' => $dt_inicial, 'dt_final' => $dt_final, 'fonte' => $fonte, 'programa' => $programa, 'expressao' => $expressao ])->links('vendor.pagination.bootstrap-4') }}
                 @endif
 
-                @foreach ($videos as $key => $video)
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-4 col-sm-12">
-                                    <video width="100%" height="240" controls>
-                                        <source src="{{ Storage::disk('s3')->temporaryUrl($video->video_path, '+30 minutes') }}" type="video/mp4">
-                                        <source src="movie.ogg" type="video/ogg">
-                                        Seu navegador não suporta a exibição de vídeos.
-                                      </video>   
-                                </div>
-                                <div class="col-lg-8 col-sm-12">
-                                    <p class="mb-1"><strong>{{ ($video->programa and $video->programa->emissora) ? $video->programa->emissora->nome_emissora : '' }}</strong> - <strong>{{ ($video->programa) ? $video->programa->nome_programa : '' }}</strong></p>
-                                    <p class="mb-1">
-                                        {{ date('d/m/Y', strtotime($video->horario_start_gravacao)) }} - Das 
-                                        {{ date('H:i:s', strtotime($video->horario_start_gravacao)) }} às 
-                                        {{ date('H:i:s', strtotime($video->horario_end_gravacao)) }}
-                                    </p>
+                @if(count($videos) > 0)
+                    @foreach ($videos as $key => $video)
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-lg-4 col-sm-12">     
+                                        {{--                                       
+                                        <video width="100%" height="240" controls>
+                                            <source src="{{ (Storage::disk('s3')) ? Storage::disk('s3')->temporaryUrl($video->video_path, '+30 minutes') : '' }}" type="video/mp4">
+                                            <source src="movie.ogg" type="video/ogg">
+                                            Seu navegador não suporta a exibição de vídeos.
+                                        </video> --}}
+                                    </div>
+                                    <div class="col-lg-8 col-sm-12">
+                                        <p class="mb-1"><strong>{{ ($video->programa and $video->programa->emissora) ? $video->programa->emissora->nome_emissora : '' }}</strong> - <strong>{{ ($video->programa) ? $video->programa->nome_programa : '' }}</strong></p>
+                                        <p class="mb-1">
+                                            {{ date('d/m/Y', strtotime($video->horario_start_gravacao)) }} - Das 
+                                            {{ date('H:i:s', strtotime($video->horario_start_gravacao)) }} às 
+                                            {{ date('H:i:s', strtotime($video->horario_end_gravacao)) }}
+                                        </p>
 
-                                    <div class="panel panel-success">
-                                        <div class="conteudo-noticia mb-1 transcricao">
-                                            {!! ($video->transcricao) ?  Str::limit($video->transcricao, 700, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
-                                        </div>
-                                        <div class="panel-body transcricao-total">
-                                            {!! ($video->transcricao) ?  $video->transcricao  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
-                                        </div>
-                                        <div class="panel-heading">
-                                            <h3 class="panel-title"><span class="btn-show">Mostrar Mais</span></h3>
-                                        </div>
-                                    </div> 
+                                        <div class="panel panel-success">
+                                            <div class="conteudo-noticia mb-1 transcricao">
+                                                {!! ($video->transcricao) ?  Str::limit($video->transcricao, 700, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                            </div>
+                                            <div class="panel-body transcricao-total">
+                                                {!! ($video->transcricao) ?  $video->transcricao  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                            </div>
+                                            <div class="panel-heading">
+                                                <h3 class="panel-title"><span class="btn-show">Mostrar Mais</span></h3>
+                                            </div>
+                                        </div> 
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                @endforeach
+                    @endforeach
+                @endif
             </div>
         </div>
     </div>
@@ -171,7 +175,58 @@
                 instance_ods.mark(expressao, options); 
             }
 
-        });
+            var emissora = $("#fonte").val();
 
+            if(emissora){
+                buscarProgramas(emissora);
+            }
+
+            $(document).on('change', '#fonte', function() {
+                
+                var emissora = $(this).val();
+
+                buscarProgramas(emissora);
+
+                return $('#programa').prop('disabled', false);
+            });
+
+            function buscarProgramas(emissora){
+
+                var cd_programa = $("#cd_programa_selecionado").val();
+
+                $.ajax({
+                        url: host+'/api/tv/emissora/'+emissora+'/programas/buscar',
+                        type: 'GET',
+                        beforeSend: function() {
+                            $('.content').loader('show');
+                            $('#programa').append('<option value="">Carregando...</option>').val('');
+                        },
+                        success: function(data) {
+
+                            $('#programa').find('option').remove();
+                            $('#programa').attr('disabled', false);
+
+                            if(data.length == 0) {                            
+                                $('#programa').append('<option value="">Emissora não possui programas cadastrados</option>').val('');
+                                return;
+                            }
+
+                            $('#programa').append('<option value="">Selecione um programa</option>').val('');
+
+                            data.forEach(element => {
+                                let option = new Option(element.text, element.id);
+                                $('#programa').append(option);
+                            });
+                            
+                        },
+                        complete: function(){
+                            if(cd_programa > 0)
+                                $('#programa').val(cd_programa);
+                            $('.content').loader('hide');
+                        }
+                    });
+
+            };
+        });
     </script>
 @endsection
