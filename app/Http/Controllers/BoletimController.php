@@ -21,9 +21,7 @@ class BoletimController extends Controller
 
     public function index()
     {
-        $clientes = Cliente::whereHas('pessoa', function ($q){
-            return $q->orderBy('nome');
-        })->get();
+        $clientes = Cliente::orderBy('nome')->get();
 
         return view('boletim/index',compact('clientes'));
     }

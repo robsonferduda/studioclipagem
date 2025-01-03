@@ -219,7 +219,7 @@ Route::post('tv/emissoras/adicionar','EmissoraTvController@adicionar');
 Route::post('tv/emissoras/atualizar','EmissoraTvController@atualizar');
 
 Route::match(array('GET', 'POST'),'tv/emissoras/programas','ProgramaTvController@index');
-
+Route::get('tv/emissoras/programas/limpar','ProgramaTvController@limpar');
 Route::get('tv/emissoras/programas/novo','ProgramaTvController@novo');
 Route::get('tv/emissoras/programas/editar/{id}','ProgramaTvController@editar');
 Route::get('tv/emissora/programas/{id}/horarios','ProgramaTvController@horarios');

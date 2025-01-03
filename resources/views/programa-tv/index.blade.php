@@ -63,7 +63,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12 checkbox-radios mb-0">
-                                <a href="{{ url('emissoras/radio/limpar') }}" class="btn btn-warning btn-limpar"><i class="fa fa-refresh"></i> Limpar</a>
+                                <a href="{{ url('tv/emissoras/programas/limpar') }}" class="btn btn-warning btn-limpar"><i class="fa fa-refresh"></i> Limpar</a>
                                 <button type="submit" id="btn-find" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                             </div>                                   
                         </div>    

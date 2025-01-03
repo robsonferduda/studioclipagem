@@ -132,6 +132,14 @@ class ProgramaTvController extends Controller
         return view('programa-tv/horarios',compact('horarios','id_programa'));
     }
 
+    public function limpar()
+    {
+        Session::forget('filtro_estado');
+        Session::forget('filtro_nome');
+        Session::forget('filtro_codigo');
+
+        return redirect('tv/emissoras/programas');
+    }
     public function adicionarHorarios(Request $request)
     {
         $emissora = $request->id_programa;
