@@ -92,7 +92,14 @@
                                         </video>
                                     </div>
                                     <div class="col-lg-8 col-sm-12">
-                                        <p class="mb-1"><strong>{{ ($video->programa and $video->programa->emissora) ? $video->programa->emissora->nome_emissora : '' }}</strong> - <strong>{{ ($video->programa) ? $video->programa->nome_programa : '' }}</strong></p>
+                                        
+                                        <p class="mb-1">
+                                            @if($video->emissora and $video->emissora->tipo and in_array($video->emissora->tipo->id, [4,5]))
+                                                <i class="fa fa-youtube text-danger" aria-hidden="true" style="font-size: 30px;"></i>
+                                            @endif
+                                            <strong>{{ ($video->programa and $video->programa->emissora) ? $video->programa->emissora->nome_emissora : '' }}</strong> - 
+                                            <strong>{{ ($video->programa) ? $video->programa->nome_programa : '' }}</strong>
+                                        </p>
                                         <p class="mb-1">
                                             {{ date('d/m/Y', strtotime($video->horario_start_gravacao)) }} - Das 
                                             {{ date('H:i:s', strtotime($video->horario_start_gravacao)) }} às 

@@ -110,3 +110,32 @@
     </div>
 </div>
 @endsection
+@section('script')    
+    <script>
+      
+        var host = $('meta[name="base-url"]').attr('content');
+
+        $(document).ready(function(){ 
+
+            destacaTexto();
+
+            function destacaTexto(){
+
+                var expressao = "{{ $expressao }}";
+                var context = document.querySelector("body");
+                var instance_ods = new Mark(context);
+                
+                var options = {"element": "mark",
+                            "separateWordSearch": false,
+                            "accuracy": {
+                                    "value": "exactly",
+                                    "limiters": [",", "."]
+                                },
+                                "diacritics": true
+                            };
+
+                instance_ods.mark(expressao, options); 
+            }            
+        });
+    </script>
+@endsection

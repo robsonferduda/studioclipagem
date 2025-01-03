@@ -7,11 +7,13 @@ use Auth;
 use DateTime;
 use DateInterval;
 use DatePeriod;
+use App\Utils;
 use Carbon\Carbon;
 use App\Models\EmissoraWeb;
 use App\Models\ProgramaEmissoraWeb;
 use App\Models\VideoEmissoraWeb;
 use Illuminate\Http\Request;
+use Laracasts\Flash\Flash;
 use Illuminate\Support\Facades\Session;
 
 class VideosController extends Controller
@@ -153,7 +155,7 @@ class VideosController extends Controller
         $dados = array();
         
         $dt_inicial = Carbon::now()->subDays(7);
-        $dt_final = date('Y-m-d');
+        $dt_final = Carbon::now()->addDays(1);
 
         $begin = new DateTime($dt_inicial);
         $end = new DateTime($dt_final);
