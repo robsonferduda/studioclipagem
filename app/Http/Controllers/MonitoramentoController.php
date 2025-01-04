@@ -71,12 +71,17 @@ class MonitoramentoController extends Controller
                             WHERE t1.created_at between '2024-11-01 00:00:00' AND '2024-11-01 23:59:59') as texto_busca
                             WHERE texto_busca.document @@ to_tsquery('$request->expressao')";
 
-        $sql = "SELECT id, titulo_noticia, url_noticia 
-                FROM noticias_web 
-                WHERE id IN(SELECT id_noticia_web 
-                            FROM fts_noticia_web 
-                            WHERE documento @@ to_tsquery('portuguese','$request->expressao')
-                            AND created_at between '2024-11-01 00:00:00' AND '2024-11-30 23:59:59')";
+        $sql = "SELECT 
+                    n.id, n.id_fonte, n.url_noticia, n.data_insert, n.data_noticia, n.titulo_noticia
+                FROM 
+                    noticias_web n
+                JOIN 
+                    conteudo_noticia_web cnw 
+                    ON cnw.id_noticia_web = n.id
+                WHERE 1=1
+                    AND cnw.created_at BETWEEN '2024-11-30' AND '2024-12-31' ";
+
+        $sql .= ($request->expressao) ? "AND  cnw.conteudo_tsv @@ to_tsquery('portuguese', '$request->expressao')" : '';
 
         $dados = DB::select($sql);
 

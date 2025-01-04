@@ -4,15 +4,14 @@
     <div class="card">
         <div class="card-header">
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-6">
                     <h4 class="card-title">
                         <i class="nc-icon nc-sound-wave ml-2"></i> Monitoramento 
-                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Dashboard 
                     </h4>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <a href="{{ url('/') }}" class="btn btn-primary pull-right mr-3"><i class="nc-icon nc-chart-pie-36"></i> Dashboard</a>
-                    <a href="{{ url('monitoramento/novo') }}" class="btn btn-info pull-right mr-3"><i class="fa fa-plus"></i> Cadastrar Monitoramento</a>
+                    <a href="{{ url('monitoramento/novo') }}" class="btn btn-info pull-right mr-3"><i class="fa fa-plus"></i> Novo</a>
                 </div>
             </div>
         </div>

@@ -280,3 +280,4 @@ div .box-horario:not(:last-child) {
     margin-bottom: 5px;
 }
 .add-area:hover{ cursor: pointer;}
+.monitoramento-total { font-weight: bold;}

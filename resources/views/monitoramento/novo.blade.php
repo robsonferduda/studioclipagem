@@ -7,7 +7,7 @@
                 <div class="col-md-8">
                     <h4 class="card-title">
                         <i class="nc-icon nc-sound-wave ml-2"></i> Monitoramento 
-                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Cadastrar 
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Novo 
                     </h4>
                 </div>
                 <div class="col-md-4">
@@ -19,8 +19,8 @@
             <div class="col-md-12">
                 @include('layouts.mensagens')
             </div>
-            <div class="row">
-                <div class="col-sm-12 col-md-12 col-lg-12">
+            <div class="row mr-1">
+                <div class="col-sm-12 col-md-6 col-lg-6">
                     {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['buscar-monitoramento']]) !!}
                         <div class="form-group m-3">
                             <div class="row">
@@ -78,6 +78,59 @@
                         </div>
                     {!! Form::close() !!}
                 </div>   
+                <div class="col-lg-6 col-md-6">
+                    <div class="nav-tabs-navigation">
+                        <div class="nav-tabs-wrapper">
+                        <ul id="tabs" class="nav nav-tabs" role="tablist">
+                            <li class="nav-item">
+                            <a class="nav-link active" data-toggle="tab" href="#home" role="tab" aria-expanded="true" aria-selected="false"><i class="fa fa-globe"></i> Web <span class="monitoramento-total monitoramento-total-web">0</span></a>
+                            </li>
+                            <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#profile" role="tab" aria-expanded="false"><i class="fa fa-newspaper-o"></i> Impressos <span class="monitoramento-total">5</span></a>
+                            </li>
+                            <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#messages" role="tab" aria-expanded="false" aria-selected="true"><i class="fa fa-volume-up"></i> Rádio <span class="monitoramento-total">0</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#panel_tv" role="tab" aria-expanded="false" aria-selected="true"><i class="fa fa-volume-up"></i> TV <span class="monitoramento-total">0</span></a>
+                            </li>
+                        </ul>
+                        </div>
+                    </div>
+                    <div id="my-tab-content" class="tab-content">
+                        <div class="tab-pane active" id="home" role="tabpanel" aria-expanded="true">
+                            <div id="accordion" role="tablist" aria-multiselectable="true" class="card-collapse">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p class="card-title mb-0">Foram encontradas <strong class="monitoramento-total-web"></strong> notícias</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="pull-right">
+                                            <span class="badge badge-pill badge-primary">
+                                                Todas as fontes
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                
+                                
+                               
+                    
+                              </div>
+
+                        </div>
+                        <div class="tab-pane" id="profile" role="tabpanel" aria-expanded="false">
+                        <p>Here is your profile.</p>
+                        </div>
+                        <div class="tab-pane" id="messages" role="tabpanel" aria-expanded="false">
+                        <p>Here are your messages.</p>
+                        </div>
+                        <div class="tab-pane" id="panel_tv" role="tabpanel" aria-expanded="false">
+                            <p>Here are your messages.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="col col-sm-12 col-md-12 col-lg-12">
@@ -143,20 +196,36 @@
                     success: function(data) {
 
                         $(".label-resultado").css("display","block");
-                        $(".resultados").empty();
+                        $("#accordion .card").remove();
 
                         if(data.length == 0){
 
-                            $(".resultados").append('<span class="text-danger">Nenhum resultado encontrado</span>');
+                            $(".monitoramento-total-web").html(0);
 
                         }else{
+
+                            $(".monitoramento-total-web").html(data.length);
 
                             $(".label-resultado").empty();
                             $(".label-resultado").append("Resultados da Busca"+" - Foram encontrados "+data.length+" registros");
 
                             $.each(data, function(k, v) {
                                // $(".resultados").append('<p><a href="'+v.url_noticia+'" target="BLANK">'+v.titulo_noticia+'</a></p>');
-                                $(".resultados").append('<div><p class="fts_detalhes" style="font-weight: 600;" data-chave="txt-'+k+'" data-id="'+v.id+'">'+v.titulo_noticia+'</p><div id="txt-'+k+'"></div></div>');
+                               // $(".resultados").append('<div><p class="fts_detalhes" style="font-weight: 600;" data-chave="txt-'+k+'" data-id="'+v.id+'">'+v.titulo_noticia+'</p><div id="txt-'+k+'"></div></div>');
+
+                                $("#accordion").append('<div class="card card-plain">'+
+                                  '<div class="card-header" role="tab" id="heading1">'+
+                                    '<a data-toggle="collapse" data-parent="#accordion" href="#collapse_'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed">'+v.titulo_noticia+
+                                      '<i class="nc-icon nc-minimal-down"></i>'+
+                                    '</a>'+
+                                  '</div>'+
+                                  '<div id="collapse_'+v.id+'" class="collapse" role="tabpanel" aria-labelledby="heading1" style="">'+
+                                    '<div class="card-body">'+
+                                    '</div>'+
+                                  '</div>'+
+                                '</div>');
+
+
                             });
                         }                            
                     },
