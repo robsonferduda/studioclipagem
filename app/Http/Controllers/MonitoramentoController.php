@@ -79,9 +79,10 @@ class MonitoramentoController extends Controller
                     conteudo_noticia_web cnw 
                     ON cnw.id_noticia_web = n.id
                 WHERE 1=1
-                    AND cnw.created_at BETWEEN '2024-12-30' AND '2024-12-31' ";
+                    AND cnw.created_at BETWEEN '2024-11-30' AND '2024-12-31' ";
 
-        $sql .= ($request->expressao) ? "AND  cnw.conteudo_tsv @@ to_tsquery('portuguese', '$request->expressao')" : '';
+        $sql .= ($request->expressao) ? "AND  cnw.conteudo_tsv @@ to_tsquery('portuguese', '$request->expressao') " : '';
+        $sql .= 'ORDER BY data_noticia DESC';
 
         $dados = DB::select($sql);
 
@@ -90,8 +91,8 @@ class MonitoramentoController extends Controller
 
     public function getConteudo(Request $request)
     {
-        $sql = "SELECT ts_headline('portuguese',fts_noticia_web.conteudo , to_tsquery('portuguese', '$request->expressao'), 'HighlightAll=true, StartSel=<mark>, StopSel=</mark>') as texto
-                FROM fts_noticia_web 
+        $sql = "SELECT ts_headline('portuguese', conteudo , to_tsquery('portuguese', '$request->expressao'), 'HighlightAll=true, StartSel=<mark>, StopSel=</mark>') as texto
+                FROM conteudo_noticia_web 
                 WHERE id_noticia_web = ".$request->id;
 
         $dados = DB::select($sql);

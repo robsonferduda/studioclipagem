@@ -60,7 +60,7 @@
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="expressao" class="form-label">Expressão de Busca</label>
+                                        <label for="expressao" class="form-label">Expressão de Busca <span class="text-danger">Campo obrigatório</span></label>
                                         <textarea class="form-control" id="expressao" rows="3"></textarea>
                                     </div>
                                     <p class="mb-1"><strong>Observações</strong></p>
@@ -211,16 +211,23 @@
 
                             $.each(data, function(k, v) {
                                // $(".resultados").append('<p><a href="'+v.url_noticia+'" target="BLANK">'+v.titulo_noticia+'</a></p>');
-                               // $(".resultados").append('<div><p class="fts_detalhes" style="font-weight: 600;" data-chave="txt-'+k+'" data-id="'+v.id+'">'+v.titulo_noticia+'</p><div id="txt-'+k+'"></div></div>');
+                               // $(".resultados").append('<div><p class="fts_detalhes" style="font-weight: 600;" data-chave="card-txt-'+k+'" data-id="'+v.id+'">'+v.titulo_noticia+'</p><div id="txt-'+k+'"></div></div>');
+
+                               const dataObj = new Date(v.data_noticia);
+                               const data_formatada = dataObj.toLocaleDateString("pt-BR", {
+                                    day: "2-digit",
+                                    month: "2-digit",
+                                    year: "numeric"
+                                });
 
                                 $("#accordion").append('<div class="card card-plain">'+
                                   '<div class="card-header" role="tab" id="heading1">'+
-                                    '<a data-toggle="collapse" data-parent="#accordion" href="#collapse_'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed">'+v.titulo_noticia+
+                                    '<a data-toggle="collapse" data-parent="#accordion" href="#collapse_'+v.id+'" data-chave="card-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.titulo_noticia+
                                       '<i class="nc-icon nc-minimal-down"></i>'+
                                     '</a>'+
                                   '</div>'+
                                   '<div id="collapse_'+v.id+'" class="collapse" role="tabpanel" aria-labelledby="heading1" style="">'+
-                                    '<div class="card-body">'+
+                                    '<div class="card-body card-txt-'+k+'" >'+
                                     '</div>'+
                                   '</div>'+
                                 '</div>');
@@ -243,7 +250,7 @@
         $('body').on('click', '.fts_detalhes', function() {
 
             var id = $(this).data("id");
-            var chave = "#"+$(this).data("chave");
+            var chave = "."+$(this).data("chave");
             var expressao = $("#expressao").val();
             
             $.ajax({url: host+'/monitoramento/filtrar/conteudo',
