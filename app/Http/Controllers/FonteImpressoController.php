@@ -76,7 +76,7 @@ class FonteImpressoController extends Controller
                 return $q->where('nome', 'ILIKE', '%'.trim($nome).'%');
             });
 
-            $fontes = $fonte->orderBy('created_at','DESC')->paginate(10);
+            $fontes = $fonte->orderBy('nome','DESC')->paginate(10);
         }
 
         return view('fonte-impresso/listar',compact('cidades','estados','fontes'));
