@@ -227,7 +227,7 @@
                                     '</a>'+
                                   '</div>'+
                                   '<div id="collapse_'+v.id+'" class="collapse" role="tabpanel" aria-labelledby="heading1" style="">'+
-                                    '<div class="card-body card-txt-'+k+'" >'+
+                                    '<div class="card-body card-txt-'+k+'" style="padding: 0px;">'+
                                     '</div>'+
                                   '</div>'+
                                 '</div>');
