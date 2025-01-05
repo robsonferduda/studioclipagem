@@ -172,6 +172,7 @@ Route::get('monitoramento/{id}/noticias','MonitoramentoController@noticias');
 Route::get('monitoramento/cliente/{id}','MonitoramentoController@getMonitoramentoCliente');
 Route::post('monitoramento/filtrar/conteudo','MonitoramentoController@getConteudo');
 Route::post('monitoramento/filtrar','MonitoramentoController@filtrar');
+Route::post('monitoramento/filtrar/impresso','MonitoramentoController@filtrarImpresso');
 
 Route::post('pauta','PautaController@store');
 Route::match(array('GET', 'POST'),'pautas','PautaController@index');

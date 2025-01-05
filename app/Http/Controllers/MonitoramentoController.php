@@ -61,8 +61,8 @@ class MonitoramentoController extends Controller
     public function filtrar(Request $request)
     {
         $carbon = new Carbon();
-        $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d "."00:00:00");
-        $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d "."23:59:59");
+        $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00" : date("Y-m-d "."00:00:00");
+        $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d "."23:59:59");
 
         $sql = "SELECT 
                     n.id, n.id_fonte, n.url_noticia, n.data_insert, n.data_noticia, n.titulo_noticia
@@ -76,6 +76,30 @@ class MonitoramentoController extends Controller
 
         $sql .= ($request->expressao) ? "AND  cnw.conteudo_tsv @@ to_tsquery('portuguese', '$request->expressao') " : '';
         $sql .= 'ORDER BY data_noticia DESC';
+
+        $dados = DB::select($sql);
+
+        return response()->json($dados);
+    }
+
+    public function filtrarImpresso(Request $request)
+    {
+        $carbon = new Carbon();
+        $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00" : date("Y-m-d "."00:00:00");
+        $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d "."23:59:59");
+
+        $sql = "SELECT 
+                    pejo.id, id_jornal_online, link_pdf, dt_coleta, dt_pub, titulo, texto_extraido
+                FROM 
+                    edicao_jornal_online n
+                JOIN 
+                    pagina_edicao_jornal_online pejo 
+                    ON pejo.id_edicao_jornal_online = n.id
+                WHERE 1=1
+                    AND pejo.created_at BETWEEN '$dt_inicial' AND '$dt_final' ";
+
+        $sql .= ($request->expressao) ? "AND  pejo.texto_extraido_tsv @@ to_tsquery('portuguese', '$request->expressao') " : '';
+        $sql .= 'ORDER BY dt_coleta DESC';
 
         $dados = DB::select($sql);
 

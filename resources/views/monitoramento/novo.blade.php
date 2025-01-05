@@ -101,7 +101,7 @@
                     </div>
                     <div id="my-tab-content" class="tab-content">
                         <div class="tab-pane active" id="panel_web" role="tabpanel" aria-expanded="true">
-                            <div id="accordion" role="tablist" aria-multiselectable="true" class="card-collapse">
+                            <div id="accordion_web" role="tablist" aria-multiselectable="true" class="card-collapse">
                                 <div class="row cabecalho-busca d-none">
                                     <div class="col-md-6">
                                         <p class="card-title mb-0">Foram encontradas <strong class="monitoramento-total-web"></strong> notícias</p>
@@ -122,7 +122,20 @@
                             </div>
                         </div>
                         <div class="tab-pane" id="panel_impresso" role="tabpanel" aria-expanded="false">
-                        
+                            <div id="accordion_impresso" role="tablist" aria-multiselectable="true" class="card-collapse">
+                                <div class="row cabecalho-busca d-none">
+                                    <div class="col-md-6">
+                                        <p class="card-title mb-0">Foram encontradas <strong class="monitoramento-total-impresso"></strong> notícias</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="pull-right">
+                                            <span class="badge badge-pill badge-primary">
+                                                Todas as fontes
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>   
+                            </div>
                         </div>
                         <div class="tab-pane" id="panel_radio" role="tabpanel" aria-expanded="false">
                         
@@ -201,6 +214,7 @@
 
             if(flag){
 
+                //Busca Web
                 $.ajax({url: host+'/monitoramento/filtrar',
                     type: 'POST',
                     data: {"_token": $('meta[name="csrf-token"]').attr('content'),
@@ -213,7 +227,7 @@
                     },
                     success: function(data) {
 
-                        $("#accordion .card").remove();
+                        $("#accordion_web .card").remove();
 
                         if(data.length == 0){
 
@@ -237,14 +251,14 @@
                                     year: "numeric"
                                 });
 
-                                $("#accordion").append('<div class="card card-plain">'+
+                                $("#accordion_web").append('<div class="card card-plain">'+
                                   '<div class="card-header" role="tab" id="heading1">'+
-                                    '<a data-toggle="collapse" data-parent="#accordion" href="#collapse_'+v.id+'" data-chave="card-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.titulo_noticia+
+                                    '<a data-toggle="collapse" data-parent="#accordion_web" href="#collapse_'+v.id+'" data-chave="card-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.titulo_noticia+
                                       '<i class="nc-icon nc-minimal-down"></i>'+
                                     '</a>'+
                                   '</div>'+
                                   '<div id="collapse_'+v.id+'" class="collapse" role="tabpanel" aria-labelledby="heading1" style="">'+
-                                    '<div class="card-body card-txt-'+k+'" style="padding: 0px;">'+
+                                    '<div class="card-body card-txt-'+k+'" style="padding: 0px; margin-top: 5px;">'+
                                     '</div>'+
                                   '</div>'+
                                 '</div>');
@@ -253,7 +267,68 @@
                         }                            
                     },
                     error: function(){
-                        $("#accordion .card").remove();
+                        $("#accordion_web .card").remove();
+                        $(".msg-alerta").html('<span class="text-danger">Erro ao executar expressão de busca</span>');
+                    },
+                    complete: function(){
+                        $('.load-busca').loader('hide');
+                    }
+                });
+
+                //Busca Impresso
+                $.ajax({url: host+'/monitoramento/filtrar/impresso',
+                    type: 'POST',
+                    data: {"_token": $('meta[name="csrf-token"]').attr('content'),
+                            "expressao": expressao,
+                            "dt_inicial": dt_inicial,
+                            "dt_final": dt_final
+                    },
+                    beforeSend: function() {
+                        $('.load-busca').loader('show');
+                    },
+                    success: function(data) {
+
+                        $("#accordion_impresso .card").remove();
+
+                        if(data.length == 0){
+
+                            $(".cabecalho-busca").addClass("d-none");
+                            $(".monitoramento-total-web").html(0);
+
+                        }else{
+
+                            $(".cabecalho-busca").removeClass("d-none");
+                            $(".cabecalho-aguardando-busca").addClass("d-none");
+
+                            $(".monitoramento-total-web").html(data.length);
+                            $.each(data, function(k, v) {
+                               // $(".resultados").append('<p><a href="'+v.url_noticia+'" target="BLANK">'+v.titulo_noticia+'</a></p>');
+                               // $(".resultados").append('<div><p class="fts_detalhes" style="font-weight: 600;" data-chave="card-txt-'+k+'" data-id="'+v.id+'">'+v.titulo_noticia+'</p><div id="txt-'+k+'"></div></div>');
+
+                               const dataObj = new Date(v.data_noticia);
+                               const data_formatada = dataObj.toLocaleDateString("pt-BR", {
+                                    day: "2-digit",
+                                    month: "2-digit",
+                                    year: "numeric"
+                                });
+
+                                $("#accordion_impresso").append('<div class="card card-plain">'+
+                                  '<div class="card-header" role="tab" id="heading1">'+
+                                    '<a data-toggle="collapse" data-parent="#accordion_impresso" href="#collapse_'+v.id+'" data-chave="card-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.titulo_noticia+
+                                      '<i class="nc-icon nc-minimal-down"></i>'+
+                                    '</a>'+
+                                  '</div>'+
+                                  '<div id="collapse_'+v.id+'" class="collapse" role="tabpanel" aria-labelledby="heading1" style="">'+
+                                    '<div class="card-body card-txt-'+k+'" style="padding: 0px; margin-top: 5px;">'+
+                                    '</div>'+
+                                  '</div>'+
+                                '</div>');
+
+                            });
+                        }                            
+                    },
+                    error: function(){
+                        $("#accordion_impresso .card").remove();
                         $(".msg-alerta").html('<span class="text-danger">Erro ao executar expressão de busca</span>');
                     },
                     complete: function(){
