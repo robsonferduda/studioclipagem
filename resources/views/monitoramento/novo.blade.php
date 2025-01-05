@@ -102,7 +102,7 @@
                     <div id="my-tab-content" class="tab-content">
                         <div class="tab-pane active" id="panel_web" role="tabpanel" aria-expanded="true">
                             <div id="accordion" role="tablist" aria-multiselectable="true" class="card-collapse">
-                                <div class="row cabecalho-busca">
+                                <div class="row cabecalho-busca d-none">
                                     <div class="col-md-6">
                                         <p class="card-title mb-0">Foram encontradas <strong class="monitoramento-total-web"></strong> notícias</p>
                                     </div>
@@ -217,9 +217,13 @@
 
                         if(data.length == 0){
 
+                            $(".cabecalho-busca").addClass("d-none");
                             $(".monitoramento-total-web").html(0);
 
                         }else{
+
+                            $(".cabecalho-busca").removeClass("d-none");
+                            $(".cabecalho-aguardando-busca").addClass("d-none");
 
                             $(".monitoramento-total-web").html(data.length);
                             $.each(data, function(k, v) {
