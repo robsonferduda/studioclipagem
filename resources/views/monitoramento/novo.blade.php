@@ -278,7 +278,7 @@
                             "id": id
                     },
                     beforeSend: function() {
-                        
+                        $(chave).loader('show');
                     },
                     success: function(data) {
                         $(chave).html(data[0].texto);                                         
@@ -287,7 +287,7 @@
                         $(".msg-alerta").html('<span class="text-danger">Erro ao buscar conteúdo</span>');
                     },
                     complete: function(){
-                        
+                        $(chave).loader('hide');
                     }
             });
 
