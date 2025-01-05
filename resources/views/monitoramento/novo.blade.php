@@ -293,19 +293,19 @@
                         if(data.length == 0){
 
                             $(".cabecalho-busca").addClass("d-none");
-                            $(".monitoramento-total-web").html(0);
+                            $(".monitoramento-total-impresso").html(0);
 
                         }else{
 
                             $(".cabecalho-busca").removeClass("d-none");
                             $(".cabecalho-aguardando-busca").addClass("d-none");
 
-                            $(".monitoramento-total-web").html(data.length);
+                            $(".monitoramento-total-impresso").html(data.length);
                             $.each(data, function(k, v) {
                                // $(".resultados").append('<p><a href="'+v.url_noticia+'" target="BLANK">'+v.titulo_noticia+'</a></p>');
                                // $(".resultados").append('<div><p class="fts_detalhes" style="font-weight: 600;" data-chave="card-txt-'+k+'" data-id="'+v.id+'">'+v.titulo_noticia+'</p><div id="txt-'+k+'"></div></div>');
 
-                               const dataObj = new Date(v.data_noticia);
+                               const dataObj = new Date(v.dt_pub);
                                const data_formatada = dataObj.toLocaleDateString("pt-BR", {
                                     day: "2-digit",
                                     month: "2-digit",
@@ -314,7 +314,7 @@
 
                                 $("#accordion_impresso").append('<div class="card card-plain">'+
                                   '<div class="card-header" role="tab" id="heading1">'+
-                                    '<a data-toggle="collapse" data-parent="#accordion_impresso" href="#collapse_'+v.id+'" data-chave="card-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.titulo_noticia+
+                                    '<a data-toggle="collapse" data-parent="#accordion_impresso" href="#collapse_'+v.id+'" data-chave="card-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.titulo+
                                       '<i class="nc-icon nc-minimal-down"></i>'+
                                     '</a>'+
                                   '</div>'+
