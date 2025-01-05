@@ -83,22 +83,22 @@
                         <div class="nav-tabs-wrapper">
                         <ul id="tabs" class="nav nav-tabs" role="tablist">
                             <li class="nav-item">
-                            <a class="nav-link active" data-toggle="tab" href="#home" role="tab" aria-expanded="true" aria-selected="false"><i class="fa fa-globe"></i> Web <span class="monitoramento-total monitoramento-total-web">0</span></a>
+                            <a class="nav-link active" data-toggle="tab" href="#panel_web" role="tab" aria-expanded="true" aria-selected="false"><i class="fa fa-globe"></i> Web <span class="monitoramento-total monitoramento-total-web">0</span></a>
                             </li>
                             <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#profile" role="tab" aria-expanded="false"><i class="fa fa-newspaper-o"></i> Impressos <span class="monitoramento-total">5</span></a>
+                            <a class="nav-link" data-toggle="tab" href="#panel_impresso" role="tab" aria-expanded="false"><i class="fa fa-newspaper-o"></i> Impressos <span class="monitoramento-total monitoramento-total-impresso"></span></a>
                             </li>
                             <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#messages" role="tab" aria-expanded="false" aria-selected="true"><i class="fa fa-volume-up"></i> Rádio <span class="monitoramento-total">0</span></a>
+                            <a class="nav-link" data-toggle="tab" href="#panel_radio" role="tab" aria-expanded="false" aria-selected="true"><i class="fa fa-volume-up"></i> Rádio <span class="monitoramento-total monitoramento-total-radio">0</span></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#panel_tv" role="tab" aria-expanded="false" aria-selected="true"><i class="fa fa-volume-up"></i> TV <span class="monitoramento-total">0</span></a>
+                                <a class="nav-link" data-toggle="tab" href="#panel_tv" role="tab" aria-expanded="false" aria-selected="true"><i class="fa fa-volume-up"></i> TV <span class="monitoramento-total monitoramento-total-tv">0</span></a>
                             </li>
                         </ul>
                         </div>
                     </div>
                     <div id="my-tab-content" class="tab-content">
-                        <div class="tab-pane active" id="home" role="tabpanel" aria-expanded="true">
+                        <div class="tab-pane active" id="panel-web" role="tabpanel" aria-expanded="true">
                             <div id="accordion" role="tablist" aria-multiselectable="true" class="card-collapse">
                                 <div class="row">
                                     <div class="col-md-6">
@@ -111,31 +111,19 @@
                                             </span>
                                         </div>
                                     </div>
-                                </div>
-                                
-                                
-                                
-                               
-                    
-                              </div>
-
+                                </div>                              
+                            </div>
                         </div>
-                        <div class="tab-pane" id="profile" role="tabpanel" aria-expanded="false">
-                        <p>Here is your profile.</p>
+                        <div class="tab-pane" id="panel_impresso" role="tabpanel" aria-expanded="false">
+                        
                         </div>
-                        <div class="tab-pane" id="messages" role="tabpanel" aria-expanded="false">
-                        <p>Here are your messages.</p>
+                        <div class="tab-pane" id="panel_radio" role="tabpanel" aria-expanded="false">
+                        
                         </div>
                         <div class="tab-pane" id="panel_tv" role="tabpanel" aria-expanded="false">
-                            <p>Here are your messages.</p>
+                            
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col col-sm-12 col-md-12 col-lg-12">
-                    <h6 class="m-3 label-resultado">Resultados da Busca</h6>
-                    <div class="resultados m-3"></div>
                 </div>
             </div>
         </div>
@@ -184,18 +172,21 @@
         $("#btn-find").click(function(){
 
             var expressao = $("#expressao").val();
+            var dt_inicial = $(".dt_inicial_relatorio").val();
+            var dt_final = $(".dt_final_relatorio").val();
 
             $.ajax({url: host+'/monitoramento/filtrar',
                     type: 'POST',
                     data: {"_token": $('meta[name="csrf-token"]').attr('content'),
-                            "expressao": expressao
+                            "expressao": expressao,
+                            "dt_inicial": dt_inicial,
+                            "dt_final": dt_final
                     },
                     beforeSend: function() {
                         $('.load-busca').loader('show');
                     },
                     success: function(data) {
 
-                        $(".label-resultado").css("display","block");
                         $("#accordion .card").remove();
 
                         if(data.length == 0){
@@ -205,10 +196,6 @@
                         }else{
 
                             $(".monitoramento-total-web").html(data.length);
-
-                            $(".label-resultado").empty();
-                            $(".label-resultado").append("Resultados da Busca"+" - Foram encontrados "+data.length+" registros");
-
                             $.each(data, function(k, v) {
                                // $(".resultados").append('<p><a href="'+v.url_noticia+'" target="BLANK">'+v.titulo_noticia+'</a></p>');
                                // $(".resultados").append('<div><p class="fts_detalhes" style="font-weight: 600;" data-chave="card-txt-'+k+'" data-id="'+v.id+'">'+v.titulo_noticia+'</p><div id="txt-'+k+'"></div></div>');
@@ -232,13 +219,11 @@
                                   '</div>'+
                                 '</div>');
 
-
                             });
                         }                            
                     },
                     error: function(){
-                        $(".resultados").empty();
-                        $(".resultados").append('<span class="text-danger">Erro ao executar o string de busca</span>');
+                        $("#accordion .card").remove();
                     },
                     complete: function(){
                         $('.load-busca').loader('hide');

@@ -60,16 +60,9 @@ class MonitoramentoController extends Controller
 
     public function filtrar(Request $request)
     {
-        $sql = "SELECT id, titulo_noticia 
-                            FROM
-                            (SELECT 
-                                t1.id, 
-                                t1.titulo_noticia,
-                                to_tsvector(conteudo) as document 
-                            FROM noticias_web t1
-                            JOIN conteudo_noticia_web t2 ON t2.id_noticia_web = t1.id 
-                            WHERE t1.created_at between '2024-11-01 00:00:00' AND '2024-11-01 23:59:59') as texto_busca
-                            WHERE texto_busca.document @@ to_tsquery('$request->expressao')";
+        $carbon = new Carbon();
+        $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d "."00:00:00");
+        $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d "."23:59:59");
 
         $sql = "SELECT 
                     n.id, n.id_fonte, n.url_noticia, n.data_insert, n.data_noticia, n.titulo_noticia
@@ -79,7 +72,7 @@ class MonitoramentoController extends Controller
                     conteudo_noticia_web cnw 
                     ON cnw.id_noticia_web = n.id
                 WHERE 1=1
-                    AND cnw.created_at BETWEEN '2024-12-30' AND '2024-12-31' ";
+                    AND cnw.created_at BETWEEN '$dt_inicial' AND '$dt_final' ";
 
         $sql .= ($request->expressao) ? "AND  cnw.conteudo_tsv @@ to_tsquery('portuguese', '$request->expressao') " : '';
         $sql .= 'ORDER BY data_noticia DESC';
