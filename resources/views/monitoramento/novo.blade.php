@@ -70,7 +70,9 @@
                                     <p class="mt-1 mb-1"><strong><-></strong>: operador de distância entre palavras, onde o - é a distância entre elas</p>
                                     <p class="mt-1 mb-1"><strong>Exemplo de busca</strong>: <span>queda<2>energia & Celesc & !Jaguaruna</span>: Todas as notícias relacionadas à queda de energia que citam a Celesc, exceto em Jaguaruna</p>
                                 </div>
-                                
+                                <div class="col-md-12 msg-alerta">
+
+                                </div>
                                 <div class="col-md-12 checkbox-radios mb-0">
                                     <button type="button" id="btn-find" class="btn btn-primary mb-3"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
@@ -86,7 +88,7 @@
                             <a class="nav-link active" data-toggle="tab" href="#panel_web" role="tab" aria-expanded="true" aria-selected="false"><i class="fa fa-globe"></i> Web <span class="monitoramento-total monitoramento-total-web">0</span></a>
                             </li>
                             <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#panel_impresso" role="tab" aria-expanded="false"><i class="fa fa-newspaper-o"></i> Impressos <span class="monitoramento-total monitoramento-total-impresso"></span></a>
+                            <a class="nav-link" data-toggle="tab" href="#panel_impresso" role="tab" aria-expanded="false"><i class="fa fa-newspaper-o"></i> Impressos <span class="monitoramento-total monitoramento-total-impresso">0</span></a>
                             </li>
                             <li class="nav-item">
                             <a class="nav-link" data-toggle="tab" href="#panel_radio" role="tab" aria-expanded="false" aria-selected="true"><i class="fa fa-volume-up"></i> Rádio <span class="monitoramento-total monitoramento-total-radio">0</span></a>
@@ -98,9 +100,9 @@
                         </div>
                     </div>
                     <div id="my-tab-content" class="tab-content">
-                        <div class="tab-pane active" id="panel-web" role="tabpanel" aria-expanded="true">
+                        <div class="tab-pane active" id="panel_web" role="tabpanel" aria-expanded="true">
                             <div id="accordion" role="tablist" aria-multiselectable="true" class="card-collapse">
-                                <div class="row">
+                                <div class="row cabecalho-busca">
                                     <div class="col-md-6">
                                         <p class="card-title mb-0">Foram encontradas <strong class="monitoramento-total-web"></strong> notícias</p>
                                     </div>
@@ -111,7 +113,12 @@
                                             </span>
                                         </div>
                                     </div>
-                                </div>                              
+                                </div>   
+                                <div class="row cabecalho-aguardando-busca">
+                                    <div class="col-md-6">
+                                        <span class="text-info">Aguardando critérios de busca</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="tab-pane" id="panel_impresso" role="tabpanel" aria-expanded="false">
@@ -174,8 +181,27 @@
             var expressao = $("#expressao").val();
             var dt_inicial = $(".dt_inicial_relatorio").val();
             var dt_final = $(".dt_final_relatorio").val();
+            var flag = false;
 
-            $.ajax({url: host+'/monitoramento/filtrar',
+            $(".msg-alerta").empty(); //Limpa as mensagens de erro
+
+            if(!dt_inicial & !dt_final){
+                flag = false;
+                $(".msg-alerta").append('<p class="text-danger mb-0">Obrigatório selecionar uma data de início e uma data de fim. </p>');
+            }else{
+                flag = true;
+            }
+
+            if(!expressao){
+                flag = false;
+                $(".msg-alerta").append('<p class="text-danger mb-0">Obrigatório informar pelo menos uma expressão de busca. </p>');
+            }else{
+                flag = true;
+            }
+
+            if(flag){
+
+                $.ajax({url: host+'/monitoramento/filtrar',
                     type: 'POST',
                     data: {"_token": $('meta[name="csrf-token"]').attr('content'),
                             "expressao": expressao,
@@ -224,12 +250,15 @@
                     },
                     error: function(){
                         $("#accordion .card").remove();
+                        $(".msg-alerta").html('<span class="text-danger">Erro ao executar expressão de busca</span>');
                     },
                     complete: function(){
                         $('.load-busca').loader('hide');
                     }
-            });
+                });
 
+            }
+           
         });
 
         $('body').on('click', '.fts_detalhes', function() {
@@ -251,7 +280,7 @@
                         $(chave).html(data[0].texto);                                         
                     },
                     error: function(){
-                        
+                        $(".msg-alerta").html('<span class="text-danger">Erro ao buscar conteúdo</span>');
                     },
                     complete: function(){
                         
