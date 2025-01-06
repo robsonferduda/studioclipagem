@@ -26,37 +26,42 @@
                     {!! Form::open(['id' => 'frm_fonte_impressa', 'class' => 'form-horizontal', 'url' => ['fonte-impresso/listar']]) !!}
                     <div class="form-group m-3 w-70">
                         <div class="row">
-                            <div class="col-md-3">
+                            <div class="col-md-2 col-sm-12">
                                 <div class="form-group">
                                     <label>Estado</label>
                                     <select class="form-control select2" name="cd_estado" id="cd_estado">
                                         <option value="">Selecione um estado</option>
-                                        @foreach ($estados as $estado)
-                                            <option value="{{ $estado->cd_estado }}" {{ (Session::get('filtro_estado') == $estado->cd_estado) ? 'selected' : '' }}>{{ $estado->nm_estado }}</option>
+                                        @foreach($estados as $estado)
+                                            <option value="{{ $estado->cd_estado }}" {{ (Session::get('impresso_filtro_estado') == $estado->cd_estado) ? 'selected' : '' }}>{{ $estado->nm_estado }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3 col-sm-12">
                                 <div class="form-group">
                                     <label>Cidade</label>
                                     <select class="form-control select2" name="cd_cidade" id="cidade" disabled="disabled">
                                         <option value="">Selecione uma cidade</option>
+                                        
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-5">
                                 <div class="form-group">
                                     <label>Nome</label>
-                                    <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome" value="">
+                                    <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome" value="{{ Session::get('impresso_filtro_nome') }}">
                                 </div>
                             </div>    
-                            <div class="col-md-2">
+                            <div class="col-md-2 col-sm-12">
                                 <div class="form-group">
-                                    <label>Código</label>
-                                    <input type="text" class="form-control" name="codigo" id="codigo" placeholder="Código" value="">
+                                    <label>Sincronização</label>
+                                    <select class="form-control select2" name="fl_gravacao" id="fl_gravacao">
+                                        <option value="">Selecione uma sincronização</option>
+                                        <option value="prioritaria" {{ (Session::get('impresso_filtro_mapeamento') === 1) ? 'selected' : '' }}>Prioritária</option>
+                                        <option value="ordinaria" {{ (Session::get('impresso_filtro_mapeamento') === 2) ? 'selected' : '' }}>Geral</option>
+                                    </select>
                                 </div>
-                            </div>     
+                            </div>   
                             <div class="col-md-12 checkbox-radios mb-0">
                                 <a href="{{ url('impresso/limpar') }}" class="btn btn-warning btn-limpar mb-3"><i class="fa fa-refresh"></i> Limpar</a>
                                 <button type="submit" id="btn-find" class="btn btn-primary mb-3"><i class="fa fa-search"></i> Buscar</button>
@@ -158,21 +163,7 @@
 
         let host =  $('meta[name="base-url"]').attr('content');
 
-        $('#fontes_impressas_off').DataTable({
-            "pagingType": "full_numbers",
-            "bPaginate": false,
-            "searching": false, 
-            "bFiltered": false,
-            "lengthMenu": [
-            [10, 25, 50, -1],
-            [10, 25, 50, "Todos"]
-            ],
-            responsive: true,
-            language: {
-            search: "_INPUT_",
-            searchPlaceholder: "Filtrar",
-            }
-        });
+        $("#cd_estado").trigger('change');
     });
 </script>
 @endsection

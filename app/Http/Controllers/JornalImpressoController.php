@@ -391,7 +391,12 @@ class JornalImpressoController extends Controller
 
     public function limpar()
     {
-        Session::forget('filtro_estado');
+        Session::forget('impresso_filtro_estado');
+        Session::forget('impresso_filtro_cidade');
+        Session::forget('impresso_filtro_mapeamento');
+        Session::forget('impresso_filtro_nome');
+
+        return redirect('fonte-impresso/listar');
     }
 
     public function monitoramento(Request $request)
