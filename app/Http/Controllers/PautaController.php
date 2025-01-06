@@ -31,11 +31,7 @@ class PautaController extends Controller
         $id_cliente = ($request->cliente) ? $request->cliente : null;
         $descricao = ($request->descricao) ? $request->descricao : null;
 
-        $clientes = Cliente::select('clientes.*')
-                            ->with('pessoa')
-                            ->join('pessoas', 'pessoas.id', '=', 'clientes.pessoa_id')
-                            ->orderBy('nome')
-                            ->get();
+        $clientes = Cliente::orderBy('nome')->get();
 
         if($request->isMethod('GET')){
             $pautas = Pauta::orderBy('created_at')->get();
@@ -63,11 +59,7 @@ class PautaController extends Controller
     {
         Session::put('sub-menu','pauta-cadastrar');
 
-        $clientes = Cliente::select('clientes.*')
-                            ->with('pessoa')
-                            ->join('pessoas', 'pessoas.id', '=', 'clientes.pessoa_id')
-                            ->orderBy('nome')
-                            ->get();
+        $clientes = Cliente::orderBy('nome')->get();
 
         return view('pauta/cadastro', compact('clientes'));
     }
@@ -77,11 +69,7 @@ class PautaController extends Controller
         Session::put('sub-menu','pauta-cadastrar');
         $pauta = Pauta::find($id);
 
-        $clientes = Cliente::select('clientes.*')
-                            ->with('pessoa')
-                            ->join('pessoas', 'pessoas.id', '=', 'clientes.pessoa_id')
-                            ->orderBy('nome')
-                            ->get();
+        $clientes = Cliente::orderBy('nome')->get();
 
         $noticias = NoticiaRadio::whereNotNull('sinopse')->paginate(14);
 

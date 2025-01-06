@@ -23,7 +23,7 @@
             <div class="col-lg-12 col-sm-12">
                 <input type="hidden" name="pauta_id" id="pauta_id" value="{{ $pauta->id }}">
                 <input type="hidden" name="cliente" id="cliente" value="{{ $pauta->cliente->id }}">
-                <p class="mb-1"><strong>Cliente</strong>: {{ $pauta->cliente->pessoa->nome }}</p>
+                <p class="mb-1"><strong>Cliente</strong>: {{ $pauta->cliente->nome }}</p>
                 <p class="mb-1"><strong>Pauta</strong>: {{ $pauta->descricao }}</p>
                 <p><strong>Notícias do Cliente</strong></p>
             </div>            

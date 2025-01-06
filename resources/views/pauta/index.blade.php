@@ -30,7 +30,7 @@
                                         <select class="form-control select2" name="cliente" id="cliente">
                                             <option value="">Selecione um cliente</option>
                                             @foreach($clientes as $cliente)
-                                                <option {{ ($cliente->id == $id_cliente) ? 'selected' : '' }} value="{!! $cliente->id !!}">{!! $cliente->pessoa->nome !!}</option>
+                                                <option {{ ($cliente->id == $id_cliente) ? 'selected' : '' }} value="{!! $cliente->id !!}">{!! $cliente->nome !!}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -64,7 +64,7 @@
                                 <tbody>
                                     @foreach($pautas as $pauta)
                                         <tr>
-                                            <td>{!! $pauta->cliente->pessoa->nome !!}</td>
+                                            <td>{!! $pauta->cliente->nome !!}</td>
                                             <td>{!! $pauta->descricao !!}</td>
                                             <td class="center">
                                                 <a title="Vincular" href="{{ url('pauta/'.$pauta->id.'/vincular') }}" class="btn btn-warning btn-link btn-icon"><i class="fa fa-check fa-2x"></i></a>
