@@ -258,7 +258,7 @@
                                     '</a>'+
                                   '</div>'+
                                   '<div id="collapse_'+v.id+'" class="collapse" role="tabpanel" aria-labelledby="heading1" style="">'+
-                                    '<div class="box-destaque-busca destaque-card-web-txt-'+k+'"><div class="card-body card-web-txt-'+k+'" style="padding: 0px; margin-top: 5px;">'+
+                                    '<div class="box-destaque-busca destaque-card-web-txt-'+k+'"></div><div class="card-body card-busca card-web-txt-'+k+'">'+
                                     '</div>'+
                                   '</div>'+
                                 '</div>');
@@ -362,6 +362,7 @@
 
                         $(chave).html(data[0].texto);   
                         $(chave_destaque).empty();    
+                        
                         var marks = [];                 
                         
                         const divContent = document.querySelector(chave);
