@@ -253,12 +253,12 @@
 
                                 $("#accordion_web").append('<div class="card card-plain">'+
                                   '<div class="card-header" role="tab" id="heading1">'+
-                                    '<a data-toggle="collapse" data-parent="#accordion_web" href="#collapse_'+v.id+'" data-chave="card-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.titulo_noticia+
+                                    '<a data-toggle="collapse" data-parent="#accordion_web" href="#collapse_'+v.id+'" data-tipo="web" data-chave="card-web-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.titulo_noticia+
                                       '<i class="nc-icon nc-minimal-down"></i>'+
                                     '</a>'+
                                   '</div>'+
                                   '<div id="collapse_'+v.id+'" class="collapse" role="tabpanel" aria-labelledby="heading1" style="">'+
-                                    '<div class="card-body card-txt-'+k+'" style="padding: 0px; margin-top: 5px;">'+
+                                    '<div class="card-body card-web-txt-'+k+'" style="padding: 0px; margin-top: 5px;">'+
                                     '</div>'+
                                   '</div>'+
                                 '</div>');
@@ -314,12 +314,12 @@
 
                                 $("#accordion_impresso").append('<div class="card card-plain">'+
                                   '<div class="card-header" role="tab" id="heading1">'+
-                                    '<a data-toggle="collapse" data-parent="#accordion_impresso" href="#collapse_'+v.id+'" data-chave="card-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.titulo+
+                                    '<a data-toggle="collapse" data-parent="#accordion_impresso" href="#collapse_'+v.id+'" data-tipo="impresso" data-chave="card-impresso-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.titulo+
                                       '<i class="nc-icon nc-minimal-down"></i>'+
                                     '</a>'+
                                   '</div>'+
                                   '<div id="collapse_'+v.id+'" class="collapse" role="tabpanel" aria-labelledby="heading1" style="">'+
-                                    '<div class="card-body card-txt-'+k+'" style="padding: 0px; margin-top: 5px;">'+
+                                    '<div class="card-body card-impresso-txt-'+k+'" style="padding: 0px; margin-top: 5px;">'+
                                     '</div>'+
                                   '</div>'+
                                 '</div>');
@@ -343,6 +343,7 @@
         $('body').on('click', '.fts_detalhes', function() {
 
             var id = $(this).data("id");
+            var tipo = $(this).data("tipo");
             var chave = "."+$(this).data("chave");
             var expressao = $("#expressao").val();
             
@@ -350,7 +351,8 @@
                     type: 'POST',
                     data: {"_token": $('meta[name="csrf-token"]').attr('content'),
                             "expressao": expressao,
-                            "id": id
+                            "id": id,
+                            "tipo": tipo
                     },
                     beforeSend: function() {
                         $(chave).loader('show');
