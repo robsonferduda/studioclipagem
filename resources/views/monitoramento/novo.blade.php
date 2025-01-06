@@ -252,7 +252,7 @@
                                 });
 
                                 $("#accordion_web").append('<div class="card card-plain">'+
-                                  '<div class="card-header" role="tab" id="heading1">'+
+                                  '<div class="card-header card-header-custom" role="tab" id="heading1">'+
                                     '<strong>'+v.nome+'</strong>'+
                                     '<a data-toggle="collapse" data-parent="#accordion_web" href="#collapse_'+v.id+'" data-tipo="web" data-chave="card-web-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.titulo_noticia+
                                       '<i class="nc-icon nc-minimal-down"></i>'+
@@ -315,7 +315,7 @@
                                 });
 
                                 $("#accordion_impresso").append('<div class="card card-plain">'+
-                                  '<div class="card-header" role="tab" id="heading1">'+
+                                  '<div class="card-header card-header-custom" role="tab" id="heading1">'+
                                     '<a data-toggle="collapse" data-parent="#accordion_impresso" href="#collapse_'+v.id+'" data-tipo="impresso" data-chave="card-impresso-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.titulo+
                                       '<i class="nc-icon nc-minimal-down"></i>'+
                                     '</a>'+
