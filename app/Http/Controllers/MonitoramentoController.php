@@ -108,9 +108,19 @@ class MonitoramentoController extends Controller
 
     public function getConteudo(Request $request)
     {
-        $sql = "SELECT ts_headline('portuguese', conteudo , to_tsquery('portuguese', '$request->expressao'), 'HighlightAll=true, StartSel=<mark>, StopSel=</mark>') as texto
-                FROM conteudo_noticia_web 
-                WHERE id_noticia_web = ".$request->id;
+        switch ($request->tipo) {
+            case 'web':
+                $sql = "SELECT ts_headline('portuguese', conteudo , to_tsquery('portuguese', '$request->expressao'), 'HighlightAll=true, StartSel=<mark>, StopSel=</mark>') as texto
+                        FROM conteudo_noticia_web 
+                        WHERE id_noticia_web = ".$request->id;
+                break;
+            
+            case 'impresso':
+                $sql = "SELECT ts_headline('portuguese', texto_extraido , to_tsquery('portuguese', '$request->expressao'), 'HighlightAll=true, StartSel=<mark>, StopSel=</mark>') as texto
+                        FROM pagina_edicao_jornal_online 
+                        WHERE id = ".$request->id;
+                break;
+        }
 
         $dados = DB::select($sql);
 
