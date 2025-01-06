@@ -73,7 +73,7 @@ class MonitoramentoController extends Controller
                 JOIN 
                     fonte_web fw ON fw.id = n.id_fonte 
                 WHERE 1=1
-                    AND cnw.data_noticia BETWEEN '$dt_inicial' AND '$dt_final' ";
+                    AND n.data_noticia BETWEEN '$dt_inicial' AND '$dt_final' ";
 
         $sql .= ($request->expressao) ? "AND  cnw.conteudo_tsv @@ to_tsquery('portuguese', '$request->expressao') " : '';
         $sql .= 'ORDER BY data_noticia DESC';
