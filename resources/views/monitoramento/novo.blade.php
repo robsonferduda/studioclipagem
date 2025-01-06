@@ -258,7 +258,7 @@
                                     '</a>'+
                                   '</div>'+
                                   '<div id="collapse_'+v.id+'" class="collapse" role="tabpanel" aria-labelledby="heading1" style="">'+
-                                    '<div class="card-body card-web-txt-'+k+'" style="padding: 0px; margin-top: 5px;">'+
+                                    '<div class="box-destaque-busca destaque-card-web-txt-'+k+'"><div class="card-body card-web-txt-'+k+'" style="padding: 0px; margin-top: 5px;">'+
                                     '</div>'+
                                   '</div>'+
                                 '</div>');
@@ -319,7 +319,7 @@
                                     '</a>'+
                                   '</div>'+
                                   '<div id="collapse_'+v.id+'" class="collapse" role="tabpanel" aria-labelledby="heading1" style="">'+
-                                    '<div class="card-body card-impresso-txt-'+k+'" style="padding: 0px; margin-top: 5px;">'+
+                                    '<div class="box-destaque-busca destaque-card-impresso-txt-'+k+'"></div><div class="card-body card-busca card-impresso-txt-'+k+'">'+
                                     '</div>'+
                                   '</div>'+
                                 '</div>');
@@ -345,6 +345,7 @@
             var id = $(this).data("id");
             var tipo = $(this).data("tipo");
             var chave = "."+$(this).data("chave");
+            var chave_destaque = ".destaque-"+$(this).data("chave");
             var expressao = $("#expressao").val();
             
             $.ajax({url: host+'/monitoramento/filtrar/conteudo',
@@ -357,8 +358,28 @@
                     beforeSend: function() {
                         $(chave).loader('show');
                     },
-                    success: function(data) {
-                        $(chave).html(data[0].texto);                                         
+                    success: function(data) {                      
+
+                        $(chave).html(data[0].texto);   
+                        $(chave_destaque).empty();    
+                        var marks = [];                 
+                        
+                        const divContent = document.querySelector(chave);
+
+                        if (divContent) {
+                        
+                            const childElements = divContent.querySelectorAll('mark');
+                            const output = document.querySelector(chave_destaque);
+
+                            childElements.forEach(element => {
+
+                                if(!marks.includes(element.innerHTML.trim())){
+                                    marks.push(element.innerHTML.trim());
+
+                                    $(chave_destaque).append('<span class="destaque-busca">'+element.innerHTML.trim()+'</span>');
+                                }
+                            });
+                        } 
                     },
                     error: function(){
                         $(".msg-alerta").html('<span class="text-danger">Erro ao buscar conteúdo</span>');

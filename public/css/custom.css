@@ -281,3 +281,6 @@ div .box-horario:not(:last-child) {
 }
 .add-area:hover{ cursor: pointer;}
 .monitoramento-total { font-weight: bold;}
+.box-destaque-busca { margin-top: 8px; }
+.destaque-busca{ background: #009688 !important; color: white; border-radius: 5px; padding: 3px 5px; margin-right: 3px;}
+.card-busca{ padding: 0px !important; margin-top: 5px;}
