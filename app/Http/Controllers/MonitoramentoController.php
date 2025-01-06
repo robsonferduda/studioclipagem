@@ -65,12 +65,13 @@ class MonitoramentoController extends Controller
         $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d "."23:59:59");
 
         $sql = "SELECT 
-                    n.id, n.id_fonte, n.url_noticia, n.data_insert, n.data_noticia, n.titulo_noticia
+                    n.id, n.id_fonte, n.url_noticia, n.data_insert, n.data_noticia, n.titulo_noticia, fw.nome
                 FROM 
                     noticias_web n
                 JOIN 
-                    conteudo_noticia_web cnw 
-                    ON cnw.id_noticia_web = n.id
+                    conteudo_noticia_web cnw ON cnw.id_noticia_web = n.id
+                JOIN 
+                    fonte_web fw ON fw.id = n.id_fonte 
                 WHERE 1=1
                     AND cnw.created_at BETWEEN '$dt_inicial' AND '$dt_final' ";
 
