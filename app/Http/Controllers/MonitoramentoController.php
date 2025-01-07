@@ -115,6 +115,62 @@ class MonitoramentoController extends Controller
         return response()->json($dados);
     }
 
+    public function filtrarRadio(Request $request)
+    {
+        $carbon = new Carbon();
+        $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00" : date("Y-m-d "."00:00:00");
+        $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d "."23:59:59");
+
+        $tipo_data = $request->tipo_data;
+
+        $label_data = ($tipo_data == "dt_publicacao") ? 'data_hora_inicio' : 'created_at' ;
+
+        $sql = "SELECT 
+                    n.id, id_emissora, data_hora_inicio, data_hora_fim, path_s3, nome_emissora
+                FROM 
+                    gravacao_emissora_radio n
+                JOIN 
+                    emissora_radio er 
+                    ON er.id = n.id_emissora
+                WHERE 1=1
+                    AND n.$label_data BETWEEN '$dt_inicial' AND '$dt_final' ";
+
+        $sql .= ($request->expressao) ? "AND  n.transcricao_tsv @@ to_tsquery('portuguese', '$request->expressao') " : '';
+        $sql .= 'ORDER BY '.$label_data.' DESC';
+
+        $dados = DB::select($sql);
+
+        return response()->json($dados);
+    }
+
+    public function filtrarTv(Request $request)
+    {
+        $carbon = new Carbon();
+        $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00" : date("Y-m-d "."00:00:00");
+        $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d "."23:59:59");
+
+        $tipo_data = $request->tipo_data;
+
+        $label_data = ($tipo_data == "dt_publicacao") ? 'horario_start_gravacao' : 'created_at' ;
+
+        $sql = "SELECT 
+                    n.id, id_programa_emissora_web, url_video, misc_data, transcricao, nome_programa
+                FROM 
+                    videos_programa_emissora_web n
+                JOIN 
+                    programa_emissora_web pew 
+                    ON pew.id = n.id_programa_emissora_web
+                WHERE 1=1
+                    AND n.$label_data BETWEEN '$dt_inicial' AND '$dt_final' ";
+
+        $sql .= ($request->expressao) ? "AND  n.transcricao_tsv @@ to_tsquery('portuguese', '$request->expressao') " : '';
+        $sql .= 'ORDER BY '.$label_data.' DESC';
+
+        $dados = DB::select($sql);
+
+        return response()->json($dados);
+    }
+
     public function getConteudo(Request $request)
     {
         switch ($request->tipo) {
@@ -127,6 +183,18 @@ class MonitoramentoController extends Controller
             case 'impresso':
                 $sql = "SELECT ts_headline('portuguese', texto_extraido , to_tsquery('portuguese', '$request->expressao'), 'HighlightAll=true, StartSel=<mark>, StopSel=</mark>') as texto
                         FROM pagina_edicao_jornal_online 
+                        WHERE id = ".$request->id;
+                break;
+
+            case 'radio':
+                $sql = "SELECT ts_headline('portuguese', transcricao , to_tsquery('portuguese', '$request->expressao'), 'HighlightAll=true, StartSel=<mark>, StopSel=</mark>') as texto
+                        FROM gravacao_emissora_radio 
+                        WHERE id = ".$request->id;
+                break;
+
+            case 'tv':
+                $sql = "SELECT ts_headline('portuguese', transcricao , to_tsquery('portuguese', '$request->expressao'), 'HighlightAll=true, StartSel=<mark>, StopSel=</mark>') as texto
+                        FROM videos_programa_emissora_web 
                         WHERE id = ".$request->id;
                 break;
         }

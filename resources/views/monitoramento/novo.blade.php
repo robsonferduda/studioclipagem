@@ -147,10 +147,36 @@
                             </div>
                         </div>
                         <div class="tab-pane" id="panel_radio" role="tabpanel" aria-expanded="false">
-                        
+                            <div id="accordion_radio" role="tablist" aria-multiselectable="true" class="card-collapse">
+                                <div class="row cabecalho-busca d-none">
+                                    <div class="col-md-6">
+                                        <p class="card-title mb-0">Foram encontradas <strong class="monitoramento-total-radio"></strong> notícias</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="pull-right">
+                                            <span class="badge badge-pill badge-primary">
+                                                Todas as fontes
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>   
+                            </div>
                         </div>
                         <div class="tab-pane" id="panel_tv" role="tabpanel" aria-expanded="false">
-                            
+                            <div id="accordion_tv" role="tablist" aria-multiselectable="true" class="card-collapse">
+                                <div class="row cabecalho-busca d-none">
+                                    <div class="col-md-6">
+                                        <p class="card-title mb-0">Foram encontradas <strong class="monitoramento-total-tv"></strong> notícias</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="pull-right">
+                                            <span class="badge badge-pill badge-primary">
+                                                Todas as fontes
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>   
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -316,8 +342,6 @@
 
                             $(".monitoramento-total-impresso").html(data.length);
                             $.each(data, function(k, v) {
-                               // $(".resultados").append('<p><a href="'+v.url_noticia+'" target="BLANK">'+v.titulo_noticia+'</a></p>');
-                               // $(".resultados").append('<div><p class="fts_detalhes" style="font-weight: 600;" data-chave="card-txt-'+k+'" data-id="'+v.id+'">'+v.titulo_noticia+'</p><div id="txt-'+k+'"></div></div>');
 
                                const dataObj = new Date(v.dt_pub);
                                const data_formatada = dataObj.toLocaleDateString("pt-BR", {
@@ -334,6 +358,126 @@
                                   '</div>'+
                                   '<div id="collapse_'+v.id+'" class="collapse" role="tabpanel" aria-labelledby="heading1" style="">'+
                                     '<div class="box-destaque-busca destaque-card-impresso-txt-'+k+'"></div><div class="card-body card-busca card-impresso-txt-'+k+'">'+
+                                    '</div>'+
+                                  '</div>'+
+                                '</div>');
+
+                            });
+                        }                            
+                    },
+                    error: function(){
+                        $("#accordion_impresso .card").remove();
+                        $(".msg-alerta").html('<span class="text-danger">Erro ao executar expressão de busca</span>');
+                    },
+                    complete: function(){
+                        $('.load-busca').loader('hide');
+                    }
+                });
+
+                   //Busca Rádio
+                   $.ajax({url: host+'/monitoramento/filtrar/radio',
+                    type: 'POST',
+                    data: {"_token": $('meta[name="csrf-token"]').attr('content'),
+                            "expressao": expressao,
+                            "dt_inicial": dt_inicial,
+                            "dt_final": dt_final,
+                            "tipo_data": tipo_data
+                    },
+                    beforeSend: function() {
+                        $('.load-busca').loader('show');
+                    },
+                    success: function(data) {
+
+                        $("#accordion_radio .card").remove();
+
+                        if(data.length == 0){
+
+                            $(".cabecalho-busca").addClass("d-none");
+                            $(".monitoramento-total-radio").html(0);
+
+                        }else{
+
+                            $(".cabecalho-busca").removeClass("d-none");
+                            $(".cabecalho-aguardando-busca").addClass("d-none");
+
+                            $(".monitoramento-total-radio").html(data.length);
+                            $.each(data, function(k, v) {
+
+                               const dataObj = new Date(v.data_hora_inicio);
+                               const data_formatada = dataObj.toLocaleDateString("pt-BR", {
+                                    day: "2-digit",
+                                    month: "2-digit",
+                                    year: "numeric"
+                                });
+
+                                $("#accordion_radio").append('<div class="card card-plain">'+
+                                  '<div class="card-header card-header-custom" role="tab" id="heading1">'+
+                                    '<a data-toggle="collapse" data-parent="#accordion_radio" href="#collapse_'+v.id+'" data-tipo="radio" data-chave="card-radio-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.nome_emissora+
+                                      '<i class="nc-icon nc-minimal-down"></i>'+
+                                    '</a>'+
+                                  '</div>'+
+                                  '<div id="collapse_'+v.id+'" class="collapse" role="tabpanel" aria-labelledby="heading1" style="">'+
+                                    '<div class="box-destaque-busca destaque-card-radio-txt-'+k+'"></div><div class="card-body card-busca card-radio-txt-'+k+'">'+
+                                    '</div>'+
+                                  '</div>'+
+                                '</div>');
+
+                            });
+                        }                            
+                    },
+                    error: function(){
+                        $("#accordion_impresso .card").remove();
+                        $(".msg-alerta").html('<span class="text-danger">Erro ao executar expressão de busca</span>');
+                    },
+                    complete: function(){
+                        $('.load-busca').loader('hide');
+                    }
+                });
+
+             //Busca TV
+             $.ajax({url: host+'/monitoramento/filtrar/tv',
+                    type: 'POST',
+                    data: {"_token": $('meta[name="csrf-token"]').attr('content'),
+                            "expressao": expressao,
+                            "dt_inicial": dt_inicial,
+                            "dt_final": dt_final,
+                            "tipo_data": tipo_data
+                    },
+                    beforeSend: function() {
+                        $('.load-busca').loader('show');
+                    },
+                    success: function(data) {
+
+                        $("#accordion_tv .card").remove();
+
+                        if(data.length == 0){
+
+                            $(".cabecalho-busca").addClass("d-none");
+                            $(".monitoramento-total-tv").html(0);
+
+                        }else{
+
+                            $(".cabecalho-busca").removeClass("d-none");
+                            $(".cabecalho-aguardando-busca").addClass("d-none");
+
+                            $(".monitoramento-total-tv").html(data.length);
+                            $.each(data, function(k, v) {
+
+                               const dataObj = new Date(v.data_hora_inicio);
+                               const data_formatada = dataObj.toLocaleDateString("pt-BR", {
+                                    day: "2-digit",
+                                    month: "2-digit",
+                                    year: "numeric"
+                                });
+
+                                $("#accordion_tv").append('<div class="card card-plain">'+
+                                  '<div class="card-header card-header-custom" role="tab" id="heading1">'+
+                                    '<a data-toggle="collapse" data-parent="#accordion_tv" href="#collapse_'+v.id+'" data-tipo="tv" data-chave="card-tv-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.nome_programa+
+                                      '<i class="nc-icon nc-minimal-down"></i>'+
+                                    '</a>'+
+                                  '</div>'+
+                                  '<div id="collapse_'+v.id+'" class="collapse" role="tabpanel" aria-labelledby="heading1" style="">'+
+                                    '<div class="box-destaque-busca destaque-card-tv-txt-'+k+'"></div><div class="card-body card-busca card-tv-txt-'+k+'">'+
                                     '</div>'+
                                   '</div>'+
                                 '</div>');
