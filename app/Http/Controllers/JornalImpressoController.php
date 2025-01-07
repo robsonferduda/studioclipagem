@@ -85,6 +85,55 @@ class JornalImpressoController extends Controller
         return view('jornal-impresso/index',compact('clientes','fontes','dados','dt_inicial','dt_final','termo','busca_fonte'));
     }
 
+    public function buscar(Request $request)
+    {
+        Session::put('sub-menu','arquivos-web');
+
+        $fonte = ($request->fonte) ? $request->fonte : null;
+
+        $carbon = new Carbon();
+        $fontes = FonteImpressa::where('tipo', 1)->orderBy("nome")->get();
+        $dados = array();
+        $busca_fonte = "";
+        $termo = "";
+
+        if($request->isMethod('GET')){
+
+            if($request->dt_inicial){
+               
+                $dt_inicial = ($request->dt_inicial) ? $request->dt_inicial : date("Y-m-d")." 00:00:00";
+                $dt_final = ($request->dt_final) ? $request->dt_final : date("Y-m-d H:i:s");
+
+                $dados = EdicaoJornalImpresso::with('fonte')->with('paginas')->whereBetween('dt_coleta', [$dt_inicial, $dt_final])->orderBy('dt_coleta','DESC')->paginate(10);
+
+            }else{
+               
+                $dt_inicial = "2024-11-01 00:00:00";
+                $dt_final = date('Y-m-d H:i:s');
+                $dados = EdicaoJornalImpresso::with('fonte')->with('paginas')->whereBetween('dt_coleta', [$dt_inicial, $dt_final])->orderBy('dt_coleta','DESC')->paginate(10);
+            }
+
+        }
+
+        if($request->isMethod('POST')){
+            
+            $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00" : date("Y-m-d")." 00:00:00";
+            $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d H:i:s");
+            $busca_fonte = $request->fonte;
+            $termo = $request->termo;
+
+            $jornais = EdicaoJornalImpresso::query();
+
+            $jornais->when($fonte, function ($q) use ($fonte) {
+                return $q->where('id_jornal_online', $fonte);
+            });
+
+            $dados = $jornais->whereBetween('dt_coleta', [$dt_inicial, $dt_final])->orderBy('dt_coleta','DESC')->paginate(10);
+        }
+
+        return view('jornal-impresso/buscar', compact("fontes", "dados", 'dt_inicial','dt_final','termo','busca_fonte'));
+    }
+
     public function dashboard(Request $request)
     {
         Session::put('sub-menu','impresso');
@@ -431,32 +480,35 @@ class JornalImpressoController extends Controller
         $filesize = $image->getSize()/1024/1024;
         $filename = pathinfo($fileInfo, PATHINFO_FILENAME);
         $extension = pathinfo($fileInfo, PATHINFO_EXTENSION);
-        $file_name= $filename.'-'.time().'.'.$extension;
-        $image->move(public_path('jornal-impresso/pendentes'),$file_name);
+        $file_name = $filename.'-'.time().'.'.$extension;
 
         $partes = explode("_", $filename);
         $dt_arquivo = strtotime($partes[1]);
         $dt_arquivo = Carbon::createFromFormat('Ymd', $partes[0]);
-        $cod_fonte = $partes[1];
+        $id_jornal = $partes[1];
 
-        $fonte = FonteImpressa::where('codigo', $cod_fonte)->first();
+        $fonte = FonteImpressa::where('id', $id_jornal)->first();
+        
 
-        if(!$fonte){
+        if($fonte){
 
-            $dados = array('codigo' => $cod_fonte);
-            $fonte = FonteImpressa::create($dados);
+            $obj_s3 = $request->file('file')->storeAs('edicao', $file_name,'s3');
+
+            $dados_edicao = array('path_s3' => $obj_s3,
+                                  'dt_coleta' => date("Y-m-d"), 
+                                  'id_jornal_online' => $fonte->id, 
+                                  'link_pdf' => 'https://docmidia-files.s3.us-east-1.amazonaws.com/edicao/'.$file_name,
+                                  'dt_pub' => $dt_arquivo);
+            
+            $edicao = EdicaoJornalImpresso::create($dados_edicao);
+
+            return response()->json(['success'=>$file_name, 'msg' => 'Arquivo inserido com sucesso.']);
+
+        }else{
+
+            return response()->json('Fonte não existe no sistema', 401);
         }
-
-        $dados = array('dt_arquivo' => $dt_arquivo->format('Y-m-d'),
-                       'ds_arquivo' => $file_name,
-                       'id_fonte' => $fonte->id,
-                       'tamanho' => $filesize);
-
-        FilaImpresso::create($dados);
-
-        //JobProcessarImpressos::dispatch(); Chamada para processar impressos
-
-        return response()->json(['success'=>$file_name, 'msg' => 'Arquivo inserido com sucesso.']);
+        
     }
 
     public function processar()

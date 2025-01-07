@@ -13,7 +13,8 @@
                 </div>
                 <div class="col-md-4">
                     <a href="{{ url('impresso') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-newspaper-o"></i> Dashboard</a>
-                    <a href="{{ url('jornal-impresso/buscar') }}" class="btn btn-info pull-right" style="margin-right: 12px;"><i class="fa fa-search"></i> Buscar Impressos</a>
+                    <a href="{{ url('jornal-impresso/processamento') }}" class="btn btn-info pull-right" style="margin-right: 12px;"><i class="fa fa-list"></i> Fila</a>
+                    <a href="{{ url('jornal-impresso/processar') }}" class="btn btn-warning pull-right" style="margin-right: 12px;"><i class="fa fa-cogs"></i> Processar</a>
                 </div>
             </div>
         </div>
@@ -49,7 +50,6 @@
             init: function() { 
                 myDropzone = this;
 
-                /*
                 $.ajax({
                     url: host+'/jornal-impresso/pendentes/listar',
                     type: 'get',
@@ -66,7 +66,6 @@
 
                     }
                 });
-                */
             }
         });
     });

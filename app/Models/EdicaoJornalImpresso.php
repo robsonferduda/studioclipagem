@@ -12,7 +12,7 @@ class EdicaoJornalImpresso extends Model
     protected $connection = 'pgsql';
     protected $table = 'edicao_jornal_online';
 
-    protected $fillable = [''];
+    protected $fillable = ['path_s3', 'dt_coleta', 'id_jornal_online', 'dt_pub', 'titulo','link_pdf'];
 
     public function fonte()
     {

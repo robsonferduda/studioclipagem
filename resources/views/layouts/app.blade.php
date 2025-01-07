@@ -101,6 +101,11 @@
                             <span class="sidebar-normal">Fontes Impressos</span>
                             </a>
                           </li>
+                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'jornal-impresso-buscar') ? 'active' : '' }}">
+                            <a href="{{ url('jornal-impresso/buscar') }}">
+                              <span class="sidebar-normal">Buscar</span>
+                              </a>
+                          </li> 
                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'upload') ? 'active' : '' }}">
                             <a href="{{ url('jornal-impresso/upload') }}">
                               <span class="sidebar-normal">Arquivos Impressos</span>
