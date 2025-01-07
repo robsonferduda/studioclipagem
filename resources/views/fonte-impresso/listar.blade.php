@@ -73,7 +73,7 @@
             </div>
             <div class="row">
                 @if(count($fontes))
-                    <input type="hidden" name="cd_cidade_selecionada" id="cd_cidade_selecionada" value="{{ Session::get('filtro_cidade') }}">
+                    <input type="hidden" name="cd_cidade_selecionada" id="cd_cidade_selecionada" value="{{ Session::get('impresso_filtro_cidade') }}">
                     <div class="col-lg-12 col-sm-12 conteudo">      
                         @if($fontes->count())
                         <h6 class="px-3">Mostrando {{ $fontes->count() }} de {{ $fontes->total() }} fontes</h6>
