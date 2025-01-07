@@ -47,7 +47,7 @@
                                 <div class="col-md-5 col-sm-12">
                                     <div class="form-group">
                                         <label>Emissora</label>
-                                        <input type="text" class="form-control" name="descricao" id="descricao" placeholder="Emissora" value="{{ Session::get('filtro_nome') }}">
+                                        <input type="text" class="form-control" name="nome" id="nome" placeholder="Emissora" value="{{ Session::get('filtro_nome') }}">
                                     </div>
                                 </div>
                                 <div class="col-md-2 col-sm-12">
