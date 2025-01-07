@@ -64,6 +64,10 @@ class MonitoramentoController extends Controller
         $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00" : date("Y-m-d "."00:00:00");
         $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d "."23:59:59");
 
+        $tipo_data = $request->tipo_data;
+
+        $label_data = ($tipo_data == "dt_publicacao") ? 'data_noticia' : 'created_at' ;
+
         $sql = "SELECT 
                     n.id, n.id_fonte, n.url_noticia, n.data_insert, n.data_noticia, n.titulo_noticia, fw.nome
                 FROM 
@@ -73,10 +77,10 @@ class MonitoramentoController extends Controller
                 JOIN 
                     fonte_web fw ON fw.id = n.id_fonte 
                 WHERE 1=1
-                    AND n.data_noticia BETWEEN '$dt_inicial' AND '$dt_final' ";
+                    AND n.$label_data BETWEEN '$dt_inicial' AND '$dt_final' ";
 
         $sql .= ($request->expressao) ? "AND  cnw.conteudo_tsv @@ to_tsquery('portuguese', '$request->expressao') " : '';
-        $sql .= 'ORDER BY data_noticia DESC';
+        $sql .= 'ORDER BY '.$label_data.' DESC';
 
         $dados = DB::select($sql);
 
@@ -89,6 +93,10 @@ class MonitoramentoController extends Controller
         $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00" : date("Y-m-d "."00:00:00");
         $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d "."23:59:59");
 
+        $tipo_data = $request->tipo_data;
+
+        $label_data = ($tipo_data == "dt_publicacao") ? 'dt_coleta' : 'dt_pub' ;
+
         $sql = "SELECT 
                     pejo.id, id_jornal_online, link_pdf, dt_coleta, dt_pub, titulo, texto_extraido
                 FROM 
@@ -97,10 +105,10 @@ class MonitoramentoController extends Controller
                     pagina_edicao_jornal_online pejo 
                     ON pejo.id_edicao_jornal_online = n.id
                 WHERE 1=1
-                    AND pejo.created_at BETWEEN '$dt_inicial' AND '$dt_final' ";
+                    AND n.$label_data BETWEEN '$dt_inicial' AND '$dt_final' ";
 
         $sql .= ($request->expressao) ? "AND  pejo.texto_extraido_tsv @@ to_tsquery('portuguese', '$request->expressao') " : '';
-        $sql .= 'ORDER BY dt_coleta DESC';
+        $sql .= 'ORDER BY '.$label_data.' DESC';
 
         $dados = DB::select($sql);
 

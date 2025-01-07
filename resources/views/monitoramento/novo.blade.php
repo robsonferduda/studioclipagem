@@ -46,13 +46,22 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-lg-6 col-md-6 mb-2">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Tipo de Data</label>
+                                        <select class="form-control select2" name="tipo_data" id="tipo_data">
+                                            <option value="dt_publicacao" selected>Data da Publicação</option>
+                                            <option value="dt_coleta">Data da Coleta</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6 mb-2">
                                     <div class="form-group">
                                         <label>Data Inicial</label>
                                         <input type="text" class="form-control dt_inicial_relatorio dt_periodo">
                                     </div>
                                 </div>
-                                <div class="col-lg-6 col-md-6 mb-2">
+                                <div class="col-lg-4 col-md-6 mb-2">
                                     <div class="form-group">
                                         <label>Data Final</label>
                                         <input type="text" class="form-control dt_final_relatorio dt_periodo">
@@ -194,6 +203,7 @@
             var expressao = $("#expressao").val();
             var dt_inicial = $(".dt_inicial_relatorio").val();
             var dt_final = $(".dt_final_relatorio").val();
+            var tipo_data = $("#tipo_data").val();
             var flag = false;
 
             $(".msg-alerta").empty(); //Limpa as mensagens de erro
@@ -220,7 +230,8 @@
                     data: {"_token": $('meta[name="csrf-token"]').attr('content'),
                             "expressao": expressao,
                             "dt_inicial": dt_inicial,
-                            "dt_final": dt_final
+                            "dt_final": dt_final,
+                            "tipo_data": tipo_data
                     },
                     beforeSend: function() {
                         $('.load-busca').loader('show');
@@ -283,7 +294,8 @@
                     data: {"_token": $('meta[name="csrf-token"]').attr('content'),
                             "expressao": expressao,
                             "dt_inicial": dt_inicial,
-                            "dt_final": dt_final
+                            "dt_final": dt_final,
+                            "tipo_data": tipo_data
                     },
                     beforeSend: function() {
                         $('.load-busca').loader('show');
