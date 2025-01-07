@@ -154,7 +154,7 @@ class MonitoramentoController extends Controller
         $label_data = ($tipo_data == "dt_publicacao") ? 'horario_start_gravacao' : 'created_at' ;
 
         $sql = "SELECT 
-                    n.id, id_programa_emissora_web, url_video, misc_data, transcricao, nome_programa
+                    n.id, id_programa_emissora_web, horario_start_gravacao, horario_end_gravacao, url_video, misc_data, transcricao, nome_programa
                 FROM 
                     videos_programa_emissora_web n
                 JOIN 

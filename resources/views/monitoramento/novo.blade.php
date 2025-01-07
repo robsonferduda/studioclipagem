@@ -463,7 +463,7 @@
                             $(".monitoramento-total-tv").html(data.length);
                             $.each(data, function(k, v) {
 
-                               const dataObj = new Date(v.data_hora_inicio);
+                               const dataObj = new Date(v.horario_start_gravacao);
                                const data_formatada = dataObj.toLocaleDateString("pt-BR", {
                                     day: "2-digit",
                                     month: "2-digit",
