@@ -73,7 +73,7 @@
             </div>
             <div class="row">
                 @if(count($fontes))
-
+                    <input type="hidden" name="cd_cidade_selecionada" id="cd_cidade_selecionada" value="{{ Session::get('filtro_cidade') }}">
                     <div class="col-lg-12 col-sm-12 conteudo">      
                         @if($fontes->count())
                         <h6 class="px-3">Mostrando {{ $fontes->count() }} de {{ $fontes->total() }} fontes</h6>
@@ -81,7 +81,7 @@
 
                     <div class="col-lg-12 col-sm-12 conteudo"> 
                     
-                    {{ $fontes->onEachSide(1)->appends([''])->links('vendor.pagination.bootstrap-4') }} 
+                    {{ $fontes->onEachSide(1)->appends(['mapear' => $mapear, 'cd_estado' => $cd_estado, 'cd_cidade' => $cd_cidade, 'nome' => $nome])->links('vendor.pagination.bootstrap-4') }} 
 
                     <table id="fontes_impressas" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>

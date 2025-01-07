@@ -86,7 +86,7 @@ class FonteImpressoController extends Controller
 
         $fontes = $fonte->orderBy('nome','ASC')->paginate(10);
 
-        return view('fonte-impresso/listar',compact('cidades','estados','fontes'));
+        return view('fonte-impresso/listar',compact('cidades','estados','fontes','cd_estado','cd_cidade','mapear','nome'));
     }
 
     public function limpar()
