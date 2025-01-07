@@ -46,7 +46,7 @@ class FonteImpressoController extends Controller
 
         $cd_estado = ($request->cd_estado) ? trim($request->cd_estado) : null;
         $cd_cidade = ($request->cd_cidade) ? trim($request->cd_cidade) : null;
-        $nome = ($request->nome) ? trim($request->nome) : null;
+        $nome      = ($request->nome) ? trim($request->nome) : null;
 
         if($request->fl_mapeamento){
             $mapear = ($request->fl_mapeamento == 'prioritaria') ? 1 : 2;
@@ -54,14 +54,10 @@ class FonteImpressoController extends Controller
             $mapear = null;
         }
 
-        $descricao = ($request->descricao) ? $request->descricao : null;  
-        $cd_cidade = ($request->cd_cidade) ? $request->cd_cidade : null;    
-        $cd_estado = ($request->cd_estado) ? $request->cd_estado : null;   
-
         Session::put('impresso_filtro_estado', $cd_estado);
         Session::put('impresso_filtro_cidade', $cd_cidade);
         Session::put('impresso_filtro_mapeamento', $mapear);
-        Session::put('impresso_filtro_nome', $descricao);
+        Session::put('impresso_filtro_nome', $nome);
 
         $fonte = FonteImpressa::query();
 
