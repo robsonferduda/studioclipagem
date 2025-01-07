@@ -237,11 +237,10 @@ class EmissoraController extends Controller
         });
 
         $emissora->when($descricao, function ($q) use ($descricao) {
-            return $q->where('nome_emissora','ilike','%'.$descricao.'%');
+            return $q->where('nome_emissora','ilike','%'.Session::get('filtro_nome').'%');
         });
 
-        $emissoras = $emissora->orderBy('nome_emissora')->paginate(10);
-        
+        $emissoras = $emissora->orderBy('nome_emissora')->paginate(10);        
 
         return view('emissora/index', compact('emissoras','descricao','estados','tipo','cd_estado','cd_cidade','gravar'));
     }

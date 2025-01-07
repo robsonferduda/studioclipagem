@@ -44,40 +44,47 @@ class FonteImpressoController extends Controller
         $estados = Estado::orderBy('nm_estado')->get();
         $fontes = array();
 
-        $codigo = ($request->codigo) ? trim($request->codigo) : null;
         $cd_estado = ($request->cd_estado) ? trim($request->cd_estado) : null;
         $cd_cidade = ($request->cd_cidade) ? trim($request->cd_cidade) : null;
         $nome = ($request->nome) ? trim($request->nome) : null;
 
+        if($request->fl_mapeamento){
+            $mapear = ($request->fl_mapeamento == 'prioritaria') ? 1 : 2;
+        }else{
+            $mapear = null;
+        }
+
+        $descricao = ($request->descricao) ? $request->descricao : null;  
+        $cd_cidade = ($request->cd_cidade) ? $request->cd_cidade : null;    
+        $cd_estado = ($request->cd_estado) ? $request->cd_estado : null;   
+
+        Session::put('impresso_filtro_estado', $cd_estado);
+        Session::put('impresso_filtro_cidade', $cd_cidade);
+        Session::put('impresso_filtro_mapeamento', $mapear);
+        Session::put('impresso_filtro_nome', $descricao);
+
         $fonte = FonteImpressa::query();
 
-        if($request->isMethod('GET')){
+        $fonte->when($mapear, function ($q) use ($mapear) {
 
-            $fontes = $fonte->orderBy('nome', 'ASC')->paginate(10);
-        }
+            $flag = (Session::get('impresso_filtro_mapeamento') == 1) ? true : false;
 
-        if($request->isMethod('POST')){
-
-            Session::put('filtro_estado', $cd_estado);
+            return $q->where('mapeamento_matinal', $flag);
+        });
             
-            $fonte->when($codigo, function ($q) use ($codigo) {
-                return $q->where('codigo', $codigo);
-            });
+        $fonte->when($cd_estado, function ($q) use ($cd_estado) {
+            return $q->where('cd_estado', Session::get('impresso_filtro_estado'));
+        });
 
-            $fonte->when($cd_estado, function ($q) use ($cd_estado) {
-                return $q->where('cd_estado', $cd_estado);
-            });
+        $fonte->when($cd_cidade, function ($q) use ($cd_cidade) {
+            return $q->where('cd_cidade', Session::get('impresso_filtro_cidade'));
+        });
 
-            $fonte->when($cd_cidade, function ($q) use ($cd_cidade) {
-                return $q->where('cd_cidade', $cd_cidade);
-            });
+        $fonte->when($nome, function ($q) use ($nome) {
+            return $q->where('nome', 'ILIKE', '%'.trim(Session::get('impresso_filtro_nome')).'%');
+        });
 
-            $fonte->when($nome, function ($q) use ($nome) {
-                return $q->where('nome', 'ILIKE', '%'.trim($nome).'%');
-            });
-
-            $fontes = $fonte->orderBy('nome','ASC')->paginate(10);
-        }
+        $fontes = $fonte->orderBy('nome','ASC')->paginate(10);
 
         return view('fonte-impresso/listar',compact('cidades','estados','fontes'));
     }

@@ -55,7 +55,7 @@
                             <div class="col-md-2 col-sm-12">
                                 <div class="form-group">
                                     <label>Sincronização</label>
-                                    <select class="form-control select2" name="fl_gravacao" id="fl_gravacao">
+                                    <select class="form-control select2" name="fl_mapeamento" id="fl_mapeamento">
                                         <option value="">Selecione uma sincronização</option>
                                         <option value="prioritaria" {{ (Session::get('impresso_filtro_mapeamento') === 1) ? 'selected' : '' }}>Prioritária</option>
                                         <option value="ordinaria" {{ (Session::get('impresso_filtro_mapeamento') === 2) ? 'selected' : '' }}>Geral</option>
