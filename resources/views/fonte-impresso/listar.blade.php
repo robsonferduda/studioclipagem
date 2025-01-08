@@ -86,7 +86,7 @@
                     <table id="fontes_impressas" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
-                                <th>Código</th>
+                                <th></th>
                                 <th>Tipo</th>
                                 <th>Coleta</th>
                                 <th>Estado</th>
@@ -103,7 +103,7 @@
                         </thead>
                         <tfoot>
                             <tr>
-                                <th>Código</th>
+                                <th></th>
                                 <th>Tipo</th>
                                 <th>Coleta</th>
                                 <th>Estado</th>
@@ -120,7 +120,9 @@
                         <tbody>
                             @foreach($fontes as $fonte)
                                 <tr>
-                                    <td>{!! ($fonte->codigo) ? $fonte->codigo : '<span class="text-danger">Não Informado</span>' !!}</td>
+                                    <td style="min-width: 100px;">
+                                        <label style="display: inline; color: black; font-weight: 600; font-size: 14px;"><input style="width: 30%;" type="checkbox" class="dt-checkboxes">{{ $fonte->id }}</label>
+                                    </td>
                                     <td>{!! ($fonte->tipoImpresso) ? $fonte->tipoImpresso->ds_tipo_impresso : '<span class="text-danger">Não Informado</span>' !!}</td>
                                     <td>{!! ($fonte->tipoColeta) ? $fonte->tipoColeta->ds_tipo_coleta : '<span class="text-danger">Não Informado</span>' !!}</td>
                                     <td>{!! ($fonte->estado) ? $fonte->estado->nm_estado : '<span class="text-danger">Não Informado</span>' !!}</td>

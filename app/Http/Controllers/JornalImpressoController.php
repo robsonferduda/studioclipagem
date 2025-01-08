@@ -483,12 +483,11 @@ class JornalImpressoController extends Controller
         $file_name = $filename.'-'.time().'.'.$extension;
 
         $partes = explode("_", $filename);
-        $dt_arquivo = strtotime($partes[1]);
+      
         $dt_arquivo = Carbon::createFromFormat('Ymd', $partes[0]);
         $id_jornal = $partes[1];
 
-        $fonte = FonteImpressa::where('id', $id_jornal)->first();
-        
+        $fonte = FonteImpressa::where('id', $id_jornal)->first();        
 
         if($fonte){
 
@@ -497,6 +496,8 @@ class JornalImpressoController extends Controller
             $dados_edicao = array('path_s3' => $obj_s3,
                                   'dt_coleta' => date("Y-m-d"), 
                                   'id_jornal_online' => $fonte->id, 
+                                  'titulo' => $fonte->nome.' '.$dt_arquivo,
+                                  'fl_upload' => true,
                                   'link_pdf' => 'https://docmidia-files.s3.us-east-1.amazonaws.com/edicao/'.$file_name,
                                   'dt_pub' => $dt_arquivo);
             
