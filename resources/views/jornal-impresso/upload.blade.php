@@ -78,24 +78,9 @@
             init: function() { 
                 myDropzone = this;
 
-                /*
-                $.ajax({
-                    url: host+'/jornal-impresso/pendentes/listar',
-                    type: 'get',
-                    dataType: 'json',
-                    success: function(response){
-
-                    $.each(response, function(key,value) {
-                        var mockFile = { name: value.name, size: value.size };
-
-                        myDropzone.emit("addedfile", mockFile);
-                        myDropzone.emit("complete", mockFile);
-
-                    });
-
-                    }
+                this.on('success', function (file, json) {
+                    window.location.reload();
                 });
-                */
             }
         });
     });
