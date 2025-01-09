@@ -42,7 +42,8 @@ Route::post('areas/{id}/atualizar','AreaController@atualizar');
 Route::post('areas/cliente/cadastrar','AreaController@cadastrarAreaCliente');
 
 Route::get('boletins','BoletimController@index');
-Route::get('boletim/{id}','BoletimController@detalhes');
+Route::get('boletim/cadastrar','BoletimController@cadastrar');
+Route::get('boletim/detalhes/{id}','BoletimController@detalhes');
 Route::get('boletim/{id}/enviar','BoletimController@enviar');
 Route::get('boletim/{id}/outlook','BoletimController@outlook');
 Route::get('boletim/{id}/visualizar','BoletimController@visualizar');
