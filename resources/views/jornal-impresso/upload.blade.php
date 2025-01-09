@@ -85,7 +85,7 @@
                 myDropzone = this;
 
                 this.on('success', function (file, json) {
-                    window.location.reload();
+                    
                 });
             }
         });
