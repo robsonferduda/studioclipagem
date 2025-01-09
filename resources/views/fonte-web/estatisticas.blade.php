@@ -9,7 +9,7 @@
                         <i class="fa fa-globe"></i> Jornal Web
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Fontes
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Estatísticas
-                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> {{ $fonte->nome }} <a href="{{$fonte->url }}" target="BLANK"><i class="fa fa-external-link text-info"></i></a>
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> {{ $fonte->nome }} <a href="{{ $fonte->url }}" target="_BLANK"><i class="fa fa-external-link text-info"></i></a>
                     </h4>
                 </div>
                 <div class="col-md-6">
@@ -65,11 +65,11 @@
                                     <li>
                                         <div class="row">
                                             <div class="col-md-3 col-3">
-                                                <img class="rounded-circle" src="{{ asset('img/clientes/logo/'.$cliente->logo) }}" alt="Circle Image" class="">
+                                                <img class="rounded-circle" src="{{ asset('img/clientes/logo/') }}" alt="Circle Image" class="">
                                             </div>
                                             <div class="col-md-9 col-9">
-                                                <h5 class="mt-1 mb-0">{{ $cliente->nome }}</h5>
-                                                <p class="mt-0 mb-0"><a href="{{ url("monitoramento/cliente/".$cliente->id) }}">Ver Monitoramento</a></p>
+                                                <h5 class="mt-1 mb-0">NOME</h5>
+                                                <p class="mt-0 mb-0"><a href="{{ url("monitoramento/cliente/") }}">Ver Monitoramento</a></p>
                                                 <p class="mt-0 mb-0">
                                                     @if($cliente->total > 1)
                                                         <span class="text-muted"><small>{{ $cliente->total }} notícias</small></span>

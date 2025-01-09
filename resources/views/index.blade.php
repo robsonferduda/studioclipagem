@@ -146,9 +146,11 @@
                                                         <a href="{{ $fonte->url }}"  target="_blank">{{ $fonte->url }}</a>
                                                     </td>
                                                     <td class="center">
-                                                        <span class="total-coletas" id="total_coletas_{{ $fonte->id }}" data-id="{{ $fonte->id }}">
-                                                            <i class="fa fa-circle-o-notch fa-spin fa-fw text-gray"></i>
-                                                        </span>
+                                                        <a href="{{ url("fonte-web/estatisticas/".$fonte->id) }}">
+                                                            <span class="total-coletas" id="total_coletas_{{ $fonte->id }}" data-id="{{ $fonte->id }}">
+                                                                <i class="fa fa-circle-o-notch fa-spin fa-fw text-gray"></i>
+                                                            </span>
+                                                        </a>
                                                     </td>
                                                 </tr>   
                                             @endforeach                                   
