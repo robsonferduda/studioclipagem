@@ -33,7 +33,7 @@
             </div>   
             <div class="col-lg-12 col-md-3 mb-12">
                 <h6>Arquivos Enviados</h6>
-                @foreach($jornais_pendentes as $key => $jornal)
+                @forelse($jornais_pendentes as $key => $jornal)
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="card">
@@ -59,7 +59,13 @@
                             </div>
                         </div>
                     </div>
-                @endforeach
+                @empty
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <p class="text-danger">Nenhum arquivo enviado em  {{ \Carbon\Carbon::now()->format('d/m/Y') }}</p>
+                        </div>
+                    </div>
+                @endforelse
             </div>
         </div>
     </div>
