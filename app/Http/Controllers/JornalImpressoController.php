@@ -366,7 +366,9 @@ class JornalImpressoController extends Controller
     {
         Session::put('sub-menu','upload');
 
-        return view('jornal-impresso/upload');
+        $jornais_pendentes = EdicaoJornalImpresso::where('fl_upload', true)->get();
+
+        return view('jornal-impresso/upload', compact('jornais_pendentes'));
     }
 
     public function processamento(Request $request)

@@ -22,9 +22,8 @@
                 @include('layouts.mensagens')
             </div>
             <div class="col-lg-12 col-md-3 mb-12">
-                <h6>Os arquivos permanecerão aqui até serem processados pelo sistema</h6>
                 <div class="form-group" style="">
-                    <div class='content'>
+                    <div class='content' style="padding-bottom: 0px !important;">
                         <span>Clique para buscar ou arraste os arquivos</span>
                         {{ Form::open(array('url' => 'jornal-impresso/upload', 'method' => 'POST', 'name'=>'product_images', 'id'=>'dropzone', 'class'=>'dropzone', 'files' => true)) }}
 
@@ -32,6 +31,36 @@
                     </div>
                 </div>
             </div>   
+            <div class="col-lg-12 col-md-3 mb-12">
+                <h6>Arquivos Enviados</h6>
+                @foreach($jornais_pendentes as $key => $jornal)
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="float-left">
+                                        <i class="fa fa-file-pdf-o text-danger mr-3 mt-4" aria-hidden="true" style="font-size: 35px;"></i>
+                                    </div>
+                                    <div class="float-left">
+                                        <p class="mb-1"><strong>{{ $jornal->titulo }}</strong></p>
+                                        <p class="mb-1 text-muted">{{ substr($jornal->path_s3, strrpos($jornal->path_s3, '/') + 1) }}</p>
+                                        <p>Enviado em  {{ \Carbon\Carbon::parse($jornal->created_at)->format('d/m/Y H:i:s') }}</p>
+                                    </div>
+                                    @if($jornal->fl_processado)
+                                        <div class="pull-right">
+                                            <span class="badge badge-pill badge-success">Processado</span>
+                                        </div>
+                                    @else
+                                        <div class="pull-right">
+                                            <span class="badge badge-pill badge-danger">Pendente</span>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
         </div>
     </div>
 </div> 
@@ -42,7 +71,7 @@
 
     $( document ).ready(function() {
 
-        var host =  $('meta[name="base-url"]').attr('content');
+        var host = $('meta[name="base-url"]').attr('content');
        
         $(".dropzone").dropzone({ 
             acceptedFiles: ".jpeg,.jpg,.png,.pdf",
