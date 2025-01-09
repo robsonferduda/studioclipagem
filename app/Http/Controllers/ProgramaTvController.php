@@ -230,7 +230,6 @@ class ProgramaTvController extends Controller
             'msg' => "Dados inseridos com sucesso");
         } catch (\Throwable $th) {
 
-            dd($th);
             $retorno = array('flag' => false,
                              'msg' => "Ocorreu um erro ao inserir o registro");
         } catch (\Exception $e) {
@@ -279,6 +278,18 @@ class ProgramaTvController extends Controller
         $emissora->dias_da_semana = $str_dias;
         $emissora->save();
 
+    }
+
+    public function excluirHorario($id)
+    {
+        $horario = EmissoraWebHorario::find($id);
+
+        if($horario->delete())
+            Flash::success('<i class="fa fa-check"></i> Horário excluído com sucesso');
+        else
+            Flash::error("Erro ao excluir o registro");
+
+        return redirect('tv/emissora/programas/'.$horario->id_programa.'/horarios')->withInput();
     }
 
     public function adicionar(Request $request)

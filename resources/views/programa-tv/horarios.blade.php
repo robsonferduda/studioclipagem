@@ -66,7 +66,7 @@
                             <h5>
                                 <span class="badge badge-default" style="background: #4CAF50 !important; border-color: #4CAF50 !important;"> {{ $horario->horario_start }}</span> 
                                 <span class="badge badge-danger" style="">{{ $horario->horario_end }}</span>
-                                <a title="Excluir" href="{{ url('radio/emissora/horario/excluir', $horario->id) }}" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-trash fa-2x"></i></a>
+                                <a title="Excluir" href="{{ url('tv/emissora/horario/excluir', $horario->id) }}" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-trash fa-2x"></i></a>
                             </h5>
                             @php 
                                 if($horario->dias_da_semana != ""){

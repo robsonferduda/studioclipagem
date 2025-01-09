@@ -108,7 +108,7 @@
                                 <tr>
                                     <td>{{ ($programa->estado) ? $programa->estado->sg_estado : 'Não Informado' }}</td>
                                     <td>{{ ($programa->cidade) ? $programa->cidade->nm_cidade : 'Não Informado' }}</td>
-                                    <td>{{ $programa->emissora->nome_emissora }}</td>
+                                    <td>{{ ($programa->emissora) ? $programa->emissora->nome_emissora : 'Não Informado'  }}</td>
                                     <td>{{ $programa->nome_programa }}</td>
                                     <td>
                                         @if($programa->tipo)
