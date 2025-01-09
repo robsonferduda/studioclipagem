@@ -366,7 +366,10 @@ class JornalImpressoController extends Controller
     {
         Session::put('sub-menu','upload');
 
-        $jornais_pendentes = EdicaoJornalImpresso::where('fl_upload', true)->where('dt_pub', date("Y-m-d"))->orderBy('fl_processado','ASC')->get();
+        $dt_inicial = date("Y-m-d")." 00:00:00";
+        $dt_final = date("Y-m-d")." 23:59:59";
+
+        $jornais_pendentes = EdicaoJornalImpresso::where('fl_upload', true)->whereBetween('dt_pub', [$dt_inicial, $dt_final])->orderBy('fl_processado','ASC')->get();
 
         return view('jornal-impresso/upload', compact('jornais_pendentes'));
     }
