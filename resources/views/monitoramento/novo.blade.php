@@ -111,7 +111,7 @@
                     <div id="my-tab-content" class="tab-content">
                         <div class="tab-pane active" id="panel_web" role="tabpanel" aria-expanded="true">
                             <div id="accordion_web" role="tablist" aria-multiselectable="true" class="card-collapse">
-                                <div class="row cabecalho-busca d-none">
+                                <div class="row cabecalho-busca cabecalho-busca-web d-none">
                                     <div class="col-md-6">
                                         <p class="card-title mb-0">Foram encontradas <strong class="monitoramento-total-web"></strong> notícias</p>
                                     </div>
@@ -123,7 +123,7 @@
                                         </div>
                                     </div>
                                 </div>   
-                                <div class="row cabecalho-aguardando-busca">
+                                <div class="row cabecalho-aguardando-busca-web">
                                     <div class="col-md-6">
                                         <span class="text-info">Aguardando critérios de busca</span>
                                     </div>
@@ -132,7 +132,7 @@
                         </div>
                         <div class="tab-pane" id="panel_impresso" role="tabpanel" aria-expanded="false">
                             <div id="accordion_impresso" role="tablist" aria-multiselectable="true" class="card-collapse">
-                                <div class="row cabecalho-busca d-none">
+                                <div class="row cabecalho-busca cabecalho-busca-impresso d-none">
                                     <div class="col-md-6">
                                         <p class="card-title mb-0">Foram encontradas <strong class="monitoramento-total-impresso"></strong> notícias</p>
                                     </div>
@@ -148,7 +148,7 @@
                         </div>
                         <div class="tab-pane" id="panel_radio" role="tabpanel" aria-expanded="false">
                             <div id="accordion_radio" role="tablist" aria-multiselectable="true" class="card-collapse">
-                                <div class="row cabecalho-busca d-none">
+                                <div class="row cabecalho-busca cabecalho-busca-radio d-none">
                                     <div class="col-md-6">
                                         <p class="card-title mb-0">Foram encontradas <strong class="monitoramento-total-radio"></strong> notícias</p>
                                     </div>
@@ -164,7 +164,7 @@
                         </div>
                         <div class="tab-pane" id="panel_tv" role="tabpanel" aria-expanded="false">
                             <div id="accordion_tv" role="tablist" aria-multiselectable="true" class="card-collapse">
-                                <div class="row cabecalho-busca d-none">
+                                <div class="row cabecalho-busca cabecalho-busca-tv d-none">
                                     <div class="col-md-6">
                                         <p class="card-title mb-0">Foram encontradas <strong class="monitoramento-total-tv"></strong> notícias</p>
                                     </div>
@@ -268,13 +268,13 @@
 
                         if(data.length == 0){
 
-                            $(".cabecalho-busca").addClass("d-none");
+                            $(".cabecalho-busca-web").addClass("d-none");
                             $(".monitoramento-total-web").html(0);
 
                         }else{
 
-                            $(".cabecalho-busca").removeClass("d-none");
-                            $(".cabecalho-aguardando-busca").addClass("d-none");
+                            $(".cabecalho-busca-web").removeClass("d-none");
+                            $(".cabecalho-aguardando-busca-web").addClass("d-none");
 
                             $(".monitoramento-total-web").html(data.length);
                             $.each(data, function(k, v) {
@@ -332,13 +332,13 @@
 
                         if(data.length == 0){
 
-                            $(".cabecalho-busca").addClass("d-none");
+                            $(".cabecalho-busca-impresso").addClass("d-none");
                             $(".monitoramento-total-impresso").html(0);
 
                         }else{
 
-                            $(".cabecalho-busca").removeClass("d-none");
-                            $(".cabecalho-aguardando-busca").addClass("d-none");
+                            $(".cabecalho-busca-impresso").removeClass("d-none");
+                            
 
                             $(".monitoramento-total-impresso").html(data.length);
                             $.each(data, function(k, v) {
@@ -392,14 +392,13 @@
 
                         if(data.length == 0){
 
-                            $(".cabecalho-busca").addClass("d-none");
+                            $(".cabecalho-busca-radio").addClass("d-none");
                             $(".monitoramento-total-radio").html(0);
 
                         }else{
 
-                            $(".cabecalho-busca").removeClass("d-none");
-                            $(".cabecalho-aguardando-busca").addClass("d-none");
-
+                            $(".cabecalho-busca-radio").removeClass("d-none");
+                            
                             $(".monitoramento-total-radio").html(data.length);
                             $.each(data, function(k, v) {
 
@@ -452,13 +451,12 @@
 
                         if(data.length == 0){
 
-                            $(".cabecalho-busca").addClass("d-none");
+                            $(".cabecalho-busca-tv").addClass("d-none");
                             $(".monitoramento-total-tv").html(0);
 
                         }else{
 
-                            $(".cabecalho-busca").removeClass("d-none");
-                            $(".cabecalho-aguardando-busca").addClass("d-none");
+                            $(".cabecalho-busca-tv").removeClass("d-none");
 
                             $(".monitoramento-total-tv").html(data.length);
                             $.each(data, function(k, v) {
