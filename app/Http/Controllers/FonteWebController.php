@@ -605,6 +605,7 @@ class FonteWebController extends Controller
 
     public function store(FontWebRequest $request)
     {
+        $carbon = new Carbon();
         $request->merge(['id_situacao' => 0]); //Inicia sempre com situação = 0 - Aguardando
 
         $fonte_existe = FonteWeb::where('url', $request->url)->first();
@@ -617,7 +618,25 @@ class FonteWebController extends Controller
         }
 
         try {
-            FonteWeb::create($request->all());
+            
+            $fonte = FonteWeb::create($request->all());
+
+            if($request->data_noticia and $request->titulo and $request->url_noticia)
+            {
+                $dados_noticia = array('id_fonte' => $fonte->id,
+                                'data_noticia' => ($request->data_noticia) ? $carbon->createFromFormat('d/m/Y', $request->data_noticia)->format('Y-m-d')." 00:00:00" : date("Y-m-d H:i:s"),
+                                'titulo_noticia' => ($request->titulo) ? $request->titulo : '',
+                                'url_noticia' => ( $request->url_noticia) ? $request->url_noticia : '');
+        
+                                $nova = NoticiaWeb::create($dados_noticia);
+        
+                                //Insere em conteúdo
+                                $dados_conteudo = array('id_noticia_web' => $nova->id,
+                                                        'conteudo' => $request->conteudo);
+        
+                                ConteudoNoticiaWeb::create($dados_conteudo);
+            }
+
             $retorno = array('flag' => true,
                              'msg' => "Dados inseridos com sucesso");
 

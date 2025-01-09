@@ -28,7 +28,7 @@
                     <div class="col-md-2">
                         <div class="form-group">
                             <label>País <span class="text-danger">Obrigatório</span></label>
-                            <select class="form-control select2" name="cd_pais" id="cd_pais">
+                            <select class="form-control select2" name="cd_pais" id="cd_pais" required>
                                 <option value="">Selecione um país</option>
                                 @foreach ($paises as $pais)
                                     <option value="{{ $pais->cd_pais }}" {{ ( old('cd_pais') == $pais->cd_pais) ? 'selected' : '' }}>{{ $pais->ds_pais }}</option>
@@ -39,7 +39,7 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label>Estado <span class="text-danger">Obrigatório</span></label>
-                            <select class="form-control select2" name="cd_estado" id="cd_estado">
+                            <select class="form-control select2" name="cd_estado" id="cd_estado" required>
                                 <option value="">Selecione um estado</option>
                                 @foreach ($estados as $estado)
                                     <option value="{{ $estado->cd_estado }}" {{ ( old('cd_estado') == $estado->cd_estado) ? 'selected' : '' }}>{{ $estado->nm_estado }}</option>
@@ -63,13 +63,13 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label>Nome <span class="text-danger">Obrigatório</span></label>
-                            <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome" value="{{ old("nome") }}">
+                            <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome" required value="{{ old("nome") }}">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>URL <span class="text-danger">Obrigatório</span></label>
-                            <input type="text" class="form-control" name="url" id="url" placeholder="URL" value="{{ old("url") }}">
+                            <input type="text" class="form-control" name="url" id="url" placeholder="URL" required value="{{ old("url") }}">
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -91,6 +91,9 @@
                             </select>
                         </div>
                     </div>
+                    <div class="col-md-12">
+                        <span> Por padrão toda nova fonte é cadastrada com a situação <strong>Aguardando</strong>.</span>
+                    </div>
                 </div>
                 <div class="row mt-3">
                     <div class="col-md-12">
@@ -99,25 +102,25 @@
                     <div class="col-md-12">
                         <div class="form-group">
                             <label>Título <span class="text-danger">Obrigatório</span></label>
-                            <input type="text" class="form-control" name="titulo" id="titulo" placeholder="Título" value="{{ old("titulo") }}">
+                            <input type="text" class="form-control" name="titulo" id="titulo" required placeholder="Título" value="{{ old("titulo") }}">
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label>Data Notícia <span class="text-danger">Obrigatório</span></label>
-                            <input type="text" class="form-control datepicker" name="dt_clipagem" required="true" value="{{ date("d/m/Y") }}" placeholder="__/__/____">
+                            <input type="text" class="form-control datepicker" name="data_noticia" required value="{{ date("d/m/Y") }}" placeholder="__/__/____">
                         </div>
                     </div>
                     <div class="col-md-9">
                         <div class="form-group">
                             <label>Link da Notícia <span class="text-danger">Obrigatório</span></label>
-                            <input type="text" class="form-control" name="link" id="link" placeholder="Link da Notícia" value="{{ old("link") }}">
+                            <input type="text" class="form-control" name="url_noticia" id="url_noticia" required placeholder="Link da Notícia" value="{{ old("url_noticia") }}">
                         </div>
                     </div>
                     <div class="col-md-12">
                         <label for="sinopse">Texto <span class="text-danger">Obrigatório</span></label>
                         <div class="form-group">
-                            <textarea class="form-control" name="texto" id="texto" rows="10">{{ old("texto") }}</textarea>
+                            <textarea class="form-control" name="conteudo" id="conteudo" rows="10">{{ old("conteudo") }}</textarea>
                         </div>
                     </div>
                 </div> 
