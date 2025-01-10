@@ -43,16 +43,20 @@
                     <table id="" class="table table-striped table-bordered" cellspacing="0" width="100%">
                     <thead>
                         <tr>
-                            <th class="w-50">Nome</th>
-                            <th class="w-10 disabled-sorting text-center">Situação</th>
-                            <th class="w-10 disabled-sorting text-center">Ações</th>
+                            <th>Nome</th>
+                            <th>Usuário</th>
+                            <th class="text-center">Clipagem</th>
+                            <th class="text-center">Situação</th>
+                            <th class="text-center">Ações</th>
                         </tr>
                     </thead>
                     <tfoot>
                         <tr>
                             <th>Nome</th>
-                            <th class="disabled-sorting text-center">Situação</th>
-                            <th class="disabled-sorting text-center">Ações</th>
+                            <th>Usuário</th>
+                            <th class="text-center">Clipagem</th>
+                            <th class="text-center">Situação</th>
+                            <th class="text-center">Ações</th>
                         </tr>
                     </tfoot>
                     <tbody>
@@ -62,6 +66,35 @@
                                     {{ $cliente->nome }} 
                                     @if($cliente->areas->count())
                                         <i title="Cliente possui áreas vinculadas" class="fa fa-tags text-primary"></i>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if($cliente->fl_area_restrita)
+                                        {!! ($cliente->usuario) ? $cliente->usuario->nome : '<span class="text-danger">Usuário não cadastrado</span>' !!}
+                                    @else
+                                        <span class="text-info">Sem acesso a Área Restrita</span>
+                                    @endif
+                                </td>
+                                <td class="text-center" style="font-size: 25px;">
+                                    @if($cliente->fl_impresso)
+                                        <i class="fa fa-newspaper-o text-primary"></i>
+                                    @else
+                                        <i class="fa fa-newspaper-o"></i>
+                                    @endif
+                                    @if($cliente->fl_web)
+                                        <i class="fa fa-globe text-primary"></i>
+                                    @else
+                                        <i class="fa fa-globe"></i>
+                                    @endif
+                                    @if($cliente->fl_radio)
+                                        <i class="fa fa-volume-up text-primary"></i>
+                                    @else
+                                        <i class="fa fa-volume-up"></i>
+                                    @endif
+                                    @if($cliente->fl_tv)
+                                        <i class="fa fa-tvo text-primary"></i>
+                                    @else
+                                        <i class="fa fa-tv"></i>
                                     @endif
                                 </td>
                                 <td class="disabled-sorting text-center">{!! ($cliente->fl_ativo) ? '<span class="badge badge-pill badge-success">ATIVO</span>' : '<span class="badge badge-pill badge-danger">INATIVO</span>' !!}</td>
