@@ -41,15 +41,10 @@ class ClienteController extends Controller
 
             $cliente->when($nome, function ($q) use ($nome) {
 
-                $q->whereHas('pessoa', function ($q) use ($nome){
-
-                    return $q->where('nome', 'ILIKE', '%'.trim($nome).'%');
-
-                });
-                
+                return $q->where('nome', 'ILIKE', '%'.trim($nome).'%');
             });
             
-            $clientes = Cliente::orderBy('nome')->paginate(10);
+            $clientes = $cliente->orderBy('nome')->paginate(10);
         }
 
         return view('cliente/index',compact('clientes','nome'));

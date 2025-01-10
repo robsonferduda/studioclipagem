@@ -31,6 +31,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-4">
+                                    <a href="{{ url('clientes') }}" class="btn btn-warning btn-limpar mt-4"><i class="fa fa-refresh"></i> Limpar</a>
                                     <button type="submit" id="btn-find" class="btn btn-primary mt-4"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
