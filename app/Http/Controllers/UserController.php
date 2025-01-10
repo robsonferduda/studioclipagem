@@ -8,6 +8,7 @@ use App\User;
 use App\Role;
 use App\Models\RoleUser;
 use App\Utils;
+use App\Models\Cliente;
 use App\Models\Pessoa;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
@@ -54,6 +55,35 @@ class UserController extends Controller
         $user = User::find($id);
 
         return view('usuarios/editar',compact('user','perfis'));
+    }
+
+    public function insereClientes()
+    {
+        $clientes = Cliente::all();
+
+        foreach ($clientes as $key => $cliente) {
+
+            if($cliente->usuario_tmp){
+
+                $user = array('name' => $cliente->nome,
+                            'email' => $cliente->usuario_tmp,
+                            'password' => \Hash::make($cliente->senha_tmp),
+                            'client_id' => $cliente->id,
+                            'is_active' => true);
+
+                $user = User::create($user);
+
+                if($user){
+
+                    $user_role = array('role_id' => 2, 'user_id' => $user->id);
+
+                    RoleUser::create($user_role);
+                }
+            }
+
+        }
+
+        
     }
 
     public function store(UserRequest $request)

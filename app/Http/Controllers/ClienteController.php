@@ -140,15 +140,10 @@ class ClienteController extends Controller
         $cliente = Cliente::find($id);
         try {
 
-            $cliente->ativo = $flag;
-            $cliente->update();
-
-            $cliente->pessoa->update([
-                'nome' => $request->nome,
-                'cpf_cnpj' => preg_replace('/\D/', '', $request->cpf_cnpj)
-            ]);
-
-            EnderecoEletronico::where('pessoa_id', $cliente->pessoa->id)->delete();
+            $cliente->fl_ativo = $flag;
+            $request->merge(['fl_ativo' => $flag]);
+            //$cliente->update($request->all());
+            $cliente->update($request->all());
 
             //$this->cadastrarEnderecoEletronico($request, $cliente);
             //$this->gerenciaClienteArea($request, $cliente);
@@ -185,6 +180,9 @@ class ClienteController extends Controller
             );
 
         } catch (\Illuminate\Database\QueryException $e) {
+
+            dd($e);
+
             $retorno = array(
                 'flag' => false,
                 'msg' => Utils::getDatabaseMessageByCode($e->getCode())

@@ -46,6 +46,7 @@
                         <tr>
                             <th>Nome</th>
                             <th>Usuário</th>
+                            <th class="text-center">Print</th>
                             <th class="text-center">Clipagem</th>
                             <th class="text-center">Situação</th>
                             <th class="text-center">Ações</th>
@@ -55,6 +56,7 @@
                         <tr>
                             <th>Nome</th>
                             <th>Usuário</th>
+                            <th class="text-center">Print</th>
                             <th class="text-center">Clipagem</th>
                             <th class="text-center">Situação</th>
                             <th class="text-center">Ações</th>
@@ -71,11 +73,12 @@
                                 </td>
                                 <td>
                                     @if($cliente->fl_area_restrita)
-                                        {!! ($cliente->usuario) ? $cliente->usuario->nome : '<span class="text-danger">Usuário não cadastrado</span>' !!}
+                                        {!! ($cliente->usuario) ? $cliente->usuario->email : '<span class="text-danger">Usuário não cadastrado</span>' !!}
                                     @else
                                         <span class="text-info">Sem acesso a Área Restrita</span>
                                     @endif
                                 </td>
+                                <td class="text-center">{!! ($cliente->fl_print) ? '<span class="badge badge-pill badge-success">SIM</span>' : '<span class="badge badge-pill badge-danger">NÃO</span>' !!}</td>
                                 <td class="text-center" style="font-size: 25px;">
                                     @if($cliente->fl_impresso)
                                         <i class="fa fa-newspaper-o text-primary"></i>
@@ -93,7 +96,7 @@
                                         <i class="fa fa-volume-up"></i>
                                     @endif
                                     @if($cliente->fl_tv)
-                                        <i class="fa fa-tvo text-primary"></i>
+                                        <i class="fa fa-tv text-primary"></i>
                                     @else
                                         <i class="fa fa-tv"></i>
                                     @endif

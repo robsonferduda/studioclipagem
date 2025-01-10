@@ -24,12 +24,10 @@
                 </div>
             </div>
             <div class="card-body">
-                <div class="row">
+                <div class="row mr-1 ml-1">
                     <div class="col-md-12">
                         @include('layouts.mensagens')
                     </div>
-                </div>
-                <div class="row mr-1 ml-1">
                     <div class="col-md-12">
                         <input type="hidden" name="cliente_id" id="cliente_id" value="{{ $cliente->id }}">
                         <div class="row">
@@ -39,9 +37,9 @@
                                     <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome" required value="{{ $cliente->nome }}">
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
-                                    <div class="form-check mt-4">
+                                    <div class="form-check">
                                         <label class="form-check-label mt-2">
                                             <input class="form-check-input" {{ ($cliente->fl_print) ? 'checked' : '' }} type="checkbox" name="fl_print" value="true">
                                             NOTÍCIAS COM PRINT
@@ -49,66 +47,83 @@
                                         </label>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
+                          
                                 <div class="form-group">
-                                    <div class="form-check mt-4">
+                                    <div class="form-check">
                                         <label class="form-check-label mt-2">
-                                            <input class="form-check-input" {{ ($cliente->ativo) ? 'checked' : '' }} type="checkbox" name="ativo" value="true">
+                                            <input class="form-check-input" {{ ($cliente->fl_ativo) ? 'checked' : '' }} type="checkbox" name="fl_ativo" value="true">
                                             ATIVO
                                             <span class="form-check-sign"></span>
                                         </label>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div>
-                                    <label>Logo</label>
-                                    <input type="file" class="form-control" name="logo" id="logo">
-                                    <div class="row">
-                                        <div class="col-md-12 mt-2">
-                                            @if($cliente->logo)
-                                                <img src="{{ asset('img/clientes/logo/'.$cliente->logo) }}" alt="{{ $cliente->logo }}" class="img-thumbnail">
-                                            @else
-                                                <span class="text-danger">Nenhuma mídia cadastrada</span>
-                                            @endif
-                                        </div>
-                                    </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12">
+                                <p class="mb-1"><i class="nc-icon nc-sound-wave"></i> Clipagem de Mídia</p>
+                                <div class="form-check float-left mr-3">
+                                    <label class="form-check-label mt-2">
+                                        <input class="form-check-input" {{ ($cliente->fl_impresso) ? 'checked' : '' }} type="checkbox" name="fl_impresso" value="true">
+                                        IMPRESSO
+                                        <span class="form-check-sign"></span>
+                                    </label>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div>
-                                    <label>Logo Expandida </label>
-                                    <input type="file" class="form-control" name="logo_expandida" id="logo_expandida">
-                                    <div class="row">
-                                        <div class="col-md-12 mt-2">
-                                            @if($cliente->logo_expandida)
-                                                <img src="{{ asset('img/clientes/logo_expandida/'.$cliente->logo_expandida) }}" alt="{{ $cliente->logo_expandida }}" class="img-thumbnail">
-                                            @else
-                                                <span class="text-danger">Nenhuma mídia cadastrada</span>
-                                            @endif
-                                        </div>
-                                    </div>
+                                <div class="form-check float-left mr-3">
+                                    <label class="form-check-label mt-2">
+                                        <input class="form-check-input" {{ ($cliente->fl_web) ? 'checked' : '' }} type="checkbox" name="fl_web" value="true">
+                                        WEB
+                                        <span class="form-check-sign"></span>
+                                    </label>
+                                </div>
+                                <div class="form-check float-left mr-3">
+                                    <label class="form-check-label mt-2">
+                                        <input class="form-check-input" {{ ($cliente->fl_radio) ? 'checked' : '' }} type="checkbox" name="fl_radio" value="true">
+                                        RÁDIO
+                                        <span class="form-check-sign"></span>
+                                    </label>
+                                </div>
+                                <div class="form-check float-left mr-3">
+                                    <label class="form-check-label mt-2">
+                                        <input class="form-check-input" {{ ($cliente->fl_tv) ? 'checked' : '' }} type="checkbox" name="fl_tv" value="true">
+                                        TV
+                                        <span class="form-check-sign"></span>
+                                    </label>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-12">
-                        <p class="mb-0">
-                            <i class="fa fa-envelope"></i> Endereços Eletrônicos 
-                            <button type="button" class="btn btn-sm btn-primary btn-icon btn-email" style="border-radius: 50%; height: 1.5rem;
-                            min-width: 1.5rem;
-                            width: 1.5rem;" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-plus fa-2x"></i></button>
-                        </p>
                         <div class="row">
-                            <div class="col-md-12">
-                                @if(count($emails))
-                                    @foreach($emails as $email)                                        
-                                        <span data-id="{{ $email->id }}" class="btn-excluir-email">{{ $email->endereco }}<a title="Remover" class=""><i class="fa fa-trash text-danger ml-1 mr-3"></i></a></span>
-                                    @endforeach
-                                @else
-                                    <p class="text-danger">Nenhum endereço eletrônico cadastrado</p>
-                                @endif
+                            <div class="col-md-12 col-sm-12">
+                                <p class="mb-1"> <i class="fa fa-file-pdf-o"></i> Relatórios</p>
+                                <div class="form-check float-left mr-3">
+                                    <label class="form-check-label mt-2">
+                                        <input class="form-check-input" {{ ($cliente->fl_relatorio_completo) ? 'checked' : '' }} type="checkbox" name="fl_relatorio_completo" value="true">
+                                            RELATÓRIO COMPLETO
+                                        <span class="form-check-sign"></span>
+                                    </label>
+                                </div>
+                                <div class="form-check float-left mr-3">
+                                    <label class="form-check-label mt-2">
+                                        <input class="form-check-input" {{ ($cliente->fl_relatorio_consolidado) ? 'checked' : '' }} type="checkbox" name="fl_relatorio_consolidado" value="true">
+                                            RELATÓRIO CONSOLIDADO
+                                        <span class="form-check-sign"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                   
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12">
+                                <p class="mb-2"><i class="fa fa-envelope"></i> Endereços Eletrônicos</p>
+                                <div class="form-group">
+                                    <textarea class="form-control" name="emails" id="emails" rows="3">{{ $cliente->emails }}</textarea>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -128,6 +143,36 @@
                                 @else
                                     <p class="text-danger">Nenhum endereço eletrônico cadastrado</p>
                                 @endif
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div>
+                            <label>Logo</label>
+                            <input type="file" class="form-control" name="logo" id="logo">
+                            <div class="row">
+                                <div class="col-md-12 mt-2">
+                                    @if($cliente->logo)
+                                        <img src="{{ asset('img/clientes/logo/'.$cliente->logo) }}" alt="{{ $cliente->logo }}" class="img-thumbnail">
+                                    @else
+                                        <span class="text-danger">Nenhuma mídia cadastrada</span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div>
+                            <label>Logo Expandida </label>
+                            <input type="file" class="form-control" name="logo_expandida" id="logo_expandida">
+                            <div class="row">
+                                <div class="col-md-12 mt-2">
+                                    @if($cliente->logo_expandida)
+                                        <img src="{{ asset('img/clientes/logo_expandida/'.$cliente->logo_expandida) }}" alt="{{ $cliente->logo_expandida }}" class="img-thumbnail">
+                                    @else
+                                        <span class="text-danger">Nenhuma mídia cadastrada</span>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -35,6 +35,7 @@ Route::get('inicio/estatisticas','HomeController@estatisticas');
 
 Route::get('import','FonteWebController@importacaoNova');
 
+Route::get('clientes/usuarios','UserController@insereClientes');
 
 Route::post('areas/inserir','AreaController@inserir');
 Route::post('areas/{id}/atualizar','AreaController@atualizar');
