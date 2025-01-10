@@ -26,17 +26,6 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label>Cliente</label>
-                                        <select class="form-control select2" name="cliente" id="cliente">
-                                            <option value="">Selecione um cliente</option>
-                                            @foreach ($clientes as $cliente)
-                                                <option value="{{ $cliente->id }}">{{ $cliente->nome }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="form-group">
                                         <label>Período</label>
                                         <select class="form-control periodo" name="periodo" id="periodo">
                                             <option value="">Selecione um período</option>
@@ -84,6 +73,7 @@
                                 </div>
                                 <div class="col-md-12 checkbox-radios mb-0">
                                     <button type="button" id="btn-find" class="btn btn-primary mb-3"><i class="fa fa-search"></i> Buscar</button>
+                                    <button type="button" id="btn-monitorar" class="btn btn-warning mb-3"><i class="nc-icon nc-sound-wave"></i> Monitorar</button>
                                 </div>
                             </div>     
                         </div>
@@ -184,6 +174,38 @@
         </div>
     </div>
 </div> 
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-envelope"></i> Adicionar Endereço Eletrônico</h6>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Cliente</label>
+                        <select class="form-control select2" name="cliente" id="cliente">
+                            <option value="">Selecione um cliente</option>
+                            @foreach ($clientes as $cliente)
+                                <option value="{{ $cliente->id }}">{{ $cliente->nome }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </div>               
+        </div>
+        <div class="center">
+          <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
+          <button type="button" class="btn btn-success btn-salvar-email"><i class="fa fa-save"></i> Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 @endsection
 @section('script')
 <script>
