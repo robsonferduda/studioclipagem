@@ -170,6 +170,7 @@ Route::get('monitoramento/cliente/{cliente}','MonitoramentoController@buscar');
 Route::get('monitoramento/novo','MonitoramentoController@novo');
 Route::get('monitoramento/executar','MonitoramentoController@executar');
 Route::get('monitoramento/{id}/executar','MonitoramentoController@executar');
+Route::get('monitoramento/{id}/historico','MonitoramentoController@historico');
 Route::get('monitoramento/{id}/atualizar-status','MonitoramentoController@atualizarStatus');
 Route::get('monitoramento/{id}/noticias','MonitoramentoController@noticias');
 Route::get('monitoramento/cliente/{id}','MonitoramentoController@getMonitoramentoCliente');
@@ -178,6 +179,8 @@ Route::post('monitoramento/filtrar','MonitoramentoController@filtrar');
 Route::post('monitoramento/filtrar/impresso','MonitoramentoController@filtrarImpresso');
 Route::post('monitoramento/filtrar/radio','MonitoramentoController@filtrarRadio');
 Route::post('monitoramento/filtrar/tv','MonitoramentoController@filtrarTv');
+
+Route::get('monitoramento/executar/web','MonitoramentoController@executarWeb');
 
 Route::post('pauta','PautaController@store');
 Route::match(array('GET', 'POST'),'pautas','PautaController@index');

@@ -219,6 +219,53 @@ class MonitoramentoController extends Controller
         return response()->json($dados);
     }
 
+    public function historico($id)
+    {
+        $monitoramento = Monitoramento::find($id);
+
+        $historico = $monitoramento->historico;
+        
+        return view('monitoramento/historico', compact('historico','monitoramento'));
+    }
+
+    public function executarWeb()
+    {
+        $dt_inicial = (Carbon::now())->format('Y-m-d')." 00:00:00";
+        $dt_final = (Carbon::now())->format('Y-m-d')." 23:59:59";
+        $data_inicio = date('Y-m-d H:i:s');
+        $total_vinculado = 0;
+
+        $monitoramentos = Monitoramento::where('fl_ativo', true)->where('fl_web', true)->get();
+        
+        foreach ($monitoramentos as $key => $monitoramento) {
+
+            $sql = "SELECT 
+                        n.id, n.id_fonte, n.url_noticia, n.data_insert, n.data_noticia, n.titulo_noticia, fw.nome
+                    FROM 
+                        noticias_web n
+                    JOIN 
+                        conteudo_noticia_web cnw ON cnw.id_noticia_web = n.id
+                    JOIN 
+                        fonte_web fw ON fw.id = n.id_fonte 
+                    WHERE 1=1
+                        AND n.data_noticia BETWEEN '$dt_inicial' AND '$dt_final' 
+                        AND cnw.conteudo_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao') 
+                        ORDER BY n.data_noticia DESC";
+
+            $dados = DB::select($sql);
+            
+            $data_termino = date('Y-m-d H:i:s');
+
+            $dado_moninoramento = array('monitoramento_id' => $monitoramento->id, 
+                                        'total_vinculado' => $total_vinculado,
+                                        'created_at' => $data_inicio,
+                                        'updated_at' => $data_termino);
+
+            MonitoramentoExecucao::create($dado_moninoramento);
+            
+        }
+    }
+
     public function executar()
     {
         $monitoramentos = Monitoramento::where('fl_ativo', true)->get();

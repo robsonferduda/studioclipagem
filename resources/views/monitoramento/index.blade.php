@@ -88,7 +88,7 @@
                                         <div class="stats">
                                             <i class="fa fa-refresh"></i>Última atualização em {{ \Carbon\Carbon::parse($monitoramento->updated_at)->format('d/m/Y H:i:s') }}
                                             <div class="pull-right">
-                                                <a href="{{ url('monitoramento/'.$monitoramento->id.'/execucoes') }}" class="btn btn-info btn-fill btn-icon btn-sm" style="border-radius: 30px;">
+                                                <a href="{{ url('monitoramento/'.$monitoramento->id.'/historico') }}" class="btn btn-info btn-fill btn-icon btn-sm" style="border-radius: 30px;">
                                                     <i class="fa fa-clock-o fa-3x text-white"></i>
                                                 </a>
                                                 <a href="{{ url('monitoramento/'.$monitoramento->id.'/executar') }}" class="btn btn-warning btn-fill btn-icon btn-sm" style="border-radius: 30px;">
