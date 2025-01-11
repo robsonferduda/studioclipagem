@@ -174,14 +174,14 @@
         </div>
     </div>
 </div> 
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="modalMonitoramento" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-envelope"></i> Adicionar Endereço Eletrônico</h6>
+          <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="nc-icon nc-sound-wave"></i> Monitoramento de Mídia</h6>
         </div>
         <div class="modal-body">
             <div class="row">
@@ -196,11 +196,42 @@
                         </select>
                     </div>
                 </div>
+                <div class="col-md-12 col-sm-12 mt-3">
+                    <p class="mb-1">Selecione as Mídias</p>
+                    <div class="form-check float-left mr-3">
+                        <label class="form-check-label mt-2">
+                            <input class="form-check-input" type="checkbox" name="fl_impresso" value="true">
+                            IMPRESSO
+                            <span class="form-check-sign"></span>
+                        </label>
+                    </div>
+                    <div class="form-check float-left mr-3">
+                        <label class="form-check-label mt-2">
+                            <input class="form-check-input" type="checkbox" name="fl_web" value="true">
+                            WEB
+                            <span class="form-check-sign"></span>
+                        </label>
+                    </div>
+                    <div class="form-check float-left mr-3">
+                        <label class="form-check-label mt-2">
+                            <input class="form-check-input" type="checkbox" name="fl_radio" value="true">
+                            RÁDIO
+                            <span class="form-check-sign"></span>
+                        </label>
+                    </div>
+                    <div class="form-check float-left mr-3">
+                        <label class="form-check-label mt-2">
+                            <input class="form-check-input" type="checkbox" name="fl_tv" value="true">
+                            TV
+                            <span class="form-check-sign"></span>
+                        </label>
+                    </div>
+                </div>
             </div>               
         </div>
-        <div class="center">
-          <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
-          <button type="button" class="btn btn-success btn-salvar-email"><i class="fa fa-save"></i> Salvar</button>
+        <div class="center mb-3">
+          <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
+          <button type="button" class="btn btn-success btn-salvar-monitoramento"><i class="fa fa-save"></i> Salvar</button>
         </div>
       </div>
     </div>
@@ -245,6 +276,12 @@
 
             return dia + '/' + mes + '/' + ano;
         }
+
+        $("#btn-monitorar").click(function(){
+
+            $("#modalMonitoramento").modal({backdrop: 'static', keyboard: false});
+
+        });
 
         $("#btn-find").click(function(){
 

@@ -57,9 +57,26 @@
                                                         @endif
                                                         </span>
                                                     </h6>
-                                                    <span class="badge badge-{{ $monitoramento->tipo->ds_tipo_color }}">
-                                                        {{ $monitoramento->tipo->ds_tipo_fonte }}
-                                                    </span>
+                                                    @if($monitoramento->fl_web)
+                                                        <span class="badge badge-danger">
+                                                            WEB
+                                                        </span>
+                                                    @endif
+                                                    @if($monitoramento->fl_web)
+                                                        <span class="badge badge-warning">
+                                                            TV
+                                                        </span>
+                                                    @endif
+                                                    @if($monitoramento->fl_web)
+                                                        <span class="badge badge-primary">
+                                                            RÁDIO
+                                                        </span>
+                                                    @endif
+                                                    @if($monitoramento->fl_web)
+                                                        <span class="badge badge-success">
+                                                            IMPRESSO
+                                                        </span>
+                                                    @endif
                                                 </p>
                                                 <p class="card-title"></p>
                                                 <p class="text-bold">"{{ $monitoramento->expressao }}"</p>                                            
@@ -69,7 +86,7 @@
                                     <div class="card-footer ">
                                         <hr>
                                         <div class="stats">
-                                            <i class="fa fa-refresh"></i>Última atualização em {{ \Carbon\Carbon::parse($monitoramento->created_at)->format('d/m/Y H:i:s') }}
+                                            <i class="fa fa-refresh"></i>Última atualização em {{ \Carbon\Carbon::parse($monitoramento->updated_at)->format('d/m/Y H:i:s') }}
                                             <div class="pull-right">
                                                 <a href="{{ url('monitoramento/'.$monitoramento->id.'/execucoes') }}" class="btn btn-info btn-fill btn-icon btn-sm" style="border-radius: 30px;">
                                                     <i class="fa fa-clock-o fa-3x text-white"></i>
