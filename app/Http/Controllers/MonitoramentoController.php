@@ -266,7 +266,51 @@ class MonitoramentoController extends Controller
         }
     }
 
-    public function executar()
+    public function executar($id)
+    {
+        $dt_inicial = (Carbon::now())->format('Y-m-d')." 00:00:00";
+        $dt_final = (Carbon::now())->format('Y-m-d')." 23:59:59";
+        $data_inicio = date('Y-m-d H:i:s');
+        $total_vinculado = 0;
+
+        $monitoramento = Monitoramento::find($id);
+        
+        if($monitoramento->fl_web) {
+
+            $sql = "SELECT 
+                        n.id, n.id_fonte, n.url_noticia, n.data_insert, n.data_noticia, n.titulo_noticia, fw.nome
+                    FROM 
+                        noticias_web n
+                    JOIN 
+                        conteudo_noticia_web cnw ON cnw.id_noticia_web = n.id
+                    JOIN 
+                        fonte_web fw ON fw.id = n.id_fonte 
+                    WHERE 1=1
+                        AND n.data_noticia BETWEEN '$dt_inicial' AND '$dt_final' 
+                        AND cnw.conteudo_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao') 
+                        ORDER BY n.data_noticia DESC";
+
+            $dados = DB::select($sql);
+            
+            $data_termino = date('Y-m-d H:i:s');
+
+            $dado_moninoramento = array('monitoramento_id' => $monitoramento->id, 
+                                        'total_vinculado' => $total_vinculado,
+                                        'created_at' => $data_inicio,
+                                        'fl_automatico' => false,
+                                        'id_user' => Auth::user()->id,
+                                        'updated_at' => $data_termino);
+
+            MonitoramentoExecucao::create($dado_moninoramento);
+
+            Flash::success('<i class="fa fa-check"></i> Monitoramento executado com sucesso');
+
+            return redirect('monitoramento')->withInput();
+            
+        }
+    }
+
+    public function executar_old()
     {
         $monitoramentos = Monitoramento::where('fl_ativo', true)->get();
 
@@ -317,13 +361,6 @@ class MonitoramentoController extends Controller
             MonitoramentoExecucao::create($dado_moninoramento);
             
         }
-
-        return redirect('monitoramento');
-    }
-
-    public function executarIndividual($id)
-    {
-        Flash::success('<i class="fa fa-check"></i> Monitoramento individual realizado com sucesso');
 
         return redirect('monitoramento');
     }

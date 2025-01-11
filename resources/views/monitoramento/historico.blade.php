@@ -27,7 +27,7 @@
                     </div>
                     <hr/>
                     @foreach($historico as $key => $monitoramento)
-                        <p style="font-family: DejaVu Sans Mono, monospace;"><i class="fa fa-clock-o fa-1x"></i> Executado em {{ \Carbon\Carbon::parse($monitoramento->created_at)->format('d/m/Y H:i:s') }} encontrou <strong>{{ $monitoramento->total_vinculado }}</strong> registros.</p>
+                        <p style="font-family: DejaVu Sans Mono, monospace;"><i class="fa fa-clock-o fa-1x"></i> Executado em {{ \Carbon\Carbon::parse($monitoramento->created_at)->format('d/m/Y H:i:s') }} <strong>{{ ($monitoramento->fl_automatico) ? 'automaticamente' : 'manualmente' }}</strong> {!! (!$monitoramento->fl_automatico and $monitoramento->usuario) ? 'por <strong>'.$monitoramento->usuario->name.'</strong>' : '' !!} encontrou <strong>{{ $monitoramento->total_vinculado }}</strong> registros.</p>
                     @endforeach                      
                 </div>          
             </div>
