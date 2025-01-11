@@ -60,14 +60,9 @@ class ClienteController extends Controller
     {
         try {
 
-            $pessoa = Pessoa::create([
-                'nome' => $request->nome,
-                'cpf_cnpj' => preg_replace('/\D/', '', $request->cpf_cnpj)
-            ]);
-
             $cliente = Cliente::create([
-                'ativo' => $request->ativo,
-                'pessoa_id' => $pessoa->id
+                'fl_ativo' => $request->fl_ativo,
+                'nome' => $request->nome
             ]);
 
             if($request->logo){
@@ -133,7 +128,7 @@ class ClienteController extends Controller
         return view('cliente/editar',compact('cliente', 'emails', 'areas'));
     }
 
-    public function update(Request $request, int $id):RedirectResponse
+    public function update(Request $request, int $id): RedirectResponse
     {
         $flag = $request->ativo == true ? true : false;
 
