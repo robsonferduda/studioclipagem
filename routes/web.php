@@ -72,7 +72,7 @@ Route::get('estado/{id}/cidades','EstadoController@getCidades');
 Route::get('exportar/atualizar','ExportarController@atualizar');
 Route::match(array('GET', 'POST'),'exportar/{log?}','ExportarController@index');
 Route::match(array('GET', 'POST'),'importar','ExportarController@importar');
-Route::post('teste','ExportarController@teste');
+Route::get('teste','EmailController@teste');
 
 Route::match(array('GET', 'POST'),'fonte-impresso/listar','FonteImpressoController@listar');
 

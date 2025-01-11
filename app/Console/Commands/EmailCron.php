@@ -41,7 +41,7 @@ class EmailCron extends Command
         $data['dados'] = null;
         $titulo = " Notificação de Monitoramento - Execução automática - ".date("d/m/Y H:i:s"); 
 
-        app('App\Http\Controllers\MonitoramentoController')->executar();
+        //app('App\Http\Controllers\MonitoramentoController')->executar();
         
         Mail::send('notificacoes.teste', $data, function($message) use ($titulo){
             $message->to("robsonferduda@gmail.com")

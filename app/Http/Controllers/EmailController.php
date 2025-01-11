@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Mail;
 use App\Models\Cliente;
 use App\Models\EnderecoEletronico;
 use Laracasts\Flash\Flash;
@@ -18,6 +19,20 @@ class EmailController extends Controller
     public function index()
     {
         
+    }
+
+    public function teste()
+    {
+        $data['dados'] = null;
+        $titulo = " Notificação de Monitoramento - Execução Automática - ".date("d/m/Y H:i:s"); 
+
+        //app('App\Http\Controllers\MonitoramentoController')->executar();
+        
+        Mail::send('notificacoes.teste', $data, function($message) use ($titulo){
+            $message->to("robsonferduda@gmail.com")
+                    ->subject($titulo);
+            $message->from('boletins@clipagens.com.br','Studio Social');
+        }); 
     }
 
     public function atualizarSituacao($email_id)
