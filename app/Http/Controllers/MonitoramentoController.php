@@ -314,7 +314,7 @@ class MonitoramentoController extends Controller
 
             MonitoramentoExecucao::create($dado_moninoramento);
 
-            Flash::success('<i class="fa fa-check"></i> Monitoramento executado com sucesso');
+            Flash::success('<i class="fa fa-check"></i> Monitoramento executado manualmente retornou '. $total_vinculado.' registros');
 
             return redirect('monitoramento')->withInput();
             
