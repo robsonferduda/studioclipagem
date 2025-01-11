@@ -253,6 +253,8 @@ class MonitoramentoController extends Controller
                         ORDER BY n.data_noticia DESC";
 
             $dados = DB::select($sql);
+
+            $total_vinculado = count($dados);
             
             $data_termino = date('Y-m-d H:i:s');
 
@@ -268,11 +270,8 @@ class MonitoramentoController extends Controller
 
     public function executar($id)
     {
-        //$dt_inicial = (Carbon::now())->format('Y-m-d')." 00:00:00";
-        //$dt_final = (Carbon::now())->format('Y-m-d')." 23:59:59";
-
-        $dt_inicial = '2025-01-09 00:00:00';
-        $dt_final = '2025-01-11 23:00:00';
+        $dt_inicial = (Carbon::now())->format('Y-m-d')." 00:00:00";
+        $dt_final = (Carbon::now())->format('Y-m-d')." 23:59:59";
 
         $data_inicio = date('Y-m-d H:i:s');
         $total_vinculado = 0;
@@ -314,7 +313,7 @@ class MonitoramentoController extends Controller
 
             MonitoramentoExecucao::create($dado_moninoramento);
 
-            Flash::success('<i class="fa fa-check"></i> Monitoramento executado manualmente retornou '. $total_vinculado.' registros');
+            Flash::success('<i class="fa fa-check"></i> Monitoramento executado manualmente retornou <strong>'. $total_vinculado.'</strong> registros');
 
             return redirect('monitoramento')->withInput();
             
