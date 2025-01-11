@@ -62,17 +62,17 @@
                                                             WEB
                                                         </span>
                                                     @endif
-                                                    @if($monitoramento->fl_web)
+                                                    @if($monitoramento->fl_tv)
                                                         <span class="badge badge-warning">
                                                             TV
                                                         </span>
                                                     @endif
-                                                    @if($monitoramento->fl_web)
+                                                    @if($monitoramento->fl_radio)
                                                         <span class="badge badge-primary">
                                                             RÁDIO
                                                         </span>
                                                     @endif
-                                                    @if($monitoramento->fl_web)
+                                                    @if($monitoramento->fl_impresso)
                                                         <span class="badge badge-success">
                                                             IMPRESSO
                                                         </span>
