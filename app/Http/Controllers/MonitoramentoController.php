@@ -343,6 +343,9 @@ class MonitoramentoController extends Controller
 
         MonitoramentoExecucao::create($dado_moninoramento);
 
+        $monitoramento->updated_at = date("Y-m-d H:i:s");
+        $monitoramento->save();
+
         Flash::success('<i class="fa fa-check"></i> Monitoramento executado manualmente retornou <strong>'. $total_vinculado.'</strong> registros');
 
         return redirect('monitoramento')->withInput();
