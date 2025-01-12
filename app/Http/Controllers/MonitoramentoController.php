@@ -319,10 +319,10 @@ class MonitoramentoController extends Controller
             MonitoramentoExecucao::create($dado_moninoramento);
 
             Flash::success('<i class="fa fa-check"></i> Monitoramento executado manualmente retornou <strong>'. $total_vinculado.'</strong> registros');
-
-            return redirect('monitoramento')->withInput();
             
         }
+
+        return redirect('monitoramento')->withInput();
     }
 
     public function executar_old()
@@ -390,6 +390,23 @@ class MonitoramentoController extends Controller
                 Flash::success('<i class="fa fa-check"></i> Status do monitoramento atualizado com sucesso');
             else
                 Flash::error('<i class="fa fa-times"></i> Erro ao atualizar status');
+        }
+
+        return redirect('monitoramento')->withInput();
+    }
+
+    public function excluir($id)
+    {
+        $monitoramento = Monitoramento::find($id);
+
+        if($monitoramento->historico){
+            $monitoramento->historico()->delete();
+        }
+
+        if($monitoramento->delete()){
+            Flash::success('<i class="fa fa-check"></i> Monitoramento excluído com sucesso');
+        }else{
+            Flash::error('<i class="fa fa-times"></i> Erro ao excluir monitoramento');
         }
 
         return redirect('monitoramento')->withInput();

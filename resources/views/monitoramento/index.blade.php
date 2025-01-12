@@ -88,10 +88,16 @@
                                         <div class="stats">
                                             <i class="fa fa-refresh"></i>Última atualização em {{ \Carbon\Carbon::parse($monitoramento->updated_at)->format('d/m/Y H:i:s') }}
                                             <div class="pull-right">
-                                                <a href="{{ url('monitoramento/'.$monitoramento->id.'/historico') }}" class="btn btn-info btn-fill btn-icon btn-sm" style="border-radius: 30px;">
+                                                <a title="Excluir" href="{{ url('monitoramento/'.$monitoramento->id.'/excluir') }}" class="btn btn-danger btn-fill btn-icon btn-sm btn-excluir" style="border-radius: 30px;">
+                                                    <i class="fa fa-times fa-3x text-white"></i>
+                                                </a>
+                                                <a title="Editar" href="{{ url('monitoramento/'.$monitoramento->id.'/editar') }}" class="btn btn-primary btn-fill btn-icon btn-sm" style="border-radius: 30px;">
+                                                    <i class="fa fa-edit fa-3x text-white"></i>
+                                                </a>
+                                                <a title="Histórico" href="{{ url('monitoramento/'.$monitoramento->id.'/historico') }}" class="btn btn-success btn-fill btn-icon btn-sm" style="border-radius: 30px;">
                                                     <i class="fa fa-clock-o fa-3x text-white"></i>
                                                 </a>
-                                                <a href="{{ url('monitoramento/'.$monitoramento->id.'/executar') }}" class="btn btn-warning btn-fill btn-icon btn-sm" style="border-radius: 30px;">
+                                                <a title="Executar" href="{{ url('monitoramento/'.$monitoramento->id.'/executar') }}" class="btn btn-warning btn-fill btn-icon btn-sm" style="border-radius: 30px;">
                                                     <i class="fa fa-bolt fa-3x text-white"></i>
                                                 </a>
                                             </div>
