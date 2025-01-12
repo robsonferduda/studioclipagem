@@ -23,7 +23,11 @@ class Kernel extends ConsoleKernel
     {
         //$schedule->command('email:cron')->everyMinute();
 
-        $schedule->command('web:cron')->everyFifteenMinutes(); //Executa a tarefa a cada 15 minutos
+        //$schedule->command('web:cron')->everyFifteenMinutes(); //Executa a tarefa a cada 15 minutos
+
+        //$schedule->command('web:cron')->everyThirtyMinutes(); //Executa a tarefa a cada 30 minutos
+
+        $schedule->command('web:cron')->hourly(); //Executa a tarefa a cada 1 hora
 
         /*
         $schedule->command('importacao:cron')->everyThirtyMinutes();
