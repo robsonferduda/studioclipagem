@@ -58,6 +58,11 @@ class MonitoramentoController extends Controller
         return view('monitoramento/noticias', compact('noticias','monitoramento'));
     }
 
+    public function create(Request $request)
+    {
+        $monitoramento = Monitoramento::create($request->all());
+    }
+
     public function filtrar(Request $request)
     {
         $carbon = new Carbon();

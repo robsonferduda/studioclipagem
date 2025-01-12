@@ -12,6 +12,7 @@
                 </div>
                 <div class="col-md-4">
                     <a href="{{ url('monitoramento') }}" class="btn btn-warning pull-right" style="margin-right: 12px;"><i class="nc-icon nc-minimal-left"></i> Voltar</a>
+                    <a href="{{ url('monitoramento') }}" class="btn btn-info pull-right" style="margin-right: 12px;"><i class="nc-icon nc-sound-wave ml-2"></i> Monitoramentos</a>
                 </div>
             </div>
         </div>
@@ -47,13 +48,13 @@
                                 <div class="col-lg-4 col-md-6 mb-2">
                                     <div class="form-group">
                                         <label>Data Inicial</label>
-                                        <input type="text" class="form-control dt_inicial_relatorio dt_periodo">
+                                        <input type="text" class="form-control datepicker dt_inicial_relatorio">
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-md-6 mb-2">
                                     <div class="form-group">
                                         <label>Data Final</label>
-                                        <input type="text" class="form-control dt_final_relatorio dt_periodo">
+                                        <input type="text" class="form-control datepicker dt_final_relatorio">
                                     </div>
                                 </div>
                                 <div class="col-md-12">
@@ -200,28 +201,28 @@
                     <p class="mb-1">Selecione as Mídias</p>
                     <div class="form-check float-left mr-3">
                         <label class="form-check-label mt-2">
-                            <input class="form-check-input" type="checkbox" name="fl_impresso" value="true">
+                            <input class="form-check-input" type="checkbox" name="fl_impresso" id="fl_impresso" value="true">
                             IMPRESSO
                             <span class="form-check-sign"></span>
                         </label>
                     </div>
                     <div class="form-check float-left mr-3">
                         <label class="form-check-label mt-2">
-                            <input class="form-check-input" type="checkbox" name="fl_web" value="true">
+                            <input class="form-check-input" type="checkbox" name="fl_web" id="fl_web" value="true">
                             WEB
                             <span class="form-check-sign"></span>
                         </label>
                     </div>
                     <div class="form-check float-left mr-3">
                         <label class="form-check-label mt-2">
-                            <input class="form-check-input" type="checkbox" name="fl_radio" value="true">
+                            <input class="form-check-input" type="checkbox" name="fl_radio" id="fl_radio" value="true">
                             RÁDIO
                             <span class="form-check-sign"></span>
                         </label>
                     </div>
                     <div class="form-check float-left mr-3">
                         <label class="form-check-label mt-2">
-                            <input class="form-check-input" type="checkbox" name="fl_tv" value="true">
+                            <input class="form-check-input" type="checkbox" name="fl_tv" id="fl_tv" value="true">
                             TV
                             <span class="form-check-sign"></span>
                         </label>
@@ -276,12 +277,6 @@
 
             return dia + '/' + mes + '/' + ano;
         }
-
-        $("#btn-monitorar").click(function(){
-
-            $("#modalMonitoramento").modal({backdrop: 'static', keyboard: false});
-
-        });
 
         $("#btn-find").click(function(){
 
@@ -553,6 +548,80 @@
 
             }
            
+        });
+
+        $("#btn-monitorar").click(function(){
+
+            $("#modalMonitoramento").modal({backdrop: 'static', keyboard: false});
+
+        });
+
+        $('body').on('click', '.btn-salvar-monitoramento', function() {
+
+            var fl_tv = $("#fl_tv").is(":checked");
+            var fl_web = $("#fl_web").is(":checked");
+            var fl_radio = $("#fl_radio").is(":checked");
+            var fl_impresso = $("#fl_impresso").is(":checked");
+            var cliente = $("#cliente").val();
+            var expressao = $("#expressao").val();
+            var flag = false;
+
+            if(!expressao){
+                Swal.fire({
+                    html: 'O campo <strong>Expressão</strong> é obrigatório.',
+                    type: "warning",
+                    icon: "warning",
+                    confirmButtonText: '<i class="fa fa-check"></i> Ok',
+                });
+                flag = false;
+            }else{
+                flag = true;
+            }
+
+            if(!cliente){
+                Swal.fire({
+                    html: 'O campo <strong>Cliente</strong> é obrigatório.',
+                    type: "warning",
+                    icon: "warning",
+                    confirmButtonText: '<i class="fa fa-check"></i> Ok',
+                });
+                flag = false;
+            }else{
+                flag = true;
+            }
+
+            if(flag){
+                $.ajax({url: host+'/monitoramento/create',
+                    type: 'POST',
+                    data: {"_token": $('meta[name="csrf-token"]').attr('content'),
+                            "expressao": expressao,
+                            "id_cliente": cliente,
+                            "fl_impresso": fl_impresso,
+                            "fl_radio": fl_radio,
+                            "fl_web": fl_web,
+                            "fl_tv": fl_tv
+                    },
+                    beforeSend: function() {
+                        $('.modal-content').loader('show');
+                    },
+                    success: function(data) {                      
+                        $("#modalMonitoramento").modal("hide");
+
+                        Swal.fire({
+                            html: 'Monitoramento cadastrado com sucesso. Para ver seus monitoramentos, selecione a opção <strong>Monitoramentos</strong>.',
+                            type: "success",
+                            icon: "success",
+                            confirmButtonText: '<i class="fa fa-check"></i> Ok',
+                        });
+                    },
+                    error: function(){
+                        
+                    },
+                    complete: function(){
+                        $('.modal-content').loader('hide');
+                    }
+                });
+            }
         });
 
         $('body').on('click', '.fts_detalhes', function() {

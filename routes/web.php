@@ -179,6 +179,7 @@ Route::post('monitoramento/filtrar','MonitoramentoController@filtrar');
 Route::post('monitoramento/filtrar/impresso','MonitoramentoController@filtrarImpresso');
 Route::post('monitoramento/filtrar/radio','MonitoramentoController@filtrarRadio');
 Route::post('monitoramento/filtrar/tv','MonitoramentoController@filtrarTv');
+Route::post('monitoramento/create','MonitoramentoController@create');
 
 Route::get('monitoramento/executar/web','MonitoramentoController@executarWeb');
 
