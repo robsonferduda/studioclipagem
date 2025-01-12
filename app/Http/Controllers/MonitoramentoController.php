@@ -305,22 +305,45 @@ class MonitoramentoController extends Controller
 
             //Fim da lógica de associação
 
-            $total_vinculado = count($dados);
-            
-            $data_termino = date('Y-m-d H:i:s');
-
-            $dado_moninoramento = array('monitoramento_id' => $monitoramento->id, 
-                                        'total_vinculado' => $total_vinculado,
-                                        'created_at' => $data_inicio,
-                                        'fl_automatico' => false,
-                                        'id_user' => Auth::user()->id,
-                                        'updated_at' => $data_termino);
-
-            MonitoramentoExecucao::create($dado_moninoramento);
-
-            Flash::success('<i class="fa fa-check"></i> Monitoramento executado manualmente retornou <strong>'. $total_vinculado.'</strong> registros');
-            
+            $total_vinculado = count($dados) + $total_vinculado;
         }
+
+        if($monitoramento->fl_impresso) {
+
+            $sql = "SELECT 
+                    pejo.id, id_jornal_online, link_pdf, dt_coleta, dt_pub, titulo, texto_extraido
+                FROM 
+                    edicao_jornal_online n
+                JOIN 
+                    pagina_edicao_jornal_online pejo 
+                    ON pejo.id_edicao_jornal_online = n.id
+                WHERE 1=1
+                    AND n.dt_coleta BETWEEN '$dt_inicial' AND '$dt_final' 
+                    AND pejo.texto_extraido_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao')
+                    ORDER BY dt_coleta DESC";
+
+            $dados = DB::select($sql);
+
+            //Aqui começa a lógica de associação das notícias encontradas com os clientes
+
+
+            //Fim da lógica de associação
+
+            $total_vinculado = count($dados) + $total_vinculado;
+        }
+
+        $data_termino = date('Y-m-d H:i:s');
+
+        $dado_moninoramento = array('monitoramento_id' => $monitoramento->id, 
+                                    'total_vinculado' => $total_vinculado,
+                                    'created_at' => $data_inicio,
+                                    'fl_automatico' => false,
+                                    'id_user' => Auth::user()->id,
+                                    'updated_at' => $data_termino);
+
+        MonitoramentoExecucao::create($dado_moninoramento);
+
+        Flash::success('<i class="fa fa-check"></i> Monitoramento executado manualmente retornou <strong>'. $total_vinculado.'</strong> registros');
 
         return redirect('monitoramento')->withInput();
     }
