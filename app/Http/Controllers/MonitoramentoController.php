@@ -411,6 +411,16 @@ class MonitoramentoController extends Controller
 
         $monitoramento = Monitoramento::find($id);
 
+        $fl_web = $request->fl_web == true ? true : false;
+        $fl_tv = $request->fl_tv == true ? true : false;
+        $fl_impresso = $request->fl_impresso == true ? true : false;
+        $fl_radio = $request->fl_radio == true ? true : false;
+
+        $request->merge(['fl_web' => $fl_web]);
+        $request->merge(['fl_tv' => $fl_tv]);
+        $request->merge(['fl_impresso' => $fl_impresso]);
+        $request->merge(['fl_radio' => $fl_radio]);
+
         try{
                         
             $monitoramento->update($request->all());

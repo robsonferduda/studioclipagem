@@ -71,7 +71,7 @@
                                 <div class="col-md-12 col-sm-12 mt-3">
                                     <div class="form-group">
                                         <label for="expressao" class="form-label">Expressão de Busca <span class="text-danger">Campo obrigatório</span></label>
-                                        <textarea class="form-control" id="expressao" rows="3">{{ $monitoramento->expressao }}</textarea>
+                                        <textarea class="form-control" name="expressao" id="expressao" rows="3">{{ $monitoramento->expressao }}</textarea>
                                     </div>
                                 </div>
                             </div>               
