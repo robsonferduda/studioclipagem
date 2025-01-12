@@ -395,6 +395,47 @@ class MonitoramentoController extends Controller
         return redirect('monitoramento')->withInput();
     }
 
+    public function editar($id)
+    {
+        $periodos = Periodo::orderBy('ordem')->get();
+        $clientes = Cliente::orderBy("nome")->get();
+
+        $monitoramento = Monitoramento::find($id);
+
+        return view('monitoramento/editar', compact('monitoramento','clientes','periodos'));
+    }
+
+    public function update(Request $request)
+    {
+        $id = $request->id;
+
+        $monitoramento = Monitoramento::find($id);
+
+        try{
+                        
+            $monitoramento->update($request->all());
+            $retorno = array('flag' => true,
+                             'msg' => '<i class="fa fa-check"></i> Dados atualizados com sucesso');
+
+        } catch (\Illuminate\Database\QueryException $e) {
+
+            $retorno = array('flag' => false,
+                             'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
+
+        } catch (Exception $e) {
+            $retorno = array('flag' => true,
+                             'msg' => "Ocorreu um erro ao atualizar o registro");
+        }
+
+        if ($retorno['flag']) {
+            Flash::success($retorno['msg']);
+            return redirect('monitoramento')->withInput();
+        } else {
+            Flash::error($retorno['msg']);
+            return redirect('monitoramento/'.$monitoramento->id.'/editar')->withInput();
+        }
+    }
+
     public function excluir($id)
     {
         $monitoramento = Monitoramento::find($id);
