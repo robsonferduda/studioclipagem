@@ -40,7 +40,7 @@ class MonitoramentoController extends Controller
         $cliente = ($request->cliente) ? $request->cliente : null;
 
         if($request->situacao != ""){
-            $situacao = ($request->situacao == 1) ? 1 : 0;
+            $situacao = $request->situacao;
             $fl_ativo = ($situacao == 1) ? true : false;
         }else{
             $fl_ativo = null;
@@ -53,7 +53,7 @@ class MonitoramentoController extends Controller
             return $q->where('id_cliente', $cliente);
         });
 
-        $monitoramento->when($fl_ativo, function ($q) use ($fl_ativo) {
+        $monitoramento->when($request->situacao != "", function ($q) use ($fl_ativo) {
             return $q->where('fl_ativo', $fl_ativo);
         });
         
