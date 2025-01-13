@@ -40,8 +40,8 @@
                                     <div class="form-group">
                                         <select class="form-control" name="situacao" id="situacao">
                                             <option value="">Selecione uma situação</option>
-                                            <option value="1" {{ ($situacao == 1) ? 'selected' : '' }}>Ativo</option>
-                                            <option value="0" {{ ($situacao == 0) ? 'selected' : '' }}>Inativo</option>
+                                            <option value="1" {{ ($situacao === 1) ? 'selected' : '' }}>Ativo</option>
+                                            <option value="0" {{ ($situacao === 0) ? 'selected' : '' }}>Inativo</option>
                                         </select>
                                     </div>
                                 </div>
