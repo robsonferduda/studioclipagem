@@ -43,6 +43,7 @@ class MonitoramentoController extends Controller
             $situacao = ($request->situacao == 1) ? 1 : 0;
             $fl_ativo = ($situacao == 1) ? true : false;
         }else{
+            $fl_ativo = null;
             $situacao = null;
         }
 
