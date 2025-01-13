@@ -100,7 +100,16 @@
                                             <strong>{{ ($video->programa) ? $video->programa->nome_programa : '' }}</strong>
                                         </p>
                                         <p class="mb-1">
-                                            {{ date('d/m/Y', strtotime($video->horario_start_gravacao)) }} - Das 
+                                            @if($video->programa and $video->programa->tipo and $video->misc_data and $video->programa->tipo and in_array($video->programa->tipo->id, [4,5]) and !$video->horario_start_gravacao)
+                                                @php 
+                                                    $partes = explode(',', explode(')',explode('(', $video->misc_data)[1])[0]);
+                                                    $data = $partes[2].'/'.$partes[1].'/'.$partes[0];                                                    
+                                                @endphp
+                                                {{ $data }}
+                                            @else
+                                            {{ date('d/m/Y', strtotime($video->horario_start_gravacao)) }}
+                                            @endif
+                                             - Das 
                                             {{ date('H:i:s', strtotime($video->horario_start_gravacao)) }} às 
                                             {{ date('H:i:s', strtotime($video->horario_end_gravacao)) }}
                                         </p>
