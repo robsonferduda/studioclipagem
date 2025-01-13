@@ -57,7 +57,7 @@ class MonitoramentoController extends Controller
             return $q->where('fl_ativo', $fl_ativo);
         });
         
-        $monitoramentos = $monitoramento->with('cliente')->orderBy('fl_ativo','DESC')->paginate(10);
+        $monitoramentos = $monitoramento->with('cliente')->orderBy('fl_ativo','DESC')->orderBy('id_cliente','ASC')->paginate(10);
 
         return view('monitoramento/index', compact('monitoramentos','clientes','situacao','cliente'));
     }
