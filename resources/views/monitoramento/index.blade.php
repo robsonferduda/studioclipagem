@@ -95,7 +95,7 @@
                                                     @endif
                                                 </p>
                                                 <p class="card-title"></p>
-                                                <p class="text-bold">"{{ $monitoramento->expressao }}"</p>                                            
+                                                <p class="text-bold">{{ $monitoramento->expressao }}</p>                                            
                                             </div>
                                         </div>
                                     </div>
