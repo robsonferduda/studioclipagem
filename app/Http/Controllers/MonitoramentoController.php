@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use DB;
 use Auth;
 use Mail;
+use App\Utils;
 use App\Models\Periodo;
 use App\Models\Cliente;
 use App\Models\Monitoramento;
@@ -282,71 +283,85 @@ class MonitoramentoController extends Controller
         $total_vinculado = 0;
 
         $monitoramento = Monitoramento::find($id);
+
+        try{
         
-        if($monitoramento->fl_web) {
+            if($monitoramento->fl_web) {
 
-            $sql = "SELECT 
-                        n.id, n.id_fonte, n.url_noticia, n.data_insert, n.data_noticia, n.titulo_noticia, fw.nome
+                $sql = "SELECT 
+                            n.id, n.id_fonte, n.url_noticia, n.data_insert, n.data_noticia, n.titulo_noticia, fw.nome
+                        FROM 
+                            noticias_web n
+                        JOIN 
+                            conteudo_noticia_web cnw ON cnw.id_noticia_web = n.id
+                        JOIN 
+                            fonte_web fw ON fw.id = n.id_fonte 
+                        WHERE 1=1
+                            AND n.data_noticia BETWEEN '$dt_inicial' AND '$dt_final' 
+                            AND cnw.conteudo_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao') 
+                            ORDER BY n.data_noticia DESC";
+
+                $dados = DB::select($sql);
+
+                //Aqui começa a lógica de associação das notícias encontradas com os clientes
+
+
+                //Fim da lógica de associação
+
+                $total_vinculado = count($dados) + $total_vinculado;
+            }
+
+            if($monitoramento->fl_impresso) {
+
+                $sql = "SELECT 
+                        pejo.id, id_jornal_online, link_pdf, dt_coleta, dt_pub, titulo, texto_extraido
                     FROM 
-                        noticias_web n
+                        edicao_jornal_online n
                     JOIN 
-                        conteudo_noticia_web cnw ON cnw.id_noticia_web = n.id
-                    JOIN 
-                        fonte_web fw ON fw.id = n.id_fonte 
+                        pagina_edicao_jornal_online pejo 
+                        ON pejo.id_edicao_jornal_online = n.id
                     WHERE 1=1
-                        AND n.data_noticia BETWEEN '$dt_inicial' AND '$dt_final' 
-                        AND cnw.conteudo_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao') 
-                        ORDER BY n.data_noticia DESC";
+                        AND n.dt_coleta BETWEEN '$dt_inicial' AND '$dt_final' 
+                        AND pejo.texto_extraido_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao')
+                        ORDER BY dt_coleta DESC";
 
-            $dados = DB::select($sql);
+                $dados = DB::select($sql);
 
-            //Aqui começa a lógica de associação das notícias encontradas com os clientes
+                //Aqui começa a lógica de associação das notícias encontradas com os clientes
 
 
-            //Fim da lógica de associação
+                //Fim da lógica de associação
 
-            $total_vinculado = count($dados) + $total_vinculado;
+                $total_vinculado = count($dados) + $total_vinculado;
+            }
+
+            $data_termino = date('Y-m-d H:i:s');
+
+            $dado_moninoramento = array('monitoramento_id' => $monitoramento->id, 
+                                        'total_vinculado' => $total_vinculado,
+                                        'created_at' => $data_inicio,
+                                        'fl_automatico' => false,
+                                        'id_user' => Auth::user()->id,
+                                        'updated_at' => $data_termino);
+
+            MonitoramentoExecucao::create($dado_moninoramento);
+
+            $monitoramento->updated_at = date("Y-m-d H:i:s");
+            $monitoramento->save();
+
+            Flash::success('<i class="fa fa-check"></i> Monitoramento executado manualmente retornou <strong>'. $total_vinculado.'</strong> registros');
+
+        } catch (\Illuminate\Database\QueryException $e) {
+
+            Flash::warning('<i class="fa fa-check"></i> Erro na execução da expressão de busca. Verifique a expressão e tente novamente.');
+
+            $retorno = array('flag' => false,
+                             'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
+
+        } catch (Exception $e) {
+            $retorno = array('flag' => true,
+                             'msg' => "Ocorreu um erro ao atualizar o registro");
         }
-
-        if($monitoramento->fl_impresso) {
-
-            $sql = "SELECT 
-                    pejo.id, id_jornal_online, link_pdf, dt_coleta, dt_pub, titulo, texto_extraido
-                FROM 
-                    edicao_jornal_online n
-                JOIN 
-                    pagina_edicao_jornal_online pejo 
-                    ON pejo.id_edicao_jornal_online = n.id
-                WHERE 1=1
-                    AND n.dt_coleta BETWEEN '$dt_inicial' AND '$dt_final' 
-                    AND pejo.texto_extraido_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao')
-                    ORDER BY dt_coleta DESC";
-
-            $dados = DB::select($sql);
-
-            //Aqui começa a lógica de associação das notícias encontradas com os clientes
-
-
-            //Fim da lógica de associação
-
-            $total_vinculado = count($dados) + $total_vinculado;
-        }
-
-        $data_termino = date('Y-m-d H:i:s');
-
-        $dado_moninoramento = array('monitoramento_id' => $monitoramento->id, 
-                                    'total_vinculado' => $total_vinculado,
-                                    'created_at' => $data_inicio,
-                                    'fl_automatico' => false,
-                                    'id_user' => Auth::user()->id,
-                                    'updated_at' => $data_termino);
-
-        MonitoramentoExecucao::create($dado_moninoramento);
-
-        $monitoramento->updated_at = date("Y-m-d H:i:s");
-        $monitoramento->save();
-
-        Flash::success('<i class="fa fa-check"></i> Monitoramento executado manualmente retornou <strong>'. $total_vinculado.'</strong> registros');
 
         return redirect('monitoramento')->withInput();
     }
