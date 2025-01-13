@@ -34,12 +34,33 @@ class MonitoramentoController extends Controller
         Session::put('url','monitoramento');
     }
 
-    public function index()
+    public function index(request $request)
     {
         $clientes = Cliente::orderBy('nome')->get();
-        $monitoramentos = Monitoramento::with('cliente')->orderBy('id','DESC')->paginate(10);
 
-        return view('monitoramento/index', compact('monitoramentos','clientes'));
+        $cliente = ($request->cliente) ? $request->cliente : null;
+
+        if($request->situacao != ""){
+            $situacao = $request->situacao;
+            $fl_ativo = ($situacao == 1) ? true : false;
+        }else{
+            $fl_ativo = null;
+            $situacao = null;
+        }
+
+        $monitoramento = Monitoramento::query();
+
+        $monitoramento->when($cliente, function ($q) use ($cliente) {
+            return $q->where('id_cliente', $cliente);
+        });
+
+        $monitoramento->when($request->situacao != "", function ($q) use ($fl_ativo) {
+            return $q->where('fl_ativo', $fl_ativo);
+        });
+        
+        $monitoramentos = $monitoramento->with('cliente')->orderBy('fl_ativo','DESC')->orderBy('id_cliente','ASC')->paginate(10);
+
+        return view('monitoramento/index', compact('monitoramentos','clientes','situacao','cliente'));
     }
 
     public function novo()

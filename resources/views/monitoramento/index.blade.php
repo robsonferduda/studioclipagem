@@ -21,24 +21,40 @@
             </div>
             <div class="row">
                 <div class="col-sm-12 col-md-12 col-lg-12">
-                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['buscar-monitoramento']]) !!}
+                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['monitoramento']]) !!}
                         <div class="form-group m-3 w-70">
                             <div class="row">
-                                <div class="col-md-12">
+                                <div class="col-md-9">
                                     <div class="form-group">
-                                        <label>Buscar Monitoramento</label>
-                                        <select class="form-control select2" name="regra" id="regra">
+                                        <label>Cliente</label>
+                                        <select class="form-control select2" name="cliente" id="cliente">
                                             <option value="">Selecione um cliente</option>
-                                            @foreach ($clientes as $cliente)
-                                                <option value="{{ $cliente->id }}">{{ $cliente->nome }}</option>
+                                            @foreach ($clientes as $cli)
+                                                <option value="{{ $cli->id }}" {{ ($cli->id == $cliente) ? 'selected' : '' }}>{{ $cli->nome }}</option>
                                             @endforeach
                                         </select>
                                     </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <label>Situação</label>
+                                    <div class="form-group">
+                                        <select class="form-control" name="situacao" id="situacao">
+                                            <option value="">Selecione uma situação</option>
+                                            <option value="1" {{ ($situacao === 1) ? 'selected' : '' }}>Ativo</option>
+                                            <option value="0" {{ ($situacao === 0) ? 'selected' : '' }}>Inativo</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <button type="submit" id="btn-find" class="btn btn-primary w-100" style="margin-top: 24px;"><i class="fa fa-search"></i> </button>
                                 </div>
                             </div>     
                         </div>
                     {!! Form::close() !!}
                 </div> 
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    {{ $monitoramentos->onEachSide(1)->appends(['cliente' => $cliente, 'situacao' => $situacao])->links('vendor.pagination.bootstrap-4') }}
+                </div>
                 @foreach ($monitoramentos as $key => $monitoramento)
                         
                             <div class="col-lg-12 col-md-12 col-sm-12">
@@ -48,7 +64,7 @@
                                             <div class="col-12 col-md-12">                                           
                                                 <p>
                                                     <h6>
-                                                        {{ $monitoramento->cliente->nome }} 
+                                                        {{ ($monitoramento->cliente) ? $monitoramento->cliente->nome : 'Cliente não informado' }} 
                                                         <span class="pull-right">
                                                         @if($monitoramento->fl_ativo)
                                                         <i class="fa fa-circle text-success mr-1"></i><a href="{{ url('monitoramento/'.$monitoramento->id.'/atualizar-status') }}">Ativo </a>
@@ -105,7 +121,10 @@
                                     </div>
                                 </div>
                             </div>
-                @endforeach                        
+                @endforeach    
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    {{ $monitoramentos->onEachSide(1)->appends(['cliente' => $cliente, 'situacao' => $situacao])->links('vendor.pagination.bootstrap-4') }}
+                </div>                    
             </div>
         </div>
     </div>
