@@ -103,7 +103,7 @@
                                             @if($video->programa and $video->programa->tipo and $video->misc_data and $video->programa->tipo and in_array($video->programa->tipo->id, [4,5]) and !$video->horario_start_gravacao)
                                                 @php 
                                                     $partes = explode(',', explode(')',explode('(', $video->misc_data)[1])[0]);
-                                                    $data = $partes[2].'/'.$partes[1].'/'.$partes[0];                                                    
+                                                    $data = str_pad($partes[2],2,"0",STR_PAD_LEFT).'/'.str_pad($partes[1],2,"0",STR_PAD_LEFT).'/'.$partes[0];                                                    
                                                 @endphp
                                                 {{ $data }}
                                             @else
