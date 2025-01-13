@@ -147,7 +147,7 @@
                             @endforeach
                         </tbody>
                     </table>
-                    {{ $fontes->onEachSide(1)->appends([''])->links('vendor.pagination.bootstrap-4') }} 
+                    {{ $fontes->onEachSide(1)->appends(['mapear' => $mapear, 'cd_estado' => $cd_estado, 'cd_cidade' => $cd_cidade, 'nome' => $nome])->links('vendor.pagination.bootstrap-4') }} 
                     </div>
                 @else 
                     <div class="col-lg-12 col-sm-12 ml-3"> 
