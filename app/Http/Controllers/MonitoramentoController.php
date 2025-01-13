@@ -266,32 +266,52 @@ class MonitoramentoController extends Controller
         
         foreach ($monitoramentos as $key => $monitoramento) {
 
-            $sql = "SELECT 
-                        n.id, n.id_fonte, n.url_noticia, n.data_insert, n.data_noticia, n.titulo_noticia, fw.nome
-                    FROM 
-                        noticias_web n
-                    JOIN 
-                        conteudo_noticia_web cnw ON cnw.id_noticia_web = n.id
-                    JOIN 
-                        fonte_web fw ON fw.id = n.id_fonte 
-                    WHERE 1=1
-                        AND n.data_noticia BETWEEN '$dt_inicial' AND '$dt_final' 
-                        AND cnw.conteudo_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao') 
-                        ORDER BY n.data_noticia DESC";
+            try{
+                $sql = "SELECT 
+                            n.id, n.id_fonte, n.url_noticia, n.data_insert, n.data_noticia, n.titulo_noticia, fw.nome
+                        FROM 
+                            noticias_web n
+                        JOIN 
+                            conteudo_noticia_web cnw ON cnw.id_noticia_web = n.id
+                        JOIN 
+                            fonte_web fw ON fw.id = n.id_fonte 
+                        WHERE 1=1
+                            AND n.data_noticia BETWEEN '$dt_inicial' AND '$dt_final' 
+                            AND cnw.conteudo_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao') 
+                            ORDER BY n.data_noticia DESC";
 
-            $dados = DB::select($sql);
+                $dados = DB::select($sql);
 
-            $total_vinculado = count($dados);
-            
-            $data_termino = date('Y-m-d H:i:s');
+                $total_vinculado = count($dados);
+                
+                $data_termino = date('Y-m-d H:i:s');
 
-            $dado_moninoramento = array('monitoramento_id' => $monitoramento->id, 
-                                        'total_vinculado' => $total_vinculado,
-                                        'created_at' => $data_inicio,
-                                        'updated_at' => $data_termino);
+                $dado_moninoramento = array('monitoramento_id' => $monitoramento->id, 
+                                            'total_vinculado' => $total_vinculado,
+                                            'created_at' => $data_inicio,
+                                            'updated_at' => $data_termino);
 
-            MonitoramentoExecucao::create($dado_moninoramento);
-            
+                MonitoramentoExecucao::create($dado_moninoramento);
+
+            } catch (\Illuminate\Database\QueryException $e) {
+
+                $titulo = " Notificação de Monitoramento - Erro de Consulta - ".date("d/m/Y H:i:s"); 
+
+                $data['dados'] = array('cliente' => $monitoramento->cliente->nome,
+                                       'expressao' => $monitoramento->expressao,
+                                       'id' => $monitoramento->id);
+
+                //app('App\Http\Controllers\MonitoramentoController')->executar();
+                
+                Mail::send('notificacoes.monitoramento', $data, function($message) use ($titulo){
+                    $message->to("robsonferduda@gmail.com")
+                            ->subject($titulo);
+                    $message->from('boletins@clipagens.com.br','Studio Clipagem');
+                }); 
+
+            } catch (Exception $e) {
+                
+            }
         }
     }
 
