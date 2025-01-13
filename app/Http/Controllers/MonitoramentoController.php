@@ -356,6 +356,66 @@ class MonitoramentoController extends Controller
                 $total_vinculado = count($dados) + $total_vinculado;
             }
 
+            if($monitoramento->fl_radio) {
+
+                $sql = "SELECT 
+                        n.id, id_emissora, data_hora_inicio, data_hora_fim, path_s3, nome_emissora
+                        FROM 
+                        gravacao_emissora_radio n
+                        JOIN 
+                        emissora_radio er 
+                        ON er.id = n.id_emissora
+                        WHERE 1=1
+                        AND n.data_hora_inicio BETWEEN '$dt_inicial' AND '$dt_final'
+                        AND  n.transcricao_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao')
+                        ORDER BY n.data_hora_inicio DESC";
+
+                $dados = DB::select($sql);
+
+                //Aqui começa a lógica de associação das notícias encontradas com os clientes
+
+
+                //Fim da lógica de associação
+
+                $total_vinculado = count($dados) + $total_vinculado;
+            }
+
+            if($monitoramento->fl_tv) {
+
+                $sql = "SELECT 
+                        n.id, id_emissora, data_hora_inicio, data_hora_fim, path_s3, nome_emissora
+                        FROM 
+                        gravacao_emissora_radio n
+                        JOIN 
+                        emissora_radio er 
+                        ON er.id = n.id_emissora
+                        WHERE 1=1
+                        AND n.data_hora_inicio BETWEEN '$dt_inicial' AND '$dt_final'
+                        AND  n.transcricao_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao')
+                        ORDER BY n.data_hora_inicio DESC";
+
+                $sql = "SELECT 
+                        n.id, id_programa_emissora_web, horario_start_gravacao, horario_end_gravacao, url_video, misc_data, transcricao, nome_programa
+                        FROM 
+                        videos_programa_emissora_web n
+                        JOIN 
+                        programa_emissora_web pew 
+                        ON pew.id = n.id_programa_emissora_web
+                        WHERE 1=1
+                        AND n.horario_start_gravacao BETWEEN '$dt_inicial' AND '$dt_final'
+                        AND n.transcricao_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao')
+                        ORDER BY n.horario_start_gravacao DESC";
+
+                $dados = DB::select($sql);
+
+                //Aqui começa a lógica de associação das notícias encontradas com os clientes
+
+
+                //Fim da lógica de associação
+
+                $total_vinculado = count($dados) + $total_vinculado;
+            }
+
             $data_termino = date('Y-m-d H:i:s');
 
             $dado_moninoramento = array('monitoramento_id' => $monitoramento->id, 
