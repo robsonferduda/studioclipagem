@@ -28,6 +28,12 @@
                                 <input type="hidden" name="id" value="{{ $monitoramento->id }}">
                                 <div class="col-md-12">
                                     <div class="form-group">
+                                        <label>Nome <span class="text-danger">Obrigatório</span></label>
+                                        <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome" value="{{ $monitoramento->nome }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
                                         <label>Cliente</label>
                                         <select class="form-control select2" name="id_cliente" id="id_cliente">
                                             <option value="">Selecione um cliente</option>
