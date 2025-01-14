@@ -64,8 +64,8 @@
                                             <div class="col-12 col-md-12">                                           
                                                 <p>
                                                     <h6>
-                                                        {{ ($monitoramento->cliente) ? $monitoramento->cliente->nome : 'Cliente não informado' }} 
-                                                        {{ ($monitoramento->nome) ? $monitoramento->nome : 'Nome não informado' }} 
+                                                        {{ ($monitoramento->cliente) ? $monitoramento->cliente->nome : 'Cliente não informado' }} - 
+                                                        <span class="text-muted">{{ ($monitoramento->nome) ? $monitoramento->nome : 'Nome não informado' }} </span>
                                                         <span class="pull-right">
                                                             @if($monitoramento->fl_ativo)
                                                             <i class="fa fa-circle text-success mr-1"></i><a href="{{ url('monitoramento/'.$monitoramento->id.'/atualizar-status') }}">Ativo </a>
