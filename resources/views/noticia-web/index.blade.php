@@ -115,7 +115,6 @@
                 </div>
                 <div class="col-lg-12 col-sm-12 conteudo">      
                     @if(count($noticias))
-                        <h6 class="px-3">Mostrando {{ $noticias->count() }} de {{ $noticias->total() }} notícias</h6> 
                         {{ $noticias->onEachSide(1)->appends([''])->links('vendor.pagination.bootstrap-4') }}
                     @endif
                 </div>
