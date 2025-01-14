@@ -105,7 +105,6 @@
                                         <div class="col-lg-10 col-sm-12">                                        
                                             <div class="conteudo-noticia mb-1">
                                                 <p>{{ $noticia->titulo_noticia }}</p>
-                                                {!! ($noticia->conteudo->conteudo) ?  Str::limit($noticia->conteudo->conteudo, 1000, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
                                             </div>
                                         </div>
                                     </div>
