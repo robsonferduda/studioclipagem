@@ -100,7 +100,7 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-lg-4 col-sm-12">                                            
-                                            
+                                            <img src="{{ Storage::disk('s3')->temporaryUrl($noticia->path_screenshot, '+2 minutes') }}" alt="Print">
                                         </div>
                                         <div class="col-lg-8 col-sm-12">                                        
                                            
