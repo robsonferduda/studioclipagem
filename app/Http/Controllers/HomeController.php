@@ -53,7 +53,7 @@ class HomeController extends Controller
         $sem_coleta = array();
 
         $total_monitoramentos = MonitoramentoExecucao::whereBetween('created_at', [$dt_inicial, $dt_final])->count();
-        $execucoes = MonitoramentoExecucao::whereBetween('created_at', [$dt_inicial, $dt_final])->take(5)->get();
+        $execucoes = MonitoramentoExecucao::whereBetween('created_at', [$dt_inicial, $dt_final])->orderBy('created_at','DESC')->take(5)->get();
 
         $total_coletas = FonteWeb::whereBetween('crawlead_at', [$dt_inicial, $dt_final])->count();
         $coletas = FonteWeb::orderBy('crawlead_at','DESC')->take(5)->get();
