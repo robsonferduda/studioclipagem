@@ -62,12 +62,37 @@
                                         <label for="expressao" class="form-label">Expressão de Busca <span class="text-danger">Campo obrigatório</span></label>
                                         <textarea class="form-control" id="expressao" rows="3"></textarea>
                                     </div>
-                                    <p class="mb-1"><strong>Observações</strong></p>
-                                    <p class="mt-1 mb-1"><strong>&</strong>: operador de busca equivalente ao "E"</p>
-                                    <p class="mt-1 mb-1"><strong>|</strong>: operador de busca equivalente ao "OU"</p>
-                                    <p class="mt-1 mb-1"><strong>!</strong>: operador de busca equivalente ao "NÃO"</p>
-                                    <p class="mt-1 mb-1"><strong><-></strong>: operador de distância entre palavras, onde o - é a distância entre elas</p>
-                                    <p class="mt-1 mb-1"><strong>Exemplo de busca</strong>: <span>queda<2>energia & Celesc & !Jaguaruna</span>: Todas as notícias relacionadas à queda de energia que citam a Celesc, exceto em Jaguaruna</p>
+                                </div>
+                                <div class="col-md-12 col-sm-12 mt-3">
+                                    <p class="mb-1">Selecione as Mídias</p>
+                                    <div class="form-check float-left mr-3">
+                                        <label class="form-check-label mt-2">
+                                            <input class="form-check-input" type="checkbox" name="fl_impresso" id="fl_impresso" value="true">
+                                            IMPRESSO
+                                            <span class="form-check-sign"></span>
+                                        </label>
+                                    </div>
+                                    <div class="form-check float-left mr-3">
+                                        <label class="form-check-label mt-2">
+                                            <input class="form-check-input" type="checkbox" name="fl_web" id="fl_web" value="true">
+                                            WEB
+                                            <span class="form-check-sign"></span>
+                                        </label>
+                                    </div>
+                                    <div class="form-check float-left mr-3">
+                                        <label class="form-check-label mt-2">
+                                            <input class="form-check-input" type="checkbox" name="fl_radio" id="fl_radio" value="true">
+                                            RÁDIO
+                                            <span class="form-check-sign"></span>
+                                        </label>
+                                    </div>
+                                    <div class="form-check float-left mr-3">
+                                        <label class="form-check-label mt-2">
+                                            <input class="form-check-input" type="checkbox" name="fl_tv" id="fl_tv" value="true">
+                                            TV
+                                            <span class="form-check-sign"></span>
+                                        </label>
+                                    </div>
                                 </div>
                                 <div class="col-md-12 msg-alerta">
 
@@ -75,6 +100,14 @@
                                 <div class="col-md-12 checkbox-radios mb-0">
                                     <button type="button" id="btn-find" class="btn btn-primary mb-3"><i class="fa fa-search"></i> Buscar</button>
                                     <button type="button" id="btn-monitorar" class="btn btn-warning mb-3"><i class="nc-icon nc-sound-wave"></i> Monitorar</button>
+                                </div>
+                                <div class="col-md-12">
+                                    <p class="mb-1"><strong>Observações</strong></p>
+                                    <p class="mt-1 mb-1"><strong>&</strong>: operador de busca equivalente ao "E"</p>
+                                    <p class="mt-1 mb-1"><strong>|</strong>: operador de busca equivalente ao "OU"</p>
+                                    <p class="mt-1 mb-1"><strong>!</strong>: operador de busca equivalente ao "NÃO"</p>
+                                    <p class="mt-1 mb-1"><strong><-></strong>: operador de distância entre palavras, onde o - é a distância entre elas</p>
+                                    <p class="mt-1 mb-1"><strong>Exemplo de busca</strong>: <span>queda<2>energia & Celesc & !Jaguaruna</span>: Todas as notícias relacionadas à queda de energia que citam a Celesc, exceto em Jaguaruna</p>
                                 </div>
                             </div>     
                         </div>
@@ -188,44 +221,19 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="form-group">
-                        <label>Cliente</label>
+                        <label>Nome <span class="text-danger">Obrigatório</span></label>
+                        <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Cliente <span class="text-danger">Obrigatório</span></label>
                         <select class="form-control select2" name="cliente" id="cliente">
                             <option value="">Selecione um cliente</option>
                             @foreach ($clientes as $cliente)
                                 <option value="{{ $cliente->id }}">{{ $cliente->nome }}</option>
                             @endforeach
                         </select>
-                    </div>
-                </div>
-                <div class="col-md-12 col-sm-12 mt-3">
-                    <p class="mb-1">Selecione as Mídias</p>
-                    <div class="form-check float-left mr-3">
-                        <label class="form-check-label mt-2">
-                            <input class="form-check-input" type="checkbox" name="fl_impresso" id="fl_impresso" value="true">
-                            IMPRESSO
-                            <span class="form-check-sign"></span>
-                        </label>
-                    </div>
-                    <div class="form-check float-left mr-3">
-                        <label class="form-check-label mt-2">
-                            <input class="form-check-input" type="checkbox" name="fl_web" id="fl_web" value="true">
-                            WEB
-                            <span class="form-check-sign"></span>
-                        </label>
-                    </div>
-                    <div class="form-check float-left mr-3">
-                        <label class="form-check-label mt-2">
-                            <input class="form-check-input" type="checkbox" name="fl_radio" id="fl_radio" value="true">
-                            RÁDIO
-                            <span class="form-check-sign"></span>
-                        </label>
-                    </div>
-                    <div class="form-check float-left mr-3">
-                        <label class="form-check-label mt-2">
-                            <input class="form-check-input" type="checkbox" name="fl_tv" id="fl_tv" value="true">
-                            TV
-                            <span class="form-check-sign"></span>
-                        </label>
                     </div>
                 </div>
             </div>               
@@ -564,7 +572,20 @@
             var fl_impresso = $("#fl_impresso").is(":checked");
             var cliente = $("#cliente").val();
             var expressao = $("#expressao").val();
+            var nome = $("#nome").val();
             var flag = false;
+
+            if(!nome){
+                Swal.fire({
+                    html: 'O campo <strong>Nome</strong> é obrigatório.',
+                    type: "warning",
+                    icon: "warning",
+                    confirmButtonText: '<i class="fa fa-check"></i> Ok',
+                });
+                flag = false;
+            }else{
+                flag = true;
+            }
 
             if(!expressao){
                 Swal.fire({
@@ -596,6 +617,7 @@
                     data: {"_token": $('meta[name="csrf-token"]').attr('content'),
                             "expressao": expressao,
                             "id_cliente": cliente,
+                            "nome": nome,
                             "fl_impresso": fl_impresso,
                             "fl_radio": fl_radio,
                             "fl_web": fl_web,
