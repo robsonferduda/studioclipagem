@@ -261,6 +261,7 @@ class MonitoramentoController extends Controller
         $dt_final = (Carbon::now())->format('Y-m-d')." 23:59:59";
         $data_inicio = date('Y-m-d H:i:s');
         $total_vinculado = 0;
+        $tipo_midia = 2;
 
         $monitoramentos = Monitoramento::where('fl_ativo', true)->where('fl_web', true)->get();
         
@@ -282,7 +283,9 @@ class MonitoramentoController extends Controller
 
                 $dados = DB::select($sql);
 
-                $total_vinculado = count($dados);
+                $total_associado = $this->associar($dados, $tipo_midia, $monitoramento);
+
+                $total_vinculado = $total_associado;
                 
                 $data_termino = date('Y-m-d H:i:s');
 
