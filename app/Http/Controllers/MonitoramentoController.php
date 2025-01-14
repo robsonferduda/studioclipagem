@@ -482,8 +482,9 @@ class MonitoramentoController extends Controller
                 NoticiaCliente::create($dados);
                 $total_vinculado++;
 
-                $noticia->screenshot = true;
-                $noticia->save();
+                $noticia_web = NoticiaWeb::find($noticia->id);
+                $noticia_web->screenshot = true;
+                $noticia_web->save();
             }            
         }
     }
