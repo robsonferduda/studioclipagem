@@ -298,7 +298,7 @@ class MonitoramentoController extends Controller
 
             } catch (\Illuminate\Database\QueryException $e) {
 
-                $titulo = " Notificação de Monitoramento - Erro de Consulta - ".date("d/m/Y H:i:s"); 
+                $titulo = "Notificação de Monitoramento - Erro de Consulta - ".date("d/m/Y H:i:s"); 
 
                 $data['dados'] = array('cliente' => $monitoramento->cliente->nome,
                                        'expressao' => $monitoramento->expressao,
@@ -490,6 +490,8 @@ class MonitoramentoController extends Controller
                 $noticia_web->save();
             }            
         }
+
+        return $total_vinculado;
     }
 
     public function executar_old()

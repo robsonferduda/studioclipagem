@@ -48,6 +48,19 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div class="form-check">
+                                            <div class="form-check">
+                                                <label class="form-check-label" style="margin-top: 15px;">
+                                                    <input class="form-check-input" {{ (true) ? 'checked' : '' }} type="checkbox" name="fl_print" value="true">
+                                                        NOTÍCIAS COM PRINT
+                                                    <span class="form-check-sign"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-12 col-sm-12">
