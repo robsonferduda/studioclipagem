@@ -481,6 +481,9 @@ class MonitoramentoController extends Controller
 
                 NoticiaCliente::create($dados);
                 $total_vinculado++;
+
+                $noticia->screenshot = true;
+                $noticia->save();
             }            
         }
     }
