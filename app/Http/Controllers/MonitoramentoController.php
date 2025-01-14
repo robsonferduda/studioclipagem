@@ -329,6 +329,8 @@ class MonitoramentoController extends Controller
         
             if($monitoramento->fl_web) {
 
+                $tipo_midia = 2; //Web
+
                 $sql = "SELECT 
                             n.id, n.id_fonte, n.url_noticia, n.data_insert, n.data_noticia, n.titulo_noticia, fw.nome
                         FROM 
@@ -343,13 +345,8 @@ class MonitoramentoController extends Controller
                             ORDER BY n.data_noticia DESC";
 
                 $dados = DB::select($sql);
-
-                //Aqui começa a lógica de associação das notícias encontradas com os clientes
-
-
-                //Fim da lógica de associação
-
-                $total_vinculado = count($dados) + $total_vinculado;
+                $total_associado = $this->associar($dados, $tipo_midia, $monitoramento);
+                $total_vinculado += $total_associado;
             }
 
             if($monitoramento->fl_impresso) {
@@ -465,6 +462,27 @@ class MonitoramentoController extends Controller
         }
 
         return redirect('monitoramento')->withInput();
+    }
+
+    public function associar($dados, $tipo, $monitoramento)
+    {
+        $total_vinculado = 0;
+
+        foreach ($dados as $key => $noticia) {
+
+            $noticia_cliente = NoticiaCliente::where('noticia_id', $id_noticia)->where('tipo_id', $tipo)->first();
+            
+            if(!$noticia){
+
+                $dados = array('cliente_id' => $monitoramento->id_cliente,
+                            'tipo_id'    => $monitoramento->tipo_midia,
+                            'noticia_id' => $noticia->id,
+                            'monitoramento_id' => $monitoramento->id);
+
+                NoticiaCliente::create($dados);
+                $total_vinculado++;
+            }            
+        }
     }
 
     public function executar_old()
