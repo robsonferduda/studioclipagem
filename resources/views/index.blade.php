@@ -168,10 +168,10 @@
                         </div>
                         <div class="timeline-panel">
                             <div class="timeline-heading">
-                                <h6>REGISTRO DE MONITORAMENTO DIÁRIO<span class="badge badge-pill badge-primary pull-right">0 EXECUÇÕES</span></h6>
+                                <h6>REGISTRO DE MONITORAMENTO DIÁRIO<span class="badge badge-pill badge-primary pull-right">{{ $total_monitoramentos }} EXECUÇÕES</span></h6>
                             </div>
                             <div class="timeline-body">
-                                @if(false)
+                             
                                     <table id="bootstrap-table" class="table table-hover">
                                         <thead>
                                             <tr>
@@ -198,10 +198,8 @@
                                             @endforeach                                    
                                         </tbody>
                                     </table>
-                                    <a href="{{ url('monitoramento/listar') }}">Ver Mais</a>
-                                @else
-                                    <p><i class="fa fa-hourglass-start mr-1"></i>Nenhum monitoramento realizado no dia de hoje</p>
-                                @endif
+                                 
+                                
                             </div>
                             
                         </div>

@@ -7,6 +7,7 @@ use Auth;
 use App\Models\EmissoraGravacao;
 use App\Models\JornalImpresso;
 use App\Models\JornalWeb;
+use App\Models\Monitoramento;
 use App\Models\FonteImpressa;
 use App\Models\VideoEmissoraWeb;
 use App\Models\NoticiaRadio;
@@ -52,10 +53,12 @@ class HomeController extends Controller
         $total_sem_area = array();
         $sem_coleta = array();
 
+        $total_monitoramentos = Monitoramento::whereBetween('created_at', [$dt_inicial, $dt_final])->count();
+
         $total_coletas = FonteWeb::whereBetween('crawlead_at', [$dt_inicial, $dt_final])->count();
         $coletas = FonteWeb::orderBy('crawlead_at','DESC')->take(5)->get();
 
-        return view('index', compact('totais','coletas','total_sem_area','execucoes','coletas','total_coletas'));
+        return view('index', compact('totais','coletas','total_sem_area','execucoes','coletas','total_coletas','total_monitoramentos'));
     }
 
     public function atualizarData(Request $request)
