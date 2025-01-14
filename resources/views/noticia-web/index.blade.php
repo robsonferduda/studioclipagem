@@ -37,13 +37,24 @@
                                         <input type="text" class="form-control datepicker" name="dt_final" id="dt_final" required="true" value="{{ date("d/m/Y") }}" placeholder="__/__/____">
                                     </div>
                                 </div>
-                                <div class="col-md-8">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Fonte</label>
                                         <select class="form-control select2" name="fonte" id="fonte">
                                             <option value="">Selecione uma fonte</option>
                                             @foreach ($fontes as $f)
                                                 <option value="{{ $f->id }}" {{ ($fonte == $f->id ) ? 'selected' : '' }}>{{ $f->nome }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Clientes</label>
+                                        <select class="form-control select2" name="cliente" id="cliente">
+                                            <option value="">Selecione um cliente</option>
+                                            @foreach ($clientes as $cli)
+                                                <option value="{{ $cli->id }}" {{ ($cliente == $cli->id ) ? 'selected' : '' }}>{{ $cli->nome }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -70,11 +81,35 @@
                                     </div>
                                 </div>
                                 <div class="col-md-12 checkbox-radios mb-0">
-                                    <button type="button" id="btn-find" class="btn btn-primary mb-3"><i class="fa fa-search"></i> Buscar</button>
+                                    <button type="submit" id="btn-find" class="btn btn-primary mb-3"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>     
                         </div>
                     {!! Form::close() !!} 
+                </div>
+                <div class="col-lg-12 col-sm-12 conteudo">      
+                    @if(count($noticias))
+                        <h6 class="px-3">Mostrando {{ $noticias->count() }} de {{ $noticias->total() }} notícias</h6> 
+                        {{ $noticias->onEachSide(1)->appends([''])->links('vendor.pagination.bootstrap-4') }}
+                    @endif
+                </div>
+                <div class="col-lg-12">
+                    @if(count($noticias) > 0)
+                        @foreach ($noticias as $key => $noticia)
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-lg-4 col-sm-12">                                            
+                                            
+                                        </div>
+                                        <div class="col-lg-8 col-sm-12">                                        
+                                           
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    @endif
                 </div>
             </div>
             <div class="row mt-0">
@@ -130,6 +165,7 @@
 
         $("#btn-find").click(function(){
 
+        /*
             var expressao = $("#expressao").val();
             var dt_inicial = $("#dt_inicial").val();
             var dt_final = $("#dt_final").val();
@@ -177,6 +213,7 @@
                         $('.load-busca').loader('hide');
                     }
             });
+            */
 
         });
 

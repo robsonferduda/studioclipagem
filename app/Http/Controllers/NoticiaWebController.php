@@ -6,6 +6,7 @@ use DB;
 use Auth;
 use App\Utils;
 use Carbon\Carbon;
+use App\Models\Cliente;
 use Laracasts\Flash\Flash;
 use App\Models\LogAcesso;
 use App\Models\FonteWeb;
@@ -29,14 +30,33 @@ class NoticiaWebController extends Controller
     {
         Session::put('sub-menu','jornal-web');
 
+        $carbon = new Carbon();
         $dt_inicial = date('Y-m-d')." 00:00:00";
         $dt_final = date('Y-m-d')." 23:59:59";
         $termo = "";
         $fonte = 0;
-        $dados = array();
+        $cliente = null;
+        $noticias = array();
 
+        $clientes = Cliente::orderBy('nome')->get();
         $fontes = FonteWeb::orderBy('nome')->get();
 
+        if($request->isMethod('POST')){
+
+            $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00" : date("Y-m-d")." 00:00:00";
+            $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d")." 23:59:59";
+            $fl_print = ($request->fl_print) ? true : false;
+
+            $noticia = NoticiaWeb::query();
+
+            $noticia->when($fl_print, function ($q) use ($fl_print) {
+                return $q->where('screenshot', $fl_print);
+            });
+
+            $noticias = $noticia->whereBetween('data_insert', [$dt_inicial, $dt_final])->orderBy('id_fonte')->orderBy('titulo_noticia')->paginate(10);
+        }
+        
+        /*
         if($request->isMethod('POST')){
 
             $carbon = new Carbon();
@@ -101,8 +121,9 @@ class NoticiaWebController extends Controller
         }
 
         $total_noticias = count($dados);
+        */
 
-        return view('noticia-web/index',compact('fontes','dados','dt_inicial','dt_final','termo','fonte'));
+        return view('noticia-web/index',compact('fontes','noticias','dt_inicial','dt_final','termo','fonte','clientes','cliente'));
     }
 
     public function dashboard()
