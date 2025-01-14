@@ -47,13 +47,13 @@ class HomeController extends Controller
         $dt_final = date("Y-m-d")." 23:59:59";
 
         $totais = array();
-        $execucoes = array();
         $coletas = array();
         $top_sites = array();
         $total_sem_area = array();
         $sem_coleta = array();
 
         $total_monitoramentos = Monitoramento::whereBetween('created_at', [$dt_inicial, $dt_final])->count();
+        $execucoes = Monitoramento::whereBetween('created_at', [$dt_inicial, $dt_final])->take(5)->get();
 
         $total_coletas = FonteWeb::whereBetween('crawlead_at', [$dt_inicial, $dt_final])->count();
         $coletas = FonteWeb::orderBy('crawlead_at','DESC')->take(5)->get();
