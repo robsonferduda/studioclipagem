@@ -472,7 +472,7 @@ class MonitoramentoController extends Controller
 
             $noticia_cliente = NoticiaCliente::where('noticia_id', $noticia->id)->where('tipo_id', $tipo)->first();
             
-            if(!$noticia){
+            if(!$noticia_cliente){
 
                 $dados = array('cliente_id' => $monitoramento->id_cliente,
                             'tipo_id'    => $monitoramento->tipo_midia,
