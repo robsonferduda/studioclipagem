@@ -99,16 +99,25 @@
                             <div class="card">
                                 <div class="card-body">
                                     <div class="row">
-                                        <div class="col-lg-4 col-sm-12">                                            
+                                        <div class="col-lg-2 col-sm-12">                                            
                                             <img src="{{ Storage::disk('s3')->temporaryUrl($noticia->path_screenshot, '+2 minutes') }}" alt="Print">
                                         </div>
-                                        <div class="col-lg-8 col-sm-12">                                        
-                                           
+                                        <div class="col-lg-10 col-sm-12">                                        
+                                            <div class="conteudo-noticia mb-1">
+                                                <p>{{ $noticia->titulo_noticia }}</p>
+                                                {!! ($noticia->conteudo->conteudo) ?  Str::limit($noticia->conteudo->conteudo, 1000, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         @endforeach
+                    @endif
+                </div>
+                <div class="col-lg-12 col-sm-12 conteudo">      
+                    @if(count($noticias))
+                        <h6 class="px-3">Mostrando {{ $noticias->count() }} de {{ $noticias->total() }} notícias</h6> 
+                        {{ $noticias->onEachSide(1)->appends([''])->links('vendor.pagination.bootstrap-4') }}
                     @endif
                 </div>
             </div>
