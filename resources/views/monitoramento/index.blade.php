@@ -65,12 +65,13 @@
                                                 <p>
                                                     <h6>
                                                         {{ ($monitoramento->cliente) ? $monitoramento->cliente->nome : 'Cliente não informado' }} 
+                                                        {{ ($monitoramento->nome) ? $monitoramento->nome : 'Nome não informado' }} 
                                                         <span class="pull-right">
-                                                        @if($monitoramento->fl_ativo)
-                                                        <i class="fa fa-circle text-success mr-1"></i><a href="{{ url('monitoramento/'.$monitoramento->id.'/atualizar-status') }}">Ativo </a>
-                                                        @else
-                                                            <i class="fa fa-circle text-danger mr-1"></i><a href="{{ url('monitoramento/'.$monitoramento->id.'/atualizar-status') }}">Inativo </a>
-                                                        @endif
+                                                            @if($monitoramento->fl_ativo)
+                                                            <i class="fa fa-circle text-success mr-1"></i><a href="{{ url('monitoramento/'.$monitoramento->id.'/atualizar-status') }}">Ativo </a>
+                                                            @else
+                                                                <i class="fa fa-circle text-danger mr-1"></i><a href="{{ url('monitoramento/'.$monitoramento->id.'/atualizar-status') }}">Inativo </a>
+                                                            @endif
                                                         </span>
                                                     </h6>
                                                     @if($monitoramento->fl_web)
