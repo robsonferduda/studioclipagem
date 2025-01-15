@@ -37,7 +37,7 @@ class NoticiaWebController extends Controller
         $fonte = null;
         $cliente = null;
         $fl_print = false;
-        $noticias = array();
+        $dados = array();
 
         $clientes = Cliente::orderBy('nome')->get();
         $fontes = FonteWeb::orderBy('nome')->get();
