@@ -106,8 +106,8 @@
                                         </div>
                                         <div class="col-lg-10 col-sm-12">                                        
                                             <div class="conteudo-noticia mb-1">
-                                                <p class="font-weight-bold">{{ $dado->noticia->titulo_noticia }}</p>
-                                                <p class="text-muted">{{ $dado->noticia->fonte->nome }}</p>
+                                                <p class="font-weight-bold mb-1">{{ $dado->noticia->titulo_noticia }}</p>
+                                                <p class="text-muted"> {!! ($dado->noticia->data_noticia) ? date('d/m/Y', strtotime($dado->noticia->data_noticia)) : date('d/m/Y', strtotime($dado->noticia->data_noticia)) !!} - {{ $dado->noticia->fonte->nome }}</p> 
                                             </div>
                                             <div class="panel panel-success">
                                                 <div class="conteudo-noticia mb-1 transcricao">
