@@ -55,6 +55,26 @@ class NoticiaWebController extends Controller
 
             $noticias = $noticia->whereBetween('data_insert', [$dt_inicial, $dt_final])->orderBy('id_fonte')->orderBy('titulo_noticia')->paginate(10);
         }
+
+        if($request->isMethod('GET')){
+
+            if($request->page){
+                
+                $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00" : date("Y-m-d")." 00:00:00";
+                $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d")." 23:59:59";
+                $fl_print = ($request->fl_print) ? true : false;
+    
+                $noticia = NoticiaWeb::query();
+    
+                $noticia->when($fl_print, function ($q) use ($fl_print) {
+                    return $q->where('screenshot', $fl_print);
+                });
+    
+                $noticias = $noticia->whereBetween('data_insert', [$dt_inicial, $dt_final])->orderBy('id_fonte')->orderBy('titulo_noticia')->paginate(10);
+
+            }
+
+        }
         
         /*
         if($request->isMethod('POST')){
