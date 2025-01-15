@@ -33,11 +33,11 @@ class NoticiaWebController extends Controller
         $carbon = new Carbon();
         $dt_inicial = date('Y-m-d')." 00:00:00";
         $dt_final = date('Y-m-d')." 23:59:59";
-        $termo = "";
-        $fonte = 0;
+        $expressao = "";
+        $fonte = null;
         $cliente = null;
-        $noticias = array();
         $fl_print = false;
+        $dados = array();
 
         $clientes = Cliente::orderBy('nome')->get();
         $fontes = FonteWeb::orderBy('nome')->get();
@@ -47,14 +47,23 @@ class NoticiaWebController extends Controller
             $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00" : date("Y-m-d")." 00:00:00";
             $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d")." 23:59:59";
             $fl_print = ($request->fl_print) ? true : false;
+            $expressao = $request->expressao;
+            $fonte = $request->fonte;
+            $cliente = $request->cliente;
 
-            $noticia = NoticiaWeb::query();
+            $noticia = ConteudoNoticiaWeb::query();
 
             $noticia->when($fl_print, function ($q) use ($fl_print) {
-                return $q->where('screenshot', $fl_print);
+                $q->whereHas('noticia', function($q) use($fl_print){
+                    return $q->where('screenshot', $fl_print);
+                });
             });
 
-            $noticias = $noticia->whereBetween('data_insert', [$dt_inicial, $dt_final])->orderBy('id_fonte')->orderBy('titulo_noticia')->paginate(10);
+            $noticia->when($expressao, function ($q) use ($expressao) {
+                return $q->whereRaw('conteudo @@ to_tsquery(\'portuguese\', ?)', [$expressao]);
+            });
+
+            $dados = $noticia->whereBetween('created_at', [$dt_inicial, $dt_final])->orderBy('created_at','DESC')->paginate(10);
         }
 
         if($request->isMethod('GET')){
@@ -65,13 +74,19 @@ class NoticiaWebController extends Controller
                 $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d")." 23:59:59";
                 $fl_print = ($request->fl_print) ? true : false;
     
-                $noticia = NoticiaWeb::query();
+                $noticia = ConteudoNoticiaWeb::query();
     
                 $noticia->when($fl_print, function ($q) use ($fl_print) {
-                    return $q->where('screenshot', $fl_print);
+                    $q->whereHas('noticia', function($q) use($fl_print){
+                        return $q->where('screenshot', $fl_print);
+                    });
                 });
     
-                $noticias = $noticia->whereBetween('data_insert', [$dt_inicial, $dt_final])->orderBy('id_fonte')->orderBy('titulo_noticia')->paginate(10);
+                $noticia->when($expressao, function ($q) use ($expressao) {
+                    return $q->whereRaw('conteudo @@ to_tsquery(\'portuguese\', ?)', [$expressao]);
+                });
+    
+                $dados = $noticia->whereBetween('created_at', [$dt_inicial, $dt_final])->orderBy('created_at','DESC')->paginate(10);
 
             }
 
@@ -144,7 +159,7 @@ class NoticiaWebController extends Controller
         $total_noticias = count($dados);
         */
 
-        return view('noticia-web/index',compact('fontes','noticias','dt_inicial','dt_final','termo','fonte','clientes','cliente','fl_print'));
+        return view('noticia-web/index',compact('fontes','dados','dt_inicial','dt_final','fonte','clientes','cliente','fl_print','expressao'));
     }
 
     public function dashboard()

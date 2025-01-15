@@ -77,7 +77,7 @@
                                 <div class="col-md-12 col-sm-12">
                                     <div class="form-group">
                                         <label for="expressao" class="form-label">Expressão de Busca <span class="text-primary">Digite o termo ou expressão de busca baseado em regex</span></label>
-                                        <textarea class="form-control" name="expressao" id="expressao" rows="3">{{ $termo }}</textarea>
+                                        <textarea class="form-control" name="expressao" id="expressao" rows="3">{{ $expressao }}</textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-12 checkbox-radios mb-0">
@@ -88,26 +88,38 @@
                     {!! Form::close() !!} 
                 </div>
                 <div class="col-lg-12 col-sm-12 conteudo">      
-                    @if(count($noticias))
-                        <h6 class="px-3">Mostrando {{ $noticias->count() }} de {{ $noticias->total() }} notícias</h6> 
-                        {{ $noticias->onEachSide(1)->appends(['fl_print' => $fl_print])->links('vendor.pagination.bootstrap-4') }}
+                    @if(count($dados))
+                        <h6 class="px-3">Mostrando {{ $dados->count() }} de {{ $dados->total() }} notícias</h6> 
+                        {{ $dados->onEachSide(1)->appends(['fl_print' => $fl_print, 'expressao' => $expressao])->links('vendor.pagination.bootstrap-4') }}
                     @endif
                 </div>
                 <div class="col-lg-12">
-                    @if(count($noticias) > 0)
-                        @foreach ($noticias as $key => $noticia)
+                    @if(count($dados) > 0)
+                        @foreach ($dados as $key => $dado)
                             <div class="card">
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-lg-2 col-sm-12">   
-                                            @if($noticia->path_screenshot)                                         
-                                                <img src="{{ Storage::disk('s3')->temporaryUrl($noticia->path_screenshot, '+2 minutes') }}" alt="Print">
+                                            @if($dado->noticia->path_screenshot)                                         
+                                                <img src="{{ Storage::disk('s3')->temporaryUrl($dado->noticia->path_screenshot, '+2 minutes') }}" alt="Print">
                                             @endif
                                         </div>
                                         <div class="col-lg-10 col-sm-12">                                        
                                             <div class="conteudo-noticia mb-1">
-                                                <p>{{ $noticia->titulo_noticia }}</p>
+                                                <p class="font-weight-bold mb-1">{{ $dado->noticia->titulo_noticia }}</p>
+                                                <p class="text-muted"> {!! ($dado->noticia->data_noticia) ? date('d/m/Y', strtotime($dado->noticia->data_noticia)) : date('d/m/Y', strtotime($dado->noticia->data_noticia)) !!} - {{ $dado->noticia->fonte->nome }}</p> 
                                             </div>
+                                            <div class="panel panel-success">
+                                                <div class="conteudo-noticia mb-1 transcricao">
+                                                    {!! ($dado->conteudo) ?  Str::limit($dado->conteudo, 700, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                                </div>
+                                                <div class="panel-body transcricao-total">
+                                                    {!! ($dado->conteudo) ?  $dado->conteudo  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                                </div>
+                                                <div class="panel-heading">
+                                                    <h3 class="panel-title"><span class="btn-show">Mostrar Mais</span></h3>
+                                                </div>
+                                            </div> 
                                         </div>
                                     </div>
                                 </div>
@@ -116,8 +128,8 @@
                     @endif
                 </div>
                 <div class="col-lg-12 col-sm-12 conteudo">      
-                    @if(count($noticias))
-                        {{ $noticias->onEachSide(1)->appends(['fl_print' => $fl_print])->links('vendor.pagination.bootstrap-4') }}
+                    @if(count($dados))
+                        {{ $dados->onEachSide(1)->appends(['fl_print' => $fl_print, 'expressao' => $expressao])->links('vendor.pagination.bootstrap-4') }}
                     @endif
                 </div>
             </div>
