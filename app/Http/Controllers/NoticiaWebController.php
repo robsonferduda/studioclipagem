@@ -37,6 +37,7 @@ class NoticiaWebController extends Controller
         $fonte = 0;
         $cliente = null;
         $noticias = array();
+        $fl_print = false;
 
         $clientes = Cliente::orderBy('nome')->get();
         $fontes = FonteWeb::orderBy('nome')->get();
@@ -143,7 +144,7 @@ class NoticiaWebController extends Controller
         $total_noticias = count($dados);
         */
 
-        return view('noticia-web/index',compact('fontes','noticias','dt_inicial','dt_final','termo','fonte','clientes','cliente'));
+        return view('noticia-web/index',compact('fontes','noticias','dt_inicial','dt_final','termo','fonte','clientes','cliente','fl_print'));
     }
 
     public function dashboard()

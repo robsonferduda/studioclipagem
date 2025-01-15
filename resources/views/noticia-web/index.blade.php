@@ -99,8 +99,10 @@
                             <div class="card">
                                 <div class="card-body">
                                     <div class="row">
-                                        <div class="col-lg-2 col-sm-12">                                            
-                                            <img src="{{ Storage::disk('s3')->temporaryUrl($noticia->path_screenshot, '+2 minutes') }}" alt="Print">
+                                        <div class="col-lg-2 col-sm-12">   
+                                            @if($noticia->path_screenshot)                                         
+                                                <img src="{{ Storage::disk('s3')->temporaryUrl($noticia->path_screenshot, '+2 minutes') }}" alt="Print">
+                                            @endif
                                         </div>
                                         <div class="col-lg-10 col-sm-12">                                        
                                             <div class="conteudo-noticia mb-1">
