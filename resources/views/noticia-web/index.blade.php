@@ -106,8 +106,8 @@
                                         </div>
                                         <div class="col-lg-10 col-sm-12">                                        
                                             <div class="conteudo-noticia mb-1">
-                                                <p class="text-bold">{{ $dado->noticia->titulo_noticia }}</p>
-                                                <p>{{ $dado->noticia->titulo_noticia }}</p>
+                                                <p class="font-weight-bold">{{ $dado->noticia->titulo_noticia }}</p>
+                                                <p>{{ $dado->noticia->fonte }}</p>
                                             </div>
                                         </div>
                                     </div>
