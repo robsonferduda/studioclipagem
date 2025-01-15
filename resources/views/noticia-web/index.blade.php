@@ -107,8 +107,19 @@
                                         <div class="col-lg-10 col-sm-12">                                        
                                             <div class="conteudo-noticia mb-1">
                                                 <p class="font-weight-bold">{{ $dado->noticia->titulo_noticia }}</p>
-                                                <p>{{ $dado->noticia->fonte }}</p>
+                                                <p class="text-muted">{{ $dado->noticia->fonte->nome }}</p>
                                             </div>
+                                            <div class="panel panel-success">
+                                                <div class="conteudo-noticia mb-1 transcricao">
+                                                    {!! ($dado->conteudo) ?  Str::limit($dado->conteudo, 700, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                                </div>
+                                                <div class="panel-body transcricao-total">
+                                                    {!! ($dado->conteudo) ?  $dado->conteudo  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                                </div>
+                                                <div class="panel-heading">
+                                                    <h3 class="panel-title"><span class="btn-show">Mostrar Mais</span></h3>
+                                                </div>
+                                            </div> 
                                         </div>
                                     </div>
                                 </div>
