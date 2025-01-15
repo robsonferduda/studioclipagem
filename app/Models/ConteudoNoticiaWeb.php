@@ -13,4 +13,8 @@ class ConteudoNoticiaWeb extends Model
     protected $table = 'conteudo_noticia_web';
     protected $fillable = ['id_noticia_web','conteudo'];
 
+    public function noticia()
+    {
+        return $this->belongsTo(NoticiaWeb::class, 'id_noticia_web', 'id');
+    }
 }

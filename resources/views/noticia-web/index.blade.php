@@ -77,7 +77,7 @@
                                 <div class="col-md-12 col-sm-12">
                                     <div class="form-group">
                                         <label for="expressao" class="form-label">Expressão de Busca <span class="text-primary">Digite o termo ou expressão de busca baseado em regex</span></label>
-                                        <textarea class="form-control" name="expressao" id="expressao" rows="3">{{ $termo }}</textarea>
+                                        <textarea class="form-control" name="expressao" id="expressao" rows="3">{{ $expressao }}</textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-12 checkbox-radios mb-0">
