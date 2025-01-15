@@ -63,7 +63,7 @@ class NoticiaWebController extends Controller
                 return $q->whereRaw('conteudo @@ to_tsquery(\'portuguese\', ?)', [$expressao]);
             });
 
-            $noticias = $noticia->whereBetween('created_at', [$dt_inicial, $dt_final])->orderBy('created_at','DESC')->orderBy('titulo_noticia')->paginate(10);
+            $dados = $noticia->whereBetween('created_at', [$dt_inicial, $dt_final])->orderBy('created_at','DESC')->orderBy('titulo_noticia')->paginate(10);
         }
 
         if($request->isMethod('GET')){
@@ -84,7 +84,7 @@ class NoticiaWebController extends Controller
                     return $q->where('screenshot', $fl_print);
                 });
     
-                $noticias = $noticia->whereBetween('data_insert', [$dt_inicial, $dt_final])->orderBy('id_fonte')->orderBy('titulo_noticia')->paginate(10);
+                $dados = $noticia->whereBetween('data_insert', [$dt_inicial, $dt_final])->orderBy('id_fonte')->orderBy('titulo_noticia')->paginate(10);
 
             }
 
@@ -157,7 +157,7 @@ class NoticiaWebController extends Controller
         $total_noticias = count($dados);
         */
 
-        return view('noticia-web/index',compact('fontes','noticias','dt_inicial','dt_final','fonte','clientes','cliente','fl_print','expressao'));
+        return view('noticia-web/index',compact('fontes','dados','dt_inicial','dt_final','fonte','clientes','cliente','fl_print','expressao'));
     }
 
     public function dashboard()

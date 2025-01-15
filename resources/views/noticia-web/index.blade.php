@@ -88,25 +88,25 @@
                     {!! Form::close() !!} 
                 </div>
                 <div class="col-lg-12 col-sm-12 conteudo">      
-                    @if(count($noticias))
-                        <h6 class="px-3">Mostrando {{ $noticias->count() }} de {{ $noticias->total() }} notícias</h6> 
-                        {{ $noticias->onEachSide(1)->appends(['fl_print' => $fl_print])->links('vendor.pagination.bootstrap-4') }}
+                    @if(count($dados))
+                        <h6 class="px-3">Mostrando {{ $dados->count() }} de {{ $dados->total() }} notícias</h6> 
+                        {{ $dados->onEachSide(1)->appends(['fl_print' => $fl_print])->links('vendor.pagination.bootstrap-4') }}
                     @endif
                 </div>
                 <div class="col-lg-12">
-                    @if(count($noticias) > 0)
-                        @foreach ($noticias as $key => $noticia)
+                    @if(count($dados) > 0)
+                        @foreach ($dados as $key => $dado)
                             <div class="card">
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-lg-2 col-sm-12">   
-                                            @if($noticia->path_screenshot)                                         
-                                                <img src="{{ Storage::disk('s3')->temporaryUrl($noticia->path_screenshot, '+2 minutes') }}" alt="Print">
+                                            @if($dado->noticia->path_screenshot)                                         
+                                                <img src="{{ Storage::disk('s3')->temporaryUrl($dado->noticia->path_screenshot, '+2 minutes') }}" alt="Print">
                                             @endif
                                         </div>
                                         <div class="col-lg-10 col-sm-12">                                        
                                             <div class="conteudo-noticia mb-1">
-                                                <p>{{ $noticia->titulo_noticia }}</p>
+                                                <p>{{ $dado->noticia->titulo_noticia }}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -116,8 +116,8 @@
                     @endif
                 </div>
                 <div class="col-lg-12 col-sm-12 conteudo">      
-                    @if(count($noticias))
-                        {{ $noticias->onEachSide(1)->appends(['fl_print' => $fl_print])->links('vendor.pagination.bootstrap-4') }}
+                    @if(count($dados))
+                        {{ $dados->onEachSide(1)->appends(['fl_print' => $fl_print])->links('vendor.pagination.bootstrap-4') }}
                     @endif
                 </div>
             </div>
