@@ -84,7 +84,7 @@ class NoticiaWebController extends Controller
                     return $q->where('screenshot', $fl_print);
                 });
     
-                $dados = $noticia->whereBetween('data_insert', [$dt_inicial, $dt_final])->orderBy('id_fonte')->orderBy('titulo_noticia')->paginate(10);
+                $dados = $noticia->whereBetween('data_insert', [$dt_inicial, $dt_final])->orderBy('id_fonte')->paginate(10);
 
             }
 
