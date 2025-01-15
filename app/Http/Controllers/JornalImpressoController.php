@@ -30,6 +30,7 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 class JornalImpressoController extends Controller
 {
     private $data_atual;
+    private $carbon;
 
     public function __construct()
     {
@@ -38,6 +39,7 @@ class JornalImpressoController extends Controller
         $this->dt_inicial = session('dt_inicial');
         $this->dt_final = session('dt_final');
         Session::put('url','impresso');
+        $this->carbon = new Carbon();
     }
 
     public function index(Request $request)
@@ -71,6 +73,8 @@ class JornalImpressoController extends Controller
             $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
             $busca_fonte = $request->fonte;
             $termo = $request->termo;
+
+            
             
             $jornais = JornalImpresso::query();
 
@@ -87,51 +91,36 @@ class JornalImpressoController extends Controller
 
     public function buscar(Request $request)
     {
-        Session::put('sub-menu','arquivos-web');
+        Session::put('sub-menu','jornal-impresso-buscar');
+        
+        $dt_inicial = date('Y-m-d H:i:s');
+        $dt_final = date('Y-m-d H:i:s');
+        $expressao = "";
+        $fonte_selecionada = null;
+        $fontes = FonteImpressa::orderBy('nome')->get();
+        $impressos = array();
 
-        $fonte = ($request->fonte) ? $request->fonte : null;
-
-        $carbon = new Carbon();
-        $fontes = FonteImpressa::where('tipo', 1)->orderBy("nome")->get();
-        $dados = array();
-        $busca_fonte = "";
-        $termo = "";
-
-        if($request->isMethod('GET')){
-
-            if($request->dt_inicial){
-               
-                $dt_inicial = ($request->dt_inicial) ? $request->dt_inicial : date("Y-m-d")." 00:00:00";
-                $dt_final = ($request->dt_final) ? $request->dt_final : date("Y-m-d H:i:s");
-
-                $dados = EdicaoJornalImpresso::with('fonte')->with('paginas')->whereBetween('dt_coleta', [$dt_inicial, $dt_final])->orderBy('dt_coleta','DESC')->paginate(10);
-
-            }else{
-               
-                $dt_inicial = "2024-11-01 00:00:00";
-                $dt_final = date('Y-m-d H:i:s');
-                $dados = EdicaoJornalImpresso::with('fonte')->with('paginas')->whereBetween('dt_coleta', [$dt_inicial, $dt_final])->orderBy('dt_coleta','DESC')->paginate(10);
-            }
-
-        }
+        $jornais = PaginaJornalImpresso::query();
 
         if($request->isMethod('POST')){
             
-            $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00" : date("Y-m-d")." 00:00:00";
-            $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d H:i:s");
-            $busca_fonte = $request->fonte;
-            $termo = $request->termo;
+            $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00" : date("Y-m-d")." 00:00:00";
+            $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d H:i:s");
+            $fonte_selecionada = $request->fontes;
+            $expressao = $request->expressao;
 
-            $jornais = EdicaoJornalImpresso::query();
+            $jornais = PaginaJornalImpresso::query();
 
-            $jornais->when($fonte, function ($q) use ($fonte) {
-                return $q->where('id_jornal_online', $fonte);
+            $jornais->when($fonte_selecionada, function ($q) use ($fonte_selecionada) {
+                $q->whereHas('edicao', function($q) use($fonte_selecionada){
+                    return $q->whereIn('id_jornal_online', $fonte_selecionada);
+                });
             });
 
-            $dados = $jornais->whereBetween('dt_coleta', [$dt_inicial, $dt_final])->orderBy('dt_coleta','DESC')->paginate(10);
+            $impressos = $jornais->orderBy('id_edicao_jornal_online')->orderBy('n_pagina','ASC')->paginate(10);
         }
 
-        return view('jornal-impresso/buscar', compact("fontes", "dados", 'dt_inicial','dt_final','termo','busca_fonte'));
+        return view('jornal-impresso/buscar', compact("impressos","fontes",'dt_inicial','dt_final','expressao','fonte_selecionada'));
     }
 
     public function dashboard(Request $request)

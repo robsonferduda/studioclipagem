@@ -123,11 +123,12 @@ Route::match(array('GET', 'POST'),'jornal-impresso/monitoramento','JornalImpress
 Route::match(array('GET', 'POST'),'jornal-impresso/noticias','JornalImpressoController@index');
 Route::match(array('GET', 'POST'),'impresso/noticias','JornalImpressoController@index');
 
+Route::match(array('GET', 'POST'),'jornal-impresso/buscar','JornalImpressoController@buscar');
 Route::post('jornal-impresso/monitoramento/{cliente}/listar','JornalImpressoController@listarMonitoramento');
 Route::get('jornal-impresso/processar','JornalImpressoController@processar');
 Route::get('jornal-impresso/noticia/extrair/{tipo}/{id}','JornalImpressoController@extrair');
 Route::get('jornal-impresso/noticia/editar/{id}','JornalImpressoController@editar');
-Route::get('jornal-impresso/buscar','JornalImpressoController@buscar');
+
 
 Route::get('jornal-impresso/pendentes/listar','JornalImpressoController@listarPendentes');
 Route::get('jornal-impresso/upload','JornalImpressoController@upload');

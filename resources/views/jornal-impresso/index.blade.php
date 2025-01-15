@@ -143,6 +143,6 @@
                
             });
            
-        })
+        });
     </script>
 @endsection

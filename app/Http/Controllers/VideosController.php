@@ -27,6 +27,7 @@ class VideosController extends Controller
     public function index(Request $request)
     {
         Session::put('sub-menu','tv-videos');
+        
         $emissoras = EmissoraWeb::orderBy('nome_emissora')->get();
         $programas = ProgramaEmissoraWeb::all();
 

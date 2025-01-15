@@ -23,9 +23,18 @@
             </div>
             <div class="row">
                 <div class="col-lg-12 col-sm-12">
-                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['jornal-impresso/web']]) !!}
+                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['jornal-impresso/buscar']]) !!}
                         <div class="form-group m-3 w-70">
                             <div class="row">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Tipo de Data</label>
+                                        <select class="form-control select2" name="regra" id="regra">
+                                            <option value="dt_noticia">Data de Cadastro</option>
+                                            <option value="dt_clipagem">Data do Clipping</option>
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
                                         <label>Data Inicial</label>
@@ -38,13 +47,14 @@
                                         <input type="text" class="form-control datepicker" name="dt_final" required="true" value="{{ \Carbon\Carbon::parse($dt_final)->format('d/m/Y H:i:s') }}" placeholder="__/__/____">
                                     </div>
                                 </div>
-                                <div class="col-md-8">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12">
+                                    <label>Fontes</label>
                                     <div class="form-group">
-                                        <label>Fonte <span class="text-primary">Somente fontes do tipo <strong>Coleta Web</strong></span></label>
-                                        <select class="form-control select2" name="fonte" id="fonte">
-                                            <option value="">Selecione uma fonte</option>
+                                        <select multiple="multiple" size="10" name="fontes[]" class="demo1 form-control">
                                             @foreach ($fontes as $fonte)
-                                                <option value="{{ $fonte->id }}" {{ ($busca_fonte == $fonte->id ) ? 'selected' : '' }}>{{ $fonte->nome }}</option>
+                                                <option value="{{ $fonte->id }}">{{ $fonte->nome }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -53,8 +63,8 @@
                             <div class="row">
                                 <div class="col-md-12 col-sm-12">
                                     <div class="form-group">
-                                        <label>Buscar por <span class="text-primary">Digite o termo ou expressão de busca</span></label>
-                                        <input type="text" class="form-control" name="termo" id="termo" minlength="3" placeholder="Termo" value="{{ $termo }}">
+                                        <label for="expressao" class="form-label">Expressão de Busca <span class="text-primary">Digite o termo ou expressão de busca</span></label>
+                                        <textarea class="form-control" name="expressao" id="expressao" rows="3">{{ $expressao }}</textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-12 checkbox-radios mb-0">
@@ -64,33 +74,41 @@
                         </div>
                     {!! Form::close() !!} 
 
-                    @if($dados->count())
-                        <h6 class="px-3">Mostrando {{ $dados->count() }} de {{ $dados->total() }} Arquivos Coletados</h6>
-                    @endif
+                    @if(count($impressos))
+                        <h6 class="px-3">Mostrando {{ $impressos->count() }} de {{ $impressos->total() }} arquivos coletados</h6>
+                        {{ $impressos->onEachSide(1)->appends(['dt_inicial' => $dt_inicial, 'dt_final' => $dt_final])->links('vendor.pagination.bootstrap-4') }} 
+                    @endif  
 
-                    {{ $dados->onEachSide(1)->appends(['dt_inicial' => $dt_inicial, 'dt_final' => $dt_final])->links('vendor.pagination.bootstrap-4') }}    
-
-                    @foreach ($dados as $key => $noticia)
+                    @foreach ($impressos as $key => $pagina)
                         <div class="card">
                             <div class="card-body">                           
                                 <div class="row">
-                                    <div class="col-lg-2 col-sm-12 mb-1">
-                                        @if($noticia->primeiraPagina)
-                                            <img src="{{ Storage::disk('s3')->temporaryUrl($noticia->primeiraPagina->path_pagina_s3, '+2 minutes') }}" alt="Página ">
-                                        @endif
+                                    <div class="col-lg-2 col-md-2 col-sm-12 mb-1">
+                                        <img src="{{ Storage::disk('s3')->temporaryUrl($pagina->path_pagina_s3, '+2 minutes') }}" alt="Girl in a jacket">
                                     </div>
-                                    <div class="col-lg-10 col-sm-10 mb-1">
-                                        <p><strong>{{ ($noticia->fonte) ? $noticia->fonte->nome : 'Não Identificado' }}</strong></p>
-                                        <p>{{ ($noticia->titulo) ? $noticia->titulo : '' }}</p>
-                                        <p><a href="{{ url('jornal-impresso/edicao/'.$noticia->id.'/paginas') }}">{{ $noticia->paginas->count() }} Páginas</a></p>
-                                        
-                                        <p>Publicado em: {{ ($noticia->dt_pub) ? \Carbon\Carbon::parse($noticia->dt_pub)->format('d/m/Y H:i:s') : 'Não informado' }}</p>
-                                        <p>Coletado em {{ \Carbon\Carbon::parse($noticia->dt_coleta)->format('d/m/Y H:i:s')  }}</p>                        
+                                    <div class="col-lg-10 col-sm-10 mb-1"> 
+                                        <h6>{{ ($pagina->edicao->fonte) ? $pagina->edicao->fonte->nome : 'Não identificada' }} - {{ \Carbon\Carbon::parse($pagina->dt_clipagem)->format('d/m/Y') }}</h6>
+                                        <p>Página <strong>{{ $pagina->n_pagina }}</strong>/<strong>{{ count($pagina->edicao->paginas) }}</strong></p>  
+                                        <div class="panel panel-success">
+                                            <div class="conteudo-noticia mb-1">
+                                                {!! ($pagina->texto_extraido) ?  Str::limit($pagina->texto_extraido, 1000, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                            </div>
+                                            <div class="panel-body">
+                                                {!! ($pagina->texto_extraido) ?  $pagina->texto_extraido  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                            </div>
+                                            <div class="panel-heading">
+                                                <h3 class="panel-title"><span class="btn-show">Mostrar Mais</span></h3>
+                                            </div>
+                                        </div> 
+                                        <a href="{{ url('jornal-impresso/noticia/extrair/web',$pagina->id) }}" class="btn btn-success btn-extrair-noticia"><i class="fa fa-database"></i> Extrair Notícia</a>                
                                     </div>
                                 </div>                               
                             </div>                            
                         </div>
                     @endforeach
+                    @if(count($impressos))
+                        {{ $impressos->onEachSide(1)->appends(['dt_inicial' => $dt_inicial, 'dt_final' => $dt_final])->links('vendor.pagination.bootstrap-4') }} 
+                    @endif
                 </div>
             </div>
         </div>
@@ -98,11 +116,17 @@
 </div> 
 @endsection
 @section('script')
-<script>
-    $( document ).ready(function() {
+    <script>
+        $(document).ready(function(){
 
-       
+            var host =  $('meta[name="base-url"]').attr('content');
 
-    });
-</script>
+            var demo2 = $('.demo1').bootstrapDualListbox({
+                nonSelectedListLabel: 'Disponíveis',
+                selectedListLabel: 'Selecionadas',
+            
+            });
+        
+        });
+    </script>
 @endsection
