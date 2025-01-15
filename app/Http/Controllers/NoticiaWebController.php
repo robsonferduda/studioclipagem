@@ -86,7 +86,7 @@ class NoticiaWebController extends Controller
                     return $q->whereRaw('conteudo @@ to_tsquery(\'portuguese\', ?)', [$expressao]);
                 });
     
-                $dados = $noticia->whereBetween('data_insert', [$dt_inicial, $dt_final])->orderBy('id_fonte')->paginate(10);
+                $dados = $noticia->whereBetween('created_at', [$dt_inicial, $dt_final])->orderBy('created_at','DESC')->paginate(10);
 
             }
 
