@@ -76,12 +76,14 @@ class NoticiaWebController extends Controller
     
                 $noticia = ConteudoNoticiaWeb::query();
     
-                $noticia->when($expressao, function ($q) use ($expressao) {
-                    return $q->whereRaw('transcricao_tsv @@ to_tsquery(\'portuguese\', ?)', [$expressao]);
-                });
-
                 $noticia->when($fl_print, function ($q) use ($fl_print) {
-                    return $q->where('screenshot', $fl_print);
+                    $q->whereHas('noticia', function($q) use($fl_print){
+                        return $q->where('screenshot', $fl_print);
+                    });
+                });
+    
+                $noticia->when($expressao, function ($q) use ($expressao) {
+                    return $q->whereRaw('conteudo @@ to_tsquery(\'portuguese\', ?)', [$expressao]);
                 });
     
                 $dados = $noticia->whereBetween('data_insert', [$dt_inicial, $dt_final])->orderBy('id_fonte')->paginate(10);
