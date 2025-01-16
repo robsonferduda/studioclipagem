@@ -88,7 +88,7 @@
                                     </div>
                                     <div class="col-lg-10 col-sm-10 mb-1"> 
                                         <h6>{{ ($pagina->edicao->fonte) ? $pagina->edicao->fonte->nome : 'Não identificada' }} - {{ \Carbon\Carbon::parse($pagina->dt_clipagem)->format('d/m/Y') }}</h6>
-                                        <h6 class="text-muted">{{ ($pagina->edicao->fonte and $pagina->edicao->fonte->estado) ? $pagina->edicao->fonte->estado->ds_estado : '' }}</h6>
+                                        <h6 class="text-muted">{{ ($pagina->edicao->fonte and $pagina->edicao->fonte->estado) ? $pagina->edicao->fonte->estado->nm_estado : '' }}</h6>
                                         <p>Página <strong>{{ $pagina->n_pagina }}</strong>/<strong>{{ count($pagina->edicao->paginas) }}</strong></p>  
                                         <div class="panel panel-success">
                                             <div class="conteudo-noticia mb-1">
