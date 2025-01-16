@@ -131,7 +131,7 @@ Route::get('jornal-impresso/noticia/editar/{id}','JornalImpressoController@edita
 
 
 Route::get('jornal-impresso/pendentes/listar','JornalImpressoController@listarPendentes');
-Route::get('jornal-impresso/upload','JornalImpressoController@upload');
+Route::match(array('GET', 'POST'),'jornal-impresso/uploads','JornalImpressoController@upload');
 Route::get('jornal-impresso/noticia/{id}','JornalImpressoController@detalhes');
 Route::post('jornal-impresso/upload','JornalImpressoController@uploadFiles');
 

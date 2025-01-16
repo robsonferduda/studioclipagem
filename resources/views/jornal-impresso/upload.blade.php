@@ -31,6 +31,31 @@
                     </div>
                 </div>
             </div>   
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['jornal-impresso/uploads']]) !!}
+                        <div class="form-group m-3">
+                            <div class="row">
+                                <div class="col-md-2 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Data Inicial</label>
+                                        <input type="text" class="form-control datepicker" name="dt_inicial" required="true" value="{{ \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y') }}" placeholder="__/__/____">
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Data Final</label>
+                                        <input type="text" class="form-control datepicker" name="dt_final" required="true" value="{{ \Carbon\Carbon::parse($dt_final)->format('d/m/Y') }}" placeholder="__/__/____">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="submit" id="btn-find" class="btn btn-primary mb-3" style="margin-top: 25px;"><i class="fa fa-search"></i> Buscar</button>
+                                </div>
+                            </div>
+                        </div>
+                    {!! Form::close() !!}
+                </div>
+            </div>
             <div class="col-lg-12 col-md-3 mb-12">
                 <h6>Arquivos Enviados</h6>
                 @forelse($jornais_pendentes as $key => $jornal)
@@ -62,7 +87,7 @@
                 @empty
                     <div class="row">
                         <div class="col-lg-12">
-                            <p class="text-danger">Nenhum arquivo enviado em  {{ \Carbon\Carbon::now()->format('d/m/Y') }}</p>
+                            <p class="text-danger">Não existem arquivos enviados nas datas especificadas</p>
                         </div>
                     </div>
                 @endforelse

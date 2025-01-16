@@ -351,16 +351,30 @@ class JornalImpressoController extends Controller
         );
     }
 
-    public function upload()
+    public function upload(Request $request)
     {
         Session::put('sub-menu','upload');
 
         $dt_inicial = date("Y-m-d")." 00:00:00";
         $dt_final = date("Y-m-d")." 23:59:59";
 
-        $jornais_pendentes = EdicaoJornalImpresso::where('fl_upload', true)->whereBetween('dt_pub', [$dt_inicial, $dt_final])->orderBy('fl_processado','ASC')->get();
+        $jornais_pendentes = EdicaoJornalImpresso::where('fl_upload', true)
+                                                    ->whereBetween('dt_pub', [$dt_inicial, $dt_final])
+                                                    ->orderBy('fl_processado','ASC')
+                                                    ->get();
 
-        return view('jornal-impresso/upload', compact('jornais_pendentes'));
+        if($request->isMethod('POST')){
+
+            $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d');
+            $dt_final = $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d');
+
+            $jornais_pendentes = EdicaoJornalImpresso::where('fl_upload', true)
+                                                    ->whereBetween('dt_pub', [$dt_inicial, $dt_final])
+                                                    ->orderBy('fl_processado','ASC')
+                                                    ->get();
+        }
+
+        return view('jornal-impresso/upload', compact('jornais_pendentes','dt_inicial','dt_final'));
     }
 
     public function processamento(Request $request)
