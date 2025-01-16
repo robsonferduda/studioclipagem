@@ -46,7 +46,7 @@
                                         <p class="mb-1 text-muted">{{ substr($jornal->path_s3, strrpos($jornal->path_s3, '/') + 1) }}</p>
                                         <p>Enviado em  {{ \Carbon\Carbon::parse($jornal->created_at)->format('d/m/Y H:i:s') }}</p>
                                     </div>
-                                    @if($jornal->fl_processado)
+                                    @if(count($jornal->paginas))
                                         <div class="pull-right">
                                             <span class="badge badge-pill badge-success">Processado</span>
                                         </div>

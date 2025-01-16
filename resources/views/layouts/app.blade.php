@@ -112,6 +112,7 @@
                               <span class="sidebar-normal">Arquivos Impressos</span>
                               </a>
                           </li> 
+                          <!--
                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'arquivos-web') ? 'active' : '' }}">
                             <a href="{{ url('jornal-impresso/web') }}">
                               <span class="sidebar-normal">Edições Web</span>
@@ -122,6 +123,7 @@
                               <span class="sidebar-normal">Páginas Web</span>
                               </a>
                           </li>
+                        -->
                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'noticia-impressa-cadastrar') ? 'active' : '' }}">
                               <a href="{{ url('noticia/impresso/cadastrar') }}">
                               <span class="sidebar-normal">Cadastrar Notícia</span>
