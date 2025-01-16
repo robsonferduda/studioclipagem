@@ -74,7 +74,7 @@
                                     @if(count($jornal->paginas))
                                         <div class="pull-right">
                                             <span class="badge badge-pill badge-success">Processado</span>
-                                            <p>{{ count($jornal->paginas) }} páginas</p>
+                                            <p class="text-center">{{ count($jornal->paginas) }} páginas</p>
                                         </div>
                                     @else
                                         <div class="pull-right">
