@@ -296,6 +296,9 @@ class MonitoramentoController extends Controller
 
                 MonitoramentoExecucao::create($dado_moninoramento);
 
+                $monitoramento->updated_at = date("Y-m-d H:i:s");
+                $monitoramento->save();
+
             } catch (\Illuminate\Database\QueryException $e) {
 
                 $titulo = "Notificação de Monitoramento - Erro de Consulta - ".date("d/m/Y H:i:s"); 
