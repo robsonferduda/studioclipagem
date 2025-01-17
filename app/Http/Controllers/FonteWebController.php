@@ -468,6 +468,13 @@ class FonteWebController extends Controller
         return response()->json($dados);
     }
 
+    public function buscarFontes()
+    {
+        $dados = FonteWeb::all();
+
+        return response()->json($dados);
+    }
+
     public function estatisticas($id)
     {
         $fonte = FonteWeb::find($id);

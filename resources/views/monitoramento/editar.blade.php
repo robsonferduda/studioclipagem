@@ -110,6 +110,15 @@
                                         </label>
                                     </div>
                                 </div>
+                                
+                                    <div class="col-md-12 col-sm-12">
+                                        <label>Fontes</label>
+                                        <div class="form-group">
+                                            <select multiple="multiple" size="10" name="fontes[]" id="fontes" class="demo1 form-control">
+                                            </select>
+                                        </div>
+                                    </div>
+                                
                                 <div class="col-md-12 col-sm-12 mt-3">
                                     <div class="form-group">
                                         <label for="expressao" class="form-label">Expressão de Busca <span class="text-danger">Campo obrigatório</span></label>
@@ -135,6 +144,45 @@
 
         var host =  $('meta[name="base-url"]').attr('content');
         var token = $('meta[name="csrf-token"]').attr('content');
+
+        var demo2 = $('.demo1').bootstrapDualListbox({
+            nonSelectedListLabel: 'Disponíveis',
+            selectedListLabel: 'Selecionadas',
+        });
+
+        var fl_impresso = $("#fl_impresso").is(":checked");
+        var fl_radio = $("#fl_radio").is(":checked");
+        var fl_web = $("#fl_web").is(":checked");
+        var fl_tv = $("#fl_tv").is(":checked");
+
+        if(fl_web){
+           
+            $.ajax({
+                    url: host+'/api/web/fontes/buscar',
+                    type: 'GET',
+                    beforeSend: function() {
+                        
+                    },
+                    success: function(data) {
+
+                        if(data.length > 0) { 
+
+                            $('#fontes').find('option').remove();
+                            $('#fontes').attr('disabled', false);
+
+                            $('#fontes').append('<option value="">Selecione uma fonte</option>').val('');
+
+                            data.forEach(element => {
+                                let option = new Option(element.nome, element.id);
+                                $('#fontes').append(option);
+                            });
+                        }                        
+                    },
+                    complete: function(){
+                        
+                    }
+            });
+        }
 
     });
 </script>
