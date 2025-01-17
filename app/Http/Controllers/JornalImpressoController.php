@@ -330,9 +330,9 @@ class JornalImpressoController extends Controller
     {
         $edicao = EdicaoJornalImpresso::find($id);
 
-        if( Storage::disk('s3')->exists($edicao->link_pdf) ) {
+        if( Storage::disk('s3')->exists($edicao->path_s3) ) {
 
-            $file =  Storage::disk('s3')->get($edicao->link_pdf);
+            $file =  Storage::disk('s3')->get($edicao->path_s3);
       
             $headers = [
               'Content-Type' => 'your_content_type', 
@@ -341,14 +341,8 @@ class JornalImpressoController extends Controller
               'filename'=> 'dsfsdf'
            ];
       
-        return response($file, 200, $headers);
+            return response($file, 200, $headers);
         }
-
-        return response()->make(
-            Storage::disk('s3')->get($edicao->path_s3),
-            200,
-            ['Content-Type' => 'pdf']
-        );
     }
 
     public function upload(Request $request)
