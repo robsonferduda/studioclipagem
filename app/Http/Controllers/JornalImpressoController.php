@@ -330,6 +330,8 @@ class JornalImpressoController extends Controller
     {
         $edicao = EdicaoJornalImpresso::find($id);
 
+        dd($edicao);
+
         if( Storage::disk('s3')->exists($edicao->link_pdf) ) {
 
             $file =  Storage::disk('s3')->get($edicao->link_pdf);
