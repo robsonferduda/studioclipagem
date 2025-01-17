@@ -335,7 +335,7 @@ class JornalImpressoController extends Controller
             $file =  Storage::disk('s3')->get($edicao->path_s3);
       
             $headers = [
-              'Content-Type' => 'application/jpg', 
+              'Content-Type' => 'pdf', 
               'Content-Description' => 'File Transfer',
               'Content-Disposition' => "attachment; filename=$edicao->path_s3",
               'filename'=> $edicao->path_s3
@@ -343,19 +343,13 @@ class JornalImpressoController extends Controller
       
             return response($file, 200, $headers);
         }
-
-        $headers = [
-            'Content-Type'        => 'application/jpg',
-            'Content-Disposition' => 'attachment; filename="'. $edicao->path_s3 .'"',
-        ];
- 
-        return \Response::make(Storage::disk('s3')->get($edicao->path_s3), 200, $headers);
     }
 
     public function getImg($id)
     {
         $conteudo = PaginaJornalImpresso::find($id);
 
+        /*
         if( Storage::disk('s3')->exists($conteudo->path_pagina_s3) ) {
 
             $file =  Storage::disk('s3')->get($conteudo->path_pagina_s3);
@@ -368,7 +362,14 @@ class JornalImpressoController extends Controller
            ];
       
             return response($file, 200, $headers);
-        }
+        }*/
+
+        $headers = [
+            'Content-Type'        => 'application/jpg',
+            'Content-Disposition' => 'attachment; filename="'. $conteudo->path_s3 .'"',
+        ];
+ 
+        return \Response::make(Storage::disk('s3')->get($conteudo->path_s3), 200, $headers);
     }
 
     public function upload(Request $request)
