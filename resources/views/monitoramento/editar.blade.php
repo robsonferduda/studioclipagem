@@ -64,7 +64,7 @@
                                 <div class="col-lg-2 col-md-6 mb-2">
                                     <div class="form-group">
                                         <label>Hora Final</label>
-                                        <input type="text" class="form-control horario" name="hora_fim">
+                                        <input type="text" class="form-control horario" name="hora_fim" value="{{ \Carbon\Carbon::parse($monitoramento->hora_fim)->format('H:i') }}">
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-md-6 mb-2">
@@ -72,9 +72,9 @@
                                         <label>Frequência de Coletas</label>
                                         <select class="form-control" name="frequencia" id="frequencia">
                                             <option value="">Selecione o valor em horas</option>
-                                            <option value="1">1 hora</option>
+                                            <option value="1" {{ ($monitoramento->frequencia == 1) ? 'selected' : '' }}>1 hora</option>
                                             @for($i = 2; $i <= 24; $i++)
-                                                <option value="{{ $i }}">{{ $i }} horas</option>
+                                                <option value="{{ $i }}" {{ ($monitoramento->frequencia == $i) ? 'selected' : '' }}>{{ $i }} horas</option>
                                             @endfor
                                         </select>
                                     </div>
@@ -117,7 +117,7 @@
                                             <div class="form-group">
                                                 <select multiple="multiple" size="10" name="fontes[]" class="demo1 form-control">
                                                     @foreach ($fontes as $fonte)
-                                                        <option value="{{ $fonte->id }}">{{ $fonte->sg_estado }} - {{ $fonte->nome }}</option>
+                                                        <option value="{{ $fonte['id'] }}" {{ $fonte['flag'] }}>{{ $fonte['nome'] }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>

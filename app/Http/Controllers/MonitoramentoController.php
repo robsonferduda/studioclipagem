@@ -580,8 +580,23 @@ class MonitoramentoController extends Controller
 
         if($monitoramento->fl_web){
 
-            $fontes = DB::select("SELECT id, nome, t2.sg_estado FROM fonte_web t1 JOIN estado t2 ON t2.cd_estado = t1.cd_estado WHERE id_situacao = 1");   
+            if($monitoramento->filtro_web){
+                $cidades_selecionadas = explode(",", $monitoramento->filtro_web);
+            }
 
+            $fontes_disponiveis = DB::select("SELECT id, nome, t2.sg_estado FROM fonte_web t1 JOIN estado t2 ON t2.cd_estado = t1.cd_estado WHERE id_situacao = 1"); 
+            
+            foreach ($fontes_disponiveis as $key => $fd) {
+                if(in_array($fd->id, $cidades_selecionadas)){
+                    $fontes[] = array('id' => $fd->id,
+                                      'nome' => $fd->nome,
+                                      'flag' => 'selected');
+                }else{
+                    $fontes[] = array('id' => $fd->id,
+                                    'nome' => $fd->nome,
+                                    'flag' => '');
+                }
+            }
         }
 
         if($monitoramento->fl_radio){
