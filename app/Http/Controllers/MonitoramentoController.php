@@ -609,8 +609,8 @@ class MonitoramentoController extends Controller
         $fl_impresso = $request->fl_impresso == true ? true : false;
         $fl_radio = $request->fl_radio == true ? true : false;
 
-        $dt_inicio = ($request->dt_inicio) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicio)->format('Y-m-d') : date("Y-m-d");
-        $dt_fim = ($request->dt_fim) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_fim)->format('Y-m-d') : date("Y-m-d");
+        $dt_inicio = ($request->dt_inicio) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicio)->format('Y-m-d')." 00:00:00" : date("Y-m-d H:i:s");
+        $dt_fim = ($request->dt_fim) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_fim)->format('Y-m-d')." 00:00:00" : date("Y-m-d H:i:s");
 
         $hora_inicio = ($request->hora_inicio) ? $this->carbon->createFromFormat('H:i', $request->hora_inicio)->format('H:i') : date("H:i");
         $hora_fim = ($request->hora_fim) ? $this->carbon->createFromFormat('H:i', $request->hora_fim)->format('H:i') : date("H:i");
