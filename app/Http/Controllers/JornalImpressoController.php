@@ -349,7 +349,7 @@ class JornalImpressoController extends Controller
         }
 
         return response()->make(
-            Storage::disk('s3')->get($edicao->link_pdf),
+            Storage::disk('s3')->get($edicao->path_s3),
             200,
             ['Content-Type' => 'pdf']
         );
