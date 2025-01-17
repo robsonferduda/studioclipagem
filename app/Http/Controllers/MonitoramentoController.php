@@ -590,12 +590,12 @@ class MonitoramentoController extends Controller
             foreach ($fontes_disponiveis as $key => $fd) {
                 if(in_array($fd->id, $cidades_selecionadas)){
                     $fontes[] = array('id' => $fd->id,
-                                      'estado' => $fd['sg_estado'],
+                                      'estado' => ($fd->sg_estado) ? $fd->sg_estado : '',
                                       'nome' => $fd->nome,
                                       'flag' => 'selected');
                 }else{
                     $fontes[] = array('id' => $fd->id,
-                                    'estado' => $fd['sg_estado'],
+                                    'estado' => ($fd->sg_estado) ? $fd->sg_estado : '',
                                     'nome' => $fd->nome,
                                     'flag' => '');
                 }
