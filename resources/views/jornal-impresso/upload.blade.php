@@ -69,7 +69,7 @@
                                     <div class="float-left">
                                         <p class="mb-1"><strong>{{ $jornal->titulo }}</strong></p>
                                         <p class="mb-1 text-muted">{{ substr($jornal->path_s3, strrpos($jornal->path_s3, '/') + 1) }}</p>
-                                        <p>Enviado em  {{ \Carbon\Carbon::parse($jornal->created_at)->format('d/m/Y H:i:s') }}</p>
+                                        <p>Arquivo de  {{ \Carbon\Carbon::parse($jornal->dt_pub)->format('d/m/Y') }} - Enviado em  {{ \Carbon\Carbon::parse($jornal->created_at)->format('d/m/Y H:i:s') }}</p>
                                     </div>
                                     @if(count($jornal->paginas))
                                         <div class="pull-right">
