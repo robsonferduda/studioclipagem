@@ -330,37 +330,86 @@ class JornalImpressoController extends Controller
     {
         $edicao = EdicaoJornalImpresso::find($id);
 
-        if( Storage::disk('s3')->exists($edicao->link_pdf) ) {
+        if( Storage::disk('s3')->exists($edicao->path_s3) ) {
 
-            $file =  Storage::disk('s3')->get($edicao->link_pdf);
+            $file =  Storage::disk('s3')->get($edicao->path_s3);
       
             $headers = [
-              'Content-Type' => 'your_content_type', 
+              'Content-Type' => 'pdf', 
               'Content-Description' => 'File Transfer',
-              'Content-Disposition' => "attachment; filename=arquivo",
-              'filename'=> 'dsfsdf'
+              'Content-Disposition' => "attachment; filename=$edicao->path_s3",
+              'filename'=> $edicao->path_s3
            ];
       
-        return response($file, 200, $headers);
+            return response($file, 200, $headers);
         }
-
-        return response()->make(
-            Storage::disk('s3')->get($edicao->link_pdf),
-            200,
-            ['Content-Type' => 'pdf']
-        );
     }
 
-    public function upload()
+    public function getImg($id)
+    {
+        $conteudo = PaginaJornalImpresso::find($id);
+
+        $arquivo = Storage::disk('s3')->get($conteudo->path_pagina_s3);
+        $filename = $id.".jpg";
+
+        Storage::disk('impresso-img-original')->put($filename, $arquivo);
+
+        $file = public_path('img/impresso-img/'.$filename);
+
+        $headers = [
+            'Content-Type' => 'application/pdf',
+        ];
+
+        return response()->download($file, $filename, $headers);
+
+
+        /*
+        if( Storage::disk('s3')->exists($conteudo->path_pagina_s3) ) {
+
+            $file =  Storage::disk('s3')->get($conteudo->path_pagina_s3);
+      
+            $headers = [
+              'Content-Type' => 'image/jpeg', 
+              'Content-Description' => 'File Transfer',
+              'Content-Disposition' => "attachment; filename=$conteudo->path_pagina_s3",
+              'filename'=> $conteudo->path_pagina_s3
+           ];
+      
+            return response($file, 200, $headers);
+        }*/
+
+        $headers = [
+            'Content-Type'        => 'application/jpg',
+            'Content-Disposition' => 'attachment; filename="'. $conteudo->path_pagina_s3 .'"',
+        ];
+ 
+        return \Response::make(Storage::disk('s3')->get($conteudo->path_pagina_s3), 200, $headers);
+    }
+
+    public function upload(Request $request)
     {
         Session::put('sub-menu','upload');
 
         $dt_inicial = date("Y-m-d")." 00:00:00";
         $dt_final = date("Y-m-d")." 23:59:59";
 
-        $jornais_pendentes = EdicaoJornalImpresso::where('fl_upload', true)->whereBetween('dt_pub', [$dt_inicial, $dt_final])->orderBy('fl_processado','ASC')->get();
+        $jornais_pendentes = EdicaoJornalImpresso::where('fl_upload', true)
+                                                    ->whereBetween('dt_pub', [$dt_inicial, $dt_final])
+                                                    ->orderBy('fl_processado','ASC')
+                                                    ->get();
 
-        return view('jornal-impresso/upload', compact('jornais_pendentes'));
+        if($request->isMethod('POST')){
+
+            $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00";
+            $dt_final = $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59";
+
+            $jornais_pendentes = EdicaoJornalImpresso::where('fl_upload', true)
+                                                    ->whereBetween('dt_pub', [$dt_inicial, $dt_final])
+                                                    ->orderBy('fl_processado','ASC')
+                                                    ->get();
+        }
+
+        return view('jornal-impresso/upload', compact('jornais_pendentes','dt_inicial','dt_final'));
     }
 
     public function processamento(Request $request)

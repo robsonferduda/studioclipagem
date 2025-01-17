@@ -43,6 +43,42 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="col-lg-2 col-md-6 mb-2">
+                                    <div class="form-group">
+                                        <label>Data Inicial</label>
+                                        <input type="text" class="form-control datepicker dt_inicial_relatorio" name="dt_inicio" value="{{ \Carbon\Carbon::parse($monitoramento->dt_inicio)->format('d/m/Y') }}">
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-md-6 mb-2">
+                                    <div class="form-group">
+                                        <label>Data Final</label>
+                                        <input type="text" class="form-control datepicker dt_final_relatorio" name="dt_fim" value="{{ \Carbon\Carbon::parse($monitoramento->dt_fim)->format('d/m/Y') }}">
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-md-6 mb-2">
+                                    <div class="form-group">
+                                        <label>Hora Inicial</label>
+                                        <input type="text" class="form-control horario" name="hora_inicio" value="{{ \Carbon\Carbon::parse($monitoramento->hora_inicio)->format('H:i') }}">
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-md-6 mb-2">
+                                    <div class="form-group">
+                                        <label>Hora Final</label>
+                                        <input type="text" class="form-control horario" name="hora_fim">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6 mb-2">
+                                    <div class="form-group">
+                                        <label>Frequência de Coletas</label>
+                                        <select class="form-control" name="frequencia" id="frequencia">
+                                            <option value="">Selecione o valor em horas</option>
+                                            <option value="1">1 hora</option>
+                                            @for($i = 2; $i <= 24; $i++)
+                                                <option value="{{ $i }}">{{ $i }} horas</option>
+                                            @endfor
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="col-md-12 col-sm-12 mt-3">
                                     <p class="mb-1">Selecione as Mídias</p>
                                     <div class="form-check float-left mr-3">

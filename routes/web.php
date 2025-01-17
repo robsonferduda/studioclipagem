@@ -113,6 +113,7 @@ ROute::post('fonte-web/inconsistencias/editar','FonteWebController@editarInconsi
 Route::match(array('GET', 'POST'),'fonte-web/listar','FonteWebController@index');
 Route::resource('fonte-web','FonteWebController');
 
+Route::get('jornal-impresso/web/pagina/download/{id}','JornalImpressoController@getImg');
 Route::get('jornal-impresso/web/download/{id}','JornalImpressoController@getPdf');
 Route::get('impresso','JornalImpressoController@dashboard');
 Route::get('impresso/limpar','FonteImpressoController@limpar');
@@ -131,7 +132,7 @@ Route::get('jornal-impresso/noticia/editar/{id}','JornalImpressoController@edita
 
 
 Route::get('jornal-impresso/pendentes/listar','JornalImpressoController@listarPendentes');
-Route::get('jornal-impresso/upload','JornalImpressoController@upload');
+Route::match(array('GET', 'POST'),'jornal-impresso/uploads','JornalImpressoController@upload');
 Route::get('jornal-impresso/noticia/{id}','JornalImpressoController@detalhes');
 Route::post('jornal-impresso/upload','JornalImpressoController@uploadFiles');
 

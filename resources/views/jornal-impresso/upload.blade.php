@@ -31,6 +31,31 @@
                     </div>
                 </div>
             </div>   
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['jornal-impresso/uploads']]) !!}
+                        <div class="form-group m-3">
+                            <div class="row">
+                                <div class="col-md-2 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Data Inicial</label>
+                                        <input type="text" class="form-control datepicker" name="dt_inicial" required="true" value="{{ \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y') }}" placeholder="__/__/____">
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Data Final</label>
+                                        <input type="text" class="form-control datepicker" name="dt_final" required="true" value="{{ \Carbon\Carbon::parse($dt_final)->format('d/m/Y') }}" placeholder="__/__/____">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="submit" id="btn-find" class="btn btn-primary mb-3" style="margin-top: 25px;"><i class="fa fa-search"></i> Buscar</button>
+                                </div>
+                            </div>
+                        </div>
+                    {!! Form::close() !!}
+                </div>
+            </div>
             <div class="col-lg-12 col-md-3 mb-12">
                 <h6>Arquivos Enviados</h6>
                 @forelse($jornais_pendentes as $key => $jornal)
@@ -43,12 +68,13 @@
                                     </div>
                                     <div class="float-left">
                                         <p class="mb-1"><strong>{{ $jornal->titulo }}</strong></p>
-                                        <p class="mb-1 text-muted">{{ substr($jornal->path_s3, strrpos($jornal->path_s3, '/') + 1) }}</p>
-                                        <p>Enviado em  {{ \Carbon\Carbon::parse($jornal->created_at)->format('d/m/Y H:i:s') }}</p>
+                                        <p class="mb-1 text-muted"><a href="{{ url('jornal-impresso/web/download/'.$jornal->id) }}">{{ substr($jornal->path_s3, strrpos($jornal->path_s3, '/') + 1) }}</a></p>
+                                        <p>Arquivo de  {{ \Carbon\Carbon::parse($jornal->dt_pub)->format('d/m/Y') }} - Enviado em  {{ \Carbon\Carbon::parse($jornal->created_at)->format('d/m/Y H:i:s') }}</p>
                                     </div>
-                                    @if($jornal->fl_processado)
+                                    @if(count($jornal->paginas))
                                         <div class="pull-right">
                                             <span class="badge badge-pill badge-success">Processado</span>
+                                            <p class="text-center">{{ count($jornal->paginas) }} páginas</p>
                                         </div>
                                     @else
                                         <div class="pull-right">
@@ -62,7 +88,7 @@
                 @empty
                     <div class="row">
                         <div class="col-lg-12">
-                            <p class="text-danger">Nenhum arquivo enviado em  {{ \Carbon\Carbon::now()->format('d/m/Y') }}</p>
+                            <p class="text-danger">Não existem arquivos enviados nas datas especificadas</p>
                         </div>
                     </div>
                 @endforelse

@@ -7,7 +7,7 @@ $(document).ready(function() {
     $('.dt_inicial_relatorio').mask('00/00/0000',{ "placeholder": "dd/mm/YYYY" });
     $('.dt_final_relatorio').mask('00/00/0000',{ "placeholder": "dd/mm/YYYY" });
     $('.duracao').mask('00:00:00');
-    $('.horario').mask('00:00');
+    $('.horario').mask('00:00', { "placeholder": "00:00" });
     $('.swal2-input').mask('00/00/0000',{ "placeholder": "dd/mm/YYYY" });
     $('.monetario').mask("###0.00" , {reverse: true});
     $('#nu_valor').mask("###0.00" , {reverse: true});
