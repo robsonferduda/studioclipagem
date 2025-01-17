@@ -352,7 +352,7 @@ class JornalImpressoController extends Controller
         $arquivo = Storage::disk('s3')->get($conteudo->path_pagina_s3);
         $filename = $id.".jpg";
 
-        Storage::disk('impresso-img')->put($filename, $arquivo);
+        Storage::disk('impresso-img-original')->put($filename, $arquivo);
 
         return response()->file(public_path('impresso-img/'.$filename));
 
