@@ -26,11 +26,13 @@ class MonitoramentoController extends Controller
     private $client_id;
     private $data_atual;
     private $periodo_padrao;
+    private $carbon;
     private $noticias = array();
 
     public function __construct()
     {
         $this->middleware('auth');        
+        $this->carbon = new Carbon();
         Session::put('url','monitoramento');
     }
 
@@ -587,6 +589,12 @@ class MonitoramentoController extends Controller
         $fl_tv = $request->fl_tv == true ? true : false;
         $fl_impresso = $request->fl_impresso == true ? true : false;
         $fl_radio = $request->fl_radio == true ? true : false;
+
+        $dt_inicio = ($request->dt_inicio) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicio)->format('Y-m-d') : date("Y-m-d");
+        $dt_fim = ($request->dt_fim) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_fim)->format('Y-m-d') : date("Y-m-d");
+
+        $hora_inicio = ($request->hora_inicio) ? $this->carbon->createFromFormat('H:i', $request->hora_inicio)->format('H:i') : date("H:i");
+        $hora_fim = ($request->hora_fim) ? $this->carbon->createFromFormat('H:i', $request->hora_fim)->format('H:i') : date("H:i");
 
         $request->merge(['fl_web' => $fl_web]);
         $request->merge(['fl_tv' => $fl_tv]);

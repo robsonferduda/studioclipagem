@@ -9,7 +9,7 @@ class Monitoramento extends Model
     protected $connection = 'pgsql';
     protected $table = 'monitoramento';
 
-    protected $fillable = ['id_cliente','expressao','frequencia','fl_impresso','fl_radio','fl_web','fl_tv','nome','updated_at'];   
+    protected $fillable = ['id_cliente','expressao','frequencia','fl_impresso','fl_radio','fl_web','fl_tv','nome','updated_at','hora_inicio','hora_fim','dt_inicio','dt_fim'];   
     
     public function cliente()
     {
