@@ -335,10 +335,10 @@ class JornalImpressoController extends Controller
             $file =  Storage::disk('s3')->get($edicao->path_s3);
       
             $headers = [
-              'Content-Type' => 'your_content_type', 
+              'Content-Type' => 'pdf', 
               'Content-Description' => 'File Transfer',
               'Content-Disposition' => "attachment; filename=arquivo",
-              'filename'=> 'dsfsdf'
+              'filename'=> $edicao->path_s3;
            ];
       
             return response($file, 200, $headers);
