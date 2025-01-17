@@ -330,7 +330,7 @@ class JornalImpressoController extends Controller
     {
         $edicao = EdicaoJornalImpresso::find($id);
 
-        dd(Storage::disk('s3')->exists($edicao->link_pdf));
+        dd(Storage::disk('s3')->exists($edicao->path_s3));
 
         dd($edicao);
 
