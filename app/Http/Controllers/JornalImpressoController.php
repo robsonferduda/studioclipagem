@@ -354,11 +354,13 @@ class JornalImpressoController extends Controller
 
         Storage::disk('impresso-img-original')->put($filename, $arquivo);
 
-        $headers = array(
-            'Content-Type: application/jpg',
-        );
+        $file = public_path('img/impresso-img/'.$filename);
 
-        return response()->download(public_path('img/impresso-img/'.$filename));
+        $headers = [
+            'Content-Type' => 'application/pdf',
+        ];
+
+        return response()->download($file, $filename, $headers);
 
 
         /*
