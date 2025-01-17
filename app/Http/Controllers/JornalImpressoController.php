@@ -354,7 +354,7 @@ class JornalImpressoController extends Controller
             $file =  Storage::disk('s3')->get($conteudo->path_pagina_s3);
       
             $headers = [
-              'Content-Type' => 'img', 
+              'Content-Type' => 'image/jpeg', 
               'Content-Description' => 'File Transfer',
               'Content-Disposition' => "attachment; filename=$conteudo->path_pagina_s3",
               'filename'=> $conteudo->path_pagina_s3
