@@ -346,7 +346,7 @@ class JornalImpressoController extends Controller
         }*/
 
         $headers = [
-            'Content-Type'        => 'application/jpeg',
+            'Content-Type'        => 'application/jpg',
             'Content-Disposition' => 'attachment; filename="'. $edicao->path_s3 .'"',
         ];
  
