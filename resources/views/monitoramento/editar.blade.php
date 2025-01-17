@@ -112,10 +112,15 @@
                                 </div>
                                 
                                     <div class="col-md-12 col-sm-12">
-                                        <label>Fontes</label>
                                         <div class="form-group">
-                                            <select multiple="multiple" size="10" name="fontes[]" id="fontes" class="demo1 form-control">
-                                            </select>
+                                            <label>Fonte</label>
+                                            <div class="form-group">
+                                                <select multiple="multiple" size="10" name="fontes[]" class="demo1 form-control">
+                                                    @foreach ($fontes as $fonte)
+                                                        <option value="{{ $fonte->id }}">{{ $fonte->sg_estado }} - {{ $fonte->nome }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
                                 
@@ -157,31 +162,6 @@
 
         if(fl_web){
            
-            $.ajax({
-                    url: host+'/api/web/fontes/buscar',
-                    type: 'GET',
-                    beforeSend: function() {
-                        
-                    },
-                    success: function(data) {
-
-                        if(data.length > 0) { 
-
-                            $('#fontes').find('option').remove();
-                            $('#fontes').attr('disabled', false);
-
-                            $('#fontes').append('<option value="">Selecione uma fonte</option>').val('');
-
-                            data.forEach(element => {
-                                let option = new Option(element.nome, element.id);
-                                $('#fontes').append(option);
-                            });
-                        }                        
-                    },
-                    complete: function(){
-                        
-                    }
-            });
         }
 
     });

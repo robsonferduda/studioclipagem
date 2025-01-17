@@ -6,6 +6,7 @@ use DB;
 use Auth;
 use Mail;
 use App\Utils;
+use App\Models\FonteWeb;
 use App\Models\Periodo;
 use App\Models\Cliente;
 use App\Models\Monitoramento;
@@ -573,16 +574,34 @@ class MonitoramentoController extends Controller
     {
         $periodos = Periodo::orderBy('ordem')->get();
         $clientes = Cliente::orderBy("nome")->get();
+        $fontes = array();
 
         $monitoramento = Monitoramento::find($id);
 
-        return view('monitoramento/editar', compact('monitoramento','clientes','periodos'));
+        if($monitoramento->fl_web){
+
+            $fontes = DB::select("SELECT id, nome, t2.sg_estado FROM fonte_web t1 JOIN estado t2 ON t2.cd_estado = t1.cd_estado WHERE id_situacao = 1");   
+
+        }
+
+        if($monitoramento->fl_radio){
+            
+        }
+
+        if($monitoramento->fl_impresso){
+            
+        }
+
+        if($monitoramento->fl_tv){
+            
+        }
+
+        return view('monitoramento/editar', compact('monitoramento','clientes','periodos','fontes'));
     }
 
     public function update(Request $request)
     {
         $id = $request->id;
-
         $monitoramento = Monitoramento::find($id);
 
         $fl_web = $request->fl_web == true ? true : false;
@@ -600,6 +619,12 @@ class MonitoramentoController extends Controller
         $request->merge(['fl_tv' => $fl_tv]);
         $request->merge(['fl_impresso' => $fl_impresso]);
         $request->merge(['fl_radio' => $fl_radio]);
+
+        $filtro_fontes = ($request->fontes) ? implode(',', $request->fontes) : '';
+
+        if($fl_web){
+            $request->merge(['filtro_web' => $filtro_fontes]);
+        }
 
         try{
                         
