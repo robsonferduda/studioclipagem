@@ -97,7 +97,7 @@
                                 <div class="row">
                                     <div class="col-lg-2 col-sm-12">
                                         @if($noticia->fonte)
-                                            <img src="{{ asset('img/noticia-impressa/'.$noticia->ds_caminho_img) }}" alt="..." class="img-thumbnail">
+                                            <a href="{{ url('jornal-impresso/web/pagina/download/'.$noticia->id) }}"><img src="{{ asset('img/noticia-impressa/'.$noticia->ds_caminho_img) }}" alt="..." class="img-thumbnail"></a>
                                         @else
 
                                         @endif

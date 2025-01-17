@@ -345,6 +345,25 @@ class JornalImpressoController extends Controller
         }
     }
 
+    public function getImg($id)
+    {
+        $conteudo = PaginaJornalImpresso::find($id);
+
+        if( Storage::disk('s3')->exists($conteudo->path_pagina_s3) ) {
+
+            $file =  Storage::disk('s3')->get($conteudo->path_pagina_s3);
+      
+            $headers = [
+              'Content-Type' => 'img', 
+              'Content-Description' => 'File Transfer',
+              'Content-Disposition' => "attachment; filename=$conteudo->path_pagina_s3",
+              'filename'=> $conteudo->path_pagina_s3
+           ];
+      
+            return response($file, 200, $headers);
+        }
+    }
+
     public function upload(Request $request)
     {
         Session::put('sub-menu','upload');

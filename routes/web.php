@@ -113,6 +113,7 @@ ROute::post('fonte-web/inconsistencias/editar','FonteWebController@editarInconsi
 Route::match(array('GET', 'POST'),'fonte-web/listar','FonteWebController@index');
 Route::resource('fonte-web','FonteWebController');
 
+Route::get('jornal-impresso/web/pagina/download/{id}','JornalImpressoController@getImg');
 Route::get('jornal-impresso/web/download/{id}','JornalImpressoController@getPdf');
 Route::get('impresso','JornalImpressoController@dashboard');
 Route::get('impresso/limpar','FonteImpressoController@limpar');
