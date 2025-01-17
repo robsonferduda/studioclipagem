@@ -620,6 +620,11 @@ class MonitoramentoController extends Controller
         $request->merge(['fl_impresso' => $fl_impresso]);
         $request->merge(['fl_radio' => $fl_radio]);
 
+        $request->merge(['dt_inicio' => $dt_inicio]);
+        $request->merge(['dt_fim' => $dt_fim]);
+        $request->merge(['hora_inicio' => $hora_inicio]);
+        $request->merge(['hora_fim' => $hora_fim]);
+
         $filtro_fontes = ($request->fontes) ? implode(',', $request->fontes) : '';
 
         if($fl_web){
