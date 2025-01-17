@@ -585,7 +585,7 @@ class MonitoramentoController extends Controller
                 $cidades_selecionadas = explode(",", $monitoramento->filtro_web);
             }
 
-            $fontes_disponiveis = DB::select("SELECT id, nome, t2.sg_estado FROM fonte_web t1 LEFT JOIN estado t2 ON t2.cd_estado = t1.cd_estado WHERE id_situacao = 1 ORDER BY nome"); 
+            $fontes_disponiveis = DB::select("SELECT id, nome, t2.sg_estado FROM fonte_web t1 LEFT JOIN estado t2 ON t2.cd_estado = t1.cd_estado WHERE id_situacao = 1 ORDER BY t2.sg_estado, nome"); 
             
             foreach ($fontes_disponiveis as $key => $fd) {
                 if(in_array($fd->id, $cidades_selecionadas)){
