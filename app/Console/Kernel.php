@@ -27,7 +27,9 @@ class Kernel extends ConsoleKernel
 
         //$schedule->command('web:cron')->everyThirtyMinutes(); //Executa a tarefa a cada 30 minutos
 
-        $schedule->command('web:cron')->hourly(); //Executa a tarefa a cada 1 hora
+        //$schedule->command('web:cron')->hourly(); //Executa a tarefa a cada 1 hora 
+
+        $schedule->command('web:cron')->everyThreeHours(); //Executa a tarefa a cada 1 hora 
 
         /*
         $schedule->command('importacao:cron')->everyThirtyMinutes();
