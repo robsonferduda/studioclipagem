@@ -338,7 +338,7 @@ class JornalImpressoController extends Controller
               'Content-Type' => 'pdf', 
               'Content-Description' => 'File Transfer',
               'Content-Disposition' => "attachment; filename=arquivo",
-              'filename'=> $edicao->path_s3;
+              'filename'=> $edicao->path_s3
            ];
       
             return response($file, 200, $headers);
