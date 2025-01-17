@@ -349,6 +349,14 @@ class JornalImpressoController extends Controller
     {
         $conteudo = PaginaJornalImpresso::find($id);
 
+        $arquivo = Storage::disk('s3')->get($conteudo->path_pagina_s3);
+        $filename = $id.".jpg";
+
+        Storage::disk('impresso-img')->put($filename, $arquivo);
+
+        return response()->file(public_path('impresso-img/'.$filename));
+
+
         /*
         if( Storage::disk('s3')->exists($conteudo->path_pagina_s3) ) {
 
