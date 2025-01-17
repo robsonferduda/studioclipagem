@@ -366,10 +366,10 @@ class JornalImpressoController extends Controller
 
         $headers = [
             'Content-Type'        => 'application/jpg',
-            'Content-Disposition' => 'attachment; filename="'. $conteudo->path_s3 .'"',
+            'Content-Disposition' => 'attachment; filename="'. $conteudo->path_pagina_s3 .'"',
         ];
  
-        return \Response::make(Storage::disk('s3')->get($conteudo->path_s3), 200, $headers);
+        return \Response::make(Storage::disk('s3')->get($conteudo->path_pagina_s3), 200, $headers);
     }
 
     public function upload(Request $request)
