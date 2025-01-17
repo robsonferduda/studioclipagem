@@ -330,20 +330,19 @@ class JornalImpressoController extends Controller
     {
         $edicao = EdicaoJornalImpresso::find($id);
 
-        /*
         if( Storage::disk('s3')->exists($edicao->path_s3) ) {
 
             $file =  Storage::disk('s3')->get($edicao->path_s3);
       
             $headers = [
-              'Content-Type' => 'pdf', 
+              'Content-Type' => 'application/jpg', 
               'Content-Description' => 'File Transfer',
               'Content-Disposition' => "attachment; filename=$edicao->path_s3",
               'filename'=> $edicao->path_s3
            ];
       
             return response($file, 200, $headers);
-        }*/
+        }
 
         $headers = [
             'Content-Type'        => 'application/jpg',
