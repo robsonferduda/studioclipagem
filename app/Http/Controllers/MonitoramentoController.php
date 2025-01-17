@@ -575,6 +575,7 @@ class MonitoramentoController extends Controller
         $periodos = Periodo::orderBy('ordem')->get();
         $clientes = Cliente::orderBy("nome")->get();
         $fontes = array();
+        $cidades_selecionadas = array();
 
         $monitoramento = Monitoramento::find($id);
 
