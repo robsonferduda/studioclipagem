@@ -126,7 +126,7 @@
                                                 <a title="Histórico" href="{{ url('monitoramento/'.$monitoramento->id.'/historico') }}" class="btn btn-success btn-fill btn-icon btn-sm" style="border-radius: 30px;">
                                                     <i class="fa fa-clock-o fa-3x text-white"></i>
                                                 </a>
-                                                <a title="Notícias" href="{{ url('monitoramento/'.$monitoramento->id.'/todas-noticias') }}" class="btn btn-warning btn-fill btn-icon btn-sm" style="border-radius: 30px;">
+                                                <a title="Notícias" href="{{ url('monitoramento/'.$monitoramento->id.'/todas-noticias') }}" class="btn btn-default btn-fill btn-icon btn-sm" style="border-radius: 30px;">
                                                     <i class="nc-icon nc-sound-wave text-white"></i>
                                                 </a>
                                                 <a title="Executar" href="{{ url('monitoramento/'.$monitoramento->id.'/executar') }}" class="btn btn-warning btn-fill btn-icon btn-sm" style="border-radius: 30px;">
