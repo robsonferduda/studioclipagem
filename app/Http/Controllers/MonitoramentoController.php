@@ -111,7 +111,7 @@ class MonitoramentoController extends Controller
     {
         $execucao = MonitoramentoExecucao::find($id);
         $monitoramento = $execucao->monitoramento;
-        $noticias = $monitoramento->noticias->whereBetween('created_at', [$execucao->created_at, $execucao->updated_at]);
+        $noticias = $monitoramento->noticias;
     
         return view('monitoramento/noticias', compact('noticias','monitoramento'));
     }
