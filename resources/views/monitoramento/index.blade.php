@@ -24,7 +24,7 @@
                     {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['monitoramento']]) !!}
                         <div class="form-group m-3 w-70">
                             <div class="row">
-                                <div class="col-md-9">
+                                <div class="col-md-7">
                                     <div class="form-group">
                                         <label>Cliente</label>
                                         <select class="form-control select2" name="cliente" id="cliente">
@@ -36,12 +36,24 @@
                                     </div>
                                 </div>
                                 <div class="col-md-2">
+                                    <label>Monitoramento</label>
+                                    <div class="form-group">
+                                        <select class="form-control" name="midia" id="midia">
+                                            <option value="">Selecione uma mídia</option>
+                                            <option value="fl_impresso" {{ ($midia === 'fl_impresso') ? 'selected' : '' }}>Impresso</option>
+                                            <option value="fl_radio" {{ ($midia === 'fl_radio') ? 'selected' : '' }}>Rádio</option>
+                                            <option value="fl_tv" {{ ($midia === 'fl_tv') ? 'selected' : '' }}>TV</option>
+                                            <option value="fl_web" {{ ($midia === 'fl_web') ? 'selected' : '' }}>Web</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
                                     <label>Situação</label>
                                     <div class="form-group">
                                         <select class="form-control" name="situacao" id="situacao">
                                             <option value="">Selecione uma situação</option>
-                                            <option value="1" {{ ($situacao === 1) ? 'selected' : '' }}>Ativo</option>
-                                            <option value="0" {{ ($situacao === 0) ? 'selected' : '' }}>Inativo</option>
+                                            <option value="1" {{ ($situacao === "1") ? 'selected' : '' }}>Ativo</option>
+                                            <option value="0" {{ ($situacao === "0") ? 'selected' : '' }}>Inativo</option>
                                         </select>
                                     </div>
                                 </div>

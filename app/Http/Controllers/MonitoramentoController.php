@@ -42,7 +42,8 @@ class MonitoramentoController extends Controller
         $clientes = Cliente::orderBy('nome')->get();
 
         $cliente = ($request->cliente) ? $request->cliente : null;
-
+        $midia = ($request->midia) ? $request->midia : null;
+        
         if($request->situacao != ""){
             $situacao = $request->situacao;
             $fl_ativo = ($situacao == 1) ? true : false;
@@ -57,13 +58,17 @@ class MonitoramentoController extends Controller
             return $q->where('id_cliente', $cliente);
         });
 
+        $monitoramento->when($midia, function ($q) use ($midia) {
+            return $q->where($midia, true);
+        });
+
         $monitoramento->when($request->situacao != "", function ($q) use ($fl_ativo) {
             return $q->where('fl_ativo', $fl_ativo);
         });
         
         $monitoramentos = $monitoramento->with('cliente')->orderBy('fl_ativo','DESC')->orderBy('id_cliente','ASC')->paginate(10);
 
-        return view('monitoramento/index', compact('monitoramentos','clientes','situacao','cliente'));
+        return view('monitoramento/index', compact('monitoramentos','clientes','situacao','cliente','midia'));
     }
 
     public function novo()
