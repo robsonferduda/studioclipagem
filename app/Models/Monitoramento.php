@@ -33,7 +33,7 @@ class Monitoramento extends Model
 
     public function noticiasWeb()
     {
-        return $this->hasMany(NoticiaCliente::class, 'monitoramento_id', 'id')->where("tipo_is",2);
+        return $this->hasMany(NoticiaCliente::class, 'monitoramento_id', 'id')->where("tipo_id",2);
     }
 
     public function historico()
