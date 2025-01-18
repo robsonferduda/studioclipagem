@@ -726,8 +726,6 @@ class MonitoramentoController extends Controller
 
         } catch (\Illuminate\Database\QueryException $e) {
 
-            dd($e);
-
             $retorno = array('flag' => false,
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
 
@@ -738,7 +736,7 @@ class MonitoramentoController extends Controller
 
         if ($retorno['flag']) {
             Flash::success($retorno['msg']);
-            return redirect('monitoramento')->withInput();
+            return redirect($request->url_origem)->withInput();
         } else {
             Flash::error($retorno['msg']);
             return redirect('monitoramento/'.$monitoramento->id.'/editar')->withInput();

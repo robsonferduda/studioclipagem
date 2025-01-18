@@ -26,6 +26,7 @@
                         <div class="form-group m-3">
                             <div class="row">
                                 <input type="hidden" name="id" value="{{ $monitoramento->id }}">
+                                <input type="hidden" name="url_origem" value="{{ url()->previous() }}">
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label>Nome <span class="text-danger">Obrigatório</span></label>
