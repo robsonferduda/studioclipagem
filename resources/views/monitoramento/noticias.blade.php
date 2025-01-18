@@ -28,7 +28,7 @@
                     <hr/>
                     <h6 class="mt-3">Notícias VINCULADAS</h6>
                     @foreach ($noticias as $noticia) 
-                        <p><a href="">{{ $noticia }}</a></p>
+                        <p><a href="">{{ $noticia->noticiaWeb }}</a></p>
                     @endforeach   
                 </div>          
             </div>

@@ -31,6 +31,11 @@ class Monitoramento extends Model
         return $this->hasMany(NoticiaCliente::class, 'monitoramento_id', 'id');
     }
 
+    public function noticiasWeb()
+    {
+        return $this->hasMany(NoticiaCliente::class, 'monitoramento_id', 'id')->where("tipo_is",2);
+    }
+
     public function historico()
     {
         return $this->hasMany(MonitoramentoExecucao::class, 'monitoramento_id', 'id')->orderBy('created_at','DESC');
