@@ -45,7 +45,7 @@
                                         <div class="col-7 col-md-8">
                                             <div class="numbers">
                                             <p class="card-category">Emissoras Cadastradas</p>
-                                            <p class="card-title">{{ $total_emissora_tv }}</p>
+                                            <p class="card-title">{{ $total_emissora_radio }}</p>
                                             <p></p>
                                             </div>
                                         </div>
@@ -55,7 +55,7 @@
                                     <hr>
                                     <div class="stats">
                                         <i class="fa fa-calendar"></i>
-                                        Última Atualização em {{ \Carbon\Carbon::parse($ultima_atualizacao_tv)->format('d/m/Y H:i:s') }}
+                                        Última Atualização em {{ \Carbon\Carbon::parse($ultima_atualizacao_radio)->format('d/m/Y H:i:s') }}
                                     </div>
                                 </div>
                             </div>
@@ -73,7 +73,7 @@
                                         <div class="col-7 col-md-8">
                                             <div class="numbers">
                                             <p class="card-category">Emissoras Gravando</p>
-                                            <p class="card-title">{{ $total_emissora_tv }}</p>
+                                            <p class="card-title">{{ $total_emissora_radio }}</p>
                                             <p></p>
                                             </div>
                                         </div>
@@ -83,7 +83,7 @@
                                     <hr>
                                     <div class="stats">
                                         <i class="fa fa-calendar"></i>
-                                        Última Atualização em {{ \Carbon\Carbon::parse($ultima_atualizacao_tv)->format('d/m/Y H:i:s') }}
+                                        Última Atualização em {{ \Carbon\Carbon::parse($ultima_atualizacao_radio)->format('d/m/Y H:i:s') }}
                                     </div>
                                 </div>
                             </div>
@@ -101,7 +101,7 @@
                                         <div class="col-7 col-md-8">
                                             <div class="numbers">
                                             <p class="card-category">Notícias de Hoje</p>
-                                            <p class="card-title">{{ $total_noticia_tv }}</p>
+                                            <p class="card-title">{{ $total_noticia_radio }}</p>
                                             <p></p>
                                             </div>
                                         </div>
@@ -129,7 +129,7 @@
                                         <div class="col-7 col-md-8">
                                             <div class="numbers">
                                             <p class="card-category">Clientes de Rádio</p>
-                                            <p class="card-title">{{ $total_noticia_tv }}</p>
+                                            <p class="card-title">{{ $total_noticia_radio }}</p>
                                             <p></p>
                                             </div>
                                         </div>

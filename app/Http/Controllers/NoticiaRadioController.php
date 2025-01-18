@@ -91,13 +91,13 @@ class NoticiaRadioController extends Controller
         $data_final = date("Y-m-d");
         $data_inicial = Carbon::now()->subDays(7)->format('Y-m-d');
 
-        $total_noticia_tv = NoticiaRadio::whereBetween('created_at', [$this->data_atual.' 00:00:00', $this->data_atual.' 23:59:59'])->count();
-        $ultima_atualizacao = NoticiaRadio::max('created_at');
+        $total_noticia_radio = EmissoraGravacao::whereBetween('created_at', [$this->data_atual.' 00:00:00', $this->data_atual.' 23:59:59'])->count();
+        $ultima_atualizacao = EmissoraGravacao::max('created_at');
 
-        $total_emissora_tv = Emissora::count();
-        $ultima_atualizacao_tv = Emissora::max('created_at');
+        $total_emissora_radio = Emissora::count();
+        $ultima_atualizacao_radio = Emissora::max('created_at');
 
-        return view('radio/dashboard', compact('total_noticia_tv', 'total_emissora_tv', 'ultima_atualizacao','ultima_atualizacao_tv','data_final','data_inicial'));
+        return view('radio/dashboard', compact('total_noticia_radio', 'total_emissora_radio', 'ultima_atualizacao','ultima_atualizacao_radio','data_final','data_inicial'));
     }
 
     public function cadastrar()
