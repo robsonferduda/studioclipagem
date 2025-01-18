@@ -39,7 +39,7 @@
                                 </div>
                                 <div class="col-md-7">
                                     <div class="form-group">
-                                        <label>Fonte <span class="text-primary">Somente fontes do tipo <strong>Coleta Web</strong></span></label>
+                                        <label>Fonte</label>
                                         <select class="form-control select2" name="fonte" id="fonte">
                                             <option value="">Selecione uma fonte</option>
                                             @foreach ($fontes as $fonte)
