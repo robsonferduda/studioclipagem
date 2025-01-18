@@ -26,7 +26,7 @@
                         <div class="card-header">
                         <p class="">Total de notícias diárias cadastradas no período de {{ \Carbon\Carbon::parse($data_inicial)->format('d/m/Y') }} a {{ \Carbon\Carbon::parse($data_final)->format('d/m/Y') }}</p>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body grafico">
                             <canvas id="chartjs-0" class="chartjs">
                         </div>
                     </div>
@@ -172,12 +172,18 @@
             $.ajax({
                 url: host+'/jornal-web/estatisticas',
                 type: 'GET',
+                beforeSend: function() {
+                    $('.grafico').loader('show');
+                },
                 success: function(response) {
                     dados = response;
                     initDashboardPageCharts();
                 },
                 error: function(){
                     $(".erro-grafico").html('<span class="text-danger">Erro ao carregar estatísticas</span>');
+                },
+                complete: function(){
+                    $('.grafico').loader('show');
                 }
             }); 
 
@@ -188,7 +194,7 @@
                     "data": {
                         "labels": dados.label,
                         "datasets": [{
-                            "label": "Vídeos coletados por dia",
+                            "label": "Notícias coletadas por dia",
                             "data": dados.totais,
                             "fill": true,
                             "borderColor": "rgb(75, 192, 192)",
