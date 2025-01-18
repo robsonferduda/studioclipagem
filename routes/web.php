@@ -175,6 +175,7 @@ Route::get('monitoramento/{id}/executar','MonitoramentoController@executar');
 Route::get('monitoramento/{id}/historico','MonitoramentoController@historico');
 Route::get('monitoramento/{id}/atualizar-status','MonitoramentoController@atualizarStatus');
 Route::get('monitoramento/{id}/noticias','MonitoramentoController@noticias');
+Route::get('monitoramento/{id}/todas-noticias','MonitoramentoController@noticiasMonitoramento');
 Route::get('monitoramento/{id}/editar','MonitoramentoController@editar');
 Route::get('monitoramento/{id}/excluir','MonitoramentoController@excluir');
 Route::get('monitoramento/cliente/{id}','MonitoramentoController@getMonitoramentoCliente');

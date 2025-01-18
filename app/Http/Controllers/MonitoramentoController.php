@@ -88,6 +88,17 @@ class MonitoramentoController extends Controller
         return view('monitoramento/noticias', compact('noticias','monitoramento'));
     }
 
+    public function noticiasMonitoramento($id)
+    {
+        $dt_inicial = date("Y-m-d H:i:s");
+        $dt_final = date("Y-m-d H:i:s");
+
+        $monitoramento = Monitoramento::find($id);
+        $noticias = $monitoramento->noticias->whereBetween('created_at', [$dt_inicial, $dt_final]);
+    
+        return view('monitoramento/noticias', compact('noticias','monitoramento'));
+    }
+
     public function create(Request $request)
     {
         $monitoramento = Monitoramento::create($request->all());
