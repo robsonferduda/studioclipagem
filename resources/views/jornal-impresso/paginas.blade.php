@@ -13,6 +13,7 @@
                 <div class="col-md-6">
                     <a href="{{ url('fonte-web/listar') }}" class="btn btn-info pull-right mr-3"><i class="fa fa-database"></i> Fontes Web</a>
                     <a href="{{ url('noticia/web/cadastrar') }}" class="btn btn-primary pull-right mr-3"><i class="fa fa-plus"></i> Cadastrar Notícia</a>
+                    <a href="{{ url()->previous() }}" class="btn btn-warning pull-right" style="margin-right: 12px;"><i class="nc-icon nc-minimal-left"></i> Voltar</a>
                 </div>
             </div>
         </div>
@@ -26,7 +27,7 @@
                         <div class="card-body">                           
                             <div class="row">
                                 <div class="col-lg-2 col-md-2 col-sm-12 mb-1">
-                                    <img src="{{ Storage::disk('s3')->temporaryUrl($pagina->path_pagina_s3, '+2 minutes') }}" alt="Girl in a jacket">
+                                    <a href="{{ url('jornal-impresso/web/pagina/download/'.$pagina->id) }}"><img src="{{ Storage::disk('s3')->temporaryUrl($pagina->path_pagina_s3, '+2 minutes') }}" alt="Pégina {{ $pagina->n_pagina }}"></a>
                                 </div>
                                 <div class="col-lg-10 col-sm-10 mb-1"> 
                                     <h6>{{ $pagina->edicao->fonte->nome }}</h6>  

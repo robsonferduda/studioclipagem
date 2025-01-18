@@ -277,7 +277,7 @@ class JornalImpressoController extends Controller
 
     public function paginas($edicao)
     {
-        $paginas = PaginaJornalImpresso::where('id_edicao_jornal_online', $edicao)->get();
+        $paginas = PaginaJornalImpresso::where('id_edicao_jornal_online', $edicao)->orderBy('n_pagina')->get();
     
         return view('jornal-impresso/paginas', compact('paginas'));
     }
