@@ -73,7 +73,7 @@
                                         <div class="col-7 col-md-8">
                                             <div class="numbers">
                                             <p class="card-category">Emissoras Gravando</p>
-                                            <p class="card-title">{{ $total_emissora_radio }}</p>
+                                            <p class="card-title">{{ $total_emissora_gravando }}</p>
                                             <p></p>
                                             </div>
                                         </div>
@@ -83,7 +83,7 @@
                                     <hr>
                                     <div class="stats">
                                         <i class="fa fa-calendar"></i>
-                                        Última Atualização em {{ \Carbon\Carbon::parse($ultima_atualizacao_radio)->format('d/m/Y H:i:s') }}
+                                        Última Atualização em {{ \Carbon\Carbon::parse($ultima_atualizacao_gravando)->format('d/m/Y H:i:s') }}
                                     </div>
                                 </div>
                             </div>
