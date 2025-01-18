@@ -134,7 +134,7 @@ class JornalWebController extends Controller
 
         foreach ($period as $dt) {
             $dados['label'][] =  $dt->format("d/m/Y");
-            $dados['totais'][] = count(NoticiaWeb::whereBetween('created_at', [$dt->format("Y-m-d")." 00:00:00", $dt->format("Y-m-d")." 23:59:59"])->get());
+            $dados['totais'][] = NoticiaWeb::whereBetween('created_at', [$dt->format("Y-m-d")." 00:00:00", $dt->format("Y-m-d")." 23:59:59"])->count();
         }
 
         return response()->json($dados);
