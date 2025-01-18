@@ -183,7 +183,7 @@
                     $(".erro-grafico").html('<span class="text-danger">Erro ao carregar estatísticas</span>');
                 },
                 complete: function(){
-                    $('.grafico').loader('show');
+                    $('.grafico').loader('hide');
                 }
             }); 
 
