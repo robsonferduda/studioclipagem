@@ -368,6 +368,201 @@ class MonitoramentoController extends Controller
         }
     }
 
+    public function executarImpresso()
+    {
+        $dt_inicial = (Carbon::now())->format('Y-m-d')." 00:00:00";
+        $dt_final = (Carbon::now())->format('Y-m-d')." 23:59:59";
+        $data_inicio = date('Y-m-d H:i:s');
+        $total_vinculado = 0;
+        $tipo_midia = 2;
+
+        $monitoramentos = Monitoramento::where('fl_ativo', true)->where('fl_web', true)->get();
+        
+        foreach ($monitoramentos as $key => $monitoramento) {
+
+            try{
+                $sql = "SELECT 
+                        pejo.id, id_jornal_online, link_pdf, dt_coleta, dt_pub, titulo, texto_extraido
+                    FROM 
+                        edicao_jornal_online n
+                    JOIN 
+                        pagina_edicao_jornal_online pejo 
+                        ON pejo.id_edicao_jornal_online = n.id
+                    WHERE 1=1
+                        AND n.dt_coleta BETWEEN '$dt_inicial' AND '$dt_final' 
+                        AND pejo.texto_extraido_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao')
+                        ORDER BY dt_coleta DESC";
+
+                $dados = DB::select($sql);
+
+                $total_associado = $this->associar($dados, $tipo_midia, $monitoramento);
+
+                $total_vinculado = $total_associado;
+                
+                $data_termino = date('Y-m-d H:i:s');
+
+                $dado_moninoramento = array('monitoramento_id' => $monitoramento->id, 
+                                            'total_vinculado' => $total_vinculado,
+                                            'created_at' => $data_inicio,
+                                            'updated_at' => $data_termino);
+
+                MonitoramentoExecucao::create($dado_moninoramento);
+
+                $monitoramento->updated_at = date("Y-m-d H:i:s");
+                $monitoramento->save();
+
+            } catch (\Illuminate\Database\QueryException $e) {
+
+                $titulo = "Notificação de Monitoramento de Rádio - Erro de Consulta - ".date("d/m/Y H:i:s"); 
+
+                $data['dados'] = array('cliente' => $monitoramento->cliente->nome,
+                                       'expressao' => $monitoramento->expressao,
+                                       'id' => $monitoramento->id);
+
+                //app('App\Http\Controllers\MonitoramentoController')->executar();
+                
+                Mail::send('notificacoes.monitoramento', $data, function($message) use ($titulo){
+                    $message->to("robsonferduda@gmail.com")
+                            ->subject($titulo);
+                    $message->from('boletins@clipagens.com.br','Studio Clipagem');
+                }); 
+
+            } catch (Exception $e) {
+                
+            }
+        }
+    }
+
+    public function executarRadio()
+    {
+        $dt_inicial = (Carbon::now())->format('Y-m-d')." 00:00:00";
+        $dt_final = (Carbon::now())->format('Y-m-d')." 23:59:59";
+        $data_inicio = date('Y-m-d H:i:s');
+        $total_vinculado = 0;
+        $tipo_midia = 3;
+
+        $monitoramentos = Monitoramento::where('fl_ativo', true)->where('fl_web', true)->get();
+        
+        foreach ($monitoramentos as $key => $monitoramento) {
+
+            try{
+                $sql = "SELECT 
+                            n.id, id_emissora, data_hora_inicio, data_hora_fim, path_s3, nome_emissora
+                        FROM 
+                            gravacao_emissora_radio n
+                        JOIN 
+                            emissora_radio er 
+                        ON er.id = n.id_emissora
+                        WHERE 1=1
+                            AND n.data_hora_inicio BETWEEN '$dt_inicial' AND '$dt_final'
+                            AND  n.transcricao_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao')
+                            ORDER BY n.data_hora_inicio DESC";
+
+                $dados = DB::select($sql);
+
+                $total_associado = $this->associar($dados, $tipo_midia, $monitoramento);
+
+                $total_vinculado = $total_associado;
+                
+                $data_termino = date('Y-m-d H:i:s');
+
+                $dado_moninoramento = array('monitoramento_id' => $monitoramento->id, 
+                                            'total_vinculado' => $total_vinculado,
+                                            'created_at' => $data_inicio,
+                                            'updated_at' => $data_termino);
+
+                MonitoramentoExecucao::create($dado_moninoramento);
+
+                $monitoramento->updated_at = date("Y-m-d H:i:s");
+                $monitoramento->save();
+
+            } catch (\Illuminate\Database\QueryException $e) {
+
+                $titulo = "Notificação de Monitoramento de Rádio - Erro de Consulta - ".date("d/m/Y H:i:s"); 
+
+                $data['dados'] = array('cliente' => $monitoramento->cliente->nome,
+                                       'expressao' => $monitoramento->expressao,
+                                       'id' => $monitoramento->id);
+
+                //app('App\Http\Controllers\MonitoramentoController')->executar();
+                
+                Mail::send('notificacoes.monitoramento', $data, function($message) use ($titulo){
+                    $message->to("robsonferduda@gmail.com")
+                            ->subject($titulo);
+                    $message->from('boletins@clipagens.com.br','Studio Clipagem');
+                }); 
+
+            } catch (Exception $e) {
+                
+            }
+        }
+    }
+
+    public function executarTv()
+    {
+        $dt_inicial = (Carbon::now())->format('Y-m-d')." 00:00:00";
+        $dt_final = (Carbon::now())->format('Y-m-d')." 23:59:59";
+        $data_inicio = date('Y-m-d H:i:s');
+        $total_vinculado = 0;
+        $tipo_midia = 4;
+
+        $monitoramentos = Monitoramento::where('fl_ativo', true)->where('fl_web', true)->get();
+        
+        foreach ($monitoramentos as $key => $monitoramento) {
+
+            try{
+                $sql = "SELECT 
+                        n.id, id_programa_emissora_web, horario_start_gravacao, horario_end_gravacao, url_video, misc_data, transcricao, nome_programa
+                        FROM 
+                        videos_programa_emissora_web n
+                        JOIN 
+                        programa_emissora_web pew 
+                        ON pew.id = n.id_programa_emissora_web
+                        WHERE 1=1
+                        AND n.horario_start_gravacao BETWEEN '$dt_inicial' AND '$dt_final'
+                        AND n.transcricao_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao')
+                        ORDER BY n.horario_start_gravacao DESC";
+
+                $dados = DB::select($sql);
+
+                $total_associado = $this->associar($dados, $tipo_midia, $monitoramento);
+
+                $total_vinculado = $total_associado;
+                
+                $data_termino = date('Y-m-d H:i:s');
+
+                $dado_moninoramento = array('monitoramento_id' => $monitoramento->id, 
+                                            'total_vinculado' => $total_vinculado,
+                                            'created_at' => $data_inicio,
+                                            'updated_at' => $data_termino);
+
+                MonitoramentoExecucao::create($dado_moninoramento);
+
+                $monitoramento->updated_at = date("Y-m-d H:i:s");
+                $monitoramento->save();
+
+            } catch (\Illuminate\Database\QueryException $e) {
+
+                $titulo = "Notificação de Monitoramento de Rádio - Erro de Consulta - ".date("d/m/Y H:i:s"); 
+
+                $data['dados'] = array('cliente' => $monitoramento->cliente->nome,
+                                       'expressao' => $monitoramento->expressao,
+                                       'id' => $monitoramento->id);
+
+                //app('App\Http\Controllers\MonitoramentoController')->executar();
+                
+                Mail::send('notificacoes.monitoramento', $data, function($message) use ($titulo){
+                    $message->to("robsonferduda@gmail.com")
+                            ->subject($titulo);
+                    $message->from('boletins@clipagens.com.br','Studio Clipagem');
+                }); 
+
+            } catch (Exception $e) {
+                
+            }
+        }
+    }
+
     public function executar($id)
     {
         $dt_inicial = (Carbon::now())->format('Y-m-d')." 00:00:00";

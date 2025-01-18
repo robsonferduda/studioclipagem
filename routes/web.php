@@ -188,6 +188,9 @@ Route::post('monitoramento/filtrar/tv','MonitoramentoController@filtrarTv');
 Route::post('monitoramento/create','MonitoramentoController@create');
 
 Route::get('monitoramento/executar/web','MonitoramentoController@executarWeb');
+Route::get('monitoramento/executar/radio','MonitoramentoController@executarRadio');
+Route::get('monitoramento/executar/impresso','MonitoramentoController@executarImpresso');
+Route::get('monitoramento/executar/tv','MonitoramentoController@executarTv');
 
 Route::post('pauta','PautaController@store');
 Route::match(array('GET', 'POST'),'pautas','PautaController@index');
