@@ -28,7 +28,7 @@
                     <hr/>
                     <h6 class="mt-3">Notícias VINCULADAS</h6>
                     @foreach ($noticias as $noticia) 
-                        <p>{{ ($noticia->noticiaWeb->data_noticia == '1998-12-31 22:00:00') ? \Carbon\Carbon::parse($noticia->noticiaWeb->data_insert)->format('d/m/Y H:i:s') : \Carbon\Carbon::parse($noticia->noticiaWeb->data_noticia)->format('d/m/Y H:i:s') }} - <a href="{{ $noticia->noticiaWeb->url_noticia }}">{{ $noticia->noticiaWeb->titulo_noticia }}</a></p>
+                        <p>{{ ($noticia->noticiaWeb->data_noticia === '1998-12-31 22:00:00') ? \Carbon\Carbon::parse($noticia->noticiaWeb->data_insert)->format('d/m/Y H:i:s') : \Carbon\Carbon::parse($noticia->noticiaWeb->data_noticia)->format('d/m/Y H:i:s') }} - <a href="{{ $noticia->noticiaWeb->url_noticia }}" target="BLANK">{{ $noticia->noticiaWeb->titulo_noticia }}</a></p>
                     @endforeach   
                 </div>          
             </div>
