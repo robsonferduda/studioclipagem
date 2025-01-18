@@ -112,12 +112,13 @@
                               <span class="sidebar-normal">Arquivos Impressos</span>
                               </a>
                           </li> 
-                          <!--
-                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'arquivos-web') ? 'active' : '' }}">
-                            <a href="{{ url('jornal-impresso/web') }}">
-                              <span class="sidebar-normal">Edições Web</span>
+                    
+                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'jornal-impresso-edicoes') ? 'active' : '' }}">
+                            <a href="{{ url('jornal-impresso/edicoes') }}">
+                              <span class="sidebar-normal">Edições Baixadas</span>
                               </a>
                           </li>
+                          <!--
                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'arquivos-paginas') ? 'active' : '' }}">
                             <a href="{{ url('jornal-impresso/paginas') }}">
                               <span class="sidebar-normal">Páginas Web</span>

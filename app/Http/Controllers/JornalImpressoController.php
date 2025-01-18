@@ -146,14 +146,14 @@ class JornalImpressoController extends Controller
         return view('jornal-impresso/detalhes',compact('noticia'));
     }
 
-    public function web(Request $request)
+    public function edicoes(Request $request)
     {
         Session::put('sub-menu','arquivos-web');
 
         $fonte = ($request->fonte) ? $request->fonte : null;
 
         $carbon = new Carbon();
-        $fontes = FonteImpressa::where('tipo', 1)->orderBy("nome")->get();
+        $fontes = FonteImpressa::orderBy("nome")->get();
         $dados = array();
         $busca_fonte = "";
         $termo = "";
@@ -192,7 +192,7 @@ class JornalImpressoController extends Controller
             $dados = $jornais->whereBetween('dt_coleta', [$dt_inicial, $dt_final])->orderBy('dt_coleta','DESC')->paginate(10);
         }
 
-        return view('jornal-impresso/web', compact("fontes", "dados", 'dt_inicial','dt_final','termo','busca_fonte'));
+        return view('jornal-impresso/edicoes', compact("fontes", "dados", 'dt_inicial','dt_final','termo','busca_fonte'));
     }
 
     public function todasPaginas(Request $request)

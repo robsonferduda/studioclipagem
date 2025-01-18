@@ -118,7 +118,7 @@ Route::get('jornal-impresso/web/download/{id}','JornalImpressoController@getPdf'
 Route::get('impresso','JornalImpressoController@dashboard');
 Route::get('impresso/limpar','FonteImpressoController@limpar');
 Route::get('impresso/coleta/estatisticas','JornalImpressoController@estatisticas');
-Route::match(array('GET', 'POST'),'jornal-impresso/web','JornalImpressoController@web');
+Route::match(array('GET', 'POST'),'jornal-impresso/edicoes','JornalImpressoController@edicoes');
 Route::match(array('GET', 'POST'),'jornal-impresso/processamento','JornalImpressoController@processamento');
 Route::match(array('GET', 'POST'),'jornal-impresso/monitoramento','JornalImpressoController@monitoramento');
 Route::match(array('GET', 'POST'),'jornal-impresso/noticias','JornalImpressoController@index');
