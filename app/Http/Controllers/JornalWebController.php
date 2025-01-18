@@ -4,9 +4,13 @@ namespace App\Http\Controllers;
 
 use DB;
 use Auth;
+use DateTime;
+use DateInterval;
+use DatePeriod;
 use App\Models\Fonte;
 use App\Models\FonteWeb;
 use App\Models\JornalWeb;
+use App\Models\NoticiaWeb;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -113,6 +117,27 @@ class JornalWebController extends Controller
         $total_noticias = JornalWeb::whereBetween('created_at', [$data_final.' 00:00:00', $data_final.' 23:59:59'])->count();
 
         return view('jornal-web/dashboard',compact('data_final','data_inicial','fontes','total_sites', 'total_noticias','ultima_atualizacao_web','ultima_atualizacao_noticia','top_sites','sem_coleta'));
+    }
+
+    public function estatisticas()
+    {
+        $dados = array();
+        
+        $dt_inicial = Carbon::now()->subDays(7);
+        $dt_final = Carbon::now()->addDays(1);
+
+        $begin = new DateTime($dt_inicial);
+        $end = new DateTime($dt_final);
+        $interval = DateInterval::createFromDateString('1 day');
+
+        $period = new DatePeriod($begin, $interval, $end);
+
+        foreach ($period as $dt) {
+            $dados['label'][] =  $dt->format("d/m/Y");
+            $dados['totais'][] = count(NoticiaWeb::whereBetween('created_at', [$dt->format("Y-m-d")." 00:00:00", $dt->format("Y-m-d")." 23:59:59"])->get());
+        }
+
+        return response()->json($dados);
     }
 
     public function getEstatisticas($id)
