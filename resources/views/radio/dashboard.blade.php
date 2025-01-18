@@ -115,35 +115,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>     
-                        
-                        <div class="col-lg-12 col-md-12 col-sm-12">
-                            <div class="card card-stats">
-                                <div class="card-body ">
-                                    <div class="row">
-                                        <div class="col-5 col-md-4">
-                                            <div class="icon-big text-center icon-danger">
-                                            <i class="nc-icon nc-briefcase-24 text-danger"></i>
-                                            </div>
-                                        </div>
-                                        <div class="col-7 col-md-8">
-                                            <div class="numbers">
-                                            <p class="card-category">Clientes de Rádio</p>
-                                            <p class="card-title">{{ $total_noticia_radio }}</p>
-                                            <p></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card-footer ">
-                                    <hr>
-                                    <div class="stats">
-                                        <i class="fa fa-calendar"></i>
-                                        Última Atualização em {{ \Carbon\Carbon::parse($ultima_atualizacao)->format('d/m/Y H:i:s') }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>            
+                        </div>                
                     </div> 
                 </div>
             </div>
