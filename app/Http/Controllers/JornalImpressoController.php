@@ -6,6 +6,9 @@ use DB;
 use Auth;
 use File;
 use Storage;
+use DateTime;
+use DateInterval;
+use DatePeriod;
 use Carbon\Carbon;
 use App\Models\Cliente;
 use App\Models\JornalWeb;
@@ -468,14 +471,19 @@ class JornalImpressoController extends Controller
     public function estatisticas()
     {
         $dados = array();
+        
         $dt_inicial = Carbon::now()->subDays(7);
-        $dt_final = date('Y-m-d')." 23:59:59";
+        $dt_final = Carbon::now()->addDays(1);
 
-        $totais = (new FonteImpressa())->getTotais($dt_inicial, $dt_final);
+        $begin = new DateTime($dt_inicial);
+        $end = new DateTime($dt_final);
+        $interval = DateInterval::createFromDateString('1 day');
 
-        for ($i=0; $i < count($totais); $i++) { 
-            $dados['label'][] = date('d/m/Y', strtotime($totais[$i]->created_at));
-            $dados['totais'][] = $totais[$i]->total;
+        $period = new DatePeriod($begin, $interval, $end);
+
+        foreach ($period as $dt) {
+            $dados['label'][] =  $dt->format("d/m/Y");
+            $dados['totais'][] = count(PaginaJornalImpresso::whereBetween('created_at', [$dt->format("Y-m-d")." 00:00:00", $dt->format("Y-m-d")." 23:59:59"])->get());
         }
 
         return response()->json($dados);
