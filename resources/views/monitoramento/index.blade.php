@@ -65,7 +65,7 @@
                     {!! Form::close() !!}
                 </div> 
                 <div class="col-lg-12 col-md-12 col-sm-12">
-                    {{ $monitoramentos->onEachSide(1)->appends(['cliente' => $cliente, 'situacao' => $situacao])->links('vendor.pagination.bootstrap-4') }}
+                    {{ $monitoramentos->onEachSide(1)->appends(['cliente' => $cliente, 'situacao' => $situacao, 'midia' => $midia])->links('vendor.pagination.bootstrap-4') }}
                 </div>
                 @foreach ($monitoramentos as $key => $monitoramento)
                         
@@ -136,7 +136,7 @@
                             </div>
                 @endforeach    
                 <div class="col-lg-12 col-md-12 col-sm-12">
-                    {{ $monitoramentos->onEachSide(1)->appends(['cliente' => $cliente, 'situacao' => $situacao])->links('vendor.pagination.bootstrap-4') }}
+                    {{ $monitoramentos->onEachSide(1)->appends(['cliente' => $cliente, 'situacao' => $situacao, 'midia' => $midia])->links('vendor.pagination.bootstrap-4') }}
                 </div>                    
             </div>
         </div>
