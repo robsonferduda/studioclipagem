@@ -173,11 +173,6 @@
                       <span class="sidebar-normal">Inconsistências</span>
                       </a>
                    </li>
-                     <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'web-estatisticas') ? 'active' : '' }}">
-                      <a href="{{ url('jornal-web/estatisticas') }}">
-                      <span class="sidebar-normal">Estatísticas</span>
-                      </a>
-                   </li>
                        </ul>
                     </div>
                  </li>                  

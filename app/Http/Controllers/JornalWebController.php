@@ -95,9 +95,9 @@ class JornalWebController extends Controller
         return view('jornal-web/detalhes',compact('noticia'));
     }
 
-    public function estatisticas()
+    public function dashboard()
     {
-        Session::put('sub-menu','web-estatisticas');
+        Session::put('sub-menu','web-dashboard');
 
         $total_sites = FonteWeb::count();
         $ultima_atualizacao_web = FonteWeb::max('created_at');
@@ -106,9 +106,12 @@ class JornalWebController extends Controller
         $data_final = date("Y-m-d");
         $data_inicial = Carbon::now()->subDays(7)->format('Y-m-d');
 
+        $top_sites = (new FonteWeb())->getTopColetas(10);
+        $sem_coleta = (new FonteWeb())->getSemColetas(10);
+
         $total_noticias = JornalWeb::whereBetween('created_at', [$data_inicial.' 00:00:00', $data_final.' 23:59:59'])->count();
 
-        return view('jornal-web/dashboard',compact('fontes','total_sites', 'total_noticias','ultima_atualizacao_web','ultima_atualizacao_noticia'));
+        return view('jornal-web/dashboard',compact('data_final','data_inicial','fontes','total_sites', 'total_noticias','ultima_atualizacao_web','ultima_atualizacao_noticia','top_sites','sem_coleta'));
     }
 
     public function getEstatisticas($id)
