@@ -37,7 +37,7 @@ class MonitoramentoController extends Controller
         Session::put('url','monitoramento');
     }
 
-    public function index(request $request)
+    public function index(Request $request)
     {
         $clientes = Cliente::orderBy('nome')->get();
 
@@ -55,19 +55,47 @@ class MonitoramentoController extends Controller
         $monitoramento = Monitoramento::query();
 
         $monitoramento->when($cliente, function ($q) use ($cliente) {
+            Session::put('monitoramento_cliente', $cliente);
             return $q->where('id_cliente', $cliente);
         });
 
         $monitoramento->when($midia, function ($q) use ($midia) {
+            Session::put('monitoramento_midia', $midia);
             return $q->where($midia, true);
         });
 
         $monitoramento->when($request->situacao != "", function ($q) use ($fl_ativo) {
+            Session::put('monitoramento_fl_ativo', $fl_ativo);
             return $q->where('fl_ativo', $fl_ativo);
         });
-        
+
         $monitoramentos = $monitoramento->with('cliente')->orderBy('fl_ativo','DESC')->orderBy('id_cliente','ASC')->paginate(10);
 
+        if($request->isMethod('POST')){
+
+            $url = 'monitoramento';
+
+            $arr = array();
+
+            if($cliente){
+                $arr[] = "cliente=".$cliente;
+            }
+
+            if($midia){
+                $arr[] = "midia=".$midia;
+            }
+
+            if($fl_ativo){
+                $arr[] = "situacao=".$situacao;
+            }
+
+            if(count($arr)){
+                $url .= "?".implode('&', $arr);
+            }
+
+            return redirect($url);
+        }
+        
         return view('monitoramento/index', compact('monitoramentos','clientes','situacao','cliente','midia'));
     }
 
