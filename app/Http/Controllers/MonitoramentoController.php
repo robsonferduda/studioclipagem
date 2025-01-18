@@ -122,7 +122,7 @@ class MonitoramentoController extends Controller
         $dt_final = date("Y-m-d H:i:s");
 
         $monitoramento = Monitoramento::find($id);
-        $noticias = $monitoramento->noticias->whereBetween('created_at', [$dt_inicial, $dt_final]);
+        $noticias = $monitoramento->noticias;
     
         return view('monitoramento/noticias', compact('noticias','monitoramento'));
     }
