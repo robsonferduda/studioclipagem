@@ -81,7 +81,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-12 col-sm-12 mt-3">
-                                    <p class="mb-1">Selecione as Mídias</p>
+                                    <p class="mb-1">Selecione uma mídia</p>
                                     <div class="form-check float-left mr-3">
                                         <label class="form-check-label mt-2">
                                             <input class="form-check-input" type="checkbox" {{ ($monitoramento->fl_impresso) ? 'checked' : '' }} name="fl_impresso" id="fl_impresso" value="true">
@@ -161,9 +161,10 @@
         var fl_web = $("#fl_web").is(":checked");
         var fl_tv = $("#fl_tv").is(":checked");
 
-        if(fl_web){
-           
-        }
+        $('.form-check-input').on('change', function() {
+            var id = $(this).attr("id");
+            $(".form-check-input:not(#"+id+")").prop('checked', false);
+        });
 
     });
 </script>
