@@ -85,7 +85,7 @@ class MonitoramentoController extends Controller
                 $arr[] = "midia=".$midia;
             }
 
-            if($fl_ativo){
+            if($request->situacao != ""){
                 $arr[] = "situacao=".$situacao;
             }
 
