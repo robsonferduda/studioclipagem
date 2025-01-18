@@ -103,13 +103,14 @@ class JornalWebController extends Controller
         $ultima_atualizacao_web = FonteWeb::max('created_at');
         $ultima_atualizacao_noticia = JornalWeb::max('created_at');
         $fontes = FonteWeb::orderBy('nome')->get();
+        
         $data_final = date("Y-m-d");
         $data_inicial = Carbon::now()->subDays(7)->format('Y-m-d');
 
         $top_sites = (new FonteWeb())->getTopColetas(10);
         $sem_coleta = (new FonteWeb())->getSemColetas(10);
 
-        $total_noticias = JornalWeb::whereBetween('created_at', [$data_inicial.' 00:00:00', $data_final.' 23:59:59'])->count();
+        $total_noticias = JornalWeb::whereBetween('created_at', [$data_final.' 00:00:00', $data_final.' 23:59:59'])->count();
 
         return view('jornal-web/dashboard',compact('data_final','data_inicial','fontes','total_sites', 'total_noticias','ultima_atualizacao_web','ultima_atualizacao_noticia','top_sites','sem_coleta'));
     }
