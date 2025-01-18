@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use DB;
+use DateTime;
+use DateInterval;
+use DatePeriod;
 use App\Models\Area;
 use App\Models\Cidade;
+use App\Models\EmissoraGravacao;
 use App\Utils;
 use Carbon\Carbon;
 use App\Models\Tag;
@@ -110,23 +114,6 @@ class NoticiaRadioController extends Controller
         $emissoras = Emissora::orderBy('nome_emissora')->get();
 
         return view('noticia-radio/form', compact('cliente', 'dados', 'estados', 'cidades', 'areas','tags','emissoras'));
-    }
-
-    public function estatisticas()
-    {
-        Session::put('sub-menu','radio-estatisticas');
-
-        $data_final = date("Y-m-d");
-        $data_inicial = Carbon::now()->subDays(7)->format('Y-m-d');
-
-        $total_noticia_radio = NoticiaRadio::whereBetween('created_at', [$data_inicial.' 00:00:00', $data_final.' 23:59:59'])->count();
-        $ultima_atualizacao = NoticiaRadio::max('created_at');
-
-        $total_emissora_radio = Emissora::count();
-        $ultima_atualizacao_radio = Emissora::max('created_at');
-
-        $noticias = NoticiaRadio::paginate(10);
-        return view('noticia-radio/estatisticas', compact('noticias','total_noticia_radio', 'total_emissora_radio', 'ultima_atualizacao','ultima_atualizacao_radio','data_final','data_inicial'));
     }
 
     public function editar(int $id, int $cliente = null)
@@ -401,6 +388,27 @@ class NoticiaRadioController extends Controller
         for ($i=0; $i < count($totais); $i++) { 
             $dados['label'][] = date('d/m/Y', strtotime($totais[$i]->dt_noticia));
             $dados['totais'][] = $totais[$i]->total;
+        }
+
+        return response()->json($dados);
+    }
+
+    public function estatisticas()
+    {
+        $dados = array();
+        
+        $dt_inicial = Carbon::now()->subDays(7);
+        $dt_final = Carbon::now()->addDays(1);
+
+        $begin = new DateTime($dt_inicial);
+        $end = new DateTime($dt_final);
+        $interval = DateInterval::createFromDateString('1 day');
+
+        $period = new DatePeriod($begin, $interval, $end);
+
+        foreach ($period as $dt) {
+            $dados['label'][] =  $dt->format("d/m/Y");
+            $dados['totais'][] = count(EmissoraGravacao::whereBetween('created_at', [$dt->format("Y-m-d")." 00:00:00", $dt->format("Y-m-d")." 23:59:59"])->get());
         }
 
         return response()->json($dados);
