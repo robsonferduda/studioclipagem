@@ -475,7 +475,7 @@ class MonitoramentoController extends Controller
                              'msg' => "Ocorreu um erro ao atualizar o registro");
         }
 
-        return redirect('monitoramento')->withInput();
+        return redirect()->back()->withInput();
     }
 
     public function associar($dados, $tipo, $monitoramento)
