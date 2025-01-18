@@ -376,7 +376,7 @@ class MonitoramentoController extends Controller
 
             if($monitoramento->fl_impresso) {
 
-                $tipo_midia = 1; //Web
+                $tipo_midia = 1; //Impresso
 
                 $sql = "SELECT 
                         pejo.id, id_jornal_online, link_pdf, dt_coleta, dt_pub, titulo, texto_extraido
@@ -400,6 +400,8 @@ class MonitoramentoController extends Controller
 
             if($monitoramento->fl_radio) {
 
+                $tipo_midia = 3; //Rádio
+
                 $sql = "SELECT 
                         n.id, id_emissora, data_hora_inicio, data_hora_fim, path_s3, nome_emissora
                         FROM 
@@ -413,28 +415,13 @@ class MonitoramentoController extends Controller
                         ORDER BY n.data_hora_inicio DESC";
 
                 $dados = DB::select($sql);
-
-                //Aqui começa a lógica de associação das notícias encontradas com os clientes
-
-
-                //Fim da lógica de associação
-
-                $total_vinculado = count($dados) + $total_vinculado;
+                $total_associado = $this->associar($dados, $tipo_midia, $monitoramento);
+                $total_vinculado += $total_associado;
             }
 
             if($monitoramento->fl_tv) {
 
-                $sql = "SELECT 
-                        n.id, id_emissora, data_hora_inicio, data_hora_fim, path_s3, nome_emissora
-                        FROM 
-                        gravacao_emissora_radio n
-                        JOIN 
-                        emissora_radio er 
-                        ON er.id = n.id_emissora
-                        WHERE 1=1
-                        AND n.data_hora_inicio BETWEEN '$dt_inicial' AND '$dt_final'
-                        AND  n.transcricao_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao')
-                        ORDER BY n.data_hora_inicio DESC";
+                $tipo_midia = 4; //TV
 
                 $sql = "SELECT 
                         n.id, id_programa_emissora_web, horario_start_gravacao, horario_end_gravacao, url_video, misc_data, transcricao, nome_programa
@@ -449,13 +436,8 @@ class MonitoramentoController extends Controller
                         ORDER BY n.horario_start_gravacao DESC";
 
                 $dados = DB::select($sql);
-
-                //Aqui começa a lógica de associação das notícias encontradas com os clientes
-
-
-                //Fim da lógica de associação
-
-                $total_vinculado = count($dados) + $total_vinculado;
+                $total_associado = $this->associar($dados, $tipo_midia, $monitoramento);
+                $total_vinculado += $total_associado;
             }
 
             $data_termino = date('Y-m-d H:i:s');
@@ -507,9 +489,11 @@ class MonitoramentoController extends Controller
                 NoticiaCliente::create($dados);
                 $total_vinculado++;
 
-                $noticia_web = NoticiaWeb::find($noticia->id);
-                $noticia_web->screenshot = true;
-                $noticia_web->save();
+                if($tipo == 2){
+                    $noticia_web = NoticiaWeb::find($noticia->id);
+                    $noticia_web->screenshot = true;
+                    $noticia_web->save();
+                }
             }            
         }
 
@@ -528,7 +512,7 @@ class MonitoramentoController extends Controller
                 Flash::error('<i class="fa fa-times"></i> Erro ao atualizar status');
         }
 
-        return redirect('monitoramento')->withInput();
+        return redirect()->back()->withInput();
     }
 
     public function editar($id)
