@@ -28,7 +28,7 @@
                     <hr/>
                     <h6 class="mt-3">Notícias VINCULADAS</h6>
                     @foreach ($noticias as $noticia) 
-                        <p><a href="">{{ $noticia->noticiaWeb }}</a></p>
+                        <p>{{ \Carbon\Carbon::parse($noticia->noticiaWeb->data_noticia)->format('d/m/Y H:i:s') }}<a href="{{ $noticia->noticiaWeb->url_noticia }}">{{ $noticia->noticiaWeb->titulo_noticia }}</a></p>
                     @endforeach   
                 </div>          
             </div>
