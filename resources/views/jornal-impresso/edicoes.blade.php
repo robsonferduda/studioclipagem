@@ -66,7 +66,7 @@
                                     <div class="row">
                                         <div class="col-lg-2 col-sm-12 mb-1">
                                             @if($noticia->primeiraPagina)
-                                                <img src="{{ Storage::disk('s3')->temporaryUrl($noticia->primeiraPagina->path_pagina_s3, '+2 minutes') }}" alt="Página ">
+                                                <a href="{{ url('jornal-impresso/web/download/'.$noticia->id) }}"><img src="{{ Storage::disk('s3')->temporaryUrl($noticia->primeiraPagina->path_pagina_s3, '+2 minutes') }}" alt="Página "></a>
                                             @endif
                                         </div>
                                         <div class="col-lg-10 col-sm-10 mb-1">
