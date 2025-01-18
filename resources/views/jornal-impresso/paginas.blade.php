@@ -27,7 +27,7 @@
                         <div class="card-body">                           
                             <div class="row">
                                 <div class="col-lg-2 col-md-2 col-sm-12 mb-1">
-                                    <a href="{{ url('jornal-impresso/web/pagina/download/'.$pagina->id) }}"><img src="{{ Storage::disk('s3')->temporaryUrl($pagina->path_pagina_s3, '+2 minutes') }}" alt="Pégina {{ $pagina->n_pagina }}"></a>
+                                    <a href="{{ url('jornal-impresso/web/pagina/download/'.$pagina->id) }}" target="_BLANK"><img src="{{ Storage::disk('s3')->temporaryUrl($pagina->path_pagina_s3, '+2 minutes') }}" alt="Pégina {{ $pagina->n_pagina }}"></a>
                                 </div>
                                 <div class="col-lg-10 col-sm-10 mb-1"> 
                                     <h6>{{ $pagina->edicao->fonte->nome }}</h6>  
