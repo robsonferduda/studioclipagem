@@ -365,6 +365,8 @@ class MonitoramentoController extends Controller
 
             if($monitoramento->fl_impresso) {
 
+                $tipo_midia = 1; //Web
+
                 $sql = "SELECT 
                         pejo.id, id_jornal_online, link_pdf, dt_coleta, dt_pub, titulo, texto_extraido
                     FROM 
@@ -379,10 +381,8 @@ class MonitoramentoController extends Controller
 
                 $dados = DB::select($sql);
 
-                //Aqui começa a lógica de associação das notícias encontradas com os clientes
-
-
-                //Fim da lógica de associação
+                $total_associado = $this->associar($dados, $tipo_midia, $monitoramento);
+                $total_vinculado += $total_associado;
 
                 $total_vinculado = count($dados) + $total_vinculado;
             }
@@ -503,61 +503,6 @@ class MonitoramentoController extends Controller
         }
 
         return $total_vinculado;
-    }
-
-    public function executar_old()
-    {
-        $monitoramentos = Monitoramento::where('fl_ativo', true)->get();
-
-        foreach ($monitoramentos as $key => $monitoramento) {
-            
-            $data_atual = date('Y-m-d');
-            $data_inicio = date('Y-m-d H:i:s');
-            $total_vinculado = 0;
-            $tabela = '';
-
-            if($monitoramento->tipo_midia == 1) $tabela = 'noticia_impresso';
-            if($monitoramento->tipo_midia == 2) $tabela = 'noticia_web';
-
-            $match = DB::select("SELECT id
-                            FROM
-                            (SELECT id,
-                                    dt_clipagem,
-                                    to_tsvector(t1.texto) AS document
-                            FROM $tabela t1) search
-                            WHERE search.document @@ to_tsquery('$monitoramento->expressao')
-                            AND dt_clipagem = '$data_atual'");
-
-            for ($i=0; $i < count($match); $i++) { 
-                
-                $id_noticia = $match[$i]->id;
-
-                $noticia = NoticiaCliente::where('noticia_id', $id_noticia)->where('tipo_id', $monitoramento->tipo_midia)->first();
-
-                if(!$noticia){
-
-                    $dados = array('cliente_id' => $monitoramento->id_cliente,
-                                'tipo_id'    => $monitoramento->tipo_midia,
-                                'noticia_id' => $id_noticia,
-                                'monitoramento_id' => $monitoramento->id);
-
-                    NoticiaCliente::create($dados);
-                    $total_vinculado++;
-                }
-            }
-
-            $data_termino = date('Y-m-d H:i:s');
-
-            $dado_moninoramento = array('monitoramento_id' => $monitoramento->id, 
-                                        'total_vinculado' => $total_vinculado,
-                                        'created_at' => $data_inicio,
-                                        'updated_at' => $data_termino);
-
-            MonitoramentoExecucao::create($dado_moninoramento);
-            
-        }
-
-        return redirect('monitoramento');
     }
 
     public function atualizarStatus($id)
