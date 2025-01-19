@@ -56,7 +56,7 @@ class JornalImpressoController extends Controller
         $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
         $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
         $cliente_selecionado = ($request->cliente) ? $request->cliente : null;
-        $fonte = ($request->fonte) ? $request->fonte : null;
+        $fontes = ($request->fontes) ? $request->fontes : null;
         $termo = ($request->termo) ? $request->termo : null;
 
         $dados = DB::table('noticia_cliente')
@@ -89,8 +89,8 @@ class JornalImpressoController extends Controller
                     ->when($cliente_selecionado, function ($q) use ($cliente_selecionado) {
                         return $q->where('noticia_cliente.cliente_id', $cliente_selecionado);
                     })
-                    ->when($fonte, function ($q) use ($fonte) {
-                        return $q->whereIn('pagina_edicao_jornal_online.id_edicao_jornal_online', $fonte);
+                    ->when($fontes, function ($q) use ($fontes) {
+                        return $q->whereIn('pagina_edicao_jornal_online.id_edicao_jornal_online', $fontes);
                     })
                     ->when($dt_inicial, function ($q) use ($dt_inicial, $dt_final) {
                         return $q->whereBetween('pagina_edicao_jornal_online.created_at', [$dt_inicial, $dt_final]);
