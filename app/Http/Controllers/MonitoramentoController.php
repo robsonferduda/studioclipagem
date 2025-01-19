@@ -323,10 +323,15 @@ class MonitoramentoController extends Controller
                             conteudo_noticia_web cnw ON cnw.id_noticia_web = n.id
                         JOIN 
                             fonte_web fw ON fw.id = n.id_fonte 
-                        WHERE 1=1
-                            AND n.data_noticia BETWEEN '$dt_inicial' AND '$dt_final' 
-                            AND cnw.conteudo_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao') 
-                            ORDER BY n.data_noticia DESC";
+                        WHERE 1=1 ";
+
+                if($monitoramento->filtro_web){
+                    $sql .= "AND fw.id IN($monitoramento->filtro_web)";
+                }
+
+                $sql .= "AND n.data_noticia BETWEEN '$dt_inicial' AND '$dt_final' 
+                         AND cnw.conteudo_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao') 
+                         ORDER BY n.data_noticia DESC";
 
                 $dados = DB::select($sql);
 
@@ -587,10 +592,15 @@ class MonitoramentoController extends Controller
                             conteudo_noticia_web cnw ON cnw.id_noticia_web = n.id
                         JOIN 
                             fonte_web fw ON fw.id = n.id_fonte 
-                        WHERE 1=1
-                            AND n.data_noticia BETWEEN '$dt_inicial' AND '$dt_final' 
-                            AND cnw.conteudo_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao') 
-                            ORDER BY n.data_noticia DESC";
+                        WHERE 1=1";
+
+                if($monitoramento->filtro_web){
+                    $sql .= "AND fw.id IN($monitoramento->filtro_web)";
+                }
+
+                $sql .= "AND n.data_noticia BETWEEN '$dt_inicial' AND '$dt_final' 
+                        AND cnw.conteudo_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao') 
+                        ORDER BY n.data_noticia DESC";
 
                 $dados = DB::select($sql);
                 $total_associado = $this->associar($dados, $tipo_midia, $monitoramento);
