@@ -133,12 +133,104 @@
                                 </div>
                             </div>               
                             <div class="col-md-12 text-center">
+                                <button type="button" id="btn-find" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Salvar</button>
                                 <a href="{{ url('monitoramento') }}" class="btn btn-danger"><i class="fa fa-times"></i> Cancelar</a>
                             </div>     
                         </div>
                     {!! Form::close() !!}
                 </div>   
+                <div class="col-lg-12 col-md-12">
+                    <div class="nav-tabs-navigation">
+                        <div class="nav-tabs-wrapper">
+                        <ul id="tabs" class="nav nav-tabs" role="tablist">
+                            <li class="nav-item">
+                            <a class="nav-link active" data-toggle="tab" href="#panel_web" role="tab" aria-expanded="true" aria-selected="false"><i class="fa fa-globe"></i> Web <span class="monitoramento-total monitoramento-total-web">0</span></a>
+                            </li>
+                            <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#panel_impresso" role="tab" aria-expanded="false"><i class="fa fa-newspaper-o"></i> Impressos <span class="monitoramento-total monitoramento-total-impresso">0</span></a>
+                            </li>
+                            <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#panel_radio" role="tab" aria-expanded="false" aria-selected="true"><i class="fa fa-volume-up"></i> Rádio <span class="monitoramento-total monitoramento-total-radio">0</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#panel_tv" role="tab" aria-expanded="false" aria-selected="true"><i class="fa fa-volume-up"></i> TV <span class="monitoramento-total monitoramento-total-tv">0</span></a>
+                            </li>
+                        </ul>
+                        </div>
+                    </div>
+                    <div id="my-tab-content" class="tab-content">
+                        <div class="tab-pane active" id="panel_web" role="tabpanel" aria-expanded="true">
+                            <div id="accordion_web" role="tablist" aria-multiselectable="true" class="card-collapse">
+                                <div class="row cabecalho-busca cabecalho-busca-web d-none">
+                                    <div class="col-md-6">
+                                        <p class="card-title mb-0">Foram encontradas <strong class="monitoramento-total-web"></strong> notícias</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="pull-right">
+                                            <span class="badge badge-pill badge-primary">
+                                                Todas as fontes
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>   
+                                <div class="row cabecalho-aguardando-busca-web">
+                                    <div class="col-md-6">
+                                        <span class="text-info">Aguardando critérios de busca</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="panel_impresso" role="tabpanel" aria-expanded="false">
+                            <div id="accordion_impresso" role="tablist" aria-multiselectable="true" class="card-collapse">
+                                <div class="row cabecalho-busca cabecalho-busca-impresso d-none">
+                                    <div class="col-md-6">
+                                        <p class="card-title mb-0">Foram encontradas <strong class="monitoramento-total-impresso"></strong> notícias</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="pull-right">
+                                            <span class="badge badge-pill badge-primary">
+                                                Todas as fontes
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>   
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="panel_radio" role="tabpanel" aria-expanded="false">
+                            <div id="accordion_radio" role="tablist" aria-multiselectable="true" class="card-collapse">
+                                <div class="row cabecalho-busca cabecalho-busca-radio d-none">
+                                    <div class="col-md-6">
+                                        <p class="card-title mb-0">Foram encontradas <strong class="monitoramento-total-radio"></strong> notícias</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="pull-right">
+                                            <span class="badge badge-pill badge-primary">
+                                                Todas as fontes
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>   
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="panel_tv" role="tabpanel" aria-expanded="false">
+                            <div id="accordion_tv" role="tablist" aria-multiselectable="true" class="card-collapse">
+                                <div class="row cabecalho-busca cabecalho-busca-tv d-none">
+                                    <div class="col-md-6">
+                                        <p class="card-title mb-0">Foram encontradas <strong class="monitoramento-total-tv"></strong> notícias</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="pull-right">
+                                            <span class="badge badge-pill badge-primary">
+                                                Todas as fontes
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>   
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -180,6 +272,278 @@
         $('.form-check-input').on('change', function() {
             var id = $(this).attr("id");
             $(".form-check-input:not(#"+id+")").prop('checked', false);
+        });
+
+        $("#btn-find").click(function(){
+
+            var expressao = $("#expressao").val();
+            var dt_inicial = $(".dt_inicial_relatorio").val();
+            var dt_final = $(".dt_final_relatorio").val();
+            var tipo_data = 'dt_publicacao';
+            var flag = false;
+
+            $(".msg-alerta").empty(); //Limpa as mensagens de erro
+
+            if(!dt_inicial & !dt_final){
+                flag = false;
+                $(".msg-alerta").append('<p class="text-danger mb-0">Obrigatório selecionar uma data de início e uma data de fim. </p>');
+            }else{
+                flag = true;
+            }
+
+            if(!expressao){
+                flag = false;
+                $(".msg-alerta").append('<p class="text-danger mb-0">Obrigatório informar pelo menos uma expressão de busca. </p>');
+            }else{
+                flag = true;
+            }
+
+            if(flag){
+
+                //Busca Web
+                $.ajax({url: host+'/monitoramento/filtrar',
+                    type: 'POST',
+                    data: {"_token": $('meta[name="csrf-token"]').attr('content'),
+                            "expressao": expressao,
+                            "dt_inicial": dt_inicial,
+                            "dt_final": dt_final,
+                            "tipo_data": tipo_data
+                    },
+                    beforeSend: function() {
+                        $('.load-busca').loader('show');
+                    },
+                    success: function(data) {
+
+                        $("#accordion_web .card").remove();
+
+                        if(data.length == 0){
+
+                            $(".cabecalho-busca-web").addClass("d-none");
+                            $(".monitoramento-total-web").html(0);
+
+                        }else{
+
+                            $(".cabecalho-busca-web").removeClass("d-none");
+                            $(".cabecalho-aguardando-busca-web").addClass("d-none");
+
+                            $(".monitoramento-total-web").html(data.length);
+                            $.each(data, function(k, v) {
+                               // $(".resultados").append('<p><a href="'+v.url_noticia+'" target="BLANK">'+v.titulo_noticia+'</a></p>');
+                               // $(".resultados").append('<div><p class="fts_detalhes" style="font-weight: 600;" data-chave="card-txt-'+k+'" data-id="'+v.id+'">'+v.titulo_noticia+'</p><div id="txt-'+k+'"></div></div>');
+
+                               const dataObj = new Date(v.data_noticia);
+                               const data_formatada = dataObj.toLocaleDateString("pt-BR", {
+                                    day: "2-digit",
+                                    month: "2-digit",
+                                    year: "numeric"
+                                });
+
+                                $("#accordion_web").append('<div class="card card-plain">'+
+                                  '<div class="card-header card-header-custom" role="tab" id="heading1">'+
+                                    '<strong>'+v.nome+'</strong>'+
+                                    '<a data-toggle="collapse" data-parent="#accordion_web" href="#collapse_'+v.id+'" data-tipo="web" data-chave="card-web-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.titulo_noticia+
+                                      '<i class="nc-icon nc-minimal-down"></i>'+
+                                    '</a>'+
+                                    '<a href="'+v.url_noticia+'" target="BLANK"><i class="fa fa-external-link" aria-hidden="true"></i></a>'+
+                                  '</div>'+
+                                  '<div id="collapse_'+v.id+'" class="collapse" role="tabpanel" aria-labelledby="heading1" style="">'+
+                                    '<div class="box-destaque-busca destaque-card-web-txt-'+k+'"></div><div class="card-body card-busca card-web-txt-'+k+'">'+
+                                    '</div>'+
+                                  '</div>'+
+                                '</div>');
+
+                            });
+                        }                            
+                    },
+                    error: function(){
+                        $("#accordion_web .card").remove();
+                        $(".msg-alerta").html('<span class="text-danger">Erro ao executar expressão de busca</span>');
+                    },
+                    complete: function(){
+                        $('.load-busca').loader('hide');
+                    }
+                });
+
+                //Busca Impresso
+                $.ajax({url: host+'/monitoramento/filtrar/impresso',
+                    type: 'POST',
+                    data: {"_token": $('meta[name="csrf-token"]').attr('content'),
+                            "expressao": expressao,
+                            "dt_inicial": dt_inicial,
+                            "dt_final": dt_final,
+                            "tipo_data": tipo_data
+                    },
+                    beforeSend: function() {
+                        $('.load-busca').loader('show');
+                    },
+                    success: function(data) {
+
+                        $("#accordion_impresso .card").remove();
+
+                        if(data.length == 0){
+
+                            $(".cabecalho-busca-impresso").addClass("d-none");
+                            $(".monitoramento-total-impresso").html(0);
+
+                        }else{
+
+                            $(".cabecalho-busca-impresso").removeClass("d-none");
+                            
+
+                            $(".monitoramento-total-impresso").html(data.length);
+                            $.each(data, function(k, v) {
+
+                               const dataObj = new Date(v.dt_pub);
+                               const data_formatada = dataObj.toLocaleDateString("pt-BR", {
+                                    day: "2-digit",
+                                    month: "2-digit",
+                                    year: "numeric"
+                                });
+
+                                $("#accordion_impresso").append('<div class="card card-plain">'+
+                                  '<div class="card-header card-header-custom" role="tab" id="heading1">'+
+                                    '<a data-toggle="collapse" data-parent="#accordion_impresso" href="#collapse_'+v.id+'" data-tipo="impresso" data-chave="card-impresso-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.titulo+
+                                      '<i class="nc-icon nc-minimal-down"></i>'+
+                                    '</a>'+
+                                  '</div>'+
+                                  '<div id="collapse_'+v.id+'" class="collapse" role="tabpanel" aria-labelledby="heading1" style="">'+
+                                    '<div class="box-destaque-busca destaque-card-impresso-txt-'+k+'"></div><div class="card-body card-busca card-impresso-txt-'+k+'">'+
+                                    '</div>'+
+                                  '</div>'+
+                                '</div>');
+
+                            });
+                        }                            
+                    },
+                    error: function(){
+                        $("#accordion_impresso .card").remove();
+                        $(".msg-alerta").html('<span class="text-danger">Erro ao executar expressão de busca</span>');
+                    },
+                    complete: function(){
+                        $('.load-busca').loader('hide');
+                    }
+                });
+
+                   //Busca Rádio
+                   $.ajax({url: host+'/monitoramento/filtrar/radio',
+                    type: 'POST',
+                    data: {"_token": $('meta[name="csrf-token"]').attr('content'),
+                            "expressao": expressao,
+                            "dt_inicial": dt_inicial,
+                            "dt_final": dt_final,
+                            "tipo_data": tipo_data
+                    },
+                    beforeSend: function() {
+                        $('.load-busca').loader('show');
+                    },
+                    success: function(data) {
+
+                        $("#accordion_radio .card").remove();
+
+                        if(data.length == 0){
+
+                            $(".cabecalho-busca-radio").addClass("d-none");
+                            $(".monitoramento-total-radio").html(0);
+
+                        }else{
+
+                            $(".cabecalho-busca-radio").removeClass("d-none");
+                            
+                            $(".monitoramento-total-radio").html(data.length);
+                            $.each(data, function(k, v) {
+
+                               const dataObj = new Date(v.data_hora_inicio);
+                               const data_formatada = dataObj.toLocaleDateString("pt-BR", {
+                                    day: "2-digit",
+                                    month: "2-digit",
+                                    year: "numeric"
+                                });
+
+                                $("#accordion_radio").append('<div class="card card-plain">'+
+                                  '<div class="card-header card-header-custom" role="tab" id="heading1">'+
+                                    '<a data-toggle="collapse" data-parent="#accordion_radio" href="#collapse_'+v.id+'" data-tipo="radio" data-chave="card-radio-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.nome_emissora+
+                                      '<i class="nc-icon nc-minimal-down"></i>'+
+                                    '</a>'+
+                                  '</div>'+
+                                  '<div id="collapse_'+v.id+'" class="collapse" role="tabpanel" aria-labelledby="heading1" style="">'+
+                                    '<div class="box-destaque-busca destaque-card-radio-txt-'+k+'"></div><div class="card-body card-busca card-radio-txt-'+k+'">'+
+                                    '</div>'+
+                                  '</div>'+
+                                '</div>');
+
+                            });
+                        }                            
+                    },
+                    error: function(){
+                        $("#accordion_impresso .card").remove();
+                        $(".msg-alerta").html('<span class="text-danger">Erro ao executar expressão de busca</span>');
+                    },
+                    complete: function(){
+                        $('.load-busca').loader('hide');
+                    }
+                });
+
+             //Busca TV
+             $.ajax({url: host+'/monitoramento/filtrar/tv',
+                    type: 'POST',
+                    data: {"_token": $('meta[name="csrf-token"]').attr('content'),
+                            "expressao": expressao,
+                            "dt_inicial": dt_inicial,
+                            "dt_final": dt_final,
+                            "tipo_data": tipo_data
+                    },
+                    beforeSend: function() {
+                        $('.load-busca').loader('show');
+                    },
+                    success: function(data) {
+
+                        $("#accordion_tv .card").remove();
+
+                        if(data.length == 0){
+
+                            $(".cabecalho-busca-tv").addClass("d-none");
+                            $(".monitoramento-total-tv").html(0);
+
+                        }else{
+
+                            $(".cabecalho-busca-tv").removeClass("d-none");
+
+                            $(".monitoramento-total-tv").html(data.length);
+                            $.each(data, function(k, v) {
+
+                               const dataObj = new Date(v.horario_start_gravacao);
+                               const data_formatada = dataObj.toLocaleDateString("pt-BR", {
+                                    day: "2-digit",
+                                    month: "2-digit",
+                                    year: "numeric"
+                                });
+
+                                $("#accordion_tv").append('<div class="card card-plain">'+
+                                  '<div class="card-header card-header-custom" role="tab" id="heading1">'+
+                                    '<a data-toggle="collapse" data-parent="#accordion_tv" href="#collapse_'+v.id+'" data-tipo="tv" data-chave="card-tv-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.nome_programa+
+                                      '<i class="nc-icon nc-minimal-down"></i>'+
+                                    '</a>'+
+                                  '</div>'+
+                                  '<div id="collapse_'+v.id+'" class="collapse" role="tabpanel" aria-labelledby="heading1" style="">'+
+                                    '<div class="box-destaque-busca destaque-card-tv-txt-'+k+'"></div><div class="card-body card-busca card-tv-txt-'+k+'">'+
+                                    '</div>'+
+                                  '</div>'+
+                                '</div>');
+
+                            });
+                        }                            
+                    },
+                    error: function(){
+                        $("#accordion_impresso .card").remove();
+                        $(".msg-alerta").html('<span class="text-danger">Erro ao executar expressão de busca</span>');
+                    },
+                    complete: function(){
+                        $('.load-busca').loader('hide');
+                    }
+                });
+
+            }
+           
         });
 
     });
