@@ -29,22 +29,22 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Tipo de Data</label>
-                                        <select class="form-control select2" name="regra" id="regra">
-                                            <option value="dt_noticia">Data de Cadastro</option>
-                                            <option value="dt_clipagem">Data do Clipping</option>
+                                        <select class="form-control select2" name="tipo_data" id="tipo_data">
+                                            <option value="created_at" {{ ($tipo_data == "created_at") ? 'selected' : '' }}>Data de Cadastro</option>
+                                            <option value="dt_pub" {{ ($tipo_data == "dt_pub") ? 'selected' : '' }}>Data do Clipping</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
                                         <label>Data Inicial</label>
-                                        <input type="text" class="form-control datepicker" name="dt_inicial" required="true" value="{{ date('d/m/Y') }}" placeholder="__/__/____">
+                                        <input type="text" class="form-control datepicker" name="dt_inicial" required="true" value="{{ \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y') }}" placeholder="__/__/____">
                                     </div>
                                 </div>
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
                                         <label>Data Final</label>
-                                        <input type="text" class="form-control datepicker" name="dt_final" required="true" value="{{ date('d/m/Y') }}" placeholder="__/__/____">
+                                        <input type="text" class="form-control datepicker" name="dt_final" required="true" value="{{ \Carbon\Carbon::parse($dt_final)->format('d/m/Y') }}" placeholder="__/__/____">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -53,7 +53,7 @@
                                         <select class="form-control select2" name="cliente" id="cliente">
                                             <option value="">Selecione um cliente</option>
                                             @foreach ($clientes as $cliente)
-                                                <option value="{{ $cliente->id }}">{{ $cliente->nome }}</option>
+                                                <option value="{{ $cliente->id }}" {{ ($cliente_selecionado == $cliente->id) ? 'selected' : '' }}>{{ $cliente->nome }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -75,7 +75,7 @@
                                 <div class="col-md-12 col-sm-12">
                                     <div class="form-group">
                                         <label>Buscar por <span class="text-primary">Digite o termo ou expressão de busca</span></label>
-                                        <input type="text" class="form-control" name="termo" id="termo" minlength="3" placeholder="Termo" value="">
+                                        <input type="text" class="form-control" name="termo" id="termo" minlength="3" placeholder="Termo" value="{{ $termo }}">
                                     </div>
                                 </div>
                                 <div class="col-md-12 checkbox-radios mb-0">
@@ -89,7 +89,11 @@
                         <h6 class="px-3">Mostrando {{ $dados->count() }} de {{ $dados->total() }} Páginas</h6>
                     @endif
 
-                    {{ $dados->onEachSide(1)->appends(['dt_inicial' => $dt_inicial, 'dt_final' => $dt_final])->links('vendor.pagination.bootstrap-4') }}
+                    {{ $dados->onEachSide(1)->appends(['dt_inicial' => \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y'), 
+                                                        'dt_final' => \Carbon\Carbon::parse($dt_final)->format('d/m/Y'),
+                                                        'cliente' => $cliente,
+                                                        'termo' => $termo])
+                                                        ->links('vendor.pagination.bootstrap-4') }}
 
                     @foreach ($dados as $key => $pagina)
                         <div class="card">
