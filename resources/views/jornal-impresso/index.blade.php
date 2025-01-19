@@ -179,8 +179,27 @@
                             
                     },
                     success: function(data) {
-                        $(chave).html('<span class="destaque-busca">'+data.expressao+'</span>');
+                        
                         $(chave_conteudo).html(data.texto);
+
+                        var marks = [];                 
+                        
+                        const divContent = document.querySelector(chave_conteudo);
+
+                        if (divContent) {
+            
+                            const childElements = divContent.querySelectorAll('mark');
+                            const output = document.querySelector(chave_destaque);
+
+                            childElements.forEach(element => {
+
+                                if(!marks.includes(element.innerHTML.trim())){
+                                    marks.push(element.innerHTML.trim());
+
+                                    $(chave).append('<span class="destaque-busca">'+element.innerHTML.trim()+'</span>');
+                                }
+                            });
+                        } 
                     },
                     complete: function(){
                             
