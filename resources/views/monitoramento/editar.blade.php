@@ -301,247 +301,256 @@
             if(flag){
 
                 //Busca Web
-                $.ajax({url: host+'/monitoramento/filtrar',
-                    type: 'POST',
-                    data: {"_token": $('meta[name="csrf-token"]').attr('content'),
-                            "expressao": expressao,
-                            "dt_inicial": dt_inicial,
-                            "dt_final": dt_final,
-                            "tipo_data": tipo_data
-                    },
-                    beforeSend: function() {
-                        $('.load-busca').loader('show');
-                    },
-                    success: function(data) {
+                if(fl_web){
+                    $.ajax({url: host+'/monitoramento/filtrar',
+                        type: 'POST',
+                        data: {"_token": $('meta[name="csrf-token"]').attr('content'),
+                                "expressao": expressao,
+                                "dt_inicial": dt_inicial,
+                                "dt_final": dt_final,
+                                "tipo_data": tipo_data
+                        },
+                        beforeSend: function() {
+                            $('.load-busca').loader('show');
+                            $('.cabecalho-aguardando-busca-web').html('<div class="col-md-6"><span class="text-warning">Buscando dados...</span></div>');
+                        },
+                        success: function(data) {
 
-                        $("#accordion_web .card").remove();
+                            $("#accordion_web .card").remove();
 
-                        if(data.length == 0){
+                            if(data.length == 0){
 
-                            $(".cabecalho-busca-web").addClass("d-none");
-                            $(".monitoramento-total-web").html(0);
+                                $(".cabecalho-busca-web").addClass("d-none");
+                                $(".monitoramento-total-web").html(0);
+                                $('.cabecalho-aguardando-busca-web').html('<div class="col-md-6"><span class="text-danger">Nenhum dado encontrado para a busca</span></div>');
 
-                        }else{
+                            }else{
 
-                            $(".cabecalho-busca-web").removeClass("d-none");
-                            $(".cabecalho-aguardando-busca-web").addClass("d-none");
+                                $(".cabecalho-busca-web").removeClass("d-none");
+                                $(".cabecalho-aguardando-busca-web").addClass("d-none");
 
-                            $(".monitoramento-total-web").html(data.length);
-                            $.each(data, function(k, v) {
-                               // $(".resultados").append('<p><a href="'+v.url_noticia+'" target="BLANK">'+v.titulo_noticia+'</a></p>');
-                               // $(".resultados").append('<div><p class="fts_detalhes" style="font-weight: 600;" data-chave="card-txt-'+k+'" data-id="'+v.id+'">'+v.titulo_noticia+'</p><div id="txt-'+k+'"></div></div>');
+                                $(".monitoramento-total-web").html(data.length);
+                                $.each(data, function(k, v) {
+                                // $(".resultados").append('<p><a href="'+v.url_noticia+'" target="BLANK">'+v.titulo_noticia+'</a></p>');
+                                // $(".resultados").append('<div><p class="fts_detalhes" style="font-weight: 600;" data-chave="card-txt-'+k+'" data-id="'+v.id+'">'+v.titulo_noticia+'</p><div id="txt-'+k+'"></div></div>');
 
-                               const dataObj = new Date(v.data_noticia);
-                               const data_formatada = dataObj.toLocaleDateString("pt-BR", {
-                                    day: "2-digit",
-                                    month: "2-digit",
-                                    year: "numeric"
-                                });
+                                const dataObj = new Date(v.data_noticia);
+                                const data_formatada = dataObj.toLocaleDateString("pt-BR", {
+                                        day: "2-digit",
+                                        month: "2-digit",
+                                        year: "numeric"
+                                    });
 
-                                $("#accordion_web").append('<div class="card card-plain">'+
-                                  '<div class="card-header card-header-custom" role="tab" id="heading1">'+
-                                    '<strong>'+v.nome+'</strong>'+
-                                    '<a data-toggle="collapse" data-parent="#accordion_web" href="#collapse_'+v.id+'" data-tipo="web" data-chave="card-web-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.titulo_noticia+
-                                      '<i class="nc-icon nc-minimal-down"></i>'+
-                                    '</a>'+
-                                    '<a href="'+v.url_noticia+'" target="BLANK"><i class="fa fa-external-link" aria-hidden="true"></i></a>'+
-                                  '</div>'+
-                                  '<div id="collapse_'+v.id+'" class="collapse" role="tabpanel" aria-labelledby="heading1" style="">'+
-                                    '<div class="box-destaque-busca destaque-card-web-txt-'+k+'"></div><div class="card-body card-busca card-web-txt-'+k+'">'+
+                                    $("#accordion_web").append('<div class="card card-plain">'+
+                                    '<div class="card-header card-header-custom" role="tab" id="heading1">'+
+                                        '<strong>'+v.nome+'</strong>'+
+                                        '<a data-toggle="collapse" data-parent="#accordion_web" href="#collapse_'+v.id+'" data-tipo="web" data-chave="card-web-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.titulo_noticia+
+                                        '<i class="nc-icon nc-minimal-down"></i>'+
+                                        '</a>'+
+                                        '<a href="'+v.url_noticia+'" target="BLANK"><i class="fa fa-external-link" aria-hidden="true"></i></a>'+
                                     '</div>'+
-                                  '</div>'+
-                                '</div>');
+                                    '<div id="collapse_'+v.id+'" class="collapse" role="tabpanel" aria-labelledby="heading1" style="">'+
+                                        '<div class="box-destaque-busca destaque-card-web-txt-'+k+'"></div><div class="card-body card-busca card-web-txt-'+k+'">'+
+                                        '</div>'+
+                                    '</div>'+
+                                    '</div>');
 
-                            });
-                        }                            
-                    },
-                    error: function(){
-                        $("#accordion_web .card").remove();
-                        $(".msg-alerta").html('<span class="text-danger">Erro ao executar expressão de busca</span>');
-                    },
-                    complete: function(){
-                        $('.load-busca').loader('hide');
-                    }
-                });
+                                });
+                            }                            
+                        },
+                        error: function(){
+                            $("#accordion_web .card").remove();
+                            $(".msg-alerta").html('<span class="text-danger">Erro ao executar expressão de busca</span>');
+                        },
+                        complete: function(){
+                            $('.load-busca').loader('hide');
+                        }
+                    });
+                }
 
                 //Busca Impresso
-                $.ajax({url: host+'/monitoramento/filtrar/impresso',
-                    type: 'POST',
-                    data: {"_token": $('meta[name="csrf-token"]').attr('content'),
-                            "expressao": expressao,
-                            "dt_inicial": dt_inicial,
-                            "dt_final": dt_final,
-                            "tipo_data": tipo_data
-                    },
-                    beforeSend: function() {
-                        
-                    },
-                    success: function(data) {
-
-                        $("#accordion_impresso .card").remove();
-
-                        if(data.length == 0){
-
-                            $(".cabecalho-busca-impresso").addClass("d-none");
-                            $(".monitoramento-total-impresso").html(0);
-
-                        }else{
-
-                            $(".cabecalho-busca-impresso").removeClass("d-none");
+                if(fl_web){
+                    $.ajax({url: host+'/monitoramento/filtrar/impresso',
+                        type: 'POST',
+                        data: {"_token": $('meta[name="csrf-token"]').attr('content'),
+                                "expressao": expressao,
+                                "dt_inicial": dt_inicial,
+                                "dt_final": dt_final,
+                                "tipo_data": tipo_data
+                        },
+                        beforeSend: function() {
                             
+                        },
+                        success: function(data) {
 
-                            $(".monitoramento-total-impresso").html(data.length);
-                            $.each(data, function(k, v) {
+                            $("#accordion_impresso .card").remove();
 
-                               const dataObj = new Date(v.dt_pub);
-                               const data_formatada = dataObj.toLocaleDateString("pt-BR", {
-                                    day: "2-digit",
-                                    month: "2-digit",
-                                    year: "numeric"
-                                });
+                            if(data.length == 0){
 
-                                $("#accordion_impresso").append('<div class="card card-plain">'+
-                                  '<div class="card-header card-header-custom" role="tab" id="heading1">'+
-                                    '<a data-toggle="collapse" data-parent="#accordion_impresso" href="#collapse_'+v.id+'" data-tipo="impresso" data-chave="card-impresso-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.titulo+
-                                      '<i class="nc-icon nc-minimal-down"></i>'+
-                                    '</a>'+
-                                  '</div>'+
-                                  '<div id="collapse_'+v.id+'" class="collapse" role="tabpanel" aria-labelledby="heading1" style="">'+
-                                    '<div class="box-destaque-busca destaque-card-impresso-txt-'+k+'"></div><div class="card-body card-busca card-impresso-txt-'+k+'">'+
+                                $(".cabecalho-busca-impresso").addClass("d-none");
+                                $(".monitoramento-total-impresso").html(0);
+
+                            }else{
+
+                                $(".cabecalho-busca-impresso").removeClass("d-none");
+                                
+
+                                $(".monitoramento-total-impresso").html(data.length);
+                                $.each(data, function(k, v) {
+
+                                const dataObj = new Date(v.dt_pub);
+                                const data_formatada = dataObj.toLocaleDateString("pt-BR", {
+                                        day: "2-digit",
+                                        month: "2-digit",
+                                        year: "numeric"
+                                    });
+
+                                    $("#accordion_impresso").append('<div class="card card-plain">'+
+                                    '<div class="card-header card-header-custom" role="tab" id="heading1">'+
+                                        '<a data-toggle="collapse" data-parent="#accordion_impresso" href="#collapse_'+v.id+'" data-tipo="impresso" data-chave="card-impresso-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.titulo+
+                                        '<i class="nc-icon nc-minimal-down"></i>'+
+                                        '</a>'+
                                     '</div>'+
-                                  '</div>'+
-                                '</div>');
+                                    '<div id="collapse_'+v.id+'" class="collapse" role="tabpanel" aria-labelledby="heading1" style="">'+
+                                        '<div class="box-destaque-busca destaque-card-impresso-txt-'+k+'"></div><div class="card-body card-busca card-impresso-txt-'+k+'">'+
+                                        '</div>'+
+                                    '</div>'+
+                                    '</div>');
 
-                            });
-                        }                            
-                    },
-                    error: function(){
-                        $("#accordion_impresso .card").remove();
-                        $(".msg-alerta").html('<span class="text-danger">Erro ao executar expressão de busca</span>');
-                    },
-                    complete: function(){
-                        
-                    }
-                });
+                                });
+                            }                            
+                        },
+                        error: function(){
+                            $("#accordion_impresso .card").remove();
+                            $(".msg-alerta").html('<span class="text-danger">Erro ao executar expressão de busca</span>');
+                        },
+                        complete: function(){
+                            
+                        }
+                    });
+                }
 
                    //Busca Rádio
-                   $.ajax({url: host+'/monitoramento/filtrar/radio',
-                    type: 'POST',
-                    data: {"_token": $('meta[name="csrf-token"]').attr('content'),
-                            "expressao": expressao,
-                            "dt_inicial": dt_inicial,
-                            "dt_final": dt_final,
-                            "tipo_data": tipo_data
-                    },
-                    beforeSend: function() {
-                       
-                    },
-                    success: function(data) {
-
-                        $("#accordion_radio .card").remove();
-
-                        if(data.length == 0){
-
-                            $(".cabecalho-busca-radio").addClass("d-none");
-                            $(".monitoramento-total-radio").html(0);
-
-                        }else{
-
-                            $(".cabecalho-busca-radio").removeClass("d-none");
-                            
-                            $(".monitoramento-total-radio").html(data.length);
-                            $.each(data, function(k, v) {
-
-                               const dataObj = new Date(v.data_hora_inicio);
-                               const data_formatada = dataObj.toLocaleDateString("pt-BR", {
-                                    day: "2-digit",
-                                    month: "2-digit",
-                                    year: "numeric"
-                                });
-
-                                $("#accordion_radio").append('<div class="card card-plain">'+
-                                  '<div class="card-header card-header-custom" role="tab" id="heading1">'+
-                                    '<a data-toggle="collapse" data-parent="#accordion_radio" href="#collapse_'+v.id+'" data-tipo="radio" data-chave="card-radio-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.nome_emissora+
-                                      '<i class="nc-icon nc-minimal-down"></i>'+
-                                    '</a>'+
-                                  '</div>'+
-                                  '<div id="collapse_'+v.id+'" class="collapse" role="tabpanel" aria-labelledby="heading1" style="">'+
-                                    '<div class="box-destaque-busca destaque-card-radio-txt-'+k+'"></div><div class="card-body card-busca card-radio-txt-'+k+'">'+
-                                    '</div>'+
-                                  '</div>'+
-                                '</div>');
-
-                            });
-                        }                            
-                    },
-                    error: function(){
-                        $("#accordion_impresso .card").remove();
-                        $(".msg-alerta").html('<span class="text-danger">Erro ao executar expressão de busca</span>');
-                    },
-                    complete: function(){
-                       
-                    }
-                });
-
-             //Busca TV
-             $.ajax({url: host+'/monitoramento/filtrar/tv',
-                    type: 'POST',
-                    data: {"_token": $('meta[name="csrf-token"]').attr('content'),
-                            "expressao": expressao,
-                            "dt_inicial": dt_inicial,
-                            "dt_final": dt_final,
-                            "tipo_data": tipo_data
-                    },
-                    beforeSend: function() {
-                       
-                    },
-                    success: function(data) {
-
-                        $("#accordion_tv .card").remove();
-
-                        if(data.length == 0){
-
-                            $(".cabecalho-busca-tv").addClass("d-none");
-                            $(".monitoramento-total-tv").html(0);
-
-                        }else{
-
-                            $(".cabecalho-busca-tv").removeClass("d-none");
-
-                            $(".monitoramento-total-tv").html(data.length);
-                            $.each(data, function(k, v) {
-
-                               const dataObj = new Date(v.horario_start_gravacao);
-                               const data_formatada = dataObj.toLocaleDateString("pt-BR", {
-                                    day: "2-digit",
-                                    month: "2-digit",
-                                    year: "numeric"
-                                });
-
-                                $("#accordion_tv").append('<div class="card card-plain">'+
-                                  '<div class="card-header card-header-custom" role="tab" id="heading1">'+
-                                    '<a data-toggle="collapse" data-parent="#accordion_tv" href="#collapse_'+v.id+'" data-tipo="tv" data-chave="card-tv-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.nome_programa+
-                                      '<i class="nc-icon nc-minimal-down"></i>'+
-                                    '</a>'+
-                                  '</div>'+
-                                  '<div id="collapse_'+v.id+'" class="collapse" role="tabpanel" aria-labelledby="heading1" style="">'+
-                                    '<div class="box-destaque-busca destaque-card-tv-txt-'+k+'"></div><div class="card-body card-busca card-tv-txt-'+k+'">'+
-                                    '</div>'+
-                                  '</div>'+
-                                '</div>');
-
-                            });
-                        }                            
-                    },
-                    error: function(){
-                        $("#accordion_impresso .card").remove();
-                        $(".msg-alerta").html('<span class="text-danger">Erro ao executar expressão de busca</span>');
-                    },
-                    complete: function(){
+                if(fl_radio){
+                    $.ajax({url: host+'/monitoramento/filtrar/radio',
+                        type: 'POST',
+                        data: {"_token": $('meta[name="csrf-token"]').attr('content'),
+                                "expressao": expressao,
+                                "dt_inicial": dt_inicial,
+                                "dt_final": dt_final,
+                                "tipo_data": tipo_data
+                        },
+                        beforeSend: function() {
                         
-                    }
-                });
+                        },
+                        success: function(data) {
 
+                            $("#accordion_radio .card").remove();
+
+                            if(data.length == 0){
+
+                                $(".cabecalho-busca-radio").addClass("d-none");
+                                $(".monitoramento-total-radio").html(0);
+
+                            }else{
+
+                                $(".cabecalho-busca-radio").removeClass("d-none");
+                                
+                                $(".monitoramento-total-radio").html(data.length);
+                                $.each(data, function(k, v) {
+
+                                const dataObj = new Date(v.data_hora_inicio);
+                                const data_formatada = dataObj.toLocaleDateString("pt-BR", {
+                                        day: "2-digit",
+                                        month: "2-digit",
+                                        year: "numeric"
+                                    });
+
+                                    $("#accordion_radio").append('<div class="card card-plain">'+
+                                    '<div class="card-header card-header-custom" role="tab" id="heading1">'+
+                                        '<a data-toggle="collapse" data-parent="#accordion_radio" href="#collapse_'+v.id+'" data-tipo="radio" data-chave="card-radio-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.nome_emissora+
+                                        '<i class="nc-icon nc-minimal-down"></i>'+
+                                        '</a>'+
+                                    '</div>'+
+                                    '<div id="collapse_'+v.id+'" class="collapse" role="tabpanel" aria-labelledby="heading1" style="">'+
+                                        '<div class="box-destaque-busca destaque-card-radio-txt-'+k+'"></div><div class="card-body card-busca card-radio-txt-'+k+'">'+
+                                        '</div>'+
+                                    '</div>'+
+                                    '</div>');
+
+                                });
+                            }                            
+                        },
+                        error: function(){
+                            $("#accordion_impresso .card").remove();
+                            $(".msg-alerta").html('<span class="text-danger">Erro ao executar expressão de busca</span>');
+                        },
+                        complete: function(){
+                        
+                        }
+                    });
+                }
+
+                if(fl_tv){
+                    //Busca TV
+                    $.ajax({url: host+'/monitoramento/filtrar/tv',
+                        type: 'POST',
+                        data: {"_token": $('meta[name="csrf-token"]').attr('content'),
+                                "expressao": expressao,
+                                "dt_inicial": dt_inicial,
+                                "dt_final": dt_final,
+                                "tipo_data": tipo_data
+                        },
+                        beforeSend: function() {
+                        
+                        },
+                        success: function(data) {
+
+                            $("#accordion_tv .card").remove();
+
+                            if(data.length == 0){
+
+                                $(".cabecalho-busca-tv").addClass("d-none");
+                                $(".monitoramento-total-tv").html(0);
+
+                            }else{
+
+                                $(".cabecalho-busca-tv").removeClass("d-none");
+
+                                $(".monitoramento-total-tv").html(data.length);
+                                $.each(data, function(k, v) {
+
+                                const dataObj = new Date(v.horario_start_gravacao);
+                                const data_formatada = dataObj.toLocaleDateString("pt-BR", {
+                                        day: "2-digit",
+                                        month: "2-digit",
+                                        year: "numeric"
+                                    });
+
+                                    $("#accordion_tv").append('<div class="card card-plain">'+
+                                    '<div class="card-header card-header-custom" role="tab" id="heading1">'+
+                                        '<a data-toggle="collapse" data-parent="#accordion_tv" href="#collapse_'+v.id+'" data-tipo="tv" data-chave="card-tv-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.nome_programa+
+                                        '<i class="nc-icon nc-minimal-down"></i>'+
+                                        '</a>'+
+                                    '</div>'+
+                                    '<div id="collapse_'+v.id+'" class="collapse" role="tabpanel" aria-labelledby="heading1" style="">'+
+                                        '<div class="box-destaque-busca destaque-card-tv-txt-'+k+'"></div><div class="card-body card-busca card-tv-txt-'+k+'">'+
+                                        '</div>'+
+                                    '</div>'+
+                                    '</div>');
+
+                                });
+                            }                            
+                        },
+                        error: function(){
+                            $("#accordion_impresso .card").remove();
+                            $(".msg-alerta").html('<span class="text-danger">Erro ao executar expressão de busca</span>');
+                        },
+                        complete: function(){
+                            
+                        }
+                    });
+                }
             }
            
         });
