@@ -90,7 +90,7 @@ class JornalImpressoController extends Controller
                         return $q->where('noticia_cliente.cliente_id', $cliente_selecionado);
                     })
                     ->when($fonte, function ($q) use ($fonte) {
-                        return $q->whereIn('pagina_edicao_jornal_online.id_edicao_jornal_online', $fonte);
+                        return $q->whereIn('jornal_online.id', $fonte);
                     })
                     ->when($dt_inicial, function ($q) use ($dt_inicial, $dt_final) {
                         return $q->whereBetween('pagina_edicao_jornal_online.created_at', [$dt_inicial, $dt_final]);
