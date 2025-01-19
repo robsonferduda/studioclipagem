@@ -93,6 +93,17 @@ class FonteImpressoController extends Controller
 
     }
 
+    public function atualizaPreferencia($id){
+
+        $fonte = FonteImpressa::find($id);
+        $fonte->mapeamento_matinal = !$fonte->mapeamento_matinal;
+        $fonte->save();
+
+        Flash::success('<i class="fa fa-check"></i> Preferência do programa atualizada com sucesso');
+
+        return redirect()->back()->withInput();
+    }
+
     public function cadastrar()
     {
         Session::put('sub-menu','fonte-impressa');

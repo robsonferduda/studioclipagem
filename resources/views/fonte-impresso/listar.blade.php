@@ -137,7 +137,9 @@
                                     <td>R$ {!! $fonte->valor_cm_demais_semana !!}</td>
                                     <td>R$ {!! $fonte->valor_cm_demais_fim_semana !!}</td>
                                     <td class="disabled-sorting text-center">{!! ($fonte->fl_ativo) ? '<span class="badge badge-pill badge-success">ATIVO</span>' : '<span class="badge badge-pill badge-danger">INATIVO</span>' !!}</td>
-                                    <td class="disabled-sorting text-center">{!! ($fonte->mapeamento_matinal) ? '<span class="badge badge-pill badge-success">SIM</span>' : '<span class="badge badge-pill badge-danger">NÃO</span>' !!}</td>
+                                    <td class="disabled-sorting text-center">
+                                        <a href="{{ url('fonte-impresso/'.$fonte->id.'/preferencia/atualiza') }}">{!! ($fonte->mapeamento_matinal) ? '<span class="badge badge-pill badge-success">SIM</span>' : '<span class="badge badge-pill badge-danger">NÃO</span>' !!}</a>
+                                    </td>
                                     <td class="text-center acoes-2">
                                         <a title="Editar" href="{{ url('fonte-impresso/'.$fonte->id.'/editar') }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
                                         <a title="Excluir" href="{{ url('fonte-impresso/'.$fonte->id.'/excluir') }}" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-trash fa-2x"></i></a>
