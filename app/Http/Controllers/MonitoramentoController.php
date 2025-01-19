@@ -374,7 +374,7 @@ class MonitoramentoController extends Controller
         $dt_final = (Carbon::now())->format('Y-m-d')." 23:59:59";
         $data_inicio = date('Y-m-d H:i:s');
         $total_vinculado = 0;
-        $tipo_midia = 2;
+        $tipo_midia = 1;
 
         $monitoramentos = Monitoramento::where('fl_ativo', true)->where('fl_web', true)->get();
         

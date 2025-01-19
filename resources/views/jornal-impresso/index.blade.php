@@ -50,7 +50,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Cliente</label>
-                                        <select class="form-control select2" name="regra" id="regra">
+                                        <select class="form-control select2" name="cliente" id="cliente">
                                             <option value="">Selecione um cliente</option>
                                             @foreach ($clientes as $cliente)
                                                 <option value="{{ $cliente->id }}">{{ $cliente->nome }}</option>
@@ -91,37 +91,30 @@
 
                     {{ $dados->onEachSide(1)->appends(['dt_inicial' => $dt_inicial, 'dt_final' => $dt_final])->links('vendor.pagination.bootstrap-4') }}
 
-                    @foreach ($dados as $key => $noticia)
+                    @foreach ($dados as $key => $pagina)
+                
                         <div class="card">
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-lg-2 col-sm-12">
-                                        @if($noticia->fonte)
-                                            <a href="{{ url('jornal-impresso/web/pagina/download/'.$noticia->id) }}"><img src="{{ asset('img/noticia-impressa/'.$noticia->ds_caminho_img) }}" alt="..." class="img-thumbnail"></a>
-                                        @else
-
-                                        @endif
+                                    <div class="col-lg-2 col-md-2 col-sm-12 mb-1">
+                                        <img src="{{ Storage::disk('s3')->temporaryUrl($pagina->path_pagina_s3, '+2 minutes') }}" alt="Girl in a jacket">
                                     </div>
-                                    <div class="col-lg-10 col-sm-12">
-                                        <h6>{{ $noticia->titulo }}</h6>
-                                        <p>{{ ($noticia->fonte) ? $noticia->fonte->nome : 'Não identificada' }} - {{ \Carbon\Carbon::parse($noticia->dt_clipagem)->format('d/m/Y') }}</p>
-                                        <p>
-                                            {{ Str::limit($noticia->texto, 800, " ...") }}
-                                        </p>
-                                        @if($noticia->nu_pagina_atual == 1)
-                                            <p>Primeira Página</p>
-                                        @else
-                                            <p>Página <strong>{{ $noticia->nu_pagina_atual }}</strong> de <strong>{{ $noticia->nu_paginas_total }}</strong></p>
-                                        @endif
-                                        <p><strong>Retorno de Mídia</strong>: {!! ($noticia->valor_retorno) ? "R$ ".$noticia->valor_retorno : '<span class="text-danger">Não calculado</span>' !!}</p>
-                                        <div>
-                                            <a class="btn btn-success btn-sm" href="{{ asset('jornal-impresso/noticia/editar/'.$noticia->id) }}"><i class="fa fa-edit"> </i> Editar Notícia</a>
-                                            <a class="btn btn-danger btn-sm" download target="_blank" href="{{ asset('jornal-impresso/processados/'.($noticia->fila) ? $noticia->fila : '') }}" role="button"><i class="fa fa-file-pdf-o"> </i> Documento Original</a>
-                                            <a class="btn btn-primary btn-sm" download target="_blank" href="{{ asset('jornal-impresso/'.$noticia->fonte.'/'.\Carbon\Carbon::parse($noticia->dt_clipagem)->format('Ymd').'/img/pagina_'.$noticia->nu_pagina_atual.'.png') }}" role="button"><i class="fa fa-file-image-o"> </i> Página Atual</a>
-                                            <a class="btn btn-success btn-sm" href="{{ asset('jornal-impresso/noticia/'.$noticia->id) }}" role="button"><i class="fa fa-eye"> </i> Detalhes</a>
-                                        </div>
+                                    <div class="col-lg-10 col-sm-10 mb-1"> 
+                                        <h6>{{ ($pagina->id_edicao_jornal_online) ? $pagina->id_edicao_jornal_online : '' }}</h6>  
+                                        <p>Página <strong>{{ $pagina->n_pagina }}</strong>/<strong></strong></p>  
+                                        <div class="panel panel-success">
+                                            <div class="conteudo-noticia mb-1">
+                                                {!! ($pagina->texto_extraido) ?  Str::limit($pagina->texto_extraido, 1000, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                            </div>
+                                            <div class="panel-body">
+                                                {!! ($pagina->texto_extraido) ?  $pagina->texto_extraido  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                            </div>
+                                            <div class="panel-heading">
+                                                <h3 class="panel-title"><span class="btn-show">Mostrar Mais</span></h3>
+                                            </div>
+                                        </div>                
                                     </div>
-                                </div>
+                                </div>     
                             </div>
                         </div>
                     @endforeach

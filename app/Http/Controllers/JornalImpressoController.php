@@ -53,7 +53,8 @@ class JornalImpressoController extends Controller
         $fontes = FonteImpressa::orderBy('nome')->get();
         $clientes = Cliente::all();
         $busca_fonte = "";
-        $termo = "";
+        $termo = "";        
+        $cliente = '';
 
         if($request->isMethod('GET')){
 
@@ -76,6 +77,7 @@ class JornalImpressoController extends Controller
             $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
             $busca_fonte = $request->fonte;
             $termo = $request->termo;
+            $cliente = $request->cliente;
 
             
             
@@ -88,6 +90,19 @@ class JornalImpressoController extends Controller
             $dados = $jornais->whereBetween('dt_clipagem', [$dt_inicial, $dt_final])->orderBy('id_fonte')->orderBy('nu_pagina_atual')->paginate(10);
 
         }
+
+        $dados = DB::table('noticia_cliente')
+                    ->join('clientes', 'clientes.id', '=', 'noticia_cliente.cliente_id')
+                    ->join('pagina_edicao_jornal_online', function ($join) {
+                        $join->on('pagina_edicao_jornal_online.id', '=', 'noticia_cliente.noticia_id')->where('tipo_id',1);
+                    })
+                    ->when($termo, function ($q) use ($termo) {
+                        return $q->where('texto_extraido', 'ILIKE', '%'.trim($termo).'%');
+                    })
+                    ->when($cliente, function ($q) use ($cliente) {
+                        return $q->where('noticia_cliente.cliente_id', $cliente);
+                    })
+                    ->paginate(10);
 
         return view('jornal-impresso/index',compact('clientes','fontes','dados','dt_inicial','dt_final','termo','busca_fonte'));
     }
@@ -666,5 +681,19 @@ class JornalImpressoController extends Controller
             }
         }
         return response()->json($files_info);
+    }
+
+    public function destacaConteudo($id_noticia, $id_monitoramento)
+    {
+        $sql = "SELECT ts_headline('portuguese', texto_extraido , to_tsquery('portuguese', t3.expressao), 'HighlightAll=true, StartSel=<mark>, StopSel=</mark>') as texto, t3.expressao 
+                        FROM pagina_edicao_jornal_online t1
+                        JOIN noticia_cliente t2 ON t2.noticia_id = t1.id 
+                        JOIN monitoramento t3 ON t3.id = t2.monitoramento_id 
+                        WHERE t1.id = $id_noticia
+                        AND t3.id = ".$id_monitoramento;
+    
+        $dados = DB::select($sql);
+
+        return response()->json($dados); 
     }
 }
