@@ -103,7 +103,7 @@
                                         <h6 class="text-muted">{{ \Carbon\Carbon::parse($pagina->dt_pub)->format('d/m/Y') }} - {{ ($pagina->nome_fonte) ? $pagina->nome_fonte : '' }}</h6> 
                                         <p>Página <strong>{{ $pagina->n_pagina }}</strong></p>  
                                         <div class="panel panel-success">
-                                            <div class="tags {{ $pagina->noticia_id }}_{{ $pagina->monitoramento_id }}" data-monitoramento="{{ $pagina->monitoramento_id }}" data-chave="{{ $pagina->noticia_id }}_{{ $pagina->monitoramento_id }}" data-noticia="{{ $pagina->noticia_id }}">
+                                            <div class="tags destaque-{{ $pagina->noticia_id }}-{{ $pagina->monitoramento_id }}" data-monitoramento="{{ $pagina->monitoramento_id }}" data-chave="{{ $pagina->noticia_id }}_{{ $pagina->monitoramento_id }}" data-noticia="{{ $pagina->noticia_id }}">
                                                 
                                             </div>
                                             <code>
@@ -169,7 +169,7 @@
                
                 var monitoramento = $(this).data("monitoramento");
                 var noticia = $(this).data("noticia");
-                var chave = "."+$(this).data("chave");
+                var chave = ".destaque-"+$(this).data("chave");
                 var chave_conteudo = ".conteudo_"+$(this).data("chave");
 
                 $.ajax({
