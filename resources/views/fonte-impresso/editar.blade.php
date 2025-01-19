@@ -166,6 +166,17 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-md-4">
+                                <div class="form-check" style="margin-top: 15px;">
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" {{ ($fonte->mapeamento_matinal) ? 'checked' : '' }} type="checkbox" name="mapeamento_matinal" value="true">
+                                                PREFERÊNCIA DE PROCESSAMENTO
+                                            <span class="form-check-sign"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-12">

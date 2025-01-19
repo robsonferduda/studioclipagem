@@ -37,7 +37,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-3 col-sm-12">
+                            <div class="col-md-2 col-sm-12">
                                 <div class="form-group">
                                     <label>Cidade</label>
                                     <select class="form-control select2" name="cd_cidade" id="cidade" disabled="disabled">
@@ -51,14 +51,14 @@
                                     <label>Nome</label>
                                     <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome" value="{{ Session::get('impresso_filtro_nome') }}">
                                 </div>
-                            </div>    
-                            <div class="col-md-2 col-sm-12">
+                            </div>     
+                            <div class="col-md-3 col-sm-12">
                                 <div class="form-group">
-                                    <label>Sincronização</label>
+                                    <label>Sincronização Preferencial</label>
                                     <select class="form-control select2" name="fl_mapeamento" id="fl_mapeamento">
                                         <option value="">Selecione uma sincronização</option>
-                                        <option value="prioritaria" {{ (Session::get('impresso_filtro_mapeamento') === 1) ? 'selected' : '' }}>Prioritária</option>
-                                        <option value="ordinaria" {{ (Session::get('impresso_filtro_mapeamento') === 2) ? 'selected' : '' }}>Geral</option>
+                                        <option value="prioritaria" {{ (Session::get('impresso_filtro_mapeamento') === 1) ? 'selected' : '' }}>Sim</option>
+                                        <option value="ordinaria" {{ (Session::get('impresso_filtro_mapeamento') === 2) ? 'selected' : '' }}>Não</option>
                                     </select>
                                 </div>
                             </div>   
@@ -87,8 +87,6 @@
                         <thead>
                             <tr>
                                 <th></th>
-                                <th>Tipo</th>
-                                <th>Coleta</th>
                                 <th>Estado</th>
                                 <th>Cidade</th>
                                 <th>Nome</th>
@@ -98,14 +96,13 @@
                                 <th>DEMAIS</th>
                                 <th>DEMAIS FDS</th>
                                 <th class="disabled-sorting text-center">Situação</th>
+                                <th class="disabled-sorting text-center">Preferencial</th>
                                 <th class="disabled-sorting text-center">Ações</th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
                                 <th></th>
-                                <th>Tipo</th>
-                                <th>Coleta</th>
                                 <th>Estado</th>
                                 <th>Cidade</th>
                                 <th>Nome</th>
@@ -114,6 +111,8 @@
                                 <th>CONTRACAPA</th>
                                 <th>DEMAIS</th>
                                 <th>DEMAIS FDS</th>
+                                <th class="disabled-sorting text-center">Situação</th>
+                                <th class="disabled-sorting text-center">Preferencial</th>
                                 <th class="disabled-sorting text-center">Ações</th>
                             </tr>
                         </tfoot>
@@ -123,15 +122,14 @@
                                     <td style="min-width: 100px;">
                                         <label style="display: inline; color: black; font-weight: 600; font-size: 14px;"><input style="width: 30%;" type="checkbox" class="dt-checkboxes">{{ $fonte->id }}</label>
                                     </td>
-                                    <td>{!! ($fonte->tipoImpresso) ? $fonte->tipoImpresso->ds_tipo_impresso : '<span class="text-danger">Não Informado</span>' !!}</td>
-                                    <td>{!! ($fonte->tipoColeta) ? $fonte->tipoColeta->ds_tipo_coleta : '<span class="text-danger">Não Informado</span>' !!}</td>
                                     <td>{!! ($fonte->estado) ? $fonte->estado->nm_estado : '<span class="text-danger">Não Informado</span>' !!}</td>
                                     <td>{!! $fonte->cidade->nm_cidade ?? '<span class="text-danger">Não Informado</span>' !!}</td>
                                     <td>
-                                        {{ $fonte->nome }}
+                                        {{ $fonte->nome }} 
                                         @if($fonte->tipoColeta and $fonte->tipoColeta->id == 1)
                                             <p class="mb-0"><a href="{{ $fonte->url }}" target="_BLANK">{{ $fonte->url }}</a></p>
                                         @endif
+                                        <p class="mb-0 text-muted font-weight-bold">{!! ($fonte->tipoImpresso) ? $fonte->tipoImpresso->ds_tipo_impresso : '<span class="text-danger">Não Informado</span>' !!}</p>
                                     </td>
                                     <td>R$ {!! $fonte->valor_cm_capa_semana  !!}</td>
                                     <td>R$ {!! $fonte->valor_cm_capa_fim_semana !!}</td>
@@ -139,6 +137,7 @@
                                     <td>R$ {!! $fonte->valor_cm_demais_semana !!}</td>
                                     <td>R$ {!! $fonte->valor_cm_demais_fim_semana !!}</td>
                                     <td class="disabled-sorting text-center">{!! ($fonte->fl_ativo) ? '<span class="badge badge-pill badge-success">ATIVO</span>' : '<span class="badge badge-pill badge-danger">INATIVO</span>' !!}</td>
+                                    <td class="disabled-sorting text-center">{!! ($fonte->mapeamento_matinal) ? '<span class="badge badge-pill badge-success">SIM</span>' : '<span class="badge badge-pill badge-danger">NÃO</span>' !!}</td>
                                     <td class="text-center acoes-2">
                                         <a title="Editar" href="{{ url('fonte-impresso/'.$fonte->id.'/editar') }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
                                         <a title="Excluir" href="{{ url('fonte-impresso/'.$fonte->id.'/excluir') }}" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-trash fa-2x"></i></a>

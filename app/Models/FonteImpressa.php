@@ -28,6 +28,7 @@ class FonteImpressa extends Model
                             'valor_cm_contracapa',
                             'valor_cm_demais_semana',
                             'valor_cm_demais_fim_semana',
+                            'mapeamento_matinal',
                             'fl_ativo'];
 
     public function estado()

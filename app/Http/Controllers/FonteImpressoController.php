@@ -216,6 +216,7 @@ class FonteImpressoController extends Controller
         try {
 
             $flag = $request->fl_ativo == true ? true : false;
+            $flag_preferencia = $request->mapeamento_matinal == true ? true : false;
 
             $jornal->update([
                 'codigo'    => $request->codigo,
@@ -231,6 +232,7 @@ class FonteImpressoController extends Controller
                 'tipo' => $request->tipo,
                 'coleta' => $request->coleta,
                 'modelo' => $request->modelo,
+                'mapeamento_matinal' => $flag_preferencia,
                 'fl_ativo' => $flag,
                 'url' => $request->url
             ]);
