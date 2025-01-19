@@ -93,6 +93,7 @@ class JornalImpressoController extends Controller
 
         $dados = DB::table('noticia_cliente')
                     ->select('path_pagina_s3',
+                            'jornal_online.id AS id_fonte',
                             'jornal_online.nome AS nome_fonte',
                             'edicao_jornal_online.titulo AS edicao',
                             'edicao_jornal_online.dt_pub',
@@ -101,6 +102,8 @@ class JornalImpressoController extends Controller
                             'noticia_cliente.monitoramento_id',
                             'texto_extraido',
                             'expressao',
+                            'nm_estado',
+                            'nm_cidade',
                             'clientes.nome AS nome_cliente',
                             'pagina_edicao_jornal_online.id AS id_pagina')
                     ->join('clientes', 'clientes.id', '=', 'noticia_cliente.cliente_id')
@@ -110,6 +113,8 @@ class JornalImpressoController extends Controller
                     ->join('edicao_jornal_online','edicao_jornal_online.id','=','pagina_edicao_jornal_online.id_edicao_jornal_online')
                     ->join('jornal_online','jornal_online.id','=','edicao_jornal_online.id_jornal_online')
                     ->join('monitoramento','monitoramento.id','=','noticia_cliente.monitoramento_id')
+                    ->leftJoin('estado','estado.cd_estado','=','jornal_online.cd_estado')
+                    ->leftJoin('cidade','cidade.cd_cidade','=','jornal_online.cd_cidade')
                     ->when($termo, function ($q) use ($termo) {
                         return $q->where('texto_extraido', 'ILIKE', '%'.trim($termo).'%');
                     })
