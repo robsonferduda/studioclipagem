@@ -692,7 +692,7 @@ class JornalImpressoController extends Controller
                         WHERE t1.id = $id_noticia
                         AND t3.id = ".$id_monitoramento;
     
-        $dados = DB::select($sql);
+        $dados = DB::select($sql)[0];
 
         return response()->json($dados); 
     }

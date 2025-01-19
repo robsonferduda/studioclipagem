@@ -103,6 +103,9 @@
                                         <h6>{{ ($pagina->id_edicao_jornal_online) ? $pagina->id_edicao_jornal_online : '' }}</h6>  
                                         <p>Página <strong>{{ $pagina->n_pagina }}</strong>/<strong></strong></p>  
                                         <div class="panel panel-success">
+                                            <div class="teste {{ $pagina->noticia_id }}_{{ $pagina->monitoramento_id }}" data-monitoramento="{{ $pagina->monitoramento_id }}" data-chave="{{ $pagina->noticia_id }}_{{ $pagina->monitoramento_id }}" data-noticia="{{ $pagina->noticia_id }}">
+                                                
+                                            </div>
                                             <div class="conteudo-noticia mb-1">
                                                 {!! ($pagina->texto_extraido) ?  Str::limit($pagina->texto_extraido, 1000, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
                                             </div>
@@ -135,7 +138,27 @@
                 selectedListLabel: 'Selecionadas',
                
             });
-           
+
+            $(".teste").each(function() {
+               
+                var monitoramento = $(this).data("monitoramento");
+                var noticia = $(this).data("noticia");
+                var chave = "."+$(this).data("chave");
+
+                $.ajax({
+                        url: host+'/jornal-impresso/conteudo/'+noticia+'/monitoramento/'+monitoramento,
+                        type: 'GET',
+                        beforeSend: function() {
+                            
+                        },
+                        success: function(data) {
+                            $(chave).html('<span class="destaque-busca">'+data.expressao+'</span>');
+                        },
+                        complete: function(){
+                            
+                        }
+                    });
+            });
         });
     </script>
 @endsection

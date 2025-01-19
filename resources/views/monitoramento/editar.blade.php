@@ -250,29 +250,10 @@
             moveOnSelect: true
         });
 
-        $('.demo1').on('change', function (e) {
-              
-            alert(demo2.scrollTop());
-        });
-
-        function move(dualListbox) {
-            var scrollPos = dualListbox.elements.select1.scrollTop();    //  new line
-        
-            refreshSelects(dualListbox);
-            dualListbox.elements.select1.scrollTop(scrollPos);    //  new line
-            triggerChangeEvent(dualListbox);
-            sortOptions(dualListbox.elements.select2);
-        }
-
         var fl_impresso = $("#fl_impresso").is(":checked");
         var fl_radio = $("#fl_radio").is(":checked");
         var fl_web = $("#fl_web").is(":checked");
         var fl_tv = $("#fl_tv").is(":checked");
-
-        $('.form-check-input').on('change', function() {
-            var id = $(this).attr("id");
-            $(".form-check-input:not(#"+id+")").prop('checked', false);
-        });
 
         $("#btn-find").click(function(){
 
