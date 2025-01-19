@@ -92,24 +92,27 @@
                     {{ $dados->onEachSide(1)->appends(['dt_inicial' => $dt_inicial, 'dt_final' => $dt_final])->links('vendor.pagination.bootstrap-4') }}
 
                     @foreach ($dados as $key => $pagina)
-                
                         <div class="card">
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-lg-2 col-md-2 col-sm-12 mb-1">
-                                        <img src="{{ Storage::disk('s3')->temporaryUrl($pagina->path_pagina_s3, '+2 minutes') }}" alt="Girl in a jacket">
+                                        <a href="{{ url('jornal-impresso/web/pagina/download/'.$pagina->id_pagina) }}" target="_BLANK"><img src="{{ Storage::disk('s3')->temporaryUrl($pagina->path_pagina_s3, '+2 minutes') }}" alt="Pégina {{ $pagina->n_pagina }}"></a>
                                     </div>
                                     <div class="col-lg-10 col-sm-10 mb-1"> 
-                                        <h6>{{ ($pagina->id_edicao_jornal_online) ? $pagina->id_edicao_jornal_online : '' }}</h6>  
-                                        <p>Página <strong>{{ $pagina->n_pagina }}</strong>/<strong></strong></p>  
+                                        <h6>{{ ($pagina->nome_fonte) ? $pagina->nome_fonte : '' }}</h6>  
+                                        <h6 class="text-muted">{{ \Carbon\Carbon::parse($pagina->dt_pub)->format('d/m/Y') }} - {{ ($pagina->nome_fonte) ? $pagina->nome_fonte : '' }}</h6> 
+                                        <p>Página <strong>{{ $pagina->n_pagina }}</strong></p>  
                                         <div class="panel panel-success">
-                                            <div class="teste {{ $pagina->noticia_id }}_{{ $pagina->monitoramento_id }}" data-monitoramento="{{ $pagina->monitoramento_id }}" data-chave="{{ $pagina->noticia_id }}_{{ $pagina->monitoramento_id }}" data-noticia="{{ $pagina->noticia_id }}">
+                                            <div class="tags {{ $pagina->noticia_id }}_{{ $pagina->monitoramento_id }}" data-monitoramento="{{ $pagina->monitoramento_id }}" data-chave="{{ $pagina->noticia_id }}_{{ $pagina->monitoramento_id }}" data-noticia="{{ $pagina->noticia_id }}">
                                                 
                                             </div>
+                                            <code>
+                                                {{ $pagina->expressao }}
+                                            </code>
                                             <div class="conteudo-noticia mb-1">
                                                 {!! ($pagina->texto_extraido) ?  Str::limit($pagina->texto_extraido, 1000, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
                                             </div>
-                                            <div class="panel-body">
+                                            <div class="panel-body conteudo_{{ $pagina->noticia_id }}_{{ $pagina->monitoramento_id }}">
                                                 {!! ($pagina->texto_extraido) ?  $pagina->texto_extraido  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
                                             </div>
                                             <div class="panel-heading">
@@ -139,25 +142,50 @@
                
             });
 
-            $(".teste").each(function() {
+            $(".panel-heading").click(function() {
+                $(this).parent().addClass('active').find('.panel-body').slideToggle('fast');
+                $(".panel-heading").not(this).parent().removeClass('active').find('.panel-body').slideUp('fast');
+            });
+
+            $(".btn-show").click(function(){
+
+                var texto = $(this).text();
+
+                if(texto == 'Mostrar Mais'){
+
+                    $(this).closest('.panel').find('.conteudo-noticia').addClass('d-none');
+                    $(this).html("Mostrar Menos");
+
+                }
+                
+                if(texto == 'Mostrar Menos'){
+                    $(this).closest('.panel').find('.conteudo-noticia').removeClass('d-none');
+                    $(this).html("Mostrar Mais");
+                }
+
+            });
+
+            $(".tags").each(function() {
                
                 var monitoramento = $(this).data("monitoramento");
                 var noticia = $(this).data("noticia");
                 var chave = "."+$(this).data("chave");
+                var chave_conteudo = ".conteudo_"+$(this).data("chave");
 
                 $.ajax({
-                        url: host+'/jornal-impresso/conteudo/'+noticia+'/monitoramento/'+monitoramento,
-                        type: 'GET',
-                        beforeSend: function() {
+                    url: host+'/jornal-impresso/conteudo/'+noticia+'/monitoramento/'+monitoramento,
+                    type: 'GET',
+                    beforeSend: function() {
                             
-                        },
-                        success: function(data) {
-                            $(chave).html('<span class="destaque-busca">'+data.expressao+'</span>');
-                        },
-                        complete: function(){
+                    },
+                    success: function(data) {
+                        $(chave).html('<span class="destaque-busca">'+data.expressao+'</span>');
+                        $(chave_conteudo).html(data.texto);
+                    },
+                    complete: function(){
                             
-                        }
-                    });
+                    }
+                });
             });
         });
     </script>

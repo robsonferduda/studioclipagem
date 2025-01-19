@@ -92,16 +92,31 @@ class JornalImpressoController extends Controller
         }
 
         $dados = DB::table('noticia_cliente')
+                    ->select('path_pagina_s3',
+                            'jornal_online.nome AS nome_fonte',
+                            'edicao_jornal_online.titulo AS edicao',
+                            'edicao_jornal_online.dt_pub',
+                            'n_pagina',
+                            'noticia_cliente.noticia_id',
+                            'noticia_cliente.monitoramento_id',
+                            'texto_extraido',
+                            'expressao',
+                            'pagina_edicao_jornal_online.id AS id_pagina')
                     ->join('clientes', 'clientes.id', '=', 'noticia_cliente.cliente_id')
                     ->join('pagina_edicao_jornal_online', function ($join) {
                         $join->on('pagina_edicao_jornal_online.id', '=', 'noticia_cliente.noticia_id')->where('tipo_id',1);
                     })
+                    ->join('edicao_jornal_online','edicao_jornal_online.id','=','pagina_edicao_jornal_online.id_edicao_jornal_online')
+                    ->join('jornal_online','jornal_online.id','=','edicao_jornal_online.id_jornal_online')
+                    ->join('monitoramento','monitoramento.id','=','noticia_cliente.monitoramento_id')
                     ->when($termo, function ($q) use ($termo) {
                         return $q->where('texto_extraido', 'ILIKE', '%'.trim($termo).'%');
                     })
                     ->when($cliente, function ($q) use ($cliente) {
                         return $q->where('noticia_cliente.cliente_id', $cliente);
                     })
+                    ->orderBy('pagina_edicao_jornal_online.id_edicao_jornal_online')
+                    ->orderBy('n_pagina')
                     ->paginate(10);
 
         return view('jornal-impresso/index',compact('clientes','fontes','dados','dt_inicial','dt_final','termo','busca_fonte'));
