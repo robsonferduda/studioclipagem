@@ -102,13 +102,13 @@
                                         <h6>{{ ($pagina->nome_fonte) ? $pagina->nome_fonte : '' }}</h6>  
                                         <h6 class="text-muted">{{ \Carbon\Carbon::parse($pagina->dt_pub)->format('d/m/Y') }} - {{ ($pagina->nome_fonte) ? $pagina->nome_fonte : '' }}</h6> 
                                         <p>Página <strong>{{ $pagina->n_pagina }}</strong></p>  
-                                        <div class="panel panel-success">
-                                            <div class="tags destaque-{{ $pagina->noticia_id }}-{{ $pagina->monitoramento_id }}" data-monitoramento="{{ $pagina->monitoramento_id }}" data-chave="{{ $pagina->noticia_id }}_{{ $pagina->monitoramento_id }}" data-noticia="{{ $pagina->noticia_id }}">
+                                        <div class="tags destaque-{{ $pagina->noticia_id }}-{{ $pagina->monitoramento_id }}" data-monitoramento="{{ $pagina->monitoramento_id }}" data-chave="{{ $pagina->noticia_id }}-{{ $pagina->monitoramento_id }}" data-noticia="{{ $pagina->noticia_id }}">
                                                 
-                                            </div>
-                                            <code>
-                                                {{ $pagina->expressao }}
-                                            </code>
+                                        </div>
+                                        <code>
+                                            {{ $pagina->expressao }}
+                                        </code>
+                                        <div class="panel panel-success">
                                             <div class="conteudo-noticia mb-1">
                                                 {!! ($pagina->texto_extraido) ?  Str::limit($pagina->texto_extraido, 1000, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
                                             </div>
