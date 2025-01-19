@@ -369,7 +369,7 @@
                 }
 
                 //Busca Impresso
-                if(fl_web){
+                if(fl_impresso){
                     $.ajax({url: host+'/monitoramento/filtrar/impresso',
                         type: 'POST',
                         data: {"_token": $('meta[name="csrf-token"]').attr('content'),
