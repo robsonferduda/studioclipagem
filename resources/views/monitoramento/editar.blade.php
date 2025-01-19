@@ -374,7 +374,7 @@
                             "tipo_data": tipo_data
                     },
                     beforeSend: function() {
-                        $('.load-busca').loader('show');
+                        
                     },
                     success: function(data) {
 
@@ -420,7 +420,7 @@
                         $(".msg-alerta").html('<span class="text-danger">Erro ao executar expressão de busca</span>');
                     },
                     complete: function(){
-                        $('.load-busca').loader('hide');
+                        
                     }
                 });
 
@@ -434,7 +434,7 @@
                             "tipo_data": tipo_data
                     },
                     beforeSend: function() {
-                        $('.load-busca').loader('show');
+                       
                     },
                     success: function(data) {
 
@@ -479,7 +479,7 @@
                         $(".msg-alerta").html('<span class="text-danger">Erro ao executar expressão de busca</span>');
                     },
                     complete: function(){
-                        $('.load-busca').loader('hide');
+                       
                     }
                 });
 
@@ -493,7 +493,7 @@
                             "tipo_data": tipo_data
                     },
                     beforeSend: function() {
-                        $('.load-busca').loader('show');
+                       
                     },
                     success: function(data) {
 
@@ -538,7 +538,7 @@
                         $(".msg-alerta").html('<span class="text-danger">Erro ao executar expressão de busca</span>');
                     },
                     complete: function(){
-                        $('.load-busca').loader('hide');
+                        
                     }
                 });
 
