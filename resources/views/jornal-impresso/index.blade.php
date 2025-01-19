@@ -189,7 +189,7 @@
                         if (divContent) {
             
                             const childElements = divContent.querySelectorAll('mark');
-                            const output = document.querySelector(chave_destaque);
+                            const output = document.querySelector(chave);
 
                             childElements.forEach(element => {
 
