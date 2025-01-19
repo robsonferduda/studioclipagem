@@ -112,7 +112,7 @@
                                             <div class="conteudo-noticia mb-1">
                                                 {!! ($pagina->texto_extraido) ?  Str::limit($pagina->texto_extraido, 1000, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
                                             </div>
-                                            <div class="panel-body conteudo_{{ $pagina->noticia_id }}_{{ $pagina->monitoramento_id }}">
+                                            <div class="panel-body conteudo-{{ $pagina->noticia_id }}-{{ $pagina->monitoramento_id }}">
                                                 {!! ($pagina->texto_extraido) ?  $pagina->texto_extraido  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
                                             </div>
                                             <div class="panel-heading">
@@ -170,7 +170,7 @@
                 var monitoramento = $(this).data("monitoramento");
                 var noticia = $(this).data("noticia");
                 var chave = ".destaque-"+$(this).data("chave");
-                var chave_conteudo = ".conteudo_"+$(this).data("chave");
+                var chave_conteudo = ".conteudo-"+$(this).data("chave");
 
                 $.ajax({
                     url: host+'/jornal-impresso/conteudo/'+noticia+'/monitoramento/'+monitoramento,
