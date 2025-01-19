@@ -100,13 +100,14 @@
                                     </div>
                                     <div class="col-lg-10 col-sm-10 mb-1"> 
                                         <h6>{{ ($pagina->nome_fonte) ? $pagina->nome_fonte : '' }}</h6>  
-                                        <h6 class="text-muted">{{ \Carbon\Carbon::parse($pagina->dt_pub)->format('d/m/Y') }} - {{ ($pagina->nome_fonte) ? $pagina->nome_fonte : '' }}</h6> 
-                                        <p>Página <strong>{{ $pagina->n_pagina }}</strong></p>  
+                                        <h6 class="text-muted mb-1">{{ \Carbon\Carbon::parse($pagina->dt_pub)->format('d/m/Y') }} - {{ ($pagina->nome_fonte) ? $pagina->nome_fonte : '' }}</h6> 
+                                        <p class="mb-0">{{ ($pagina->nome_cliente) ? $pagina->nome_cliente : '' }}</p>
+                                        <p class="mb-0">Página <strong>{{ $pagina->n_pagina }}</strong></p>  
                                         <div class="tags destaque-{{ $pagina->noticia_id }}-{{ $pagina->monitoramento_id }}" data-monitoramento="{{ $pagina->monitoramento_id }}" data-chave="{{ $pagina->noticia_id }}-{{ $pagina->monitoramento_id }}" data-noticia="{{ $pagina->noticia_id }}">
                                                 
                                         </div>
                                         <code>
-                                            {{ $pagina->expressao }}
+                                            <a href="{{ url('monitoramento/'.$pagina->monitoramento_id.'/editar') }}" target="_BLANK">{{ $pagina->expressao }}</a>
                                         </code>
                                         <div class="panel panel-success">
                                             <div class="conteudo-noticia mb-1">

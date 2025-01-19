@@ -101,6 +101,7 @@ class JornalImpressoController extends Controller
                             'noticia_cliente.monitoramento_id',
                             'texto_extraido',
                             'expressao',
+                            'clientes.nome AS nome_cliente',
                             'pagina_edicao_jornal_online.id AS id_pagina')
                     ->join('clientes', 'clientes.id', '=', 'noticia_cliente.cliente_id')
                     ->join('pagina_edicao_jornal_online', function ($join) {
