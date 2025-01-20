@@ -73,42 +73,6 @@ class NoticiaRadioController extends Controller
                     ->leftJoin('cidade','cidade.cd_cidade','=','emissora_radio.cd_cidade')
                     ->paginate(10);
 
-        /*
-
-        if($request->isMethod('GET')){
-            $noticias = NoticiaRadio::select('noticia_radio.*','noticia_cliente.cliente_id','noticia_cliente.sentimento')
-                ->leftJoin('noticia_cliente', function($join){
-                $join->on('noticia_cliente.noticia_id', '=', 'noticia_radio.id');
-                $join->on('noticia_cliente.tipo_id','=', DB::raw(3));
-                $join->whereNull('noticia_cliente.deleted_at');
-            })
-            ->where('dt_noticia', $this->data_atual)
-            ->orderBy('created_at', 'DESC')
-            ->paginate(10);
-        }
-
-        if($request->isMethod('POST')){
-
-            $noticia = NoticiaRadio::query();
-            $noticia->select('noticia_radio.*','noticia_cliente.cliente_id','noticia_cliente.sentimento');
-            $noticia->leftJoin('noticia_cliente', function($join){
-                $join->on('noticia_cliente.noticia_id', '=', 'noticia_radio.id');
-                $join->on('tipo_id','=', DB::raw(3));
-                $join->whereNull('noticia_cliente.deleted_at');
-            }); 
-
-            $noticia->when($termo, function ($q) use ($termo) {
-                return $q->where('sinopse', 'ILIKE', '%'.trim($termo).'%');
-            });
-
-            $noticia->when($dt_inicial, function ($q) use ($dt_inicial, $dt_final) {
-                return $q->whereBetween('dt_noticia', [$dt_inicial, $dt_final]);
-            });
-
-            $noticias = $noticia->orderBy('created_at', 'DESC')->paginate(10);
-
-        }*/
-
         return view('noticia-radio/index', compact('clientes','fontes','dados','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo'));
     }
 
