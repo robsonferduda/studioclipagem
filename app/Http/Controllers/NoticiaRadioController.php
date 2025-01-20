@@ -7,6 +7,7 @@ use DateTime;
 use DateInterval;
 use DatePeriod;
 use App\Models\Area;
+use App\Models\Cliente;
 use App\Models\Cidade;
 use App\Models\EmissoraGravacao;
 use App\Utils;
@@ -25,27 +26,54 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 class NoticiaRadioController extends Controller
 {
     private $data_atual;
+    private $carbon;
 
     public function __construct()
     {
         $this->middleware('auth');
         $this->data_atual = session('data_atual');
+        $this->carbon = new Carbon();
         Session::put('url','radio');
-    }
-
-    public function getBasePath()
-    {
-        return public_path().DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR;
     }
 
     public function index(Request $request)
     {
         Session::put('sub-menu','radios');
 
-        $carbon = new Carbon();
-        $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
-        $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
-        $termo = $request->termo;
+        $fontes = Emissora::orderBy('nome_emissora')->get();
+        $clientes = Cliente::orderBy('fl_ativo')->orderBy('nome')->get();
+
+        $tipo_data = $request->tipo_data;
+        $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
+        $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
+        $cliente_selecionado = ($request->cliente) ? $request->cliente : null;
+        $fonte = ($request->fontes) ? $request->fontes : null;
+        $termo = ($request->termo) ? $request->termo : null;
+
+        $dados = DB::table('noticia_cliente')
+                    ->select('noticia_cliente.noticia_id AS id_audio',
+                            'noticia_cliente.noticia_id',
+                            'noticia_cliente.monitoramento_id',
+                            'emissora_radio.id AS id_fonte',
+                            'nome_emissora AS nome_fonte',
+                            'clientes.nome AS nome_cliente',
+                            'nm_estado',
+                            'nm_cidade',
+                            'data_hora_inicio',
+                            'transcricao',
+                            'expressao',
+                            'path_s3')
+                    ->join('clientes', 'clientes.id', '=', 'noticia_cliente.cliente_id')
+                    ->join('gravacao_emissora_radio', function ($join) {
+                        $join->on('gravacao_emissora_radio.id', '=', 'noticia_cliente.noticia_id')->where('tipo_id', 3);
+                    })
+                    ->join('emissora_radio','emissora_radio.id','=','gravacao_emissora_radio.id_emissora')
+                    ->join('monitoramento','monitoramento.id','=','noticia_cliente.monitoramento_id')
+                    ->leftJoin('estado','estado.cd_estado','=','emissora_radio.cd_estado')
+                    ->leftJoin('cidade','cidade.cd_cidade','=','emissora_radio.cd_cidade')
+                    ->paginate(10);
+
+        /*
 
         if($request->isMethod('GET')){
             $noticias = NoticiaRadio::select('noticia_radio.*','noticia_cliente.cliente_id','noticia_cliente.sentimento')
@@ -79,9 +107,9 @@ class NoticiaRadioController extends Controller
 
             $noticias = $noticia->orderBy('created_at', 'DESC')->paginate(10);
 
-        }
+        }*/
 
-        return view('noticia-radio/index', compact('noticias','dt_inicial','dt_final','termo'));
+        return view('noticia-radio/index', compact('clientes','fontes','dados','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo'));
     }
 
     public function dashboard()
@@ -396,6 +424,11 @@ class NoticiaRadioController extends Controller
         return response()->json($dados);
     }
 
+    public function getBasePath()
+    {
+        return public_path().DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR;
+    }
+
     public function estatisticas()
     {
         $dados = array();
@@ -415,5 +448,19 @@ class NoticiaRadioController extends Controller
         }
 
         return response()->json($dados);
+    }
+
+    public function destacaConteudo($id_noticia, $id_monitoramento)
+    {
+        $sql = "SELECT ts_headline('portuguese', t1.transcricao, to_tsquery('portuguese', t3.expressao), 'HighlightAll=true, StartSel=<mark>, StopSel=</mark>') as texto, t3.expressao 
+                        FROM gravacao_emissora_radio t1
+                        JOIN noticia_cliente t2 ON t2.noticia_id = t1.id 
+                        JOIN monitoramento t3 ON t3.id = t2.monitoramento_id  
+                        WHERE t1.id = $id_noticia
+                        AND t3.id = ".$id_monitoramento;
+    
+        $dados = DB::select($sql)[0];
+
+        return response()->json($dados); 
     }
 }

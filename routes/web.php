@@ -222,6 +222,7 @@ Route::get('radio/noticias/{id}/cliente/{cliente}/editar','NoticiaRadioControlle
 Route::get('radio/noticias/{id}/cliente/{cliente}/remover','NoticiaRadioController@remover');
 Route::get('radio/noticias/{id}/download','NoticiaRadioController@download');
 Route::get('radio/noticias/estatisticas','NoticiaRadioController@getEstatisticas');
+Route::get('radio/conteudo/{id_noticia}/monitoramento/{id_monitoramento}','NoticiaRadioController@destacaConteudo');
 Route::post('radio/noticias/inserir','NoticiaRadioController@inserir');
 Route::post('radio/noticias/{id}/atualizar','NoticiaRadioController@atualizar');
 Route::post('radio/noticias/upload','NoticiaRadioController@upload');
