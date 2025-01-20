@@ -93,7 +93,7 @@ class JornalImpressoController extends Controller
                         return $q->whereIn('jornal_online.id', $fonte);
                     })
                     ->when($dt_inicial, function ($q) use ($dt_inicial, $dt_final) {
-                        return $q->whereBetween('pagina_edicao_jornal_online.created_at', [$dt_inicial, $dt_final]);
+                        return $q->whereBetween('pagina_edicao_jornal_online.created_at', [$dt_inicial." 00:00:00", $dt_final." 23:59:59"]);
                     })
                     ->orderBy('pagina_edicao_jornal_online.id_edicao_jornal_online')
                     ->orderBy('n_pagina')
