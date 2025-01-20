@@ -381,7 +381,7 @@ class MonitoramentoController extends Controller
         $total_vinculado = 0;
         $tipo_midia = 1;
 
-        $monitoramentos = Monitoramento::where('fl_ativo', true)->where('fl_web', true)->get();
+        $monitoramentos = Monitoramento::where('fl_ativo', true)->where('fl_impresso', true)->get();
         
         foreach ($monitoramentos as $key => $monitoramento) {
 
@@ -446,7 +446,7 @@ class MonitoramentoController extends Controller
         $total_vinculado = 0;
         $tipo_midia = 3;
 
-        $monitoramentos = Monitoramento::where('fl_ativo', true)->where('fl_web', true)->get();
+        $monitoramentos = Monitoramento::where('fl_ativo', true)->where('fl_radio', true)->get();
         
         foreach ($monitoramentos as $key => $monitoramento) {
 
@@ -511,7 +511,7 @@ class MonitoramentoController extends Controller
         $total_vinculado = 0;
         $tipo_midia = 4;
 
-        $monitoramentos = Monitoramento::where('fl_ativo', true)->where('fl_web', true)->get();
+        $monitoramentos = Monitoramento::where('fl_ativo', true)->where('fl_tv', true)->get();
         
         foreach ($monitoramentos as $key => $monitoramento) {
 
