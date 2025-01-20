@@ -899,8 +899,6 @@ class MonitoramentoController extends Controller
             $request->merge(['filtro_tv' => $filtro_fontes]);
         }
 
-        dd($request->all());
-
         try{
                         
             $monitoramento->update($request->all());
