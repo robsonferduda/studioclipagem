@@ -71,6 +71,18 @@ class NoticiaRadioController extends Controller
                     ->join('monitoramento','monitoramento.id','=','noticia_cliente.monitoramento_id')
                     ->leftJoin('estado','estado.cd_estado','=','emissora_radio.cd_estado')
                     ->leftJoin('cidade','cidade.cd_cidade','=','emissora_radio.cd_cidade')
+                    ->when($termo, function ($q) use ($termo) {
+                        return $q->where('transcricao', 'ILIKE', '%'.trim($termo).'%');
+                    })
+                    ->when($cliente_selecionado, function ($q) use ($cliente_selecionado) {
+                        return $q->where('noticia_cliente.cliente_id', $cliente_selecionado);
+                    })
+                    ->when($fonte, function ($q) use ($fonte) {
+                        return $q->whereIn('emissora_radio.id', $fonte);
+                    })
+                    ->when($dt_inicial, function ($q) use ($dt_inicial, $dt_final) {
+                        return $q->whereBetween('gravacao_emissora_radio.created_at', [$dt_inicial, $dt_final]);
+                    })
                     ->paginate(10);
 
         return view('noticia-radio/index', compact('clientes','fontes','dados','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo'));
