@@ -83,4 +83,9 @@ class HomeController extends Controller
 
         return response()->json($totais);
     }
+
+    public function php()
+    {
+        phpinfo(); 
+    }
 }

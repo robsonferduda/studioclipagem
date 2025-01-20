@@ -193,6 +193,8 @@ Route::get('monitoramento/executar/radio','MonitoramentoController@executarRadio
 Route::get('monitoramento/executar/impresso','MonitoramentoController@executarImpresso');
 Route::get('monitoramento/executar/tv','MonitoramentoController@executarTv');
 
+Route::get('php','HomeController@php');
+
 Route::post('pauta','PautaController@store');
 Route::match(array('GET', 'POST'),'pautas','PautaController@index');
 Route::get('pauta/cadastrar','PautaController@cadastrar');
