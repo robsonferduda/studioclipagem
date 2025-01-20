@@ -302,7 +302,7 @@ class MonitoramentoController extends Controller
         return view('monitoramento/historico', compact('historico','monitoramento'));
     }
 
-    public function executarWeb()
+    public function executarWeb($grupo)
     {
         $dt_inicial = (Carbon::now())->format('Y-m-d')." 00:00:00";
         $dt_final = (Carbon::now())->format('Y-m-d')." 23:59:59";
@@ -310,7 +310,7 @@ class MonitoramentoController extends Controller
         $total_vinculado = 0;
         $tipo_midia = 2;
 
-        $monitoramentos = Monitoramento::where('fl_ativo', true)->where('fl_web', true)->get();
+        $monitoramentos = Monitoramento::where('fl_ativo', true)->where('fl_web', true)->where('grupo_execucao', $grupo)->get();
         
         foreach ($monitoramentos as $key => $monitoramento) {
 

@@ -29,7 +29,12 @@ class Kernel extends ConsoleKernel
 
         //$schedule->command('web:cron')->hourly(); //Executa a tarefa a cada 1 hora 
 
-        $schedule->command('web:cron')->everyTwoHours()->between('1:00', '22:00'); //Executa a tarefa a cada 2 hora 
+        $schedule->command('web_1:cron')->everyTwoHours(); //Executa a tarefa a cada 2 hora 
+        $schedule->command('web_2:cron')->everyTwoHours(); //Executa a tarefa a cada 2 hora 
+        $schedule->command('web_3:cron')->everyTwoHours(); //Executa a tarefa a cada 2 hora 
+        $schedule->command('web_4:cron')->everyTwoHours(); //Executa a tarefa a cada 2 hora 
+        $schedule->command('web_5:cron')->everyTwoHours(); //Executa a tarefa a cada 2 hora 
+
         $schedule->command('impresso:cron')->everyTwoHours()->between('2:00', '22:00'); //Executa a tarefa a cada 2 hora 
         $schedule->command('radio:cron')->everyThreeHours()->between('0:00', '22:00'); //Executa a tarefa a cada 2 hora 
         $schedule->command('tv:cron')->everyThreeHours()->between('1:00', '22:00'); //Executa a tarefa a cada 2 hora 

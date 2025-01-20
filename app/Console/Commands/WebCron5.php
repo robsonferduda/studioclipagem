@@ -5,9 +5,9 @@ namespace App\Console\Commands;
 use Mail;
 use Illuminate\Console\Command;
 
-class WebCron extends Command
+class WebCron5 extends Command
 {
-    protected $signature = 'web_1:cron';
+    protected $signature = 'web_5:cron';
     protected $description = 'Executa monitoramentos de web';
 
     public function __construct()
@@ -18,9 +18,9 @@ class WebCron extends Command
     public function handle()
     {
         $data['dados'] = null;
-        $titulo = " Notificação de Monitoramento Web - Grupo 1 - ".date("d/m/Y H:i:s"); 
+        $titulo = " Notificação de Monitoramento Web - Grupo 5 - ".date("d/m/Y H:i:s"); 
 
-        app('App\Http\Controllers\MonitoramentoController')->executarWeb(1);
+        app('App\Http\Controllers\MonitoramentoController')->executarWeb(5);
         
         Mail::send('notificacoes.teste', $data, function($message) use ($titulo){
             $message->to("robsonferduda@gmail.com")
