@@ -106,9 +106,6 @@
                                     @else
 
                                     @endif
-                                    <div class="center mt-2">
-                                        <a href="{{ url('jornal-impresso/web/pagina/download/'.$audio->id_audio) }}" target="_BLANK">Baixar</a>
-                                    </div>
                                 </div>
                                 <div class="col-lg-10 col-sm-10 mb-1"> 
                                     <h6><a href="{{ url('emissora/'.$audio->id_fonte.'/edit') }}" target="_BLANK">{{ ($audio->nome_fonte) ? $audio->nome_fonte : '' }}</a></h6>  
