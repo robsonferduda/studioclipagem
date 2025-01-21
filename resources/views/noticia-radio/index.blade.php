@@ -110,7 +110,11 @@
                                 <div class="col-lg-10 col-sm-10 mb-1"> 
                                     <h6><a href="{{ url('emissora/'.$audio->id_fonte.'/edit') }}" target="_BLANK">{{ ($audio->nome_fonte) ? $audio->nome_fonte : '' }}</a></h6>  
                                     <h6 style="color: #FF5722;">{{ ($audio->nm_estado) ? $audio->nm_estado : '' }}{{ ($audio->nm_cidade) ? "/".$audio->nm_cidade : '' }}</h6>  
-                                    <h6 class="text-muted mb-1">{{ \Carbon\Carbon::parse($audio->data_hora_inicio)->format('d/m/Y') }} - {{ ($audio->nome_fonte) ? $audio->nome_fonte : '' }}</h6> 
+                                    <h6 class="text-muted mb-1">
+                                        {{ ($audio->nome_fonte) ? $audio->nome_fonte : '' }} - 
+                                        {{ \Carbon\Carbon::parse($audio->data_hora_inicio)->format('d/m/Y') }} - 
+                                        De {{ \Carbon\Carbon::parse($audio->data_hora_inicio)->format('H:i:s') }} às {{ \Carbon\Carbon::parse($audio->data_hora_fim)->format('H:i:s') }}
+                                    </h6> 
                                     <p class="mb-1"><i class="nc-icon nc-briefcase-24"></i> {{ ($audio->nome_cliente) ? $audio->nome_cliente : '' }}</p>
                                     
                                     <div style="margin-bottom: 5px;" class="tags destaque-{{ $audio->noticia_id }}-{{ $audio->monitoramento_id }}" data-monitoramento="{{ $audio->monitoramento_id }}" data-chave="{{ $audio->noticia_id }}-{{ $audio->monitoramento_id }}" data-noticia="{{ $audio->noticia_id }}">

@@ -81,6 +81,7 @@ class NoticiaRadioController extends Controller
                             'nm_estado',
                             'nm_cidade',
                             'data_hora_inicio',
+                            'data_hora_fim',
                             'transcricao',
                             'expressao',
                             'path_s3')
