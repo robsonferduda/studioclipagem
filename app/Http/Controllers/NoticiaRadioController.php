@@ -51,11 +51,11 @@ class NoticiaRadioController extends Controller
 
         if($request->fontes or Session::get('radio_filtro_fonte')){
             if($request->fontes){
-                $fontes = $request->fontes;
+                $fonte = $request->fontes;
             }elseif(Session::get('radio_filtro_fonte')){
-                $fontes = Session::get('radio_filtro_fonte');
+                $fonte = Session::get('radio_filtro_fonte');
             }else{
-                $fontes = null;
+                $fonte = null;
             }
         }
 
