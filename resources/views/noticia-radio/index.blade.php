@@ -63,7 +63,7 @@
                                 <div class="form-group">
                                     <select multiple="multiple" size="10" name="fontes[]" class="demo1 form-control">
                                         @foreach ($fontes as $fonte)
-                                            <option value="{{ $fonte->id }}">{{ $fonte->nome_emissora }}</option>
+                                            <option value="{{ $fonte->id }}" {{ (in_array($fonte->id, Session::get('radio_filtro_fonte'))) ? 'selected' : '' }}>{{ $fonte->nome_emissora }}</option>
                                         @endforeach
                                     </select>
                                 </div>

@@ -50,6 +50,14 @@ class NoticiaRadioController extends Controller
         $fonte = ($request->fontes) ? $request->fontes : null;
         $termo = ($request->termo) ? $request->termo : null;
 
+        if($request->isMethod('POST')){
+
+            if($fonte)
+                Session::put('radio_filtro_fonte', $fonte);
+            else
+                Session::forget('radio_filtro_fonte');
+        }
+
         $dados = DB::table('noticia_cliente')
                     ->select('noticia_cliente.noticia_id AS id_audio',
                             'noticia_cliente.noticia_id',
