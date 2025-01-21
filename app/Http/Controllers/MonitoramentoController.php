@@ -310,8 +310,6 @@ class MonitoramentoController extends Controller
         $total_vinculado = 0;
         $tipo_midia = 2;
 
-        $dt_inicial = '2025-01-01 00:00:00';
-
         $monitoramentos = Monitoramento::where('fl_ativo', true)->where('fl_web', true)->where('grupo_execucao', $grupo)->get();
         
         foreach ($monitoramentos as $key => $monitoramento) {
@@ -382,8 +380,6 @@ class MonitoramentoController extends Controller
         $data_inicio = date('Y-m-d H:i:s');
         $total_vinculado = 0;
         $tipo_midia = 1;
-
-        $dt_inicial = '2025-01-01 00:00:00';
 
         $monitoramentos = Monitoramento::where('fl_ativo', true)->where('fl_impresso', true)->get();
         
