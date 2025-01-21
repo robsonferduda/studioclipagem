@@ -941,9 +941,9 @@ class MonitoramentoController extends Controller
         return redirect('monitoramento')->withInput();
     }
 
-    public function getMonitoramento($cliente)
+    public function getMonitoramento($cliente, $flag)
     {
-        $monitoramentos = Monitoramento::where('id_cliente', $cliente)->get();
+        $monitoramentos = Monitoramento::where('id_cliente', $cliente)->where($flag, true)->get();
 
         return response()->json($monitoramentos);
     }

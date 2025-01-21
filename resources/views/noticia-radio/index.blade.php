@@ -202,7 +202,7 @@
                 if(cliente_selecionado){
 
                     $.ajax({
-                        url: host+'/monitoramento/cliente/'+cliente_selecionado,
+                        url: host+'/monitoramento/cliente/'+cliente_selecionado+'/fl_impresso',
                         type: 'GET',
                         beforeSend: function() {
                             $('#monitoramento').find('option').remove().end();
