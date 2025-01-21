@@ -61,7 +61,7 @@ class NoticiaRadioController extends Controller
 
         if($request->isMethod('POST')){
 
-            if($fonte)
+            if($request->fontes)
                 Session::put('radio_filtro_fonte', $fonte);
             else
                 Session::forget('radio_filtro_fonte');
