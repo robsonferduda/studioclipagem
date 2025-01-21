@@ -405,8 +405,6 @@ class MonitoramentoController extends Controller
                             AND jo.id IN($monitoramento->filtro_impresso)
                             ORDER BY dt_coleta DESC";
 
-                            dd($sql);
-
                 }else{
 
                     $sql = "SELECT 
