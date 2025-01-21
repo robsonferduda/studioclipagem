@@ -57,6 +57,8 @@ class NoticiaRadioController extends Controller
             }else{
                 $fonte = null;
             }
+        }else{
+            $fonte = null;
         }
 
         if($request->isMethod('POST')){
