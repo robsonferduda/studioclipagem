@@ -94,7 +94,12 @@ class NoticiaRadioController extends Controller
                         $join->on('gravacao_emissora_radio.id', '=', 'noticia_cliente.noticia_id')->where('tipo_id', 3);
                     })
                     ->join('emissora_radio','emissora_radio.id','=','gravacao_emissora_radio.id_emissora')
-                    ->join('monitoramento','monitoramento.id','=','noticia_cliente.monitoramento_id')
+                    ->join('monitoramento', function($join) use($monitoramento){
+                        $join->on('monitoramento.id','=','noticia_cliente.monitoramento_id')
+                        ->when($monitoramento, function ($q) use ($monitoramento) {
+                            return $q->where('monitoramento.id', $monitoramento);
+                        });
+                    })
                     ->leftJoin('estado','estado.cd_estado','=','emissora_radio.cd_estado')
                     ->leftJoin('cidade','cidade.cd_cidade','=','emissora_radio.cd_cidade')
                     ->when($termo, function ($q) use ($termo) {
@@ -105,9 +110,6 @@ class NoticiaRadioController extends Controller
                     })
                     ->when($fonte, function ($q) use ($fonte) {
                         return $q->whereIn('emissora_radio.id', $fonte);
-                    })
-                    ->when($monitoramento, function ($q) use ($monitoramento) {
-                        return $q->where('monitoramento.id', $monitoramento);
                     })
                     ->when($dt_inicial, function ($q) use ($dt_inicial, $dt_final) {
                         return $q->whereBetween('gravacao_emissora_radio.created_at', [$dt_inicial." 00:00:00", $dt_final." 23:59:59"]);

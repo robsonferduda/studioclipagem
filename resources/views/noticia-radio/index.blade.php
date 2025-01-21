@@ -72,7 +72,7 @@
                             <div class="col-md-12 col-sm-12">
                                 <label>Fontes</label>
                                 <div class="form-group">
-                                    <select multiple="multiple" size="10" name="fontes[]" class="demo1 form-control">
+                                    <select multiple="multiple" size="10" name="fontes[]" id="fontes" class="demo1 form-control">
                                         @foreach ($fontes as $fonte)
                                             <option value="{{ $fonte->id }}" {{ (Session::get('radio_filtro_fonte') and in_array($fonte->id, Session::get('radio_filtro_fonte'))) ? 'selected' : '' }}>{{ $fonte->nome_emissora }}</option>
                                         @endforeach
@@ -202,7 +202,7 @@
                 if(cliente_selecionado){
 
                     $.ajax({
-                        url: host+'/monitoramento/cliente/'+cliente_selecionado+'/fl_radio',
+                        url: host+'/public/monitoramento/cliente/'+cliente_selecionado+'/fl_radio',
                         type: 'GET',
                         beforeSend: function() {
                             $('#monitoramento').find('option').remove().end();
@@ -239,6 +239,47 @@
                 }
              
             });
+
+            $("#monitoramento").change(function(){
+
+                var monitoramento_selecionado = $(this).val();
+
+                if(monitoramento_selecionado){
+
+                    $.ajax({
+                        url: host+'/public/monitoramento/'+monitoramento_selecionado+'/fontes',
+                        type: 'GET',
+                        beforeSend: function() {
+                                                       
+                        },
+                        success: function(data) {
+                            if(data.filtro_radio){
+
+                                const lista_fontes = JSON.parse("[" + data.filtro_radio + "]");
+
+                                console.log(lista_fontes);
+
+                                
+                                for (var i = 0; i < $('#fontes option').length; i++) {
+                                    if ($('#fontes option')[i].value == 1) {
+                                        
+                                    }
+                                }
+                            }
+                            
+                        },
+                        error: function(){
+                           
+                        },
+                        complete: function(){
+                                
+                        }
+                    }); 
+
+                }
+
+            });
+
             
             $(".tags").each(function() {
                

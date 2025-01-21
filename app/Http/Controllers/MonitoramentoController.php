@@ -947,4 +947,11 @@ class MonitoramentoController extends Controller
 
         return response()->json($monitoramentos);
     }
+
+    public function getFontesMonitoramento($monitoramento)
+    {
+        $monitoramento = Monitoramento::where('id', $monitoramento)->first();
+
+        return response()->json($monitoramento);
+    }
 }
