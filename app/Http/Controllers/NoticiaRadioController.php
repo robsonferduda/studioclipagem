@@ -47,7 +47,7 @@ class NoticiaRadioController extends Controller
         $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
         $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
         $cliente_selecionado = ($request->cliente) ? $request->cliente : null;
-        $fonte = ($request->fontes) ? $request->fontes : null;
+        $fonte = ($request->fontes or Session::get('radio_filtro_fonte')) ? $request->fontes : null;
         $termo = ($request->termo) ? $request->termo : null;
 
         if($request->isMethod('POST')){
