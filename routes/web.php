@@ -192,6 +192,7 @@ Route::get('monitoramento/executar/web/{grupo}','MonitoramentoController@executa
 Route::get('monitoramento/executar/radio','MonitoramentoController@executarRadio');
 Route::get('monitoramento/executar/impresso','MonitoramentoController@executarImpresso');
 Route::get('monitoramento/executar/tv','MonitoramentoController@executarTv');
+Route::get('monitoramento/cliente/{id_cliente}','MonitoramentoController@getMonitoramento');
 
 Route::get('php','HomeController@php');
 

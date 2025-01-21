@@ -48,6 +48,8 @@ class NoticiaRadioController extends Controller
         $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
         $cliente_selecionado = ($request->cliente) ? $request->cliente : null;
         $termo = ($request->termo) ? $request->termo : null;
+        $monitoramento = ($request->monitoramento) ? $request->monitoramento : null;
+        $monitoramento_id = null;
 
         if($request->fontes or Session::get('radio_filtro_fonte')){
             if($request->fontes){
@@ -62,6 +64,8 @@ class NoticiaRadioController extends Controller
         }
 
         if($request->isMethod('POST')){
+
+            ($monitoramento) ? $monitoramento_id = $monitoramento : null;
 
             if($request->fontes){
                 Session::put('radio_filtro_fonte', $fonte);
@@ -102,12 +106,15 @@ class NoticiaRadioController extends Controller
                     ->when($fonte, function ($q) use ($fonte) {
                         return $q->whereIn('emissora_radio.id', $fonte);
                     })
+                    ->when($monitoramento, function ($q) use ($monitoramento) {
+                        return $q->whereIn('monitoramento.id', $monitoramento);
+                    })
                     ->when($dt_inicial, function ($q) use ($dt_inicial, $dt_final) {
                         return $q->whereBetween('gravacao_emissora_radio.created_at', [$dt_inicial." 00:00:00", $dt_final." 23:59:59"]);
                     })
                     ->paginate(10);
 
-        return view('noticia-radio/index', compact('clientes','fontes','dados','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo'));
+        return view('noticia-radio/index', compact('clientes','fontes','dados','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo','monitoramento','monitoramento_id'));
     }
 
     public function dashboard()

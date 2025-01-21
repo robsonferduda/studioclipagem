@@ -58,6 +58,17 @@
                             </div>
                         </div>
                         <div class="row">
+                            <div class="col-md-12">
+                                <label>Monitoramento</label>
+                                <input type="hidden" name="monitoramento_id" id="monitoramento_id" value="{{ $monitoramento_id }}">
+                                <div class="form-group">
+                                    <select class="form-control" name="monitoramento" id="monitoramento" disabled>
+                                        <option value="">Selecione um monitoramento</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-12 col-sm-12">
                                 <label>Fontes</label>
                                 <div class="form-group">
@@ -158,8 +169,7 @@
 
             var demo2 = $('.demo1').bootstrapDualListbox({
                 nonSelectedListLabel: 'Disponíveis',
-                selectedListLabel: 'Selecionadas',
-               
+                selectedListLabel: 'Selecionadas',               
             });
 
             $(".panel-heading").click(function() {
@@ -185,6 +195,51 @@
 
             });
 
+            $("#cliente").change(function(){
+
+                var cliente_selecionado = $(this).val();
+
+                if(cliente_selecionado){
+
+                    $.ajax({
+                        url: host+'/monitoramento/cliente/'+cliente_selecionado,
+                        type: 'GET',
+                        beforeSend: function() {
+                            $('#monitoramento').find('option').remove().end();
+                            $('#monitoramento').append('<option value="">Carregando...</option>').val('');                            
+                        },
+                        success: function(data) {
+                            $('#monitoramento').attr('disabled', false);
+                            $('#monitoramento').find('option').remove().end();
+
+                            $('#monitoramento').append('<option value="" selected>Selecione um monitoramento</option>').val(''); 
+                            data.forEach(element => {
+
+                                var nome = (element.nome) ? element.nome : 'Monitoramento sem nome';
+
+                                let option = new Option(nome, element.id);
+                                $('#monitoramento').append(option);
+                            });    
+                            
+                            var monitoramento_selecionado = $("#monitoramento_id").val();
+                            if(monitoramento_selecionado > 0){
+                                if($("#monitoramento option[value="+monitoramento_selecionado+"]").length > 0)
+                                    $("#monitoramento").val(monitoramento_selecionado);
+                            }
+                        },
+                        error: function(){
+                            $('#monitoramento').find('option').remove().end();
+                            $('#monitoramento').append('<option value="">Erro ao carregar dados...</option>').val('');
+                        },
+                        complete: function(){
+                                
+                        }
+                    }); 
+
+                }
+             
+            });
+            
             $(".tags").each(function() {
                
                 var monitoramento = $(this).data("monitoramento");
@@ -226,6 +281,10 @@
                     }
                 });
             });
+        });
+
+        $(document).ready(function(){
+            $('#cliente').trigger('change');
         });
     </script>
 @endsection
