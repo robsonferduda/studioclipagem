@@ -381,12 +381,35 @@ class MonitoramentoController extends Controller
         $total_vinculado = 0;
         $tipo_midia = 1;
 
+        $dt_inicial = '2025-01-01 00:00:00';
+
         $monitoramentos = Monitoramento::where('fl_ativo', true)->where('fl_impresso', true)->get();
         
         foreach ($monitoramentos as $key => $monitoramento) {
 
             try{
-                $sql = "SELECT 
+
+                if($monitoramento->filtro_impresso){
+
+                    $sql = "SELECT
+                        pejo.id, n.id_jornal_online, n.link_pdf, dt_coleta, dt_pub, titulo, texto_extraido
+                        FROM 
+                            edicao_jornal_online n
+                        JOIN 
+                            pagina_edicao_jornal_online pejo 
+                            ON pejo.id_edicao_jornal_online = n.id
+                        JOIN jornal_online jo ON jo.id = n.id_jornal_online 
+                        WHERE 1=1
+                            AND n.dt_coleta BETWEEN '2025-01-20 00:00:00' AND '2025-01-20 23:00:00' 
+                            AND pejo.texto_extraido_tsv @@ to_tsquery('portuguese', 'Palmeiras')
+                            AND jo.id IN($monitoramento->filtro_impresso)
+                            ORDER BY dt_coleta DESC";
+
+                            dd($sql);
+
+                }else{
+
+                    $sql = "SELECT 
                         pejo.id, id_jornal_online, link_pdf, dt_coleta, dt_pub, titulo, texto_extraido
                     FROM 
                         edicao_jornal_online n
@@ -397,7 +420,8 @@ class MonitoramentoController extends Controller
                         AND n.dt_coleta BETWEEN '$dt_inicial' AND '$dt_final' 
                         AND pejo.texto_extraido_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao')
                         ORDER BY dt_coleta DESC";
-
+                }
+               
                 $dados = DB::select($sql);
 
                 $total_associado = $this->associar($dados, $tipo_midia, $monitoramento);

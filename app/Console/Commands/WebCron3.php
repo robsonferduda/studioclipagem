@@ -22,10 +22,11 @@ class WebCron3 extends Command
 
         app('App\Http\Controllers\MonitoramentoController')->executarWeb(3);
         
+        /*
         Mail::send('notificacoes.teste', $data, function($message) use ($titulo){
             $message->to("robsonferduda@gmail.com")
                     ->subject($titulo);
             $message->from('boletins@clipagens.com.br','Studio Clipagem');
-        }); 
+        }); */
     }
 }
