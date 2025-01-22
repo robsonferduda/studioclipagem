@@ -466,8 +466,6 @@ class MonitoramentoController extends Controller
         $total_vinculado = 0;
         $tipo_midia = 3;
 
-        $dt_inicial = '2025-01-01 00:00:00';
-
         $monitoramentos = Monitoramento::where('fl_ativo', true)->where('fl_radio', true)->get();
         
         foreach ($monitoramentos as $key => $monitoramento) {
