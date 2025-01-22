@@ -77,10 +77,10 @@ class JornalImpressoController extends Controller
             }elseif(Session::get('impresso_monitoramento')){
                 $monitoramento = Session::get('impresso_monitoramento');
             }else{
-                $monitoramento : null;
+                $monitoramento = null;
             }
         }else{
-            $monitoramento : null;
+            $monitoramento = null;
         }
 
         if($request->isMethod('POST')){
