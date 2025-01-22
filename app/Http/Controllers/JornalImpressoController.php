@@ -61,11 +61,11 @@ class JornalImpressoController extends Controller
         $monitoramento = ($request->monitoramento) ? $request->monitoramento : null;
         $monitoramento_id = null;
 
-        if($request->fontes or Session::get('radio_filtro_fonte')){
+        if($request->fontes or Session::get('impresso_filtro_fonte')){
             if($request->fontes){
                 $fonte = $request->fontes;
-            }elseif(Session::get('radio_filtro_fonte')){
-                $fonte = Session::get('radio_filtro_fonte');
+            }elseif(Session::get('impresso_filtro_fonte')){
+                $fonte = Session::get('impresso_filtro_fonte');
             }else{
                 $fonte = null;
             }
@@ -78,9 +78,9 @@ class JornalImpressoController extends Controller
             ($monitoramento) ? $monitoramento_id = $monitoramento : null;
 
             if($request->fontes){
-                Session::put('radio_filtro_fonte', $fonte);
+                Session::put('impresso_filtro_fonte', $fonte);
             }else{
-                Session::forget('radio_filtro_fonte');
+                Session::forget('impresso_filtro_fonte');
                 $fonte = null;
             }
         }
