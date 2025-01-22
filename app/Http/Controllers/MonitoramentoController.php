@@ -637,7 +637,25 @@ class MonitoramentoController extends Controller
 
                 $tipo_midia = 1; //Impresso
 
-                $sql = "SELECT 
+                if($monitoramento->filtro_impresso){
+
+                    $sql = "SELECT
+                        pejo.id, n.id_jornal_online, n.link_pdf, dt_coleta, dt_pub, titulo, texto_extraido
+                        FROM 
+                            edicao_jornal_online n
+                        JOIN 
+                            pagina_edicao_jornal_online pejo 
+                            ON pejo.id_edicao_jornal_online = n.id
+                        JOIN jornal_online jo ON jo.id = n.id_jornal_online 
+                        WHERE 1=1
+                            AND n.dt_coleta BETWEEN '$dt_inicial' AND '$dt_final' 
+                            AND pejo.texto_extraido_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao')
+                            AND jo.id IN($monitoramento->filtro_impresso)
+                            ORDER BY dt_coleta DESC";
+
+                }else{
+
+                    $sql = "SELECT 
                         pejo.id, id_jornal_online, link_pdf, dt_coleta, dt_pub, titulo, texto_extraido
                     FROM 
                         edicao_jornal_online n
@@ -648,6 +666,7 @@ class MonitoramentoController extends Controller
                         AND n.dt_coleta BETWEEN '$dt_inicial' AND '$dt_final' 
                         AND pejo.texto_extraido_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao')
                         ORDER BY dt_coleta DESC";
+                }
 
                 $dados = DB::select($sql);
 
@@ -661,15 +680,20 @@ class MonitoramentoController extends Controller
 
                 $tipo_midia = 3; //Rádio
 
-                $sql = "SELECT 
-                        n.id, id_emissora, data_hora_inicio, data_hora_fim, path_s3, nome_emissora
+                 $sql = "SELECT 
+                            n.id, id_emissora, data_hora_inicio, data_hora_fim, path_s3, nome_emissora
                         FROM 
-                        gravacao_emissora_radio n
+                            gravacao_emissora_radio n
                         JOIN 
-                        emissora_radio er 
+                            emissora_radio er 
                         ON er.id = n.id_emissora
-                        WHERE 1=1
-                        AND n.data_hora_inicio BETWEEN '$dt_inicial' AND '$dt_final'
+                        WHERE 1=1 ";
+
+                if($monitoramento->filtro_radio){
+                    $sql .= "AND er.id IN($monitoramento->filtro_radio) ";
+                }
+
+                $sql .= "AND n.data_hora_inicio BETWEEN '$dt_inicial' AND '$dt_final'
                         AND  n.transcricao_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao')
                         ORDER BY n.data_hora_inicio DESC";
 
