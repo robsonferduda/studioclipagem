@@ -75,7 +75,11 @@ class JornalImpressoController extends Controller
 
         if($request->isMethod('POST')){
 
-            ($monitoramento) ? $monitoramento_id = $monitoramento : null;
+            if($request->monitoramento){
+                Session::put('impresso_monitoramento', $monitoramento);
+            }else{
+                Session::forget('impresso_monitoramento');
+            }
 
             if($request->fontes){
                 Session::put('impresso_filtro_fonte', $fonte);

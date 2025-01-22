@@ -62,7 +62,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <label>Monitoramento</label>
-                                    <input type="hidden" name="monitoramento_id" id="monitoramento_id" value="{{ $monitoramento_id }}">
+                                    <input type="hidden" name="monitoramento_id" id="monitoramento_id" value="{{ Session::get('impresso_monitoramento') }}">
                                     <div class="form-group">
                                         <select class="form-control" name="monitoramento" id="monitoramento" disabled>
                                             <option value="">Selecione um monitoramento</option>
