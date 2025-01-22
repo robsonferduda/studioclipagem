@@ -65,8 +65,12 @@ class NoticiaRadioController extends Controller
 
         if($request->isMethod('POST')){
 
-            ($monitoramento) ? $monitoramento_id = $monitoramento : null;
-
+            if($request->monitoramento){
+                Session::put('radio_monitoramento', $monitoramento);
+            }else{
+                Session::forget('radio_monitoramento');
+            }
+        
             if($request->fontes){
                 Session::put('radio_filtro_fonte', $fonte);
             }else{
