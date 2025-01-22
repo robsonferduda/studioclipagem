@@ -58,6 +58,32 @@ class JornalImpressoController extends Controller
         $cliente_selecionado = ($request->cliente) ? $request->cliente : null;
         $fonte = ($request->fontes) ? $request->fontes : null;
         $termo = ($request->termo) ? $request->termo : null;
+        $monitoramento = ($request->monitoramento) ? $request->monitoramento : null;
+        $monitoramento_id = null;
+
+        if($request->fontes or Session::get('radio_filtro_fonte')){
+            if($request->fontes){
+                $fonte = $request->fontes;
+            }elseif(Session::get('radio_filtro_fonte')){
+                $fonte = Session::get('radio_filtro_fonte');
+            }else{
+                $fonte = null;
+            }
+        }else{
+            $fonte = null;
+        }
+
+        if($request->isMethod('POST')){
+
+            ($monitoramento) ? $monitoramento_id = $monitoramento : null;
+
+            if($request->fontes){
+                Session::put('radio_filtro_fonte', $fonte);
+            }else{
+                Session::forget('radio_filtro_fonte');
+                $fonte = null;
+            }
+        }
 
         $dados = DB::table('noticia_cliente')
                     ->select('path_pagina_s3',
@@ -95,11 +121,14 @@ class JornalImpressoController extends Controller
                     ->when($dt_inicial, function ($q) use ($dt_inicial, $dt_final) {
                         return $q->whereBetween('pagina_edicao_jornal_online.created_at', [$dt_inicial." 00:00:00", $dt_final." 23:59:59"]);
                     })
+                    ->when($monitoramento, function ($q) use ($monitoramento) {
+                        return $q->where('noticia_cliente.monitoramento_id', $monitoramento);
+                    })
                     ->orderBy('pagina_edicao_jornal_online.id_edicao_jornal_online')
                     ->orderBy('n_pagina')
                     ->paginate(10);
 
-        return view('jornal-impresso/index',compact('clientes','fontes','dados','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo'));
+        return view('jornal-impresso/index',compact('clientes','fontes','dados','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo','monitoramento','monitoramento_id'));
     }
 
     public function buscar(Request $request)

@@ -60,6 +60,17 @@
                                 </div>
                             </div>
                             <div class="row">
+                                <div class="col-md-12">
+                                    <label>Monitoramento</label>
+                                    <input type="hidden" name="monitoramento_id" id="monitoramento_id" value="{{ $monitoramento_id }}">
+                                    <div class="form-group">
+                                        <select class="form-control" name="monitoramento" id="monitoramento" disabled>
+                                            <option value="">Selecione um monitoramento</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-12 col-sm-12">
                                     <label>Fontes</label>
                                     <div class="form-group">
@@ -100,7 +111,7 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-lg-2 col-md-2 col-sm-12 mb-1">
-                                        <a href="{{ url('jornal-impresso/web/pagina/download/'.$pagina->id_pagina) }}" target="_BLANK"><img src="{{ Storage::disk('s3')->temporaryUrl($pagina->path_pagina_s3, '+2 minutes') }}" alt="Pégina {{ $pagina->n_pagina }}"></a>
+                                        <a href="{{ url('jornal-impresso/web/pagina/download/'.$pagina->id_pagina) }}" target="_BLANK"><img src="{{ Storage::disk('s3')->temporaryUrl($pagina->path_pagina_s3, '+2 minutes') }}" alt="Página {{ $pagina->n_pagina }}"></a>
                                     </div>
                                     <div class="col-lg-10 col-sm-10 mb-1"> 
                                         <h6><a href="{{ url('fonte-impresso/'.$pagina->id_fonte.'/editar') }}" target="_BLANK">{{ ($pagina->nome_fonte) ? $pagina->nome_fonte : '' }}</a></h6>  
@@ -177,6 +188,92 @@
 
             });
 
+
+            $("#cliente").change(function(){
+
+                var cliente_selecionado = $(this).val();
+
+                if(cliente_selecionado){
+
+                    $.ajax({
+                        url: host+'/monitoramento/cliente/'+cliente_selecionado+'/fl_impresso',
+                        type: 'GET',
+                        beforeSend: function() {
+                            $('#monitoramento').find('option').remove().end();
+                            $('#monitoramento').append('<option value="">Carregando...</option>').val('');                            
+                        },
+                        success: function(data) {
+                            $('#monitoramento').attr('disabled', false);
+                            $('#monitoramento').find('option').remove().end();
+
+                            $('#monitoramento').append('<option value="" selected>Selecione um monitoramento</option>').val(''); 
+                            data.forEach(element => {
+
+                                var nome = (element.nome) ? element.nome : 'Monitoramento sem nome';
+
+                                let option = new Option(nome, element.id);
+                                $('#monitoramento').append(option);
+                            });    
+                            
+                            var monitoramento_selecionado = $("#monitoramento_id").val();
+                            if(monitoramento_selecionado > 0){
+                                if($("#monitoramento option[value="+monitoramento_selecionado+"]").length > 0)
+                                    $("#monitoramento").val(monitoramento_selecionado);
+                            }
+                        },
+                        error: function(){
+                            $('#monitoramento').find('option').remove().end();
+                            $('#monitoramento').append('<option value="">Erro ao carregar dados...</option>').val('');
+                        },
+                        complete: function(){
+                                
+                        }
+                    }); 
+
+                }
+             
+            });
+
+            $("#monitoramento").change(function(){
+
+                var monitoramento_selecionado = $(this).val();
+
+                if(monitoramento_selecionado){
+
+                    $.ajax({
+                        url: host+'/monitoramento/'+monitoramento_selecionado+'/fontes',
+                        type: 'GET',
+                        beforeSend: function() {
+                                                       
+                        },
+                        success: function(data) {
+                            if(data.filtro_impresso){
+
+                                const lista_fontes = JSON.parse("[" + data.filtro_impresso + "]");
+
+                                console.log(lista_fontes);
+
+                                
+                                for (var i = 0; i < $('#fontes option').length; i++) {
+                                    if ($('#fontes option')[i].value == 1) {
+                                        
+                                    }
+                                }
+                            }
+                            
+                        },
+                        error: function(){
+                           
+                        },
+                        complete: function(){
+                                
+                        }
+                    }); 
+
+                }
+
+            });
+
             $(".tags").each(function() {
                
                 var monitoramento = $(this).data("monitoramento");
@@ -218,6 +315,10 @@
                     }
                 });
             });
+        });
+
+        $(document).ready(function(){
+            $('#cliente').trigger('change');
         });
     </script>
 @endsection
