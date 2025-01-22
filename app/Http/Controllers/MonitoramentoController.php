@@ -326,7 +326,7 @@ class MonitoramentoController extends Controller
                         WHERE 1=1 ";
 
                 if($monitoramento->filtro_web){
-                    $sql .= "AND fw.id IN($monitoramento->filtro_web)";
+                    $sql .= "AND fw.id IN($monitoramento->filtro_web) ";
                 }
 
                 $sql .= "AND n.data_noticia BETWEEN '$dt_inicial' AND '$dt_final' 
@@ -466,11 +466,14 @@ class MonitoramentoController extends Controller
         $total_vinculado = 0;
         $tipo_midia = 3;
 
+        $dt_inicial = '2025-01-01 00:00:00';
+
         $monitoramentos = Monitoramento::where('fl_ativo', true)->where('fl_radio', true)->get();
         
         foreach ($monitoramentos as $key => $monitoramento) {
 
             try{
+                
                 $sql = "SELECT 
                             n.id, id_emissora, data_hora_inicio, data_hora_fim, path_s3, nome_emissora
                         FROM 
@@ -478,10 +481,15 @@ class MonitoramentoController extends Controller
                         JOIN 
                             emissora_radio er 
                         ON er.id = n.id_emissora
-                        WHERE 1=1
-                            AND n.data_hora_inicio BETWEEN '$dt_inicial' AND '$dt_final'
-                            AND  n.transcricao_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao')
-                            ORDER BY n.data_hora_inicio DESC";
+                        WHERE 1=1 ";
+
+                if($monitoramento->filtro_radio){
+                    $sql .= "AND er.id IN($monitoramento->filtro_radio) ";
+                }
+
+                $sql .= "AND n.data_hora_inicio BETWEEN '$dt_inicial' AND '$dt_final'
+                        AND  n.transcricao_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao')
+                        ORDER BY n.data_hora_inicio DESC";
 
                 $dados = DB::select($sql);
 
