@@ -106,7 +106,12 @@ class JornalImpressoController extends Controller
                     })
                     ->join('edicao_jornal_online','edicao_jornal_online.id','=','pagina_edicao_jornal_online.id_edicao_jornal_online')
                     ->join('jornal_online','jornal_online.id','=','edicao_jornal_online.id_jornal_online')
-                    ->join('monitoramento','monitoramento.id','=','noticia_cliente.monitoramento_id')
+                    ->join('monitoramento', function($join) use($monitoramento){
+                        $join->on('monitoramento.id','=','noticia_cliente.monitoramento_id')
+                        ->when($monitoramento, function ($q) use ($monitoramento) {
+                            return $q->where('monitoramento.id', $monitoramento);
+                        });
+                    })
                     ->leftJoin('estado','estado.cd_estado','=','jornal_online.cd_estado')
                     ->leftJoin('cidade','cidade.cd_cidade','=','jornal_online.cd_cidade')
                     ->when($termo, function ($q) use ($termo) {
