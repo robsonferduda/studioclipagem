@@ -58,9 +58,7 @@ class JornalImpressoController extends Controller
         $cliente_selecionado = ($request->cliente) ? $request->cliente : null;
         $fonte = ($request->fontes) ? $request->fontes : null;
         $termo = ($request->termo) ? $request->termo : null;
-        $monitoramento = ($request->monitoramento) ? $request->monitoramento : null;
-        $monitoramento_id = null;
-
+       
         if($request->fontes or Session::get('impresso_filtro_fonte')){
             if($request->fontes){
                 $fonte = $request->fontes;
@@ -71,6 +69,18 @@ class JornalImpressoController extends Controller
             }
         }else{
             $fonte = null;
+        }
+
+        if($request->monitoramento or Session::get('impresso_monitoramento')){
+            if($request->monitoramento){
+                $monitoramento = $request->monitoramento;
+            }elseif(Session::get('impresso_monitoramento')){
+                $monitoramento = Session::get('impresso_monitoramento');
+            }else{
+                $monitoramento : null;
+            }
+        }else{
+            $monitoramento : null;
         }
 
         if($request->isMethod('POST')){
@@ -137,7 +147,7 @@ class JornalImpressoController extends Controller
                     ->orderBy('n_pagina')
                     ->paginate(10);
 
-        return view('jornal-impresso/index',compact('clientes','fontes','dados','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo','monitoramento','monitoramento_id'));
+        return view('jornal-impresso/index',compact('clientes','fontes','dados','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo','monitoramento'));
     }
 
     public function buscar(Request $request)
