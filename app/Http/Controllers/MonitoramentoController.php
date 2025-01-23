@@ -315,6 +315,11 @@ class MonitoramentoController extends Controller
         foreach ($monitoramentos as $key => $monitoramento) {
 
             try{
+
+                if($monitoramento->dt_inicio){
+                    $dt_inicial = $monitoramento->dt_inicio;
+                }
+                
                 $sql = "SELECT 
                             n.id, n.id_fonte, n.url_noticia, n.data_insert, n.data_noticia, n.titulo_noticia, fw.nome
                         FROM 
@@ -388,6 +393,10 @@ class MonitoramentoController extends Controller
         foreach ($monitoramentos as $key => $monitoramento) {
 
             try{
+
+                if($monitoramento->dt_inicio){
+                    $dt_inicial = $monitoramento->dt_inicio;
+                }
 
                 if($monitoramento->filtro_impresso){
 
@@ -473,6 +482,10 @@ class MonitoramentoController extends Controller
         foreach ($monitoramentos as $key => $monitoramento) {
 
             try{
+
+                if($monitoramento->dt_inicio){
+                    $dt_inicial = $monitoramento->dt_inicio;
+                }
                 
                 $sql = "SELECT 
                             n.id, id_emissora, data_hora_inicio, data_hora_fim, path_s3, nome_emissora
@@ -543,6 +556,10 @@ class MonitoramentoController extends Controller
         
         foreach ($monitoramentos as $key => $monitoramento) {
 
+            if($monitoramento->dt_inicio){
+                $dt_inicial = $monitoramento->dt_inicio;
+            }
+
             try{
                 $sql = "SELECT 
                         n.id, id_programa_emissora_web, horario_start_gravacao, horario_end_gravacao, url_video, misc_data, transcricao, nome_programa
@@ -605,6 +622,10 @@ class MonitoramentoController extends Controller
         $total_vinculado = 0;
 
         $monitoramento = Monitoramento::find($id);
+
+        if($monitoramento->dt_inicio){
+            $dt_inicial = $monitoramento->dt_inicio;
+        }
 
         try{
         
@@ -1016,6 +1037,6 @@ class MonitoramentoController extends Controller
             Flash::error('<i class="fa fa-times"></i> Erro ao limpar monitoramento');
         }
 
-        return redirect('monitoramento')->withInput();
+        return redirect()->back()->withInput();
     }
 }
