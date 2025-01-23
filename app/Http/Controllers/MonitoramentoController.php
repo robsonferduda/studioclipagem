@@ -319,7 +319,7 @@ class MonitoramentoController extends Controller
                 if($monitoramento->dt_inicio){
                     $dt_inicial = $monitoramento->dt_inicio;
                 }
-                
+
                 $sql = "SELECT 
                             n.id, n.id_fonte, n.url_noticia, n.data_insert, n.data_noticia, n.titulo_noticia, fw.nome
                         FROM 
@@ -1030,12 +1030,18 @@ class MonitoramentoController extends Controller
 
     public function limparMonitoramento($id)
     {
-    
-        if(DB::table('noticia_cliente')->where('monitoramento_id', $id)->delete()){
-            Flash::success('<i class="fa fa-check"></i> Limpeza de monitoramento realizada com sucesso');
+        $dados = DB::table('noticia_cliente')->where('monitoramento_id', $id)->get();
+
+        if(count($dados)){
+            if(DB::table('noticia_cliente')->where('monitoramento_id', $id)->delete()){
+                Flash::success('<i class="fa fa-check"></i> Limpeza de monitoramento realizada com sucesso');
+            }else{
+                Flash::error('<i class="fa fa-times"></i> Erro ao limpar monitoramento');
+            }
         }else{
-            Flash::error('<i class="fa fa-times"></i> Erro ao limpar monitoramento');
+            Flash::warning('<i class="fa fa-times"></i> Monitoramento não possui dados vinculados');
         }
+      
 
         return redirect()->back()->withInput();
     }
