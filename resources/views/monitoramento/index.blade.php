@@ -129,6 +129,9 @@
                                                 <a title="Notícias" href="{{ url('monitoramento/'.$monitoramento->id.'/todas-noticias') }}" class="btn btn-default btn-fill btn-icon btn-sm" style="border-radius: 30px;">
                                                     <i class="nc-icon nc-sound-wave text-white"></i>
                                                 </a>
+                                                <a title="Limpar" href="{{ url('monitoramento/limpar/'.$monitoramento->id) }}" class="btn btn-default btn-fill btn-icon btn-sm" style="border-radius: 30px; background: #c54cc5;">
+                                                    <i class="fa fa-eraser fa-3x text-white"></i>
+                                                </a>
                                                 <a title="Executar" href="{{ url('monitoramento/'.$monitoramento->id.'/executar') }}" class="btn btn-warning btn-fill btn-icon btn-sm" style="border-radius: 30px;">
                                                     <i class="fa fa-bolt fa-3x text-white"></i>
                                                 </a>

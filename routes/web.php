@@ -180,6 +180,7 @@ Route::get('monitoramento/{id}/todas-noticias','MonitoramentoController@noticias
 Route::get('monitoramento/{id}/editar','MonitoramentoController@editar');
 Route::get('monitoramento/{id}/excluir','MonitoramentoController@excluir');
 Route::get('monitoramento/cliente/{id}','MonitoramentoController@getMonitoramentoCliente');
+Route::get('monitoramento/limpar/{id}','MonitoramentoController@limparMonitoramento');
 Route::post('monitoramento/update','MonitoramentoController@update');
 Route::post('monitoramento/filtrar/conteudo','MonitoramentoController@getConteudo');
 Route::post('monitoramento/filtrar','MonitoramentoController@filtrar');

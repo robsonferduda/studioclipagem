@@ -1006,4 +1006,16 @@ class MonitoramentoController extends Controller
 
         return response()->json($monitoramento);
     }
+
+    public function limparMonitoramento($id)
+    {
+    
+        if(DB::table('noticia_cliente')->where('monitoramento_id', $id)->delete()){
+            Flash::success('<i class="fa fa-check"></i> Limpeza de monitoramento realizada com sucesso');
+        }else{
+            Flash::error('<i class="fa fa-times"></i> Erro ao limpar monitoramento');
+        }
+
+        return redirect('monitoramento')->withInput();
+    }
 }
