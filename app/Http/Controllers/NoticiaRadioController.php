@@ -59,6 +59,7 @@ class NoticiaRadioController extends Controller
             }
         }else{
             $fonte = null;
+            Session::forget('radio_filtro_fonte');
         }
 
         if($request->monitoramento or Session::get('radio_monitoramento')){
@@ -71,6 +72,7 @@ class NoticiaRadioController extends Controller
             }
         }else{
             $monitoramento = null;
+            Session::forget('radio_monitoramento');
         }
 
         if($request->isMethod('POST')){

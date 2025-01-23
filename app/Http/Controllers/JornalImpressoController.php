@@ -69,6 +69,7 @@ class JornalImpressoController extends Controller
             }
         }else{
             $fonte = null;
+            Session::forget('impresso_filtro_fonte');
         }
 
         if($request->monitoramento or Session::get('impresso_monitoramento')){
@@ -81,6 +82,7 @@ class JornalImpressoController extends Controller
             }
         }else{
             $monitoramento = null;
+            Session::forget('impresso_monitoramento');
         }
 
         if($request->isMethod('POST')){
