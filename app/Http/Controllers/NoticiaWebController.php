@@ -33,6 +33,7 @@ class NoticiaWebController extends Controller
         Session::put('sub-menu','jornal-web');
 
         $fontes = FonteWeb::orderBy('nome')->get();
+        $fontes = array();
         $clientes = Cliente::orderBy('fl_ativo')->orderBy('nome')->get();
         $dados = array();
 
