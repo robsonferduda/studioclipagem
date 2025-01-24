@@ -111,7 +111,12 @@
                 <div class="col-lg-12 col-sm-12 conteudo">      
                     @if(count($dados))
                         <h6 class="px-3">Mostrando {{ $dados->count() }} de {{ $dados->total() }} notícias</h6> 
-                        {{ $dados->onEachSide(1)->appends(['fl_print' => $fl_print, 'expressao' => $expressao])->links('vendor.pagination.bootstrap-4') }}
+                        
+                        {{ $dados->onEachSide(1)->appends(['dt_inicial' => \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y'), 
+                                                            'dt_final' => \Carbon\Carbon::parse($dt_final)->format('d/m/Y'),
+                                                            'cliente' => $cliente_selecionado,
+                                                            'termo' => $termo])
+                                                            ->links('vendor.pagination.bootstrap-4') }}
                     @endif
                 </div>
                 <div class="col-lg-12">
@@ -150,7 +155,11 @@
                 </div>
                 <div class="col-lg-12 col-sm-12 conteudo">      
                     @if(count($dados))
-                        {{ $dados->onEachSide(1)->appends(['fl_print' => $fl_print, 'expressao' => $expressao])->links('vendor.pagination.bootstrap-4') }}
+                    {{ $dados->onEachSide(1)->appends(['dt_inicial' => \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y'), 
+                                                        'dt_final' => \Carbon\Carbon::parse($dt_final)->format('d/m/Y'),
+                                                        'cliente' => $cliente_selecionado,
+                                                        'termo' => $termo])
+                                                        ->links('vendor.pagination.bootstrap-4') }}
                     @endif
                 </div>
             </div>
