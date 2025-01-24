@@ -92,6 +92,7 @@ class NoticiaWebController extends Controller
                             'fonte_web.nome AS nome_fonte',
                             'noticias_web.data_noticia',
                             'noticias_web.data_insert',
+                            'noticias_web.titulo_noticia',
                             'noticia_cliente.noticia_id',
                             'noticia_cliente.monitoramento_id',
                             'conteudo',
