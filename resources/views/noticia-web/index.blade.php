@@ -133,7 +133,7 @@
                                         <div class="col-lg-10 col-sm-12">                                        
                                             <div class="conteudo-noticia mb-1">
                                                 <p class="font-weight-bold mb-1">{{ $dado->titulo_noticia }}</p>
-                                                <p class="text-muted"> {!! ($dado->data_noticia) ? date('d/m/Y', strtotime($dado->noticia->data_noticia)) : date('d/m/Y', strtotime($dado->data_noticia)) !!} - {{ $dado->nome_fonte }}</p> 
+                                                <p class="text-muted"> {!! ($dado->data_noticia) ? date('d/m/Y', strtotime($dado->data_noticia)) : date('d/m/Y', strtotime($dado->data_noticia)) !!} - {{ $dado->nome_fonte }}</p> 
                                             </div>
                                             <div class="panel panel-success">
                                                 <div class="conteudo-noticia mb-1 transcricao">
