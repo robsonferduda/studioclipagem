@@ -97,6 +97,7 @@ class NoticiaWebController extends Controller
                             'conteudo',
                             'expressao',
                             'nm_estado',
+                            'fl_print',
                             'nm_cidade',
                             'clientes.nome AS nome_cliente')
                     ->join('clientes', 'clientes.id', '=', 'noticia_cliente.cliente_id')
