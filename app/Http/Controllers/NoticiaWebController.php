@@ -136,7 +136,7 @@ class NoticiaWebController extends Controller
                     ->orderBy('data_noticia','DESC')
                     ->paginate(10);
 
-        return view('noticia-web/index',compact('clientes','fontes','dados','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo','monitoramento'));
+        return view('noticia-web/index',compact('clientes','fontes','dados','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo','monitoramento','fl_print'));
     }
 
     public function dashboard()
