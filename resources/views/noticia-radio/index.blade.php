@@ -108,7 +108,7 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-lg-2 col-md-2 col-sm-12 mb-1">                                    
+                                <div class="col-lg-12 col-md-12 col-sm-12 mb-1">                                    
                                     @if(Storage::disk('s3')->temporaryUrl($audio->path_s3, '+30 minutes'))
                                         <audio width="100%" controls style="width: 100%;">
                                             <source src="{{ Storage::disk('s3')->temporaryUrl($audio->path_s3, '+30 minutes') }}" type="audio/mpeg">
@@ -118,7 +118,7 @@
 
                                     @endif
                                 </div>
-                                <div class="col-lg-10 col-sm-10 mb-1"> 
+                                <div class="col-lg-12 col-sm-12 mb-1"> 
                                     <h6><a href="{{ url('emissora/'.$audio->id_fonte.'/edit') }}" target="_BLANK">{{ ($audio->nome_fonte) ? $audio->nome_fonte : '' }}</a></h6>  
                                     <h6 style="color: #FF5722;">{{ ($audio->nm_estado) ? $audio->nm_estado : '' }}{{ ($audio->nm_cidade) ? "/".$audio->nm_cidade : '' }}</h6>  
                                     <h6 class="text-muted mb-1">
