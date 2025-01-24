@@ -131,7 +131,7 @@ class NoticiaWebController extends Controller
                     ->when($fl_print, function ($q) use ($fl_print) {
                         return $q->where('screenshot', $fl_print);
                     })
-                    ->orderBy('fonte_web.id_fonte')
+                    ->orderBy('fonte_web.id')
                     ->orderBy('data_noticia','DESC')
                     ->paginate(10);
 
