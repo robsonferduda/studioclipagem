@@ -87,7 +87,7 @@ class NoticiaWebController extends Controller
         }
 
         $dados = DB::table('noticia_cliente')
-                    ->select('path_pagina_s3',
+                    ->select('path_screenshot',
                             'fonte_web.id AS id_fonte',
                             'fonte_web.nome AS nome_fonte',
                             'noticias_web.data_noticia',
