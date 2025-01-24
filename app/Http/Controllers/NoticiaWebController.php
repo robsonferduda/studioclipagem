@@ -18,148 +18,124 @@ use Illuminate\Support\Facades\Session;
 class NoticiaWebController extends Controller
 {
     private $data_atual;
+    private $carbon;
 
     public function __construct()
     {
         $this->middleware('auth');
         $this->data_atual = session('data_atual');
         Session::put('url','jornal-web');
+        $this->carbon = new Carbon();
     }
 
     public function index(Request $request)
     {
         Session::put('sub-menu','jornal-web');
 
-        $carbon = new Carbon();
-        $dt_inicial = date('Y-m-d')." 00:00:00";
-        $dt_final = date('Y-m-d')." 23:59:59";
-        $expressao = "";
-        $fonte = null;
-        $cliente = null;
-        $fl_print = false;
+        $fontes = FonteWeb::orderBy('nome')->get();
+        $clientes = Cliente::orderBy('fl_ativo')->orderBy('nome')->get();
         $dados = array();
 
-        $clientes = Cliente::orderBy('nome')->get();
-        $fontes = FonteWeb::orderBy('nome')->get();
+        $tipo_data = $request->tipo_data;
+        $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
+        $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
+        $cliente_selecionado = ($request->cliente) ? $request->cliente : null;
+        $fonte = ($request->fontes) ? $request->fontes : null;
+        $termo = ($request->termo) ? $request->termo : null;
+        $fl_print = ($request->fl_print) ? true : false;
+
+        if($request->fontes or Session::get('web_filtro_fonte')){
+            if($request->fontes){
+                $fonte = $request->fontes;
+            }elseif(Session::get('web_filtro_fonte')){
+                $fonte = Session::get('web_filtro_fonte');
+            }else{
+                $fonte = null;
+            }
+        }else{
+            $fonte = null;
+            Session::forget('web_filtro_fonte');
+        }
+
+        if($request->monitoramento or Session::get('web_monitoramento')){
+            if($request->monitoramento){
+                $monitoramento = $request->monitoramento;
+            }elseif(Session::get('web_monitoramento')){
+                $monitoramento = Session::get('web_monitoramento');
+            }else{
+                $monitoramento = null;
+            }
+        }else{
+            $monitoramento = null;
+            Session::forget('web_monitoramento');
+        }
 
         if($request->isMethod('POST')){
 
-            $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00" : date("Y-m-d")." 00:00:00";
-            $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d")." 23:59:59";
-            $fl_print = ($request->fl_print) ? true : false;
-            $expressao = $request->expressao;
-            $fonte = $request->fonte;
-            $cliente = $request->cliente;
+            if($request->monitoramento){
+                Session::put('web_monitoramento', $monitoramento);
+            }else{
+                Session::forget('web_monitoramento');
+            }
 
-            $noticia = ConteudoNoticiaWeb::query();
-
-            $noticia->when($fl_print, function ($q) use ($fl_print) {
-                $q->whereHas('noticia', function($q) use($fl_print){
-                    return $q->where('screenshot', $fl_print);
-                });
-            });
-
-            $noticia->when($expressao, function ($q) use ($expressao) {
-                return $q->whereRaw('conteudo @@ to_tsquery(\'portuguese\', ?)', [$expressao]);
-            });
-
-            $dados = $noticia->whereBetween('created_at', [$dt_inicial, $dt_final])->orderBy('created_at','DESC')->paginate(10);
+            if($request->fontes){
+                Session::put('web_filtro_fonte', $fonte);
+            }else{
+                Session::forget('web_filtro_fonte');
+                $fonte = null;
+            }
         }
 
-        if($request->isMethod('GET')){
-
-            if($request->page){
-                
-                $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00" : date("Y-m-d")." 00:00:00";
-                $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d")." 23:59:59";
-                $fl_print = ($request->fl_print) ? true : false;
-    
-                $noticia = ConteudoNoticiaWeb::query();
-    
-                $noticia->when($fl_print, function ($q) use ($fl_print) {
-                    $q->whereHas('noticia', function($q) use($fl_print){
+        $dados = DB::table('noticia_cliente')
+                    ->select('path_pagina_s3',
+                            'fonte_web.id AS id_fonte',
+                            'fonte_web.nome AS nome_fonte',
+                            'noticias_web.data_noticia',
+                            'noticias_web.data_insert',
+                            'noticia_cliente.noticia_id',
+                            'noticia_cliente.monitoramento_id',
+                            'conteudo',
+                            'expressao',
+                            'nm_estado',
+                            'nm_cidade',
+                            'clientes.nome AS nome_cliente')
+                    ->join('clientes', 'clientes.id', '=', 'noticia_cliente.cliente_id')
+                    ->join('noticias_web', function ($join) {
+                        $join->on('noticias_web.id', '=', 'noticia_cliente.noticia_id')->where('tipo_id',2);
+                    })
+                    ->join('conteudo_noticia_web','conteudo_noticia_web.id_noticia_web','=','noticias_web.id')
+                    ->join('fonte_web','fonte_web.id','=','noticias_web.id_fonte')
+                    ->join('monitoramento', function($join) use($monitoramento){
+                        $join->on('monitoramento.id','=','noticia_cliente.monitoramento_id')
+                        ->when($monitoramento, function ($q) use ($monitoramento) {
+                            return $q->where('monitoramento.id', $monitoramento);
+                        });
+                    })
+                    ->leftJoin('estado','estado.cd_estado','=','fonte_web.cd_estado')
+                    ->leftJoin('cidade','cidade.cd_cidade','=','fonte_web.cd_cidade')
+                    ->when($termo, function ($q) use ($termo) {
+                        return $q->where('texto_extraido', 'ILIKE', '%'.trim($termo).'%');
+                    })
+                    ->when($cliente_selecionado, function ($q) use ($cliente_selecionado) {
+                        return $q->where('noticia_cliente.cliente_id', $cliente_selecionado);
+                    })
+                    ->when($fonte, function ($q) use ($fonte) {
+                        return $q->whereIn('fonte_web.id', $fonte);
+                    })
+                    ->when($dt_inicial, function ($q) use ($dt_inicial, $dt_final) {
+                        return $q->whereBetween('noticias_web.data_noticia', [$dt_inicial." 00:00:00", $dt_final." 23:59:59"]);
+                    })
+                    ->when($monitoramento, function ($q) use ($monitoramento) {
+                        return $q->where('noticia_cliente.monitoramento_id', $monitoramento);
+                    })
+                    ->when($fl_print, function ($q) use ($fl_print) {
                         return $q->where('screenshot', $fl_print);
-                    });
-                });
-    
-                $noticia->when($expressao, function ($q) use ($expressao) {
-                    return $q->whereRaw('conteudo @@ to_tsquery(\'portuguese\', ?)', [$expressao]);
-                });
-    
-                $dados = $noticia->whereBetween('created_at', [$dt_inicial, $dt_final])->orderBy('created_at','DESC')->paginate(10);
+                    })
+                    ->orderBy('fonte_web.id_fonte')
+                    ->orderBy('data_noticia','DESC')
+                    ->paginate(10);
 
-            }
-
-        }
-        
-        /*
-        if($request->isMethod('POST')){
-
-            $carbon = new Carbon();
-            $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00" : date("Y-m-d")." 00:00:00";
-            $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d")." 23:59:59";
-            $expressao = $request->expressao;
-            $fonte = $request->fonte;
-
-            $filtro_fonte = '';
-            $filtro_expressao = '';
-
-            $jornais = NoticiaWeb::query();
-
-            $jornais->when($fonte, function ($q) use ($fonte) {
-                return $q->where('id_fonte', $fonte);
-            });
-
-            $jornais->when($termo, function ($q) use ($termo) {
-                $q->whereHas('conteudo', function($q) use($termo){
-                    return $q->whereRaw("conteudo  ~* '$termo' ");
-                });
-            });
-
-            //$dados = $jornais->whereBetween('data_insert', [$dt_inicial, $dt_final])->orderBy('id_fonte')->orderBy('titulo_noticia')->get();
-
-            if($fonte) $filtro_fonte = " AND nw.id_fonte = $fonte";
-            if($expressao) $filtro_expressao = " AND n.conteudo ~* '$expressao'";
-
-            $sql = "SELECT 
-                        n.id AS id,
-                        'conteudo_noticia_web' AS origem,
-                        n.id_noticia_web::TEXT AS id_referencia,
-                        n.created_at AS data_hora,
-                        nw.titulo_noticia as titulo
-                    FROM public.conteudo_noticia_web n
-                    JOIN public.noticias_web nw ON nw.id = n.id_noticia_web 
-                    WHERE n.created_at::DATE BETWEEN '$dt_inicial' AND '$dt_final'
-                    $filtro_fonte
-                    $filtro_expressao";
-
-            $dados = DB::select($sql);
-
-            return response()->json($dados);
-
-        }
-
-        if($request->isMethod('GET')){
-
-            Session::forget('busca_termo');
-            Session::forget('burca_fonte');
-
-            if($request->dt_inicial){
-
-                $carbon = new Carbon();
-                $dt_inicial = ($request->dt_inicial) ? $request->dt_inicial : date("Y-m-d")." 00:00:00";
-                $dt_final = ($request->dt_final) ? $request->dt_final : date("Y-m-d")." 23:59:59";
-
-                $dados = NoticiaWeb::whereBetween('data_insert', [$dt_inicial, $dt_final])->orderBy('data_noticia','DESC')->orderBy('id_fonte')->paginate(10);
-
-            }
-
-        }
-
-        $total_noticias = count($dados);
-        */
-
-        return view('noticia-web/index',compact('fontes','dados','dt_inicial','dt_final','fonte','clientes','cliente','fl_print','expressao'));
+        return view('noticia-web/index',compact('clientes','fontes','dados','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo','monitoramento'));
     }
 
     public function dashboard()

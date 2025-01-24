@@ -25,38 +25,67 @@
                     {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['buscar-web']]) !!}
                         <div class="form-group m-3 w-70">
                             <div class="row">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Tipo de Data</label>
+                                        <select class="form-control select2" name="tipo_data" id="tipo_data">
+                                            <option value="created_at" {{ ($tipo_data == "created_at") ? 'selected' : '' }}>Data de Cadastro</option>
+                                            <option value="dt_pub" {{ ($tipo_data == "dt_pub") ? 'selected' : '' }}>Data do Clipping</option>
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
                                         <label>Data Inicial</label>
-                                        <input type="text" class="form-control datepicker" name="dt_inicial" id="dt_inicial" required="true" value="{{ date("d/m/Y") }}" placeholder="__/__/____">
+                                        <input type="text" class="form-control datepicker" name="dt_inicial" required="true" value="{{ \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y') }}" placeholder="__/__/____">
                                     </div>
                                 </div>
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
                                         <label>Data Final</label>
-                                        <input type="text" class="form-control datepicker" name="dt_final" id="dt_final" required="true" value="{{ date("d/m/Y") }}" placeholder="__/__/____">
+                                        <input type="text" class="form-control datepicker" name="dt_final" required="true" value="{{ \Carbon\Carbon::parse($dt_final)->format('d/m/Y') }}" placeholder="__/__/____">
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Fonte</label>
-                                        <select class="form-control select2" name="fonte" id="fonte">
-                                            <option value="">Selecione uma fonte</option>
-                                            @foreach ($fontes as $f)
-                                                <option value="{{ $f->id }}" {{ ($fonte == $f->id ) ? 'selected' : '' }}>{{ $f->nome }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Clientes</label>
+                                        <label>Cliente</label>
                                         <select class="form-control select2" name="cliente" id="cliente">
                                             <option value="">Selecione um cliente</option>
-                                            @foreach ($clientes as $cli)
-                                                <option value="{{ $cli->id }}" {{ ($cliente == $cli->id ) ? 'selected' : '' }}>{{ $cli->nome }}</option>
+                                            @foreach ($clientes as $cliente)
+                                                <option value="{{ $cliente->id }}" {{ ($cliente_selecionado == $cliente->id) ? 'selected' : '' }}>{{ $cliente->nome }}</option>
                                             @endforeach
                                         </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>Monitoramento</label>
+                                    <input type="hidden" name="monitoramento_id" id="monitoramento_id" value="{{ Session::get('web_monitoramento') }}">
+                                    <div class="form-group">
+                                        <select class="form-control" name="monitoramento" id="monitoramento" disabled>
+                                            <option value="">Selecione um monitoramento</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12">
+                                    <label>Fontes</label>
+                                    <div class="form-group">
+                                        <select multiple="multiple" size="10" name="fontes[]" class="demo1 form-control">
+                                            @foreach ($fontes as $fonte)
+                                                <option value="{{ $fonte->id }}">{{ $fonte->nome }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12">
+                                    <div class="form-group">
+                                        <label>Buscar por <span class="text-primary">Digite o termo ou expressão de busca</span></label>
+                                        <input type="text" class="form-control" name="termo" id="termo" minlength="3" placeholder="Termo" value="{{ $termo }}">
                                     </div>
                                 </div>
                                 <div class="col-md-12">
@@ -72,20 +101,12 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12 col-sm-12">
-                                    <div class="form-group">
-                                        <label for="expressao" class="form-label">Expressão de Busca <span class="text-primary">Digite o termo ou expressão de busca baseado em regex</span></label>
-                                        <textarea class="form-control" name="expressao" id="expressao" rows="3">{{ $expressao }}</textarea>
-                                    </div>
-                                </div>
                                 <div class="col-md-12 checkbox-radios mb-0">
                                     <button type="submit" id="btn-find" class="btn btn-primary mb-3"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
-                            </div>     
+                            </div>
                         </div>
-                    {!! Form::close() !!} 
+                    {!! Form::close() !!}
                 </div>
                 <div class="col-lg-12 col-sm-12 conteudo">      
                     @if(count($dados))
@@ -152,97 +173,12 @@
         var host =  $('meta[name="base-url"]').attr('content');
         var token = $('meta[name="csrf-token"]').attr('content');
 
-        $(".periodo").change(function(){
-            var periodo = $(this).val();
-            inicializaDatas(periodo);        
-        });
-
-        function inicializaDatas(periodo)
-        {
-            var dataFinal = new Date();
-            var dataInicial = new Date();    
-                
-            if(periodo != 'personalizado'){
-                dataInicial.setDate(dataFinal.getDate() - (periodo - 1));
-            }else{
-                $(".dt_inicial_relatorio").focus();
-            }
-
-            $(".dt_inicial_relatorio").val(formataData(dataInicial));
-            $(".dt_final_relatorio").val(formataData(dataFinal));
-
-            $(".label_data_inicial").html(formataData(dataInicial));
-            $(".label_data_final").html(formataData(dataFinal));   
-        }
-
-        function formataData(data)
-        {
-            var dia = String(data.getDate()).padStart(2, '0');
-            var mes = String(data.getMonth() + 1).padStart(2, '0');
-            var ano = data.getFullYear();
-
-            return dia + '/' + mes + '/' + ano;
-        }
-
-        $("#btn-find").click(function(){
-
-        /*
-            var expressao = $("#expressao").val();
-            var dt_inicial = $("#dt_inicial").val();
-            var dt_final = $("#dt_final").val();
-            var fonte = $("#fonte").val();
-
-            var ajaxTime = new Date().getTime();
-
-            $.ajax({url: host+'/buscar-web',
-                    type: 'POST',
-                    data: {"_token": $('meta[name="csrf-token"]').attr('content'),
-                            "dt_inicial": dt_inicial,
-                            "dt_final": dt_final,
-                            "fonte": fonte,
-                            "expressao": expressao
-                    },
-                    beforeSend: function() {
-                        $('.load-busca').loader('show');
-                    },
-                    success: function(data) {
-
-                        $(".label-resultado").css("display","block");
-                        $(".resultados").empty();
-
-                        var totalTime = millisToMinutesAndSeconds(new Date().getTime() - ajaxTime);
-
-                        if(data.length == 0){
-
-                            $(".resultados").append('<span class="text-danger">Consulta realizada em <strong>'+totalTime+'</strong> não encontrou nenhum registro</span>');
-
-                        }else{
-
-                            $(".resultados").append('<span class="mb-3">Consulta realizada em <strong>'+totalTime+'</strong> encontrou '+data.length+' registros</span><br/><br/>');
-
-                            $.each(data, function(k, v) {
-                            // $(".resultados").append('<p><a href="'+v.url_noticia+'" target="BLANK">'+v.titulo_noticia+'</a></p>');
-                                $(".resultados").append('<div><p class="fts_detalhes" style="font-weight: 600;" data-chave="txt-'+k+'" data-id="'+v.id+'">'+v.titulo+'</p><div id="txt-'+k+'"></div></div>');
-                            });
-                        }                            
-                    },
-                    error: function(){
-                        $(".resultados").empty();
-                        $(".resultados").append('<span class="text-danger">Erro ao executar o string de busca</span>');
-                    },
-                    complete: function(){
-                        $('.load-busca').loader('hide');
-                    }
+        var demo2 = $('.demo1').bootstrapDualListbox({
+                nonSelectedListLabel: 'Disponíveis',
+                selectedListLabel: 'Selecionadas',
+               
             });
-            */
-
-        });
-
-        function millisToMinutesAndSeconds(millis) {
-            var minutes = Math.floor(millis / 60000);
-            var seconds = ((millis % 60000) / 1000).toFixed(0);
-            return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
-        }
+       
 
         $(".panel-heading").click(function() {
             $(this).parent().addClass('active').find('.panel-body').slideToggle('fast');
@@ -267,6 +203,136 @@
 
         });
 
+        $("#cliente").change(function(){
+
+                var cliente_selecionado = $(this).val();
+
+                if(cliente_selecionado){
+
+                    $.ajax({
+                        url: host+'/monitoramento/cliente/'+cliente_selecionado+'/fl_web',
+                        type: 'GET',
+                        beforeSend: function() {
+                            $('#monitoramento').find('option').remove().end();
+                            $('#monitoramento').append('<option value="">Carregando...</option>').val('');                            
+                        },
+                        success: function(data) {
+                            $('#monitoramento').attr('disabled', false);
+                            $('#monitoramento').find('option').remove().end();
+
+                            $('#monitoramento').append('<option value="" selected>Selecione um monitoramento</option>').val(''); 
+                            data.forEach(element => {
+
+                                var nome = (element.nome) ? element.nome : 'Monitoramento sem nome';
+
+                                let option = new Option(nome, element.id);
+                                $('#monitoramento').append(option);
+                            });    
+                            
+                            var monitoramento_selecionado = $("#monitoramento_id").val();
+                            if(monitoramento_selecionado > 0){
+                                if($("#monitoramento option[value="+monitoramento_selecionado+"]").length > 0)
+                                    $("#monitoramento").val(monitoramento_selecionado);
+                            }
+                        },
+                        error: function(){
+                            $('#monitoramento').find('option').remove().end();
+                            $('#monitoramento').append('<option value="">Erro ao carregar dados...</option>').val('');
+                        },
+                        complete: function(){
+                                
+                        }
+                    }); 
+
+                }
+             
+            });
+
+            $("#monitoramento").change(function(){
+
+                var monitoramento_selecionado = $(this).val();
+
+                if(monitoramento_selecionado){
+
+                    $.ajax({
+                        url: host+'/monitoramento/'+monitoramento_selecionado+'/fontes',
+                        type: 'GET',
+                        beforeSend: function() {
+                                                       
+                        },
+                        success: function(data) {
+                            if(data.filtro_web){
+
+                                const lista_fontes = JSON.parse("[" + data.filtro_web + "]");
+
+                                console.log(lista_fontes);
+
+                                
+                                for (var i = 0; i < $('#fontes option').length; i++) {
+                                    if ($('#fontes option')[i].value == 1) {
+                                        
+                                    }
+                                }
+                            }
+                            
+                        },
+                        error: function(){
+                           
+                        },
+                        complete: function(){
+                                
+                        }
+                    }); 
+
+                }
+
+            });
+
+             $(".tags").each(function() {
+               
+                var monitoramento = $(this).data("monitoramento");
+                var noticia = $(this).data("noticia");
+                var chave = ".destaque-"+$(this).data("chave");
+                var chave_conteudo = ".conteudo-"+$(this).data("chave");
+
+                $.ajax({
+                    url: host+'/jornal-impresso/conteudo/'+noticia+'/monitoramento/'+monitoramento,
+                    type: 'GET',
+                    beforeSend: function() {
+                            
+                    },
+                    success: function(data) {
+                        
+                        $(chave_conteudo).html(data.texto);
+
+                        var marks = [];                 
+                        
+                        const divContent = document.querySelector(chave_conteudo);
+
+                        if (divContent) {
+            
+                            const childElements = divContent.querySelectorAll('mark');
+                            const output = document.querySelector(chave);
+
+                            childElements.forEach(element => {
+
+                                if(!marks.includes(element.innerHTML.trim())){
+                                    marks.push(element.innerHTML.trim());
+
+                                    $(chave).append('<span class="destaque-busca">'+element.innerHTML.trim()+'</span>');
+                                }
+                            });
+                        } 
+                    },
+                    complete: function(){
+                            
+                    }
+                });
+            });
+
+    });
+    $(document).ready(function(){
+        $('#cliente').trigger('change');
     });
 </script>
 @endsection
