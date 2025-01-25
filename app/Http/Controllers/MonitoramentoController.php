@@ -386,8 +386,6 @@ class MonitoramentoController extends Controller
         $total_vinculado = 0;
         $tipo_midia = 1;
 
-        $dt_inicial = '2025-01-01 00:00:00';
-
         $monitoramentos = Monitoramento::where('fl_ativo', true)->where('fl_impresso', true)->get();
         
         foreach ($monitoramentos as $key => $monitoramento) {
@@ -690,6 +688,8 @@ class MonitoramentoController extends Controller
                         AND pejo.texto_extraido_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao')
                         ORDER BY dt_coleta DESC";
                 }
+
+                dd($sql);
 
                 $dados = DB::select($sql);
 
