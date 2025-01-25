@@ -145,15 +145,15 @@
                                     </code>
                                     <div class="panel panel-success">
                                         <div class="conteudo-noticia mb-1 transcricao">
-                                            {!! ($video->transcricao) ?  Str::limit($video->transcricao, 700, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                            {!! ($video->transcricao) ?  Str::limit($video->transcricao, 1000, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
                                         </div>
-                                        <div class="panel-body transcricao-total">
+                                        <div class="panel-body conteudo-{{ $video->noticia_id }}-{{ $video->monitoramento_id }}">
                                             {!! ($video->transcricao) ?  $video->transcricao  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
                                         </div>
                                         <div class="panel-heading">
                                             <h3 class="panel-title"><span class="btn-show">Mostrar Mais</span></h3>
                                         </div>
-                                    </div> 
+                                    </div>       
                                 </div>
                             </div>
                         </div>
