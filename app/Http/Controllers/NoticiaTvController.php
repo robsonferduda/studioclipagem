@@ -97,7 +97,7 @@ class NoticiaTvController extends Controller
         $dados = DB::table('noticia_cliente')
                     ->select('video_path',
                             'programa_emissora_web.id AS id_fonte',
-                            'programa_emissora_web.nome AS nome_programa',
+                            'programa_emissora_web.nome_programa AS nome_programa',
                             'noticia_cliente.noticia_id',
                             'noticia_cliente.monitoramento_id',
                             'transcricao',
