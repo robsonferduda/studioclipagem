@@ -117,7 +117,7 @@
                                 </div>
                                 <div class="col-lg-8 col-sm-12">                                        
                                     <p class="mb-1">
-                                        @if($video->programa and $video->programa->tipo and in_array($video->programa->tipo->id, [4,5]))
+                                        @if($video->tipo_programa and in_array($video->tipo_programa, [4,5]))
                                             <i class="fa fa-youtube text-danger" aria-hidden="true" style="font-size: 30px;"></i>
                                         @endif
                                         <strong>{{ ($video->nome_emissora) ? $video->nome_emissora : '' }}</strong> - 
