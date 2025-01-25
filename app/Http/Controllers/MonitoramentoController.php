@@ -689,14 +689,10 @@ class MonitoramentoController extends Controller
                         ORDER BY dt_coleta DESC";
                 }
 
-                dd($sql);
-
                 $dados = DB::select($sql);
 
                 $total_associado = $this->associar($dados, $tipo_midia, $monitoramento);
                 $total_vinculado += $total_associado;
-
-                $total_vinculado = count($dados) + $total_vinculado;
             }
 
             if($monitoramento->fl_radio) {
@@ -783,7 +779,7 @@ class MonitoramentoController extends Controller
 
         foreach ($dados as $key => $noticia) {
 
-            $noticia_cliente = NoticiaCliente::where('noticia_id', $noticia->id)->where('tipo_id', $tipo)->first();
+            $noticia_cliente = NoticiaCliente::where('noticia_id', $noticia->id)->where('tipo_id', $tipo)->where('cliente_id', $monitoramento->id_cliente)->first();
             
             if(!$noticia_cliente){
 
