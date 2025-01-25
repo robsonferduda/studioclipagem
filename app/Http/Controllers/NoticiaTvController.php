@@ -28,83 +28,121 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 class NoticiaTvController extends Controller
 {
     private $data_atual;
+    private $carbon;
 
     public function __construct()
     {
         $this->middleware('auth');
         $this->data_atual = session('data_atual');
         Session::put('url','tv');
-    }
-
-    public function getBasePath()
-    {
-        return storage_path().DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR;
+        $this->carbon = new Carbon();
     }
 
     public function index(Request $request)
     {
         Session::put('sub-menu','tv-noticias');
 
-        $carbon = new Carbon();
-        $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d "."00:00:00");
-        $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d "."23:59:59");
-        $termo = $request->termo;
-        $noticias = array();
-        $clientes = Cliente::all();
-        $emissoras = EmissoraWeb::orderBy('nome_emissora')->get();
+        $fontes = ProgramaEmissoraWeb::orderBy('nome_programa')->get();
+        $clientes = Cliente::orderBy('fl_ativo')->orderBy('nome')->get();
 
-        if($request->isMethod('GET')){
+        $tipo_data = $request->tipo_data;
+        $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
+        $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
+        $cliente_selecionado = ($request->cliente) ? $request->cliente : null;
+        $fonte = ($request->fontes) ? $request->fontes : null;
+        $termo = ($request->termo) ? $request->termo : null;
 
-            /*
-            $storage = Storage::disk('s3')->allFiles();
-
-            $arquivo = Storage::disk('s3')->url('app/files/streams/379798884_20241104_092035.mp4');
-          
-            $arquivo = Storage::disk('s3')->get('app/files/streams/379798884_20241104_092035.mp4');
-
-            dd($arquivo);
-            */
-
-            $tv = NoticiaTv::query();
-            $noticias = $tv->whereBetween('dt_noticia', [$dt_inicial, $dt_final])->paginate(10);
+        if($request->fontes or Session::get('tv_filtro_fonte')){
+            if($request->fontes){
+                $fonte = $request->fontes;
+            }elseif(Session::get('tv_filtro_fonte')){
+                $fonte = Session::get('tv_filtro_fonte');
+            }else{
+                $fonte = null;
+            }
+        }else{
+            $fonte = null;
+            Session::forget('tv_filtro_fonte');
         }
 
-        /*
-        if($request->isMethod('GET')){
-            $noticias = NoticiaTv::select('noticia_tv.*','noticia_cliente.cliente_id','noticia_cliente.sentimento')
-                ->leftJoin('noticia_cliente', function($join){
-                $join->on('noticia_cliente.noticia_id', '=', 'noticia_tv.id');
-                $join->on('noticia_cliente.tipo_id','=', DB::raw(3));
-                $join->whereNull('noticia_cliente.deleted_at');
-            })
-            ->where('dt_noticia', $this->data_atual)
-            ->orderBy('created_at', 'DESC')
-            ->paginate(10);
+        if($request->monitoramento or Session::get('tv_monitoramento')){
+            if($request->monitoramento){
+                $monitoramento = $request->monitoramento;
+            }elseif(Session::get('tv_monitoramento')){
+                $monitoramento = Session::get('tv_monitoramento');
+            }else{
+                $monitoramento = null;
+            }
+        }else{
+            $monitoramento = null;
+            Session::forget('tv_monitoramento');
         }
 
         if($request->isMethod('POST')){
 
-            $noticia = NoticiaTv::query();
-            $noticia->select('noticia_tv.*','noticia_cliente.cliente_id','noticia_cliente.sentimento');
-            $noticia->leftJoin('noticia_cliente', function($join){
-                $join->on('noticia_cliente.noticia_id', '=', 'noticia_tv.id');
-                $join->on('tipo_id','=', DB::raw(3));
-                $join->whereNull('noticia_cliente.deleted_at');
-            }); 
+            if($request->monitoramento){
+                Session::put('tv_monitoramento', $monitoramento);
+            }else{
+                Session::forget('tv_monitoramento');
+            }
 
-            $noticia->when($termo, function ($q) use ($termo) {
-                return $q->where('sinopse', 'ILIKE', '%'.trim($termo).'%');
-            });
+            if($request->fontes){
+                Session::put('tv_filtro_fonte', $fonte);
+            }else{
+                Session::forget('tv_filtro_fonte');
+                $fonte = null;
+            }
+        }
+       
+        $dados = DB::table('noticia_cliente')
+                    ->select('video_path',
+                            'programa_emissora_web.id AS id_fonte',
+                            'programa_emissora_web.nome AS nome_programa',
+                            'noticia_cliente.noticia_id',
+                            'noticia_cliente.monitoramento_id',
+                            'transcricao',
+                            'nome_emissora',
+                            'programa_emissora_web.tipo_programa',
+                            'horario_start_gravacao',
+                            'horario_end_gravacao',
+                            'misc_data',
+                            'expressao',
+                            'nm_estado',
+                            'nm_cidade',
+                            'clientes.nome AS nome_cliente')
+                    ->join('clientes', 'clientes.id', '=', 'noticia_cliente.cliente_id')
+                    ->join('videos_programa_emissora_web', function ($join) {
+                        $join->on('videos_programa_emissora_web.id', '=', 'noticia_cliente.noticia_id')->where('tipo_id',4);
+                    })
+                    ->join('programa_emissora_web','videos_programa_emissora_web.id_programa_emissora_web','=','programa_emissora_web.id')
+                    ->join('emissora_web','emissora_web.id','=','programa_emissora_web.id_emissora')
+                    ->join('monitoramento', function($join) use($monitoramento){
+                        $join->on('monitoramento.id','=','noticia_cliente.monitoramento_id')
+                        ->when($monitoramento, function ($q) use ($monitoramento) {
+                            return $q->where('monitoramento.id', $monitoramento);
+                        });
+                    })
+                    ->leftJoin('estado','estado.cd_estado','=','programa_emissora_web.cd_estado')
+                    ->leftJoin('cidade','cidade.cd_cidade','=','programa_emissora_web.cd_cidade')
+                    ->when($termo, function ($q) use ($termo) {
+                        return $q->where('transcricao', 'ILIKE', '%'.trim($termo).'%');
+                    })
+                    ->when($cliente_selecionado, function ($q) use ($cliente_selecionado) {
+                        return $q->where('noticia_cliente.cliente_id', $cliente_selecionado);
+                    })
+                    ->when($fonte, function ($q) use ($fonte) {
+                        return $q->whereIn('programa_emissora_web.id', $fonte);
+                    })
+                    ->when($dt_inicial, function ($q) use ($dt_inicial, $dt_final) {
+                        return $q->whereBetween('videos_programa_emissora_web.horario_start_gravacao', [$dt_inicial." 00:00:00", $dt_final." 23:59:59"]);
+                    })
+                    ->when($monitoramento, function ($q) use ($monitoramento) {
+                        return $q->where('noticia_cliente.monitoramento_id', $monitoramento);
+                    })
+                    ->orderBy('horario_start_gravacao')
+                    ->paginate(10);
 
-            $noticia->when($dt_inicial, function ($q) use ($dt_inicial, $dt_final) {
-                return $q->whereBetween('dt_noticia', [$dt_inicial, $dt_final]);
-            });
-
-            $noticias = $noticia->orderBy('created_at', 'DESC')->paginate(10);
-
-        }*/
-
-        return view('noticia-tv/index', compact('noticias','dt_inicial','dt_final','termo','clientes','emissoras'));
+        return view('noticia-tv/index', compact('clientes','fontes','dados','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo','monitoramento'));
     }
 
     public function dashboard()
@@ -120,6 +158,11 @@ class NoticiaTvController extends Controller
         $total_noticias_tv = count(NoticiaTv::whereBetween('dt_noticia', [$dt_final." 00:00:00", $dt_final." 23:59:59"])->get());
 
         return view('noticia-tv/dashboard', compact('dt_inicial','dt_final','total_emissoras','total_programas','total_videos_tv','total_noticias_tv'));
+    }
+
+    public function getBasePath()
+    {
+        return storage_path().DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR;
     }
 
     public function cadastrar()
@@ -532,5 +575,19 @@ class NoticiaTvController extends Controller
         }
 
         return redirect('tv/noticias')->withInput();
+    }
+
+    public function destacaConteudo($id_noticia, $id_monitoramento)
+    {
+        $sql = "SELECT ts_headline('portuguese', transcricao , to_tsquery('portuguese', t3.expressao), 'HighlightAll=true, StartSel=<mark>, StopSel=</mark>') as texto, t3.expressao 
+                        FROM videos_programa_emissora_web t1
+                        JOIN noticia_cliente t2 ON t2.noticia_id = t1.id 
+                        JOIN monitoramento t3 ON t3.id = t2.monitoramento_id 
+                        WHERE t1.id = $id_noticia
+                        AND t3.id = ".$id_monitoramento;
+    
+        $dados = DB::select($sql)[0];
+
+        return response()->json($dados); 
     }
 }

@@ -276,6 +276,7 @@ Route::post('noticia_tv/decupagem/salvar','NoticiaTvController@salvarDecugem');
 Route::post('noticia_tv/decupagem/processar','NoticiaTvController@processar');
 Route::post('tv/noticias/upload','NoticiaTvController@upload');
 Route::post('tv/decupagem/upload','NoticiaTvController@uploadWord');
+Route::get('tv/conteudo/{id_noticia}/monitoramento/{id_monitoramento}','NoticiaTvController@destacaConteudo');
 
 Route::match(array('GET', 'POST'),'tv/videos','VideosController@index');
 Route::get('tv/video/detalhes/{id}','VideosController@detalhes');
