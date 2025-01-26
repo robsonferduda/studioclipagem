@@ -157,8 +157,6 @@ class MonitoramentoController extends Controller
         $sql .= ($request->expressao) ? "AND  cnw.conteudo_tsv @@ to_tsquery('simple', '$request->expressao') " : '';
         $sql .= 'ORDER BY n.'.$label_data.' DESC';
 
-        dd($sql);
-
         $dados = DB::select($sql);
 
         return response()->json($dados);
