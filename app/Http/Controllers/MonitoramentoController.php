@@ -151,10 +151,13 @@ class MonitoramentoController extends Controller
                 JOIN 
                     fonte_web fw ON fw.id = n.id_fonte 
                 WHERE 1=1
+                 AND n.created_at >= now() - interval '24' hour 
                     AND n.$label_data BETWEEN '$dt_inicial' AND '$dt_final' ";
 
-        $sql .= ($request->expressao) ? "AND  cnw.conteudo_tsv @@ to_tsquery('portuguese', '$request->expressao') " : '';
+        $sql .= ($request->expressao) ? "AND  cnw.conteudo_tsv @@ to_tsquery('simple', '$request->expressao') " : '';
         $sql .= 'ORDER BY n.'.$label_data.' DESC';
+
+        dd($sql);
 
         $dados = DB::select($sql);
 
@@ -179,6 +182,7 @@ class MonitoramentoController extends Controller
                     pagina_edicao_jornal_online pejo 
                     ON pejo.id_edicao_jornal_online = n.id
                 WHERE 1=1
+                   
                     AND n.$label_data BETWEEN '$dt_inicial' AND '$dt_final' ";
 
         $sql .= ($request->expressao) ? "AND  pejo.texto_extraido_tsv @@ to_tsquery('portuguese', '$request->expressao') " : '';
@@ -249,7 +253,7 @@ class MonitoramentoController extends Controller
     {
         switch ($request->tipo) {
             case 'web':
-                $sql = "SELECT ts_headline('portuguese', conteudo , to_tsquery('portuguese', '$request->expressao'), 'HighlightAll=true, StartSel=<mark>, StopSel=</mark>') as texto
+                $sql = "SELECT ts_headline('simple', conteudo , to_tsquery('simple', '$request->expressao'), 'HighlightAll=true, StartSel=<mark>, StopSel=</mark>') as texto
                         FROM conteudo_noticia_web 
                         WHERE id_noticia_web = ".$request->id;
                 break;
@@ -329,14 +333,14 @@ class MonitoramentoController extends Controller
                         JOIN 
                             fonte_web fw ON fw.id = n.id_fonte 
                         WHERE 1=1 
-                        AND n.created_at >= now() - interval '3' hour ";
+                        AND n.created_at >= now() - interval '24' hour ";
 
                 if($monitoramento->filtro_web){
                     $sql .= "AND fw.id IN($monitoramento->filtro_web) ";
                 }
 
                 $sql .= "AND n.data_noticia BETWEEN '$dt_inicial' AND '$dt_final' 
-                         AND cnw.conteudo_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao') 
+                         AND cnw.conteudo_tsv @@ to_tsquery('simple', '$monitoramento->expressao') 
                          ORDER BY n.data_noticia DESC";
 
                 $dados = DB::select($sql);
@@ -652,7 +656,7 @@ class MonitoramentoController extends Controller
                 }
 
                 $sql .= "AND n.data_noticia BETWEEN '$dt_inicial' AND '$dt_final' 
-                        AND cnw.conteudo_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao') 
+                        AND cnw.conteudo_tsv @@ to_tsquery('simple', '$monitoramento->expressao') 
                         ORDER BY n.data_noticia DESC";
 
                 $dados = DB::select($sql);
