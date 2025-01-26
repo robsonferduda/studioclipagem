@@ -157,6 +157,7 @@ Route::get('noticia/web/cadastrar','NoticiaWebController@cadastrar');
 Route::get('noticia/web/dashboard','JornalWebController@dashboard');
 Route::get('noticia/web/detalhes/{id}','NoticiaWebController@detalhes');
 Route::get('noticia/web/estatisticas/{id}','NoticiaWebController@getEstatisticas');
+Route::get('web/conteudo/{id_noticia}/monitoramento/{id_monitoramento}','NoticiaWebController@destacaConteudo');
 Route::resource('noticia-web','NoticiaWebController');
 
 Route::get('jornal-web','JornalWebController@index');

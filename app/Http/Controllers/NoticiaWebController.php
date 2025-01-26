@@ -258,4 +258,18 @@ class NoticiaWebController extends Controller
             return redirect('noticia/web/cadastrar')->withInput();
         }
     }
+
+    public function destacaConteudo($id_noticia, $id_monitoramento)
+    {
+        $sql = "SELECT ts_headline('simple', texto_extraido , to_tsquery('simple', t3.expressao), 'HighlightAll=true, StartSel=<mark>, StopSel=</mark>') as texto, t3.expressao 
+                        FROM noticias_web t1
+                        JOIN noticia_cliente t2 ON t2.noticia_id = t1.id 
+                        JOIN monitoramento t3 ON t3.id = t2.monitoramento_id 
+                        WHERE t1.id = $id_noticia
+                        AND t3.id = ".$id_monitoramento;
+    
+        $dados = DB::select($sql)[0];
+
+        return response()->json($dados); 
+    }
 }

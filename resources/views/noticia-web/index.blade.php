@@ -305,7 +305,7 @@
                 var chave_conteudo = ".conteudo-"+$(this).data("chave");
 
                 $.ajax({
-                    url: host+'/jornal-impresso/conteudo/'+noticia+'/monitoramento/'+monitoramento,
+                    url: host+'/web/conteudo/'+noticia+'/monitoramento/'+monitoramento,
                     type: 'GET',
                     beforeSend: function() {
                             
