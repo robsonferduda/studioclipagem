@@ -158,6 +158,36 @@ class NoticiaRadioController extends Controller
         return view('radio/dashboard', compact('total_noticia_radio', 'total_emissora_radio', 'ultima_atualizacao','ultima_atualizacao_radio','data_final','data_inicial','total_emissora_gravando','ultima_atualizacao_gravando'));
     }
 
+    public function extrair($tipo, $id)
+    {
+        switch ($tipo) {
+            case 'web':
+                $conteudo = PaginaJornalImpresso::find($id);
+
+                $arquivo = Storage::disk('s3')->get($conteudo->path_pagina_s3);
+                $filename = $id.".jpg";
+
+                $nova_noticia = array("id_fonte" => $conteudo->edicao->id_jornal_online,
+                                      "dt_clipagem" => $conteudo->edicao->dt_coleta,
+                                      "texto" => $conteudo->texto_extraido,
+                                      "nu_paginas_total" => $conteudo->edicao->paginas->count(),
+                                      "nu_pagina_atual" => $conteudo->n_pagina,
+                                      "ds_caminho_img" => $filename);
+
+                $noticia = NoticiaImpresso::create($nova_noticia);
+
+                Storage::disk('impresso-img')->put($filename, $arquivo);
+
+                return redirect('jornal-impresso/noticia/editar/'.$noticia->id);
+
+                break;
+            
+            case 'impresso':
+                # code...
+                break;                
+        }
+    }
+
     public function cadastrar()
     {
         Session::put('sub-menu','radio-cadastrar');        

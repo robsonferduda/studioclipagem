@@ -98,7 +98,7 @@
                                         </h6> 
                                         <p class="mb-2"><strong>Retorno de Mídia</strong>: {!! ($audio->valor_retorno) ? "R$ ".$audio->valor_retorno : '<span class="text-danger">Não calculado</span>' !!}</p>
                                         <div>
-                                            <a href="{{ url('jornal-impresso/noticia/extrair/web',$audio->id) }}" class="btn btn-success btn-sm"><i class="fa fa-database"></i> Extrair Notícia</a> 
+                                            <a href="{{ url('jornal-impresso/noticia/extrair/web',$audio->id) }}" target="BLANK" class="btn btn-success btn-sm"><i class="fa fa-database"></i> Extrair Notícia</a> 
                                         </div>
                                         <div class="panel panel-success">
                                             <div class="conteudo-noticia mb-1">
