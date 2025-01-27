@@ -142,7 +142,7 @@ class MonitoramentoController extends Controller
 
         $label_data = ($tipo_data == "dt_publicacao") ? 'data_noticia' : 'created_at' ;
 
-        $sql = "SELECT 
+        $sql = "SELECT DISTINCT ON (cnw.conteudo) 
                     n.id, n.id_fonte, n.url_noticia, n.data_insert, n.data_noticia, n.titulo_noticia, fw.nome
                 FROM 
                     noticias_web n
@@ -322,7 +322,7 @@ class MonitoramentoController extends Controller
                     $dt_inicial = $monitoramento->dt_inicio;
                 }
 
-                $sql = "SELECT 
+                $sql = "SELECT DISTINCT ON (cnw.conteudo) 
                             n.id, n.id_fonte, n.url_noticia, n.data_insert, n.data_noticia, n.titulo_noticia, fw.nome
                         FROM 
                             noticias_web n
@@ -338,8 +338,7 @@ class MonitoramentoController extends Controller
                 }
 
                 $sql .= "AND n.data_noticia BETWEEN '$dt_inicial' AND '$dt_final' 
-                         AND cnw.conteudo_tsv @@ to_tsquery('simple', '$monitoramento->expressao') 
-                         ORDER BY n.data_noticia DESC";
+                         AND cnw.conteudo_tsv @@ to_tsquery('simple', '$monitoramento->expressao')";
 
                 $dados = DB::select($sql);
 
