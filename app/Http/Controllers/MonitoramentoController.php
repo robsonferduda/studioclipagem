@@ -653,8 +653,7 @@ class MonitoramentoController extends Controller
                 }
 
                 $sql .= "AND n.data_noticia BETWEEN '$dt_inicial' AND '$dt_final' 
-                        AND cnw.conteudo_tsv @@ to_tsquery('simple', '$monitoramento->expressao') 
-                        ORDER BY n.data_noticia DESC";
+                        AND cnw.conteudo_tsv @@ to_tsquery('simple', '$monitoramento->expressao')";
 
                 $dados = DB::select($sql);
                 $total_associado = $this->associar($dados, $tipo_midia, $monitoramento);
