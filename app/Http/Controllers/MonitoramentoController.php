@@ -142,10 +142,10 @@ class MonitoramentoController extends Controller
 
         $label_data = ($tipo_data == "dt_publicacao") ? 'data_noticia' : 'created_at' ;
 
-        $sql = "SELECT DISTINCT ON (n.titulo_noticia) 
-                    n.id, n.id_fonte, n.url_noticia, n.data_insert, n.data_noticia, n.titulo_noticia, fw.nome
+        $sql = "SELECT DISTINCT ON (cnw.conteudo) 
+                    id, id_fonte, url_noticia, data_insert, data_noticia, titulo_noticia, cnw.conteudo
                 FROM 
-                    noticias_web n
+                    noticias_web
                 JOIN 
                     conteudo_noticia_web cnw ON cnw.id_noticia_web = n.id
                 JOIN 
