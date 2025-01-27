@@ -128,7 +128,7 @@ class NoticiaRadioController extends Controller
                         return $q->whereIn('emissora_radio.id', $fonte);
                     })
                     ->when($dt_inicial, function ($q) use ($dt_inicial, $dt_final) {
-                        return $q->whereBetween('gravacao_emissora_radio.created_at', [$dt_inicial." 00:00:00", $dt_final." 23:59:59"]);
+                        return $q->whereBetween('gravacao_emissora_radio.data_hora_inicio', [$dt_inicial." 00:00:00", $dt_final." 23:59:59"]);
                     })
                     ->when($monitoramento, function ($q) use ($monitoramento) {
                         return $q->where('noticia_cliente.monitoramento_id', $monitoramento);

@@ -38,16 +38,16 @@
                                         <input type="text" class="form-control datepicker" name="dt_final" required="true" value="{{ date('d/m/Y') }}" placeholder="__/__/____">
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-12 col-sm-12">
-                                        <label>Fontes</label>
-                                        <div class="form-group">
-                                            <select multiple="multiple" size="10" name="fontes[]" id="fontes" class="demo1 form-control">
-                                                @foreach ($fontes as $fonte)
-                                                    <option value="{{ $fonte->id }}" {{ (Session::get('radio_filtro_fonte') and in_array($fonte->id, Session::get('radio_filtro_fonte'))) ? 'selected' : '' }}>{{ $fonte->nome_emissora }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12">
+                                    <label>Fontes</label>
+                                    <div class="form-group">
+                                        <select multiple="multiple" size="10" name="fontes[]" id="fontes" class="demo1 form-control">
+                                            @foreach ($fontes as $fonte)
+                                                <option value="{{ $fonte->id }}" {{ (Session::get('radio_filtro_fonte') and in_array($fonte->id, Session::get('radio_filtro_fonte'))) ? 'selected' : '' }}>{{ $fonte->nome_emissora }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                             </div>
