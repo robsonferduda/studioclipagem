@@ -73,35 +73,44 @@
 
                     @foreach ($dados as $key => $noticia)
                         <div class="card">
-                            <div class="card-body">
+                            <div class="card-body">                    
                                 <div class="row">
-                                    <div class="col-lg-3 col-sm-12">
-                                        <div style="text-align: center;">
-                                            @if($noticia->emissora and $noticia->emissora->logo)
-                                                <img src="{{ asset('img/emissoras/'.$noticia->emissora->logo) }}" alt="Logo {{ ($noticia->emissora) ? $noticia->emissora->nome_emissora : 'Não identificada' }}" style="width: 90%; padding: 25px;">
-                                            @endif
-                                            @if(Storage::disk('s3')->temporaryUrl($noticia->path_s3, '+30 minutes'))
-                                                <audio width="100%" controls style="width: 100%;">
-                                                    <source src="{{ Storage::disk('s3')->temporaryUrl($noticia->path_s3, '+30 minutes') }}" type="audio/mpeg">
-                                                    Seu navegador não suporta a execução de áudios, faça o download para poder ouvir.
-                                                </audio>
-                                            @else
-
-                                            @endif
-                                        </div>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 mb-1">                                    
+                                        @if(Storage::disk('s3')->temporaryUrl($audio->path_s3, '+30 minutes'))
+                                            <audio width="100%" controls style="width: 100%;">
+                                                <source src="{{ Storage::disk('s3')->temporaryUrl($audio->path_s3, '+30 minutes') }}" type="audio/mpeg">
+                                                Seu navegador não suporta a execução de áudios, faça o download para poder ouvir.
+                                            </audio>
+                                        @else
+    
+                                        @endif
                                     </div>
-                                    <div class="col-lg-9 col-sm-12">
-                                        <p><strong>{{ ($noticia->emissora) ? $noticia->emissora->nome_emissora : 'Não identificada' }}</strong></p>
-                                        <p> {{ \Carbon\Carbon::parse($noticia->data_hora_inicio)->format('d/m/Y') }} - De {{ \Carbon\Carbon::parse($noticia->data_hora_inicio)->format('H:i:s') }} às {{ \Carbon\Carbon::parse($noticia->data_hora_fim)->format('H:i:s') }}</p>
-                                        <p>
-                                            {!! Str::limit($noticia->transcricao, 700, '<a href="../radio/arquivos/detalhes/'.$noticia->id.'"><strong> Veja Mais</strong></a>') !!}
-                                        </p>                                        
-                                        <p class="mb-2"><strong>Retorno de Mídia</strong>: {!! ($noticia->valor_retorno) ? "R$ ".$noticia->valor_retorno : '<span class="text-danger">Não calculado</span>' !!}</p>
+                                    <div class="col-lg-12 col-sm-12 mb-1"> 
+                                        <h6><a href="{{ url('emissora/'.$audio->id_fonte.'/edit') }}" target="_BLANK">{{ ($audio->nome_fonte) ? $audio->nome_fonte : '' }}</a></h6>  
+                                        <h6 style="color: #FF5722;">{{ ($audio->nm_estado) ? $audio->nm_estado : '' }}{{ ($audio->nm_cidade) ? "/".$audio->nm_cidade : '' }}</h6>  
+                                        <h6 class="text-muted mb-1">
+                                            {{ ($audio->nome_fonte) ? $audio->nome_fonte : '' }} - 
+                                            {{ \Carbon\Carbon::parse($audio->data_hora_inicio)->format('d/m/Y') }} - 
+                                            De {{ \Carbon\Carbon::parse($audio->data_hora_inicio)->format('H:i:s') }} às {{ \Carbon\Carbon::parse($audio->data_hora_fim)->format('H:i:s') }}
+                                        </h6> 
+                                        <p class="mb-2"><strong>Retorno de Mídia</strong>: {!! ($audio->valor_retorno) ? "R$ ".$audio->valor_retorno : '<span class="text-danger">Não calculado</span>' !!}</p>
                                         <div>
-                                            <a href="{{ url('jornal-impresso/noticia/extrair/web',$noticia->id) }}" class="btn btn-success btn-sm"><i class="fa fa-database"></i> Extrair Notícia</a> 
+                                            <a href="{{ url('jornal-impresso/noticia/extrair/web',$audio->id) }}" class="btn btn-success btn-sm"><i class="fa fa-database"></i> Extrair Notícia</a> 
                                         </div>
+                                        <div class="panel panel-success">
+                                            <div class="conteudo-noticia mb-1">
+                                                {!! ($audio->transcricao) ?  Str::limit($audio->transcricao, 1000, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                            </div>
+                                            <div class="panel-body conteudo-{{ $audio->noticia_id }}-{{ $audio->monitoramento_id }}">
+                                                {!! ($audio->transcricao) ?  $audio->transcricao  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                            </div>
+                                            <div class="panel-heading">
+                                                <h3 class="panel-title"><span class="btn-show">Mostrar Mais</span></h3>
+                                            </div>
+                                        </div>                
                                     </div>
-                                </div>
+                                </div>     
+
                             </div>
                         </div>
                     @endforeach
