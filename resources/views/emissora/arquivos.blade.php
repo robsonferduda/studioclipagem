@@ -71,7 +71,7 @@
                         {{ $dados->onEachSide(1)->appends(['dt_inicial' => $dt_inicial, 'dt_final' => $dt_final, 'fonte' => $fonte, 'expressao' => $expressao])->links('vendor.pagination.bootstrap-4') }}
                     @endif
 
-                    @foreach ($dados as $key => $noticia)
+                    @foreach ($dados as $key => $audio)
                         <div class="card">
                             <div class="card-body">                    
                                 <div class="row">
