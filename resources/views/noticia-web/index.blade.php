@@ -127,7 +127,7 @@
                                     <div class="row">
                                         <div class="col-lg-2 col-sm-12">   
                                             @if($dado->path_screenshot)                                         
-                                                <img src="{{ Storage::disk('s3')->temporaryUrl($dado->path_screenshot, '+2 minutes') }}" alt="Print">
+                                                <img src="" alt="Print">
                                             @endif
                                         </div>
                                         <div class="col-lg-10 col-sm-12">                                        
