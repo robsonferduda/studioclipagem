@@ -70,7 +70,6 @@
 
                         {{ $dados->onEachSide(1)->appends(['dt_inicial' => \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y'), 
                                                             'dt_final' => \Carbon\Carbon::parse($dt_final)->format('d/m/Y'),
-                                                            'cliente' => $cliente_selecionado,
                                                             'expressao' => $expressao])
                                                             ->links('vendor.pagination.bootstrap-4') }}
                     @endif
@@ -121,7 +120,6 @@
 
                     {{ $dados->onEachSide(1)->appends(['dt_inicial' => \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y'), 
                                                             'dt_final' => \Carbon\Carbon::parse($dt_final)->format('d/m/Y'),
-                                                            'cliente' => $cliente_selecionado,
                                                             'expressao' => $expressao])
                                                             ->links('vendor.pagination.bootstrap-4') }}
                 </div>
