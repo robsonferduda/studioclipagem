@@ -151,8 +151,8 @@ class MonitoramentoController extends Controller
                 JOIN 
                     fonte_web fw ON fw.id = n.id_fonte 
                 WHERE 1=1
-                 AND n.created_at >= now() - interval '24' hour 
-                    AND n.$label_data BETWEEN '$dt_inicial' AND '$dt_final' ";
+                AND n.created_at BETWEEN '$dt_inicial' AND '$dt_final'
+                AND n.$label_data BETWEEN '$dt_inicial' AND '$dt_final' ";
 
         $sql .= ($request->expressao) ? "AND  cnw.conteudo_tsv @@ to_tsquery('simple', '$request->expressao') " : '';
         $sql .= 'ORDER BY n.'.$label_data.' DESC';

@@ -38,15 +38,16 @@
                                         <input type="text" class="form-control datepicker" name="dt_final" required="true" value="{{ date('d/m/Y') }}" placeholder="__/__/____">
                                     </div>
                                 </div>
-                                <div class="col-md-8">
-                                    <div class="form-group">
-                                        <label>Fonte</label>
-                                        <select class="form-control select2" name="fonte" id="fonte">
-                                            <option value="">Selecione uma fonte</option>
-                                            @foreach ($emissoras as $emissora)
-                                                <option value="{{ $emissora->id }}" {{ ($emissora->id == $fonte) ? 'selected' : '' }}>{{ $emissora->nome_emissora }}</option>
-                                            @endforeach
-                                        </select>
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12">
+                                        <label>Fontes</label>
+                                        <div class="form-group">
+                                            <select multiple="multiple" size="10" name="fontes[]" id="fontes" class="demo1 form-control">
+                                                @foreach ($fontes as $fonte)
+                                                    <option value="{{ $fonte->id }}" {{ (Session::get('radio_filtro_fonte') and in_array($fonte->id, Session::get('radio_filtro_fonte'))) ? 'selected' : '' }}>{{ $fonte->nome_emissora }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -64,13 +65,13 @@
                         </div>
                     {!! Form::close() !!}
 
-                    @if(count($arquivos) > 0)
-                        <h6 class="px-3">Mostrando {{ $arquivos->count() }} de {{ $arquivos->total() }} Páginas</h6>
+                    @if(count($dados) > 0)
+                        <h6 class="px-3">Mostrando {{ $dados->count() }} de {{ $dados->total() }} Páginas</h6>
 
-                        {{ $arquivos->onEachSide(1)->appends(['dt_inicial' => $dt_inicial, 'dt_final' => $dt_final, 'fonte' => $fonte, 'expressao' => $expressao])->links('vendor.pagination.bootstrap-4') }}
+                        {{ $dados->onEachSide(1)->appends(['dt_inicial' => $dt_inicial, 'dt_final' => $dt_final, 'fonte' => $fonte, 'expressao' => $expressao])->links('vendor.pagination.bootstrap-4') }}
                     @endif
 
-                    @foreach ($arquivos as $key => $noticia)
+                    @foreach ($dados as $key => $noticia)
                         <div class="card">
                             <div class="card-body">
                                 <div class="row">
@@ -113,9 +114,14 @@
 @section('script')    
     <script>
       
-        var host = $('meta[name="base-url"]').attr('content');
-
         $(document).ready(function(){ 
+
+            var host =  $('meta[name="base-url"]').attr('content');
+
+        var demo2 = $('.demo1').bootstrapDualListbox({
+            nonSelectedListLabel: 'Disponíveis',
+            selectedListLabel: 'Selecionadas',               
+        });
 
             destacaTexto();
 

@@ -30,6 +30,7 @@ class EmissoraController extends Controller
     public function index(Request $request)
     {
         Session::put('sub-menu','emissoras');
+
         $estados = Estado::orderBy('nm_estado')->get();
 
         $dt_inicial = date('Y-m-d')." 00:00:00";
@@ -87,13 +88,36 @@ class EmissoraController extends Controller
         Session::put('url', 'radio');
         Session::put('sub-menu', "radio-arquivos");
 
-        $dt_inicial = date('Y-m-d')." 00:00:00";
-        $dt_final = date('Y-m-d')." 23:59:59";
-        $expressao = "";
-        $fonte = 0;
-        $arquivos = array();
+        $fontes = Emissora::orderBy('nome_emissora')->get();
 
-        $emissoras = Emissora::orderBy('nome_emissora')->get();
+        $tipo_data = $request->tipo_data;
+        $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
+        $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
+        $expressao = ($request->expressao) ? $request->expressao : null;
+        $dados = array();
+
+        if($request->fontes or Session::get('radio_arquivos_fonte')){
+            if($request->fontes){
+                $fonte = $request->fontes;
+            }elseif(Session::get('radio_arquivos_fonte')){
+                $fonte = Session::get('radio_arquivos_fonte');
+            }else{
+                $fonte = null;
+            }
+        }else{
+            $fonte = null;
+            Session::forget('radio_arquivos_fonte');
+        }
+
+        if($request->isMethod('POST')){
+        
+            if($request->fontes){
+                Session::put('radio_arquivos_fonte', $fonte);
+            }else{
+                Session::forget('radio_arquivos_fonte');
+                $fonte = null;
+            }
+        }
 
         $emissora = EmissoraGravacao::query();
 
@@ -185,7 +209,7 @@ class EmissoraController extends Controller
             }          
         }
 
-        return view('emissora/arquivos', compact('arquivos','emissoras','dt_inicial','dt_final','fonte','expressao'));
+        return view('emissora/arquivos', compact('fontes','dados','tipo_data','dt_inicial','dt_final','fonte','expressao'));
     }
 
     public function atualizarHorarios(Request $request)
