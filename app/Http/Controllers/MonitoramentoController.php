@@ -142,7 +142,7 @@ class MonitoramentoController extends Controller
 
         $label_data = ($tipo_data == "dt_publicacao") ? 'data_noticia' : 'created_at' ;
 
-        $sql = "SELECT 
+        $sql = "SELECT DISTINCT ON (cnw.conteudo) 
                     n.id, n.id_fonte, n.url_noticia, n.data_insert, n.data_noticia, n.titulo_noticia, fw.nome
                 FROM 
                     noticias_web n
@@ -155,7 +155,7 @@ class MonitoramentoController extends Controller
                 AND n.$label_data BETWEEN '$dt_inicial' AND '$dt_final' ";
 
         $sql .= ($request->expressao) ? "AND  cnw.conteudo_tsv @@ to_tsquery('simple', '$request->expressao') " : '';
-        $sql .= 'ORDER BY n.'.$label_data.' DESC';
+        //$sql .= 'ORDER BY n.'.$label_data.' DESC';
 
         $dados = DB::select($sql);
 
@@ -322,7 +322,7 @@ class MonitoramentoController extends Controller
                     $dt_inicial = $monitoramento->dt_inicio;
                 }
 
-                $sql = "SELECT 
+                $sql = "SELECT DISTINCT ON (n.titulo_noticia) 
                             n.id, n.id_fonte, n.url_noticia, n.data_insert, n.data_noticia, n.titulo_noticia, fw.nome
                         FROM 
                             noticias_web n
@@ -338,8 +338,7 @@ class MonitoramentoController extends Controller
                 }
 
                 $sql .= "AND n.data_noticia BETWEEN '$dt_inicial' AND '$dt_final' 
-                         AND cnw.conteudo_tsv @@ to_tsquery('simple', '$monitoramento->expressao') 
-                         ORDER BY n.data_noticia DESC";
+                         AND cnw.conteudo_tsv @@ to_tsquery('simple', '$monitoramento->expressao')";
 
                 $dados = DB::select($sql);
 
@@ -573,10 +572,15 @@ class MonitoramentoController extends Controller
                         programa_emissora_web pew 
                         ON pew.id = n.id_programa_emissora_web
                         WHERE 1=1
-                        AND n.created_at >= now() - interval '3' hour 
-                        AND n.horario_start_gravacao BETWEEN '$dt_inicial' AND '$dt_final'
-                        AND n.transcricao_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao')
-                        ORDER BY n.horario_start_gravacao DESC";
+                        AND n.created_at >= now() - interval '3' hour";
+
+                if($monitoramento->filtro_tv){
+                    $sql .= "AND n.id_programa_emissora_web IN($monitoramento->filtro_tv)";
+                }     
+                        
+                $sql .= "AND n.horario_start_gravacao BETWEEN '$dt_inicial' AND '$dt_final'
+                         AND n.transcricao_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao')
+                         ORDER BY n.horario_start_gravacao DESC";
 
                 $dados = DB::select($sql);
 
@@ -638,7 +642,7 @@ class MonitoramentoController extends Controller
 
                 $tipo_midia = 2; //Web
 
-                $sql = "SELECT 
+                $sql = "SELECT DISTINCT ON (n.titulo_noticia) 
                             n.id, n.id_fonte, n.url_noticia, n.data_insert, n.data_noticia, n.titulo_noticia, fw.nome
                         FROM 
                             noticias_web n
@@ -654,8 +658,7 @@ class MonitoramentoController extends Controller
                 }
 
                 $sql .= "AND n.data_noticia BETWEEN '$dt_inicial' AND '$dt_final' 
-                        AND cnw.conteudo_tsv @@ to_tsquery('simple', '$monitoramento->expressao') 
-                        ORDER BY n.data_noticia DESC";
+                        AND cnw.conteudo_tsv @@ to_tsquery('simple', '$monitoramento->expressao')";
 
                 $dados = DB::select($sql);
                 $total_associado = $this->associar($dados, $tipo_midia, $monitoramento);
@@ -744,10 +747,15 @@ class MonitoramentoController extends Controller
                         programa_emissora_web pew 
                         ON pew.id = n.id_programa_emissora_web
                         WHERE 1=1
-                        AND n.created_at >= now() - interval '24' hour 
-                        AND n.horario_start_gravacao BETWEEN '$dt_inicial' AND '$dt_final'
-                        AND n.transcricao_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao')
-                        ORDER BY n.horario_start_gravacao DESC";
+                        AND n.created_at >= now() - interval '48' hour "; 
+
+                if($monitoramento->filtro_tv){
+                    $sql .= "AND n.id_programa_emissora_web IN($monitoramento->filtro_tv)";
+                }
+
+                $sql .= "AND n.horario_start_gravacao BETWEEN '$dt_inicial' AND '$dt_final'
+                         AND n.transcricao_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao')
+                         ORDER BY n.horario_start_gravacao DESC";
 
                 $dados = DB::select($sql);
                 $total_associado = $this->associar($dados, $tipo_midia, $monitoramento);
