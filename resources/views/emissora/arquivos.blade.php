@@ -135,30 +135,33 @@
 
             var host =  $('meta[name="base-url"]').attr('content');
 
-        var demo2 = $('.demo1').bootstrapDualListbox({
-            nonSelectedListLabel: 'Disponíveis',
-            selectedListLabel: 'Selecionadas',               
-        });
+            var demo2 = $('.demo1').bootstrapDualListbox({
+                nonSelectedListLabel: 'Disponíveis',
+                selectedListLabel: 'Selecionadas',               
+            });
 
-            destacaTexto();
+            $(".panel-heading").click(function() {
+                $(this).parent().addClass('active').find('.panel-body').slideToggle('fast');
+                $(".panel-heading").not(this).parent().removeClass('active').find('.panel-body').slideUp('fast');
+            });
 
-            function destacaTexto(){
+            $(".btn-show").click(function(){
 
-                var expressao = "{{ $expressao }}";
-                var context = document.querySelector("body");
-                var instance_ods = new Mark(context);
+                var texto = $(this).text();
+
+                if(texto == 'Mostrar Mais'){
+
+                    $(this).closest('.panel').find('.conteudo-noticia').addClass('d-none');
+                    $(this).html("Mostrar Menos");
+
+                }
                 
-                var options = {"element": "mark",
-                            "separateWordSearch": false,
-                            "accuracy": {
-                                    "value": "exactly",
-                                    "limiters": [",", "."]
-                                },
-                                "diacritics": true
-                            };
+                if(texto == 'Mostrar Menos'){
+                    $(this).closest('.panel').find('.conteudo-noticia').removeClass('d-none');
+                    $(this).html("Mostrar Mais");
+                }
 
-                instance_ods.mark(expressao, options); 
-            }            
+            });          
         });
     </script>
 @endsection
