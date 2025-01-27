@@ -133,7 +133,7 @@ class NoticiaRadioController extends Controller
                     ->when($monitoramento, function ($q) use ($monitoramento) {
                         return $q->where('noticia_cliente.monitoramento_id', $monitoramento);
                     })
-                    ->orderBy('gravacao_emissora_radio.data_hora_inicio')
+                    ->orderBy('gravacao_emissora_radio.data_hora_inicio','DESC')
                     ->paginate(10);
 
         return view('noticia-radio/index', compact('clientes','fontes','dados','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo','monitoramento'));
