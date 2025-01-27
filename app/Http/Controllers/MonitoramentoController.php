@@ -155,7 +155,7 @@ class MonitoramentoController extends Controller
                     AND n.$label_data BETWEEN '$dt_inicial' AND '$dt_final' ";
 
         $sql .= ($request->expressao) ? "AND  cnw.conteudo_tsv @@ to_tsquery('simple', '$request->expressao') " : '';
-        $sql .= 'ORDER BY n.'.$label_data.' DESC';
+        //$sql .= 'ORDER BY n.'.$label_data.' DESC';
 
         $dados = DB::select($sql);
 
