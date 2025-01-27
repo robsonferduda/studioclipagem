@@ -130,7 +130,6 @@ class EmissoraController extends Controller
                             'data_hora_inicio',
                             'data_hora_fim',
                             'transcricao',
-                            'expressao',
                             'path_s3')
                     ->join('emissora_radio','emissora_radio.id','=','gravacao_emissora_radio.id_emissora')
                     ->leftJoin('estado','estado.cd_estado','=','emissora_radio.cd_estado')
