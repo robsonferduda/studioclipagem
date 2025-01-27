@@ -68,7 +68,11 @@
                     @if(count($dados) > 0)
                         <h6 class="px-3">Mostrando {{ $dados->count() }} de {{ $dados->total() }} Páginas</h6>
 
-                        {{ $dados->onEachSide(1)->appends(['dt_inicial' => $dt_inicial, 'dt_final' => $dt_final, 'fonte' => $fonte, 'expressao' => $expressao])->links('vendor.pagination.bootstrap-4') }}
+                        {{ $dados->onEachSide(1)->appends(['dt_inicial' => \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y'), 
+                                                            'dt_final' => \Carbon\Carbon::parse($dt_final)->format('d/m/Y'),
+                                                            'cliente' => $cliente_selecionado,
+                                                            'expressao' => $expressao])
+                                                            ->links('vendor.pagination.bootstrap-4') }}
                     @endif
 
                     @foreach ($dados as $key => $audio)
@@ -114,6 +118,12 @@
                             </div>
                         </div>
                     @endforeach
+
+                    {{ $dados->onEachSide(1)->appends(['dt_inicial' => \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y'), 
+                                                            'dt_final' => \Carbon\Carbon::parse($dt_final)->format('d/m/Y'),
+                                                            'cliente' => $cliente_selecionado,
+                                                            'expressao' => $expressao])
+                                                            ->links('vendor.pagination.bootstrap-4') }}
                 </div>
             </div>
         </div>
