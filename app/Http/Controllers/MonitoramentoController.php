@@ -322,7 +322,7 @@ class MonitoramentoController extends Controller
                     $dt_inicial = $monitoramento->dt_inicio;
                 }
 
-                $sql = "SELECT DISTINCT ON (cnw.conteudo) 
+                $sql = "SELECT DISTINCT ON (n.titulo_noticia) 
                             n.id, n.id_fonte, n.url_noticia, n.data_insert, n.data_noticia, n.titulo_noticia, fw.nome
                         FROM 
                             noticias_web n
@@ -637,7 +637,7 @@ class MonitoramentoController extends Controller
 
                 $tipo_midia = 2; //Web
 
-                $sql = "SELECT 
+                $sql = "SELECT DISTINCT ON (n.titulo_noticia) 
                             n.id, n.id_fonte, n.url_noticia, n.data_insert, n.data_noticia, n.titulo_noticia, fw.nome
                         FROM 
                             noticias_web n
