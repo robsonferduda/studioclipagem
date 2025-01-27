@@ -101,7 +101,7 @@
                                             <div class="conteudo-noticia mb-1">
                                                 {!! ($audio->transcricao) ?  Str::limit($audio->transcricao, 1000, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
                                             </div>
-                                            <div class="panel-body conteudo-{{ $audio->noticia_id }}-{{ $audio->monitoramento_id }}">
+                                            <div class="panel-body conteudo-{{ $audio->id }}">
                                                 {!! ($audio->transcricao) ?  $audio->transcricao  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
                                             </div>
                                             <div class="panel-heading">
