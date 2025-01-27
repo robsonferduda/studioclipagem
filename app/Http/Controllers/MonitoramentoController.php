@@ -572,10 +572,15 @@ class MonitoramentoController extends Controller
                         programa_emissora_web pew 
                         ON pew.id = n.id_programa_emissora_web
                         WHERE 1=1
-                        AND n.created_at >= now() - interval '3' hour 
-                        AND n.horario_start_gravacao BETWEEN '$dt_inicial' AND '$dt_final'
-                        AND n.transcricao_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao')
-                        ORDER BY n.horario_start_gravacao DESC";
+                        AND n.created_at >= now() - interval '3' hour";
+
+                if($monitoramento->filtro_tv){
+                    $sql .= "AND n.id_programa_emissora_web IN($monitoramento->filtro_tv)";
+                }     
+                        
+                $sql .= "AND n.horario_start_gravacao BETWEEN '$dt_inicial' AND '$dt_final'
+                         AND n.transcricao_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao')
+                         ORDER BY n.horario_start_gravacao DESC";
 
                 $dados = DB::select($sql);
 
@@ -742,10 +747,15 @@ class MonitoramentoController extends Controller
                         programa_emissora_web pew 
                         ON pew.id = n.id_programa_emissora_web
                         WHERE 1=1
-                        AND n.created_at >= now() - interval '24' hour 
-                        AND n.horario_start_gravacao BETWEEN '$dt_inicial' AND '$dt_final'
-                        AND n.transcricao_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao')
-                        ORDER BY n.horario_start_gravacao DESC";
+                        AND n.created_at >= now() - interval '24' hour "; 
+
+                if($monitoramento->filtro_tv){
+                    $sql .= "AND n.id_programa_emissora_web IN($monitoramento->filtro_tv)";
+                }
+
+                $sql .= "AND n.horario_start_gravacao BETWEEN '$dt_inicial' AND '$dt_final'
+                         AND n.transcricao_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao')
+                         ORDER BY n.horario_start_gravacao DESC";
 
                 $dados = DB::select($sql);
                 $total_associado = $this->associar($dados, $tipo_midia, $monitoramento);
