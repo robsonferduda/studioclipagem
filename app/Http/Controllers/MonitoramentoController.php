@@ -572,7 +572,7 @@ class MonitoramentoController extends Controller
                         programa_emissora_web pew 
                         ON pew.id = n.id_programa_emissora_web
                         WHERE 1=1
-                        AND n.created_at >= now() - interval '3' hour";
+                        AND n.created_at BETWEEN '$dt_inicial' AND '$dt_final' ";
 
                 if($monitoramento->filtro_tv){
                     $sql .= "AND n.id_programa_emissora_web IN($monitoramento->filtro_tv)";
@@ -602,7 +602,7 @@ class MonitoramentoController extends Controller
 
             } catch (\Illuminate\Database\QueryException $e) {
 
-                $titulo = "Notificação de Monitoramento de Rádio - Erro de Consulta - ".date("d/m/Y H:i:s"); 
+                $titulo = "Notificação de Monitoramento de TV - Erro de Consulta - ".date("d/m/Y H:i:s"); 
 
                 $data['dados'] = array('cliente' => $monitoramento->cliente->nome,
                                        'expressao' => $monitoramento->expressao,
