@@ -32,7 +32,14 @@ class VideosController extends Controller
     {
         Session::put('sub-menu','tv-videos');
         
-        $fontes = ProgramaEmissoraWeb::orderBy('nome_programa')->get();
+        $fontes_disponiveis = DB::select("SELECT id, nome_programa as nome, t2.sg_estado FROM programa_emissora_web t1 LEFT JOIN estado t2 ON t2.cd_estado = t1.cd_estado ORDER BY t2.sg_estado, nome"); 
+
+        foreach ($fontes_disponiveis as $key => $fd) {
+            $fontes[] = array('id' => $fd->id,
+                                'estado' => ($fd->sg_estado) ? $fd->sg_estado : '',
+                                'nome' => $fd->nome,
+                                'flag' => '');
+        }
 
         $tipo_data = $request->tipo_data;
         $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
@@ -56,7 +63,27 @@ class VideosController extends Controller
         if($request->isMethod('POST')){
 
             if($request->fontes){
+
                 Session::put('tv_arquivos_fonte', $fonte);
+
+                
+                
+                $fontes = null;
+                foreach ($fontes_disponiveis as $key => $fd) {
+
+                    if(in_array($fd->id, $fonte)){
+                        $fontes[] = array('id' => $fd->id,
+                                        'estado' => ($fd->sg_estado) ? $fd->sg_estado : '',
+                                        'nome' => $fd->nome,
+                                        'flag' => 'selected');
+                    }else{
+                        $fontes[] = array('id' => $fd->id,
+                                        'estado' => ($fd->sg_estado) ? $fd->sg_estado : '',
+                                        'nome' => $fd->nome,
+                                        'flag' => '');
+                    }
+                }
+
             }else{
                 Session::forget('tv_arquivos_fonte');
                 $fonte = null;

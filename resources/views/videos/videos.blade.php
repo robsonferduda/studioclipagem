@@ -51,7 +51,7 @@
                                     <div class="form-group">
                                         <select multiple="multiple" size="10" name="fontes[]" class="demo1 form-control">
                                             @foreach ($fontes as $fonte)
-                                                <option value="{{ $fonte->id }}">{{ $fonte->nome_programa }}</option>
+                                                <option value="{{ $fonte['id'] }}" {{ $fonte['flag'] }}>{{ $fonte['estado']."-" }}  {{ $fonte['nome'] }}</option>
                                             @endforeach
                                         </select>
                                     </div>
