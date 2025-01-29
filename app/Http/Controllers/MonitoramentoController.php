@@ -180,7 +180,7 @@ class MonitoramentoController extends Controller
                     pagina_edicao_jornal_online pejo 
                     ON pejo.id_edicao_jornal_online = n.id
                 WHERE 1=1
-                   
+                    AND n.created_at BETWEEN '$dt_inicial' AND '$dt_final'
                     AND n.$label_data BETWEEN '$dt_inicial' AND '$dt_final' ";
 
         $sql .= ($request->expressao) ? "AND  pejo.texto_extraido_tsv @@ to_tsquery('portuguese', '$request->expressao') " : '';
@@ -209,6 +209,7 @@ class MonitoramentoController extends Controller
                     emissora_radio er 
                     ON er.id = n.id_emissora
                 WHERE 1=1
+                    AND n.created_at BETWEEN '$dt_inicial' AND '$dt_final'
                     AND n.$label_data BETWEEN '$dt_inicial' AND '$dt_final' ";
 
         $sql .= ($request->expressao) ? "AND  n.transcricao_tsv @@ to_tsquery('simple', '$request->expressao') " : '';
@@ -237,6 +238,7 @@ class MonitoramentoController extends Controller
                     programa_emissora_web pew 
                     ON pew.id = n.id_programa_emissora_web
                 WHERE 1=1
+                    AND n.created_at BETWEEN '$dt_inicial' AND '$dt_final'
                     AND n.$label_data BETWEEN '$dt_inicial' AND '$dt_final' ";
 
         $sql .= ($request->expressao) ? "AND  n.transcricao_tsv @@ to_tsquery('portuguese', '$request->expressao') " : '';
@@ -263,7 +265,7 @@ class MonitoramentoController extends Controller
                 break;
 
             case 'radio':
-                $sql = "SELECT ts_headline('portuguese', transcricao , to_tsquery('portuguese', '$request->expressao'), 'HighlightAll=true, StartSel=<mark>, StopSel=</mark>') as texto
+                $sql = "SELECT ts_headline('simple', transcricao , to_tsquery('simple', '$request->expressao'), 'HighlightAll=true, StartSel=<mark>, StopSel=</mark>') as texto
                         FROM gravacao_emissora_radio 
                         WHERE id = ".$request->id;
                 break;
@@ -409,7 +411,7 @@ class MonitoramentoController extends Controller
                             ON pejo.id_edicao_jornal_online = n.id
                         JOIN jornal_online jo ON jo.id = n.id_jornal_online 
                         WHERE 1=1
-                            AND pejo.created_at >= now() - interval '3' hour
+                            AND pejo.created_at >= now() - interval '24' hour
                             AND n.dt_coleta BETWEEN '$dt_inicial' AND '$dt_final' 
                             AND pejo.texto_extraido_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao')
                             AND jo.id IN($monitoramento->filtro_impresso)
@@ -425,7 +427,7 @@ class MonitoramentoController extends Controller
                         pagina_edicao_jornal_online pejo 
                         ON pejo.id_edicao_jornal_online = n.id
                     WHERE 1=1
-                        AND pejo.created_at >= now() - interval '3' hour
+                        AND pejo.created_at >= now() - interval '24' hour
                         AND n.dt_coleta BETWEEN '$dt_inicial' AND '$dt_final' 
                         AND pejo.texto_extraido_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao')
                         ORDER BY dt_coleta DESC";
@@ -497,7 +499,7 @@ class MonitoramentoController extends Controller
                             emissora_radio er 
                         ON er.id = n.id_emissora
                         WHERE 1=1 
-                        AND n.created_at >= now() - interval '3' hour ";
+                        AND n.created_at >= now() - interval '24' hour ";
 
                 if($monitoramento->filtro_radio){
                     $sql .= "AND er.id IN($monitoramento->filtro_radio) ";
@@ -566,13 +568,14 @@ class MonitoramentoController extends Controller
             try{
                 $sql = "SELECT 
                         n.id, id_programa_emissora_web, horario_start_gravacao, horario_end_gravacao, url_video, misc_data, transcricao, nome_programa
-                        FROM 
+                            FROM 
                         videos_programa_emissora_web n
-                        JOIN 
+                            JOIN 
                         programa_emissora_web pew 
-                        ON pew.id = n.id_programa_emissora_web
+                            ON pew.id = n.id_programa_emissora_web
                         WHERE 1=1
-                        AND n.created_at BETWEEN '$dt_inicial' AND '$dt_final' ";
+                            AND pejo.created_at >= now() - interval '24' hour
+                            AND n.created_at BETWEEN '$dt_inicial' AND '$dt_final' ";
 
                 if($monitoramento->filtro_tv){
                     $sql .= "AND n.id_programa_emissora_web IN($monitoramento->filtro_tv)";
@@ -747,7 +750,7 @@ class MonitoramentoController extends Controller
                         programa_emissora_web pew 
                         ON pew.id = n.id_programa_emissora_web
                         WHERE 1=1
-                        AND n.created_at >= now() - interval '48' hour "; 
+                        AND n.created_at >= now() - interval '24' hour "; 
 
                 if($monitoramento->filtro_tv){
                     $sql .= "AND n.id_programa_emissora_web IN($monitoramento->filtro_tv)";
