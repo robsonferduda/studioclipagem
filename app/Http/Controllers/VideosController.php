@@ -64,7 +64,7 @@ class VideosController extends Controller
         }
 
           $videos = DB::table('videos_programa_emissora_web')
-                    ->select('videos_programa_emissora_web.id AS id',
+                    ->select('videos_programa_emissora_web.id AS noticia_id',
                             'programa_emissora_web.id AS id_fonte',
                             'nome_programa AS nome_programa',
                             'nm_estado',
