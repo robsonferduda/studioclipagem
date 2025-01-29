@@ -126,17 +126,11 @@
                                             {{ date('H:i:s', strtotime($video->horario_start_gravacao)) }} às 
                                             {{ date('H:i:s', strtotime($video->horario_end_gravacao)) }}
                                         </p>
-                                        <div style="margin-bottom: 5px;" class="tags destaque-{{ $video->noticia_id }}-{{ $video->monitoramento_id }}" data-monitoramento="{{ $video->monitoramento_id }}" data-chave="{{ $video->noticia_id }}-{{ $video->monitoramento_id }}" data-noticia="{{ $video->noticia_id }}">
-                                                    
-                                        </div>
-                                        <code>
-                                            <a href="{{ url('monitoramento/'.$video->monitoramento_id.'/editar') }}" target="_BLANK">{{ $video->expressao }}</a>
-                                        </code>
                                         <div class="panel panel-success">
                                             <div class="conteudo-noticia mb-1 transcricao">
                                                 {!! ($video->transcricao) ?  Str::limit($video->transcricao, 1000, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
                                             </div>
-                                            <div class="panel-body conteudo-{{ $video->noticia_id }}-{{ $video->monitoramento_id }}">
+                                            <div class="panel-body conteudo-{{ $video->noticia_id }}">
                                                 {!! ($video->transcricao) ?  $video->transcricao  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
                                             </div>
                                             <div class="panel-heading">
