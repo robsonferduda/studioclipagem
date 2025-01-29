@@ -87,7 +87,7 @@ class VideosController extends Controller
                     ->when($dt_inicial, function ($q) use ($dt_inicial, $dt_final) {
                         return $q->whereBetween('videos_programa_emissora_web.horario_start_gravacao', [$dt_inicial." 00:00:00", $dt_final." 23:59:59"]);
                     })
-                    ->orderBy('videos_programa_emissora_web.horario_start_gravacaoo','DESC')
+                    ->orderBy('videos_programa_emissora_web.horario_start_gravacao','DESC')
                     ->paginate(10);
 
         return view('videos/videos', compact('fontes','videos','tipo_data','dt_inicial','dt_final','fonte','expressao'));
