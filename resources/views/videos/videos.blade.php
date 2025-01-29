@@ -106,14 +106,14 @@
                                     </div>
                                     <div class="col-lg-8 col-sm-12">                                        
                                         <p class="mb-1">
-                                            @if($video->programa and $video->programa->tipo and in_array($video->programa->tipo->id, [4,5]))
+                                            @if($video->tipo_programa and in_array($video->tipo_programa, [4,5]))
                                                 <i class="fa fa-youtube text-danger" aria-hidden="true" style="font-size: 30px;"></i>
                                             @endif
-                                            <strong>{{ ($video->programa and $video->programa->emissora) ? $video->programa->emissora->nome_emissora : '' }}</strong> - 
-                                            <strong>{{ ($video->programa) ? $video->programa->nome_programa : '' }}</strong>
+                                            <strong>{{ ($video->nome_emissora) ? $video->nome_emissora : '' }}</strong> - 
+                                            <strong>{{ ($video->nome_programa) ? $video->nome_programa : '' }}</strong>
                                         </p>
                                         <p class="mb-1">
-                                            @if($video->programa and $video->programa->tipo and $video->misc_data and $video->programa->tipo and in_array($video->programa->tipo->id, [4,5]) and !$video->horario_start_gravacao)
+                                            @if($video->tipo_programa and in_array($video->tipo_programa, [4,5]) and !$video->horario_start_gravacao)
                                                 @php 
                                                     $partes = explode(',', explode(')',explode('(', $video->misc_data)[1])[0]);
                                                     $data = str_pad($partes[2],2,"0",STR_PAD_LEFT).'/'.str_pad($partes[1],2,"0",STR_PAD_LEFT).'/'.$partes[0];                                                    
@@ -126,18 +126,23 @@
                                             {{ date('H:i:s', strtotime($video->horario_start_gravacao)) }} às 
                                             {{ date('H:i:s', strtotime($video->horario_end_gravacao)) }}
                                         </p>
-
+                                        <div style="margin-bottom: 5px;" class="tags destaque-{{ $video->noticia_id }}-{{ $video->monitoramento_id }}" data-monitoramento="{{ $video->monitoramento_id }}" data-chave="{{ $video->noticia_id }}-{{ $video->monitoramento_id }}" data-noticia="{{ $video->noticia_id }}">
+                                                    
+                                        </div>
+                                        <code>
+                                            <a href="{{ url('monitoramento/'.$video->monitoramento_id.'/editar') }}" target="_BLANK">{{ $video->expressao }}</a>
+                                        </code>
                                         <div class="panel panel-success">
                                             <div class="conteudo-noticia mb-1 transcricao">
-                                                {!! ($video->transcricao) ?  Str::limit($video->transcricao, 700, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                                {!! ($video->transcricao) ?  Str::limit($video->transcricao, 1000, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
                                             </div>
-                                            <div class="panel-body transcricao-total">
+                                            <div class="panel-body conteudo-{{ $video->noticia_id }}-{{ $video->monitoramento_id }}">
                                                 {!! ($video->transcricao) ?  $video->transcricao  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
                                             </div>
                                             <div class="panel-heading">
                                                 <h3 class="panel-title"><span class="btn-show">Mostrar Mais</span></h3>
                                             </div>
-                                        </div> 
+                                        </div>       
                                     </div>
                                 </div>
                             </div>
