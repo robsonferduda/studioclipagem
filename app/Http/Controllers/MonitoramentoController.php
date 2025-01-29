@@ -154,7 +154,7 @@ class MonitoramentoController extends Controller
                 AND n.created_at BETWEEN '$dt_inicial' AND '$dt_final'
                 AND n.$label_data BETWEEN '$dt_inicial' AND '$dt_final' ";
 
-        $sql .= ($request->expressao) ? "AND  cnw.conteudo_tsv @@ to_tsquery('simple', '$request->expressao') " : '';
+        $sql .= ($request->expressao) ? "AND  cnw.conteudo_tsv @@ to_tsquery('simple', transform_tsquery_distances('$request->expressao')) " : '';
         //$sql .= 'ORDER BY n.'.$label_data.' DESC';
 
         $dados = DB::select($sql);
@@ -340,7 +340,7 @@ class MonitoramentoController extends Controller
                 }
 
                 $sql .= "AND n.data_noticia BETWEEN '$dt_inicial' AND '$dt_final' 
-                         AND cnw.conteudo_tsv @@ to_tsquery('simple', transform_tsquery_distances('$monitoramento->expressao'))";
+                         AND cnw.conteudo_tsv @@ to_tsquery('simple', c('$monitoramento->expressao'))";
 
                 $dados = DB::select($sql);
 
