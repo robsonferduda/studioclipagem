@@ -211,7 +211,7 @@ class MonitoramentoController extends Controller
                 WHERE 1=1
                     AND n.$label_data BETWEEN '$dt_inicial' AND '$dt_final' ";
 
-        $sql .= ($request->expressao) ? "AND  n.transcricao_tsv @@ to_tsquery('portuguese', '$request->expressao') " : '';
+        $sql .= ($request->expressao) ? "AND  n.transcricao_tsv @@ to_tsquery('simple', '$request->expressao') " : '';
         $sql .= 'ORDER BY n.'.$label_data.' DESC';
 
         $dados = DB::select($sql);
@@ -504,7 +504,7 @@ class MonitoramentoController extends Controller
                 }
 
                 $sql .= "AND n.data_hora_inicio BETWEEN '$dt_inicial' AND '$dt_final'
-                        AND  n.transcricao_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao')
+                        AND  n.transcricao_tsv @@ to_tsquery('simple', '$monitoramento->expressao')
                         ORDER BY n.data_hora_inicio DESC";
 
                 $dados = DB::select($sql);
@@ -727,7 +727,7 @@ class MonitoramentoController extends Controller
                 }
 
                 $sql .= "AND n.data_hora_inicio BETWEEN '$dt_inicial' AND '$dt_final'
-                        AND  n.transcricao_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao')
+                        AND  n.transcricao_tsv @@ to_tsquery('simple', '$monitoramento->expressao')
                         ORDER BY n.data_hora_inicio DESC";
 
                 $dados = DB::select($sql);
