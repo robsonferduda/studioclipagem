@@ -186,8 +186,6 @@ class MonitoramentoController extends Controller
         $sql .= ($request->expressao) ? "AND pejo.texto_extraido_tsv @@ to_tsquery('portuguese', transform_tsquery_distances('$request->expressao')) " : '';
         $sql .= 'ORDER BY '.$label_data.' DESC';
 
-        dd($sql);
-
         $dados = DB::select($sql);
 
         return response()->json($dados);
