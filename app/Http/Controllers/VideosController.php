@@ -66,7 +66,7 @@ class VideosController extends Controller
           $videos = DB::table('videos_programa_emissora_web')
                     ->select('videos_programa_emissora_web.id AS id',
                             'programa_emissora_web.id AS id_fonte',
-                            'nome_programa AS nome_fonte',
+                            'nome_programa AS nome_programa',
                             'nm_estado',
                             'nm_cidade',
                             'horario_start_gravacao',
