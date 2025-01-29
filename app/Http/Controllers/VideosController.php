@@ -73,6 +73,7 @@ class VideosController extends Controller
                             'horario_end_gravacao',
                             'programa_emissora_web.tipo_programa',
                             'transcricao',
+                            'nome_emissora',
                             'misc_data',
                             'video_path')
                     ->join('programa_emissora_web','programa_emissora_web.id','=','videos_programa_emissora_web.id_programa_emissora_web')
