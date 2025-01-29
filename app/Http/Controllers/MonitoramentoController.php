@@ -453,7 +453,7 @@ class MonitoramentoController extends Controller
 
             } catch (\Illuminate\Database\QueryException $e) {
 
-                $titulo = "Notificação de Monitoramento de Rádio - Erro de Consulta - ".date("d/m/Y H:i:s"); 
+                $titulo = "Notificação de Monitoramento de Impresso - Erro de Consulta - ".date("d/m/Y H:i:s"); 
 
                 $data['dados'] = array('cliente' => $monitoramento->cliente->nome,
                                        'expressao' => $monitoramento->expressao,
