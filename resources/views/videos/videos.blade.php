@@ -86,7 +86,7 @@
                 @if(count($videos) > 0)
                     <h6 class="px-3">Mostrando {{ $videos->count() }} de {{ $videos->total() }} vídeos coletados</h6>
 
-                     {{ $dados->onEachSide(1)->appends(['dt_inicial' => \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y'), 
+                     {{ $videos->onEachSide(1)->appends(['dt_inicial' => \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y'), 
                                                         'dt_final' => \Carbon\Carbon::parse($dt_final)->format('d/m/Y'),
                                                         'expressao' => $expressao])
                                                         ->links('vendor.pagination.bootstrap-4') }}
@@ -144,7 +144,7 @@
                         </div>
                     @endforeach
 
-                      {{ $dados->onEachSide(1)->appends(['dt_inicial' => \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y'), 
+                      {{ $videos->onEachSide(1)->appends(['dt_inicial' => \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y'), 
                                                         'dt_final' => \Carbon\Carbon::parse($dt_final)->format('d/m/Y'),
                                                         'expressao' => $expressao])
                                                         ->links('vendor.pagination.bootstrap-4') }}
