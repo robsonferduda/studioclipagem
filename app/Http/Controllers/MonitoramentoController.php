@@ -340,7 +340,7 @@ class MonitoramentoController extends Controller
                 }
 
                 $sql .= "AND n.data_noticia BETWEEN '$dt_inicial' AND '$dt_final' 
-                         AND cnw.conteudo_tsv @@ to_tsquery('simple', '$monitoramento->expressao')";
+                         AND cnw.conteudo_tsv @@ to_tsquery('simple', transform_tsquery_distances('$monitoramento->expressao'))";
 
                 $dados = DB::select($sql);
 
