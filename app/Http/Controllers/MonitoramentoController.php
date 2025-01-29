@@ -183,8 +183,10 @@ class MonitoramentoController extends Controller
                     AND n.created_at BETWEEN '$dt_inicial' AND '$dt_final'
                     AND n.$label_data BETWEEN '$dt_inicial' AND '$dt_final' ";
 
-        $sql .= ($request->expressao) ? "AND  pejo.texto_extraido_tsv @@ to_tsquery('portuguese', transform_tsquery_distances('$request->expressao')) " : '';
+        $sql .= ($request->expressao) ? "AND pejo.texto_extraido_tsv @@ to_tsquery('portuguese', transform_tsquery_distances('$request->expressao')) " : '';
         $sql .= 'ORDER BY '.$label_data.' DESC';
+
+        dd($sql);
 
         $dados = DB::select($sql);
 
@@ -212,7 +214,7 @@ class MonitoramentoController extends Controller
                     AND n.created_at BETWEEN '$dt_inicial' AND '$dt_final'
                     AND n.$label_data BETWEEN '$dt_inicial' AND '$dt_final' ";
 
-        $sql .= ($request->expressao) ? "AND  n.transcricao_tsv @@ to_tsquery('simple', transform_tsquery_distances('$request->expressao')) " : '';
+        $sql .= ($request->expressao) ? "AND n.transcricao_tsv @@ to_tsquery('simple', transform_tsquery_distances('$request->expressao')) " : '';
         $sql .= 'ORDER BY n.'.$label_data.' DESC';
 
         $dados = DB::select($sql);
