@@ -71,6 +71,7 @@ class VideosController extends Controller
                             'nm_cidade',
                             'horario_start_gravacao',
                             'horario_end_gravacao',
+                            'programa_emissora_web.tipo_programa',
                             'transcricao',
                             'misc_data',
                             'video_path')
