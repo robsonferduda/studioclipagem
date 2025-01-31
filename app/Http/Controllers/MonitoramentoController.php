@@ -382,6 +382,18 @@ class MonitoramentoController extends Controller
         }
     }
 
+    public function clonar($id)
+    {
+        $monitoramento = Monitoramento::find($id);
+
+        $novo_monitoramento = $monitoramento->replicate();
+        $novo_monitoramento->nome = null;
+        $novo_monitoramento->id_cliente = null;
+        $novo_monitoramento->save();
+
+        return redirect('monitoramento/'.$novo_monitoramento->id.'/editar');
+    }
+
     public function executarImpresso()
     {
         $dt_inicial = (Carbon::now())->format('Y-m-d')." 00:00:00";
