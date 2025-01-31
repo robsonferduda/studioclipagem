@@ -18,131 +18,108 @@ use Illuminate\Support\Facades\Session;
 
 class VideosController extends Controller
 {
+    private $data_atual;
+    private $carbon;
+
     public function __construct()
     {
         $this->middleware('auth');
         Session::put('url','tv');
+        $this->carbon = new Carbon();
     }
 
     public function index(Request $request)
     {
         Session::put('sub-menu','tv-videos');
         
-        $emissoras = EmissoraWeb::orderBy('nome_emissora')->get();
-        $programas = ProgramaEmissoraWeb::all();
+        $fontes_disponiveis = DB::select("SELECT id, nome_programa as nome, t2.sg_estado FROM programa_emissora_web t1 LEFT JOIN estado t2 ON t2.cd_estado = t1.cd_estado ORDER BY t2.sg_estado, nome"); 
 
-        $carbon = new Carbon();
-        
-        $termo = $request->termo;
-        $videos = array();
-        $expressao = "";
-        $fonte = 0;
-        $programa = 0;
+        foreach ($fontes_disponiveis as $key => $fd) {
+            $fontes[] = array('id' => $fd->id,
+                                'estado' => ($fd->sg_estado) ? $fd->sg_estado : '',
+                                'nome' => $fd->nome,
+                                'flag' => '');
+        }
 
-        $video = VideoEmissoraWeb::query();
+        $tipo_data = $request->tipo_data;
+        $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
+        $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
+        $fonte = ($request->fontes) ? $request->fontes : null;
+        $expressao = ($request->expressao) ? $request->expressao : null;
 
-        if($request->isMethod('GET')){
-
-            $dt_inicial = date('Y-m-d H:i:s');
-            $dt_final = date('Y-m-d H:i:s');
-
-            if($request->page){
-
-                $carbon = new Carbon();
-                $dt_inicial = ($request->dt_inicial) ? $request->dt_inicial : date("Y-m-d")." 00:00:00";
-                $dt_final = ($request->dt_final) ? $request->dt_final : date("Y-m-d")." 23:59:59";
-                $expressao = $request->expressao;
-                $fonte = $request->fonte;
-                $programa = $request->programa;
-
-                $video->when($fonte, function ($q) use ($fonte) {
-                    $q->whereHas('programa.emissora', function($q) use($fonte){
-                        return $q->where('id_emissora', $fonte);
-                    });
-                });
-    
-                $video->when($programa, function ($q) use ($programa) {
-                    $q->whereHas('programa', function($q) use($programa){
-                        return $q->where('id_programa_emissora_web', $programa);
-                    });
-                });
-    
-                $video->when($expressao, function ($q) use ($expressao) {
-                    return $q->whereRaw('transcricao_tsv @@ to_tsquery(\'portuguese\', ?)', [$expressao]);
-                });
-    
-                $video->whereBetween('created_at', [$dt_inicial, $dt_final]);
-
-                try {                
-
-                    $videos = $video->orderBy('created_at','DESC')->paginate(10);
-
-                } catch (\Illuminate\Database\QueryException $e) {
-
-                    $retorno = array('flag' => false,
-                                    'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
-                    
-                    Flash::warning($retorno['msg']);
-        
-                } catch (Exception $e) {
-                    
-                    $retorno = array('flag' => true,
-                                    'msg' => "Ocorreu um erro ao inserir o registro");
-
-                    Flash::warning($retorno['msg']);
-                }          
+        if($request->fontes or Session::get('tv_arquivos_fonte')){
+            if($request->fontes){
+                $fonte = $request->fontes;
+            }elseif(Session::get('tv_arquivos_fonte')){
+                $fonte = Session::get('tv_arquivos_fonte');
+            }else{
+                $fonte = null;
             }
-
+        }else{
+            $fonte = null;
+            Session::forget('tv_arquivos_fonte');
         }
 
         if($request->isMethod('POST')){
 
-            $carbon = new Carbon();
-            $dt_inicial = ($request->dt_inicial) ? $carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00" : date("Y-m-d")." 00:00:00";
-            $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d")." 23:59:59";
-            $expressao = $request->expressao;
-            $fonte = $request->fonte;
-            $programa = $request->programa;
+            if($request->fontes){
 
-            $video->when($fonte, function ($q) use ($fonte) {
-                $q->whereHas('programa.emissora', function($q) use($fonte){
-                    return $q->where('id_emissora', $fonte);
-                });
-            });
+                Session::put('tv_arquivos_fonte', $fonte);
 
-            $video->when($programa, function ($q) use ($programa) {
-                $q->whereHas('programa', function($q) use($programa){
-                    return $q->where('id_programa_emissora_web', $programa);
-                });
-            });
-
-            $video->when($expressao, function ($q) use ($expressao) {
-                return $q->whereRaw('transcricao_tsv @@ to_tsquery(\'portuguese\', ?)', [$expressao]);
-            });
-
-            $video->whereBetween('created_at', [$dt_inicial, $dt_final]);
-
-            try {                
-
-                $videos = $video->orderBy('created_at','DESC')->paginate(10);
-
-            } catch (\Illuminate\Database\QueryException $e) {
-
-                $retorno = array('flag' => false,
-                                 'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
                 
-                Flash::warning($retorno['msg']);
-    
-            } catch (Exception $e) {
                 
-                $retorno = array('flag' => true,
-                                 'msg' => "Ocorreu um erro ao inserir o registro");
+                $fontes = null;
+                foreach ($fontes_disponiveis as $key => $fd) {
 
-                Flash::warning($retorno['msg']);
-            }          
+                    if(in_array($fd->id, $fonte)){
+                        $fontes[] = array('id' => $fd->id,
+                                        'estado' => ($fd->sg_estado) ? $fd->sg_estado : '',
+                                        'nome' => $fd->nome,
+                                        'flag' => 'selected');
+                    }else{
+                        $fontes[] = array('id' => $fd->id,
+                                        'estado' => ($fd->sg_estado) ? $fd->sg_estado : '',
+                                        'nome' => $fd->nome,
+                                        'flag' => '');
+                    }
+                }
+
+            }else{
+                Session::forget('tv_arquivos_fonte');
+                $fonte = null;
+            }
         }
-        
-        return view('videos/videos', compact('dt_inicial','dt_final','expressao','fonte','programa','emissoras','videos','programas'));
+
+          $videos = DB::table('videos_programa_emissora_web')
+                    ->select('videos_programa_emissora_web.id AS noticia_id',
+                            'programa_emissora_web.id AS id_fonte',
+                            'nome_programa AS nome_programa',
+                            'nm_estado',
+                            'nm_cidade',
+                            'horario_start_gravacao',
+                            'horario_end_gravacao',
+                            'programa_emissora_web.tipo_programa',
+                            'transcricao',
+                            'nome_emissora',
+                            'misc_data',
+                            'video_path')
+                    ->join('programa_emissora_web','programa_emissora_web.id','=','videos_programa_emissora_web.id_programa_emissora_web')
+                    ->join('emissora_web','emissora_web.id','=','programa_emissora_web.id_emissora')
+                    ->leftJoin('estado','estado.cd_estado','=','programa_emissora_web.cd_estado')
+                    ->leftJoin('cidade','cidade.cd_cidade','=','programa_emissora_web.cd_cidade')
+                    ->when($expressao, function ($q) use ($expressao) {
+                        return $q->whereRaw("transcricao_tsv @@ to_tsquery('portuguese', '$expressao')");
+                    })
+                    ->when($fonte, function ($q) use ($fonte) {
+                        return $q->whereIn('programa_emissora_web.id', $fonte);
+                    })
+                    ->when($dt_inicial, function ($q) use ($dt_inicial, $dt_final) {
+                        return $q->whereBetween('videos_programa_emissora_web.horario_start_gravacao', [$dt_inicial." 00:00:00", $dt_final." 23:59:59"]);
+                    })
+                    ->orderBy('videos_programa_emissora_web.horario_start_gravacao','DESC')
+                    ->paginate(10);
+
+        return view('videos/videos', compact('fontes','videos','tipo_data','dt_inicial','dt_final','fonte','expressao'));
     }
 
     public function detalhes($id)
