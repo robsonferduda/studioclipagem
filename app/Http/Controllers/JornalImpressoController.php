@@ -456,6 +456,7 @@ class JornalImpressoController extends Controller
 
         $dt_inicial = date("Y-m-d")." 00:00:00";
         $dt_final = date("Y-m-d")." 23:59:59";
+        $tipo_data = 'created_at';
 
         $jornais_pendentes = EdicaoJornalImpresso::where('fl_upload', true)
                                                     ->whereBetween('dt_pub', [$dt_inicial, $dt_final])
@@ -466,14 +467,15 @@ class JornalImpressoController extends Controller
 
             $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00";
             $dt_final = $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59";
+            $tipo_data = $request->tipo_data;
 
             $jornais_pendentes = EdicaoJornalImpresso::where('fl_upload', true)
-                                                    ->whereBetween('dt_pub', [$dt_inicial, $dt_final])
+                                                    ->whereBetween($tipo_data, [$dt_inicial, $dt_final])
                                                     ->orderBy('fl_processado','ASC')
                                                     ->get();
         }
 
-        return view('jornal-impresso/upload', compact('jornais_pendentes','dt_inicial','dt_final'));
+        return view('jornal-impresso/upload', compact('jornais_pendentes','dt_inicial','dt_final','tipo_data'));
     }
 
     public function processamento(Request $request)
