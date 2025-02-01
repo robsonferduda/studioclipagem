@@ -84,7 +84,7 @@
                                         <div class="pull-right">
                                             <span class="badge badge-pill badge-success">Processado</span>
                                             <p class="text-center">{{ count($jornal->paginas) }} páginas</p>
-                                            <a title="Excluir" href="{{ url('jornal-impresso/'.$jornal->id.'/remover') }}" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-trash fa-2x"></i></a>
+                                            <a title="Excluir" href="{{ url('jornal-impresso/'.$jornal->id.'/remover') }}" class="btn btn-danger btn-link btn-icon btn-excluir pull-right"><i class="fa fa-trash fa-2x"></i></a>
                                         </div>
                                     @else
                                         <div class="pull-right">
