@@ -467,7 +467,7 @@ class JornalImpressoController extends Controller
 
             $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00";
             $dt_final = $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59";
-            $tipo_data = $request->tipo_data;
+            $tipo_data = ($request->tipo_data) ? $request->tipo_data : 'created_at';
 
             $jornais_pendentes = EdicaoJornalImpresso::where('fl_upload', true)
                                                     ->whereBetween($tipo_data, [$dt_inicial, $dt_final])
