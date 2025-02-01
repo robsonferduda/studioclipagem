@@ -43,11 +43,13 @@ class FonteWebController extends Controller
         $cidades = Cidade::orderBy('nm_cidade')->get();
         $estados = Estado::orderBy('nm_estado')->get();
         $situacoes = (new FonteWeb())->getSituacoes();
+        $prioridade = ($request->id_prioridade) ? $request->id_prioridade : "";
 
         $fonte = FonteWeb::query();
 
         if($request->isMethod('POST')){
 
+            $prioridade = ($request->id_prioridade) ? $request->id_prioridade : "";
             $nome = ($request->nome) ? $request->nome : "";
             $codigo = ($request->codigo) ? $request->codigo : "";
 
@@ -79,6 +81,11 @@ class FonteWebController extends Controller
                 Session::put('filtro_codigo', $codigo);
                 return $q->where('id', $codigo);
             });
+
+            $fonte->when($prioridade, function ($q) use ($prioridade) {
+                Session::put('filtro_prioridade', $prioridade);
+                return $q->where('id_prioridade', $prioridade);
+            });
             
             $fonte->orderByRaw("CASE WHEN crawlead_at IS NULL THEN 1 ELSE 0 END ASC")->orderBy('crawlead_at','DESC');
 
@@ -101,14 +108,18 @@ class FonteWebController extends Controller
             $fonte->when(Session::get('filtro_codigo'), function ($q) {
                 return $q->where('id', Session::get('filtro_codigo'));
             });
+
+            $fonte->when(Session::get('filtro_prioridade'), function ($q) {
+                return $q->where('id_prioridade', Session::get('filtro_prioridade'));
+            });
             
-            $fonte->orderByRaw("CASE WHEN crawlead_at IS NULL THEN 1 ELSE 0 END ASC")->orderBy('crawlead_at','DESC');
+            $fonte->orderByRaw("CASE WHEN crawlead_at IS NULL THEN 1 ELSE 0 END ASC")->orderBy('crawlead_at','DESC')->orderBy('created_at');
 
         }
 
         $fontes = $fonte->paginate(10);
 
-        return view('fonte-web/listar',compact('cidades','estados','situacoes','fontes'));
+        return view('fonte-web/listar',compact('cidades','estados','situacoes','fontes','prioridade'));
     }
 
     public function listar(Request $request)
@@ -127,6 +138,8 @@ class FonteWebController extends Controller
             $estado = ($request->estado) ? $request->estado : "";
             $cidade = ($request->cidade) ? $request->cidade : "";
             $id = ($request->id) ? $request->id : "";
+            $prioridade = ($request->id_prioridade) ? $request->id_prioridade : "";
+            
     
                 $fonte = FonteWeb::query();
     
@@ -203,7 +216,8 @@ class FonteWebController extends Controller
         Session::forget('filtro_estado');
         Session::forget('filtro_nome');
         Session::forget('filtro_codigo');
-
+        Session::forget('filtro_prioridade');
+        
         return redirect('fonte-web/listar');
 
     }
@@ -212,8 +226,8 @@ class FonteWebController extends Controller
     {
         $prioridade = $request->prioridade;
 
-        if($prioridade == 3){
-            $prioridade = 0;
+        if($prioridade == 5){
+            $prioridade = 1;
         }else{
             $prioridade += 1;
         }

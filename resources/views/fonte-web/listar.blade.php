@@ -39,7 +39,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Cidade</label>
                                         <select class="form-control select2" name="cd_cidade" id="cidade" disabled="disabled">
@@ -47,7 +47,20 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Prioridade</label>
+                                        <select class="form-control select2" name="id_prioridade" id="id_prioridade">
+                                            <option value="">Selecione uma prioridade</option>
+                                            <option value="1" {{ (Session::get('filtro_prioridade') and Session::get('filtro_prioridade') == 1 ) ? 'selected' : '' }}>Prioridade 1</option>
+                                            <option value="2" {{ (Session::get('filtro_prioridade') and Session::get('filtro_prioridade') == 2 ) ? 'selected' : '' }}>Prioridade 2</option>
+                                            <option value="3" {{ (Session::get('filtro_prioridade') and Session::get('filtro_prioridade') == 3 ) ? 'selected' : '' }}>Prioridade 3</option>
+                                            <option value="4" {{ (Session::get('filtro_prioridade') and Session::get('filtro_prioridade') == 4 ) ? 'selected' : '' }}>Prioridade 4</option>
+                                            <option value="5" {{ (Session::get('filtro_prioridade') and Session::get('filtro_prioridade') == 5 ) ? 'selected' : '' }}>Prioridade 5</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Nome</label>
                                         <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome" value="{{ (Session::get('filtro_nome')) ? Session::get('filtro_nome') : '' }}">
@@ -95,6 +108,7 @@
                                 <th>URL</th>
                                 <th>Valor cm/col</th>
                                 <th>Situação</th>
+                                <th>Prioridade</th>
                                 <th class="disabled-sorting text-center">Ações</th>
                             </tr>
                         </thead>
@@ -107,6 +121,7 @@
                                 <th>URL</th>
                                 <th>Valor cm/col</th>
                                 <th>Situação</th>
+                                <th>Prioridade</th>
                                 <th class="disabled-sorting text-center">Ações</th>
                             </tr>
                         </tfoot>
@@ -138,6 +153,9 @@
                                     </td>
                                     <td>
                                         <span class="badge badge-default" style="background: {{ $fonte->situacao->ds_color }} !important; border-color:  {{ $fonte->situacao->ds_color }} !important;">{{ $fonte->situacao->ds_situacao }}</span>
+                                    </td>
+                                    <td>
+                                        <span data-fonte="{{ $fonte->id }}" data-id="{{ $fonte->prioridade->id }}" class="badge badge-default btn-prioridade" style="background: {{ $fonte->prioridade->ds_color }} !important; border-color: {{ $fonte->prioridade->ds_color }} !important;">Prioridade {{ $fonte->prioridade->id }}</span>                  
                                     </td>
                                     <td>
                                         <div class="text-center">
@@ -274,7 +292,7 @@
                         "prioridade":prioridade
                                 },
                 success: function(result) {
-                              
+                    location.reload();  
                 },
                 error: function(response){
 
