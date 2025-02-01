@@ -744,4 +744,16 @@ class JornalImpressoController extends Controller
 
         return response()->json($dados); 
     }
+
+    public function remover($id)
+    {
+        $edicao = EdicaoJornalImpresso::find($id);
+
+        if($edicao->delete())
+            Flash::success('<i class="fa fa-check"></i> Edição excluída com sucesso');
+        else
+            Flash::error("Erro ao excluir o registro");
+
+        return redirect('jornal-impresso/uploads')->withInput();
+    }
 }
