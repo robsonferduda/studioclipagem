@@ -266,11 +266,10 @@
             estado = $("#cd_estado").val();
             
             $.ajax({
-                url: '../fonte-web/listar',
+                url: '../fonte-web/filtrar-situacao',
                 type: 'POST',
                 data: { "_token": token,
-                        "situacao": situacao,
-                        "estado": estado
+                        "situacao": situacao
                 },
                 success: function(result) {
                     window.location.reload();   

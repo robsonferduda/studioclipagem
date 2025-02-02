@@ -90,6 +90,7 @@ Route::get('jornal-impresso/edicao/{edicao}/paginas','JornalImpressoController@p
 Route::match(array('GET', 'POST'),'jornal-impresso/paginas','JornalImpressoController@todasPaginas');
 
 Route::get('fontes','FonteController@index');
+Route::post('fonte-web/filtrar-situacao','FonteWebController@filtrarSituacao');
 Route::post('fonte-web/prioridade/atualizar','FonteWebController@atualizarPrioridade');
 Route::get('fonte-web/coletas/{origem}/listar/{id_fonte}','FonteWebController@listarColetas');
 Route::get('fonte-web/coletas/{id}','FonteWebController@coletas');

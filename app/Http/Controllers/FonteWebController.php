@@ -64,12 +64,6 @@ class FonteWebController extends Controller
             else
                 Session::forget('filtro_cidade');
             
-            if($request->situacao and $request->situacao >= 0){
-                Session::put('filtro_situacao', $request->situacao);
-            }else{
-                Session::forget('filtro_situacao');
-            }
-
             $fonte->when(Session::get('filtro_estado'), function ($q) {
                 return $q->where('cd_estado', Session::get('filtro_estado'));
             });
@@ -143,6 +137,15 @@ class FonteWebController extends Controller
         $fontes = $fonte->paginate(10);
 
         return view('fonte-web/listar',compact('cidades','estados','situacoes','fontes','prioridade'));
+    }
+
+    public function filtrarSituacao(Request $request)
+    {
+        if($request->situacao and $request->situacao >= 0){
+            Session::put('filtro_situacao', $request->situacao);
+        }else{
+            Session::forget('filtro_situacao');
+        }
     }
 
     public function limpar()
