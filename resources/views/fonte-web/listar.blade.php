@@ -28,7 +28,7 @@
                     {!! Form::open(['id' => 'frm_fonte_impressa', 'class' => 'form-horizontal', 'url' => ['fonte-web/listar']]) !!}
                         <div class="form-group m-3 w-70">
                             <div class="row">
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Estado</label>
                                         <select class="form-control select2" name="cd_estado" id="cd_estado">
@@ -39,7 +39,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Cidade</label>
                                         <select class="form-control select2" name="cd_cidade" id="cidade" disabled="disabled">
@@ -66,6 +66,12 @@
                                         <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome" value="{{ (Session::get('filtro_nome')) ? Session::get('filtro_nome') : '' }}">
                                     </div>
                                 </div>    
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>URL <span class="text-info">Qualquer termo</span></label>
+                                        <input type="text" class="form-control" name="url" id="url" placeholder="URL" value="{{ (Session::get('filtro_url')) ? Session::get('filtro_url') : '' }}">
+                                    </div>
+                                </div>  
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Código</label>
@@ -157,7 +163,7 @@
                                     <td>
                                         <span data-fonte="{{ $fonte->id }}" data-id="{{ $fonte->prioridade->id }}" class="badge badge-default btn-prioridade" style="background: {{ $fonte->prioridade->ds_color }} !important; border-color: {{ $fonte->prioridade->ds_color }} !important;">Prioridade {{ $fonte->prioridade->id }}</span>                  
                                     </td>
-                                    <td>
+                                    <td class="acoes-3">
                                         <div class="text-center">
                                             <a title="Estatísticas" href="{{ url('fonte-web/estatisticas', $fonte->id) }}" class="btn btn-warning btn-link btn-icon"> <i class="fa fa-bar-chart fa-2x"></i></a>
                                             <a title="Editar" href="{{ url('fonte-web/editar', $fonte->id) }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
@@ -224,60 +230,9 @@
     $(document).ready(function() {
 
         var host =  $('meta[name="base-url"]').attr('content');
-        var token = $('meta[name="csrf-token"]').attr('content');
-        var estado = 0;
-        var cidade = 0;
-        var nome = "";
-        var situacao = "";
-        var id = "";
-        
+        var token = $('meta[name="csrf-token"]').attr('content');  
 
-        /*
-        var table = $('#bootstrap-table').DataTable({
-                "processing": true,
-                "paginate": true,
-                "serverSide": true,
-                "ordering": true,
-                "bFilter": true,
-                "ajax":{
-                    "url": "{{ url('fonte-web/listar') }}",
-                    "dataType": "json",
-                    "type": "GET",
-                    "data": function (d) {
-                        d._token   = "{{csrf_token()}}";
-                        d.situacao = situacao;
-                        d.estado   = estado;
-                        d.cidade   = cidade;
-                        d.nome     = nome;
-                        d.id       = id;
-                    }
-                },
-                "columns": [
-                    { data: "id" },
-                    { data: "estado" },
-                    { data: "cidade" },
-                    { data: "nome" },
-                    { data: "url" },
-                    { data: "valor" },
-                    { data: "situacao" },
-                    { data: "acoes" },
-                ],
-                'columnDefs': [
-                    {
-                        'targets': 0,
-                        'className': 'item',
-                        'checkboxes': true,
-                        'ordering': false,
-                        'sortable': false,
-                        'render': function(data, type, row, meta){
-                            data = '<label style="display: inline; color: black; font-weight: 600;"><input style="width: 50%;" type="checkbox" class="dt-checkboxes">'+data+'</label>'
-                            return data;
-                        }
-                    }
-                ],
-                "stateSave": true
-            });
-        */
+        $("#cd_estado").trigger("change");
 
         $(document).on('click', '.btn-prioridade', function() {   
 
@@ -328,26 +283,6 @@
                 }
             });  
 
-        });
-
-        $(document).on('change', '#cd_estado', function() {     
-            estado = $(this).val();
-            //table.draw();
-        });
-
-        $(document).on('change', '#cidade', function() {     
-            cidade = $(this).val();
-            //table.draw();
-        });
-
-        $(document).on('input', '#nome', function() {     
-            nome = $(this).val();
-            //table.draw();
-        });
-
-        $(document).on('input', '#codigo', function() {     
-            id = $(this).val();
-            //table.draw();
         });
 
         $(document).on('click', '.btn-selecao', function() {     
