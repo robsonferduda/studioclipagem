@@ -68,7 +68,7 @@
                                         <p class="mb-1"><a href="{{ $monitoramento->url_noticia }}" target="BLANK">{{ $monitoramento->titulo_noticia }}</a></p>
                                         <p class="mb-1 text-muted"><strong>ID {{ $monitoramento->noticia_id }} - {{ $monitoramento->nome_cliente }} - {{ $monitoramento->nome_fonte }}</strong></p>
                                         <code>{{ $monitoramento->expressao }}</code>
-                                        <p class="mb-1" style="font-family: DejaVu Sans Mono, monospace;">
+                                        <p class="mb-1 mt-1" style="font-family: DejaVu Sans Mono, monospace;">
                                             <i class="fa fa-clock-o fa-1x"></i> Notícia de {{ \Carbon\Carbon::parse($monitoramento->data_noticia)->format('d/m/Y H:i:s') }} coletada em {{ \Carbon\Carbon::parse($monitoramento->created_at)->format('d/m/Y H:i:s') }} 
                                         </p>  
                                         <div class="pull-right">
