@@ -132,6 +132,7 @@ class MonitoramentoController extends Controller
                             'noticia_cliente.monitoramento_id',
                             'expressao',
                             'fl_print',
+                            'noticia_cliente.created_at',
                             'clientes.nome AS nome_cliente')
                     ->join('clientes', 'clientes.id', '=', 'noticia_cliente.cliente_id')
                     ->join('noticias_web', function ($join) {
