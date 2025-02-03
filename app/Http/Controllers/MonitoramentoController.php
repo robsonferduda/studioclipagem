@@ -118,8 +118,10 @@ class MonitoramentoController extends Controller
         $periodos = Periodo::orderBy('ordem')->get();
         $clientes = Cliente::orderBy('nome')->get();
 
+        $tipo_data = $request->tipo_data;
         $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
         $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
+        $cliente = ($request->cliente) ? $request->cliente : null;
 
         $dados = DB::table('noticia_cliente')
                     ->select('path_screenshot',
@@ -145,10 +147,13 @@ class MonitoramentoController extends Controller
                     ->when($dt_inicial, function ($q) use ($dt_inicial, $dt_final) {
                         return $q->whereBetween('noticia_cliente.created_at', [$dt_inicial." 00:00:00", $dt_final." 23:59:59"]);
                     })
+                    ->when($cliente, function ($q) use ($cliente) {
+                        return $q->where('noticia_cliente.cliente_id', $cliente);
+                    })
                     ->orderBy('noticia_cliente.created_at','DESC')
                     ->get();
 
-        return view('monitoramento/exportacao-web', compact('clientes','periodos','dados'));
+        return view('monitoramento/exportacao-web', compact('clientes','periodos','dados','tipo_data','dt_inicial','dt_final','cliente'));
     }
 
     public function noticias($id)

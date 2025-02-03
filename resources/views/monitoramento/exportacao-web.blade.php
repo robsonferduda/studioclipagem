@@ -20,6 +20,42 @@
                 @include('layouts.mensagens')
             </div>
             <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['monitoramento/exportacao/web']]) !!}
+                        <div class="form-group m-3">
+                            <div class="row">
+                                <div class="col-md-2 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Data Inicial</label>
+                                        <input type="text" class="form-control datepicker" name="dt_inicial" required="true" value="{{ \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y') }}" placeholder="__/__/____">
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Data Final</label>
+                                        <input type="text" class="form-control datepicker" name="dt_final" required="true" value="{{ \Carbon\Carbon::parse($dt_final)->format('d/m/Y') }}" placeholder="__/__/____">
+                                    </div>
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="form-group">
+                                        <label>Cliente</label>
+                                        <select class="form-control select2" name="cliente" id="cliente">
+                                            <option value="">Selecione um cliente</option>
+                                            @foreach ($clientes as $cli)
+                                                <option value="{{ $cli->id }}" {{ ($cli->id == $cliente) ? 'selected' : '' }}>{{ $cli->nome }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <button type="submit" id="btn-find" class="btn btn-primary mb-3 w-100" style="margin-top: 25px;"><i class="fa fa-search"></i> </button>
+                                </div>
+                            </div>
+                        </div>
+                    {!! Form::close() !!}
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-lg-12 col-md-3 mb-12">
                     @if(count($dados))
                         <p>Foram coletadas {{ count($dados) }} notícias no período selecionado</p>
@@ -53,10 +89,8 @@
                             </div>
                         </div>
                     @empty
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <p class="text-danger">Nenhum notícia web coletada para o intervalo de datas especificado</p>
-                            </div>
+                        <div class="col-lg-12">
+                            <p class="text-danger">Nenhum notícia web coletada para o intervalo de datas especificado</p>
                         </div>
                     @endforelse          
                 </div>           
