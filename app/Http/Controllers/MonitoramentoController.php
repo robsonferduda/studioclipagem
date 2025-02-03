@@ -132,7 +132,6 @@ class MonitoramentoController extends Controller
                             'noticia_cliente.monitoramento_id',
                             'expressao',
                             'fl_print',
-                            'fl_automatico',
                             'url_noticia',
                             'exported',
                             'noticia_cliente.created_at',
