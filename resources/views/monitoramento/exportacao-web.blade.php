@@ -78,7 +78,7 @@
                                                 <span class="badge badge-pill badge-danger">Exportação Pendente</span>
                                             @endif
 
-                                            @if($monitoramento->fl_print)
+                                            @if($monitoramento->screenshot)
                                                 <span class="badge badge-pill badge-success">Print Capturado</span>
                                             @else
                                                 <span class="badge badge-pill badge-danger">Aguardando Print</span>
