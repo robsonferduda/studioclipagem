@@ -26,8 +26,9 @@
                             <div class="col-lg-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <p class="mb-1">{{ $monitoramento->titulo_noticia }}</p>
+                                        <p class="mb-1"><a href="{{ $monitoramento->url_noticia }}" target="BLANK">{{ $monitoramento->titulo_noticia }}</a></p>
                                         <p class="mb-1"><strong>{{ $monitoramento->nome_cliente }} - {{ $monitoramento->nome_fonte }}</strong></p>
+                                        <code>{{ $monitoramento->expressao }}</code>
                                         <p class="mb-1" style="font-family: DejaVu Sans Mono, monospace;">
                                             <i class="fa fa-clock-o fa-1x"></i> Executado em {{ \Carbon\Carbon::parse($monitoramento->created_at)->format('d/m/Y H:i:s') }} 
                                             <strong>{{ ($monitoramento->fl_automatico) ? 'automaticamente' : 'manualmente' }}</strong> 
