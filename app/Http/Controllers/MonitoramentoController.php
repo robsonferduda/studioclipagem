@@ -132,6 +132,7 @@ class MonitoramentoController extends Controller
                             'noticia_cliente.monitoramento_id',
                             'expressao',
                             'fl_print',
+                            'fl_automatico',
                             'noticia_cliente.created_at',
                             'clientes.nome AS nome_cliente')
                     ->join('clientes', 'clientes.id', '=', 'noticia_cliente.cliente_id')
@@ -140,6 +141,7 @@ class MonitoramentoController extends Controller
                     })
                     ->join('fonte_web','fonte_web.id','=','noticias_web.id_fonte')
                     ->join('monitoramento', 'monitoramento.id','=','noticia_cliente.monitoramento_id')
+                    ->join('monitoramento_execucao','monitoramento_execucao.id','=','monitoramento.monitoramento_id')
                     ->when($dt_inicial, function ($q) use ($dt_inicial, $dt_final) {
                         return $q->whereBetween('noticias_web.data_noticia', [$dt_inicial." 00:00:00", $dt_final." 23:59:59"]);
                     })
