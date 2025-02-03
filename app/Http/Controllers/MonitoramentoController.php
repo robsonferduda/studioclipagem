@@ -143,9 +143,8 @@ class MonitoramentoController extends Controller
                     })
                     ->join('fonte_web','fonte_web.id','=','noticias_web.id_fonte')
                     ->join('monitoramento', 'monitoramento.id','=','noticia_cliente.monitoramento_id')
-                    ->join('monitoramento_execucao','monitoramento_execucao.monitoramento_id','=','noticia_cliente.monitoramento_id')
                     ->when($dt_inicial, function ($q) use ($dt_inicial, $dt_final) {
-                        return $q->whereBetween('noticias_web.data_noticia', [$dt_inicial." 00:00:00", $dt_final." 23:59:59"]);
+                        return $q->whereBetween('noticia_cliente.created_at', [$dt_inicial." 00:00:00", $dt_final." 23:59:59"]);
                     })
                     ->orderBy('noticia_cliente.created_at','DESC')
                     ->get();
