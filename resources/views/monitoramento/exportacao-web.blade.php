@@ -36,7 +36,7 @@
                                         <input type="text" class="form-control datepicker" name="dt_final" required="true" value="{{ \Carbon\Carbon::parse($dt_final)->format('d/m/Y') }}" placeholder="__/__/____">
                                     </div>
                                 </div>
-                                <div class="col-md-7">
+                                <div class="col-md-5">
                                     <div class="form-group">
                                         <label>Cliente</label>
                                         <select class="form-control select2" name="cliente" id="cliente">
@@ -44,6 +44,17 @@
                                             @foreach ($clientes as $cli)
                                                 <option value="{{ $cli->id }}" {{ ($cli->id == $cliente) ? 'selected' : '' }}>{{ $cli->nome }}</option>
                                             @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Exportação</label>
+                                        <select class="form-control select2" name="exportacao" id="exportacao">
+                                            <option value="">Selecione uma situação</option>
+                                            <option value="0" {{ ($exportacao == 0) ? 'selected' : '' }}>Todas</option>
+                                            <option value="1" {{ ($exportacao == 1) ? 'selected' : '' }}>Exportadas</option>
+                                            <option value="2" {{ ($exportacao == 2) ? 'selected' : '' }}>Pendentes</option>
                                         </select>
                                     </div>
                                 </div>
@@ -55,7 +66,7 @@
                                         <div class="form-check">
                                             <label class="form-check-label" style="margin-top: 15px;">
                                                 <input class="form-check-input" {{ ($fl_dia) ? 'checked' : '' }} type="checkbox" name="fl_dia" value="true">
-                                                SOMENTE NOTÌCIAS DO DIA
+                                                SOMENTE NOTÍCIAS DO DIA
                                                 <span class="form-check-sign"></span>
                                             </label>
                                         </div>
