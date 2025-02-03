@@ -39,7 +39,7 @@
                                             @if($monitoramento->exported)
                                                 <span class="badge badge-pill badge-success">Exportada</span>
                                             @else
-                                                <span class="badge badge-pill badge-danger">Pendente</span>
+                                                <span class="badge badge-pill badge-danger">Exportação Pendente</span>
                                             @endif
 
                                             @if($monitoramento->fl_print)
