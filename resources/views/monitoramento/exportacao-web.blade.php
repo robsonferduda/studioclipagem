@@ -41,6 +41,12 @@
                                             @else
                                                 <span class="badge badge-pill badge-danger">Pendente</span>
                                             @endif
+
+                                            @if($monitoramento->fl_print)
+                                                <span class="badge badge-pill badge-success">Print Capturado</span>
+                                            @else
+                                                <span class="badge badge-pill badge-danger">Aguardando Print</span>
+                                            @endif
                                         </div>                                     
                                     </div>
                                 </div>
