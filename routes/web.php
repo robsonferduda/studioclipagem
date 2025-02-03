@@ -170,8 +170,9 @@ Route::get('jornal-web/listar','JornalWebController@listar');
 Route::get('jornal-web/noticia/{id}','JornalWebController@detalhes');
 Route::get('jornal-web/noticia/estatisticas/{id}','JornalWebController@getEstatisticas');
 
-Route::match(array('GET', 'POST'),'monitoramento','MonitoramentoController@index');
+Route::match(array('GET', 'POST'),'monitoramentos','MonitoramentoController@index');
 Route::match(array('GET', 'POST'),'monitoramento/listar','MonitoramentoController@listar');
+Route::get('monitoramento/exportacao/web','MonitoramentoController@exportacaoWeb');
 Route::get('monitoramento/cliente/{cliente}','MonitoramentoController@buscar');
 Route::get('monitoramento/novo','MonitoramentoController@novo');
 Route::get('monitoramento/executar','MonitoramentoController@executar');

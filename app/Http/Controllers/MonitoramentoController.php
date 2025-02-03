@@ -39,6 +39,8 @@ class MonitoramentoController extends Controller
 
     public function index(Request $request)
     {
+        Session::put('sub-menu','monitoramentos');
+
         $clientes = Cliente::orderBy('nome')->get();
 
         $cliente = ($request->cliente) ? $request->cliente : null;
@@ -73,7 +75,7 @@ class MonitoramentoController extends Controller
 
         if($request->isMethod('POST')){
 
-            $url = 'monitoramento';
+            $url = 'monitoramentos';
 
             $arr = array();
 
@@ -101,10 +103,50 @@ class MonitoramentoController extends Controller
 
     public function novo()
     {
+        Session::put('sub-menu','monitoramento-cadastrar');
+
         $periodos = Periodo::orderBy('ordem')->get();
         $clientes = Cliente::orderBy('nome')->get();
 
         return view('monitoramento/novo', compact('clientes','periodos'));
+    }
+
+    public function exportacaoWeb(Request $request)
+    {
+        Session::put('sub-menu','monitoramento-exportar-web');
+        
+        $periodos = Periodo::orderBy('ordem')->get();
+        $clientes = Cliente::orderBy('nome')->get();
+
+        $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
+        $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
+
+        $dados = DB::table('noticia_cliente')
+                    ->select('path_screenshot',
+                            'fonte_web.id AS id_fonte',
+                            'fonte_web.nome AS nome_fonte',
+                            'noticias_web.data_noticia',
+                            'noticias_web.data_insert',
+                            'noticias_web.titulo_noticia',
+                            'noticia_cliente.noticia_id',
+                            'noticia_cliente.monitoramento_id',
+                            'expressao',
+                            'fl_print',
+                            'clientes.nome AS nome_cliente')
+                    ->join('clientes', 'clientes.id', '=', 'noticia_cliente.cliente_id')
+                    ->join('noticias_web', function ($join) {
+                        $join->on('noticias_web.id', '=', 'noticia_cliente.noticia_id')->where('tipo_id',2);
+                    })
+                    ->join('fonte_web','fonte_web.id','=','noticias_web.id_fonte')
+                    ->join('monitoramento', 'monitoramento.id','=','noticia_cliente.monitoramento_id')
+                    ->when($dt_inicial, function ($q) use ($dt_inicial, $dt_final) {
+                        return $q->whereBetween('noticias_web.data_noticia', [$dt_inicial." 00:00:00", $dt_final." 23:59:59"]);
+                    })
+                    ->orderBy('fonte_web.id')
+                    ->orderBy('data_noticia','DESC')
+                    ->paginate(10);
+
+        return view('monitoramento/exportacao-web', compact('clientes','periodos','dados'));
     }
 
     public function noticias($id)
@@ -1042,7 +1084,7 @@ class MonitoramentoController extends Controller
             Flash::error('<i class="fa fa-times"></i> Erro ao excluir monitoramento');
         }
 
-        return redirect('monitoramento')->withInput();
+        return redirect('monitoramentos')->withInput();
     }
 
     public function getMonitoramento($cliente, $flag)

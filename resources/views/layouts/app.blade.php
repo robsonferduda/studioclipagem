@@ -310,11 +310,32 @@
               @endrole
                 @role('administradores')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'monitoramento') ? 'active' : '' }}">
-                    <a href="{{ url('monitoramento') }}">
-                    <i class="nc-icon nc-sound-wave"></i>
-                    <p>Monitoramento</p>
+                    <a data-toggle="collapse" href="#submenu-monitoramento" class="{{ (Session::has('url') and Session::get('url') == 'monitoramento') ? '' : 'collapsed' }}" aria-expanded="{{ (Session::has('url') and Session::get('url') == 'monitoramento') ? 'true' : 'false' }}">
+                        <i class="nc-icon nc-sound-wave"></i>
+                        <p>Monitoramentos
+                          <b class="caret"></b>
+                        </p>
                     </a>
-                  </li>
+                    <div class="collapse {{ (Session::has('url') and Session::get('url') == 'monitoramento') ? 'show' : '' }}" id="submenu-monitoramento" aria-expanded="false">
+                       <ul class="nav ml-5">
+                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'monitoramentos') ? 'active' : '' }}">
+                             <a href="{{ url('monitoramentos') }}">
+                             <span class="sidebar-normal">Listar</span>
+                             </a>
+                          </li>
+                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'monitoramento-cadastrar') ? 'active' : '' }}">
+                            <a href="{{ url('monitoramento/novo') }}">
+                            <span class="sidebar-normal">Cadastrar</span>
+                            </a>
+                         </li>
+                         <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'monitoramento-exportar-web') ? 'active' : '' }}">
+                          <a href="{{ url('monitoramento/exportacao/web') }}">
+                          <span class="sidebar-normal">Exportação Web</span>
+                          </a>
+                       </li>
+                       </ul>
+                    </div>
+                 </li>              
                 @endrole
                 @role('administradores')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'boletins') ? 'active' : '' }}">
