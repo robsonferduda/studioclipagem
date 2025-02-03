@@ -133,6 +133,7 @@ class MonitoramentoController extends Controller
                             'expressao',
                             'fl_print',
                             'fl_automatico',
+                            'url_noticia',
                             'noticia_cliente.created_at',
                             'clientes.nome AS nome_cliente')
                     ->join('clientes', 'clientes.id', '=', 'noticia_cliente.cliente_id')
