@@ -147,7 +147,7 @@ class MonitoramentoController extends Controller
                         return $q->whereBetween('noticias_web.data_noticia', [$dt_inicial." 00:00:00", $dt_final." 23:59:59"]);
                     })
                     ->orderBy('noticia_cliente.created_at','DESC')
-                    ->paginate(10);
+                    ->get();
 
         return view('monitoramento/exportacao-web', compact('clientes','periodos','dados'));
     }
