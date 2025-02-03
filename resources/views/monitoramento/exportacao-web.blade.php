@@ -50,6 +50,17 @@
                                 <div class="col-md-1">
                                     <button type="submit" id="btn-find" class="btn btn-primary mb-3 w-100" style="margin-top: 25px;"><i class="fa fa-search"></i> </button>
                                 </div>
+                                <div class="col-md-12">
+                                    <div class="form-check mt-0">
+                                        <div class="form-check">
+                                            <label class="form-check-label" style="margin-top: 15px;">
+                                                <input class="form-check-input" {{ ($fl_dia) ? 'checked' : '' }} type="checkbox" name="fl_dia" value="true">
+                                                SOMENTE NOTÌCIAS DO DIA
+                                                <span class="form-check-sign"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>                                
                             </div>
                         </div>
                     {!! Form::close() !!}
