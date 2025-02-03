@@ -33,8 +33,7 @@
                                         <p class="mb-1"><strong>{{ $monitoramento->nome_cliente }} - {{ $monitoramento->nome_fonte }}</strong></p>
                                         <code>{{ $monitoramento->expressao }}</code>
                                         <p class="mb-1" style="font-family: DejaVu Sans Mono, monospace;">
-                                            <i class="fa fa-clock-o fa-1x"></i> Executado em {{ \Carbon\Carbon::parse($monitoramento->created_at)->format('d/m/Y H:i:s') }} 
-                                            <strong>{{ ($monitoramento->fl_automatico) ? 'automaticamente' : 'manualmente' }}</strong> 
+                                            <i class="fa fa-clock-o fa-1x"></i> Coletado em {{ \Carbon\Carbon::parse($monitoramento->created_at)->format('d/m/Y H:i:s') }} 
                                         </p>  
                                         <div class="pull-right">
                                             @if($monitoramento->exported)
