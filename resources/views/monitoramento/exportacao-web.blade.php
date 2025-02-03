@@ -20,20 +20,30 @@
                 @include('layouts.mensagens')
             </div>
             <div class="row">
-                @forelse($dados as $key => $monitoramento)
-                    <div class="col-12 col-md-12 ml-3">
-                        <p>{{ $monitoramento->titulo_noticia }}</p>
-                        <p><strong>{{ $monitoramento->nome_cliente }} - {{ $monitoramento->nome_fonte }}</strong></p>
-                        <p style="font-family: DejaVu Sans Mono, monospace;">
-                            <i class="fa fa-clock-o fa-1x"></i> Executado em {{ \Carbon\Carbon::parse($monitoramento->created_at)->format('d/m/Y H:i:s') }} 
-                            <strong>{{ ($monitoramento->fl_automatico) ? 'automaticamente' : 'manualmente' }}</strong> 
-                        </p>
-                    </div>
-                @empty
-                    <div class="col-12 col-md-12 ml-3">
-                        <p class="text-danger">Nenhum notícia web coletada para o intervalo de datas especificado</p>
-                    </div>
-                @endforelse                     
+                <div class="col-lg-12 col-md-3 mb-12">
+                    @forelse($dados as $key => $monitoramento)
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <p class="mb-1">{{ $monitoramento->titulo_noticia }}</p>
+                                        <p class="mb-1"><strong>{{ $monitoramento->nome_cliente }} - {{ $monitoramento->nome_fonte }}</strong></p>
+                                        <p class="mb-1" style="font-family: DejaVu Sans Mono, monospace;">
+                                            <i class="fa fa-clock-o fa-1x"></i> Executado em {{ \Carbon\Carbon::parse($monitoramento->created_at)->format('d/m/Y H:i:s') }} 
+                                            <strong>{{ ($monitoramento->fl_automatico) ? 'automaticamente' : 'manualmente' }}</strong> 
+                                        </p>                                       
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <p class="text-danger">Nenhum notícia web coletada para o intervalo de datas especificado</p>
+                            </div>
+                        </div>
+                    @endforelse          
+                </div>           
             </div>
         </div>
     </div>
