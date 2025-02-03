@@ -21,6 +21,9 @@
             </div>
             <div class="row">
                 <div class="col-lg-12 col-md-3 mb-12">
+                    @if(count($dados))
+                        <p>Foram coletadas {{ count($dados) }} notícias no período selecionado</p>
+                    @endif
                     @forelse($dados as $key => $monitoramento)
                         <div class="row">
                             <div class="col-lg-12">
@@ -32,7 +35,14 @@
                                         <p class="mb-1" style="font-family: DejaVu Sans Mono, monospace;">
                                             <i class="fa fa-clock-o fa-1x"></i> Executado em {{ \Carbon\Carbon::parse($monitoramento->created_at)->format('d/m/Y H:i:s') }} 
                                             <strong>{{ ($monitoramento->fl_automatico) ? 'automaticamente' : 'manualmente' }}</strong> 
-                                        </p>                                       
+                                        </p>  
+                                        <div class="pull-right">
+                                            @if($monitoramento->exported)
+                                                <span class="badge badge-pill badge-success">Exportada</span>
+                                            @else
+                                                <span class="badge badge-pill badge-danger">Pendente</span>
+                                            @endif
+                                        </div>                                     
                                     </div>
                                 </div>
                             </div>
