@@ -151,7 +151,7 @@ class MonitoramentoController extends Controller
                         return $q->whereBetween('noticia_cliente.created_at', [$dt_inicial." 00:00:00", $dt_final." 23:59:59"]);
                     })
                     ->when($fl_dia, function ($q) use ($fl_dia) {
-                        return $q->whereBetween('noticias_web.data_noticia', [date("Y-m-d")." 00:00:00", date("Y-m-d")." 23:59:59"]);
+                        return $q->whereBetween('noticias_web.data_noticia', [$dt_final." 00:00:00", $dt_final." 23:59:59"]);
                     })
                     ->when($exportacao, function ($q) use ($exportacao) {
                         if($exportacao == 1){
