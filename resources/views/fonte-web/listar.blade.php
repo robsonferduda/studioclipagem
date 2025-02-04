@@ -52,7 +52,7 @@
                                         <label>Prioridade {{ Session::get('filtro_prioridade') }}</label>
                                         <select class="form-control" name="id_prioridade" id="id_prioridade">
                                             <option value="">Selecione uma prioridade</option>
-                                            <option value="0" {{ (Session::get('filtro_prioridade') === 0 ) ? 'selected' : '' }}>Prioridade 0</option>
+                                            <option value="6" {{ (Session::get('filtro_prioridade') and Session::get('filtro_prioridade') == 6 ) ? 'selected' : '' }}>Prioridade 0</option>
                                             <option value="1" {{ (Session::get('filtro_prioridade') and Session::get('filtro_prioridade') == 1 ) ? 'selected' : '' }}>Prioridade 1</option>
                                             <option value="2" {{ (Session::get('filtro_prioridade') and Session::get('filtro_prioridade') == 2 ) ? 'selected' : '' }}>Prioridade 2</option>
                                             <option value="3" {{ (Session::get('filtro_prioridade') and Session::get('filtro_prioridade') == 3 ) ? 'selected' : '' }}>Prioridade 3</option>
