@@ -49,7 +49,7 @@ class FonteWebController extends Controller
 
         if($request->isMethod('POST')){
 
-            $prioridade = ($request->id_prioridade) ? $request->id_prioridade : "";
+            $prioridade = ($request->id_prioridade != "") ? $request->id_prioridade : "";
             $nome = ($request->nome) ? $request->nome : "";
             $url = ($request->url) ? $request->url : "";
             $codigo = ($request->codigo) ? $request->codigo : "";
