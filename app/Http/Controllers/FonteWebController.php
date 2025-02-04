@@ -79,8 +79,11 @@ class FonteWebController extends Controller
                 return $q->where('id_situacao', Session::get('filtro_situacao'));
             });
 
-            $fonte->when(Session::get('filtro_prioridade') >= 0, function ($q) {
-                return $q->where('id_prioridade', Session::get('filtro_prioridade'));
+            $fonte->when(Session::get('filtro_prioridade'), function ($q) {
+                if(Session::get('filtro_prioridade') == 6)
+                    return $q->where('id_prioridade', 0);
+                else
+                    return $q->where('id_prioridade', Session::get('filtro_prioridade'));
             });
 
             $fonte->when($nome, function ($q) use ($nome) {
