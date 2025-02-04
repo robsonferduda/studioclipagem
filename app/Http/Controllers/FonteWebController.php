@@ -43,7 +43,7 @@ class FonteWebController extends Controller
         $cidades = Cidade::orderBy('nm_cidade')->get();
         $estados = Estado::orderBy('nm_estado')->get();
         $situacoes = (new FonteWeb())->getSituacoes();
-        $prioridade = ($request->id_prioridade) ? $request->id_prioridade : "";
+        $prioridade = ($request->id_prioridade != "") ? $request->id_prioridade : "";
 
         $fonte = FonteWeb::query();
 
@@ -76,7 +76,7 @@ class FonteWebController extends Controller
                 return $q->where('id_situacao', Session::get('filtro_situacao'));
             });
 
-            $fonte->when($prioridade, function ($q) use ($prioridade) {
+            $fonte->when($prioridade >= 0, function ($q) use ($prioridade) {
                 Session::put('filtro_prioridade', $prioridade);
                 return $q->where('id_prioridade', $prioridade);
             });
