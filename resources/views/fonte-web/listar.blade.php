@@ -50,7 +50,7 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Prioridade {{ Session::get('filtro_prioridade') }}</label>
-                                        <select class="form-control select2" name="id_prioridade" id="id_prioridade">
+                                        <select class="form-control" name="id_prioridade" id="id_prioridade">
                                             <option value="">Selecione uma prioridade</option>
                                             <option value="0" {{ (Session::get('filtro_prioridade') == 0 ) ? 'selected' : '' }}>Prioridade 0</option>
                                             <option value="1" {{ (Session::get('filtro_prioridade') and Session::get('filtro_prioridade') == 1 ) ? 'selected' : '' }}>Prioridade 1</option>
