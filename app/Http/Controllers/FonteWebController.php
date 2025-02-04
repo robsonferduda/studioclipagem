@@ -43,8 +43,7 @@ class FonteWebController extends Controller
         $cidades = Cidade::orderBy('nm_cidade')->get();
         $estados = Estado::orderBy('nm_estado')->get();
         $situacoes = (new FonteWeb())->getSituacoes();
-        $prioridade = ($request->id_prioridade != "") ? $request->id_prioridade : "";
-
+        
         $fonte = FonteWeb::query();
 
         if($request->isMethod('POST')){
