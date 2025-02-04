@@ -135,7 +135,7 @@ class FonteWebController extends Controller
 
         $fontes = $fonte->paginate(10);
 
-        return view('fonte-web/listar',compact('cidades','estados','situacoes','fontes','prioridade'));
+        return view('fonte-web/listar',compact('cidades','estados','situacoes','fontes'));
     }
 
     public function filtrarSituacao(Request $request)
