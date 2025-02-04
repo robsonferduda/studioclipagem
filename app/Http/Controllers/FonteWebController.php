@@ -48,7 +48,6 @@ class FonteWebController extends Controller
 
         if($request->isMethod('POST')){
 
-            $prioridade = ($request->id_prioridade != "") ? $request->id_prioridade : "";
             $nome = ($request->nome) ? $request->nome : "";
             $url = ($request->url) ? $request->url : "";
             $codigo = ($request->codigo) ? $request->codigo : "";
@@ -62,7 +61,12 @@ class FonteWebController extends Controller
                 Session::put('filtro_cidade', $request->cd_cidade);
             else
                 Session::forget('filtro_cidade');
-            
+
+            if($request->id_prioridade != "")
+                Session::put('filtro_prioridade', $request->id_prioridade);
+            else
+                Session::forget('filtro_prioridade');
+
             $fonte->when(Session::get('filtro_estado'), function ($q) {
                 return $q->where('cd_estado', Session::get('filtro_estado'));
             });
@@ -75,9 +79,8 @@ class FonteWebController extends Controller
                 return $q->where('id_situacao', Session::get('filtro_situacao'));
             });
 
-            $fonte->when($prioridade >= 0, function ($q) use ($prioridade) {
-                Session::put('filtro_prioridade', $prioridade);
-                return $q->where('id_prioridade', $prioridade);
+            $fonte->when(Session::get('filtro_prioridade') >= 0, function ($q) {
+                return $q->where('id_prioridade', Session::get('filtro_prioridade'));
             });
 
             $fonte->when($nome, function ($q) use ($nome) {
