@@ -81,7 +81,7 @@ class ProgramaTvController extends Controller
             return $q->where('nome_programa','ilike','%'.$descricao.'%');
         });
 
-        $programas = $programa->orderBY("id_situacao")->orderBy('nome_programa')->paginate(10);
+        $programas = $programa->orderBY("id_situacao","DESC")->orderBy('nome_programa')->paginate(10);
         
         return view('programa-tv/index', compact('programas','descricao','cidades','estados','cd_estado','cd_cidade','gravar','tipos'));
 
