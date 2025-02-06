@@ -130,7 +130,7 @@
                                         @else
                                             <span class="text-danger">Não informado</span>
                                         @endif
-                                        <p class="mb-0">{{ $programa->url }}</p>
+                                        <p class="mb-0" style="overflow: inherit; max-width: 450px;">{{ $programa->url }}</p>
                                     </td>
                                     <td class="text-center">
                                         @if($programa->id_situacao == 1)
