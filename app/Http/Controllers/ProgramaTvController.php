@@ -37,6 +37,7 @@ class ProgramaTvController extends Controller
 
         $cidades = Cidade::orderBy('nm_cidade')->get();
         $estados = Estado::orderBy('nm_estado')->get();
+        $tipos = TipoProgramaEmissoraWeb::orderBy('nome')->get();
 
         if($request->fl_gravacao){
             $gravar = ($request->fl_gravacao == 'gravando') ? 1 : 2;
@@ -47,11 +48,13 @@ class ProgramaTvController extends Controller
         $descricao = ($request->descricao) ? $request->descricao : null;  
         $cd_cidade = ($request->cd_cidade) ? $request->cd_cidade : null;    
         $cd_estado = ($request->cd_estado) ? $request->cd_estado : null;   
+        $tipo_programa = ($request->tipo_programa) ? $request->tipo_programa : null;
 
         Session::put('filtro_estado', $cd_estado);
         Session::put('filtro_cidade', $cd_cidade);
         Session::put('filtro_gravar', $gravar);
         Session::put('filtro_nome', $descricao);
+        Session::put('filtro_tipo', $tipo_programa);
 
         $programa = ProgramaEmissoraWeb::query();
 
@@ -70,13 +73,17 @@ class ProgramaTvController extends Controller
             return $q->where('cd_estado', Session::get('filtro_estado'));
         });
 
+        $programa->when($tipo_programa, function ($q) use ($tipo_programa) {
+            return $q->where('tipo_programa', Session::get('filtro_tipo'));
+        });
+
         $programa->when($descricao, function ($q) use ($descricao) {
             return $q->where('nome_programa','ilike','%'.$descricao.'%');
         });
 
-        $programas = $programa->orderBy('nome_programa')->paginate(10);
+        $programas = $programa->orderBY("id_situacao")->orderBy('nome_programa')->paginate(10);
         
-        return view('programa-tv/index', compact('programas','descricao','cidades','estados','cd_estado','cd_cidade','gravar'));
+        return view('programa-tv/index', compact('programas','descricao','cidades','estados','cd_estado','cd_cidade','gravar','tipos'));
 
         return view('emissora/index', compact('emissoras','descricao','estados','tipo','cd_estado','cd_cidade','gravar'));
 
@@ -149,6 +156,17 @@ class ProgramaTvController extends Controller
         */
     }
 
+    public function limpar()
+    {
+        Session::forget('filtro_estado');
+        Session::forget('filtro_cidade');
+        Session::forget('filtro_gravar');
+        Session::forget('filtro_nome');
+        Session::forget('filtro_tipo');
+
+        return redirect('tv/emissoras/programas');
+    }
+
     public function novo()
     {
         $cidades = Cidade::orderBy('nm_cidade')->get();
@@ -180,15 +198,6 @@ class ProgramaTvController extends Controller
         $horarios = $emissora->horarios->sortBy('horario_start');
 
         return view('programa-tv/horarios',compact('horarios','id_programa'));
-    }
-
-    public function limpar()
-    {
-        Session::forget('filtro_estado');
-        Session::forget('filtro_nome');
-        Session::forget('filtro_codigo');
-
-        return redirect('tv/emissoras/programas');
     }
 
     public function atualizaGravacao($id){
