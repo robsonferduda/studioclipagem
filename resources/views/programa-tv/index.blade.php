@@ -125,12 +125,12 @@
                                     <td>{{ ($programa->emissora) ? $programa->emissora->nome_emissora : 'Não Informado'  }}</td>
                                     <td>{{ $programa->nome_programa }}</td>
                                     <td>
+                                        <p class="mb-0" style="overflow: inherit; max-width: 450px;">{{ $programa->url }}</p>
                                         @if($programa->tipo)
                                             <span class="badge badge-primary" style="background: '.$programa->tipo->ds_color.'; border-color: '.$programa->tipo->ds_color.';"> {{ $programa->tipo->nome }}</span>
                                         @else
                                             <span class="text-danger">Não informado</span>
-                                        @endif
-                                        <p class="mb-0" style="overflow: inherit; max-width: 450px;">{{ $programa->url }}</p>
+                                        @endif                                       
                                     </td>
                                     <td class="text-center">
                                         @if($programa->id_situacao == 1)
