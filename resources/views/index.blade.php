@@ -95,7 +95,7 @@
                         <div class="alert alert-danger alert-with-icon" data-notify="container">
                             <button type="button" aria-hidden="true" class="close">×</button>
                             <span data-notify="icon" class="ti-bell" style="top: 40% !important;"><i class="fa fa-tv"></i></span>
-                            <span data-notify="message">Existem <strong>{{ count($programas_erros) }}</strong> programas com erro de gravação! <a href="{{ url("tv/emissoras/programas") }}" style="color: white; font-weight: bold;">Clique aqui</a> para verificar e atualizar</span>
+                            <span data-notify="message">Existem <strong>{{ $programas_erros }}</strong> programas com erro de gravação! <a href="{{ url("tv/emissoras/programas") }}" style="color: white; font-weight: bold;">Clique aqui</a> para verificar e atualizar</span>
                         </div>
                     </div>
                 @endif
