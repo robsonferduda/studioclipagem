@@ -88,6 +88,7 @@
                         <p class="mb-0">Mostrando <strong>{{ $programas->count() }}</strong> de <strong>{{ $programas->total() }}</strong> programas</p>
                     @endif
                     <p class="mt-0 mb-1 text-info">Clique sobre o ícone de <strong>Gravação</strong> para pausar/continuar a gravação</p>
+                    {{ $programas->onEachSide(1)->appends(['gravar' => $gravar, 'cd_estado' => $cd_estado, 'cd_cidade' => $cd_cidade, 'descricao' => $descricao])->links('vendor.pagination.bootstrap-4') }}
                     @if($programas->total())                      
                         <table id="bootstrap-table" class="table table-striped table-bordered" cellspacing="0" width="100%">
                             <thead>
