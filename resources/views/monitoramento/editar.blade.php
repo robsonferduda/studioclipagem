@@ -145,16 +145,16 @@
                         <div class="nav-tabs-wrapper">
                         <ul id="tabs" class="nav nav-tabs" role="tablist">
                             <li class="nav-item">
-                            <a class="nav-link active" data-toggle="tab" href="#panel_web" role="tab" aria-expanded="true" aria-selected="false"><i class="fa fa-globe"></i> Web <span class="monitoramento-total monitoramento-total-web">0</span></a>
+                            <a class="nav-link active" id="nav-web" data-toggle="tab" href="#panel_web" role="tab" aria-expanded="true" aria-selected="false"><i class="fa fa-globe"></i> Web <span class="monitoramento-total monitoramento-total-web">0</span></a>
                             </li>
                             <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#panel_impresso" role="tab" aria-expanded="false"><i class="fa fa-newspaper-o"></i> Impressos <span class="monitoramento-total monitoramento-total-impresso">0</span></a>
+                            <a class="nav-link" id="nav-impresso" data-toggle="tab" href="#panel_impresso" role="tab" aria-expanded="false"><i class="fa fa-newspaper-o"></i> Impressos <span class="monitoramento-total monitoramento-total-impresso">0</span></a>
                             </li>
                             <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#panel_radio" role="tab" aria-expanded="false" aria-selected="true"><i class="fa fa-volume-up"></i> Rádio <span class="monitoramento-total monitoramento-total-radio">0</span></a>
+                            <a class="nav-link" id="nav-radio" data-toggle="tab" href="#panel_radio" role="tab" aria-expanded="false" aria-selected="true"><i class="fa fa-volume-up"></i> Rádio <span class="monitoramento-total monitoramento-total-radio">0</span></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#panel_tv" role="tab" aria-expanded="false" aria-selected="true"><i class="fa fa-volume-up"></i> TV <span class="monitoramento-total monitoramento-total-tv">0</span></a>
+                                <a class="nav-link" id="nav-tv" data-toggle="tab" href="#panel_tv" role="tab" aria-expanded="false" aria-selected="true"><i class="fa fa-volume-up"></i> TV <span class="monitoramento-total monitoramento-total-tv">0</span></a>
                             </li>
                         </ul>
                         </div>
@@ -288,6 +288,10 @@
                     $(this).removeClass("active");
                 });
 
+                $('.nav-link').each(function(i, obj) {
+                    $(this).removeClass("active");
+                });
+
                 //Busca Web
                 if(fl_web){
 
@@ -362,6 +366,7 @@
                 if(fl_impresso){
 
                     $("#panel_impresso > .tab-pane").addClass("active");
+                    $("#nav-impresso").addClass("active");
 
                     $.ajax({url: host+'/monitoramento/filtrar/impresso',
                         type: 'POST',
@@ -428,6 +433,7 @@
                 if(fl_radio){
 
                     $("#panel_radio > .tab-pane").addClass("active");
+                    $("#nav-radio").addClass("active");
 
                     $.ajax({url: host+'/monitoramento/filtrar/radio',
                         type: 'POST',
@@ -493,6 +499,7 @@
                     //Busca TV
 
                     $("#panel_tv > .tab-pane").addClass("active");
+                    $("#nav-tv").addClass("active");
 
                     $.ajax({url: host+'/monitoramento/filtrar/tv',
                         type: 'POST',
