@@ -47,6 +47,14 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Prioridade</label>
+                                        <select class="form-control" name="id_prioridade" id="id_prioridade">
+                                            <option value="">Selecione uma cidade</option>
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Nome</label>
