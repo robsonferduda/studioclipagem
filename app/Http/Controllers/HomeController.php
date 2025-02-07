@@ -15,6 +15,7 @@ use App\Models\NoticiaWeb;
 use App\Models\FonteWeb;
 use App\Models\ColetaWeb;
 use App\Models\MonitoramentoExecucao;
+use App\Models\ProgramaEmissoraWeb;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -58,7 +59,9 @@ class HomeController extends Controller
         $total_coletas = FonteWeb::whereBetween('crawlead_at', [$dt_inicial, $dt_final])->count();
         $coletas = FonteWeb::orderBy('crawlead_at','DESC')->take(5)->get();
 
-        return view('index', compact('totais','coletas','total_sem_area','execucoes','coletas','total_coletas','total_monitoramentos'));
+        $programas_erros = ProgramaEmissoraWeb::where('id_situacao',2)->count();
+
+        return view('index', compact('totais','coletas','total_sem_area','execucoes','coletas','total_coletas','total_monitoramentos','programas_erros'));
     }
 
     public function atualizarData(Request $request)

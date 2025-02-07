@@ -90,6 +90,7 @@ Route::get('jornal-impresso/edicao/{edicao}/paginas','JornalImpressoController@p
 Route::match(array('GET', 'POST'),'jornal-impresso/paginas','JornalImpressoController@todasPaginas');
 
 Route::get('fontes','FonteController@index');
+Route::post('fonte-web/filtrar-situacao','FonteWebController@filtrarSituacao');
 Route::post('fonte-web/prioridade/atualizar','FonteWebController@atualizarPrioridade');
 Route::get('fonte-web/coletas/{origem}/listar/{id_fonte}','FonteWebController@listarColetas');
 Route::get('fonte-web/coletas/{id}','FonteWebController@coletas');
@@ -131,6 +132,7 @@ Route::get('jornal-impresso/processar','JornalImpressoController@processar');
 Route::get('jornal-impresso/noticia/extrair/{tipo}/{id}','JornalImpressoController@extrair');
 Route::get('jornal-impresso/noticia/editar/{id}','JornalImpressoController@editar');
 Route::get('jornal-impresso/conteudo/{id_noticia}/monitoramento/{id_monitoramento}','JornalImpressoController@destacaConteudo');
+Route::get('jornal-impresso/{id}/remover','JornalImpressoController@remover');
 
 Route::get('jornal-impresso/pendentes/listar','JornalImpressoController@listarPendentes');
 Route::match(array('GET', 'POST'),'jornal-impresso/uploads','JornalImpressoController@upload');
@@ -168,8 +170,9 @@ Route::get('jornal-web/listar','JornalWebController@listar');
 Route::get('jornal-web/noticia/{id}','JornalWebController@detalhes');
 Route::get('jornal-web/noticia/estatisticas/{id}','JornalWebController@getEstatisticas');
 
-Route::match(array('GET', 'POST'),'monitoramento','MonitoramentoController@index');
+Route::match(array('GET', 'POST'),'monitoramentos','MonitoramentoController@index');
 Route::match(array('GET', 'POST'),'monitoramento/listar','MonitoramentoController@listar');
+Route::match(array('GET', 'POST'),'monitoramento/exportacao/web','MonitoramentoController@exportacaoWeb');
 Route::get('monitoramento/cliente/{cliente}','MonitoramentoController@buscar');
 Route::get('monitoramento/novo','MonitoramentoController@novo');
 Route::get('monitoramento/executar','MonitoramentoController@executar');

@@ -43,31 +43,47 @@ class FonteWebController extends Controller
         $cidades = Cidade::orderBy('nm_cidade')->get();
         $estados = Estado::orderBy('nm_estado')->get();
         $situacoes = (new FonteWeb())->getSituacoes();
-
+        
         $fonte = FonteWeb::query();
 
         if($request->isMethod('POST')){
 
             $nome = ($request->nome) ? $request->nome : "";
+            $url = ($request->url) ? $request->url : "";
             $codigo = ($request->codigo) ? $request->codigo : "";
 
             if($request->cd_estado != "")
                 Session::put('filtro_estado', $request->cd_estado);
             else
                 Session::forget('filtro_estado');
-            
-            if($request->situacao and $request->situacao >= 0){
-                Session::put('filtro_situacao', $request->situacao);
-            }else{
-                Session::forget('filtro_situacao');
-            }
+
+            if($request->cd_cidade != "")
+                Session::put('filtro_cidade', $request->cd_cidade);
+            else
+                Session::forget('filtro_cidade');
+
+            if($request->id_prioridade != "")
+                Session::put('filtro_prioridade', $request->id_prioridade);
+            else
+                Session::forget('filtro_prioridade');
+
+            $fonte->when(Session::get('filtro_estado'), function ($q) {
+                return $q->where('cd_estado', Session::get('filtro_estado'));
+            });
+
+            $fonte->when(Session::get('filtro_cidade'), function ($q) {
+                return $q->where('cd_cidade', Session::get('filtro_cidade'));
+            });
 
             $fonte->when(Session::get('filtro_situacao'), function ($q) {
                 return $q->where('id_situacao', Session::get('filtro_situacao'));
             });
 
-            $fonte->when(Session::get('filtro_estado'), function ($q) {
-                return $q->where('cd_estado', Session::get('filtro_estado'));
+            $fonte->when(Session::get('filtro_prioridade'), function ($q) {
+                if(Session::get('filtro_prioridade') == 6)
+                    return $q->where('id_prioridade', 0);
+                else
+                    return $q->where('id_prioridade', Session::get('filtro_prioridade'));
             });
 
             $fonte->when($nome, function ($q) use ($nome) {
@@ -75,13 +91,16 @@ class FonteWebController extends Controller
                 return $q->where('nome', 'ILIKE', '%'.trim($nome).'%');
             });
 
+            $fonte->when($url, function ($q) use ($url) {
+                Session::put('filtro_url', $url);
+                return $q->where('url', 'ILIKE', '%'.trim($url).'%');
+            });
+
             $fonte->when($codigo, function ($q) use ($codigo) {
                 Session::put('filtro_codigo', $codigo);
                 return $q->where('id', $codigo);
             });
             
-            $fonte->orderByRaw("CASE WHEN crawlead_at IS NULL THEN 1 ELSE 0 END ASC")->orderBy('crawlead_at','DESC');
-
         }
 
         if($request->isMethod('GET')){
@@ -90,25 +109,64 @@ class FonteWebController extends Controller
                 return $q->where('cd_estado', Session::get('filtro_estado'));
             });
 
+            $fonte->when(Session::get('filtro_cidade'), function ($q) {
+                return $q->where('cd_cidade', Session::get('filtro_cidade'));
+            });
+
             $fonte->when(Session::get('filtro_situacao'), function ($q) {
                 return $q->where('id_situacao', Session::get('filtro_situacao'));
+            });
+
+            $fonte->when(Session::get('filtro_prioridade'), function ($q) {
+                if(Session::get('filtro_prioridade') == 6)
+                    return $q->where('id_prioridade', 0);
+                else
+                    return $q->where('id_prioridade', Session::get('filtro_prioridade'));
             });
 
             $fonte->when(Session::get('filtro_nome'), function ($q) {
                 return $q->where('nome', 'ILIKE', '%'.trim(Session::get('filtro_nome')).'%');
             });
 
+            $fonte->when(Session::get('filtro_url'), function ($q) {
+                return $q->where('url', 'ILIKE', '%'.trim(Session::get('filtro_url')).'%');
+            });
+
             $fonte->when(Session::get('filtro_codigo'), function ($q) {
                 return $q->where('id', Session::get('filtro_codigo'));
-            });
+            });           
             
-            $fonte->orderByRaw("CASE WHEN crawlead_at IS NULL THEN 1 ELSE 0 END ASC")->orderBy('crawlead_at','DESC');
-
         }
+
+        $fonte->orderByRaw("CASE WHEN crawlead_at IS NULL THEN 1 ELSE 0 END ASC")
+                ->orderBy('crawlead_at','DESC')
+                ->orderBy('created_at');
 
         $fontes = $fonte->paginate(10);
 
         return view('fonte-web/listar',compact('cidades','estados','situacoes','fontes'));
+    }
+
+    public function filtrarSituacao(Request $request)
+    {
+        if($request->situacao and $request->situacao >= 0){
+            Session::put('filtro_situacao', $request->situacao);
+        }else{
+            Session::forget('filtro_situacao');
+        }
+    }
+
+    public function limpar()
+    {
+        Session::forget('filtro_estado');
+        Session::forget('filtro_cidade');
+        Session::forget('filtro_url');
+        Session::forget('filtro_nome');
+        Session::forget('filtro_codigo');
+        Session::forget('filtro_prioridade');
+        Session::forget('filtro_situacao');
+        
+        return redirect('fonte-web/listar');
     }
 
     public function listar(Request $request)
@@ -124,9 +182,12 @@ class FonteWebController extends Controller
 
             $situacao = ($request->situacao) ? $request->situacao : "";
             $nome = ($request->nome) ? $request->nome : "";
+            $url = ($request->url) ? $request->url : "";
             $estado = ($request->estado) ? $request->estado : "";
             $cidade = ($request->cidade) ? $request->cidade : "";
             $id = ($request->id) ? $request->id : "";
+            $prioridade = ($request->id_prioridade) ? $request->id_prioridade : "";
+            
     
                 $fonte = FonteWeb::query();
     
@@ -198,21 +259,11 @@ class FonteWebController extends Controller
         return view('fonte-web/listar',compact('cidades','estados','situacoes'));
     }
 
-    public function limpar()
-    {
-        Session::forget('filtro_estado');
-        Session::forget('filtro_nome');
-        Session::forget('filtro_codigo');
-
-        return redirect('fonte-web/listar');
-
-    }
-
     public function atualizarPrioridade(Request $request)
     {
         $prioridade = $request->prioridade;
 
-        if($prioridade == 3){
+        if($prioridade == 5){
             $prioridade = 0;
         }else{
             $prioridade += 1;

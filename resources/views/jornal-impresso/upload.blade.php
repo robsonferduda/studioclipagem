@@ -36,6 +36,15 @@
                     {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['jornal-impresso/uploads']]) !!}
                         <div class="form-group m-3">
                             <div class="row">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Tipo de Data</label>
+                                        <select class="form-control" name="tipo_data" id="tipo_data">
+                                            <option value="created_at" {{ ($tipo_data == "created_at") ? 'selected' : '' }}>Data de Envio</option>
+                                            <option value="dt_pub" {{ ($tipo_data == "dt_pub") ? 'selected' : '' }}>Data da Publicação</option>
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
                                         <label>Data Inicial</label>
@@ -74,7 +83,8 @@
                                     @if(count($jornal->paginas))
                                         <div class="pull-right">
                                             <span class="badge badge-pill badge-success">Processado</span>
-                                            <p class="text-center">{{ count($jornal->paginas) }} páginas</p>
+                                            <p class="text-center mb-0">{{ count($jornal->paginas) }} páginas</p>
+                                            <a title="Excluir" href="{{ url('jornal-impresso/'.$jornal->id.'/remover') }}" class="btn btn-danger btn-link btn-icon btn-excluir pull-right"><i class="fa fa-trash fa-2x"></i></a>
                                         </div>
                                     @else
                                         <div class="pull-right">

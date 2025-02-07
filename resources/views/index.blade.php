@@ -89,6 +89,17 @@
                 </div>  
             </div>
             <div class="row">
+
+                @if($programas_erros)
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="alert alert-danger alert-with-icon" data-notify="container">
+                            <button type="button" aria-hidden="true" class="close">×</button>
+                            <span data-notify="icon" class="ti-bell" style="top: 40% !important;"><i class="fa fa-tv"></i></span>
+                            <span data-notify="message">Existem <strong>{{ $programas_erros }}</strong> programas com erro de gravação! <a href="{{ url("tv/emissoras/programas") }}" style="color: white; font-weight: bold;">Clique aqui</a> para verificar e atualizar</span>
+                        </div>
+                    </div>
+                @endif
+
                 <div class="col-lg-12 col-md-12 col-sm-12">
                     <div class="card card-maiores-coletas">
                         <div class="card-header">

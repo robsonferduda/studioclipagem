@@ -46,7 +46,18 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-5 col-sm-12">
+                            <div class="col-md-2 col-sm-12">
+                                <div class="form-group">
+                                    <label>Tipo</label>
+                                    <select class="form-control" name="tipo_programa" id="tipo_programa">
+                                        <option value="">Selecione um tipo</option>
+                                        @foreach($tipos as $tipo)
+                                            <option value="{{ $tipo->id }}" {{ (Session::get('filtro_tipo') == $tipo->id) ? 'selected' : '' }}>{{ $tipo->nome }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-12">
                                 <div class="form-group">
                                     <label>Emissora</label>
                                     <input type="text" class="form-control" name="descricao" id="descricao" placeholder="Emissora" value="{{ Session::get('filtro_nome') }}">
@@ -77,6 +88,7 @@
                         <p class="mb-0">Mostrando <strong>{{ $programas->count() }}</strong> de <strong>{{ $programas->total() }}</strong> programas</p>
                     @endif
                     <p class="mt-0 mb-1 text-info">Clique sobre o ícone de <strong>Gravação</strong> para pausar/continuar a gravação</p>
+                    {{ $programas->onEachSide(1)->appends(['gravar' => $gravar, 'cd_estado' => $cd_estado, 'cd_cidade' => $cd_cidade, 'descricao' => $descricao])->links('vendor.pagination.bootstrap-4') }}
                     @if($programas->total())                      
                         <table id="bootstrap-table" class="table table-striped table-bordered" cellspacing="0" width="100%">
                             <thead>
@@ -86,6 +98,7 @@
                                     <th>Emissora</th>
                                     <th>Programa</th>
                                     <th>Tipo</th>
+                                    <th>Situação</th>
                                     <th>Valor</th>
                                     <th class="disabled-sorting text-center">Gravação</th>
                                     <th class="disabled-sorting text-center">Ações</th>
@@ -98,6 +111,7 @@
                                     <th>Emissora</th>
                                     <th>Programa</th>
                                     <th>Tipo</th>
+                                    <th>Situação</th>
                                     <th>Valor</th>
                                     <th class="disabled-sorting text-center">Gravação</th>
                                     <th class="disabled-sorting text-center">Ações</th>
@@ -111,12 +125,19 @@
                                     <td>{{ ($programa->emissora) ? $programa->emissora->nome_emissora : 'Não Informado'  }}</td>
                                     <td>{{ $programa->nome_programa }}</td>
                                     <td>
+                                        <p class="mb-0" style="overflow: inherit; max-width: 450px;">{{ $programa->url }}</p>
                                         @if($programa->tipo)
                                             <span class="badge badge-primary" style="background: '.$programa->tipo->ds_color.'; border-color: '.$programa->tipo->ds_color.';"> {{ $programa->tipo->nome }}</span>
                                         @else
                                             <span class="text-danger">Não informado</span>
+                                        @endif                                       
+                                    </td>
+                                    <td class="text-center">
+                                        @if($programa->id_situacao == 1)
+                                            <span class="badge badge-pill badge-success">Normal</span>
+                                        @else
+                                            <span class="badge badge-pill badge-danger">Erro</span>
                                         @endif
-                                        <p class="mb-0">{{ $programa->url }}</p>
                                     </td>
                                     <td class="right">{{ number_format($programa->nu_valor, 2, ".","") }}</td>
                                     <td class="center">
