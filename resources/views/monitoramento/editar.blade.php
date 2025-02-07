@@ -360,7 +360,8 @@
                                 "expressao": expressao,
                                 "dt_inicial": dt_inicial,
                                 "dt_final": dt_final,
-                                "tipo_data": tipo_data
+                                "tipo_data": tipo_data,
+                                "fontes": fontes
                         },
                         beforeSend: function() {
                             
@@ -422,7 +423,8 @@
                                 "expressao": expressao,
                                 "dt_inicial": dt_inicial,
                                 "dt_final": dt_final,
-                                "tipo_data": tipo_data
+                                "tipo_data": tipo_data,
+                                "fontes": fontes
                         },
                         beforeSend: function() {
                         
@@ -483,7 +485,8 @@
                                 "expressao": expressao,
                                 "dt_inicial": dt_inicial,
                                 "dt_final": dt_final,
-                                "tipo_data": tipo_data
+                                "tipo_data": tipo_data,
+                                "fontes": fontes
                         },
                         beforeSend: function() {
                         
