@@ -160,6 +160,7 @@
                         </div>
                     </div>
                     <div id="my-tab-content" class="tab-content">
+                        
                         <div class="tab-pane active" id="panel_web" role="tabpanel" aria-expanded="true">
                             <div id="accordion_web" role="tablist" aria-multiselectable="true" class="card-collapse">
                                 <div class="row cabecalho-busca cabecalho-busca-web d-none">
@@ -283,8 +284,13 @@
 
                 var fontes = $("#fontes").val();
 
+                $('.tab-pane').each(function(i, obj) {
+                    $(this).removeClass("active");
+                });
+
                 //Busca Web
                 if(fl_web){
+
                     $.ajax({url: host+'/monitoramento/filtrar',
                         type: 'POST',
                         data: {"_token": $('meta[name="csrf-token"]').attr('content'),
@@ -354,6 +360,9 @@
 
                 //Busca Impresso
                 if(fl_impresso){
+
+                    $("#panel_impresso > .tab-pane").addClass("active");
+
                     $.ajax({url: host+'/monitoramento/filtrar/impresso',
                         type: 'POST',
                         data: {"_token": $('meta[name="csrf-token"]').attr('content'),
@@ -417,6 +426,9 @@
 
                    //Busca Rádio
                 if(fl_radio){
+
+                    $("#panel_radio > .tab-pane").addClass("active");
+
                     $.ajax({url: host+'/monitoramento/filtrar/radio',
                         type: 'POST',
                         data: {"_token": $('meta[name="csrf-token"]').attr('content'),
@@ -479,6 +491,9 @@
 
                 if(fl_tv){
                     //Busca TV
+
+                    $("#panel_tv > .tab-pane").addClass("active");
+
                     $.ajax({url: host+'/monitoramento/filtrar/tv',
                         type: 'POST',
                         data: {"_token": $('meta[name="csrf-token"]').attr('content'),
