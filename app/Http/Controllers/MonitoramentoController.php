@@ -948,6 +948,7 @@ class MonitoramentoController extends Controller
         $clientes = Cliente::orderBy("nome")->get();
         $fontes = array();
         $cidades_selecionadas = array();
+        $estados = Estado::orderBy('nm_estado')->get();
 
         $monitoramento = Monitoramento::find($id);
 
@@ -1046,7 +1047,7 @@ class MonitoramentoController extends Controller
             
         }
 
-        return view('monitoramento/editar', compact('monitoramento','clientes','periodos','fontes'));
+        return view('monitoramento/editar', compact('monitoramento','clientes','periodos','fontes','estados'));
     }
 
     public function update(Request $request)
