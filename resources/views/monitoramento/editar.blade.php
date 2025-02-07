@@ -116,7 +116,7 @@
                                         <div class="form-group">
                                             <label>Fonte</label>
                                             <div class="form-group">
-                                                <select multiple="multiple" size="10" name="fontes[]" class="demo1 form-control">
+                                                <select multiple="multiple" size="10" name="fontes[]" id="fontes" class="demo1 form-control">
                                                     @foreach ($fontes as $fonte)
                                                         <option value="{{ $fonte['id'] }}" {{ $fonte['flag'] }}>{{ $fonte['estado']."-" }}  {{ $fonte['nome'] }}</option>
                                                     @endforeach
@@ -281,6 +281,8 @@
 
             if(flag){
 
+                var fontes = $("#fontes").val();
+
                 //Busca Web
                 if(fl_web){
                     $.ajax({url: host+'/monitoramento/filtrar',
@@ -289,7 +291,8 @@
                                 "expressao": expressao,
                                 "dt_inicial": dt_inicial,
                                 "dt_final": dt_final,
-                                "tipo_data": tipo_data
+                                "tipo_data": tipo_data,
+                                "fontes": fontes
                         },
                         beforeSend: function() {
                             $('.load-busca').loader('show');
@@ -341,7 +344,7 @@
                         },
                         error: function(){
                             $("#accordion_web .card").remove();
-                            $(".msg-alerta").html('<span class="text-danger">Erro ao executar expressão de busca</span>');
+                            $('.cabecalho-aguardando-busca-web').html('<div class="col-md-6"><span class="text-danger">Erro ao realizar busca</span></div>');
                         },
                         complete: function(){
                             $('.load-busca').loader('hide');

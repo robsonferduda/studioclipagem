@@ -212,9 +212,16 @@ class MonitoramentoController extends Controller
                     conteudo_noticia_web cnw ON cnw.id_noticia_web = n.id
                 JOIN 
                     fonte_web fw ON fw.id = n.id_fonte 
-                WHERE 1=1
-                AND n.created_at BETWEEN '$dt_inicial' AND '$dt_final'
-                AND n.$label_data BETWEEN '$dt_inicial' AND '$dt_final' ";
+                WHERE 1=1 ";
+
+        if($request->fontes){
+
+            $fontes = implode(',', $request->fontes);
+            $sql .= "AND fw.id IN($fontes) ";
+        }
+        
+        $sql .= " AND n.created_at BETWEEN '$dt_inicial' AND '$dt_final'
+                 AND n.$label_data BETWEEN '$dt_inicial' AND '$dt_final' ";
 
         $sql .= ($request->expressao) ? "AND  cnw.conteudo_tsv @@ to_tsquery('simple', '$request->expressao') " : '';
         //$sql .= 'ORDER BY n.'.$label_data.' DESC';
