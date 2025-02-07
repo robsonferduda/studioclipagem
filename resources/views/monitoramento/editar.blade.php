@@ -433,7 +433,7 @@
                 if(fl_radio){
 
                     $("#panel_radio > .tab-pane").addClass("active");
-                    $("#nav-radio").addClass("active");
+                    $("#nav-radio").trigger("click");
 
                     $.ajax({url: host+'/monitoramento/filtrar/radio',
                         type: 'POST',
