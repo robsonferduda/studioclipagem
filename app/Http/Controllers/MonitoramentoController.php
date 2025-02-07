@@ -253,6 +253,13 @@ class MonitoramentoController extends Controller
                     AND n.$label_data BETWEEN '$dt_inicial' AND '$dt_final' ";
 
         $sql .= ($request->expressao) ? "AND pejo.texto_extraido_tsv @@ to_tsquery('portuguese', '$request->expressao') " : '';
+
+        if($request->fontes){
+
+            $fontes = implode(',', $request->fontes);
+            $sql .= "AND n.id_jornal_online IN($fontes) ";
+        }
+
         $sql .= 'ORDER BY '.$label_data.' DESC';
 
         $dados = DB::select($sql);
@@ -282,6 +289,13 @@ class MonitoramentoController extends Controller
                     AND n.$label_data BETWEEN '$dt_inicial' AND '$dt_final' ";
 
         $sql .= ($request->expressao) ? "AND n.transcricao_tsv @@ to_tsquery('simple', '$request->expressao') " : '';
+
+        if($request->fontes){
+
+            $fontes = implode(',', $request->fontes);
+            $sql .= "AND er.id IN($fontes) ";
+        }
+
         $sql .= 'ORDER BY n.'.$label_data.' DESC';
 
         $dados = DB::select($sql);
@@ -311,6 +325,13 @@ class MonitoramentoController extends Controller
                     AND n.$label_data BETWEEN '$dt_inicial' AND '$dt_final' ";
 
         $sql .= ($request->expressao) ? "AND  n.transcricao_tsv @@ to_tsquery('portuguese', '$request->expressao') " : '';
+
+        if($request->fontes){
+
+            $fontes = implode(',', $request->fontes);
+            $sql .= "AND pew.id IN($fontes) ";
+        }
+
         $sql .= 'ORDER BY n.'.$label_data.' DESC';
 
         $dados = DB::select($sql);
