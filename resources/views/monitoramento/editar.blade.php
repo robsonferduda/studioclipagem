@@ -583,6 +583,58 @@
            
         });
 
+        $('body').on('click', '.fts_detalhes', function() {
+
+            var id = $(this).data("id");
+            var tipo = $(this).data("tipo");
+            var chave = "."+$(this).data("chave");
+            var chave_destaque = ".destaque-"+$(this).data("chave");
+            var expressao = $("#expressao").val();
+            
+            $.ajax({url: host+'/monitoramento/filtrar/conteudo',
+                    type: 'POST',
+                    data: {"_token": $('meta[name="csrf-token"]').attr('content'),
+                            "expressao": expressao,
+                            "id": id,
+                            "tipo": tipo
+                    },
+                    beforeSend: function() {
+                        $(chave).loader('show');
+                    },
+                    success: function(data) {                      
+
+                        $(chave).html(data[0].texto);   
+                        $(chave_destaque).empty();    
+                        
+                        var marks = [];                 
+                        
+                        const divContent = document.querySelector(chave);
+
+                        if (divContent) {
+                        
+                            const childElements = divContent.querySelectorAll('mark');
+                            const output = document.querySelector(chave_destaque);
+
+                            childElements.forEach(element => {
+
+                                if(!marks.includes(element.innerHTML.trim())){
+                                    marks.push(element.innerHTML.trim());
+
+                                    $(chave_destaque).append('<span class="destaque-busca">'+element.innerHTML.trim()+'</span>');
+                                }
+                            });
+                        } 
+                    },
+                    error: function(){
+                        $(".msg-alerta").html('<span class="text-danger">Erro ao buscar conteúdo</span>');
+                    },
+                    complete: function(){
+                        $(chave).loader('hide');
+                    }
+            });
+
+        });
+
     });
 </script>
 @endsection
