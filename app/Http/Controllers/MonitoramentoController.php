@@ -16,6 +16,7 @@ use App\Models\JornalWeb;
 use App\Models\NoticiaWeb;
 use App\Models\ConteudoNoticiaWeb;
 use App\Models\Fonte;
+use App\Models\Estado;
 use App\Models\NoticiaCliente;
 use Carbon\Carbon;
 use Laracasts\Flash\Flash;
