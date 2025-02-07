@@ -116,6 +116,15 @@
                                         <div class="form-group">
                                             <label>Fonte</label>
                                             <div class="form-group">
+                                                <label>Estado <span class="text-danger">Obrigatório</span></label>
+                                                <select class="form-control select2" name="cd_estado" id="cd_estado">
+                                                    <option value="">Selecione um estado</option>
+                                                    @foreach ($estados as $estado)
+                                                        <option value="{{ $estado->cd_estado }}">{{ $estado->nm_estado }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
                                                 <select multiple="multiple" size="10" name="fontes[]" id="fontes" class="demo1 form-control">
                                                     @foreach ($fontes as $fonte)
                                                         <option value="{{ $fonte['id'] }}" {{ $fonte['flag'] }}>{{ $fonte['estado']."-" }}  {{ $fonte['nome'] }}</option>
@@ -250,6 +259,8 @@
             preserveSelectionOnMove: 'all',
             moveOnSelect: true
         });
+
+
 
         var fl_impresso = $("#fl_impresso").is(":checked");
         var fl_radio = $("#fl_radio").is(":checked");
