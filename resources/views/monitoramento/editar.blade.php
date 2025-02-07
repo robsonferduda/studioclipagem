@@ -256,6 +256,22 @@
         var fl_web = $("#fl_web").is(":checked");
         var fl_tv = $("#fl_tv").is(":checked");
 
+        if(fl_impresso){
+            $("#nav-impresso").trigger("click");
+        }
+
+        if(fl_radio){
+            $("#nav-radio").trigger("click");
+        }
+
+        if(fl_web){
+            $("#nav-web").trigger("click");
+        }
+
+        if(fl_tv){
+            $("#nav-tv").trigger("click");
+        }
+
         $("#btn-find").click(function(){
 
             var expressao = $("#expressao").val();
@@ -294,6 +310,9 @@
 
                 //Busca Web
                 if(fl_web){
+
+                    $("#panel_web > .tab-pane").addClass("active");
+                    $("#nav-web").trigger("click");
 
                     $.ajax({url: host+'/monitoramento/filtrar',
                         type: 'POST',
@@ -366,7 +385,7 @@
                 if(fl_impresso){
 
                     $("#panel_impresso > .tab-pane").addClass("active");
-                    $("#nav-impresso").addClass("active");
+                    $("#nav-impresso").trigger("click");
 
                     $.ajax({url: host+'/monitoramento/filtrar/impresso',
                         type: 'POST',
@@ -499,7 +518,7 @@
                     //Busca TV
 
                     $("#panel_tv > .tab-pane").addClass("active");
-                    $("#nav-tv").addClass("active");
+                    $("#nav-tv").trigger("click");
 
                     $.ajax({url: host+'/monitoramento/filtrar/tv',
                         type: 'POST',
