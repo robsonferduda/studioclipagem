@@ -16,6 +16,7 @@ use App\Models\JornalWeb;
 use App\Models\NoticiaWeb;
 use App\Models\ConteudoNoticiaWeb;
 use App\Models\Fonte;
+use App\Models\Estado;
 use App\Models\NoticiaCliente;
 use Carbon\Carbon;
 use Laracasts\Flash\Flash;
@@ -212,9 +213,16 @@ class MonitoramentoController extends Controller
                     conteudo_noticia_web cnw ON cnw.id_noticia_web = n.id
                 JOIN 
                     fonte_web fw ON fw.id = n.id_fonte 
-                WHERE 1=1
-                AND n.created_at BETWEEN '$dt_inicial' AND '$dt_final'
-                AND n.$label_data BETWEEN '$dt_inicial' AND '$dt_final' ";
+                WHERE 1=1 ";
+
+        if($request->fontes){
+
+            $fontes = implode(',', $request->fontes);
+            $sql .= "AND fw.id IN($fontes) ";
+        }
+        
+        $sql .= " AND n.created_at BETWEEN '$dt_inicial' AND '$dt_final'
+                 AND n.$label_data BETWEEN '$dt_inicial' AND '$dt_final' ";
 
         $sql .= ($request->expressao) ? "AND  cnw.conteudo_tsv @@ to_tsquery('simple', '$request->expressao') " : '';
         //$sql .= 'ORDER BY n.'.$label_data.' DESC';
@@ -246,6 +254,13 @@ class MonitoramentoController extends Controller
                     AND n.$label_data BETWEEN '$dt_inicial' AND '$dt_final' ";
 
         $sql .= ($request->expressao) ? "AND pejo.texto_extraido_tsv @@ to_tsquery('portuguese', '$request->expressao') " : '';
+
+        if($request->fontes){
+
+            $fontes = implode(',', $request->fontes);
+            $sql .= "AND n.id_jornal_online IN($fontes) ";
+        }
+
         $sql .= 'ORDER BY '.$label_data.' DESC';
 
         $dados = DB::select($sql);
@@ -275,6 +290,13 @@ class MonitoramentoController extends Controller
                     AND n.$label_data BETWEEN '$dt_inicial' AND '$dt_final' ";
 
         $sql .= ($request->expressao) ? "AND n.transcricao_tsv @@ to_tsquery('simple', '$request->expressao') " : '';
+
+        if($request->fontes){
+
+            $fontes = implode(',', $request->fontes);
+            $sql .= "AND er.id IN($fontes) ";
+        }
+
         $sql .= 'ORDER BY n.'.$label_data.' DESC';
 
         $dados = DB::select($sql);
@@ -304,6 +326,13 @@ class MonitoramentoController extends Controller
                     AND n.$label_data BETWEEN '$dt_inicial' AND '$dt_final' ";
 
         $sql .= ($request->expressao) ? "AND  n.transcricao_tsv @@ to_tsquery('portuguese', '$request->expressao') " : '';
+
+        if($request->fontes){
+
+            $fontes = implode(',', $request->fontes);
+            $sql .= "AND pew.id IN($fontes) ";
+        }
+
         $sql .= 'ORDER BY n.'.$label_data.' DESC';
 
         $dados = DB::select($sql);
@@ -920,6 +949,7 @@ class MonitoramentoController extends Controller
         $clientes = Cliente::orderBy("nome")->get();
         $fontes = array();
         $cidades_selecionadas = array();
+        $estados = Estado::orderBy('nm_estado')->get();
 
         $monitoramento = Monitoramento::find($id);
 
@@ -1022,7 +1052,7 @@ class MonitoramentoController extends Controller
             
         }
 
-        return view('monitoramento/editar', compact('monitoramento','clientes','periodos','fontes'));
+        return view('monitoramento/editar', compact('monitoramento','clientes','periodos','fontes','estados'));
     }
 
     public function update(Request $request)

@@ -11,8 +11,8 @@
                     </h4>
                 </div>
                 <div class="col-md-4">
-                    <a href="{{ url('monitoramento') }}" class="btn btn-warning pull-right" style="margin-right: 12px;"><i class="nc-icon nc-minimal-left"></i> Voltar</a>
-                    <a href="{{ url('monitoramento') }}" class="btn btn-info pull-right" style="margin-right: 12px;"><i class="nc-icon nc-sound-wave ml-2"></i> Monitoramentos</a>
+                    <a href="{{ url('monitoramentos') }}" class="btn btn-warning pull-right" style="margin-right: 12px;"><i class="nc-icon nc-minimal-left"></i> Voltar</a>
+                    <a href="{{ url('monitoramentos') }}" class="btn btn-info pull-right" style="margin-right: 12px;"><i class="nc-icon nc-sound-wave ml-2"></i> Monitoramentos</a>
                 </div>
             </div>
         </div>
@@ -116,7 +116,16 @@
                                         <div class="form-group">
                                             <label>Fonte</label>
                                             <div class="form-group">
-                                                <select multiple="multiple" size="10" name="fontes[]" class="demo1 form-control">
+                                                <label>Estado <span class="text-danger">Obrigatório</span></label>
+                                                <select class="form-control select2" name="cd_estado" id="cd_estado">
+                                                    <option value="">Selecione um estado</option>
+                                                    @foreach ($estados as $estado)
+                                                        <option value="{{ $estado->cd_estado }}">{{ $estado->nm_estado }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <select multiple="multiple" size="10" name="fontes[]" id="fontes" class="demo1 form-control">
                                                     @foreach ($fontes as $fonte)
                                                         <option value="{{ $fonte['id'] }}" {{ $fonte['flag'] }}>{{ $fonte['estado']."-" }}  {{ $fonte['nome'] }}</option>
                                                     @endforeach
@@ -145,21 +154,22 @@
                         <div class="nav-tabs-wrapper">
                         <ul id="tabs" class="nav nav-tabs" role="tablist">
                             <li class="nav-item">
-                            <a class="nav-link active" data-toggle="tab" href="#panel_web" role="tab" aria-expanded="true" aria-selected="false"><i class="fa fa-globe"></i> Web <span class="monitoramento-total monitoramento-total-web">0</span></a>
+                            <a class="nav-link active" id="nav-web" data-toggle="tab" href="#panel_web" role="tab" aria-expanded="true" aria-selected="false"><i class="fa fa-globe"></i> Web <span class="monitoramento-total monitoramento-total-web">0</span></a>
                             </li>
                             <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#panel_impresso" role="tab" aria-expanded="false"><i class="fa fa-newspaper-o"></i> Impressos <span class="monitoramento-total monitoramento-total-impresso">0</span></a>
+                            <a class="nav-link" id="nav-impresso" data-toggle="tab" href="#panel_impresso" role="tab" aria-expanded="false"><i class="fa fa-newspaper-o"></i> Impressos <span class="monitoramento-total monitoramento-total-impresso">0</span></a>
                             </li>
                             <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#panel_radio" role="tab" aria-expanded="false" aria-selected="true"><i class="fa fa-volume-up"></i> Rádio <span class="monitoramento-total monitoramento-total-radio">0</span></a>
+                            <a class="nav-link" id="nav-radio" data-toggle="tab" href="#panel_radio" role="tab" aria-expanded="false" aria-selected="true"><i class="fa fa-volume-up"></i> Rádio <span class="monitoramento-total monitoramento-total-radio">0</span></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#panel_tv" role="tab" aria-expanded="false" aria-selected="true"><i class="fa fa-volume-up"></i> TV <span class="monitoramento-total monitoramento-total-tv">0</span></a>
+                                <a class="nav-link" id="nav-tv" data-toggle="tab" href="#panel_tv" role="tab" aria-expanded="false" aria-selected="true"><i class="fa fa-volume-up"></i> TV <span class="monitoramento-total monitoramento-total-tv">0</span></a>
                             </li>
                         </ul>
                         </div>
                     </div>
                     <div id="my-tab-content" class="tab-content">
+                        
                         <div class="tab-pane active" id="panel_web" role="tabpanel" aria-expanded="true">
                             <div id="accordion_web" role="tablist" aria-multiselectable="true" class="card-collapse">
                                 <div class="row cabecalho-busca cabecalho-busca-web d-none">
@@ -250,10 +260,28 @@
             moveOnSelect: true
         });
 
+
+
         var fl_impresso = $("#fl_impresso").is(":checked");
         var fl_radio = $("#fl_radio").is(":checked");
         var fl_web = $("#fl_web").is(":checked");
         var fl_tv = $("#fl_tv").is(":checked");
+
+        if(fl_impresso){
+            $("#nav-impresso").trigger("click");
+        }
+
+        if(fl_radio){
+            $("#nav-radio").trigger("click");
+        }
+
+        if(fl_web){
+            $("#nav-web").trigger("click");
+        }
+
+        if(fl_tv){
+            $("#nav-tv").trigger("click");
+        }
 
         $("#btn-find").click(function(){
 
@@ -281,15 +309,30 @@
 
             if(flag){
 
+                var fontes = $("#fontes").val();
+
+                $('.tab-pane').each(function(i, obj) {
+                    $(this).removeClass("active");
+                });
+
+                $('.nav-link').each(function(i, obj) {
+                    $(this).removeClass("active");
+                });
+
                 //Busca Web
                 if(fl_web){
+
+                    $("#panel_web > .tab-pane").addClass("active");
+                    $("#nav-web").trigger("click");
+
                     $.ajax({url: host+'/monitoramento/filtrar',
                         type: 'POST',
                         data: {"_token": $('meta[name="csrf-token"]').attr('content'),
                                 "expressao": expressao,
                                 "dt_inicial": dt_inicial,
                                 "dt_final": dt_final,
-                                "tipo_data": tipo_data
+                                "tipo_data": tipo_data,
+                                "fontes": fontes
                         },
                         beforeSend: function() {
                             $('.load-busca').loader('show');
@@ -341,7 +384,7 @@
                         },
                         error: function(){
                             $("#accordion_web .card").remove();
-                            $(".msg-alerta").html('<span class="text-danger">Erro ao executar expressão de busca</span>');
+                            $('.cabecalho-aguardando-busca-web').html('<div class="col-md-6"><span class="text-danger">Erro ao realizar busca</span></div>');
                         },
                         complete: function(){
                             $('.load-busca').loader('hide');
@@ -351,13 +394,18 @@
 
                 //Busca Impresso
                 if(fl_impresso){
+
+                    $("#panel_impresso > .tab-pane").addClass("active");
+                    $("#nav-impresso").trigger("click");
+
                     $.ajax({url: host+'/monitoramento/filtrar/impresso',
                         type: 'POST',
                         data: {"_token": $('meta[name="csrf-token"]').attr('content'),
                                 "expressao": expressao,
                                 "dt_inicial": dt_inicial,
                                 "dt_final": dt_final,
-                                "tipo_data": tipo_data
+                                "tipo_data": tipo_data,
+                                "fontes": fontes
                         },
                         beforeSend: function() {
                             
@@ -413,13 +461,18 @@
 
                    //Busca Rádio
                 if(fl_radio){
+
+                    $("#panel_radio > .tab-pane").addClass("active");
+                    $("#nav-radio").trigger("click");
+
                     $.ajax({url: host+'/monitoramento/filtrar/radio',
                         type: 'POST',
                         data: {"_token": $('meta[name="csrf-token"]').attr('content'),
                                 "expressao": expressao,
                                 "dt_inicial": dt_inicial,
                                 "dt_final": dt_final,
-                                "tipo_data": tipo_data
+                                "tipo_data": tipo_data,
+                                "fontes": fontes
                         },
                         beforeSend: function() {
                         
@@ -474,13 +527,18 @@
 
                 if(fl_tv){
                     //Busca TV
+
+                    $("#panel_tv > .tab-pane").addClass("active");
+                    $("#nav-tv").trigger("click");
+
                     $.ajax({url: host+'/monitoramento/filtrar/tv',
                         type: 'POST',
                         data: {"_token": $('meta[name="csrf-token"]').attr('content'),
                                 "expressao": expressao,
                                 "dt_inicial": dt_inicial,
                                 "dt_final": dt_final,
-                                "tipo_data": tipo_data
+                                "tipo_data": tipo_data,
+                                "fontes": fontes
                         },
                         beforeSend: function() {
                         
@@ -534,6 +592,58 @@
                 }
             }
            
+        });
+
+        $('body').on('click', '.fts_detalhes', function() {
+
+            var id = $(this).data("id");
+            var tipo = $(this).data("tipo");
+            var chave = "."+$(this).data("chave");
+            var chave_destaque = ".destaque-"+$(this).data("chave");
+            var expressao = $("#expressao").val();
+            
+            $.ajax({url: host+'/monitoramento/filtrar/conteudo',
+                    type: 'POST',
+                    data: {"_token": $('meta[name="csrf-token"]').attr('content'),
+                            "expressao": expressao,
+                            "id": id,
+                            "tipo": tipo
+                    },
+                    beforeSend: function() {
+                        $(chave).loader('show');
+                    },
+                    success: function(data) {                      
+
+                        $(chave).html(data[0].texto);   
+                        $(chave_destaque).empty();    
+                        
+                        var marks = [];                 
+                        
+                        const divContent = document.querySelector(chave);
+
+                        if (divContent) {
+                        
+                            const childElements = divContent.querySelectorAll('mark');
+                            const output = document.querySelector(chave_destaque);
+
+                            childElements.forEach(element => {
+
+                                if(!marks.includes(element.innerHTML.trim())){
+                                    marks.push(element.innerHTML.trim());
+
+                                    $(chave_destaque).append('<span class="destaque-busca">'+element.innerHTML.trim()+'</span>');
+                                }
+                            });
+                        } 
+                    },
+                    error: function(){
+                        $(".msg-alerta").html('<span class="text-danger">Erro ao buscar conteúdo</span>');
+                    },
+                    complete: function(){
+                        $(chave).loader('hide');
+                    }
+            });
+
         });
 
     });
