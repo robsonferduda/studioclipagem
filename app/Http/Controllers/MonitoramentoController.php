@@ -969,7 +969,7 @@ class MonitoramentoController extends Controller
             $fontes_disponiveis = DB::select("SELECT id, nome, t2.sg_estado 
                                                 FROM fonte_web t1 
                                                 LEFT JOIN estado t2 ON t2.cd_estado = t1.cd_estado 
-                                                WHERE id_situacao IN(0, 1, 2, 3) 
+                                                WHERE id_situacao IN(1, 2, 3) 
                                                 ORDER BY t2.sg_estado, nome"); 
             
             foreach ($fontes_disponiveis as $key => $fd) {
