@@ -221,8 +221,7 @@ class MonitoramentoController extends Controller
             $sql .= "AND fw.id IN($fontes) ";
         }
         
-        $sql .= " AND n.created_at BETWEEN '$dt_inicial' AND '$dt_final'
-                 AND n.$label_data BETWEEN '$dt_inicial' AND '$dt_final' ";
+        $sql .= " AND n.$label_data BETWEEN '$dt_inicial' AND '$dt_final' ";
 
         $sql .= ($request->expressao) ? "AND  cnw.conteudo_tsv @@ to_tsquery('simple', '$request->expressao') " : '';
         //$sql .= 'ORDER BY n.'.$label_data.' DESC';
@@ -250,7 +249,6 @@ class MonitoramentoController extends Controller
                     pagina_edicao_jornal_online pejo 
                     ON pejo.id_edicao_jornal_online = n.id
                 WHERE 1=1
-                    AND n.created_at BETWEEN '$dt_inicial' AND '$dt_final'
                     AND n.$label_data BETWEEN '$dt_inicial' AND '$dt_final' ";
 
         $sql .= ($request->expressao) ? "AND pejo.texto_extraido_tsv @@ to_tsquery('portuguese', '$request->expressao') " : '';
@@ -286,7 +284,6 @@ class MonitoramentoController extends Controller
                     emissora_radio er 
                     ON er.id = n.id_emissora
                 WHERE 1=1
-                    AND n.created_at BETWEEN '$dt_inicial' AND '$dt_final'
                     AND n.$label_data BETWEEN '$dt_inicial' AND '$dt_final' ";
 
         $sql .= ($request->expressao) ? "AND n.transcricao_tsv @@ to_tsquery('simple', '$request->expressao') " : '';
@@ -322,7 +319,6 @@ class MonitoramentoController extends Controller
                     programa_emissora_web pew 
                     ON pew.id = n.id_programa_emissora_web
                 WHERE 1=1
-                    AND n.created_at BETWEEN '$dt_inicial' AND '$dt_final'
                     AND n.$label_data BETWEEN '$dt_inicial' AND '$dt_final' ";
 
         $sql .= ($request->expressao) ? "AND  n.transcricao_tsv @@ to_tsquery('portuguese', '$request->expressao') " : '';
@@ -424,8 +420,7 @@ class MonitoramentoController extends Controller
                             conteudo_noticia_web cnw ON cnw.id_noticia_web = n.id
                         JOIN 
                             fonte_web fw ON fw.id = n.id_fonte 
-                        WHERE 1=1 
-                        AND n.created_at >= now() - interval '24' hour ";
+                        WHERE 1=1 ";
 
                 if($monitoramento->filtro_web){
                     $sql .= "AND fw.id IN($monitoramento->filtro_web) ";
@@ -516,8 +511,7 @@ class MonitoramentoController extends Controller
                             pagina_edicao_jornal_online pejo 
                             ON pejo.id_edicao_jornal_online = n.id
                         JOIN jornal_online jo ON jo.id = n.id_jornal_online 
-                        WHERE 1=1
-                            AND pejo.created_at BETWEEN '$dt_inicial' AND '$dt_final' 
+                        WHERE 1=1 
                             AND n.dt_coleta BETWEEN '$dt_inicial' AND '$dt_final' 
                             AND pejo.texto_extraido_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao')
                             AND jo.id IN($monitoramento->filtro_impresso)
@@ -532,8 +526,7 @@ class MonitoramentoController extends Controller
                     JOIN 
                         pagina_edicao_jornal_online pejo 
                         ON pejo.id_edicao_jornal_online = n.id
-                    WHERE 1=1
-                        AND pejo.created_at BETWEEN '$dt_inicial' AND '$dt_final' 
+                    WHERE 1=1 
                         AND n.dt_coleta BETWEEN '$dt_inicial' AND '$dt_final' 
                         AND pejo.texto_extraido_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao')
                         ORDER BY dt_coleta DESC";
@@ -767,7 +760,7 @@ class MonitoramentoController extends Controller
                     $sql .= "AND fw.id IN($monitoramento->filtro_web)";
                 }
 
-                $sql .= " AND n.created_at BETWEEN '$dt_inicial' AND '$dt_final' 
+                $sql .= " AND n.data_noticia BETWEEN '$dt_inicial' AND '$dt_final' 
                         AND cnw.conteudo_tsv @@ to_tsquery('simple', '$monitoramento->expressao')";
 
                 $dados = DB::select($sql);
@@ -793,7 +786,6 @@ class MonitoramentoController extends Controller
                             ON pejo.id_edicao_jornal_online = n.id
                         JOIN jornal_online jo ON jo.id = n.id_jornal_online 
                         WHERE 1=1
-                            AND pejo.created_at BETWEEN '$dt_inicial' AND '$dt_final' 
                             AND n.dt_coleta BETWEEN '$dt_inicial' AND '$dt_final' 
                             AND pejo.texto_extraido_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao')
                             AND jo.id IN($monitoramento->filtro_impresso)
@@ -809,7 +801,6 @@ class MonitoramentoController extends Controller
                         pagina_edicao_jornal_online pejo 
                         ON pejo.id_edicao_jornal_online = n.id
                     WHERE 1=1
-                        AND pejo.created_at BETWEEN '$dt_inicial' AND '$dt_final' 
                         AND n.dt_coleta BETWEEN '$dt_inicial' AND '$dt_final' 
                         AND pejo.texto_extraido_tsv @@ to_tsquery('portuguese', '$monitoramento->expressao')
                         ORDER BY dt_coleta DESC";
