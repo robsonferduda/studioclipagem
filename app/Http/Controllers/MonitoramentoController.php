@@ -402,6 +402,7 @@ class MonitoramentoController extends Controller
         $dt_inicial = (Carbon::now())->format('Y-m-d')." 00:00:00";
         $dt_final = (Carbon::now())->format('Y-m-d')." 23:59:59";
         $data_inicio = date('Y-m-d H:i:s');
+        $total_encontrado = 0;
         $total_vinculado = 0;
         $tipo_midia = 2;
 
@@ -434,6 +435,8 @@ class MonitoramentoController extends Controller
                          AND cnw.conteudo_tsv @@ to_tsquery('simple', '$monitoramento->expressao')";
 
                 $dados = DB::select($sql);
+
+                $total_encontrado += count($dados);
 
                 $total_associado = $this->associar($dados, $tipo_midia, $monitoramento);
 
@@ -735,6 +738,7 @@ class MonitoramentoController extends Controller
 
         $data_inicio = date('Y-m-d H:i:s');
         $total_vinculado = 0;
+        $total_encontrado = 0;
 
         $monitoramento = Monitoramento::find($id);
 
@@ -767,6 +771,9 @@ class MonitoramentoController extends Controller
                         AND cnw.conteudo_tsv @@ to_tsquery('simple', '$monitoramento->expressao')";
 
                 $dados = DB::select($sql);
+
+                $total_encontrado += count($dados);
+
                 $total_associado = $this->associar($dados, $tipo_midia, $monitoramento);
                 $total_vinculado += $total_associado;
             }
@@ -810,6 +817,8 @@ class MonitoramentoController extends Controller
 
                 $dados = DB::select($sql);
 
+                $total_encontrado += count($dados);
+
                 $total_associado = $this->associar($dados, $tipo_midia, $monitoramento);
                 $total_vinculado += $total_associado;
             }
@@ -837,6 +846,10 @@ class MonitoramentoController extends Controller
                         ORDER BY n.data_hora_inicio DESC";
 
                 $dados = DB::select($sql);
+
+                $total_encontrado += count($dados);
+
+
                 $total_associado = $this->associar($dados, $tipo_midia, $monitoramento);
                 $total_vinculado += $total_associado;
             }
@@ -864,6 +877,9 @@ class MonitoramentoController extends Controller
                          ORDER BY n.horario_start_gravacao DESC";
 
                 $dados = DB::select($sql);
+
+                $total_encontrado += count($dados);
+
                 $total_associado = $this->associar($dados, $tipo_midia, $monitoramento);
                 $total_vinculado += $total_associado;
             }
@@ -882,7 +898,7 @@ class MonitoramentoController extends Controller
             $monitoramento->updated_at = date("Y-m-d H:i:s");
             $monitoramento->save();
 
-            Flash::success('<i class="fa fa-check"></i> Monitoramento executado manualmente retornou <strong>'. $total_vinculado.'</strong> registros');
+            Flash::success('<i class="fa fa-check"></i> Monitoramento executado manualmente encontrou <strong>'.$total_encontrado.'</strong> registros e vinculou <strong>'. $total_vinculado.'</strong> registros');
 
         } catch (\Illuminate\Database\QueryException $e) {
 
