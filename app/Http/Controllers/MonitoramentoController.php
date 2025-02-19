@@ -736,6 +736,8 @@ class MonitoramentoController extends Controller
 
         if($monitoramento->dt_inicio){
             $dt_inicial = $monitoramento->dt_inicio." 00:00:00";
+
+            dd($dt_inicial);
         }
 
         try{
