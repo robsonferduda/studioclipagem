@@ -735,9 +735,7 @@ class MonitoramentoController extends Controller
         $monitoramento = Monitoramento::find($id);
 
         if($monitoramento->dt_inicio){
-            $dt_inicial = $monitoramento->dt_inicio." 00:00:00";
-
-            dd($dt_inicial);
+            $dt_inicial = $monitoramento->dt_inicio;
         }
 
         try{
