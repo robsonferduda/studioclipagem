@@ -824,8 +824,7 @@ class MonitoramentoController extends Controller
                         JOIN 
                             emissora_radio er 
                         ON er.id = n.id_emissora
-                        WHERE 1=1 
-                        AND n.created_at >= now() - interval '24' hour ";
+                        WHERE 1=1 ";
 
                 if($monitoramento->filtro_radio){
                     $sql .= "AND er.id IN($monitoramento->filtro_radio) ";
