@@ -280,7 +280,7 @@ class EmissoraController extends Controller
         $emissora = Emissora::find($id_emissora);
         $horarios = $emissora->horarios->sortBy('horario_start');
 
-        return view('emissora/horarios',compact('horarios','id_emissora'));
+        return view('emissora/horarios',compact('horarios','id_emissora','emissora'));
     }
 
     public function atualizaGravacao($id)
