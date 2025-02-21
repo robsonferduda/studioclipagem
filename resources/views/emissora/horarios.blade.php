@@ -59,7 +59,7 @@
                     {!! Form::close() !!} 
             </div>
             <div class="col-md-12">
-                <h6 class="mt-4">Horários de Gravação</h6>
+                <h6 class="mt-4">{{ $emissora->nome_emissora }} - Horários de Gravação</h6>
                 <div>
                     @foreach($horarios as $key => $horario)
                         <div class="box-horario box-horario-{{ $horario->id }}">
