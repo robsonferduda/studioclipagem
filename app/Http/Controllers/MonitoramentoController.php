@@ -259,7 +259,7 @@ class MonitoramentoController extends Controller
             $sql .= "AND n.id_jornal_online IN($fontes) ";
         }
 
-        $sql .= 'ORDER BY '.$label_data.' DESC';
+        $sql .= 'ORDER BY '.$label_data.' DESC, n_pagina';
 
         $dados = DB::select($sql);
 
