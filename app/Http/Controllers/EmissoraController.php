@@ -228,7 +228,7 @@ class EmissoraController extends Controller
             return $q->where('nome_emissora','ilike','%'.Session::get('filtro_nome').'%');
         });
 
-        $emissoras = $emissora->orderBy('nome_emissora')->paginate(10);        
+        $emissoras = $emissora->orderBy('nome_emissora')->paginate(20);        
 
         return view('emissora/index', compact('emissoras','nome','estados','tipo','cd_estado','cd_cidade','gravar'));
     }
@@ -280,7 +280,7 @@ class EmissoraController extends Controller
         $emissora = Emissora::find($id_emissora);
         $horarios = $emissora->horarios->sortBy('horario_start');
 
-        return view('emissora/horarios',compact('horarios','id_emissora'));
+        return view('emissora/horarios',compact('horarios','id_emissora','emissora'));
     }
 
     public function atualizaGravacao($id)

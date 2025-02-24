@@ -242,12 +242,12 @@ class MonitoramentoController extends Controller
         $label_data = ($tipo_data == "dt_publicacao") ? 'dt_coleta' : 'dt_pub' ;
 
         $sql = "SELECT 
-                    pejo.id, id_jornal_online, link_pdf, dt_coleta, dt_pub, titulo, texto_extraido
+                    pejo.id, id_jornal_online, link_pdf, dt_coleta, dt_pub, titulo, texto_extraido, jo.nome, pejo.n_pagina 
                 FROM 
                     edicao_jornal_online n
                 JOIN 
-                    pagina_edicao_jornal_online pejo 
-                    ON pejo.id_edicao_jornal_online = n.id
+                    pagina_edicao_jornal_online pejo ON pejo.id_edicao_jornal_online = n.id
+                JOIN jornal_online jo ON jo.id = n.id_jornal_online 
                 WHERE 1=1
                     AND n.$label_data BETWEEN '$dt_inicial' AND '$dt_final' ";
 
@@ -259,7 +259,7 @@ class MonitoramentoController extends Controller
             $sql .= "AND n.id_jornal_online IN($fontes) ";
         }
 
-        $sql .= 'ORDER BY '.$label_data.' DESC';
+        $sql .= 'ORDER BY '.$label_data.' DESC, n_pagina';
 
         $dados = DB::select($sql);
 

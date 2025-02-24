@@ -414,7 +414,7 @@
 
                                 $("#accordion_impresso").append('<div class="card card-plain">'+
                                   '<div class="card-header card-header-custom" role="tab" id="heading1">'+
-                                    '<a data-toggle="collapse" data-parent="#accordion_impresso" href="#collapse_'+v.id+'" data-tipo="impresso" data-chave="card-impresso-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.titulo+
+                                    '<a data-toggle="collapse" data-parent="#accordion_impresso" href="#collapse_'+v.id+'" data-tipo="impresso" data-chave="card-impresso-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.nome+' - Página '+v.n_pagina+
                                       '<i class="nc-icon nc-minimal-down"></i>'+
                                     '</a>'+
                                   '</div>'+

@@ -12,7 +12,7 @@
                     </h4>
                 </div>
                 <div class="col-md-4">
-                    
+                    <a href="{{ url('emissoras/radio') }}" class="btn btn-warning pull-right" style="margin-right: 12px;"><i class="nc-icon nc-minimal-left"></i> Voltar</a>
                 </div>
             </div>
         </div>
@@ -59,7 +59,7 @@
                     {!! Form::close() !!} 
             </div>
             <div class="col-md-12">
-                <h6 class="mt-4">Horários de Gravação</h6>
+                <h6 class="mt-4">{{ $emissora->nome_emissora }} - Horários de Gravação</h6>
                 <div>
                     @foreach($horarios as $key => $horario)
                         <div class="box-horario box-horario-{{ $horario->id }}">
