@@ -286,3 +286,7 @@ div .box-horario:not(:last-child) {
 .destaque-busca{ background: #009688 !important; color: white; border-radius: 5px; padding: 3px 5px; margin-right: 3px;}
 .card-busca{ padding: 0px !important; margin-top: 5px;}
 .card-header-custom {padding-top: 8px !important; padding-bottom: 8px !important;}
+.table-container {
+    max-height: 300px;
+    overflow-y: auto;
+}

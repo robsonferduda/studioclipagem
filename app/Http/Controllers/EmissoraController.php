@@ -462,4 +462,15 @@ class EmissoraController extends Controller
 
         return response()->json($result);
     }
+
+    public function loadEmissoras()
+    {
+        $emissora = Emissora::select('id', 'nome_emissora as nome', 'nm_cidade as cidade', 'nm_estado as uf');
+        $emissora->leftJoin('cidade', 'cidade.cd_cidade', '=', 'emissora_radio.cd_cidade');
+        $emissora->leftJoin('estado', 'estado.cd_estado', '=', 'emissora_radio.cd_estado');
+
+        $emissoras = $emissora->orderBy('nome_emissora', 'asc')->get();
+
+        return response()->json($emissoras);
+    }
 }
