@@ -289,7 +289,7 @@
                     },
                     success: function(data) {
                         
-                        $(chave_conteudo).write(data.texto);
+                        $(chave_conteudo).innerHTML(data.texto);
 
                         var marks = [];                 
                         
