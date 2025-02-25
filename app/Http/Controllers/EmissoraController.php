@@ -465,7 +465,7 @@ class EmissoraController extends Controller
 
     public function loadEmissoras()
     {
-        $emissora = Emissora::select('id', 'nome_emissora as nome', 'nm_cidade as cidade', 'nm_estado as uf');
+        $emissora = Emissora::select('id', 'nome_emissora as nome', 'nm_cidade as cidade', 'sg_estado as uf');
         $emissora->leftJoin('cidade', 'cidade.cd_cidade', '=', 'emissora_radio.cd_cidade');
         $emissora->leftJoin('estado', 'estado.cd_estado', '=', 'emissora_radio.cd_estado');
 

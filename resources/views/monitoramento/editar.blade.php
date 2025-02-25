@@ -266,13 +266,13 @@
                         <div class="form-group">
                             <label for="filtroUF" class="form-label">Filtrar por Estado:</label>
                             <select class="form-control" name="filtro_uf" id="filtro_uf">
-                                <option value="">Selecione um estado</option>
+                                <option value="">Todos</option>
                             </select>
                         </div>
                     </div>    
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label>Bucar por Nome:</label>
+                            <label>Bucar por Emissora:</label>
                             <input type="mail" class="form-control" name="filtro_nome" id="filtro_nome">
                         </div>
                     </div>  
@@ -328,15 +328,16 @@
 
        
         carregarEmissoras();
+        carregarUFs();
         
 
         let emissoras = [];
 
         async function carregarEmissoras() {
             try {
-                const response = await fetch('http://localhost/studioclipagem/public/radio/emissoras');
+                const response = await fetch(host+'/radio/emissoras');
                 emissoras = await response.json();
-                carregarUFs();
+                
                 carregarTabela();
             } catch (error) {
                 console.error('Erro ao carregar emissoras:', error);
@@ -349,18 +350,21 @@
             document.getElementById('selecionadasTexto').textContent = `Selecionadas: ${selecionadas.length}`;
         }
 
-        function carregarUFs() {           
+        async function carregarUFs() {           
 
             const filtroUF = document.getElementById('filtro_uf');
-            const ufs = [...new Set(emissoras.map(e => e.uf))];
+           
+
+            const response = await fetch(host+'/estado/siglas');
+            ufs = await response.json();
 
             console.log(ufs);
 
             ufs.forEach(uf => {
-            let option = document.createElement('option');
-            option.value = uf;
-            option.textContent = uf;
-            filtroUF.appendChild(option);
+                let option = document.createElement('option');
+                option.value = uf.sg_estado;
+                option.textContent = uf.sg_estado;
+                filtroUF.appendChild(option);
             });
         }
 

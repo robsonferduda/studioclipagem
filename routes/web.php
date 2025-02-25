@@ -68,6 +68,7 @@ Route::get('email/cliente/excluir/{id}','EmailController@excluir');
 Route::post('email/cliente/cadastrar','EmailController@cadastrar');
 
 Route::get('estado/{id}/cidades','EstadoController@getCidades');
+Route::get('estado/siglas','EstadoController@siglas');
 
 Route::get('exportar/atualizar','ExportarController@atualizar');
 Route::match(array('GET', 'POST'),'exportar/{log?}','ExportarController@index');
