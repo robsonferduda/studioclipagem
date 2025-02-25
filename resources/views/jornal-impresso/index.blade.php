@@ -130,7 +130,7 @@
                                                 {!! ($pagina->texto_extraido) ?  nl2br(e(Str::limit($pagina->texto_extraido, 1000, " ...")))  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
                                             </div>
                                             <div class="panel-body conteudo-{{ $pagina->noticia_id }}-{{ $pagina->monitoramento_id }}">
-                                                {!! ($pagina->texto_extraido) ?  $pagina->texto_extraido  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                                {!! ($pagina->texto_extraido) ?  nl2br(e($pagina->texto_extraido))  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
                                             </div>
                                             <div class="panel-heading">
                                                 <h3 class="panel-title"><span class="btn-show">Mostrar Mais</span></h3>
