@@ -289,7 +289,7 @@
                     },
                     success: function(data) {
                         
-                        $(chave_conteudo).html(data.texto);
+                        $(chave_conteudo).html(data.texto.replace(/\n/g, "<br />"));
 
                         var marks = [];                 
                         
