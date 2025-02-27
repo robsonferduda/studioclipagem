@@ -90,7 +90,7 @@
                                         <div class="row">
                                             <div class="col-lg-12 col-md-12 col-sm-12 mb-1"> 
                                                 <h6 class="conteudo-fonte-{{ $pagina->id }}">{{ ($pagina->edicao->fonte) ? $pagina->edicao->fonte->nome : 'Não identificada' }} - {{ \Carbon\Carbon::parse($pagina->dt_clipagem)->format('d/m/Y') }}</h6>
-                                                <h6 class="text-muted">
+                                                <h6 class="text-muted conteudo-estado-{{ $pagina->id }}">
                                                     {{ ($pagina->edicao->fonte and $pagina->edicao->fonte->estado) ? $pagina->edicao->fonte->estado->nm_estado : '' }}
                                                     {{ ($pagina->edicao->fonte and $pagina->edicao->fonte->cidade) ? '/ '.$pagina->edicao->fonte->cidade->nm_cidade : '' }}
                                                 </h6>
@@ -138,6 +138,7 @@
             <div class="row">
                 <div class="col-md-12 modal-cabecalho">
                     <h6 class="modal-fonte mt-0 mb-1"></h6>
+                    <h6 class="text-muted modal-estado mt-0 mb-1"></h6>
                     <p class="modal-pagina mt-0 mb-2"></p>
                 </div>
                 <hr/>
@@ -171,9 +172,11 @@
                 var id = $(this).data("id");
                 var chave = ".conteudo-"+id;
                 var pagina = ".paginas-"+id;
+                var estado = ".conteudo-estado-"+id;
                 var fonte = ".conteudo-fonte-"+id;
 
                 $(".modal-fonte").html($(fonte).text());
+                $(".modal-estado").html($(estado).text());
                 $(".modal-pagina").html($(pagina).text());
                 $(".modal-conteudo").html($(chave).text());
 
