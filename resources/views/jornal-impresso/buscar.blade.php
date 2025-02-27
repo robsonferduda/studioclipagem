@@ -178,7 +178,7 @@
                 $(".modal-fonte").html($(fonte).text());
                 $(".modal-estado").html($(estado).text());
                 $(".modal-pagina").html($(pagina).text());
-                $(".modal-conteudo").html($(chave).text());
+                $(".modal-conteudo").html($(chave).text().replace(/\n/g, "<br />"));
 
                 $("#showNoticia").modal("show");
 
