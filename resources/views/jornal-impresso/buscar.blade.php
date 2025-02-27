@@ -84,7 +84,9 @@
                             <div class="card-body">                           
                                 <div class="row">
                                     <div class="col-lg-2 col-md-2 col-sm-12 mb-1">
-                                        <a href="{{ url('jornal-impresso/web/pagina/download/'.$pagina->id) }}"><img src="{{ Storage::disk('s3')->temporaryUrl($pagina->path_pagina_s3, '+2 minutes') }}" alt="Pégina {{ $pagina->n_pagina }}"></a>
+                                        <a href="{{ url('jornal-impresso/web/pagina/download/'.$pagina->id) }}">
+                                            <img class="lazy-load" data-src="{{ Storage::disk('s3')->temporaryUrl($pagina->path_pagina_s3, '+2 minutes') }}" alt="Página {{ $pagina->n_pagina }}">
+                                        </a>
                                     </div>
                                     <div class="col-lg-10 col-sm-10 mb-1"> 
                                         <div class="row">
@@ -97,13 +99,10 @@
                                                 <p class="paginas-{{ $pagina->id }}">Página <strong>{{ $pagina->n_pagina }}</strong>/<strong>{{ count($pagina->edicao->paginas) }}</strong></p>  
                                                 <div class="panel panel-success">
                                                     <div class="conteudo-noticia mb-1">
-                                                        {!! ($pagina->texto_extraido) ?  Str::limit($pagina->texto_extraido, 1000, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                                        {!! ($pagina->texto_extraido) ?  Str::limit($pagina->texto_extraido, 800, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
                                                     </div>
                                                     <div class="panel-body conteudo-{{ $pagina->id }}">
                                                         {!! ($pagina->texto_extraido) ?  $pagina->texto_extraido  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
-                                                    </div>
-                                                    <div class="panel-heading">
-                                                        <h3 class="panel-title"><span class="btn-show">Mostrar Mais</span></h3>
                                                     </div>
                                                 </div>        
                                             </div>  
@@ -157,6 +156,33 @@
 @endsection
 @section('script')
     <script>
+
+        document.addEventListener("DOMContentLoaded", function() {
+            var lazyImages = [].slice.call(document.querySelectorAll("img.lazy-load"));
+
+            if ("IntersectionObserver" in window) {
+                let lazyImageObserver = new IntersectionObserver(function(entries, observer) {
+                    entries.forEach(function(entry) {
+                        if (entry.isIntersecting) {
+                            let lazyImage = entry.target;
+                            lazyImage.src = lazyImage.dataset.src;
+                            lazyImage.classList.remove("lazy-load");
+                            lazyImageObserver.unobserve(lazyImage);
+                        }
+                    });
+                });
+
+                lazyImages.forEach(function(lazyImage) {
+                    lazyImageObserver.observe(lazyImage);
+                });
+            } else {
+                // Fallback for browsers that do not support IntersectionObserver
+                lazyImages.forEach(function(lazyImage) {
+                    lazyImage.src = lazyImage.dataset.src;
+                });
+            }
+        });
+
         $(document).ready(function(){
 
             var host =  $('meta[name="base-url"]').attr('content');
