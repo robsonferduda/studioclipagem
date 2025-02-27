@@ -87,24 +87,31 @@
                                         <a href="{{ url('jornal-impresso/web/pagina/download/'.$pagina->id) }}"><img src="{{ Storage::disk('s3')->temporaryUrl($pagina->path_pagina_s3, '+2 minutes') }}" alt="Pégina {{ $pagina->n_pagina }}"></a>
                                     </div>
                                     <div class="col-lg-10 col-sm-10 mb-1"> 
-                                        <h6>{{ ($pagina->edicao->fonte) ? $pagina->edicao->fonte->nome : 'Não identificada' }} - {{ \Carbon\Carbon::parse($pagina->dt_clipagem)->format('d/m/Y') }}</h6>
-                                        <h6 class="text-muted">
-                                            {{ ($pagina->edicao->fonte and $pagina->edicao->fonte->estado) ? $pagina->edicao->fonte->estado->nm_estado : '' }}
-                                            {{ ($pagina->edicao->fonte and $pagina->edicao->fonte->cidade) ? '/ '.$pagina->edicao->fonte->cidade->nm_cidade : '' }}
-                                        </h6>
-                                        <p>Página <strong>{{ $pagina->n_pagina }}</strong>/<strong>{{ count($pagina->edicao->paginas) }}</strong></p>  
-                                        <div class="panel panel-success">
-                                            <div class="conteudo-noticia mb-1">
-                                                {!! ($pagina->texto_extraido) ?  Str::limit($pagina->texto_extraido, 1000, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 mb-1"> 
+                                                <h6 class="conteudo-fonte-{{ $pagina->id }}">{{ ($pagina->edicao->fonte) ? $pagina->edicao->fonte->nome : 'Não identificada' }} - {{ \Carbon\Carbon::parse($pagina->dt_clipagem)->format('d/m/Y') }}</h6>
+                                                <h6 class="text-muted">
+                                                    {{ ($pagina->edicao->fonte and $pagina->edicao->fonte->estado) ? $pagina->edicao->fonte->estado->nm_estado : '' }}
+                                                    {{ ($pagina->edicao->fonte and $pagina->edicao->fonte->cidade) ? '/ '.$pagina->edicao->fonte->cidade->nm_cidade : '' }}
+                                                </h6>
+                                                <p class="paginas-{{ $pagina->id }}">Página <strong>{{ $pagina->n_pagina }}</strong>/<strong>{{ count($pagina->edicao->paginas) }}</strong></p>  
+                                                <div class="panel panel-success">
+                                                    <div class="conteudo-noticia mb-1">
+                                                        {!! ($pagina->texto_extraido) ?  Str::limit($pagina->texto_extraido, 1000, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                                    </div>
+                                                    <div class="panel-body conteudo-{{ $pagina->id }}">
+                                                        {!! ($pagina->texto_extraido) ?  $pagina->texto_extraido  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                                    </div>
+                                                    <div class="panel-heading">
+                                                        <h3 class="panel-title"><span class="btn-show">Mostrar Mais</span></h3>
+                                                    </div>
+                                                </div>        
+                                            </div>  
+                                            <div class="col-lg-12 col-md-12 col-sm-12 mb-1 rodape-noticia"> 
+                                                <button class="btn btn-primary btn-visualizar-noticia" data-id="{{ $pagina->id }}"><i class="fa fa-eye"></i> Visualizar</button> 
+                                                <a href="{{ url('jornal-impresso/noticia/extrair/web',$pagina->id) }}" class="btn btn-success btn-extrair-noticia"><i class="fa fa-database"></i> Extrair Notícia</a>  
                                             </div>
-                                            <div class="panel-body">
-                                                {!! ($pagina->texto_extraido) ?  $pagina->texto_extraido  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
-                                            </div>
-                                            <div class="panel-heading">
-                                                <h3 class="panel-title"><span class="btn-show">Mostrar Mais</span></h3>
-                                            </div>
-                                        </div> 
-                                        <a href="{{ url('jornal-impresso/noticia/extrair/web',$pagina->id) }}" class="btn btn-success btn-extrair-noticia"><i class="fa fa-database"></i> Extrair Notícia</a>                
+                                        </div>    
                                     </div>
                                 </div>                               
                             </div>                            
@@ -118,6 +125,34 @@
         </div>
     </div>
 </div> 
+<div class="modal fade" id="showNoticia" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="padding: 15px !important;">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-newspaper-o"></i><span></span> Dodos da Notícia</h6>
+        </div>
+        <div class="modal-body" style="padding: 15px;">
+            <div class="row">
+                <div class="col-md-12 modal-cabecalho">
+                    <h6 class="modal-fonte mt-0 mb-1"></h6>
+                    <p class="modal-pagina mt-0 mb-2"></p>
+                </div>
+                <hr/>
+                <div class="col-md-12 modal-conteudo">
+                    
+                </div>
+            </div>
+            <div class="center">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
+                <button type="button" class="btn btn-success btn-salvar-usuario"><i class="fa fa-save"></i> Salvar</button>
+            </div>
+      </div>
+    </div>
+  </div>
+</div>
 @endsection
 @section('script')
     <script>
@@ -129,6 +164,21 @@
                 nonSelectedListLabel: 'Disponíveis',
                 selectedListLabel: 'Selecionadas',
             
+            });
+
+            $(".btn-visualizar-noticia").click(function(){
+
+                var id = $(this).data("id");
+                var chave = ".conteudo-"+id;
+                var pagina = ".paginas-"+id;
+                var fonte = ".conteudo-fonte-"+id;
+
+                $(".modal-fonte").html($(fonte).text());
+                $(".modal-pagina").html($(pagina).text());
+                $(".modal-conteudo").html($(chave).text());
+
+                $("#showNoticia").modal("show");
+
             });
         
         });

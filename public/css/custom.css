@@ -260,7 +260,7 @@ input[type="checkbox"]:checked + label-check .fa{
 .mb-1 { padding-bottom: 1px;}
 mark{background: #009688 !important; color: white; border-radius: 5px;}
 .fts_detalhes { cursor: pointer;}
-.btn-extrair-noticia { position: absolute; bottom: 0px; }
+.rodape-noticia { position: absolute; bottom: 0px; }
 canvas { width: 100% !important;}
 .input-impresso{ font-weight: 600; }
 .edit-url-fonte { cursor: pointer; }
