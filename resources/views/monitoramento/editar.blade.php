@@ -112,10 +112,14 @@
                                     </div>                                   
                                 </div>
                                 <div class="col-md-12 col-sm-12 mt-3">
-                                    <p id="selecionadasTexto" class="mt-3">Selecionadas: 0</p>
-                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalFontes">
-                                        Selecionar Emissoras
-                                    </button>
+                                    <p class="mb-0">
+                                        <i class="fa fa-database fa-1x"></i> Fontes
+                                        <button type="button" class="btn btn-sm btn-primary btn-icon btn-email" style="border-radius: 50%; height: 1.5rem;
+                                        min-width: 1.5rem;
+                                        width: 1.5rem;" data-toggle="modal" data-target="#modalFontes"><i class="fa fa-plus fa-2x"></i></button>
+                                    </p>
+                                    <p id="selecionadasTexto" class="mt-3">Fontes selecionadas: 0</p>
+                                    <input type="hidden" name="selecionadas[]" id="selecionadas">
                                 </div>
                                 
                                     <div class="col-md-12 col-sm-12">
@@ -276,18 +280,8 @@
                             <input type="mail" class="form-control" name="filtro_nome" id="filtro_nome">
                         </div>
                     </div>  
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <div class="form-check mt-1">
-                                <label for="selecionar-todos" class="form-check-label mt-2">
-                                    <input class="form-check-input" type="checkbox" name="selecionar-todos" id="selecionar-todos" value="true">
-                                    Selecionar Todos
-                                    <span class="form-check-sign"></span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
+                    <div class="col-md-12">
+                        <button type="button" class="btn btn-primary mb-3 pull-left" id="selecionarTodos">Selecionar Filtrados</button>
                         <button type="button" class="btn btn-warning mb-3 pull-right" id="limparSelecao">Limpar Seleção</button>
                     </div>
                     <div class="col-md-12">
@@ -308,7 +302,7 @@
                 </div>
                 <div class="center">
                     <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
-                    <button type="button" class="btn btn-success btn-salvar-usuario"><i class="fa fa-save"></i> Salvar</button>
+                    <button type="button" class="btn btn-primary" id="btn-selecionar"><i class="fa fa-check"></i> Fializar Seleção</button>
                 </div>
           </div>
         </div>
@@ -318,20 +312,14 @@
 @endsection
 @section('script')
 <script>
-        
-        const estados = ['SP', 'RJ', 'MG', 'BA', 'PR', 'SC', 'RS', 'PE', 'CE', 'GO'];
-        const cidades = ['Cidade A', 'Cidade B', 'Cidade C', 'Cidade D', 'Cidade E'];
-        const nomes = ['Rádio Alpha', 'Rádio Beta', 'Rádio Gamma', 'Rádio Delta', 'Rádio Omega'];
-
         var host =  $('meta[name="base-url"]').attr('content');
         var token = $('meta[name="csrf-token"]').attr('content');
+        
+        let emissoras = [];
+        let selecionadas = [];
 
-       
         carregarEmissoras();
         carregarUFs();
-        
-
-        let emissoras = [];
 
         async function carregarEmissoras() {
             try {
@@ -344,21 +332,16 @@
             }
         }
        
-        let selecionadas = [];
-
         function atualizarSelecionadasTexto() {
-            document.getElementById('selecionadasTexto').textContent = `Selecionadas: ${selecionadas.length}`;
+            document.getElementById('selecionadasTexto').textContent = `Fontes selecionadas: ${selecionadas.length}`;
         }
 
         async function carregarUFs() {           
 
             const filtroUF = document.getElementById('filtro_uf');
-           
-
             const response = await fetch(host+'/estado/siglas');
-            ufs = await response.json();
 
-            console.log(ufs);
+            ufs = await response.json();
 
             ufs.forEach(uf => {
                 let option = document.createElement('option');
@@ -378,45 +361,59 @@
             let filtradas = emissoras.filter(e => (filtroUF === '' || e.uf === filtroUF) && e.nome.toLowerCase().includes(filtroNome));
 
             filtradas.forEach((e, index) => {
-            let row = tabela.insertRow();
-            let cell1 = row.insertCell(0);
-            let cell2 = row.insertCell(1);
-            let cell3 = row.insertCell(2);
-            let cell4 = row.insertCell(3);
-            
-            let checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.value = index;
-            checkbox.checked = selecionadas.includes(index);
-            checkbox.classList.add('checkbox-emissora');
-            checkbox.addEventListener('change', (event) => {
-                if (event.target.checked) {
-                selecionadas.push(index);
-                } else {
-                selecionadas = selecionadas.filter(i => i !== index);
-                }
-                atualizarSelecionadasTexto();
-            });
-            
-            cell1.appendChild(checkbox);
-            cell2.textContent = e.uf;
-            cell3.textContent = e.cidade;
-            cell4.textContent = e.nome;
+
+                let row = tabela.insertRow();
+                let cell1 = row.insertCell(0);
+                let cell2 = row.insertCell(1);
+                let cell3 = row.insertCell(2);
+                let cell4 = row.insertCell(3);
+                
+                let checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.value = e.id;
+                checkbox.checked = selecionadas.includes(e.id);
+                checkbox.classList.add('checkbox-emissora');
+
+                checkbox.addEventListener('change', (event) => {
+                    if (event.target.checked) {
+                        if (!selecionadas.includes(e.id)) {
+                            selecionadas.push(e.id);
+                        }
+                    } else {
+                        selecionadas = selecionadas.filter(i => i !== e.id);
+                    }
+                    atualizarSelecionadasTexto();
+                });
+                
+                cell1.appendChild(checkbox);
+                cell2.textContent = e.uf;
+                cell3.textContent = e.cidade;
+                cell4.textContent = e.nome;
             });
         }
 
-        document.getElementById('selecionar-todos').addEventListener('change', function() {
+        document.getElementById('selecionarTodos').addEventListener('click', function() {
+            
             let checkboxes = document.querySelectorAll('.checkbox-emissora');
             checkboxes.forEach(checkbox => {
-            checkbox.checked = this.checked;
-            checkbox.dispatchEvent(new Event('change'));
+                checkbox.checked = true;
+                checkbox.dispatchEvent(new Event('change'));
             });
         });
 
         document.getElementById('limparSelecao').addEventListener('click', function() {
             selecionadas = [];
+                       
             carregarTabela();
             atualizarSelecionadasTexto();
+        });
+
+        document.getElementById('btn-selecionar').addEventListener('click', function() {
+
+            console.log(selecionadas);
+            document.getElementById('selecionadas').value = selecionadas;
+            $('#modalFontes').modal('hide');
+            
         });
 
         document.getElementById('filtro_uf').addEventListener('change', carregarTabela);
