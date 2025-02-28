@@ -222,7 +222,7 @@ Route::post('radio/emissora/horario/atualizar','EmissoraController@atualizarHora
 Route::get('radio/emissora/horario/excluir/{horario}','EmissoraController@excluirHorario');
 Route::get('radio/arquivos/detalhes/{id}','EmissoraController@detalhes');
 Route::get('radio/dashboard','NoticiaRadioController@dashboard');
-Route::get('radio/emissoras','EmissoraController@loadEmissoras');
+Route::get('radio/emissoras/{monitoramento}','EmissoraController@loadEmissoras');
 
 Route::get('radio/estatisticas','NoticiaRadioController@estatisticas');
 Route::match(array('GET', 'POST'),'radios','NoticiaRadioController@index');

@@ -25,7 +25,7 @@
                     {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['monitoramento/update']]) !!}
                         <div class="form-group m-3">
                             <div class="row">
-                                <input type="hidden" name="id" value="{{ $monitoramento->id }}">
+                                <input type="hidden" name="id" id="id" value="{{ $monitoramento->id }}">
                                 <input type="hidden" name="url_origem" value="{{ url()->previous() }}">
                                 <div class="col-md-12">
                                     <div class="form-group">
@@ -322,8 +322,11 @@
         carregarUFs();
 
         async function carregarEmissoras() {
+
+            const id_monitoramento = document.getElementById('id').value;
+
             try {
-                const response = await fetch(host+'/radio/emissoras');
+                const response = await fetch(host+'/radio/emissoras/'+id_monitoramento);
                 emissoras = await response.json();
                 
                 carregarTabela();
@@ -371,7 +374,8 @@
                 let checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
                 checkbox.value = e.id;
-                checkbox.checked = selecionadas.includes(e.id);
+                //checkbox.checked = selecionadas.includes(e.id);
+                checkbox.checked = e.fl_filtro === true;
                 checkbox.classList.add('checkbox-emissora');
 
                 checkbox.addEventListener('change', (event) => {
