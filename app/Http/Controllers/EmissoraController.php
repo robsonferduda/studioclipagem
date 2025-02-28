@@ -469,7 +469,7 @@ class EmissoraController extends Controller
         $emissora->leftJoin('cidade', 'cidade.cd_cidade', '=', 'emissora_radio.cd_cidade');
         $emissora->leftJoin('estado', 'estado.cd_estado', '=', 'emissora_radio.cd_estado');
 
-        $emissoras = $emissora->orderBy('nome_emissora', 'asc')->get();
+        $emissoras = $emissora->orderBy('sg_estado')->orderBy('nm_cidade')->orderBy('nome_emissora', 'asc')->get();
 
         return response()->json($emissoras);
     }
