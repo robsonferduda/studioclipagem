@@ -1062,9 +1062,6 @@ class MonitoramentoController extends Controller
 
     public function update(Request $request)
     {
-
-        dd($request->all());
-
         $id = $request->id;
         $monitoramento = Monitoramento::find($id);
 
