@@ -328,7 +328,14 @@
             try {
                 const response = await fetch(host+'/radio/emissoras/'+id_monitoramento);
                 emissoras = await response.json();
-                
+
+                // Adiciona os registros com fl_filtro = true à variável selecionados
+                emissoras.forEach(e => {
+                    if (e.fl_filtro === true && !selecionadas.includes(e.id)) {
+                        selecionadas.push(e.id);
+                    }
+                });
+                atualizarSelecionadasTexto();
                 carregarTabela();
             } catch (error) {
                 console.error('Erro ao carregar emissoras:', error);
@@ -377,6 +384,10 @@
                 //checkbox.checked = selecionadas.includes(e.id);
                 checkbox.checked = e.fl_filtro === true;
                 checkbox.classList.add('checkbox-emissora');
+
+                if (e.fl_filtro === true && !selecionadas.includes(e.id)) {
+                    selecionadas.push(e.id);
+                }
 
                 checkbox.addEventListener('change', (event) => {
                     if (event.target.checked) {
