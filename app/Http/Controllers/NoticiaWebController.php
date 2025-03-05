@@ -34,7 +34,8 @@ class NoticiaWebController extends Controller
 
         $fontes = FonteWeb::orderBy('nome')->get();
         $fontes = array();
-        $clientes = Cliente::orderBy('fl_ativo')->orderBy('nome')->get();
+        $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
+
         $dados = array();
 
         $tipo_data = $request->tipo_data;

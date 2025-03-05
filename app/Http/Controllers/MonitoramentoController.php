@@ -42,7 +42,7 @@ class MonitoramentoController extends Controller
     {
         Session::put('sub-menu','monitoramentos');
 
-        $clientes = Cliente::orderBy('nome')->get();
+        $clientes = Cliente::where('fl_ativo', true)->orderBy('nome')->get();
 
         $cliente = ($request->cliente) ? $request->cliente : null;
         $midia = ($request->midia) ? $request->midia : null;
@@ -107,7 +107,7 @@ class MonitoramentoController extends Controller
         Session::put('sub-menu','monitoramento-cadastrar');
 
         $periodos = Periodo::orderBy('ordem')->get();
-        $clientes = Cliente::orderBy('nome')->get();
+        $clientes = Cliente::where('fl_ativo', true)->orderBy('nome')->get();
 
         return view('monitoramento/novo', compact('clientes','periodos'));
     }
@@ -117,7 +117,7 @@ class MonitoramentoController extends Controller
         Session::put('sub-menu','monitoramento-exportar-web');
         
         $periodos = Periodo::orderBy('ordem')->get();
-        $clientes = Cliente::orderBy('nome')->get();
+        $clientes = Cliente::where('fl_ativo', true)->orderBy('nome')->get();
 
         $tipo_data = $request->tipo_data;
         $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
@@ -951,7 +951,7 @@ class MonitoramentoController extends Controller
     public function editar($id)
     {
         $periodos = Periodo::orderBy('ordem')->get();
-        $clientes = Cliente::orderBy("nome")->get();
+        $clientes = Cliente::where('fl_ativo', true)->orderBy('nome')->get();
         $fontes = array();
         $cidades_selecionadas = array();
         $estados = Estado::orderBy('nm_estado')->get();

@@ -43,7 +43,7 @@ class NoticiaTvController extends Controller
         Session::put('sub-menu','tv-noticias');
 
         $fontes = ProgramaEmissoraWeb::orderBy('nome_programa')->get();
-        $clientes = Cliente::orderBy('fl_ativo')->orderBy('nome')->get();
+        $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
 
         $tipo_data = $request->tipo_data;
         $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
