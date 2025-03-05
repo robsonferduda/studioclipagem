@@ -130,7 +130,7 @@ class ClienteController extends Controller
 
     public function update(Request $request, int $id): RedirectResponse
     {
-        $flag = $request->ativo == true ? true : false;
+        $flag = $request->fl_ativo == true ? true : false;
 
         $cliente = Cliente::find($id);
         try {

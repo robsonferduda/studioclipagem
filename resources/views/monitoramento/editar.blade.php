@@ -47,25 +47,25 @@
                                 <div class="col-lg-2 col-md-6 mb-2">
                                     <div class="form-group">
                                         <label>Data Inicial</label>
-                                        <input type="text" class="form-control datepicker dt_inicial_relatorio" name="dt_inicio" value="{{ \Carbon\Carbon::parse($monitoramento->dt_inicio)->format('d/m/Y') }}">
+                                        <input type="text" class="form-control datepicker dt_inicial_relatorio" name="dt_inicio" value="{{ ($monitoramento->dt_inicio) ? \Carbon\Carbon::parse($monitoramento->dt_inicio)->format('d/m/Y') : '' }}">
                                     </div>
                                 </div>
                                 <div class="col-lg-2 col-md-6 mb-2">
                                     <div class="form-group">
                                         <label>Data Final</label>
-                                        <input type="text" class="form-control datepicker dt_final_relatorio" name="dt_fim" value="{{ \Carbon\Carbon::parse($monitoramento->dt_fim)->format('d/m/Y') }}">
+                                        <input type="text" class="form-control datepicker dt_final_relatorio" name="dt_fim" value="{{ ($monitoramento->dt_fim) ? \Carbon\Carbon::parse($monitoramento->dt_fim)->format('d/m/Y') : '' }}">
                                     </div>
                                 </div>
                                 <div class="col-lg-2 col-md-6 mb-2">
                                     <div class="form-group">
                                         <label>Hora Inicial</label>
-                                        <input type="text" class="form-control horario" name="hora_inicio" value="{{ \Carbon\Carbon::parse($monitoramento->hora_inicio)->format('H:i') }}">
+                                        <input type="text" class="form-control horario" name="hora_inicio" value="{{ ($monitoramento->hora_inicio) ? \Carbon\Carbon::parse($monitoramento->hora_inicio)->format('H:i') : '' }}">
                                     </div>
                                 </div>
                                 <div class="col-lg-2 col-md-6 mb-2">
                                     <div class="form-group">
                                         <label>Hora Final</label>
-                                        <input type="text" class="form-control horario" name="hora_fim" value="{{ \Carbon\Carbon::parse($monitoramento->hora_fim)->format('H:i') }}">
+                                        <input type="text" class="form-control horario" name="hora_fim" value="{{ ($monitoramento->hora_fim) ? \Carbon\Carbon::parse($monitoramento->hora_fim)->format('H:i') : '' }}">
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-md-6 mb-2">
