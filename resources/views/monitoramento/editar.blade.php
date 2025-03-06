@@ -111,17 +111,17 @@
                                         </label>
                                     </div>                                   
                                 </div>
-                                <div class="col-md-12 col-sm-12 mt-3">
+                                <div class="col-md-12 col-sm-12 mt-1">
                                     <p class="mb-0">
                                         <i class="fa fa-filter fa-1x"></i> Filtrar Fontes
                                         <button type="button" class="btn btn-sm btn-primary btn-icon btn-email" style="border-radius: 50%; height: 1.5rem;
                                         min-width: 1.5rem;
                                         width: 1.5rem;" data-toggle="modal" data-target="#modalFontes"><i class="fa fa-check fa-2x"></i></button>
                                     </p>
-                                    <p id="selecionadasTexto" class="mt-3">Fontes selecionadas: 0</p>
+                                    <p id="selecionadasTexto" class="mt-1">Fontes selecionadas: 0</p>
                                     <input type="hidden" name="selecionadas[]" id="selecionadas">
                                 </div>
-                                
+                                <!--
                                     <div class="col-md-12 col-sm-12">
                                         <div class="form-group">
                                             <label>Fonte</label>
@@ -135,8 +135,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                
-                                <div class="col-md-12 col-sm-12 mt-3">
+                                -->
+                                <div class="col-md-12 col-sm-12 mt-0">
                                     <div class="form-group">
                                         <label for="expressao" class="form-label">Expressão de Busca <span class="text-danger">Campo obrigatório</span></label>
                                         <textarea class="form-control" name="expressao" id="expressao" rows="3">{{ $monitoramento->expressao }}</textarea>
@@ -294,7 +294,7 @@
                 </div>
                 <div class="center">
                     <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
-                    <button type="button" class="btn btn-primary" id="btn-selecionar"><i class="fa fa-check"></i> Fializar Seleção</button>
+                    <button type="button" class="btn btn-primary" id="btn-selecionar"><i class="fa fa-check"></i> Finalizar Seleção</button>
                 </div>
           </div>
         </div>
@@ -447,7 +447,6 @@
 
         document.getElementById('btn-selecionar').addEventListener('click', function() {
 
-            console.log(selecionadas);
             document.getElementById('selecionadas').value = selecionadas;
             $('#modalFontes').modal('hide');
             

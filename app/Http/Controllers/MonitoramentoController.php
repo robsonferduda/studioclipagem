@@ -962,6 +962,7 @@ class MonitoramentoController extends Controller
 
         $monitoramento = Monitoramento::find($id);
 
+        /*
         if($monitoramento->fl_web){
 
             if($monitoramento->filtro_web){
@@ -1059,7 +1060,7 @@ class MonitoramentoController extends Controller
                 }
             }
             
-        }
+        }*/
 
         return view('monitoramento/editar', compact('monitoramento','clientes','periodos','fontes','estados'));
     }
@@ -1090,7 +1091,9 @@ class MonitoramentoController extends Controller
         $request->merge(['hora_inicio' => $hora_inicio]);
         $request->merge(['hora_fim' => $hora_fim]);
 
-        $filtro_fontes = ($request->fontes) ? implode(',', $request->fontes) : '';
+        //$filtro_fontes = ($request->fontes) ? implode(',', $request->fontes) : '';
+
+        $filtro_fontes = $request->selecionadas[0];
 
         if($fl_web){
             $request->merge(['filtro_web' => $filtro_fontes]);
