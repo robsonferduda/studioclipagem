@@ -348,8 +348,6 @@
                     tipo_midia = "tv";
                 }
 
-                alert(tipo_midia);
-
                 const response = await fetch(host+'/monitoramento/'+tipo_midia+'/emissoras/'+id_monitoramento);
                 emissoras = await response.json();
 
