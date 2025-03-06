@@ -147,7 +147,6 @@
             </div>
             <div class="center">
                 <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
-                <button type="button" class="btn btn-success btn-salvar-usuario"><i class="fa fa-save"></i> Salvar</button>
             </div>
       </div>
     </div>

@@ -6,12 +6,16 @@ use DB;
 use Auth;
 use Mail;
 use App\Utils;
+use App\Models\Emissora;
+use App\Models\ProgramaEmissoraWeb;
 use App\Models\FonteWeb;
 use App\Models\Periodo;
 use App\Models\Cliente;
 use App\Models\Monitoramento;
 use App\Models\MonitoramentoExecucao;
 use App\Models\JornalImpresso;
+use App\Models\JornalOnline;
+use App\Models\EdicaoJornalOnline;
 use App\Models\JornalWeb;
 use App\Models\NoticiaWeb;
 use App\Models\ConteudoNoticiaWeb;
@@ -1070,11 +1074,11 @@ class MonitoramentoController extends Controller
         $fl_impresso = $request->fl_impresso == true ? true : false;
         $fl_radio = $request->fl_radio == true ? true : false;
 
-        $dt_inicio = ($request->dt_inicio) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicio)->format('Y-m-d')." 00:00:00" : date("Y-m-d H:i:s");
-        $dt_fim = ($request->dt_fim) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_fim)->format('Y-m-d')." 00:00:00" : date("Y-m-d H:i:s");
+        $dt_inicio = ($request->dt_inicio) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicio)->format('Y-m-d')." 00:00:00" : null;
+        $dt_fim = ($request->dt_fim) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_fim)->format('Y-m-d')." 00:00:00" : null;
 
-        $hora_inicio = ($request->hora_inicio) ? $this->carbon->createFromFormat('H:i', $request->hora_inicio)->format('H:i') : date("H:i");
-        $hora_fim = ($request->hora_fim) ? $this->carbon->createFromFormat('H:i', $request->hora_fim)->format('H:i') : date("H:i");
+        $hora_inicio = ($request->hora_inicio) ? $this->carbon->createFromFormat('H:i', $request->hora_inicio)->format('H:i') : null;
+        $hora_fim = ($request->hora_fim) ? $this->carbon->createFromFormat('H:i', $request->hora_fim)->format('H:i') : null;
 
         $request->merge(['fl_web' => $fl_web]);
         $request->merge(['fl_tv' => $fl_tv]);
@@ -1179,5 +1183,47 @@ class MonitoramentoController extends Controller
       
 
         return redirect()->back()->withInput();
+    }
+
+    public function loadEmissoras($tipo, $id_monitoramento)
+    {
+        $filtro = "filtro_".$tipo;
+
+        $fontes = DB::table('monitoramento')->select($filtro)->where('id', $id_monitoramento)->first()->$filtro;
+        $fontesArray = explode(',', $fontes);
+
+        if($tipo == 'web'){
+            $fonte = FonteWeb::select('id', 'nome', 'nm_cidade as cidade', 'sg_estado as uf');
+            $fonte->leftJoin('cidade', 'cidade.cd_cidade', '=', 'fonte_web.cd_cidade');
+            $fonte->leftJoin('estado', 'estado.cd_estado', '=', 'fonte_web.cd_estado');
+            $emissoras = $fonte->orderBy('sg_estado')->orderBy('nm_cidade')->orderBy('nome', 'asc')->get();
+        }
+
+        if($tipo == 'impresso'){
+            $fonte = JornalOnline::select('id', 'nome', 'nm_cidade as cidade', 'sg_estado as uf');
+            $fonte->leftJoin('cidade', 'cidade.cd_cidade', '=', 'jornal_online.cd_cidade');
+            $fonte->leftJoin('estado', 'estado.cd_estado', '=', 'jornal_online.cd_estado');
+            $emissoras = $fonte->orderBy('sg_estado')->orderBy('nm_cidade')->orderBy('nome', 'asc')->get();
+        }
+
+        if($tipo == 'tv'){
+            $fonte = ProgramaEmissoraWeb::select('id', 'nome_programa as nome', 'nm_cidade as cidade', 'sg_estado as uf');
+            $fonte->leftJoin('cidade', 'cidade.cd_cidade', '=', 'programa_emissora_web.cd_cidade');
+            $fonte->leftJoin('estado', 'estado.cd_estado', '=', 'programa_emissora_web.cd_estado');
+            $emissoras = $fonte->orderBy('sg_estado')->orderBy('nm_cidade')->orderBy('nome', 'asc')->get();
+        }
+
+        if($tipo == 'radio'){
+            $fonte = Emissora::select('id', 'nome_emissora as nome', 'nm_cidade as cidade', 'sg_estado as uf');
+            $fonte->leftJoin('cidade', 'cidade.cd_cidade', '=', 'emissora_radio.cd_cidade');
+            $fonte->leftJoin('estado', 'estado.cd_estado', '=', 'emissora_radio.cd_estado');
+            $emissoras = $fonte->orderBy('sg_estado')->orderBy('nm_cidade')->orderBy('nome_emissora', 'asc')->get();
+        }
+
+        foreach ($emissoras as $key => $emissora) {
+            $emissoras[$key]->fl_filtro = in_array($emissora->id, $fontesArray);
+        }
+
+        return response()->json($emissoras);
     }
 }

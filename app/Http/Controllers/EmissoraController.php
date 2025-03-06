@@ -462,21 +462,4 @@ class EmissoraController extends Controller
 
         return response()->json($result);
     }
-
-    public function loadEmissoras($id_monitoramento)
-    {
-        $fontes = DB::table('monitoramento')->select('filtro_radio')->where('id', $id_monitoramento)->first()->filtro_radio;
-        $fontesArray = explode(',', $fontes);
-
-        $emissora = Emissora::select('id', 'nome_emissora as nome', 'nm_cidade as cidade', 'sg_estado as uf');
-        $emissora->leftJoin('cidade', 'cidade.cd_cidade', '=', 'emissora_radio.cd_cidade');
-        $emissora->leftJoin('estado', 'estado.cd_estado', '=', 'emissora_radio.cd_estado');
-        $emissoras = $emissora->orderBy('sg_estado')->orderBy('nm_cidade')->orderBy('nome_emissora', 'asc')->get();
-
-        foreach ($emissoras as $key => $emissora) {
-            $emissoras[$key]->fl_filtro = in_array($emissora->id, $fontesArray);
-        }
-
-        return response()->json($emissoras);
-    }
 }

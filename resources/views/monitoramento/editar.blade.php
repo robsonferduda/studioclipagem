@@ -52,7 +52,7 @@
                                 </div>
                                 <div class="col-lg-2 col-md-6 mb-2">
                                     <div class="form-group">
-                                        <label>Data Final</label>
+                                        <label>Data Final {{ $monitoramento->dt_fim }}</label>
                                         <input type="text" class="form-control datepicker dt_final_relatorio" name="dt_fim" value="{{ ($monitoramento->dt_fim) ? \Carbon\Carbon::parse($monitoramento->dt_fim)->format('d/m/Y') : '' }}">
                                     </div>
                                 </div>
@@ -113,10 +113,10 @@
                                 </div>
                                 <div class="col-md-12 col-sm-12 mt-3">
                                     <p class="mb-0">
-                                        <i class="fa fa-database fa-1x"></i> Fontes
+                                        <i class="fa fa-filter fa-1x"></i> Filtrar Fontes
                                         <button type="button" class="btn btn-sm btn-primary btn-icon btn-email" style="border-radius: 50%; height: 1.5rem;
                                         min-width: 1.5rem;
-                                        width: 1.5rem;" data-toggle="modal" data-target="#modalFontes"><i class="fa fa-plus fa-2x"></i></button>
+                                        width: 1.5rem;" data-toggle="modal" data-target="#modalFontes"><i class="fa fa-check fa-2x"></i></button>
                                     </p>
                                     <p id="selecionadasTexto" class="mt-3">Fontes selecionadas: 0</p>
                                     <input type="hidden" name="selecionadas[]" id="selecionadas">
@@ -125,15 +125,7 @@
                                     <div class="col-md-12 col-sm-12">
                                         <div class="form-group">
                                             <label>Fonte</label>
-                                            <div class="form-group">
-                                                <label>Estado <span class="text-danger">Obrigatório</span></label>
-                                                <select class="form-control select2" name="cd_estado" id="cd_estado">
-                                                    <option value="">Selecione um estado</option>
-                                                    @foreach ($estados as $estado)
-                                                        <option value="{{ $estado->cd_estado }}">{{ $estado->nm_estado }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
+                                            
                                             <div class="form-group">
                                                 <select multiple="multiple" size="10" name="fontes[]" id="fontes" class="demo1 form-control">
                                                     @foreach ($fontes as $fonte)
@@ -318,15 +310,47 @@
         let emissoras = [];
         let selecionadas = [];
 
-        carregarEmissoras();
-        carregarUFs();
+        document.querySelectorAll(".form-check-input").forEach(function(checkbox) {
+            checkbox.addEventListener("click", function() {
+                document.querySelectorAll(".form-check-input").forEach(function(cb) {
+                    cb.checked = false;
+                });
+                checkbox.checked = true;
+                carregarEmissoras();
+            });
+        });
 
         async function carregarEmissoras() {
 
             const id_monitoramento = document.getElementById('id').value;
+            const fl_impresso = document.getElementById("fl_impresso").checked;
+            const fl_web = document.getElementById("fl_web").checked;
+            const fl_radio = document.getElementById("fl_radio").checked;
+            const fl_tv = document.getElementById("fl_tv").checked;
 
             try {
-                const response = await fetch(host+'/radio/emissoras/'+id_monitoramento);
+
+                let tipo_midia = "";
+
+                if(fl_impresso){
+                    tipo_midia = "impresso";
+                }
+
+                if(fl_web){
+                    tipo_midia = "web";
+                }
+
+                if(fl_radio){
+                    tipo_midia = "radio";
+                }
+
+                if(fl_tv){
+                    tipo_midia = "tv";
+                }
+
+                alert(tipo_midia);
+
+                const response = await fetch(host+'/monitoramento/'+tipo_midia+'/emissoras/'+id_monitoramento);
                 emissoras = await response.json();
 
                 // Adiciona os registros com fl_filtro = true à variável selecionados
@@ -436,8 +460,9 @@
         
         document.addEventListener('DOMContentLoaded', () => {
             carregarUFs();
-            carregarTabela();
+            carregarEmissoras();
         });
+        
 </script>
 <script>
     $( document ).ready(function() {
@@ -451,8 +476,6 @@
             preserveSelectionOnMove: 'all',
             moveOnSelect: true
         });
-
-
 
         var fl_impresso = $("#fl_impresso").is(":checked");
         var fl_radio = $("#fl_radio").is(":checked");

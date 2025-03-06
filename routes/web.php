@@ -201,6 +201,7 @@ Route::get('monitoramento/executar/impresso','MonitoramentoController@executarIm
 Route::get('monitoramento/executar/tv','MonitoramentoController@executarTv');
 Route::get('monitoramento/cliente/{id_cliente}/{flag}','MonitoramentoController@getMonitoramento');
 Route::get('monitoramento/{id_monitoramento}/fontes','MonitoramentoController@getFontesMonitoramento');
+Route::get('monitoramento/{tipo}/emissoras/{monitoramento}','MonitoramentoController@loadEmissoras');
 
 Route::get('php','HomeController@php');
 
@@ -222,7 +223,6 @@ Route::post('radio/emissora/horario/atualizar','EmissoraController@atualizarHora
 Route::get('radio/emissora/horario/excluir/{horario}','EmissoraController@excluirHorario');
 Route::get('radio/arquivos/detalhes/{id}','EmissoraController@detalhes');
 Route::get('radio/dashboard','NoticiaRadioController@dashboard');
-Route::get('radio/emissoras/{monitoramento}','EmissoraController@loadEmissoras');
 
 Route::get('radio/estatisticas','NoticiaRadioController@estatisticas');
 Route::match(array('GET', 'POST'),'radios','NoticiaRadioController@index');
