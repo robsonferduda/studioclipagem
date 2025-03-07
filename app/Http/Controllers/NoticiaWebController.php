@@ -284,12 +284,16 @@ class NoticiaWebController extends Controller
             if($noticia->noticiaWeb){
 
                 $fonte = FonteWeb::find($noticia->noticiaWeb->id_fonte);
-                $valor = $fonte->nu_valor;
 
-                if($valor){
-                    $noticia->noticiaWeb->nu_valor = $valor;
-                    $noticia->noticiaWeb->save();
+                if($fonte){
+                    $valor = $fonte->nu_valor;
+
+                    if($valor){
+                        $noticia->noticiaWeb->nu_valor = $valor;
+                        $noticia->noticiaWeb->save();
+                    }
                 }
+                
             }
         }
     }
