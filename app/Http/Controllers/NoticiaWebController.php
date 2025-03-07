@@ -289,11 +289,12 @@ class NoticiaWebController extends Controller
 
         foreach($dados as $dado){
 
-            if($dado->id){
+            if($dado){
 
                 $noticia = NoticiaWeb::find($dado->id);
 
                 if($noticia){
+                    
                     $fonte = FonteWeb::find($noticia->id_fonte);
 
                     if($fonte){
