@@ -279,18 +279,28 @@ class NoticiaWebController extends Controller
     {
         $noticias = NoticiaCliente::where('tipo_id',2)->where('created_at', '>', '2025-02-10')->where('created_at', '<', '2025-03-01')->get();
 
-        foreach($noticias as $noticia){
+        $sql = "SELECT t1.created_at, t2.nu_valor, t2.id 
+                FROM noticia_cliente t1
+                JOIN noticias_web t2 ON t2.id = t1.noticia_id 
+                WHERE t1.created_at > '2025-02-01'
+                AND nu_valor IS null";
 
-            if($noticia->noticiaWeb){
+        $dados = DB::select($sql)[0];
 
-                $fonte = FonteWeb::find($noticia->noticiaWeb->id_fonte);
+        foreach($dados as $dado){
+
+            $noticia = NoticiaWeb::find($dado->id);
+
+            if($noticia){
+
+                $fonte = FonteWeb::find($noticia->id_fonte);
 
                 if($fonte){
                     $valor = $fonte->nu_valor;
 
                     if($valor){
-                        $noticia->noticiaWeb->nu_valor = $valor;
-                        $noticia->noticiaWeb->save();
+                        $noticia->nu_valor = $valor;
+                        $noticia->save();
                     }
                 }
                 
