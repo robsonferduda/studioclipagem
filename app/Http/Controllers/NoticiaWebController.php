@@ -293,6 +293,8 @@ class NoticiaWebController extends Controller
 
                 $noticia = NoticiaWeb::find($dado->id);
 
+                dd($noticia);
+
                 if($noticia){
 
                     $fonte = FonteWeb::find($noticia->id_fonte);
