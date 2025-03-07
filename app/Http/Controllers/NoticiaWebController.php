@@ -304,6 +304,9 @@ class NoticiaWebController extends Controller
                             $noticia->nu_valor = $valor;
                             $noticia->save();
                         }
+                    }else{
+                        $noticia->nu_valor = 0;
+                        $noticia->save();
                     }
                 }
             }
