@@ -287,26 +287,26 @@ class NoticiaWebController extends Controller
 
         $dados = DB::select($sql)[0];
 
-        dd($dados);
-
         foreach($dados as $dado){
 
-            $noticia = NoticiaWeb::find($dado->id);
+            if($dado->id){
 
-            if($noticia){
+                $noticia = NoticiaWeb::find($dado->id);
 
-                $fonte = FonteWeb::find($noticia->id_fonte);
+                if($noticia){
+                    $fonte = FonteWeb::find($noticia->id_fonte);
 
-                if($fonte){
-                    $valor = $fonte->nu_valor;
+                    if($fonte){
+                        $valor = $fonte->nu_valor;
 
-                    if($valor){
-                        $noticia->nu_valor = $valor;
-                        $noticia->save();
+                        if($valor){
+                            $noticia->nu_valor = $valor;
+                            $noticia->save();
+                        }
                     }
                 }
-                
             }
+
         }
     }
 }
