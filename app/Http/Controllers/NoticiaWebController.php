@@ -11,6 +11,7 @@ use Laracasts\Flash\Flash;
 use App\Models\LogAcesso;
 use App\Models\FonteWeb;
 use App\Models\NoticiaWeb;
+use App\Models\NoticiaCliente;
 use App\Models\ConteudoNoticiaWeb;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -272,5 +273,27 @@ class NoticiaWebController extends Controller
         $dados = DB::select($sql)[0];
 
         return response()->json($dados); 
+    }
+
+    public function valores()
+    {
+        $noticias = NoticiaCliente::where('tipo_id',2)->get();
+
+        foreach($noticias as $noticia){
+
+            if($noticia->noticiaWeb){
+
+                $fonte = FonteWeb::find($noticia->noticiaWeb->id_fonte);
+                $valor = $fonte->nu_valor;
+
+                dd($valor);
+
+                if($valor){
+                    $noticia->noticiaWeb->nu_valor = $valor;
+                    $noticia->noticiaWeb->save();
+                }
+
+            }
+        }
     }
 }

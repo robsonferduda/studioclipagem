@@ -21,7 +21,7 @@ class NoticiaCliente extends Model
 
     public function noticiaWeb()
     {
-        return $this->hasOne(JornalWeb::class, 'id', 'noticia_id');
+        return $this->hasOne(NoticiaWeb::class, 'id', 'noticia_id');
     }
 
     public function noticiaImpressa()
