@@ -285,7 +285,7 @@ class NoticiaWebController extends Controller
                 WHERE t1.created_at > '2025-02-01'
                 AND nu_valor IS null";
 
-        $dados = DB::select($sql)[0];
+        $dados = DB::select($sql);
 
         foreach($dados as $dado){
 
@@ -294,7 +294,7 @@ class NoticiaWebController extends Controller
                 $noticia = NoticiaWeb::find($dado->id);
 
                 if($noticia){
-                    
+
                     $fonte = FonteWeb::find($noticia->id_fonte);
 
                     if($fonte){
