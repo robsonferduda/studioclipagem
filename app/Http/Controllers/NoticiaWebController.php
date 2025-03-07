@@ -287,6 +287,8 @@ class NoticiaWebController extends Controller
 
         $dados = DB::select($sql)[0];
 
+        dd($dados);
+
         foreach($dados as $dado){
 
             $noticia = NoticiaWeb::find($dado->id);
