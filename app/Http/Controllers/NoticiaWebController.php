@@ -277,7 +277,7 @@ class NoticiaWebController extends Controller
 
     public function valores()
     {
-        $noticias = NoticiaCliente::where('tipo_id',2)->where('created_at', '>', '2025-03-01')->get();
+        $noticias = NoticiaCliente::where('tipo_id',2)->where('created_at', '>', '2025-02-10')->where('created_at', '<', '2025-03-01')->get();
 
         foreach($noticias as $noticia){
 
