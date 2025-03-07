@@ -283,7 +283,7 @@ class NoticiaWebController extends Controller
                 FROM noticia_cliente t1
                 JOIN noticias_web t2 ON t2.id = t1.noticia_id 
                 WHERE t1.created_at > '2025-02-01'
-                AND nu_valor IS null";
+                AND t2.nu_valor IS null";
 
         $dados = DB::select($sql);
 
@@ -292,8 +292,6 @@ class NoticiaWebController extends Controller
             if($dado){
 
                 $noticia = NoticiaWeb::find($dado->id);
-
-                dd($noticia);
 
                 if($noticia){
 
