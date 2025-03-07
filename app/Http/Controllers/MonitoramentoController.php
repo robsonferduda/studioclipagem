@@ -927,8 +927,18 @@ class MonitoramentoController extends Controller
                 $total_vinculado++;
 
                 if($tipo == 2){
+
+                    $valor_fonte = FonteWeb::find($noticia->id_fonte)->nu_valor;
+
+                    if($valor_fonte){
+                        $valor_retorno = $valor_fonte;
+                    }else{
+                        $valor_retorno = 0;
+                    }
+                       
                     $noticia_web = NoticiaWeb::find($noticia->id);
                     $noticia_web->screenshot = true;
+                    $noticia_web->nu_valor = $valor_retorno;
                     $noticia_web->save();
                 }
             }            
