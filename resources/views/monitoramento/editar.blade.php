@@ -273,7 +273,10 @@
                         </div>
                     </div>  
                     <div class="col-md-12">
-                        <button type="button" class="btn btn-primary mb-3 pull-left" id="selecionarTodos">Selecionar Filtrados</button>
+                        <button type="button" class="btn btn-primary mb-3 pull-left" id="selecionarTodos">
+                            Selecionar Filtrados
+                            <span id="spinnerSelecionarTodos" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                        </button>
                         <button type="button" class="btn btn-warning mb-3 pull-right" id="limparSelecao">Limpar Seleção</button>
                     </div>
                     <div class="col-md-12">
@@ -438,12 +441,17 @@
         }
 
         document.getElementById('selecionarTodos').addEventListener('click', function() {
-            
+            // Mostrar o spinner de carregamento
+            document.getElementById('spinnerSelecionarTodos').style.display = 'inline-block';
+
             let checkboxes = document.querySelectorAll('.checkbox-emissora');
             checkboxes.forEach(checkbox => {
                 checkbox.checked = true;
                 checkbox.dispatchEvent(new Event('change'));
             });
+
+            // Ocultar o spinner de carregamento após a operação
+            document.getElementById('spinnerSelecionarTodos').style.display = 'none';
         });
 
         document.getElementById('limparSelecao').addEventListener('click', function() {
