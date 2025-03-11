@@ -15,6 +15,7 @@ use App\Models\Monitoramento;
 use App\Models\MonitoramentoExecucao;
 use App\Models\JornalImpresso;
 use App\Models\JornalOnline;
+use App\Models\FonteImpressa;
 use App\Models\EdicaoJornalOnline;
 use App\Models\JornalWeb;
 use App\Models\NoticiaWeb;
@@ -1213,7 +1214,7 @@ class MonitoramentoController extends Controller
         }
 
         if($tipo == 'impresso'){
-            $fonte = JornalOnline::select('id', 'nome', 'nm_cidade as cidade', 'sg_estado as uf');
+            $fonte = FonteImpressa::select('id', 'nome', 'nm_cidade as cidade', 'sg_estado as uf');
             $fonte->leftJoin('cidade', 'cidade.cd_cidade', '=', 'jornal_online.cd_cidade');
             $fonte->leftJoin('estado', 'estado.cd_estado', '=', 'jornal_online.cd_estado');
             $emissoras = $fonte->orderBy('sg_estado')->orderBy('nm_cidade')->orderBy('nome', 'asc')->get();
