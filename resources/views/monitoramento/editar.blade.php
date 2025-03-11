@@ -351,7 +351,7 @@
                     tipo_midia = "tv";
                 }
 
-                 // Mostrar o spinner de carregamento
+                // Mostrar o spinner de carregamento
                 document.getElementById('loadingSpinner').style.display = 'inline-block';
 
                 const response = await fetch(host+'/monitoramento/'+tipo_midia+'/emissoras/'+id_monitoramento);
@@ -370,8 +370,7 @@
             } catch (error) {
                 console.error('Erro ao carregar emissoras:', error);
             }finally {
-                // Ocultar o spinner de carregamento
-                document.getElementById('loadingSpinner').style.display = 'none';
+                                
             }
         }
        
