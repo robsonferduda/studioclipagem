@@ -447,9 +447,17 @@
         });
 
         document.getElementById('limparSelecao').addEventListener('click', function() {
+            
+            // Limpar o array selecionadas
             selecionadas = [];
-                       
-            carregarTabela();
+
+            // Desmarcar todos os checkboxes na tabela
+            let checkboxes = document.querySelectorAll('.checkbox-emissora');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+
+            // Atualizar o texto de fontes selecionadas
             atualizarSelecionadasTexto();
         });
 

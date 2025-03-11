@@ -1210,6 +1210,7 @@ class MonitoramentoController extends Controller
             $fonte = FonteWeb::select('id', 'nome', 'nm_cidade as cidade', 'sg_estado as uf');
             $fonte->leftJoin('cidade', 'cidade.cd_cidade', '=', 'fonte_web.cd_cidade');
             $fonte->leftJoin('estado', 'estado.cd_estado', '=', 'fonte_web.cd_estado');
+            $fonte->whereIn('id_situacao', [1, 2, 3]);
             $emissoras = $fonte->orderBy('sg_estado')->orderBy('nm_cidade')->orderBy('nome', 'asc')->get();
         }
 
