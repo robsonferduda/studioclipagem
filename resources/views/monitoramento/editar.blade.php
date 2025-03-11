@@ -118,7 +118,7 @@
                                         min-width: 1.5rem;
                                         width: 1.5rem;" data-toggle="modal" data-target="#modalFontes"><i class="fa fa-check fa-2x"></i></button>
                                     </p>
-                                    <p id="selecionadasTexto" class="mt-1">Fontes selecionadas: 0</p>
+                                    <p id="selecionadasTexto" class="mt-1">Fontes selecionadas: <span id="loadingSpinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span></p>
                                     <input type="hidden" name="selecionadas[]" id="selecionadas">
                                 </div>
                                 <!--
@@ -348,6 +348,9 @@
                     tipo_midia = "tv";
                 }
 
+                 // Mostrar o spinner de carregamento
+                document.getElementById('loadingSpinner').style.display = 'inline-block';
+
                 const response = await fetch(host+'/monitoramento/'+tipo_midia+'/emissoras/'+id_monitoramento);
                 emissoras = await response.json();
 
@@ -357,10 +360,15 @@
                         selecionadas.push(e.id);
                     }
                 });
+
                 atualizarSelecionadasTexto();
                 carregarTabela();
+
             } catch (error) {
                 console.error('Erro ao carregar emissoras:', error);
+            }finally {
+                // Ocultar o spinner de carregamento
+                document.getElementById('loadingSpinner').style.display = 'none';
             }
         }
        
