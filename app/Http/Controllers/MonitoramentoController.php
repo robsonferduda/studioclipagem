@@ -222,7 +222,7 @@ class MonitoramentoController extends Controller
 
         if($request->fontes){
 
-            $fontes = implode(',', $request->fontes);
+            $fontes = $request->fontes;
             $sql .= "AND fw.id IN($fontes) ";
         }
         
@@ -260,7 +260,7 @@ class MonitoramentoController extends Controller
 
         if($request->fontes){
 
-            $fontes = implode(',', $request->fontes);
+            $fontes = $request->fontes;
             $sql .= "AND n.id_jornal_online IN($fontes) ";
         }
 
@@ -295,7 +295,7 @@ class MonitoramentoController extends Controller
 
         if($request->fontes){
 
-            $fontes = implode(',', $request->fontes);
+            $fontes = $request->fontes;
             $sql .= "AND er.id IN($fontes) ";
         }
 
@@ -330,7 +330,7 @@ class MonitoramentoController extends Controller
 
         if($request->fontes){
 
-            $fontes = implode(',', $request->fontes);
+            $fontes = $request->fontes;
             $sql .= "AND pew.id IN($fontes) ";
         }
 

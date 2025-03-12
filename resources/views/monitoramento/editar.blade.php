@@ -364,6 +364,8 @@
                     }
                 });
 
+                document.getElementById('selecionadas').value = selecionadas;
+
                 atualizarSelecionadasTexto();
                 carregarTabela();
 
