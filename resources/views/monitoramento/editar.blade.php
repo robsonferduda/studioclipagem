@@ -544,7 +544,7 @@
 
             if(flag){
 
-                var fontes = $("#fontes").val();
+                var fontes = $("#selecionadas").val();
 
                 $('.tab-pane').each(function(i, obj) {
                     $(this).removeClass("active");
