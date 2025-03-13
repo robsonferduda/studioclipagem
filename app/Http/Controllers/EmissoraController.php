@@ -114,7 +114,7 @@ class EmissoraController extends Controller
         if($request->isMethod('POST')){
         
             if($request->fontes){
-                Session::put('radio_arquivos_fonte', $fonte);
+                Session::put('radio_arquivos_fonte', $request->fontes);
             }else{
                 Session::forget('radio_arquivos_fonte');
                 $fonte = null;
