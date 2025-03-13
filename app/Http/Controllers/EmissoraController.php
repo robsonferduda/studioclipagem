@@ -136,7 +136,7 @@ class EmissoraController extends Controller
                     ->leftJoin('estado','estado.cd_estado','=','emissora_radio.cd_estado')
                     ->leftJoin('cidade','cidade.cd_cidade','=','emissora_radio.cd_cidade')
                     ->when($expressao, function ($q) use ($expressao) {
-                        return $q->whereRaw("transcricao_tsv @@ to_tsquery('portuguese', '$expressao')");
+                        return $q->whereRaw("transcricao_tsv @@ to_tsquery('simple', '$expressao')");
                     })
                     ->when($fonte, function ($q) use ($fonte) {
                         return $q->whereIn('emissora_radio.id', $fonte);
