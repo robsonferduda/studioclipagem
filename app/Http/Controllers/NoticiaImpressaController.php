@@ -26,17 +26,37 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 class NoticiaImpressaController extends Controller
 {
     private $data_atual;
+    private $carbon;
 
     public function __construct()
     {
         $this->middleware('auth');
         $this->data_atual = session('data_atual');
-        Session::put('url','impresso');
+        Session::put('url','noticias/impresso');
+        $this->carbon = new Carbon();
     }
 
     public function index(Request $request)
     {
-        
+        Session::put('sub-menu','noticias/impresso');
+
+        $fontes = FonteImpressa::orderBy('nome')->get();
+        $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
+
+        $tipo_data = $request->tipo_data;
+        $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
+        $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
+        $cliente_selecionado = ($request->cliente) ? $request->cliente : null;
+        $fonte = ($request->fontes) ? $request->fontes : null;
+        $termo = ($request->termo) ? $request->termo : null;
+
+        $dados = NoticiaImpresso::with('fonte')
+                    ->where('dt_clipagem', $this->data_atual)
+                    ->orderBy('dt_clipagem')
+                    ->orderBy('titulo')
+                    ->paginate(10);
+
+        return view('noticia-impressa/index', compact('dados','fontes','clientes','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo'));
     }
 
     public function show(Request $request)
@@ -50,6 +70,15 @@ class NoticiaImpressaController extends Controller
         $fontes = FonteImpressa::orderBy("nome")->get();
         
         return view('noticia-impressa/cadastrar', compact('fontes'));
+    }
+
+    public function editar($id)
+    {
+        $noticia = NoticiaImpresso::find($id);
+        $fontes = FonteImpressa::orderBy("nome")->get();
+        $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
+
+        return view('noticia-impressa/editar', compact('noticia','clientes','fontes'));
     }
 
     public function copiar($cliente, $id_noticia)
@@ -77,19 +106,33 @@ class NoticiaImpressaController extends Controller
         return redirect('noticia-impressa/cliente/'.$cliente.'/editar/'.$noticia->id);
     }
 
-    public function editar($cliente, $id_noticia)
+   
+
+    public function store(Request $request)
     {
-        $clientes = Cliente::with('pessoa')
-                    ->join('pessoas', 'pessoas.id', '=', 'clientes.pessoa_id')
-                    ->orderBy('nome')
-                    ->get();
+        try {
+            NoticiaImpresso::create($request->all());
 
-                    dd($cleintes);
+            $retorno = array('flag' => true,
+                             'msg' => '<i class="fa fa-check"></i> Dados inseridos com sucesso');
 
-        $noticia = JornalImpresso::find($id_noticia);
-        $vinculo = NoticiaCliente::where('noticia_id', $id_noticia)->where('tipo_id',1)->where('cliente_id', $cliente)->first();
+        } catch (\Illuminate\Database\QueryException $e) {
 
-        return view('noticia-impressa/editar', compact('noticia','clientes','vinculo'));
+            $retorno = array('flag' => false,
+                             'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
+
+        } catch (\Exception $e) {
+            $retorno = array('flag' => true,
+                             'msg' => '<i class="fa fa-times"></i> Ocorreu um erro ao inserir o registro');
+        }
+
+        if ($retorno['flag']) {
+            Flash::success($retorno['msg']);
+            return redirect('noticias/impresso')->withInput();
+        } else {
+            Flash::error($retorno['msg']);
+            return redirect('noticia/impresso/novo')->withInput();
+        }
     }
 
     public function update(Request $request, $id)
@@ -103,10 +146,12 @@ class NoticiaImpressaController extends Controller
             $request->merge(['valor_retorno' => $valor_retorno]);
             
             $noticia->update($request->all());
+
             $retorno = array('flag' => true,
                              'msg' => '<i class="fa fa-check"></i> Dados atualizados com sucesso');
 
         } catch (\Illuminate\Database\QueryException $e) {
+
             $retorno = array('flag' => false,
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
         } catch (Exception $e) {
@@ -116,10 +161,10 @@ class NoticiaImpressaController extends Controller
 
         if ($retorno['flag']) {
             Flash::success($retorno['msg']);
-            return redirect('jornal-impresso/noticias')->withInput();
+            return redirect('noticias/impresso')->withInput();
         } else {
             Flash::error($retorno['msg']);
-            return redirect()->route('')->withInput();
+            return redirect('noticia-impressa/'.$id.'/editar')->withInput();
         }
     }
 

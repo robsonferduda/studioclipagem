@@ -136,7 +136,7 @@
                               </a>
                           </li> 
                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'impresso/noticias') ? 'active' : '' }}">
-                            <a href="{{ url('impresso/noticias') }}">
+                            <a href="{{ url('noticias/impresso') }}">
                               <span class="sidebar-normal">Notícias</span>
                               </a>
                           </li>                          

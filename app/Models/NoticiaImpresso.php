@@ -12,7 +12,21 @@ class NoticiaImpresso extends Model
     protected $connection = 'pgsql';
     protected $table = 'noticia_impresso';
 
-    protected $fillable = ['id_fonte','id_sessao_impresso','dt_clipagem','titulo','texto','sinopse','nu_paginas_total','nu_pagina_atual','ds_caminho_img','nu_colunas','nu_altura', 'nu_largura','valor_retorno'];
+    protected $fillable = ['id_fonte',
+                            'id_sessao_impresso',
+                            'cd_cidade',
+                            'dt_clipagem',
+                            'dt_cadastro',
+                            'titulo',
+                            'texto',
+                            'sinopse',
+                            'nu_paginas_total',
+                            'nu_pagina_atual',
+                            'ds_caminho_img',
+                            'nu_colunas',
+                            'nu_altura', 
+                            'nu_largura',
+                            'valor_retorno'];
 
     public function fonte()
     {

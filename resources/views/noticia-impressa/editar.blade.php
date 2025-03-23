@@ -6,14 +6,13 @@
             <div class="row">
                 <div class="col-md-8">
                     <h4 class="card-title ml-3">
-                        <i class="fa fa-newspaper-o"></i> Jornal Impresso 
-                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Notícias 
-                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Editar
+                        <i class="fa fa-newspaper-o"></i> Impressos 
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Cadastrar Notícia
                     </h4>
                 </div>
                 <div class="col-md-4">
-                    <button class="btn btn-primary pull-right mr-3"><i class="fa fa-plus"></i> Novo</button>
-                    <a href="{{ url('monitoramento/executar') }}" class="btn btn-warning pull-right mr-3"><i class="fa fa-bolt"></i> Executar</a>
+                    <a href="{{ url('impresso') }}" class="btn btn-warning pull-right mr-3"><i class="nc-icon nc-chart-pie-36"></i> Dashboard</a>
+                    <a href="{{ url('noticias/impresso') }}" class="btn btn-info pull-right mr-3"><i class="fa fa-newspaper-o"></i> Listar Notícias</a>
                 </div>
             </div>
         </div>
@@ -21,128 +20,131 @@
             <div class="col-md-12">
                 @include('layouts.mensagens')
             </div>
-            <div class="row">
+            <div class="row"> 
                 <div class="col-lg-12 col-sm-12">
-                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['noticia-impressa', $noticia->id], 'method' => 'patch']) !!}
+                    {!! Form::open(['id' => 'frm_user_edit', 'url' => ['noticia-impressa', $noticia->id], 'method' => 'patch']) !!}
                         <div class="form-group m-3 w-70">
                             <div class="row">
-                                <div class="col-md-12">
+                                <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
-                                        <input type="hidden" name="noticia_id" id="noticia_id" value="{{ $noticia->id }}"/>
-                                        <label>Cliente</label>
-                                        <select class="form-control select2" name="cliente" id="cliente">
-                                            <option value="">Selecione um cliente</option>
-                                            @foreach ($clientes as $cliente)
-                                                <option value="{{ $cliente->id }}" {{ ($cliente->id == $vinculo->cliente_id) ? 'selected' : '' }}>{{ $cliente->pessoa->nome }}</option>
-                                            @endforeach
+                                        <label>Data de Cadastro</label>
+                                        <input type="text" class="form-control datepicker" name="dt_cadastro" required="true" value="{{ date("d/m/Y") }}" placeholder="__/__/____">
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Data do Clipping</label>
+                                        <input type="text" class="form-control datepicker" name="dt_clipagem" required="true" value="{{ date("d/m/Y") }}" placeholder="__/__/____">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Fonte</label>
+                                            <select class="form-control select2" name="id_fonte" id="id_fonte" required="true">
+                                                <option value="">Selecione uma fonte</option>
+                                                @foreach ($fontes as $fonte)
+                                                    <option value="{{ $fonte->id }}">{{ $fonte->nome }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Seção</label>
+                                        <select class="form-control select2" name="id_sessao_impresso" id="id_sessao_impresso" disabled="true">
+                                            <option value="">Selecione uma seção</option>
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-12">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12">
                                     <div class="form-group">
                                         <label>Título</label>
-                                        <input type="text" class="form-control" name="titulo" value="{{ $noticia->titulo }}">
+                                        <input type="text" class="form-control" name="titulo" id="titulo" placeholder="Título" value="{{ ($noticia->titulo) ? $noticia->titulo : '' }}">
                                     </div>
                                 </div>
-                                <div class="col-md-12">
+                                <div class="col-md-3">
+                                    <label for="arquivo">Print da Notícia</label>
+                                    <div style="min-height: 302px;" class="dropzone" id="dropzone"><div class="dz-message" data-dz-message><span>CLIQUE AQUI<br/> ou <br/>ARRASTE</span></div></div>
+                                    <input type="hidden" name="arquivo" id="arquivo">
+                                </div>
+                                <div class="col-md-9">
+                                    <label for="sinopse">Sinopse</label>
                                     <div class="form-group">
-                                        <label>Texto</label>
-                                        <textarea class="form-control texto-noticia-field" id="texto" name="texto" rows="15">{!! $noticia->texto !!}</textarea>
+                                        <textarea class="form-control" name="sinopse" id="sinopse" rows="10"></textarea>
                                     </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label>Imagem</label>
-                                        <div class="row">
-                                            @if($noticia->fl_copia and $noticia->print)
-                                                <div class="col-md-12">
-                                                    <img src="{{ asset('jornal-impresso/noticias/'.$noticia->print) }}" alt="Recorte do Jornal">
-                                                </div>
-                                            @else
-                                                <div class="col-md-9">
-                                                    <div class="img-container">
-                                                        <img id="image" src="{{ asset('jornal-impresso/'.$noticia->fonte->codigo.'/'.\Carbon\Carbon::parse($noticia->dt_clipagem)->format('Ymd').'/img/pagina_'.$noticia->nu_pagina_atual.'.png') }}" alt="Recorte do Jornal">
-                                                    </div>
-                                                </div>
-
-                                            <div class="col-md-3">
-                                                <!-- <h3>Preview:</h3> -->
-                                                <div class="docs-preview clearfix">
-                                                  <div class="img-preview preview-lg"></div>
-                                                  <div class="img-preview preview-md"></div>
-                                                  <div class="img-preview preview-sm"></div>
-                                                  <div class="img-preview preview-xs"></div>
-                                                </div>
-                                        
-                                                <!-- <h3>Data:</h3> -->
-                                                <div class="docs-data">
-                                                                                                       
-                                                    <div class="input-group mb-3">
-                                                      <div class="input-group-prepend">
-                                                        <span class="input-group-text" id="basic-addon1">Largura</span>
-                                                      </div>
-                                                      <input type="text" class="form-control" id="dataWidth" placeholder="x">
-                                                    </div>
-
-                                                    <div class="input-group mb-3">
-                                                        <div class="input-group-prepend">
-                                                          <span class="input-group-text" id="basic-addon1">Altura</span>
-                                                        </div>
-                                                        <input type="text" class="form-control" id="dataHeight" placeholder="x">
-                                                      </div>
-                                                  
-                                                                                           
-                                                  
-                                                </div>
-
-                                                <div class="docs-buttons center">
-                                                    <button type="button" class="btn btn-info" data-method="getCroppedCanvas" data-option="{ &quot;maxWidth&quot;: 4096, &quot;maxHeight&quot;: 4096 }">
-                                                        <span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;getCroppedCanvas&quot;, { maxWidth: 4096, maxHeight: 4096 })">
-                                                            <i class="fa fa-eye"></i> Ver Recorte
-                                                        </span>
-                                                      </button>
-                                                </div>
-                                              </div>                                                
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>                                
-                                <div class="col-md-12 checkbox-radios mb-0">
-                                    <button type="submit" id="btn-find" class="btn btn-success mb-3"><i class="fa fa-save"></i> Atualizar</button>
-                                </div>
+                                </div>                            
                             </div>     
+                            <div class="text-center mb-2 mt-3">
+                                <button type="submit" class="btn btn-success" name="btn_enviar" value="salvar"><i class="fa fa-save"></i> Salvar</button>
+                                <button type="submit" class="btn btn-warning" name="btn_enviar" value="salvar_e_copiar"><i class="fa fa-copy"></i> Salvar e Copiar</button>
+                                <a href="{{ url('impresso') }}" class="btn btn-danger"><i class="fa fa-times"></i> Cancelar</a>
+                            </div>
                         </div>
-                    {!! Form::close() !!}
-                </div>               
+                    {!! Form::close() !!} 
+                </div>
             </div>
         </div>
     </div>
 </div> 
-
-        <!-- Show the cropped image in modal -->
-        <div class="modal fade docs-cropped" id="getCroppedCanvasModal" aria-hidden="true" aria-labelledby="getCroppedCanvasTitle" role="dialog" tabindex="-1">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="getCroppedCanvasTitle">Imagem Recortada</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body"></div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                  <a class="btn btn-primary" id="download" href="javascript:void(0);" download="cropped.jpg">Atualizar Imagem</a>
-                </div>
-              </div>
-            </div>
-          </div><!-- /.modal -->
 @endsection
 @section('script')
 <script>
     $( document ).ready(function() {
 
-      
+        var host = $('meta[name="base-url"]').attr('content');
+
+
+        $(document).on('change', '#id_fonte', function() {
+                
+                var fonte = $(this).val();
+
+                buscarSecoes(fonte);
+
+                return $('#id_sessao_impresso').prop('disabled', false);
+            });
+
+
+        function buscarSecoes(id_fonte){
+
+            //var cd_programa = $("#cd_programa").val();
+
+            $.ajax({
+                    url: host+'/noticia/impresso/fonte/sessoes/'+id_fonte,
+                    type: 'GET',
+                    beforeSend: function() {
+                        $('.content').loader('show');
+                        $('#id_sessao_impresso').append('<option value="">Buscando seções...</option>').val('');
+                    },
+                    success: function(data) {
+
+                        $('#id_sessao_impresso').find('option').remove();
+                        $('#id_sessao_impresso').attr('disabled', false);
+
+                        if(data.length == 0) {                            
+                            $('#id_sessao_impresso').append('<option value="">Fonte não possui seções cadastradas</option>').val('');
+                            return;
+                        }
+
+                        $('#id_sessao_impresso').append('<option value="">Selecione uma seção</option>').val('');
+
+                        data.forEach(element => {
+                            let option = new Option(element.ds_sessao, element.id_sessao_impresso);
+                            $('#id_sessao_impresso').append(option);
+                        });
+                        
+                    },
+                    complete: function(){
+                        /*
+                        if(cd_programa > 0)
+                            $('#programa').val(cd_programa);
+                        */
+                        $('.content').loader('hide');
+                    }
+                });
+
+        };
 
     });
 </script>

@@ -141,7 +141,7 @@ Route::get('jornal-impresso/noticia/{id}','JornalImpressoController@detalhes');
 Route::post('jornal-impresso/upload','JornalImpressoController@uploadFiles');
 
 Route::post('noticia-impressa/upload','NoticiaImpressaController@upload'); 
-Route::resource('noticia-impressa','NoticiaImpressaController');
+
 
 //Route::resource('noticia-impressa','NoticiaImpressaController');
 Route::get('noticia-impressa/cadastrar','NoticiaImpressaController@cadastrar');  // Rota Antiga
@@ -149,8 +149,11 @@ Route::get('noticia-impressa/cliente/{cliente}/copiar/{id}','NoticiaImpressaCont
 Route::get('noticia-impressa/cliente/{cliente}/editar/{id}','NoticiaImpressaController@editar'); // Rota Antiga
 Route::post('noticia-impressa/upload','NoticiaImpressaController@upload'); 
 
+Route::resource('noticia-impressa','NoticiaImpressaController');
+Route::match(array('GET', 'POST'),'noticias/impresso','NoticiaImpressaController@index');
 Route::get('noticia/impresso/novo','NoticiaImpressaController@cadastrar');
 Route::get('noticia/impresso/fonte/sessoes/{id}','NoticiaImpressaController@getSecoes');
+Route::get('noticia-impressa/{id}/editar','NoticiaImpressaController@editar');
 
 
 Route::get('noticia/web/valores','NoticiaWebController@valores');
