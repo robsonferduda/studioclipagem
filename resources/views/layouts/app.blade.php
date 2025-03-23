@@ -118,6 +118,11 @@
                               <span class="sidebar-normal">Edições Baixadas</span>
                               </a>
                           </li>
+                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'impresso/noticias') ? 'active' : '' }}">
+                            <a href="{{ url('impresso/noticias') }}">
+                              <span class="sidebar-normal">Notícias (Páginas)</span>
+                              </a>
+                          </li>
                           <!--
                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'arquivos-paginas') ? 'active' : '' }}">
                             <a href="{{ url('jornal-impresso/paginas') }}">
@@ -126,15 +131,15 @@
                           </li>
                         -->
                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'noticia-impressa-cadastrar') ? 'active' : '' }}">
-                              <a href="{{ url('noticia/impresso/cadastrar') }}">
-                              <span class="sidebar-normal">Cadastrar Notícia</span>
+                              <a href="{{ url('noticia/impresso/novo') }}">
+                              <span class="sidebar-normal">Nova Notícia</span>
                               </a>
                           </li> 
                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'impresso/noticias') ? 'active' : '' }}">
                             <a href="{{ url('impresso/noticias') }}">
                               <span class="sidebar-normal">Notícias</span>
                               </a>
-                          </li>
+                          </li>                          
                         </ul>
                      </div>
                   </li>

@@ -149,7 +149,8 @@ Route::get('noticia-impressa/cliente/{cliente}/copiar/{id}','NoticiaImpressaCont
 Route::get('noticia-impressa/cliente/{cliente}/editar/{id}','NoticiaImpressaController@editar'); // Rota Antiga
 Route::post('noticia-impressa/upload','NoticiaImpressaController@upload'); 
 
-Route::get('noticia/impresso/cadastrar','NoticiaImpressaController@cadastrar');
+Route::get('noticia/impresso/novo','NoticiaImpressaController@cadastrar');
+Route::get('noticia/impresso/fonte/sessoes/{id}','NoticiaImpressaController@getSecoes');
 
 
 Route::get('noticia/web/valores','NoticiaWebController@valores');

@@ -39,7 +39,7 @@
                                 <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Fonte</label>
-                                            <select class="form-control select2" name="regra" id="regra">
+                                            <select class="form-control select2" name="id_fonte" id="id_fonte" required="true">
                                                 <option value="">Selecione uma fonte</option>
                                                 @foreach ($fontes as $fonte)
                                                     <option value="{{ $fonte->id }}">{{ $fonte->nome }}</option>
@@ -50,11 +50,8 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Seção</label>
-                                        <select class="form-control select2" name="regra" id="regra">
-                                            <option value="">Selecione uma fonte</option>
-                                            @foreach ($fontes as $fonte)
-                                                <option value="{{ $fonte->id }}">{{ $fonte->nome }}</option>
-                                            @endforeach
+                                        <select class="form-control select2" name="id_sessao_impresso" id="id_sessao_impresso" disabled="true">
+                                            <option value="">Selecione uma seção</option>
                                         </select>
                                     </div>
                                 </div>
@@ -94,6 +91,59 @@
 @section('script')
 <script>
     $( document ).ready(function() {
+
+        var host = $('meta[name="base-url"]').attr('content');
+
+
+        $(document).on('change', '#id_fonte', function() {
+                
+                var fonte = $(this).val();
+
+                buscarSecoes(fonte);
+
+                return $('#id_sessao_impresso').prop('disabled', false);
+            });
+
+
+        function buscarSecoes(id_fonte){
+
+            //var cd_programa = $("#cd_programa").val();
+
+            $.ajax({
+                    url: host+'/noticia/impresso/fonte/sessoes/'+id_fonte,
+                    type: 'GET',
+                    beforeSend: function() {
+                        $('.content').loader('show');
+                        $('#id_sessao_impresso').append('<option value="">Buscando seções...</option>').val('');
+                    },
+                    success: function(data) {
+
+                        $('#id_sessao_impresso').find('option').remove();
+                        $('#id_sessao_impresso').attr('disabled', false);
+
+                        if(data.length == 0) {                            
+                            $('#id_sessao_impresso').append('<option value="">Fonte não possui seções cadastradas</option>').val('');
+                            return;
+                        }
+
+                        $('#id_sessao_impresso').append('<option value="">Selecione uma seção</option>').val('');
+
+                        data.forEach(element => {
+                            let option = new Option(element.ds_sessao, element.id_sessao_impresso);
+                            $('#id_sessao_impresso').append(option);
+                        });
+                        
+                    },
+                    complete: function(){
+                        /*
+                        if(cd_programa > 0)
+                            $('#programa').val(cd_programa);
+                        */
+                        $('.content').loader('hide');
+                    }
+                });
+
+        };
 
     });
 </script>

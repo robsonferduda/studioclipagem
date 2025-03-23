@@ -47,7 +47,7 @@ class NoticiaImpressaController extends Controller
     public function cadastrar()
     {
         Session::put('sub-menu','noticia-impressa-cadastrar');
-        $fontes = FonteImpressa::all();
+        $fontes = FonteImpressa::orderBy("nome")->get();
         
         return view('noticia-impressa/cadastrar', compact('fontes'));
     }
@@ -139,5 +139,14 @@ class NoticiaImpressaController extends Controller
         //$noticia->save();
 
         return $file_name;
+    }
+
+    public function getSecoes($id_fonte)
+    {
+        $secoes = array();
+        
+        $secoes = FonteImpressa::find($id_fonte)->secoes()->orderBy('ds_sessao')->get();
+        
+        return response()->json($secoes);
     }
 }
