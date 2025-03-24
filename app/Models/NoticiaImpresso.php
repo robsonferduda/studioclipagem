@@ -18,6 +18,7 @@ class NoticiaImpresso extends Model
                             'dt_clipagem',
                             'dt_cadastro',
                             'titulo',
+                            'ds_link',
                             'texto',
                             'sinopse',
                             'nu_paginas_total',
@@ -31,5 +32,10 @@ class NoticiaImpresso extends Model
     public function fonte()
     {
         return $this->hasOne(FonteImpressa::class, 'id', 'id_fonte');
+    }
+
+    public function secao()
+    {
+        return $this->hasOne(SecaoImpresso::class,'id_sessao_impresso','id_sessao_impresso');
     }
 }

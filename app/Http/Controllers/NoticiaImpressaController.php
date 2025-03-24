@@ -43,7 +43,7 @@ class NoticiaImpressaController extends Controller
         $fontes = FonteImpressa::orderBy('nome')->get();
         $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
 
-        $tipo_data = $request->tipo_data;
+        $tipo_data = ($request->tipo_data) ? $request->tipo_data : 'dt_clipagem';
         $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
         $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
         $cliente_selecionado = ($request->cliente) ? $request->cliente : null;
@@ -51,7 +51,7 @@ class NoticiaImpressaController extends Controller
         $termo = ($request->termo) ? $request->termo : null;
 
         $dados = NoticiaImpresso::with('fonte')
-                    ->where('dt_clipagem', $this->data_atual)
+                    ->whereBetween($tipo_data, [$dt_inicial." 00:00:00", $dt_final." 23:59:59"])
                     ->orderBy('dt_clipagem')
                     ->orderBy('titulo')
                     ->paginate(10);
@@ -110,6 +110,12 @@ class NoticiaImpressaController extends Controller
 
     public function store(Request $request)
     {
+        $dt_cadastro = ($request->dt_cadastro) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_cadastro)->format('Y-m-d') : date("Y-m-d");
+        $request->merge(['dt_cadastro' => $dt_cadastro]);
+
+        $dt_clipagem = ($request->dt_clipagem) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_clipagem)->format('Y-m-d') : date("Y-m-d");
+        $request->merge(['dt_clipagem' => $dt_clipagem]);
+
         try {
             NoticiaImpresso::create($request->all());
 
@@ -141,10 +147,6 @@ class NoticiaImpressaController extends Controller
 
         try {
 
-            $valor_retorno = $request->nu_altura * $request->nu_colunas * $noticia->fonte->retorno_midia;
-
-            $request->merge(['valor_retorno' => $valor_retorno]);
-            
             $noticia->update($request->all());
 
             $retorno = array('flag' => true,

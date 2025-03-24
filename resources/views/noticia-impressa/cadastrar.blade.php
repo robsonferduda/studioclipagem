@@ -61,9 +61,57 @@
                                 <div class="col-md-12 col-sm-12">
                                     <div class="form-group">
                                         <label>Título</label>
-                                        <input type="text" class="form-control" name="termo" id="termo" minlength="3" placeholder="Termo" value="">
+                                        <input type="text" class="form-control" name="titulo" id="titulo" minlength="3" placeholder="Título" value="{{ old('titulo') }}">
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Página Atual</label>
+                                        <input type="text" class="form-control" name="nu_pagina_atual" id="nu_pagina_atual" placeholder="Número">
+                                    </div>                                    
+                                </div>
+                                <div class="col-md-2 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Total de Páginas</label>
+                                        <input type="text" class="form-control" name="nu_paginas_total" id="nu_paginas_total" placeholder="Número">
+                                    </div>                                    
+                                </div>
+                                <div class="col-md-8 col-sm-12">
+                                    <div class="form-group">
+                                        <label>Link</label>
+                                        <input type="text" class="form-control" name="ds_link" id="ds_link" placeholder="URL">
+                                    </div>                                    
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Colunas</label>
+                                        <input type="text" class="form-control monetario" name="nu_colunas" id="nu_colunas" placeholder="Colunas" value="{{ old('nu_colunas') }}">
+                                    </div>                                    
+                                </div>
+                                <div class="col-md-3 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Altura</label>
+                                        <input type="text" class="form-control monetario" name="nu_altura" id="nu_altura" placeholder="Altura" value="{{ old('nu_altura') }}">
+                                    </div>                                    
+                                </div>
+                                <div class="col-md-3 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Largura</label>
+                                        <input type="text" class="form-control monetario" name="nu_largura" id="nu_largura" placeholder="Largura" value="{{ old('nu_largura') }}">
+                                    </div>                                    
+                                </div>
+                                <div class="col-md-3 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Retorno</label>
+                                        <input type="text" class="form-control monetario" name="valor_retorno" id="valor_retorno" placeholder="Retorno" value="{{ old('valor_retorno') }}" readonly>
+                                    </div>                                    
+                                </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-3">
                                     <label for="arquivo">Print da Notícia</label>
                                     <div style="min-height: 302px;" class="dropzone" id="dropzone"><div class="dz-message" data-dz-message><span>CLIQUE AQUI<br/> ou <br/>ARRASTE</span></div></div>
@@ -94,6 +142,18 @@
     $( document ).ready(function() {
 
         var host = $('meta[name="base-url"]').attr('content');
+
+        $(document).on('change', '.monetario', function() {
+                
+            var retorno = 0;
+            var altura = ($("#nu_altura").val()) ? $("#nu_altura").val() : 1;
+            var largura = ($("#nu_largura").val()) ? $("#nu_largura").val() : 1;
+            var colunas = ($("#nu_colunas").val()) ? $("#nu_colunas").val() : 1;
+
+            retorno = altura * largura * colunas;
+
+            $("#valor_retorno").val(retorno);
+        });
 
 
         $(document).on('change', '#id_fonte', function() {

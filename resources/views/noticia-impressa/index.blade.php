@@ -29,9 +29,9 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Tipo de Data</label>
-                                        <select class="form-control select2" name="tipo_data" id="tipo_data">
-                                            <option value="created_at" {{ ($tipo_data == "created_at") ? 'selected' : '' }}>Data de Cadastro</option>
-                                            <option value="dt_pub" {{ ($tipo_data == "dt_pub") ? 'selected' : '' }}>Data do Clipping</option>
+                                        <select class="form-control" name="tipo_data" id="tipo_data">
+                                            <option value="dt_cadastro" {{ ($tipo_data == "dt_cadastro") ? 'selected' : '' }}>Data de Cadastro</option>
+                                            <option value="dt_clipagem" {{ ($tipo_data == "dt_clipagem") ? 'selected' : '' }}>Data do Clipping</option>
                                         </select>
                                     </div>
                                 </div>
@@ -91,18 +91,31 @@
                                         
                                     </div>
                                     <div class="col-lg-10 col-sm-10 mb-1"> 
-                                        <p class="font-weight-bold mb-1">{{ $noticia->titulo }}</p>
-                                        <h6><a href="{{ url('fonte-impresso/'.$noticia->id_fonte.'/editar') }}" target="_BLANK">{{ ($noticia->fonte) ? $noticia->fonte->nome : '' }}</a></h6>  
-                                        <h6 style="color: #FF5722;">{{ ($noticia->nm_estado) ? $noticia->nm_estado : '' }}{{ ($noticia->nm_cidade) ? "/".$noticia->nm_cidade : '' }}</h6>  
-                                        <h6 class="text-muted mb-1">{{ \Carbon\Carbon::parse($noticia->dt_pub)->format('d/m/Y') }} - {{ ($noticia->fonte) ? $noticia->fonte->nome : '' }}</h6> 
-                                        <p class="mb-0">{{ ($noticia->nome_cliente) ? $noticia->nome_cliente : '' }}</p>
-                                        <p class="mb-1">
-                                            @if($noticia->n_pagina)
-                                                Página <strong>{{ $noticia->n_pagina }}</strong>
-                                            @else
-                                                <span class="text-danger">Página não informada</span>
-                                            @endif
-                                        </p>           
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 mb-1"> 
+                                                <p class="font-weight-bold mb-1">{{ $noticia->titulo }}</p>
+                                                <h6><a href="{{ url('fonte-impresso/'.$noticia->id_fonte.'/editar') }}" target="_BLANK">{{ ($noticia->fonte) ? $noticia->fonte->nome : '' }}</a></h6>  
+                                                <h6 style="color: #FF5722;">{{ ($noticia->nm_estado) ? $noticia->nm_estado : '' }}{{ ($noticia->nm_cidade) ? "/".$noticia->nm_cidade : '' }}</h6>  
+                                                <h6 class="text-muted mb-1">{{ \Carbon\Carbon::parse($noticia->dt_pub)->format('d/m/Y') }} - {{ ($noticia->fonte) ? $noticia->fonte->nome : '' }}  {{ ($noticia->id_sessao_impresso) ? "- ".$noticia->secao->ds_sessao : '' }}</h6> 
+                                                <p class="mb-0">{{ ($noticia->nome_cliente) ? $noticia->nome_cliente : '' }}</p>
+                                                <p class="mb-1">
+                                                    @if($noticia->nu_pagina_atual)
+                                                        Página <strong>{{ $noticia->nu_pagina_atual }}</strong>/<strong>{{ $noticia->nu_paginas_total }}</strong>
+                                                    @else
+                                                        <span class="text-danger">Página não informada</span>
+                                                    @endif
+                                                </p>     
+                                                <p class="mb-0"><strong>Sinopse</strong>: {!! ($noticia->sinopse) ? $noticia->sinopse : '<span class="text-danger">Não cadastrada</span>' !!}</p>  
+                                                <div class="d-none conteudo-{{ $noticia->id }}">
+                                                    {!! ($noticia->texto) ?  $noticia->texto  : '<span class="text-danger center">Notícia não possui texto</span>' !!}
+                                                </div>  
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 mb-1"> 
+                                                <button class="btn btn-primary btn-visualizar-noticia" data-id="{{ $noticia->id }}"><i class="fa fa-eye"></i> Visualizar</button> 
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>     
                             </div>
@@ -133,6 +146,34 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="showNoticia" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-dialog-scrollable modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="padding: 15px !important;">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-newspaper-o"></i><span></span> Dodos da Notícia</h6>
+        </div>
+        <div class="modal-body" style="padding: 15px;">
+            <div class="row">
+                <div class="col-md-12 modal-cabecalho">
+                    <h6 class="modal-fonte mt-0 mb-1"></h6>
+                    <h6 class="text-muted modal-estado mt-0 mb-1"></h6>
+                    <p class="modal-pagina mt-0 mb-2"></p>
+                </div>
+                <hr/>
+                <div class="col-md-12 modal-conteudo">
+                    
+                </div>
+            </div>
+            <div class="center">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
+            </div>
+      </div>
+    </div>
+  </div>
+</div>
 @endsection
 @section('script')
     <script>
@@ -144,6 +185,23 @@
                 nonSelectedListLabel: 'Disponíveis',
                 selectedListLabel: 'Selecionadas',
                
+            });
+
+             $(".btn-visualizar-noticia").click(function(){
+
+                var id = $(this).data("id");
+                var chave = ".conteudo-"+id;
+                var pagina = ".paginas-"+id;
+                var estado = ".conteudo-estado-"+id;
+                var fonte = ".conteudo-fonte-"+id;
+
+                $(".modal-fonte").html($(fonte).text());
+                $(".modal-estado").html($(estado).text());
+                $(".modal-pagina").html($(pagina).text());
+                $(".modal-conteudo").html($(chave).text().replace(/\n/g, "<br />"));
+
+                $("#showNoticia").modal("show");
+
             });
 
             $(".panel-heading").click(function() {
