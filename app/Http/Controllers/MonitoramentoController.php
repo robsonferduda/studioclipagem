@@ -1108,7 +1108,6 @@ class MonitoramentoController extends Controller
 
         if($fl_web){
             $request->merge(['filtro_web' => $filtro_fontes]);
-            dd($filtro_fontes);
         }
 
         if($fl_impresso){
