@@ -1104,10 +1104,11 @@ class MonitoramentoController extends Controller
 
         //$filtro_fontes = ($request->fontes) ? implode(',', $request->fontes) : '';
 
-        $filtro_fontes = $request->selecionadas[0];
+        $filtro_fontes = ($request->selecionadas[0]) ? $request->selecionadas[0] : '';
 
         if($fl_web){
             $request->merge(['filtro_web' => $filtro_fontes]);
+            dd($filtro_fontes);
         }
 
         if($fl_impresso){
