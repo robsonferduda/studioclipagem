@@ -111,6 +111,7 @@ class NoticiaImpressaController extends Controller
     public function store(Request $request)
     {
         try {
+            
             NoticiaImpresso::create($request->all());
 
             $retorno = array('flag' => true,
