@@ -68,17 +68,21 @@ class NoticiaImpressaController extends Controller
     {
         Session::put('sub-menu','noticia-impressa-cadastrar');
         $fontes = FonteImpressa::orderBy("nome")->get();
+        $estados = Estado::orderBy('nm_estado')->get();
         
-        return view('noticia-impressa/cadastrar', compact('fontes'));
+        return view('noticia-impressa/cadastrar', compact('fontes','estados'));
     }
 
     public function editar($id)
     {
         $noticia = NoticiaImpresso::find($id);
+
+        $estados = Estado::orderBy('nm_estado')->get();
+        $cidades = Cidade::where(['cd_estado' => $noticia->cd_estado])->orderBy('nm_cidade')->get();
         $fontes = FonteImpressa::orderBy("nome")->get();
         $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
 
-        return view('noticia-impressa/editar', compact('noticia','clientes','fontes'));
+        return view('noticia-impressa/editar', compact('noticia','clientes','fontes','estados','cidades'));
     }
 
     public function copiar($cliente, $id_noticia)

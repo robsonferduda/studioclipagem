@@ -43,7 +43,7 @@
                                             <select class="form-control select2" name="id_fonte" id="id_fonte" required="true">
                                                 <option value="">Selecione uma fonte</option>
                                                 @foreach ($fontes as $fonte)
-                                                    <option value="{{ $fonte->id }}">{{ $fonte->nome }}</option>
+                                                    <option value="{{ $fonte->id }}" {{ (old("id_fonte") ? "selected" : "") }}>{{ $fonte->nome }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -62,6 +62,30 @@
                                     <div class="form-group">
                                         <label>Título</label>
                                         <input type="text" class="form-control" name="titulo" id="titulo" minlength="3" placeholder="Título" value="{{ old('titulo') }}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Estado </label>
+                                        <select class="form-control selector-select2" name="cd_estado" id="cd_estado">
+                                            <option value="">Selecione um estado</option>
+                                            @foreach ($estados as $estado)
+                                                <option value="{{ $estado->cd_estado }}" {!! old('cd_estado') == $estado->cd_estado ? " selected" : '' !!}>
+                                                    {{ $estado->nm_estado }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label>Cidade </label>
+                                        <input type="hidden" name="cd_cidade" id="cd_cidade" value="{{ (old('cd_cidade')) ? old('cd_cidade') : 0  }}">
+                                        <select class="form-control select2" name="cidade" id="cidade" disabled="disabled">
+                                            <option value="">Selecione uma cidade</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -112,17 +136,18 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-3">
-                                    <label for="arquivo">Print da Notícia</label>
-                                    <div style="min-height: 302px;" class="dropzone" id="dropzone"><div class="dz-message" data-dz-message><span>CLIQUE AQUI<br/> ou <br/>ARRASTE</span></div></div>
-                                    <input type="hidden" name="arquivo" id="arquivo">
-                                </div>
-                                <div class="col-md-9">
+                                <div class="col-md-12">
                                     <label for="sinopse">Sinopse</label>
                                     <div class="form-group">
                                         <textarea class="form-control" name="sinopse" id="sinopse" rows="10"></textarea>
                                     </div>
-                                </div>                            
+                                </div>   
+
+                                <div class="col-md-12">
+                                    <label for="arquivo">Print da Notícia</label>
+                                    <div style="min-height: 302px;" class="dropzone" id="dropzone"><div class="dz-message" data-dz-message><span>CLIQUE AQUI<br/> ou <br/>ARRASTE</span></div></div>
+                                    <input type="hidden" name="arquivo" id="arquivo">
+                                </div>                                                         
                             </div>     
                             <div class="text-center mb-2 mt-3">
                                 <button type="submit" class="btn btn-success" name="btn_enviar" value="salvar"><i class="fa fa-save"></i> Salvar</button>
@@ -139,9 +164,40 @@
 @endsection
 @section('script')
 <script>
+
+    Dropzone.autoDiscover = false;
+
     $( document ).ready(function() {
 
         var host = $('meta[name="base-url"]').attr('content');
+
+        //Inicializar o Dropzone
+        var myDropzone = new Dropzone("#dropzone", {
+            url: host + "/upload", // URL para onde os arquivos serão enviados
+            method: "post", // Método HTTP
+            paramName: "file", // Nome do parâmetro no backend
+            maxFilesize: 1, // Tamanho máximo do arquivo em MB
+            acceptedFiles: ".jpeg,.jpg,.png,.pdf", // Tipos de arquivos aceitos
+            addRemoveLinks: true, // Adicionar links para remover arquivos
+            dictRemoveFile: "Remover", // Texto do botão de remoção
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"), // Token CSRF para Laravel
+            },
+            init: function () {
+                this.on("success", function (file, response) {
+                    console.log("Arquivo enviado com sucesso:", response);
+                });
+
+                this.on("error", function (file, response) {
+                    console.error("Erro ao enviar arquivo:", response);
+                });
+
+                this.on("removedfile", function (file) {
+                    console.log("Arquivo removido:", file.name);
+                    // Opcional: envie uma requisição para remover o arquivo do servidor
+                });
+            },
+        });
 
         $(document).on('change', '.monetario', function() {
                 
@@ -151,6 +207,9 @@
             var colunas = ($("#nu_colunas").val()) ? $("#nu_colunas").val() : 1;
 
             retorno = altura * largura * colunas;
+
+            // Truncar o valor com duas casas decimais
+            retorno = retorno.toFixed(2);
 
             $("#valor_retorno").val(retorno);
         });

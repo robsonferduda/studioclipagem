@@ -143,7 +143,9 @@
 @endsection
 @section('script')
     <script>
+        
         $(document).on('change', '#cpf_cnpj', function() {
+
             if($.inArray($(this).val().length, [14,18]) === -1) {
                 return;
             }

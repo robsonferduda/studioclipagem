@@ -67,6 +67,30 @@
                                 </div>
                             </div>
                             <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Estado </label>
+                                        <select class="form-control selector-select2" name="cd_estado" id="cd_estado">
+                                            <option value="">Selecione um estado</option>
+                                            @foreach ($estados as $estado)
+                                                <option value="{{ $estado->cd_estado }}" {!! $noticia->cd_estado == $estado->cd_estado ? " selected" : '' !!}>
+                                                    {{ $estado->nm_estado }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label>Cidade </label>
+                                        <input type="hidden" name="cd_cidade" id="cd_cidade" value="{{ ($noticia->cd_cidade) ? $noticia->cd_cidade : 0  }}">
+                                        <select class="form-control select2" name="cidade" id="cidade" disabled="disabled">
+                                            <option value="">Selecione uma cidade</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
                                         <label>Página Atual</label>
@@ -157,6 +181,9 @@
             var colunas = ($("#nu_colunas").val()) ? $("#nu_colunas").val() : 1;
 
             retorno = altura * largura * colunas;
+
+            // Truncar o valor com duas casas decimais
+            retorno = retorno.toFixed(2);
 
             $("#valor_retorno").val(retorno);
         });

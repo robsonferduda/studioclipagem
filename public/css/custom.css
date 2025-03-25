@@ -290,3 +290,11 @@ div .box-horario:not(:last-child) {
     max-height: 300px;
     overflow-y: auto;
 }
+/* Reposicionar o balão de erro para cima */
+.dropzone .dz-error-message {
+    top: -20px !important; /* Ajuste a posição vertical */
+    left: 0 !important;
+    right: 0 !important;
+    text-align: center !important;
+    z-index: 10; /* Certifique-se de que ele não sobreponha outros elementos */
+}
