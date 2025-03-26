@@ -39,6 +39,7 @@
 @endsection
 @section('script')
 <script>
+    
     Dropzone.autoDiscover = false;
 
     $( document ).ready(function() {

@@ -130,12 +130,12 @@
                               </a>
                           </li>
                         -->
-                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'noticia-impressa-cadastrar') ? 'active' : '' }}">
+                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'noticias-impresso-cadastrar') ? 'active' : '' }}">
                               <a href="{{ url('noticia/impresso/novo') }}">
                               <span class="sidebar-normal">Nova Notícia</span>
                               </a>
                           </li> 
-                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'impresso/noticias') ? 'active' : '' }}">
+                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'noticias-impresso') ? 'active' : '' }}">
                             <a href="{{ url('noticias/impresso') }}">
                               <span class="sidebar-normal">Notícias</span>
                               </a>

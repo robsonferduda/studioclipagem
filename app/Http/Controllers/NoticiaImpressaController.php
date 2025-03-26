@@ -32,13 +32,13 @@ class NoticiaImpressaController extends Controller
     {
         $this->middleware('auth');
         $this->data_atual = session('data_atual');
-        Session::put('url','noticias/impresso');
+        Session::put('url','impresso');
         $this->carbon = new Carbon();
     }
 
     public function index(Request $request)
     {
-        Session::put('sub-menu','noticias/impresso');
+        Session::put('sub-menu','noticias-impresso');
 
         $fontes = FonteImpressa::orderBy('nome')->get();
         $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
@@ -66,7 +66,7 @@ class NoticiaImpressaController extends Controller
 
     public function cadastrar()
     {
-        Session::put('sub-menu','noticia-impressa-cadastrar');
+        Session::put('sub-menu','noticias-impresso-cadastrar');
         $fontes = FonteImpressa::orderBy("nome")->get();
         $estados = Estado::orderBy('nm_estado')->get();
         
