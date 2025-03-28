@@ -154,6 +154,7 @@
                     <div class="card-footer text-center mb-3">
                         <button type="submit" class="btn btn-danger" name="acao" value="gerar-pdf"><i class="fa fa-file-pdf-o"></i> Gerar PDF</button>
                         <button type="submit" class="btn btn-info" name="acao" value="pesquisar"><i class="fa fa-search"></i> Pesquisar</button>
+                        <a href="{{ url('relatorios/teste') }}" class="btn btn-secondary"><i class="fa fa-refresh"></i> Teste</a>
                     </div>
                 {!! Form::close() !!} 
             </div>

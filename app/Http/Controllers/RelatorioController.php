@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\GerarRelatorioJob;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -267,4 +268,32 @@ class RelatorioController extends Controller
 
         return $pdf->download($nome_arquivo);
     }
+
+    public function teste()
+    {
+         // Medir o tempo de início
+    $startTime = microtime(true);
+
+    // Gerar um JSON dinâmico com 10.000 itens
+    $data = [
+        "nome" => "João Silva",
+        "email" => "joao@example.com",
+        "itens" => []
+    ];
+
+    for ($i = 1; $i <= 100; $i++) {
+        $data['itens'][] = [
+            'produto' => "Produto #$i",
+            'quantidade' => rand(1, 10),
+            'preco' => rand(50, 1000) / 100 // Preço entre 0.50 e 10.00
+        ];
+    }
+
+   // Enviar o job para a fila
+   GerarRelatorioJob::dispatch($data);
+
+   // Retornar uma resposta imediata ao usuário
+   return response()->json(['message' => 'Geração de PDF iniciada. Você será notificado quando estiver pronto.']);
+    }
+
 }

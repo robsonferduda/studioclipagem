@@ -337,6 +337,8 @@ Route::get('processamento','ProcessamentoController@index');
 
 Route::match(array('GET', 'POST'),'relatorios','RelatorioController@index');
 
+Route::match(array('GET', 'POST'),'relatorios/teste','RelatorioController@teste');
+
 Route::get('leitura','RelatorioController@word');
 
 Route::get('files/{file_name}', function($file_name = null)
