@@ -21,6 +21,15 @@ class TrackUserActivity
      */
     public function handle($request, Closure $next)
     {
+        // Ignora métodos irrelevantes
+        if (in_array($request->method(), ['OPTIONS', 'HEAD'])) {
+            return $next($request);
+        } 
+
+        if ($request->ajax()) {
+            return $next($request);
+        }
+
         // Ignora requisições para rotas públicas
         if ($request->is('login', 'register', 'assets/*')) {
             return $next($request);
