@@ -360,6 +360,7 @@
                 @endrole
               
                 <hr/>
+
                 @role('administradores')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'perfis') ? 'active' : '' }}">
                       <a href="{{ url('perfis') }}">
@@ -383,7 +384,15 @@
                       <p>Usuários</p>
                       </a>
                   </li>  
-                @endrole               
+                @endrole  
+                @role('administradores')
+                <li class="{{ (Session::has('url') and Session::get('url') == 'online') ? 'active' : '' }}">
+                    <a href="{{ url('online') }}">
+                    <i class="fa fa-wifi"></i>
+                    <p>Online</p>
+                    </a>
+                </li>  
+              @endrole              
                 <li>
                     <a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
                       <i class="nc-icon nc-button-power"></i>
