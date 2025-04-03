@@ -95,7 +95,7 @@
                                             <div class="col-lg-12 col-md-12 col-sm-12 mb-1"> 
                                                 <p class="font-weight-bold mb-1">{{ $noticia->titulo }}</p>
                                                 <h6><a href="{{ url('fonte-impresso/'.$noticia->id_fonte.'/editar') }}" target="_BLANK">{{ ($noticia->fonte) ? $noticia->fonte->nome : '' }}</a></h6>  
-                                                <h6 style="color: #FF5722;">{{ ($noticia->nm_estado) ? $noticia->nm_estado : '' }}{{ ($noticia->nm_cidade) ? "/".$noticia->nm_cidade : '' }}</h6>  
+                                                <h6 style="color: #FF5722;">{{ ($noticia->cd_estado) ? $noticia->estado->nm_estado : '' }}{{ ($noticia->cd_cidade) ? "/".$noticia->cidade->nm_cidade : '' }}</h6>  
                                                 <h6 class="text-muted mb-1">{{ \Carbon\Carbon::parse($noticia->dt_pub)->format('d/m/Y') }} - {{ ($noticia->fonte) ? $noticia->fonte->nome : '' }}  {{ ($noticia->id_sessao_impresso) ? "- ".$noticia->secao->ds_sessao : '' }}</h6> 
                                                 <p class="mb-0">{{ ($noticia->nome_cliente) ? $noticia->nome_cliente : '' }}</p>
                                                 <p class="mb-1">

@@ -209,7 +209,7 @@ class JornalImpressoController extends Controller
 
     public function edicoes(Request $request)
     {
-        Session::put('sub-menu','arquivos-web');
+        Session::put('sub-menu','jornal-impresso-edicoes');
 
         $fonte = ($request->fonte) ? $request->fonte : null;
 

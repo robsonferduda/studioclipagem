@@ -6,6 +6,7 @@ use DB;
 use Hash;
 use App\User;
 use App\Role;
+use App\Audits;
 use App\Models\RoleUser;
 use App\Utils;
 use App\Models\Cliente;
@@ -35,6 +36,34 @@ class UserController extends Controller
     {
         $user = User::find($id);
         return view('usuarios/perfil', compact('user'));
+    }
+
+    public function online()
+    {
+        Session::put('url','online');
+
+        $online = Audits::where(function ($query) {
+                $query->where('event', 'login')
+                    ->orWhere('event', 'logout');
+            })
+            ->orderBy('user_id')
+            ->orderByDesc('created_at')
+            ->get()
+            ->unique('user_id') // Garante que só pegamos o último evento por usuário
+            ->filter(function ($log) {
+                return $log->event === 'login';
+            });
+
+        $timeout = now()->subMinutes(30); // Timeout de 30 minutos
+
+        $online = User::where('last_active_at', '>=', $timeout)->get();
+        
+        $recentActivities = Audits::where('created_at', '>=', now()->subHours(1))
+            ->orderByDesc('created_at')
+            ->limit(15)
+            ->get();
+
+        return view('usuarios/online', compact('online','recentActivities'));
     }
 
     public function perfil()

@@ -211,6 +211,8 @@ Route::get('monitoramento/cliente/{id_cliente}/{flag}','MonitoramentoController@
 Route::get('monitoramento/{id_monitoramento}/fontes','MonitoramentoController@getFontesMonitoramento');
 Route::get('monitoramento/{tipo}/emissoras/{monitoramento}','MonitoramentoController@loadEmissoras');
 
+Route::get('online','UserController@online');
+
 Route::get('php','HomeController@php');
 
 Route::post('pauta','PautaController@store');
@@ -337,6 +339,8 @@ Route::get('transcricao/audios/{emissora}','ProcessamentoController@audios');
 Route::get('processamento','ProcessamentoController@index');
 
 Route::match(array('GET', 'POST'),'relatorios','RelatorioController@index');
+
+Route::match(array('GET', 'POST'),'relatorios/teste','RelatorioController@teste');
 
 Route::get('leitura','RelatorioController@word');
 

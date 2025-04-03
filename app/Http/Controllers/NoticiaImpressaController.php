@@ -32,13 +32,13 @@ class NoticiaImpressaController extends Controller
     {
         $this->middleware('auth');
         $this->data_atual = session('data_atual');
-        Session::put('url','noticias/impresso');
+        Session::put('url','impresso');
         $this->carbon = new Carbon();
     }
 
     public function index(Request $request)
     {
-        Session::put('sub-menu','noticias/impresso');
+        Session::put('sub-menu','noticias-impresso');
 
         $fontes = FonteImpressa::orderBy('nome')->get();
         $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
@@ -66,19 +66,23 @@ class NoticiaImpressaController extends Controller
 
     public function cadastrar()
     {
-        Session::put('sub-menu','noticia-impressa-cadastrar');
+        Session::put('sub-menu','noticias-impresso-cadastrar');
         $fontes = FonteImpressa::orderBy("nome")->get();
+        $estados = Estado::orderBy('nm_estado')->get();
         
-        return view('noticia-impressa/cadastrar', compact('fontes'));
+        return view('noticia-impressa/cadastrar', compact('fontes','estados'));
     }
 
     public function editar($id)
     {
         $noticia = NoticiaImpresso::find($id);
+
+        $estados = Estado::orderBy('nm_estado')->get();
+        $cidades = Cidade::where(['cd_estado' => $noticia->cd_estado])->orderBy('nm_cidade')->get();
         $fontes = FonteImpressa::orderBy("nome")->get();
         $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
 
-        return view('noticia-impressa/editar', compact('noticia','clientes','fontes'));
+        return view('noticia-impressa/editar', compact('noticia','clientes','fontes','estados','cidades'));
     }
 
     public function copiar($cliente, $id_noticia)
@@ -117,6 +121,7 @@ class NoticiaImpressaController extends Controller
         $request->merge(['dt_clipagem' => $dt_clipagem]);
 
         try {
+            
             NoticiaImpresso::create($request->all());
 
             $retorno = array('flag' => true,

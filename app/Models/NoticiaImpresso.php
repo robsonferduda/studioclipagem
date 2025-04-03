@@ -14,6 +14,7 @@ class NoticiaImpresso extends Model
 
     protected $fillable = ['id_fonte',
                             'id_sessao_impresso',
+                            'cd_estado',
                             'cd_cidade',
                             'dt_clipagem',
                             'dt_cadastro',
@@ -28,6 +29,16 @@ class NoticiaImpresso extends Model
                             'nu_altura', 
                             'nu_largura',
                             'valor_retorno'];
+
+    public function cidade()
+    {
+        return $this->hasOne(Cidade::class,'cd_cidade','cd_cidade');
+    }
+
+    public function estado()
+    {
+        return $this->hasOne(Estado::class,'cd_estado','cd_estado');
+    }
 
     public function fonte()
     {
