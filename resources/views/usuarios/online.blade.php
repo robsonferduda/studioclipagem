@@ -21,7 +21,7 @@
                 <div class="row mb-0">
                     <div class="col-md-12">
 
-                        <h6 class="card-title"> <i class="fa fa-wifi"></i> Usuários Online</h6>
+                        <h6 class="card-title"> <i class="fa fa-wifi text-success"></i> Usuários Online</h6>
                         
 
                             <ul class="list-group">
@@ -43,27 +43,34 @@
 
                 <div class="row mt-3 mb-5">
                     <div class="col-md-12">
-                        <h6 class="card-title">Atividades Recentes</h6>
+                        <h6 class="card-title"><i class="fa fa-history text-info"></i> Atividades Recentes</h6>
                         <ul class="list-group">
                             @if ($recentActivities->isEmpty())
-                                <li class="list-group-item">Nenhuma atividade registrada recentemente.</li>
+                                <li class="list-group-item" style="border: none; padding: 5px 5px; border-radius: 5px;">Nenhuma atividade registrada recentemente.</li>
                             @else
+                                @php
+                                    $zebra = false;
+                                @endphp
                                 @foreach ($recentActivities as $log)
-                                    <li class="list-group-item">
-                                        <span class="pull-right">Ultima atividade {{ $log->created_at->diffForHumans() }}</span>
+                                    <li class="list-group-item mb-3" style="border: none; padding: 5px 5px; background: {{ ($zebra) ? '#eee' : 'white' }} ; border-radius: 5px;">
+                                        <span class="badge badge-pill badge-default pull-right mt-1 mr-2" style="background-color: {{ $log->evento->color }}; border-color: {{ $log->evento->color }};">{{ ucfirst($log->evento->nome) }}</span>
                                         <div>
                                             <strong>Usuário</strong>: {{ $log->user->name }}
                                         </div>
                                         <div>
-                                            <span><strong>Evento</strong>: {{ ucfirst($log->event) }}</span>
+                                            <span><strong>Evento</strong>:  - {{ $log->auditable_type }}</span>
                                         </div>
                                         <div>
                                             <span><strong>IP</strong>: {{ $log->ip_address }}</span>
                                         </div>
                                         <div>
                                             <span><strong>Navegador</strong>: {{ $log->user_agent }}</span>
+                                            <span class="pull-right text-mutted">Atividade executada {{ $log->created_at->diffForHumans() }}</span>
                                         </div>
                                     </li>
+                                    @php
+                                        $zebra = !$zebra;
+                                    @endphp
                                 @endforeach
                             @endif
                         </ul>

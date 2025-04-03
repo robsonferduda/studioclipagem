@@ -37,4 +37,9 @@ class Audits extends Model implements \OwenIt\Auditing\Contracts\Audit
     {
         return $this->belongsTo('App\User', 'user_id', 'id');
     }
+
+    public function evento()
+    {
+        return $this->belongsTo('App\Models\Event', 'event', 'chave');
+    }
 }
