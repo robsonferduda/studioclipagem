@@ -58,7 +58,7 @@
                                             <strong>Usuário</strong>: {{ $log->user->name }}
                                         </div>
                                         <div>
-                                            <span><strong>Evento</strong>:  - {{ $log->auditable_type }}</span>
+                                            <span><strong>Modelo/Tabela</strong>: {{ $log->auditable_type }}</span>
                                         </div>
                                         <div>
                                             <span><strong>IP</strong>: {{ $log->ip_address }}</span>
