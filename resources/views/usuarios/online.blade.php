@@ -52,7 +52,7 @@
                                     $zebra = false;
                                 @endphp
                                 @foreach ($recentActivities as $log)
-                                    <li class="list-group-item mb-3" style="border: none; padding: 5px 5px; background: {{ ($zebra) ? '#eee' : 'white' }} ; border-radius: 5px;">
+                                    <li class="list-group-item mb-3" style="border: none; padding: 5px 5px; background: {{ ($zebra) ? 'white' : 'white' }} ; border-radius: 5px; border: 1px solid #eee;">
                                         <span class="badge badge-pill badge-default pull-right mt-1 mr-2" style="background-color: {{ $log->evento->color }}; border-color: {{ $log->evento->color }};">{{ ucfirst($log->evento->nome) }}</span>
                                         <div>
                                             <strong>Usuário</strong>: {{ $log->user->name }}
