@@ -435,7 +435,11 @@
         </div>
       </nav>
       <!-- End Navbar -->
-      <div class="content">       
+      <div class="content">      
+        <p>
+          Try publishing an event to channel <code>my-channel</code>
+          with event name <code>my-event</code>.
+        </p> 
         @yield('content')          
       </div>
 
@@ -574,6 +578,22 @@
 
       });
       
+    });
+  </script>
+  <script src="https://js.pusher.com/8.4.0/pusher.min.js"></script>
+  <script>
+
+    // Enable pusher logging - don't include this in production
+    Pusher.logToConsole = true;
+
+    var pusher = new Pusher('2e820b910a4566bfafdb', {
+      cluster: 'sa1'
+    });
+
+    var channel = pusher.subscribe('my-channel');
+    channel.bind('my-event', function(data) {
+      alert("Received my-event with data: ");
+      alert(JSON.stringify(data));
     });
   </script>
   

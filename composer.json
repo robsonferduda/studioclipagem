@@ -32,6 +32,7 @@
         "pear/text_languagedetect": "^1.0",
         "phpoffice/phpword": "^1.1",
         "predis/predis": "^1.1",
+        "pusher/pusher-php-server": "^5.0",
         "santigarcor/laratrust": "^6.1",
         "symfony/process": "^5.4",
         "voku/stop-words": "^2.0",

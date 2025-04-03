@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use DB;
 use Auth;
+use App\Events\RelatorioEvent;
 use App\Models\EmissoraGravacao;
 use App\Models\JornalImpresso;
 use App\Models\JornalWeb;
@@ -42,10 +43,17 @@ class HomeController extends Controller
         Session::put('url','home');
     }
 
+    public function evento()
+    {
+        event(new RelatorioEvent('hello world'));
+    }
+
     public function index()
     {
         $dt_inicial = date("Y-m-d")." 00:00:00";
         $dt_final = date("Y-m-d")." 23:59:59";
+
+        event(new RelatorioEvent('hello world'));
 
         $totais = array();
         $coletas = array();

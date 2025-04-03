@@ -8,6 +8,7 @@ use App\Media;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', 'HomeController@index');
+Route::get('evento', 'HomeController@evento');
 Route::get('/home', 'HomeController@index');
 Route::get('/politica-de-privacidade', function () { return view('politica-de-privacidade'); });
 Route::get('/termos-de-servico', function () { return view('termos-de-servico'); });
