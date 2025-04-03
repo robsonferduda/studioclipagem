@@ -58,7 +58,11 @@
                                             <strong>Usuário</strong>: {{ $log->user->name }}
                                         </div>
                                         <div>
-                                            <span><strong>Modelo/Tabela</strong>: {{ $log->auditable_type }}</span>
+                                            @if($log->evento->chave == 'activity')
+                                                <span><strong>URL</strong>: {{ $log->url }}</span>
+                                            @else
+                                                <span><strong>Modelo/Tabela</strong>: {{ $log->auditable_type }}</span>  
+                                            @endif
                                         </div>
                                         <div>
                                             <span><strong>IP</strong>: {{ $log->ip_address }}</span>

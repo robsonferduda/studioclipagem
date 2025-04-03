@@ -60,6 +60,7 @@ class UserController extends Controller
         
         $recentActivities = Audits::where('created_at', '>=', now()->subHours(1))
             ->orderByDesc('created_at')
+            ->limit(15)
             ->get();
 
         return view('usuarios/online', compact('online','recentActivities'));
