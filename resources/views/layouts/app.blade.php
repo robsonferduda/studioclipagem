@@ -445,10 +445,6 @@
       </nav>
       <!-- End Navbar -->
       <div class="content">      
-        <p>
-          Try publishing an event to channel <code>my-channel</code>
-          with event name <code>my-event</code>.
-        </p> 
         @yield('content')          
       </div>
 
