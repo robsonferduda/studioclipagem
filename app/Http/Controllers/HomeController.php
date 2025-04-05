@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use DB;
 use Auth;
 use App\Events\RelatorioEvent;
+use App\Models\Emissora;
 use App\Models\EmissoraGravacao;
 use App\Models\JornalImpresso;
 use App\Models\JornalWeb;
@@ -68,8 +69,9 @@ class HomeController extends Controller
         $coletas = FonteWeb::orderBy('crawlead_at','DESC')->take(5)->get();
 
         $programas_erros = ProgramaEmissoraWeb::where('id_situacao',2)->count();
+        $programas_radio_erros = Emissora::where('id_situacao',2)->count();
 
-        return view('index', compact('totais','coletas','total_sem_area','execucoes','coletas','total_coletas','total_monitoramentos','programas_erros'));
+        return view('index', compact('totais','coletas','total_sem_area','execucoes','coletas','total_coletas','total_monitoramentos','programas_erros','programas_radio_erros'));
     }
 
     public function atualizarData(Request $request)
