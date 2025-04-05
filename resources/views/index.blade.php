@@ -105,7 +105,7 @@
                         <div class="alert alert-danger alert-with-icon" data-notify="container">
                             <button type="button" aria-hidden="true" class="close">×</button>
                             <span data-notify="icon" class="ti-bell" style="top: 40% !important;"><i class="fa fa-volume-up"></i></span>
-                            <span data-notify="message">Existem <strong>{{ $programas_erros }}</strong> emissoras de Rádio com erro de gravação! <a href="{{ url("emissoras/radio") }}" style="color: white; font-weight: bold;">Clique aqui</a> para verificar e atualizar</span>
+                            <span data-notify="message">Existem <strong>{{ $programas_radio_erros }}</strong> emissoras de Rádio com erro de gravação! <a href="{{ url("emissoras/radio") }}" style="color: white; font-weight: bold;">Clique aqui</a> para verificar e atualizar</span>
                         </div>
                     </div>
                 @endif
