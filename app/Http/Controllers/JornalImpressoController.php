@@ -220,7 +220,7 @@ class JornalImpressoController extends Controller
 
         $edicoes = EdicaoJornalImpresso::with('fonte')
                     ->with('paginas')
-                    ->whereBetween('dt_coleta', [$dt_final." 00:00:00", $dt_final." 23:59:59"])
+                    ->whereBetween('dt_coleta', [$dt_inicial." 00:00:00", $dt_final." 23:59:59"])
                     ->when($fonte, function ($q) use ($fonte) {
                         return $q->where('id_jornal_online', $fonte);
                     })
