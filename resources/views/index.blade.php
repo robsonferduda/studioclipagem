@@ -207,7 +207,7 @@
                                                                 </h6>
                                                             
                                                             <p class="text-muted mb-1 mt-0">{{ $execucao->monitoramento->expressao }}</p>   
-                                                            <p class="mb-0">
+                                                            <p class="mb-0" style="border-bottom: 1px solid #80808038;">
                                                                 Execução iniciada em <strong>{{ \Carbon\Carbon::parse($execucao->created_at)->format('d/m/Y H:i:s') }}</strong> com duração de <strong>
                                                                  @if(\Carbon\Carbon::create($execucao->updated_at)->diffInMinutes(\Carbon\Carbon::create($execucao->created_at)))
                                                                     {{ \Carbon\Carbon::create($execucao->updated_at)->diffInMinutes(\Carbon\Carbon::create($execucao->created_at)) }} </strong> minutos
