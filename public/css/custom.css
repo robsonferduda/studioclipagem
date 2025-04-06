@@ -298,3 +298,6 @@ div .box-horario:not(:last-child) {
     text-align: center !important;
     z-index: 10; /* Certifique-se de que ele não sobreponha outros elementos */
 }
+.box-execucao .linha-execucao:not(:last-child) {
+  border-bottom: 1px solid #80808038;
+}

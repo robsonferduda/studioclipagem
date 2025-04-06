@@ -191,11 +191,11 @@
                             <div class="timeline-heading">
                                 <h6>REGISTRO DE MONITORAMENTO DIÁRIO<span class="badge badge-pill badge-primary pull-right">{{ $total_monitoramentos }} EXECUÇÕES</span></h6>
                             </div>
-                            <div class="timeline-body">
+                            <div class="timeline-body box-execucao">
                                 @foreach ($execucoes as $execucao)
                                  
                                                 
-                                                    <div class="row mb-0">
+                                                    <div class="row mb-0 linha-execucao">
                                                         <div class="col-12 col-md-12">                                           
                                                             
                                                                 <h6 class="mb-0 font-weight-bold text-danger">
@@ -207,7 +207,7 @@
                                                                 </h6>
                                                             
                                                             <p class="text-muted mb-1 mt-0">{{ $execucao->monitoramento->expressao }}</p>   
-                                                            <p class="mb-0" style="border-bottom: 1px solid #80808038;">
+                                                            <p class="mb-0 text-tempo">
                                                                 Execução iniciada em <strong>{{ \Carbon\Carbon::parse($execucao->created_at)->format('d/m/Y H:i:s') }}</strong> com duração de <strong>
                                                                  @if(\Carbon\Carbon::create($execucao->updated_at)->diffInMinutes(\Carbon\Carbon::create($execucao->created_at)))
                                                                     {{ \Carbon\Carbon::create($execucao->updated_at)->diffInMinutes(\Carbon\Carbon::create($execucao->created_at)) }} </strong> minutos
