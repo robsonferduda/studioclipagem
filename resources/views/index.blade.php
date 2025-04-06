@@ -206,7 +206,7 @@
                                             @foreach ($execucoes as $execucao)
                                                 <tr>
                                                     <td>{{ \Carbon\Carbon::parse($execucao->created_at)->format('d/m/Y H:i:s') }}</td>
-                                                    <td>{{ $execucao->monitoramento->expressao }}</td>
+                                                    <td><p>{{ $execucao->monitoramento->expressao }}</p></td>
                                                     <td>
                                                         @if(\Carbon\Carbon::create($execucao->updated_at)->diffInMinutes(\Carbon\Carbon::create($execucao->created_at)))
                                                             {{ \Carbon\Carbon::create($execucao->updated_at)->diffInMinutes(\Carbon\Carbon::create($execucao->created_at)) }} minutos
