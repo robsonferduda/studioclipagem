@@ -59,7 +59,7 @@
                         <h6 class="px-3">Mostrando {{ $edicoes->count() }} de {{ $edicoes->total() }} edições coletadas</h6>
                     @endif
 
-                    {{ $edicoes->onEachSide(1)->appends(['dt_inicial' => $dt_inicial, 'dt_final' => $dt_final, 'fonte' => $fonte])->links('vendor.pagination.bootstrap-4') }}    
+                    {{ $edicoes->onEachSide(1)->appends(['dt_inicial' => \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y'), 'dt_final' => \Carbon\Carbon::parse($dt_final)->format('d/m/Y'), 'fonte' => $fonte])->links('vendor.pagination.bootstrap-4') }}    
                         @foreach ($edicoes as $key => $noticia)
                             <div class="card">
                                 <div class="card-body">                           
