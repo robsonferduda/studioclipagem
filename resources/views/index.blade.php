@@ -192,37 +192,39 @@
                                 <h6>REGISTRO DE MONITORAMENTO DIÁRIO<span class="badge badge-pill badge-primary pull-right">{{ $total_monitoramentos }} EXECUÇÕES</span></h6>
                             </div>
                             <div class="timeline-body">
-                             
-                                    <table id="bootstrap-table" class="table table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>Início</th>
-                                                <th>Expressão</th>
-                                                <th>Duração</th>
-                                                <th class="center">Total</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($execucoes as $execucao)
-                                                <tr>
-                                                    <td>{{ \Carbon\Carbon::parse($execucao->created_at)->format('d/m/Y H:i:s') }}</td>
-                                                    <td><p>{{ $execucao->monitoramento->expressao }}</p></td>
-                                                    <td>
-                                                        @if(\Carbon\Carbon::create($execucao->updated_at)->diffInMinutes(\Carbon\Carbon::create($execucao->created_at)))
-                                                            {{ \Carbon\Carbon::create($execucao->updated_at)->diffInMinutes(\Carbon\Carbon::create($execucao->created_at)) }} minutos
-                                                        @else
-                                                            {{ \Carbon\Carbon::create($execucao->updated_at)->diffInSeconds(\Carbon\Carbon::create($execucao->created_at)) }} segundos
-                                                        @endif
-                                                    </td>
-                                                    <td class="center"><a href="{{ url('monitoramento/'.$execucao->id.'/noticias') }}">{{ $execucao->total_vinculado }}</a></td>
-                                                </tr>   
-                                            @endforeach                                    
-                                        </tbody>
-                                    </table>
-                                 
-                                
+                                @foreach ($execucoes as $execucao)
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-12 col-sm-12">
+                                            <div class="card card-stats" style="box-shadow: none; margin-bottom: 0px; margin-top: 0px;">
+                                                <div class="card-body">
+                                                    <div class="row mb-0">
+                                                        <div class="col-12 col-md-12 mb-0">                                           
+                                                            <p class="mb-0">
+                                                                <h6 class="mb-0 font-weight-bold">
+                                                                    {{ ($execucao->monitoramento->cliente) ? $execucao->monitoramento->cliente->nome : 'Cliente não informado' }} - 
+                                                                    <span class="">{{ ($execucao->monitoramento->nome) ? $execucao->monitoramento->nome : 'Nome não informado' }} </span>
+                                                                    <span class="pull-right">
+                                                                       Total de Coletas: <a href="{{ url('monitoramento/'.$execucao->id.'/noticias') }}">{{ $execucao->total_vinculado }}</a>
+                                                                    </span>
+                                                                </h6>
+                                                            </p>
+                                                            <p class="text-muted mb-1 mt-0">{{ $execucao->monitoramento->expressao }}</p>   
+                                                            <p class="font-weight-bold">
+                                                                Execução iniciada em {{ \Carbon\Carbon::parse($execucao->created_at)->format('d/m/Y H:i:s') }} com duração de 
+                                                                 @if(\Carbon\Carbon::create($execucao->updated_at)->diffInMinutes(\Carbon\Carbon::create($execucao->created_at)))
+                                                                    {{ \Carbon\Carbon::create($execucao->updated_at)->diffInMinutes(\Carbon\Carbon::create($execucao->created_at)) }} minutos
+                                                                @else
+                                                                    {{ \Carbon\Carbon::create($execucao->updated_at)->diffInSeconds(\Carbon\Carbon::create($execucao->created_at)) }} segundos
+                                                                @endif
+                                                            </p>                                         
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach 
                             </div>
-                            
                         </div>
                     </li>
                     <li class="timeline-inverted">
