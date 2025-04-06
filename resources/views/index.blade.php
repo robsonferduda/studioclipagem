@@ -193,36 +193,32 @@
                             </div>
                             <div class="timeline-body">
                                 @foreach ($execucoes as $execucao)
-                                    <div class="row">
-                                        <div class="col-lg-12 col-md-12 col-sm-12">
-                                            <div class="card card-stats" style="box-shadow: none; margin-bottom: 0px; margin-top: 0px;">
-                                                <div class="card-body">
+                                 
+                                                
                                                     <div class="row mb-0">
-                                                        <div class="col-12 col-md-12 mb-0">                                           
-                                                            <p class="mb-0">
-                                                                <h6 class="mb-0 font-weight-bold">
+                                                        <div class="col-12 col-md-12">                                           
+                                                            
+                                                                <h6 class="mb-0 font-weight-bold text-danger">
                                                                     {{ ($execucao->monitoramento->cliente) ? $execucao->monitoramento->cliente->nome : 'Cliente não informado' }} - 
                                                                     <span class="">{{ ($execucao->monitoramento->nome) ? $execucao->monitoramento->nome : 'Nome não informado' }} </span>
-                                                                    <span class="pull-right">
-                                                                       Total de Coletas: <a href="{{ url('monitoramento/'.$execucao->id.'/noticias') }}">{{ $execucao->total_vinculado }}</a>
+                                                                    <span class="pull-right text-info">
+                                                                       <a href="{{ url('monitoramento/'.$execucao->id.'/noticias') }}">{{ $execucao->total_vinculado }} Notícias</a>
                                                                     </span>
                                                                 </h6>
-                                                            </p>
+                                                            
                                                             <p class="text-muted mb-1 mt-0">{{ $execucao->monitoramento->expressao }}</p>   
-                                                            <p class="font-weight-bold">
-                                                                Execução iniciada em {{ \Carbon\Carbon::parse($execucao->created_at)->format('d/m/Y H:i:s') }} com duração de 
+                                                            <p class="mb-0">
+                                                                Execução iniciada em <strong>{{ \Carbon\Carbon::parse($execucao->created_at)->format('d/m/Y H:i:s') }}</strong> com duração de <strong>
                                                                  @if(\Carbon\Carbon::create($execucao->updated_at)->diffInMinutes(\Carbon\Carbon::create($execucao->created_at)))
-                                                                    {{ \Carbon\Carbon::create($execucao->updated_at)->diffInMinutes(\Carbon\Carbon::create($execucao->created_at)) }} minutos
+                                                                    {{ \Carbon\Carbon::create($execucao->updated_at)->diffInMinutes(\Carbon\Carbon::create($execucao->created_at)) }} </strong> minutos
                                                                 @else
-                                                                    {{ \Carbon\Carbon::create($execucao->updated_at)->diffInSeconds(\Carbon\Carbon::create($execucao->created_at)) }} segundos
+                                                                    {{ \Carbon\Carbon::create($execucao->updated_at)->diffInSeconds(\Carbon\Carbon::create($execucao->created_at)) }} </strong> segundos
                                                                 @endif
+                                                            
                                                             </p>                                         
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    
                                 @endforeach 
                             </div>
                         </div>
