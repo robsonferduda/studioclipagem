@@ -81,7 +81,7 @@
                                 </div>                            
                             </div>
                         @endforeach
-                    {{ $edicoes->onEachSide(1)->appends(['dt_inicial' => $dt_inicial, 'dt_final' => $dt_final, 'fonte' => $fonte])->links('vendor.pagination.bootstrap-4') }} 
+                    {{ $edicoes->onEachSide(1)->appends(['dt_inicial' => \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y'), 'dt_final' => \Carbon\Carbon::parse($dt_final)->format('d/m/Y'), 'fonte' => $fonte])->links('vendor.pagination.bootstrap-4') }} 
                 </div>
             </div>
         </div>
