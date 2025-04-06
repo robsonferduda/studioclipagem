@@ -60,22 +60,26 @@
                     @endif
 
                     {{ $edicoes->onEachSide(1)->appends(['dt_inicial' => \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y'), 'dt_final' => \Carbon\Carbon::parse($dt_final)->format('d/m/Y'), 'fonte' => $fonte])->links('vendor.pagination.bootstrap-4') }}    
-                        @foreach ($edicoes as $key => $noticia)
+                        @foreach ($edicoes as $key => $edicao)
                             <div class="card">
                                 <div class="card-body">                           
                                     <div class="row">
                                         <div class="col-lg-2 col-sm-12 mb-1">
-                                            @if($noticia->primeiraPagina)
-                                                <a href="{{ url('jornal-impresso/web/download/'.$noticia->id) }}" target="_BLANK"><img src="{{ Storage::disk('s3')->temporaryUrl($noticia->primeiraPagina->path_pagina_s3, '+2 minutes') }}" alt="Página "></a>
+                                            @if($edicao->primeiraPagina)
+                                                <a href="{{ url('jornal-impresso/web/download/'.$edicao->id) }}" target="_BLANK"><img src="{{ Storage::disk('s3')->temporaryUrl($edicao->primeiraPagina->path_pagina_s3, '+2 minutes') }}" alt="Página "></a>
                                             @endif
                                         </div>
                                         <div class="col-lg-10 col-sm-10 mb-1">
-                                            <p><strong>{{ ($noticia->fonte) ? $noticia->fonte->nome : 'Não Identificado' }}</strong></p>
-                                            <p>{{ ($noticia->titulo) ? $noticia->titulo : '' }}</p>
-                                            <p><a href="{{ url('jornal-impresso/edicao/'.$noticia->id.'/paginas') }}">{{ $noticia->paginas->count() }} Páginas</a></p>
+                                            <p><strong>{{ ($edicao->fonte) ? $edicao->fonte->nome : 'Não Identificado' }}</strong></p>
+                                            <p>{{ ($edicao->titulo) ? $edicao->titulo : '' }}</p>
+                                            <h6 class="text-muted">
+                                                {{ ($edicao->fonte and $edicao->fonte->estado) ? $edicao->fonte->estado->nm_estado : '' }}
+                                                {{ ($edicao->fonte and $edicao->fonte->cidade) ? '/ '.$edicao->fonte->cidade->nm_cidade : '' }}
+                                            </h6>
+                                            <p><a href="{{ url('jornal-impresso/edicao/'.$edicao->id.'/paginas') }}">{{ $edicao->paginas->count() }} Páginas</a></p>
                                             
-                                            <p>Publicado em: {{ ($noticia->dt_pub) ? \Carbon\Carbon::parse($noticia->dt_pub)->format('d/m/Y H:i:s') : 'Não informado' }}</p>
-                                            <p>Coletado em {{ \Carbon\Carbon::parse($noticia->dt_coleta)->format('d/m/Y H:i:s')  }}</p>                        
+                                            <p>Arquivo publicado em {{ ($edicao->dt_pub) ? \Carbon\Carbon::parse($edicao->dt_pub)->format('d/m/Y H:i:s') : 'Não informado' }}
+                                                e coletado em {{ \Carbon\Carbon::parse($edicao->created_at)->format('d/m/Y H:i:s')  }}</p>                        
                                         </div>
                                     </div>                               
                                 </div>                            
