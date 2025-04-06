@@ -42,8 +42,8 @@
                                         <label>Fonte</label>
                                         <select class="form-control select2" name="fonte" id="fonte">
                                             <option value="">Selecione uma fonte</option>
-                                            @foreach ($fontes as $fonte)
-                                                <option value="{{ $fonte->id }}" {{ ($busca_fonte == $fonte->id ) ? 'selected' : '' }}>{{ $fonte->nome }}</option>
+                                            @foreach ($fontes as $f)
+                                                <option value="{{ $f->id }}" {{ ($fonte == $f->id ) ? 'selected' : '' }}>{{ $f->nome }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -55,12 +55,12 @@
                         </div>
                     {!! Form::close() !!} 
 
-                    @if($dados->count())
-                        <h6 class="px-3">Mostrando {{ $dados->count() }} de {{ $dados->total() }} Arquivos Coletados</h6>
+                    @if($edicoes->count())
+                        <h6 class="px-3">Mostrando {{ $edicoes->count() }} de {{ $edicoes->total() }} edições coletadas</h6>
                     @endif
 
-                    {{ $dados->onEachSide(1)->appends(['dt_inicial' => $dt_inicial, 'dt_final' => $dt_final, 'fonte' => $busca_fonte])->links('vendor.pagination.bootstrap-4') }}    
-                        @foreach ($dados as $key => $noticia)
+                    {{ $edicoes->onEachSide(1)->appends(['dt_inicial' => $dt_inicial, 'dt_final' => $dt_final, 'fonte' => $fonte])->links('vendor.pagination.bootstrap-4') }}    
+                        @foreach ($edicoes as $key => $noticia)
                             <div class="card">
                                 <div class="card-body">                           
                                     <div class="row">
@@ -81,7 +81,7 @@
                                 </div>                            
                             </div>
                         @endforeach
-                    {{ $dados->onEachSide(1)->appends(['dt_inicial' => $dt_inicial, 'dt_final' => $dt_final, 'fonte' => $busca_fonte])->links('vendor.pagination.bootstrap-4') }} 
+                    {{ $edicoes->onEachSide(1)->appends(['dt_inicial' => $dt_inicial, 'dt_final' => $dt_final, 'fonte' => $fonte])->links('vendor.pagination.bootstrap-4') }} 
                 </div>
             </div>
         </div>
