@@ -64,22 +64,29 @@
                             <div class="card">
                                 <div class="card-body">                           
                                     <div class="row">
+                                        <!--
                                         <div class="col-lg-2 col-sm-12 mb-1">
                                             @if($edicao->primeiraPagina)
                                                 <a href="{{ url('jornal-impresso/web/download/'.$edicao->id) }}" target="_BLANK"><img src="{{ Storage::disk('s3')->temporaryUrl($edicao->primeiraPagina->path_pagina_s3, '+2 minutes') }}" alt="Página "></a>
                                             @endif
                                         </div>
-                                        <div class="col-lg-10 col-sm-10 mb-1">
-                                            <p><strong>{{ ($edicao->fonte) ? $edicao->fonte->nome : 'Não Identificado' }}</strong></p>
-                                            <p>{{ ($edicao->titulo) ? $edicao->titulo : '' }}</p>
-                                            <h6 class="text-muted">
+                                        -->
+                                        <div class="col-lg-12 col-sm-12 mb-1">
+                                            <span class="pull-right">{{ $edicao->paginas->count() }} Páginas</span>
+                                            <h6>
+                                                <a href="{{ url('fonte-impresso/'.$edicao->fonte->id.'/editar') }}" target="_BLANK">{{ ($edicao->fonte) ? $edicao->fonte->nome : '' }}</a>
+                                            </h6>  
+                                            <h6 style="color: #FF5722;">
                                                 {{ ($edicao->fonte and $edicao->fonte->estado) ? $edicao->fonte->estado->nm_estado : '' }}
                                                 {{ ($edicao->fonte and $edicao->fonte->cidade) ? '/ '.$edicao->fonte->cidade->nm_cidade : '' }}
-                                            </h6>
-                                            <p><a href="{{ url('jornal-impresso/edicao/'.$edicao->id.'/paginas') }}">{{ $edicao->paginas->count() }} Páginas</a></p>
+                                            </h6>  
+                                            <h6 class="text-muted mb-1">{{ \Carbon\Carbon::parse($edicao->dt_pub)->format('d/m/Y') }} - {{ ($edicao->fonte) ? $edicao->fonte->nome : '' }}</h6> 
+                                            <p class="mb-0"><strong>{{ ($edicao->titulo) ? $edicao->titulo : '' }}</strong></p>
+                                            <p class="mb-0"><a href="{{ url('jornal-impresso/edicao/'.$edicao->id.'/paginas') }}"> Clique para ver os arquivos </a></p>
                                             
                                             <p>Arquivo publicado em {{ ($edicao->dt_pub) ? \Carbon\Carbon::parse($edicao->dt_pub)->format('d/m/Y H:i:s') : 'Não informado' }}
-                                                e coletado em {{ \Carbon\Carbon::parse($edicao->created_at)->format('d/m/Y H:i:s')  }}</p>                        
+                                                e coletado em {{ \Carbon\Carbon::parse($edicao->created_at)->format('d/m/Y H:i:s')  }}
+                                            </p>                        
                                         </div>
                                     </div>                               
                                 </div>                            
