@@ -82,7 +82,7 @@
                   </a>
                 </li>
               @endrole
-                @role('administradores')
+
                 @permission('menu-impressos')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'impresso') ? 'active' : '' }}">
                       <a data-toggle="collapse" href="#submenu-impresso" class="{{ (Session::has('url') and Session::get('url') == 'impresso') ? '' : 'collapsed' }}" aria-expanded="{{ (Session::has('url') and Session::get('url') == 'impresso') ? 'true' : 'false' }}">
@@ -153,7 +153,7 @@
                      </div>
                   </li>
                   @endpermission
-                @endrole
+               
                 @role('administradores')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'jornal-web') ? 'active' : '' }}">
                     <a data-toggle="collapse" href="#submenu-web" class="{{ (Session::has('url') and Session::get('url') == 'jornal-web') ? '' : 'collapsed' }}" aria-expanded="{{ (Session::has('url') and Session::get('url') == 'jornal-web') ? 'true' : 'false' }}">
