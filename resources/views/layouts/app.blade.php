@@ -83,7 +83,7 @@
                 </li>
               @endrole
                 @role('administradores')
-                @permission('menu_impressos')
+                @permission('menu-impressos')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'impresso') ? 'active' : '' }}">
                       <a data-toggle="collapse" href="#submenu-impresso" class="{{ (Session::has('url') and Session::get('url') == 'impresso') ? '' : 'collapsed' }}" aria-expanded="{{ (Session::has('url') and Session::get('url') == 'impresso') ? 'true' : 'false' }}">
                         <i class="fa fa-newspaper-o"></i>
