@@ -7,12 +7,15 @@
                 <div class="col-md-6">
                     <h4 class="card-title ml-3">
                         <i class="fa fa-newspaper-o"></i> Impressos
-                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Arquivos Web 
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Edições de Impressos 
                     </h4>
                 </div>
                 <div class="col-md-6">
                     <a href="{{ url('fonte-impresso/listar') }}" class="btn btn-info pull-right mr-3"><i class="fa fa-database"></i> Fontes Impressos</a>
-                    <a href="{{ url('noticia/impresso/cadastrar') }}" class="btn btn-primary pull-right mr-3"><i class="fa fa-plus"></i> Cadastrar Notícia</a>
+                    <a href="{{ url('noticia/impresso/novo') }}" class="btn btn-primary pull-right mr-3"><i class="fa fa-plus"></i> Cadastrar Notícia</a>
+                </div>
+                <div class="col-md-12">
+                    <p class="ml-3">Listagem de todas as edições coletadas no período definido na busca</p>
                 </div>
             </div>
         </div>
@@ -20,10 +23,10 @@
             <div class="col-md-12">
                 @include('layouts.mensagens')
             </div>
-            <div class="row">
+            <div class="row mt-0">
                 <div class="col-lg-12 col-sm-12">
                     {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['jornal-impresso/edicoes']]) !!}
-                        <div class="form-group m-3 w-70">
+                        <div class="form-group mt-0 mr-3 ml-3 w-70">
                             <div class="row">
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
