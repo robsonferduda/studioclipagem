@@ -146,7 +146,7 @@
                         </div>
                         <div class="timeline-panel">
                             <div class="timeline-heading">
-                                <h6>COLETAS WEB <span class="badge badge-pill badge-warning pull-right">{{ $total_coletas }} coletas</span></h6>
+                                <h6 class="text-dark"><i class="fa fa-globe fa-1x mt-0"></i> COLETAS WEB <span class="badge badge-pill badge-warning pull-right">{{ $total_coletas }} coletas</span></h6>
                             </div>
                             <div class="timeline-body">
                                 @if(count($coletas))
@@ -189,10 +189,10 @@
                         </div>
                         <div class="timeline-panel">
                             <div class="timeline-heading">
-                                <h6>REGISTRO DE MONITORAMENTO DIÁRIO<span class="badge badge-pill badge-primary pull-right">{{ $total_monitoramentos }} EXECUÇÕES</span></h6>
+                                <h6 class="text-dark"><i class="nc-icon nc-sound-wave font-20"></i> REGISTRO DE MONITORAMENTO DIÁRIO<span class="badge badge-pill badge-primary pull-right">{{ $total_monitoramentos }} EXECUÇÕES</span></h6>
                             </div>
                             <div class="timeline-body box-execucao">
-                                @foreach ($execucoes as $execucao)
+                                @forelse($execucoes as $execucao)
                                  
                                                 
                                                     <div class="row mb-0 linha-execucao">
@@ -218,8 +218,9 @@
                                                             </p>                                         
                                                         </div>
                                                     </div>
-                                    
-                                @endforeach 
+                                @empty
+                                    <p class="text-danger"><i class="fa fa-hourglass-start mr-1"></i>Nenhum monitoramento executado no dia de hoje</p>
+                                @endforelse 
                             </div>
                         </div>
                     </li>
@@ -229,13 +230,13 @@
                         </div>
                         <div class="timeline-panel">
                             <div class="timeline-heading">
-                                <h6>CATEGORIAS <span class="badge badge-pill badge-success pull-right"> NOTÍCIAS</span></h6>
+                                <h6 class="text-dark"><i class="fa fa-tags fa-1x mt-1"></i> CATEGORIAS <span class="badge badge-pill badge-success pull-right"> NOTÍCIAS</span></h6>
                             </div>
                             <div class="timeline-body">
                                 @if(false)
                                     <p>Existem  notícias sem identificação de categoria.</p>
                                 @else
-                                    <p><i class="fa fa-hourglass-start mr-1"></i>Nenhuma coleta realizada no dia de hoje</p>
+                                    <p class="text-danger"><i class="fa fa-exclamation-circle mr-1"></i>Identificação de categorias não realizada</p>
                                 @endif
                             </div>
                         </div>
