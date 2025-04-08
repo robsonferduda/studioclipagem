@@ -107,16 +107,17 @@
                               <span class="sidebar-normal">Edições Impressos</span>
                               </a>
                           </li>
-                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'jornal-impresso-buscar') ? 'active' : '' }}">
-                            <a href="{{ url('jornal-impresso/buscar') }}">
-                              <span class="sidebar-normal">Buscar</span>
-                              </a>
-                          </li> 
                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'upload') ? 'active' : '' }}">
                             <a href="{{ url('jornal-impresso/uploads') }}">
                               <span class="sidebar-normal">Arquivos Impressos</span>
                               </a>
                           </li> 
+                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'jornal-impresso-buscar') ? 'active' : '' }}">
+                            <a href="{{ url('jornal-impresso/buscar') }}">
+                              <span class="sidebar-normal">Buscar</span>
+                              </a>
+                          </li> 
+                         
                     
                           
                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'impresso/noticias') ? 'active' : '' }}">
