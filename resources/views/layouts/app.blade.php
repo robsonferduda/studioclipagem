@@ -82,7 +82,8 @@
                   </a>
                 </li>
               @endrole
-                @role('administradores')
+
+                @permission('menu-impressos')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'impresso') ? 'active' : '' }}">
                       <a data-toggle="collapse" href="#submenu-impresso" class="{{ (Session::has('url') and Session::get('url') == 'impresso') ? '' : 'collapsed' }}" aria-expanded="{{ (Session::has('url') and Session::get('url') == 'impresso') ? 'true' : 'false' }}">
                         <i class="fa fa-newspaper-o"></i>
@@ -92,60 +93,67 @@
                       </a>
                       <div class="collapse {{ (Session::has('url') and Session::get('url') == 'impresso') ? 'show' : '' }}" id="submenu-impresso" aria-expanded="false">
                         <ul class="nav ml-5">
+                          @permission('impresso-dashboard') 
                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'impresso') ? 'active' : '' }}">
                             <a href="{{ url('impresso') }}">
                             <span class="sidebar-normal">Dashboard</span>
                             </a>
                          </li> 
+                         @endpermission
+                         @permission('impresso-fontes') 
                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'fonte-impressa') ? 'active' : '' }}">
                             <a href="{{ url('fonte-impresso/listar') }}">
                             <span class="sidebar-normal">Fontes Impressos</span>
                             </a>
                           </li>
+                          @endpermission
+                         @permission('impresso-edicoes') 
                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'jornal-impresso-edicoes') ? 'active' : '' }}">
                             <a href="{{ url('jornal-impresso/edicoes') }}">
                               <span class="sidebar-normal">Edições Impressos</span>
                               </a>
                           </li>
+                          @endpermission
+                          @permission('impresso-arquivos') 
                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'upload') ? 'active' : '' }}">
                             <a href="{{ url('jornal-impresso/uploads') }}">
-                              <span class="sidebar-normal">Arquivos Impressos</span>
+                              <span class="sidebar-normal">Processar Arquivos</span>
                               </a>
                           </li> 
+                          @endpermission
+                         @permission('impresso-buscar') 
                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'jornal-impresso-buscar') ? 'active' : '' }}">
                             <a href="{{ url('jornal-impresso/buscar') }}">
                               <span class="sidebar-normal">Buscar</span>
                               </a>
                           </li> 
-                         
-                    
-                          
+                          @endpermission                         
+                          @permission('impresso-monitoramento')                           
                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'impresso/noticias') ? 'active' : '' }}">
                             <a href="{{ url('impresso/noticias') }}">
                               <span class="sidebar-normal">Notícias (Páginas)</span>
                               </a>
                           </li>
-                          <!--
-                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'arquivos-paginas') ? 'active' : '' }}">
-                            <a href="{{ url('jornal-impresso/paginas') }}">
-                              <span class="sidebar-normal">Páginas Web</span>
-                              </a>
-                          </li>
-                        -->
+                          @endpermission
+                          @permission('impresso-noticias-novo') 
                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'noticias-impresso-cadastrar') ? 'active' : '' }}">
                               <a href="{{ url('noticia/impresso/novo') }}">
                               <span class="sidebar-normal">Nova Notícia</span>
                               </a>
                           </li> 
+                          @endpermission
+                          @permission('impresso-noticias') 
                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'noticias-impresso') ? 'active' : '' }}">
                             <a href="{{ url('noticias/impresso') }}">
                               <span class="sidebar-normal">Notícias</span>
                               </a>
-                          </li>                          
+                          </li>       
+                          @endpermission                   
                         </ul>
                      </div>
                   </li>
-                @endrole
+                  @endpermission
+               
                 @role('administradores')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'jornal-web') ? 'active' : '' }}">
                     <a data-toggle="collapse" href="#submenu-web" class="{{ (Session::has('url') and Session::get('url') == 'jornal-web') ? '' : 'collapsed' }}" aria-expanded="{{ (Session::has('url') and Session::get('url') == 'jornal-web') ? 'true' : 'false' }}">
@@ -195,11 +203,13 @@
                   </a>
                   <div class="collapse {{ (Session::has('url') and Session::get('url') == 'radio') ? 'show' : '' }}" id="submenu-radio" aria-expanded="false">
                      <ul class="nav ml-5">
-                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'radio-dashboard') ? 'active' : '' }}">
-                          <a href="{{ url('radio/dashboard') }}">
-                          <span class="sidebar-normal">Dashboard</span>
-                          </a>
-                        </li>
+                        @permission('radio-dashboard')
+                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'radio-dashboard') ? 'active' : '' }}">
+                            <a href="{{ url('radio/dashboard') }}">
+                            <span class="sidebar-normal">Dashboard</span>
+                            </a>
+                          </li>
+                        @endpermission
                         <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'radios') ? 'active' : '' }}">
                            <a href="{{ url('radio/noticias') }}">
                            <span class="sidebar-normal">Notícias</span>
