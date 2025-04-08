@@ -730,4 +730,15 @@ class JornalImpressoController extends Controller
 
         return redirect('jornal-impresso/uploads')->withInput();
     }
+
+    public function loadEmissoras()
+    {
+       
+            $fonte = FonteImpressa::select('id', 'nome', 'nm_cidade as cidade', 'sg_estado as uf');
+            $fonte->leftJoin('cidade', 'cidade.cd_cidade', '=', 'jornal_online.cd_cidade');
+            $fonte->leftJoin('estado', 'estado.cd_estado', '=', 'jornal_online.cd_estado');
+            $emissoras = $fonte->orderBy('sg_estado')->orderBy('nm_cidade')->orderBy('nome', 'asc')->get();
+
+        return response()->json($emissoras);
+    }
 }
