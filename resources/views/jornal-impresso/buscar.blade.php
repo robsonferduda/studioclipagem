@@ -78,7 +78,7 @@
 
                     @if(count($impressos))
                         <h6 class="px-3">Mostrando {{ $impressos->count() }} de {{ $impressos->total() }} arquivos coletados</h6>
-                        {{ $impressos->onEachSide(1)->appends(['dt_inicial' => $dt_inicial, 'dt_final' => $dt_final])->links('vendor.pagination.bootstrap-4') }} 
+                        {{ $impressos->onEachSide(1)->appends(['dt_inicial' => \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y'), 'dt_final' => \Carbon\Carbon::parse($dt_final)->format('d/m/Y')])->links('vendor.pagination.bootstrap-4') }} 
                     @endif  
 
                     @foreach ($impressos as $key => $pagina)
