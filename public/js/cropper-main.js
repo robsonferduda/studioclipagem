@@ -16,6 +16,7 @@ $(function () {
   var options = {
         aspectRatio: NaN,
         preview: '.img-preview',
+        zoomable: false, // Desativa o zoom
         crop: function (e) {
           $dataX.val(Math.round(e.x));
           $dataY.val(Math.round(e.y));
