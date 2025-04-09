@@ -167,8 +167,6 @@ class JornalImpressoController extends Controller
         $jornais = PaginaJornalImpresso::query();
 
         if($request->isMethod('POST')){
-
-            dd($request->selecionadas);
             
             $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00" : date("Y-m-d")." 00:00:00";
             $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d H:i:s");
@@ -176,8 +174,6 @@ class JornalImpressoController extends Controller
             $expressao = $request->expressao;
 
             $jornais = PaginaJornalImpresso::query();
-
-
 
             $jornais->when($fonte_selecionada, function ($q) use ($fonte_selecionada) {
                 $q->whereHas('edicao', function($q) use($fonte_selecionada){
