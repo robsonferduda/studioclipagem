@@ -184,7 +184,7 @@ class JornalImpressoController extends Controller
                 });
             });
 
-            $impressos = $jornais->orderBy('id_edicao_jornal_online')->orderBy('n_pagina','ASC')->paginate(10);
+            $impressos = $jornais->orderBy('id_edicao_jornal_online')->orderBy('n_pagina','DESC')->paginate(10);
 
         }
 
