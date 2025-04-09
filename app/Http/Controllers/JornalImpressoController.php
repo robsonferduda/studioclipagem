@@ -175,6 +175,8 @@ class JornalImpressoController extends Controller
 
             $jornais = PaginaJornalImpresso::query();
 
+            dd($request->selecionadas);
+
             $jornais->when($fonte_selecionada, function ($q) use ($fonte_selecionada) {
                 $q->whereHas('edicao', function($q) use($fonte_selecionada){
                     return $q->whereIn('id_jornal_online', $fonte_selecionada);
