@@ -29,7 +29,7 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Tipo de Data</label>
-                                        <select class="form-control select2" name="regra" id="regra">
+                                        <select class="form-control select2" name="tipo_data" id="tipo_data">
                                             <option value="created_at">Data de Cadastro</option>
                                             <option value="created_at">Data do Clipping</option>
                                         </select>
@@ -38,13 +38,13 @@
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
                                         <label>Data Inicial</label>
-                                        <input type="text" class="form-control datepicker" name="dt_inicial" required="true" value="{{ \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y H:i:s') }}" placeholder="__/__/____">
+                                        <input type="text" class="form-control datepicker" name="dt_inicial" required="true" value="{{ \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y') }}" placeholder="__/__/____">
                                     </div>
                                 </div>
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
                                         <label>Data Final</label>
-                                        <input type="text" class="form-control datepicker" name="dt_final" required="true" value="{{ \Carbon\Carbon::parse($dt_final)->format('d/m/Y H:i:s') }}" placeholder="__/__/____">
+                                        <input type="text" class="form-control datepicker" name="dt_final" required="true" value="{{ \Carbon\Carbon::parse($dt_final)->format('d/m/Y') }}" placeholder="__/__/____">
                                     </div>
                                 </div>
                             </div>
