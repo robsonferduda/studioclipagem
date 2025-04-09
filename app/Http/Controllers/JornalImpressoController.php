@@ -166,7 +166,7 @@ class JornalImpressoController extends Controller
 
         $jornais = PaginaJornalImpresso::query();
 
-        if($request->isMethod('POST')){
+        if($request->isMethod('POST') or $_REQUEST['page']){
             
             $tipo_data = ($request->tipo_data) ? $request->tipo_data : 'created_at';
             $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");

@@ -73,8 +73,6 @@ class EmissoraController extends Controller
             return $q->where('cd_estado', Session::get('filtro_estado'));
         });
 
-        dd($nome);
-
         $emissora->when($nome, function ($q) use ($nome) {
             dd($nome);
             return $q->where('nome_emissora','ilike','%'.$nome.'%');
