@@ -168,12 +168,15 @@ class JornalImpressoController extends Controller
 
         if($request->isMethod('POST')){
             
-            $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00" : date("Y-m-d")." 00:00:00";
-            $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d H:i:s");
+            $tipo_data = ($request->tipo_data) ? $request->tipo_data : 'dt_clipagem';
+            $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
+            $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
             $fonte_selecionada = ($request->selecionadas) ? array_map('intval', explode(",", $request->selecionadas[0])) : null;
             $expressao = $request->expressao;
 
             $jornais = PaginaJornalImpresso::query();
+
+            $jornais->whereBetween($tipo_data, [$dt_inicial." 00:00:00", $dt_final." 23:59:59"])
 
             $jornais->when($fonte_selecionada, function ($q) use ($fonte_selecionada) {
                 $q->whereHas('edicao', function($q) use($fonte_selecionada){
