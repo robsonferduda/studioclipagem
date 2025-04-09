@@ -30,8 +30,8 @@
                                     <div class="form-group">
                                         <label>Tipo de Data</label>
                                         <select class="form-control select2" name="regra" id="regra">
-                                            <option value="dt_noticia">Data de Cadastro</option>
-                                            <option value="dt_clipagem">Data do Clipping</option>
+                                            <option value="created_at">Data de Cadastro</option>
+                                            <option value="created_at">Data do Clipping</option>
                                         </select>
                                     </div>
                                 </div>
