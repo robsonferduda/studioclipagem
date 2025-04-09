@@ -171,7 +171,7 @@ class JornalImpressoController extends Controller
             $tipo_data = ($request->tipo_data) ? $request->tipo_data : 'created_at';
             $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
             $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
-            $fonte_selecionada = ($request->selecionadas) ? array_map('intval', explode(",", $request->selecionadas[0])) : null;
+            $fonte_selecionada = (count($request->selecionadas) > 0) ? array_map('intval', explode(",", $request->selecionadas[0])) : null;
             $expressao = $request->expressao;
 
             $jornais = PaginaJornalImpresso::query();
@@ -184,7 +184,7 @@ class JornalImpressoController extends Controller
                 });
             });
 
-            $impressos = $jornais->orderBy('id_edicao_jornal_online')->orderBy('n_pagina','ASC')->toSql();
+            $impressos = $jornais->orderBy('id_edicao_jornal_online')->orderBy('n_pagina','ASC')->paginate(10);
 
             dd($impressos);
         }
