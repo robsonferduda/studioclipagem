@@ -176,8 +176,6 @@ class JornalImpressoController extends Controller
 
             $jornais = PaginaJornalImpresso::query();
 
-            dd($request->selecionadas);
-
             $jornais->whereBetween('created_at', [$dt_inicial." 00:00:00", $dt_final." 23:59:59"]);
 
             $jornais->when($fonte_selecionada, function ($q) use ($fonte_selecionada) {
