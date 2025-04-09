@@ -349,6 +349,13 @@ class JornalImpressoController extends Controller
 
                 Storage::disk('impresso-img')->put($filename, $arquivo);
 
+                $estados = Estado::orderBy('nm_estado')->get();
+                $cidades = Cidade::where(['cd_estado' => $noticia->cd_estado])->orderBy('nm_cidade')->get();
+                $fontes = FonteImpressa::orderBy("nome")->get();
+                $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
+
+                return view('jornal-impresso/editar', compact('noticia','clientes','fontes','estados','cidades'));
+
                 return redirect('jornal-impresso/noticia/editar/'.$noticia->id);
 
                 break;

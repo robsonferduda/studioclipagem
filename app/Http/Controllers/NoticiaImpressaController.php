@@ -186,7 +186,7 @@ class NoticiaImpressaController extends Controller
         $file_name= $filename.'-'.time().'.'.$extension;
         $image->move(public_path('img/noticia-impressa/recorte'),$file_name);
 
-        //$noticia = JornalImpresso::find($request->id);
+        //$noticia = NoticiaImpresso::find($request->id);
         //$noticia->print = $file_name;
         //$noticia->save();
 

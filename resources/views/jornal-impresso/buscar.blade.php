@@ -85,12 +85,7 @@
                         <div class="card">
                             <div class="card-body">                           
                                 <div class="row">
-                                    <div class="col-lg-2 col-md-2 col-sm-12 mb-1">
-                                        <a href="{{ url('jornal-impresso/web/pagina/download/'.$pagina->id) }}">
-                                            <img class="lazy-load" data-src="{{ Storage::disk('s3')->temporaryUrl($pagina->path_pagina_s3, '+2 minutes') }}" alt="Página {{ $pagina->n_pagina }}">
-                                        </a>
-                                    </div>
-                                    <div class="col-lg-10 col-sm-10 mb-1"> 
+                                    <div class="col-lg-12 col-sm-12 mb-1"> 
                                         <div class="row">
                                             <div class="col-lg-12 col-md-12 col-sm-12 mb-1"> 
 
@@ -117,7 +112,7 @@
                                                     </div>
                                                 </div>        
                                             </div>  
-                                            <div class="col-lg-12 col-md-12 col-sm-12 mb-1 rodape-noticia"> 
+                                            <div class="col-lg-12 col-md-12 col-sm-12 mb-1"> 
                                                 <button class="btn btn-primary btn-visualizar-noticia" data-id="{{ $pagina->id }}"><i class="fa fa-eye"></i> Visualizar</button> 
                                                 <a href="{{ url('jornal-impresso/noticia/extrair/web',$pagina->id) }}" class="btn btn-success btn-extrair-noticia"><i class="fa fa-database"></i> Extrair Notícia</a>  
                                             </div>
@@ -148,7 +143,7 @@
             <div class="row">
                 <div class="col-md-12 modal-cabecalho">
                     <h6 class="modal-fonte mt-0 mb-1"></h6>
-                    <h6 class="text-muted modal-estado mt-0 mb-1"></h6>
+                    <h6 class="text-muted modal-estado mt-0 mb-1" style="color: #FF5722;"></h6>
                     <p class="modal-pagina mt-0 mb-2"></p>
                 </div>
                 <hr/>
