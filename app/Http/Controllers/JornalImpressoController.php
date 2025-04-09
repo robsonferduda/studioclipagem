@@ -181,7 +181,7 @@ class JornalImpressoController extends Controller
             $jornais->when($fonte_selecionada, function ($q) use ($fonte_selecionada) {
 
 
-                dd("Entrou");
+                dd($request->selecionadas);
 
                 $q->whereHas('edicao', function($q) use($fonte_selecionada){
                     return $q->whereIn('id_jornal_online', $fonte_selecionada);
