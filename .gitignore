@@ -19,3 +19,4 @@ __pycache__/
 worker.log
 /public/planilhas
 /public/img/noticia-impressa
+/public/img/noticia-impressa/recorte

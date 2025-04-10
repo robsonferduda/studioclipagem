@@ -7,7 +7,7 @@
                 <div class="col-md-8">
                     <h4 class="card-title ml-3">
                         <i class="fa fa-newspaper-o"></i> Impressos 
-                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Cadastrar Notícia
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Editar Notícia
                     </h4>
                 </div>
                 <div class="col-md-4">
@@ -137,18 +137,23 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-3">
-                                    <label for="arquivo">Print da Notícia</label>
-                                    <div style="min-height: 302px;" class="dropzone" id="dropzone"><div class="dz-message" data-dz-message><span>CLIQUE AQUI<br/> ou <br/>ARRASTE</span></div></div>
-                                    <input type="hidden" name="arquivo" id="arquivo">
-                                </div>
-                                <div class="col-md-9">
+                                <div class="col-md-12">
                                     <label for="sinopse">Sinopse</label>
                                     <div class="form-group">
                                         <textarea class="form-control" name="sinopse" id="sinopse" rows="10">{{ $noticia->sinopse }}</textarea>
                                     </div>
                                 </div>                            
                             </div>     
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <img src="{{ asset('img/noticia-impressa/'.$noticia->ds_caminho_img) }}" alt="Página {{ $noticia->n_pagina }}">
+                                </div>
+                                <div class="col-md-9">
+                                    <label for="arquivo">Print da Notícia</label>
+                                    <div style="min-height: 302px;" class="dropzone" id="dropzone"><div class="dz-message" data-dz-message><span>CLIQUE AQUI<br/> ou <br/>ARRASTE</span></div></div>
+                                    <input type="hidden" name="arquivo" id="arquivo">
+                                </div>
+                            </div>
                             <div class="text-center mb-2 mt-3">
                                 <button type="submit" class="btn btn-success" name="btn_enviar" value="salvar"><i class="fa fa-save"></i> Salvar</button>
                                 <button type="submit" class="btn btn-warning" name="btn_enviar" value="salvar_e_copiar"><i class="fa fa-copy"></i> Salvar e Copiar</button>

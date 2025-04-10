@@ -88,7 +88,7 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-lg-2 col-md-2 col-sm-12 mb-1">
-                                        
+                                          <a href="{{ url('jornal-impresso/web/pagina/download/'.$noticia->id) }}" target="_BLANK"><img src="{{ asset('img/noticia-impressa/'.$noticia->ds_caminho_img) }}" alt="Página {{ $noticia->n_pagina }}"></a>
                                     </div>
                                     <div class="col-lg-10 col-sm-10 mb-1"> 
                                         <div class="row">

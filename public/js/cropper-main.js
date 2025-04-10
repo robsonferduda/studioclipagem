@@ -237,7 +237,7 @@ $(function () {
                 },
                 success: function(data) {
 
-                  var img = host+"/img/noticia-impressa/recorte/"+data;  
+                  var img = host+"/img/noticia-impressa/"+data;  
                                       
                   $(".img-container img").remove();
                   $(".img-container").html('<img id="image" src="'+img+'">');

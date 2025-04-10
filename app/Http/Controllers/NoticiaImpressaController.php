@@ -150,9 +150,20 @@ class NoticiaImpressaController extends Controller
     {
         $noticia = NoticiaImpresso::find($id);
 
+        flash('Mensagem flash de teste')->success();
+
         try {
 
+            $dt_cadastro = ($request->dt_cadastro) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_cadastro)->format('Y-m-d') : date("Y-m-d");
+            $request->merge(['dt_cadastro' => $dt_cadastro]);
+
+            $dt_clipagem = ($request->dt_clipagem) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_clipagem)->format('Y-m-d') : date("Y-m-d");
+            $request->merge(['dt_clipagem' => $dt_clipagem]);
+
+            $request->merge(['cd_cidade' => $request->cidade]);
+
             $noticia->update($request->all());
+
 
             $retorno = array('flag' => true,
                              'msg' => '<i class="fa fa-check"></i> Dados atualizados com sucesso');
@@ -161,6 +172,7 @@ class NoticiaImpressaController extends Controller
 
             $retorno = array('flag' => false,
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
+
         } catch (Exception $e) {
             $retorno = array('flag' => true,
                              'msg' => "Ocorreu um erro ao atualizar o registro");
@@ -183,14 +195,20 @@ class NoticiaImpressaController extends Controller
         $filesize = $image->getSize()/1024/1024;
         $filename = pathinfo($fileInfo, PATHINFO_FILENAME);
         $extension = "jpeg";
-        $file_name= $filename.'-'.time().'.'.$extension;
-        $image->move(public_path('img/noticia-impressa/recorte'),$file_name);
+        $file_name = $filename.'-'.time().'.'.$extension;
+        $file_noticia = $request->id.'.'.$extension;
 
-        //$noticia = NoticiaImpresso::find($request->id);
-        //$noticia->print = $file_name;
-        //$noticia->save();
+       //dd($file_noticia);
 
-        return $file_name;
+        //$image->move(public_path('img/noticia-impressa/recorte'),$file_name);
+        $image->move(public_path('img/noticia-impressa'),$file_noticia);
+
+        $noticia = NoticiaImpresso::find($request->id);
+
+        $noticia->ds_caminho_img = $file_noticia;
+        $noticia->save();
+
+        return $file_noticia;
     }
 
     public function getSecoes($id_fonte)
@@ -200,5 +218,17 @@ class NoticiaImpressaController extends Controller
         $secoes = FonteImpressa::find($id_fonte)->secoes()->orderBy('ds_sessao')->get();
         
         return response()->json($secoes);
+    }
+
+    public function excluir($id)
+    {
+        $noticia = NoticiaImpresso::find($id);
+
+        if($noticia->delete())
+            Flash::success('<i class="fa fa-check"></i> Notícia excluída com sucesso');
+        else
+            Flash::error("Erro ao excluir o registro");
+
+        return redirect('noticias/impresso')->withInput();
     }
 }

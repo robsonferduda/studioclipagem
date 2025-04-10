@@ -1,3 +1,4 @@
+@include('flash::message')
 @if(\Session::has('flash_notification'))
     @foreach (Session::get('flash_notification') as $message)
         <div class="alert alert-{{ $message['level'] }}">
