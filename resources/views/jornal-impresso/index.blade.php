@@ -156,6 +156,34 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="showNoticia" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-dialog-scrollable modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="padding: 15px !important;">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-newspaper-o"></i><span></span> Dodos da Notícia</h6>
+        </div>
+        <div class="modal-body" style="padding: 15px;">
+            <div class="row">
+                <div class="col-md-12 modal-cabecalho">
+                    <h6 class="modal-fonte mt-0 mb-1"></h6>
+                    <h6 class="text-muted modal-estado mt-0 mb-1" style="color: #FF5722;"></h6>
+                    <p class="modal-pagina mt-0 mb-2"></p>
+                </div>
+                <hr/>
+                <div class="col-md-12 modal-conteudo">
+                    
+                </div>
+            </div>
+            <div class="center">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
+            </div>
+      </div>
+    </div>
+  </div>
+</div>
 @endsection
 @section('script')
     <script>
@@ -172,6 +200,23 @@
             $(".panel-heading").click(function() {
                 $(this).parent().addClass('active').find('.panel-body').slideToggle('fast');
                 $(".panel-heading").not(this).parent().removeClass('active').find('.panel-body').slideUp('fast');
+            });
+
+             $(".btn-visualizar-noticia").click(function(){
+
+                var id = $(this).data("id");
+                var chave = ".conteudo-"+id;
+                var pagina = ".paginas-"+id;
+                var estado = ".conteudo-estado-"+id;
+                var fonte = ".conteudo-fonte-"+id;
+
+                $(".modal-fonte").html($(fonte).text());
+                $(".modal-estado").html($(estado).text());
+                $(".modal-pagina").html($(pagina).text());
+                $(".modal-conteudo").html($(chave).text().replace(/\n/g, "<br />"));
+
+                $("#showNoticia").modal("show");
+
             });
 
             $(".btn-show").click(function(){
