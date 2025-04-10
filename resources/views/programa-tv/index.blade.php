@@ -98,8 +98,8 @@
                                     <th>Emissora</th>
                                     <th>Programa</th>
                                     <th>Tipo</th>
-                                    <th>Situação</th>
                                     <th>Valor</th>
+                                    <th>Situação</th>
                                     <th class="disabled-sorting text-center">Gravação</th>
                                     <th class="disabled-sorting text-center">Ações</th>
                                 </tr>
@@ -111,8 +111,8 @@
                                     <th>Emissora</th>
                                     <th>Programa</th>
                                     <th>Tipo</th>
-                                    <th>Situação</th>
                                     <th>Valor</th>
+                                    <th>Situação</th>
                                     <th class="disabled-sorting text-center">Gravação</th>
                                     <th class="disabled-sorting text-center">Ações</th>
                                 </tr>
@@ -139,10 +139,10 @@
                                             <span class="badge badge-pill badge-danger">Erro</span>
                                         @endif
                                     </td>
-                                    <td class="right">{{ number_format($programa->nu_valor, 2, ".","") }}</td>
                                     <td class="center">
                                         <a href="{{ url('tv/emissora/programa/'.$programa->id.'/gravacao/atualiza') }}">{!! ($programa->gravar) ? '<span class="badge badge-pill badge-success">SIM</span>' : '<span class="badge badge-pill badge-danger">NÃO</span>' !!}</a>
                                     </td>
+                                    <td class="right">{{ number_format($programa->nu_valor, 2, ".","") }}</td>
                                     <td class="center acoes-3">
                                         
                                         @if(count($programa->horarios))

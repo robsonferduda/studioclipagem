@@ -85,6 +85,7 @@
                                 <th>Emissora</th>
                                 <th>URL</th>
                                 <th>Valor</th>
+                                <th>Situação</th>
                                 <th class="disabled-sorting text-center">Gravação</th>
                                 <th class="disabled-sorting text-center">Ações</th>
                             </tr>
@@ -96,6 +97,7 @@
                                 <th>Emissora</th>
                                 <th>URL</th>
                                 <th>Valor</th>
+                                <th>Situação</th>
                                 <th class="disabled-sorting text-center">Gravação</th>
                                 <th class="disabled-sorting text-center">Ações</th>
                             </tr>
@@ -108,6 +110,13 @@
                                     <td>{{ $emissora->nome_emissora }}</td>
                                     <td>{{ $emissora->url_stream }}</td>
                                     <td class="right">{{ number_format($emissora->nu_valor, 2, ".","") }}</td>
+                                    <td class="text-center">
+                                        @if($emissora->id_situacao == 1)
+                                            <span class="badge badge-pill badge-success">Normal</span>
+                                        @else
+                                            <span class="badge badge-pill badge-danger">Erro</span>
+                                        @endif
+                                    </td>
                                     <td class="center">
                                         <a href="{{ url('emissora/'.$emissora->id.'/gravacao/atualiza') }}">{!! ($emissora->gravar) ? '<span class="badge badge-pill badge-success">SIM</span>' : '<span class="badge badge-pill badge-danger">NÃO</span>' !!}</a>
                                     </td>

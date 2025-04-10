@@ -75,7 +75,17 @@
                         </div>
                     </div>  
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Situação <span class="text-danger">Obrigatório</span></label>
+                                <select class="form-control" name="id_situacao" id="id_situacao" required>
+                                    <option value="">Selecione uma situação</option>
+                                    <option value="1" {{ ($emissora and $emissora->id_situacao == "1") ? 'selected' : '' }}>Normal</option>
+                                    <option value="2" {{ ($emissora and $emissora->id_situacao == "2") ? 'selected' : '' }}>Erro</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label>Valor</label>
                                 <input type="text" class="form-control" name="nu_valor" id="nu_valor" placeholder="Valor" value="{{ ($emissora) ? $emissora->nu_valor : old('nu_valor') }}">
