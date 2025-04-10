@@ -137,6 +137,10 @@
                                             </div>
                                         </div>                
                                     </div>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 mb-1"> 
+                                        <button class="btn btn-primary btn-visualizar-noticia" data-id="{{ $pagina->id }}"><i class="fa fa-eye"></i> Visualizar</button> 
+                                        <a href="{{ url('jornal-impresso/noticia/extrair/web',$pagina->id) }}" class="btn btn-success btn-extrair-noticia"><i class="fa fa-database"></i> Extrair Notícia</a>  
+                                    </div>
                                 </div>     
                             </div>
                         </div>

@@ -100,7 +100,6 @@ class JornalImpressoController extends Controller
                 $fonte = null;
             }
         }
-
         
         $dados = DB::table('noticia_cliente')
                     ->select('path_pagina_s3',
