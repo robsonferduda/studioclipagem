@@ -184,6 +184,10 @@ class JornalImpressoController extends Controller
                 });
             });
 
+            $jornais->when($expressao, function ($q) use ($expressao) {
+                return $q->where('texto_extraido', 'ILIKE', '%'.trim($expressao).'%');
+            });
+
             $impressos = $jornais->orderBy('id_edicao_jornal_online')->orderBy('n_pagina','DESC')->paginate(10);
 
         }

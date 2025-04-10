@@ -59,14 +59,15 @@
                                     </p>
                                     <p id="selecionadasTexto" class="mt-1">Fontes selecionadas: <span id="loadingSpinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span></p>
                                     <input type="hidden" name="selecionadas[]" id="selecionadas">
+                                    <input type="hidden" name="filtradas" id="filtradas" value="{{ ($fonte_selecionada) ? implode(",", $fonte_selecionada) : "" }}">
                                 </div>
 
                             </div>
                             <div class="row">
                                 <div class="col-md-12 col-sm-12">
                                     <div class="form-group">
-                                        <label for="expressao" class="form-label">Expressão de Busca <span class="text-primary">Digite o termo ou expressão de busca</span></label>
-                                        <textarea class="form-control" name="expressao" id="expressao" rows="3">{{ $expressao }}</textarea>
+                                        <label for="expressao" class="form-label">Termo de Busca <span class="text-primary">Digite o termo de busca</span></label>
+                                        <textarea class="form-control" name="expressao" id="expressao" rows="1">{{ $expressao }}</textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-12 checkbox-radios mb-0">
@@ -247,12 +248,9 @@
                 const response = await fetch(host+'/jornal-impresso/emissoras');
                 emissoras = await response.json();
 
-                // Adiciona os registros com fl_filtro = true à variável selecionados
-                emissoras.forEach(e => {
-                    if (e.fl_filtro === true && !selecionadas.includes(e.id)) {
-                        selecionadas.push(e.id);
-                    }
-                });
+                // Preencher a variável selecionadas com os IDs contidos em #filtradas
+                const filtradas = document.getElementById('filtradas').value.split(',').map(id => parseInt(id.trim()));
+                selecionadas = filtradas.filter(id => !isNaN(id)); // Garantir que apenas números sejam adicionados
 
                 document.getElementById('selecionadas').value = selecionadas;
 
@@ -305,13 +303,8 @@
                 let checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
                 checkbox.value = e.id;
-                //checkbox.checked = selecionadas.includes(e.id);
-                checkbox.checked = e.fl_filtro === true;
+                checkbox.checked = selecionadas.includes(e.id);
                 checkbox.classList.add('checkbox-emissora');
-
-                if (e.fl_filtro === true && !selecionadas.includes(e.id)) {
-                    selecionadas.push(e.id);
-                }
 
                 checkbox.addEventListener('change', (event) => {
                     if (event.target.checked) {
