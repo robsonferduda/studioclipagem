@@ -53,10 +53,13 @@ Route::middleware(['web'])->group(function () {
 	Route::get('boletins','BoletimController@index');
 	Route::get('boletim/cadastrar','BoletimController@cadastrar');
 	Route::get('boletim/detalhes/{id}','BoletimController@detalhes');
+	Route::get('boletim/editar/{id}','BoletimController@editar');
 	Route::get('boletim/{id}/enviar','BoletimController@enviar');
 	Route::get('boletim/{id}/outlook','BoletimController@outlook');
 	Route::get('boletim/{id}/visualizar','BoletimController@visualizar');
+	Route::post('boletim/noticias','BoletimController@noticias');
 	Route::post('boletim/enviar/lista','BoletimController@enviarLista');
+	Route::resource('boletim','BoletimController');
 
 	Route::resource('cliente','ClienteController');
 	Route::match(array('GET', 'POST'),'clientes','ClienteController@index');

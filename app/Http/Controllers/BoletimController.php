@@ -4,26 +4,38 @@ namespace App\Http\Controllers;
 
 use Auth;
 use Mail;
-use App\Boletim;
+use Carbon\Carbon;
+use App\Models\Boletim;
 use App\Models\Cliente;
+use App\Models\NoticiaImpresso;
 use Illuminate\Http\Request;
+use Laracasts\Flash\Flash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 
 class BoletimController extends Controller
 {
+    private $data_atual;
+    private $carbon;
+
     public function __construct()
     {
         $this->middleware('auth', ['except' => ['detalhes','enviar','visualizar']]);
         Session::put('url','boletins');
+        $this->data_atual = session('data_atual');
+        $this->carbon = new Carbon();
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $clientes = Cliente::orderBy('nome')->get();
+        $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
+        $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
 
-        return view('boletim/index',compact('clientes'));
+        $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
+        $boletins = Boletim::whereBetween('dt_boletim', [$dt_inicial." 00:00:00", $dt_final." 23:59:59"])->get();
+
+        return view('boletim/index',compact('boletins','clientes','dt_inicial','dt_final'));
     }
 
     public function detalhes($id)
@@ -34,11 +46,67 @@ class BoletimController extends Controller
         return view('boletim/detalhes', compact('boletim', 'dados'));
     }
 
+    public function noticias(Request $request)
+    {   
+        $noticias = array();
+
+        $sql = "SELECT t1.id, 
+                    titulo, 
+                    'impresso' as tipo, 
+                    TO_CHAR(dt_clipagem, 'DD/MM/YYYY') AS data_formatada,
+                    t2.nome as fonte
+                FROM noticia_impresso t1
+                JOIN jornal_online t2 ON t2.id = t1.id_fonte";
+
+        $noticias = DB::select($sql);
+
+        return response()->json($noticias);
+    }
+
     public function cadastrar()
     {   
         $clientes = Cliente::orderBy('nome')->get();
 
         return view('boletim/cadastrar', compact('clientes'));
+    }
+
+    public function editar($id)
+    {   
+        $boletim = Boletim::find($id);
+        $clientes = Cliente::orderBy('nome')->get();
+
+        return view('boletim/editar', compact('boletim','clientes'));
+    }
+
+    public function store(Request $request)
+    {
+        $dt_boletim = ($request->dt_boletim) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_boletim)->format('Y-m-d') : date("Y-m-d");
+        $request->merge(['dt_boletim' => $dt_boletim]);
+
+        try {
+            
+            $boletim = Boletim::create($request->all());
+
+            $retorno = array('flag' => true,
+                             'msg' => '<i class="fa fa-check"></i> Dados inseridos com sucesso');
+
+        } catch (\Illuminate\Database\QueryException $e) {
+
+            $retorno = array('flag' => false,
+                             'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
+
+        } catch (\Exception $e) {
+            $retorno = array('flag' => true,
+                             'msg' => '<i class="fa fa-times"></i> Ocorreu um erro ao inserir o registro');
+        }
+
+        if ($retorno['flag']) {
+            Flash::success($retorno['msg']);
+            return redirect('boletim/editar/'.$boletim->id)->withInput();
+        } else {
+            Flash::error($retorno['msg']);
+            return redirect('boletim/cadastrar')->withInput();
+        }
     }
 
     public function visualizar($id)
