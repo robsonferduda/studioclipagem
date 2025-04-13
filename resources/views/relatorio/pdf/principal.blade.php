@@ -6,18 +6,11 @@
                 <div>
                     <div style="float:left; margin-right: 10px;">
                         <span style="font-size: 8px;  margin:0px; padding: 0px;">EMISSORA</span>  
-                        <h1 style="font-size: 16px; margin:0px; padding: 0px;">{{ $noticia->INFO1 }}</h1>  
+                        <h1 style="font-size: 16px; margin:0px; padding: 0px;">{{ $noticia->fonte }}</h1>  
                     </div>  
-                    <div style="float:left; margin-right: 10px;">
-                        <span style="font-size: 8px; margin:0px; padding: 0px;">PROGRAMA</span> 
-                        <h1 style="font-size: 16px; margin:0px; padding: 0px;">{{ $noticia->INFO2 }}</h1>   
-                    </div> 
-                    <div style="float:left; text-align: right;">
-                        <span style="font-size: 8px; margin:0px; padding: 0px;">DURAÇÃO</span>   
-                        <h1 style="font-size: 16px; margin:0px; padding: 0px;">{{ $noticia->segundos }}</h1> 
-                    </div> 
+                    
                     <div style="float:right; text-align: right;">
-                        {{ $noticia->data }}
+                        {{ $noticia->data_formatada }}
                     </div>
                 </div>
                 <div style="clear: both;">

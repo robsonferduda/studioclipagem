@@ -164,7 +164,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-lg-12 col-sm-12">
-                                    @switch($noticia->clipagem)
+                                    @switch($noticia->tipo)
                                         @case('web')
                                             @php
                                                 $tipo_formatado = '<i class="fa fa-globe"></i> Clipagens de Web';
@@ -180,7 +180,7 @@
                                                 $tipo_formatado = '<i class="fa fa-volume-up"></i> Clipagens de Rádio';
                                             @endphp
                                         @break
-                                        @case('jornal')
+                                        @case('impresso')
                                             @php
                                                 $tipo_formatado = '<i class="fa fa-newspaper-o"></i> Clipagens de Jornal';
                                             @endphp
@@ -202,7 +202,7 @@
                             <div class="row">
                                 <div class="col-lg-6 col-sm-12">
                                     <div style="font-size: 18px;">
-                                        @switch($noticia->status)
+                                        @switch($noticia->sentimento)
                                             @case("Negativo")
                                                     <i class="fa fa-frown-o text-danger"></i>
                                                     <i class="fa fa-ban op-2"></i>

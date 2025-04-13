@@ -63,11 +63,22 @@ class RelatorioController extends Controller
 
         if($request->isMethod('POST')){
 
+            $sql = "SELECT t1.id, 
+                                titulo, 
+                                'impresso' as tipo, 
+                                TO_CHAR(dt_clipagem, 'DD/MM/YYYY') AS data_formatada,
+                                t2.nome as fonte,
+                                t1.sinopse,
+                                t3.sentimento
+                            FROM noticia_impresso t1
+                            JOIN jornal_online t2 ON t2.id = t1.id_fonte
+                            LEFT JOIN noticia_cliente t3 ON t3.noticia_id = t1.id";
+
+            $dados = DB::select($sql);
+
             switch($request->acao) {
 
                 case 'gerar-pdf':
-
-                    $dados = $this->dadosTv();
 
                     $dt_inicial = date('d/m/Y');
                     $dt_final = date('d/m/Y');
@@ -105,10 +116,9 @@ class RelatorioController extends Controller
                 break;
             
                 case 'pesquisar': 
-                    $sql = $this->sqlDiario();
-                    $dados = DB::connection('mysql')->select($sql); 
-
+                    
                     return view('relatorio/index', compact('dados'));
+
                 break;
             }
 
