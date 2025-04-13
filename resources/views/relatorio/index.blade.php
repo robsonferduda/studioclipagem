@@ -167,22 +167,22 @@
                                     @switch($noticia->tipo)
                                         @case('web')
                                             @php
-                                                $tipo_formatado = '<i class="fa fa-globe"></i> Clipagens de Web';
+                                                $tipo_formatado = '<i class="fa fa-globe"></i> Web';
                                             @endphp
                                         @break
                                         @case('tv')
                                             @php
-                                                $tipo_formatado = '<i class="fa fa-television"></i> Clipagens de TV';
+                                                $tipo_formatado = '<i class="fa fa-television"></i> TV';
                                             @endphp
                                         @break
                                         @case('radio')
                                             @php
-                                                $tipo_formatado = '<i class="fa fa-volume-up"></i> Clipagens de Rádio';
+                                                $tipo_formatado = '<i class="fa fa-volume-up"></i> Rádio';
                                             @endphp
                                         @break
                                         @case('impresso')
                                             @php
-                                                $tipo_formatado = '<i class="fa fa-newspaper-o"></i> Clipagens de Jornal';
+                                                $tipo_formatado = '<i class="fa fa-newspaper-o"></i> Impressos';
                                             @endphp
                                         @break
                                         @default
