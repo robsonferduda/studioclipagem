@@ -38,7 +38,7 @@ class MonitoramentoController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth');        
+        $this->middleware('auth', ['except' => ['executarImpresso']]);        
         $this->carbon = new Carbon();
         Session::put('url','monitoramento');
     }
