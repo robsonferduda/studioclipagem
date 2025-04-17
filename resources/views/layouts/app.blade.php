@@ -50,7 +50,7 @@
                     <p>Dashboard</p>
                     </a>
                 </li>
-                @permission('menu_clientes')
+                @permission('menu-clientes')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'cliente') ? 'active' : '' }}">
                     <a href="{{ url('cliente') }}">
                     <i class="nc-icon nc-briefcase-24"></i>
