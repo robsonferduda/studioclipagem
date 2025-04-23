@@ -38,16 +38,7 @@
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="form-group">
-                                    <div class="form-check">
-                                        <label class="form-check-label mt-2">
-                                            <input class="form-check-input" {{ ($cliente->fl_print) ? 'checked' : '' }} type="checkbox" name="fl_print" value="true">
-                                            NOTÍCIAS COM PRINT
-                                            <span class="form-check-sign"></span>
-                                        </label>
-                                    </div>
-                                </div>
-                          
+
                                 <div class="form-group">
                                     <div class="form-check">
                                         <label class="form-check-label mt-2">
@@ -57,6 +48,17 @@
                                         </label>
                                     </div>
                                 </div>
+                                
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <label class="form-check-label mt-2">
+                                            <input class="form-check-input" {{ ($cliente->fl_print) ? 'checked' : '' }} type="checkbox" name="fl_print" value="true">
+                                            NOTÍCIAS COM PRINT
+                                            <span class="form-check-sign"></span>
+                                        </label>
+                                    </div>
+                                </div>                          
+                                
                             </div>
                         </div>
                     </div>
@@ -113,6 +115,13 @@
                                         <span class="form-check-sign"></span>
                                     </label>
                                 </div>
+                                <div class="form-check float-left mr-3">
+                                    <label class="form-check-label mt-2">
+                                        <input class="form-check-input" {{ ($cliente->fl_link_relatorio) ? 'checked' : '' }} type="checkbox" name="fl_link_relatorio" value="true">
+                                            RELATÓRIO COM LINKS
+                                        <span class="form-check-sign"></span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -134,6 +143,17 @@
                             min-width: 1.5rem;
                             width: 1.5rem;" data-toggle="modal" data-target="#addUsuario"><i class="fa fa-plus fa-2x"></i></button>
                         </p>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-check float-left mr-3">
+                                    <label class="form-check-label mt-2">
+                                        <input class="form-check-input" {{ ($cliente->fl_area_restrita) ? 'checked' : '' }} type="checkbox" name="fl_area_restrita" value="true">
+                                            ÁREA RESTRITA
+                                        <span class="form-check-sign"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-md-12">
                                 @if(count($emails))

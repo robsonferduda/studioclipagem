@@ -58,10 +58,45 @@ class ClienteController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        $fl_ativo = $request->fl_ativo == true ? true : false;
+        $fl_print = $request->fl_print == true ? true : false;
+
+        $fl_tv = $request->fl_tv == true ? true : false;
+        $fl_impresso = $request->fl_impresso == true ? true : false;
+        $fl_web = $request->fl_web == true ? true : false;
+        $fl_radio = $request->fl_radio == true ? true : false;
+
+        $fl_relatorio_consolidado = $request->fl_relatorio_consolidado == true ? true : false;
+        $fl_relatorio_completo = $request->fl_relatorio_completo == true ? true : false;
+        $fl_link_relatorio = $request->fl_link_relatorio == true ? true : false;
+        $fl_area_restrita = $request->fl_area_restrita == true ? true : false;      
+        
         try {
+
+            $request->merge(['fl_ativo' => $fl_ativo]);
+            $request->merge(['fl_print' => $fl_print]);
+
+            $request->merge(['fl_tv' => $fl_tv]);
+            $request->merge(['fl_impresso' => $fl_impresso]);
+            $request->merge(['fl_web' => $fl_web]);
+            $request->merge(['fl_radio' => $fl_radio]);
+
+            $request->merge(['fl_relatorio_consolidado' => $fl_relatorio_consolidado]);
+            $request->merge(['fl_relatorio_completo' => $fl_relatorio_completo]);
+            $request->merge(['fl_link_relatorio' => $fl_link_relatorio]);
+            $request->merge(['fl_area_restrita' => $fl_area_restrita]);
 
             $cliente = Cliente::create([
                 'fl_ativo' => $request->fl_ativo,
+                'fl_print' => $request->fl_print,
+                'fl_tv' => $request->fl_tv,
+                'fl_impresso' => $request->fl_impresso,
+                'fl_web' => $request->fl_web,
+                'fl_radio' => $request->fl_radio,
+                'fl_relatorio_consolidado' => $request->fl_relatorio_consolidado,
+                'fl_relatorio_completo' => $request->fl_relatorio_completo,
+                'fl_link_relatorio' => $request->fl_link_relatorio,
+                'fl_area_restrita' => $request->fl_area_restrita,
                 'nome' => $request->nome
             ]);
 
@@ -91,13 +126,12 @@ class ClienteController extends Controller
                 $cliente->update(['logo_expandida' => $file_name]);
             }
 
-            //$this->cadastrarEnderecoEletronico($request, $cliente);
-            //$this->gerenciaClienteArea($request, $cliente);
-
             $retorno = array('flag' => true,
                              'msg' => "Dados inseridos com sucesso");
 
         } catch (\Illuminate\Database\QueryException $e) {
+
+            dd($e);
 
             $retorno = array('flag' => false,
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
@@ -130,14 +164,36 @@ class ClienteController extends Controller
 
     public function update(Request $request, int $id): RedirectResponse
     {
-        $flag = $request->fl_ativo == true ? true : false;
+        $fl_ativo = $request->fl_ativo == true ? true : false;
+        $fl_print = $request->fl_print == true ? true : false;
 
+        $fl_tv = $request->fl_tv == true ? true : false;
+        $fl_impresso = $request->fl_impresso == true ? true : false;
+        $fl_web = $request->fl_web == true ? true : false;
+        $fl_radio = $request->fl_radio == true ? true : false;
+
+        $fl_relatorio_consolidado = $request->fl_relatorio_consolidado == true ? true : false;
+        $fl_relatorio_completo = $request->fl_relatorio_completo == true ? true : false;
+        $fl_link_relatorio = $request->fl_link_relatorio == true ? true : false;
+        $fl_area_restrita = $request->fl_area_restrita == true ? true : false;      
+        
         $cliente = Cliente::find($id);
+
         try {
 
-            $cliente->fl_ativo = $flag;
-            $request->merge(['fl_ativo' => $flag]);
-            //$cliente->update($request->all());
+            $request->merge(['fl_ativo' => $fl_ativo]);
+            $request->merge(['fl_print' => $fl_print]);
+
+            $request->merge(['fl_tv' => $fl_tv]);
+            $request->merge(['fl_impresso' => $fl_impresso]);
+            $request->merge(['fl_web' => $fl_web]);
+            $request->merge(['fl_radio' => $fl_radio]);
+
+            $request->merge(['fl_relatorio_consolidado' => $fl_relatorio_consolidado]);
+            $request->merge(['fl_relatorio_completo' => $fl_relatorio_completo]);
+            $request->merge(['fl_link_relatorio' => $fl_link_relatorio]);
+            $request->merge(['fl_area_restrita' => $fl_area_restrita]);
+
             $cliente->update($request->all());
 
             //$this->cadastrarEnderecoEletronico($request, $cliente);

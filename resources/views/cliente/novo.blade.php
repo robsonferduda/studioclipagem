@@ -39,16 +39,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <div class="form-group">
-                                    <div class="form-check">
-                                        <label class="form-check-label mt-2">
-                                            <input class="form-check-input" {{ (old('fl_print')) ? 'checked' : '' }} type="checkbox" name="fl_print" value="true">
-                                            NOTÍCIAS COM PRINT
-                                            <span class="form-check-sign"></span>
-                                        </label>
-                                    </div>
-                                </div>
-                          
+
                                 <div class="form-group">
                                     <div class="form-check">
                                         <label class="form-check-label mt-2">
@@ -58,75 +49,111 @@
                                         </label>
                                     </div>
                                 </div>
+
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <label class="form-check-label mt-2">
+                                            <input class="form-check-input" {{ (old('fl_print')) ? 'checked' : '' }} type="checkbox" name="fl_print" value="true">
+                                            NOTÍCIAS COM PRINT
+                                            <span class="form-check-sign"></span>
+                                        </label>
+                                    </div>
+                                </div>                          
+                               
                             </div>
-                            <div class="col-md-6">
-                                <div>
-                                    <label>Logo</label>
-                                    <input type="file" class="form-control" name="logo" id="logo">
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12">
+                                <p class="mb-1"><i class="nc-icon nc-sound-wave"></i> Clipagem de Mídia</p>
+                                <div class="form-check float-left mr-3">
+                                    <label class="form-check-label mt-2">
+                                        <input class="form-check-input" {{ old('fl_impresso') ? 'checked' : '' }} type="checkbox" name="fl_impresso" value="true">
+                                        IMPRESSO
+                                        <span class="form-check-sign"></span>
+                                    </label>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div>
-                                    <label>Logo Expandida </label>
-                                    <input type="file" class="form-control" name="logo_expandida" id="logo_expandida">
+                                <div class="form-check float-left mr-3">
+                                    <label class="form-check-label mt-2">
+                                        <input class="form-check-input" {{  old('fl_web') ? 'checked' : '' }} type="checkbox" name="fl_web" value="true">
+                                        WEB
+                                        <span class="form-check-sign"></span>
+                                    </label>
+                                </div>
+                                <div class="form-check float-left mr-3">
+                                    <label class="form-check-label mt-2">
+                                        <input class="form-check-input" {{  old('fl_radio') ? 'checked' : '' }} type="checkbox" name="fl_radio" value="true">
+                                        RÁDIO
+                                        <span class="form-check-sign"></span>
+                                    </label>
+                                </div>
+                                <div class="form-check float-left mr-3">
+                                    <label class="form-check-label mt-2">
+                                        <input class="form-check-input" {{  old('fl_tv') ? 'checked' : '' }} type="checkbox" name="fl_tv" value="true">
+                                        TV
+                                        <span class="form-check-sign"></span>
+                                    </label>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12">
+                                <p class="mb-1"> <i class="fa fa-file-pdf-o"></i> Relatórios</p>
+                                <div class="form-check float-left mr-3">
+                                    <label class="form-check-label mt-2">
+                                        <input class="form-check-input" {{ old('fl_relatorio_completo') ? 'checked' : '' }} type="checkbox" name="fl_relatorio_completo" value="true">
+                                            RELATÓRIO COMPLETO
+                                        <span class="form-check-sign"></span>
+                                    </label>
+                                </div>
+                                <div class="form-check float-left mr-3">
+                                    <label class="form-check-label mt-2">
+                                        <input class="form-check-input" {{ old('fl_relatorio_consolidado') ? 'checked' : '' }} type="checkbox" name="fl_relatorio_consolidado" value="true">
+                                            RELATÓRIO CONSOLIDADO
+                                        <span class="form-check-sign"></span>
+                                    </label>
+                                </div>
+                                <div class="form-check float-left mr-3">
+                                    <label class="form-check-label mt-2">
+                                        <input class="form-check-input" {{ old('fl_link_relatorio') ? 'checked' : '' }} type="checkbox" name="fl_link_relatorio" value="true">
+                                            RELATÓRIO COM LINKS
+                                        <span class="form-check-sign"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>                   
                  
                     <div class="col-md-12">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Emails</th>
-                                    <th><a title="Adicionar" class="btn btn-primary btn-link btn-icon btn-adicionar"><i class="fa fa-plus"></i></a></th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbody-endereco-eletronico">
-                                <tr class="linha-email">
-                                    <td><input type="text" class="form-control" name="email[]" placeholder="Email" value="" /></td>
-                                    <td><a title="Remover" class="btn btn-danger btn-link btn-icon btn-remover"><i class="fa fa-trash"></i></a></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12">
+                                <p class="mb-2"><i class="fa fa-envelope"></i> Endereços Eletrônicos</p>
+                                <div class="form-group">
+                                    <textarea class="form-control" name="emails" id="emails" rows="3">{{ old('emails') }}</textarea>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-12">
-                        <hr/>
-                        <p><i class="fa fa-tags"></i> Áreas do Cliente</p>
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Área</th>
-                                    <th>Expressão</th>
-                                    <th>Status</th>
-                                    <th><a title="Adicionar" class="btn btn-primary btn-link btn-icon btn-adicionar-expressao"><i class="fa fa-plus"></i></a></th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbody-expressoes">
-                                <tr class="linha-expressao">
-                                    <td>
-                                        <select class="form-control" name="area[]">
-                                            <option value="">Selecione</option>
-                                            @foreach($areas as $area)
-                                                <option value="{{ $area->id }}">{{ $area->descricao }}</option>
-                                            @endforeach
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <input type="text" class="form-control input-expressao" name="expressao[]" placeholder="Expressao" />
-                                    </td>
-                                    <td>
-                                        <select class="form-control" name="status[]">
-                                            <option value="true">Ativo</option>
-                                            <option value="false">Inativo</option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <a title="Remover" class="btn btn-danger btn-link btn-icon btn-remover-expressao"><i class="fa fa-trash"></i></a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+
+                    <div class="col-md-6">
+                        <div>
+                            <label>Logo</label>
+                            <input type="file" class="form-control" name="logo" id="logo">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div>
+                            <label>Logo Expandida </label>
+                            <input type="file" class="form-control" name="logo_expandida" id="logo_expandida">
+                        </div>
+                    </div>
+                    <div class="col-md-12 mt-2">
+                        <p>O cadastro de <strong>Usuários</strong> e <strong>Áreas</strong> será habilitado após o cadastro do cliente</p>
                     </div>
                 </div>
             </div>

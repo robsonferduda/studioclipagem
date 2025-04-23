@@ -11,7 +11,23 @@ class Cliente extends Model
 
     protected $connection = 'pgsql';
     protected $table = 'clientes';
-    protected $fillable = ['nome','fl_ativo','emails','logo','fl_audiencia','cod_unico','fl_print','fl_area_restrita','fl_areas','fl_sentimento','fl_link_relatorio','fl_radio','fl_web','fl_impresso','fl_tv','fl_relatorio_completo','fl_relatorio_consolidado'];
+    protected $fillable = ['nome',
+                        'fl_ativo',
+                        'emails',
+                        'logo',
+                        'fl_audiencia',
+                        'cod_unico',
+                        'fl_print',
+                        'fl_area_restrita',
+                        'fl_areas',
+                        'fl_sentimento',
+                        'fl_link_relatorio',
+                        'fl_radio',
+                        'fl_web',
+                        'fl_impresso',
+                        'fl_tv',
+                        'fl_relatorio_completo',
+                        'fl_relatorio_consolidado'];
 
     public function areas()
     {
