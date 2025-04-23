@@ -26,6 +26,7 @@
                             @if ($atividades->isEmpty())
                                 <li class="list-group-item text-danger" style="border: none; padding: 5px 5px; border-radius: 5px;">Nenhuma atividade registrada recentemente.</li>
                             @else
+                                <p class="mt-1 mb-1">Foram registradas <strong>{{ count($atividades) }}</strong> atividades do usuário na data atual.</p>
                                 @php
                                     $zebra = false;
                                 @endphp
@@ -47,7 +48,7 @@
                                         </div>
                                         <div>
                                             <span><strong>Navegador</strong>: {{ $log->user_agent }}</span>
-                                            <span class="pull-right text-mutted">Atividade executada {{ $log->created_at->diffForHumans() }}</span>
+                                            <span class="pull-right text-mutted">Atividade executada em {{ \Carbon\Carbon::parse($log->created_at)->format('d/m/Y H:i:s') }} - {{ $log->created_at->diffForHumans() }}</span>
                                         </div>
                                     </li>
                                     @php
