@@ -48,7 +48,7 @@ class UserController extends Controller
         $dt_inicial = date("Y-m-d")." 00:00:00";
         $dt_final = date("Y-m-d")." 23:59:59";
 
-        $atividades = Audits::where('user_id', $id)->whereBetween('created_at',[$dt_inicial, $dt_final])->get();
+        $atividades = Audits::where('user_id', $id)->whereBetween('created_at',[$dt_inicial, $dt_final])->orderBy("desc")->get();
 
         return view('usuarios/historico', compact('atividades'));
     }
