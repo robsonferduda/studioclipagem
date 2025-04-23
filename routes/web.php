@@ -339,6 +339,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('perfil','UserController@perfil');
 
 	Route::get('usuarios','UserController@index');
+	Route::get('usuario/historico/{id}','UserController@historico');
 	Route::get('usuarios/excluir/{id}','UserController@excluir');
 
 	Route::get('role/permissions/{role}','RoleController@permissions');

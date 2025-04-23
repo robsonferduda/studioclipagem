@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use DB;
 use Hash;
+use Carbon\Carbon;
 use App\User;
 use App\Role;
 use App\Audits;
@@ -18,10 +19,13 @@ use Illuminate\Support\Facades\Session;
 
 class UserController extends Controller
 {
+    private $carbon;
+
     public function __construct()
     {
         $this->middleware('auth');
         Session::put('url','usuarios');
+        $this->carbon = new Carbon();
     }
 
     public function index()
@@ -36,6 +40,19 @@ class UserController extends Controller
     {
         $user = User::find($id);
         return view('usuarios/perfil', compact('user'));
+    }
+
+
+    public function historico($id)
+    {
+        $dt_inicial = date("Y-m-d")." 00:00:00";
+        $dt_final = date("Y-m-d")." 23:59:59";
+
+        $atividades = Audits::where('user_id', $id)->whereBetween('created_at',[$dt_inicial, $dt_final])->get();
+
+        dd($atividades);
+
+        return view('usuarios/historico', compact('atividades'));
     }
 
     public function online()

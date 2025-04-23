@@ -52,6 +52,7 @@
                             </td>
                             <td class="disabled-sorting text-center">{!! ($u->is_active) ? '<span class="badge badge-pill badge-success">ATIVO</span>' : '<span class="badge badge-pill badge-danger">INATIVO</span>' !!}</td>
                             <td class="text-center">
+                                <a title="Histórico do Usuário" href="{{ url('usuario/historico',$u->id) }}" class="btn btn-success btn-link btn-icon"><i class="fa fa-clock-o fa-2x"></i></a>
                                 <a title="Dados do Usuário" href="{{ url('usuario',$u->id) }}" class="btn btn-warning btn-link btn-icon"><i class="nc-icon nc-circle-10 font-25"></i></a>
                                 <a title="Editar" href="{{ route('usuario.edit',$u->id) }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
                                 <form class="form-delete" style="display: inline;" action="{{ route('usuario.destroy',$u->id) }}" method="POST">
