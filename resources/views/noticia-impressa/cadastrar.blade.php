@@ -25,6 +25,43 @@
                     {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['noticia-impressa']]) !!}
                         <div class="form-group m-3 w-70">
                             <div class="row">
+                                <input type="hidden" name="clientes[]" id="clientes">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <label>Cliente</label>
+                                        <select class="form-control cliente select2" name="cd_cliente" id="cd_cliente">
+                                            <option value="">Selecione um cliente</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Área do Cliente <span class="text-info add-area" data-toggle="modal" data-target="#modalArea">Adicionar Área</span></label>
+                                        <select class="form-control area select2" name="cd_area" id="cd_area" disabled>
+                                            <option value="">Selecione uma área</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Sentimento </label>
+                                        <select class="form-control" name="cd_sentimento" id="cd_sentimento">
+                                            <option value="">Selecione um sentimento</option>
+                                            <option value="1">Positivo</option>
+                                            <option value="0">Neutro</option>
+                                            <option value="-1">Negativo</option>
+                                        </select>
+                                    </div>                        
+                                </div>
+                                <div class="col-md-1">
+                                    <button type="button" class="btn btn-success btn-add-cliente mt-4 w-100"><i class="fa fa-plus"></i></button>
+                                </div>
+                                
+                                <div class="col-md-12">
+                                    <ul class="list-unstyled metadados"></ul>
+                                </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
                                         <label>Data de Cadastro</label>
@@ -50,7 +87,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>Seção</label>
+                                        <label>Seção <span class="text-primary add-secao" data-toggle="modal" data-target="#addSecao">Adicionar Seção</span></label>
                                         <select class="form-control select2" name="id_sessao_impresso" id="id_sessao_impresso" disabled="true">
                                             <option value="">Selecione uma seção</option>
                                         </select>
@@ -137,6 +174,18 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
+                                    <div class="form-group">    
+                                        <label for="tags[]">TAGs</label>
+                                        <select name="tags[]" multiple="multiple" class="form-control select2">
+                                            @foreach ($tags as $tag)
+                                                <option value="{{ $tag->id }}">{{ $tag->nome }}</option>
+                                            @endforeach
+                                        </select> 
+                                    </div>    
+                                </div> 
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
                                     <label for="sinopse">Sinopse</label>
                                     <div class="form-group">
                                         <textarea class="form-control" name="sinopse" id="sinopse" rows="10"></textarea>
@@ -161,8 +210,35 @@
         </div>
     </div>
 </div> 
+<div class="modal fade" id="addSecao" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-bookmark "></i> Adicionar Seção</h6>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Nome da Seção</label>
+                        <input type="mail" class="form-control" name="ds_sessao" id="ds_sessao">
+                    </div>
+                </div>
+            </div>
+            <div class="center">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
+                <button type="button" class="btn btn-success btn-salvar-secao"><i class="fa fa-save"></i> Salvar</button>
+            </div>
+      </div>
+    </div>
+  </div>
+</div>
 @endsection
 @section('script')
+<script src="{{ asset('js/formulario-cadastro.js') }}"></script>
 <script>
 
     Dropzone.autoDiscover = false;
@@ -197,6 +273,29 @@
                     // Opcional: envie uma requisição para remover o arquivo do servidor
                 });
             },
+        });
+
+        $(".btn-salvar-secao").click(function(){
+
+            var ds_sessao = $("#ds_sessao").val();
+            var font_id = $("#id_fonte").val();
+
+            $.ajax({
+                url: host+'/fonte-impresso/secao',
+                type: 'POST',
+                data: {
+                    "_token": $('meta[name="csrf-token"]').attr('content'),
+                    "ds_sessao": ds_sessao,
+                    "font_id": font_id
+                },
+                success: function(response) {
+                    $("#id_fonte").trigger("change");  
+                    $("#addSecao").modal("hide");            
+                },
+                error: function(response){
+                        
+                }
+            });
         });
 
         $(document).on('change', '.monetario', function() {

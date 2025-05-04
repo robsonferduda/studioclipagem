@@ -152,6 +152,8 @@ Route::middleware(['web'])->group(function () {
 	Route::get('jornal-impresso/noticia/{id}','JornalImpressoController@detalhes');
 	Route::post('jornal-impresso/upload','JornalImpressoController@uploadFiles');
 
+	Route::get('noticia/{id}/tipo/{tipo}/cliente/{cliente}/sentimento/{sentimento}/atualizar','NoticiaController@atualizarSentimento');
+
 	Route::post('noticia-impressa/upload','NoticiaImpressaController@upload'); 
 
 

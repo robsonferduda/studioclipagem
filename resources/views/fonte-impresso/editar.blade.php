@@ -181,7 +181,7 @@
                     </div>
                     <div class="col-md-12">
                         <p class="mb-1 mt-3 text-info">
-                            <i class="fa fa-envelope"></i> Seções 
+                            <i class="fa fa-bookmark"></i> Seções 
                         </p>
                         <div class="row">
                             <div class="col-md-3 col-sm-12">

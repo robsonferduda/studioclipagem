@@ -6,6 +6,7 @@ use DB;
 use Auth;
 use App\Utils;
 use Carbon\Carbon;
+use App\Models\NoticiaCliente;
 use App\Models\JornalWeb;
 use App\Models\JornalImpresso;
 use Laracasts\Flash\Flash;
@@ -21,6 +22,15 @@ class NoticiaController extends Controller
         $this->middleware('auth');
         $this->data_atual = session('data_atual');
         Session::put('url','noticias');
+    }
+
+    public function atualizarSentimento($id, $tipo, $cliente, $sentimento)
+    {
+        $noticia = NoticiaCliente::where('noticia_id',$id)->where('tipo_id',$tipo)->where('cliente_id', $cliente)->first();
+        $noticia->sentimento = $sentimento;
+        $noticia->save();
+
+        return redirect()->back();
     }
 
     public function todas(Request $request)

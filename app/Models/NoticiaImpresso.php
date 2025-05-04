@@ -49,4 +49,14 @@ class NoticiaImpresso extends Model
     {
         return $this->hasOne(SecaoImpresso::class,'id_sessao_impresso','id_sessao_impresso');
     }
+
+    public function clientes()
+    {
+        return $this->belongsToMany(Cliente::class,'noticia_cliente','noticia_id','cliente_id')->withPivot('tipo_id','sentimento','area')->where('tipo_id', 1)->withTimestamps();
+    }
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class,'noticia_tag','noticia_id','tag_id')->withPivot('tipo_id')->where('tipo_id', 1)->withTimestamps();
+    }
 }

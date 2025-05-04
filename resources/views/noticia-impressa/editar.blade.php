@@ -138,6 +138,18 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
+                                    <div class="form-group">    
+                                        <label for="tags[]">TAGs</label>
+                                        <select name="tags[]" multiple="multiple" class="form-control select2">
+                                            @foreach ($tags as $tag)
+                                                <option value="{{ $tag->id }}" {{ ($noticia->tags->contains($tag->id)) ? 'selected'  : '' }}>{{ $tag->nome }}</option>
+                                            @endforeach
+                                        </select> 
+                                    </div>    
+                                </div> 
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
                                     <label for="sinopse">Sinopse</label>
                                     <div class="form-group">
                                         <textarea class="form-control" name="sinopse" id="sinopse" rows="10">{{ $noticia->sinopse }}</textarea>

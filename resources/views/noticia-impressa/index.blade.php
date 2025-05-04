@@ -97,14 +97,46 @@
                                                 <h6><a href="{{ url('fonte-impresso/'.$noticia->id_fonte.'/editar') }}" target="_BLANK">{{ ($noticia->fonte) ? $noticia->fonte->nome : '' }}</a></h6>  
                                                 <h6 style="color: #FF5722;">{{ ($noticia->cd_estado) ? $noticia->estado->nm_estado : '' }}{{ ($noticia->cd_cidade) ? "/".$noticia->cidade->nm_cidade : '' }}</h6>  
                                                 <h6 class="text-muted mb-1">{{ \Carbon\Carbon::parse($noticia->dt_pub)->format('d/m/Y') }} - {{ ($noticia->fonte) ? $noticia->fonte->nome : '' }}  {{ ($noticia->id_sessao_impresso) ? "- ".$noticia->secao->ds_sessao : '' }}</h6> 
-                                                <p class="mb-0">{{ ($noticia->nome_cliente) ? $noticia->nome_cliente : '' }}</p>
                                                 <p class="mb-1">
                                                     @if($noticia->nu_pagina_atual)
                                                         Página <strong>{{ $noticia->nu_pagina_atual }}</strong>/<strong>{{ $noticia->nu_paginas_total }}</strong>
                                                     @else
                                                         <span class="text-danger">Página não informada</span>
                                                     @endif
-                                                </p>     
+                                                </p>  
+                                                <div>
+                                                    @forelse($noticia->clientes as $cliente)
+                                                        <p class="mb-2">
+                                                            <span>{{ $cliente->nome }}</span>
+                                                            @switch($cliente->pivot->sentimento)
+                                                                @case(-1)
+                                                                        <i class="fa fa-frown-o text-danger"></i>
+                                                                        <a href="{{ url('noticia/'.$cliente->pivot->noticia_id.'/tipo/'.$cliente->pivot->tipo_id.'/cliente/'.$cliente->pivot->cliente_id.'/sentimento/0/atualizar') }}"><i class="fa fa-ban op-2"></i></a>
+                                                                        <a href="{{ url('noticia/'.$cliente->pivot->noticia_id.'/tipo/'.$cliente->pivot->tipo_id.'/cliente/'.$cliente->pivot->cliente_id.'/sentimento/1/atualizar') }}"><i class="fa fa-smile-o op-2"></i></a>
+                                                                    @break
+                                                                @case(0)
+                                                                        <a href="{{ url('noticia/'.$cliente->pivot->noticia_id.'/tipo/'.$cliente->pivot->tipo_id.'/cliente/'.$cliente->pivot->cliente_id.'/sentimento/-1/atualizar') }}"><i class="fa fa-frown-o op-2"></i></a> 
+                                                                        <i class="fa fa-ban text-primary"></i>
+                                                                        <a href="{{ url('noticia/'.$cliente->pivot->noticia_id.'/tipo/'.$cliente->pivot->tipo_id.'/cliente/'.$cliente->pivot->cliente_id.'/sentimento/1/atualizar') }}"><i class="fa fa-smile-o op-2"></i></a>                                                
+                                                                    @break
+                                                                @case(1)
+                                                                        <a href="{{ url('noticia/'.$cliente->pivot->noticia_id.'/tipo/'.$cliente->pivot->tipo_id.'/cliente/'.$cliente->pivot->cliente_id.'/sentimento/-1/atualizar') }}"><i class="fa fa-frown-o op-2"></i></a>
+                                                                        <a href="{{ url('noticia/'.$cliente->pivot->noticia_id.'/tipo/'.$cliente->pivot->tipo_id.'/cliente/'.$cliente->pivot->cliente_id.'/sentimento/0/atualizar') }}"><i class="fa fa-ban op-2"></i></a>
+                                                                        <i class="fa fa-smile-o text-success"></i>
+                                                                    @break                                            
+                                                            @endswitch
+                                                        </p>
+                                                    @empty
+                                                        <p class="text-danger mb-1">Nenhum cliente associada à notícia</p>
+                                                    @endforelse
+                                                </div>
+                                                <div>
+                                                    @forelse($noticia->tags as $tag)
+                                                        <span>#{{ $tag->nome }}</span>
+                                                    @empty
+                                                        <p class="text-danger mb-1">#Nenhuma tag associada à notícia</p>
+                                                    @endforelse
+                                                </div>
                                                 <p class="mb-0"><strong>Sinopse</strong>: {!! ($noticia->sinopse) ? $noticia->sinopse : '<span class="text-danger">Não cadastrada</span>' !!}</p>  
                                                 <div class="d-none conteudo-{{ $noticia->id }}">
                                                     {!! ($noticia->texto) ?  $noticia->texto  : '<span class="text-danger center">Notícia não possui texto</span>' !!}

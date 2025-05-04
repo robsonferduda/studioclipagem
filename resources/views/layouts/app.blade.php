@@ -520,8 +520,6 @@
   <script src="{{ asset('js/mark.min.js') }}"></script>
   <script src="{{ asset('js/chinese-string.js') }}"></script>
   
-  
-  
   @yield('script')
   <script>
     function setFormValidation(id) {

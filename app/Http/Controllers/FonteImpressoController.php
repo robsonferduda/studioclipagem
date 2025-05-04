@@ -16,6 +16,7 @@ use App\Models\ModeloImpresso;
 use App\Models\Fonte;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
+use Response;
 use App\Jobs\ProcessarImpressos as JobProcessarImpressos;
 use App\Models\Cidade;
 use App\Models\Estado;
@@ -124,7 +125,24 @@ class FonteImpressoController extends Controller
         $dados_insert = array('id_jornal_online' => $request->font_id,
                               'ds_sessao' => $request->ds_sessao);
 
-        SecaoImpresso::create($dados_insert);
+        $nova_secao = SecaoImpresso::create($dados_insert);
+
+        if($nova_secao){
+
+            return Response::json(array(
+                    'code'      =>  200,
+                    'message'   =>  'Dados inseridos com sucesso'
+                ), 200);
+
+        }else{
+
+             return Response::json(array(
+                    'code'      =>  401,
+                    'message'   =>  'Erro ao inserir dados'
+                ), 401);
+
+        }
+
     }
 
     public function excluirSecao($id)

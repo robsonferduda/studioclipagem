@@ -63,7 +63,7 @@ class NoticiaTv extends Model
 
     public function tags()
     {
-        return $this->belongsToMany(Tag::class,'tag_radio','noticia_id','tag_id')->withPivot('tipo_id')->withTimestamps();
+        return $this->belongsToMany(Tag::class,'noticia_tag','noticia_id','tag_id')->withPivot('tipo_id')->where('tipo_id', 4)->withTimestamps();
     }
 
     public function getTotais()

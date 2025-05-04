@@ -301,3 +301,6 @@ div .box-horario:not(:last-child) {
 .box-execucao .linha-execucao:not(:last-child) {
   border-bottom: 1px solid #80808038;
 }
+.add-secao:hover{
+    cursor: pointer;
+}

@@ -13,6 +13,7 @@ use App\Models\FilaImpresso;
 use App\Models\JornalImpresso;
 use App\Models\NoticiaImpresso;
 use App\Models\Fonte;
+use App\Models\Tag;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
 use App\Jobs\ProcessarImpressos as JobProcessarImpressos;
@@ -69,20 +70,21 @@ class NoticiaImpressaController extends Controller
         Session::put('sub-menu','noticias-impresso-cadastrar');
         $fontes = FonteImpressa::orderBy("nome")->get();
         $estados = Estado::orderBy('nm_estado')->get();
+        $tags = Tag::orderBy('nome')->get();
         
-        return view('noticia-impressa/cadastrar', compact('fontes','estados'));
+        return view('noticia-impressa/cadastrar', compact('fontes','estados','tags'));
     }
 
     public function editar($id)
     {
         $noticia = NoticiaImpresso::find($id);
-
+        $tags = Tag::orderBy('nome')->get();
         $estados = Estado::orderBy('nm_estado')->get();
         $cidades = Cidade::where(['cd_estado' => $noticia->cd_estado])->orderBy('nm_cidade')->get();
         $fontes = FonteImpressa::orderBy("nome")->get();
         $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
 
-        return view('noticia-impressa/editar', compact('noticia','clientes','fontes','estados','cidades'));
+        return view('noticia-impressa/editar', compact('noticia','clientes','fontes','estados','cidades','tags'));
     }
 
     public function copiar($cliente, $id_noticia)
@@ -122,7 +124,34 @@ class NoticiaImpressaController extends Controller
 
         try {
             
-            NoticiaImpresso::create($request->all());
+            $noticia = NoticiaImpresso::create($request->all());
+
+            if($noticia)
+            {
+               
+                $tags = collect($request->tags)->mapWithKeys(function($tag){
+                    return [$tag => ['tipo_id' => 1]];
+                })->toArray();
+
+                $noticia->tags()->sync($tags);
+
+                $clientes = json_decode($request->clientes[0]);
+
+                if($clientes){
+
+                    for ($i=0; $i < count($clientes); $i++) { 
+                        
+                        $dados = array('tipo_id' => 1,
+                                'noticia_id' => $noticia->id,
+                                'cliente_id' => (int) $clientes[$i]->id_cliente,
+                                'area' => (int) $clientes[$i]->id_area,
+                                'sentimento' => (int) $clientes[$i]->id_sentimento);
+
+                        $noticia_cliente = NoticiaCliente::create($dados);
+
+                    }
+                }
+            }
 
             $retorno = array('flag' => true,
                              'msg' => '<i class="fa fa-check"></i> Dados inseridos com sucesso');
@@ -164,6 +193,11 @@ class NoticiaImpressaController extends Controller
 
             $noticia->update($request->all());
 
+            $tags = collect($request->tags)->mapWithKeys(function($tag){
+                    return [$tag => ['tipo_id' => 1]];
+                })->toArray();
+
+            $noticia->tags()->sync($tags);
 
             $retorno = array('flag' => true,
                              'msg' => '<i class="fa fa-check"></i> Dados atualizados com sucesso');
