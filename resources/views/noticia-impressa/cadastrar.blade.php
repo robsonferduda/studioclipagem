@@ -156,13 +156,13 @@
                                 </div>
                                 <div class="col-md-3 col-sm-6">
                                     <div class="form-group">
-                                        <label>Altura</label>
+                                        <label>Altura <span class="text-info">em cm</span></label>
                                         <input type="text" class="form-control monetario" name="nu_altura" id="nu_altura" placeholder="Altura" value="{{ old('nu_altura') }}">
                                     </div>                                    
                                 </div>
                                 <div class="col-md-3 col-sm-6">
                                     <div class="form-group">
-                                        <label>Largura</label>
+                                        <label>Largura <span class="text-info">em cm</span></label>
                                         <input type="text" class="form-control monetario" name="nu_largura" id="nu_largura" placeholder="Largura" value="{{ old('nu_largura') }}">
                                     </div>                                    
                                 </div>

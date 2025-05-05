@@ -105,6 +105,9 @@
                                                             <span class="text-danger">Página não informada</span>
                                                         @endif
                                                     </p>  
+                                                    <p class="mb-1">
+                                                        <strong>Retorno de Mídia: </strong>{{ ($noticia->valor_retorno) ? "R$ ".$noticia->valor_retorno : 'Não calculado' }}
+                                                    </p> 
                                                     <div>
                                                         @forelse($noticia->clientes as $cliente)
                                                             <p class="mb-2">

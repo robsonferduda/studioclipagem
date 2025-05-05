@@ -3,7 +3,7 @@ $(document).ready(function() {
     var host = $('meta[name="base-url"]').attr('content');
     var clientes = [];
 
-    $(document).on('change', '.monetario', function() {
+    $(document).on('keyup', '.monetario', function() {
                 
         var retorno = 0;
         var altura = ($("#nu_altura").val()) ? $("#nu_altura").val() : 1;
