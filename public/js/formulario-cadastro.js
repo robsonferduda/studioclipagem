@@ -35,7 +35,7 @@ $(document).ready(function() {
         buscarAreas(cliente);
     });
 
-     $(document).on('click', '.btn-remover-cliente', function() {
+    $(document).on('click', '.btn-remover-cliente', function() {
             
         id = $(this).data("id");
         clientes.splice(id, 1);
@@ -81,6 +81,46 @@ $(document).ready(function() {
                 icon: "warning",
                 confirmButtonText: '<i class="fa fa-check"></i> Ok',
             });
+        }
+    });
+
+    $(document).on("click", ".btn-add-area", function() {
+
+        var ds_area = $("#ds_area").val();
+        var id_cliente = $("#cd_cliente").val();
+
+        if(!id_cliente){
+
+            Swal.fire({
+                text: 'Obrigatório informar um cliente.',
+                type: "warning",
+                icon: "warning",
+                confirmButtonText: '<i class="fa fa-check"></i> Ok',
+            });
+
+        }else{
+
+            $.ajax({url: host+'/cliente/area/adicionar',
+                type: 'POST',
+                data: {"_token": $('meta[name="csrf-token"]').attr('content'),
+                        "ds_area": ds_area,
+                        "id_cliente": id_cliente
+                },
+                beforeSend: function() {
+        
+                },
+                success: function(data) {
+                    $("#cd_cliente").trigger('change');                           
+                },
+                error: function(){
+                    
+                },
+                complete: function(){
+                    $('#modalArea').modal('hide');
+                    $("#ds_area").val("");
+                }
+            });
+
         }
     });
 

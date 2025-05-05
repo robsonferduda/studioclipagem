@@ -212,26 +212,54 @@
 </div> 
 <div class="modal fade" id="addSecao" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-bookmark "></i> Adicionar Seção</h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Nome da Seção</label>
+                            <input type="mail" class="form-control" name="ds_sessao" id="ds_sessao">
+                        </div>
+                    </div>
+                </div>
+                <div class="center">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
+                    <button type="button" class="btn btn-success btn-salvar-secao"><i class="fa fa-save"></i> Salvar</button>
+                </div>
+        </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalArea" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-bookmark "></i> Adicionar Seção</h6>
+          <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-tags"></i> Adicionar Área</h6>
         </div>
         <div class="modal-body">
             <div class="row">
                 <div class="col-md-12">
                     <div class="form-group">
-                        <label>Nome da Seção</label>
-                        <input type="mail" class="form-control" name="ds_sessao" id="ds_sessao">
+                        <label>Área</label>
+                        <input type="text" class="form-control" name="ds_area" id="ds_area" placeholder="Descrição">
                     </div>
+                </div>             
+            <div class="col-md-12 center">
+                <div class="form-group mt-3">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
+                    <button type="button" class="btn btn-success btn-add-area"><i class="fa fa-plus"></i> Adicionar</button>
                 </div>
             </div>
-            <div class="center">
-                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
-                <button type="button" class="btn btn-success btn-salvar-secao"><i class="fa fa-save"></i> Salvar</button>
-            </div>
+        </div>
       </div>
     </div>
   </div>
@@ -280,22 +308,34 @@
             var ds_sessao = $("#ds_sessao").val();
             var font_id = $("#id_fonte").val();
 
-            $.ajax({
-                url: host+'/fonte-impresso/secao',
-                type: 'POST',
-                data: {
-                    "_token": $('meta[name="csrf-token"]').attr('content'),
-                    "ds_sessao": ds_sessao,
-                    "font_id": font_id
-                },
-                success: function(response) {
-                    $("#id_fonte").trigger("change");  
-                    $("#addSecao").modal("hide");            
-                },
-                error: function(response){
-                        
-                }
-            });
+            if(!font_id){
+
+                Swal.fire({
+                    text: 'Obrigatório informar uma fonte.',
+                    type: "warning",
+                    icon: "warning",
+                    confirmButtonText: '<i class="fa fa-check"></i> Ok',
+                });
+
+            }else{
+
+                $.ajax({
+                    url: host+'/fonte-impresso/secao',
+                    type: 'POST',
+                    data: {
+                        "_token": $('meta[name="csrf-token"]').attr('content'),
+                        "ds_sessao": ds_sessao,
+                        "font_id": font_id
+                    },
+                    success: function(response) {
+                        $("#id_fonte").trigger("change");  
+                        $("#addSecao").modal("hide");            
+                    },
+                    error: function(response){
+                            
+                    }
+                });
+            }
         });
 
         $(document).on('change', '.monetario', function() {
