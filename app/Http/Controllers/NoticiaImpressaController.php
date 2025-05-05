@@ -200,6 +200,22 @@ class NoticiaImpressaController extends Controller
 
             $noticia->tags()->sync($tags);
 
+            //Atualização de clientes
+            $clientes = json_decode($request->clientes[0]);
+
+            if($clientes){
+                for ($i=0; $i < count($clientes); $i++) { 
+                        
+                    $dados = array('tipo_id' => 1,
+                                'noticia_id' => $noticia->id,
+                                'cliente_id' => (int) $clientes[$i]->id_cliente,
+                                'area' => (int) $clientes[$i]->id_area,
+                                'sentimento' => (int) $clientes[$i]->id_sentimento);
+
+                    $noticia_cliente = NoticiaCliente::create($dados);
+                }
+            }
+
             $retorno = array('flag' => true,
                              'msg' => '<i class="fa fa-check"></i> Dados atualizados com sucesso');
 

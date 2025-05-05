@@ -25,6 +25,44 @@
                     {!! Form::open(['id' => 'frm_user_edit', 'url' => ['noticia-impressa', $noticia->id], 'method' => 'patch']) !!}
                         <div class="form-group m-3 w-70">
                             <div class="row">
+                                <input type="hidden" name="clientes[]" id="clientes">
+                                <input type="hidden" name="ds_caminho_img" id="ds_caminho_img">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <label>Cliente</label>
+                                        <select class="form-control cliente select2" name="cd_cliente" id="cd_cliente">
+                                            <option value="">Selecione um cliente</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Área do Cliente <span class="text-info add-area" data-toggle="modal" data-target="#modalArea">Adicionar Área</span></label>
+                                        <select class="form-control area select2" name="cd_area" id="cd_area" disabled>
+                                            <option value="">Selecione uma área</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Sentimento </label>
+                                        <select class="form-control" name="cd_sentimento" id="cd_sentimento">
+                                            <option value="">Selecione um sentimento</option>
+                                            <option value="1">Positivo</option>
+                                            <option value="0">Neutro</option>
+                                            <option value="-1">Negativo</option>
+                                        </select>
+                                    </div>                        
+                                </div>
+                                <div class="col-md-1">
+                                    <button type="button" class="btn btn-success btn-add-cliente mt-4 w-100"><i class="fa fa-plus"></i></button>
+                                </div>
+                                
+                                <div class="col-md-12">
+                                    <ul class="list-unstyled metadados"></ul>
+                                </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
                                         <label>Data de Cadastro</label>
@@ -180,6 +218,7 @@
 </div> 
 @endsection
 @section('script')
+<script src="{{ asset('js/formulario-cadastro.js') }}"></script>
 <script>
     $( document ).ready(function() {
 
