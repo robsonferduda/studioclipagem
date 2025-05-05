@@ -229,18 +229,20 @@ class NoticiaImpressaController extends Controller
         $filesize = $image->getSize()/1024/1024;
         $filename = pathinfo($fileInfo, PATHINFO_FILENAME);
         $extension = "jpeg";
-        $file_name = $filename.'-'.time().'.'.$extension;
-        $file_noticia = $request->id.'.'.$extension;
+        $file_name = time().'.'.$extension;
+        $file_noticia = ($request->id) ? $request->id.'.'.$extension : $file_name;
 
        //dd($file_noticia);
 
         //$image->move(public_path('img/noticia-impressa/recorte'),$file_name);
         $image->move(public_path('img/noticia-impressa'),$file_noticia);
 
-        $noticia = NoticiaImpresso::find($request->id);
+        if($request->id){
+            $noticia = NoticiaImpresso::find($request->id);
 
-        $noticia->ds_caminho_img = $file_noticia;
-        $noticia->save();
+            $noticia->ds_caminho_img = $file_noticia;
+            $noticia->save();
+        }
 
         return $file_noticia;
     }

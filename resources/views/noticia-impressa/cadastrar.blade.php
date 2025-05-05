@@ -26,6 +26,7 @@
                         <div class="form-group m-3 w-70">
                             <div class="row">
                                 <input type="hidden" name="clientes[]" id="clientes">
+                                <input type="hidden" name="ds_caminho_img" id="ds_caminho_img">
                                 <div class="col-md-5">
                                     <div class="form-group">
                                         <label>Cliente</label>
@@ -277,9 +278,9 @@
 
         //Inicializar o Dropzone
         var myDropzone = new Dropzone("#dropzone", {
-            url: host + "/upload", // URL para onde os arquivos serão enviados
+            url: host + "/noticia-impressa/upload", // URL para onde os arquivos serão enviados
             method: "post", // Método HTTP
-            paramName: "file", // Nome do parâmetro no backend
+            paramName: "picture", // Nome do parâmetro no backend
             maxFilesize: 1, // Tamanho máximo do arquivo em MB
             acceptedFiles: ".jpeg,.jpg,.png,.pdf", // Tipos de arquivos aceitos
             addRemoveLinks: true, // Adicionar links para remover arquivos
@@ -289,7 +290,7 @@
             },
             init: function () {
                 this.on("success", function (file, response) {
-                    console.log("Arquivo enviado com sucesso:", response);
+                    $("#ds_caminho_img").val(response);
                 });
 
                 this.on("error", function (file, response) {
