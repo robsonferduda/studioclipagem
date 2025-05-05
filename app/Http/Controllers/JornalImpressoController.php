@@ -368,16 +368,7 @@ class JornalImpressoController extends Controller
                 break;                
         }
     }
-
-    public function getImage($path)
-    {
-        return response()->make(
-            Storage::disk('s3')->get($path),
-            200,
-            ['Content-Type' => 'image/jpeg']
-        );
-    }
-
+    
     public function getPdf($id)
     {
         $edicao = EdicaoJornalImpresso::find($id);

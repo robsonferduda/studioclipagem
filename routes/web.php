@@ -169,6 +169,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('noticia/impresso/fonte/sessoes/{id}','NoticiaImpressaController@getSecoes');
 	Route::get('noticia-impressa/{id}/editar','NoticiaImpressaController@editar');
 	Route::get('noticia-impressa/{id}/excluir','NoticiaImpressaController@excluir');
+	Route::get('noticia-impressa/imagem/download/{id}','NoticiaImpressaController@getImagem');
 
 
 	Route::get('noticia/web/valores','NoticiaWebController@valores');

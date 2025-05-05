@@ -88,58 +88,59 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-lg-2 col-md-2 col-sm-12 mb-1">
-                                          <a href="{{ url('jornal-impresso/web/pagina/download/'.$noticia->id) }}" target="_BLANK"><img src="{{ asset('img/noticia-impressa/'.$noticia->ds_caminho_img) }}" alt="Página {{ $noticia->n_pagina }}"></a>
+                                        <a href="{{ url('noticia-impressa/imagem/download/'.$noticia->id) }}" target="_BLANK"><img src="{{ asset('img/noticia-impressa/'.$noticia->ds_caminho_img) }}" alt="Página {{ $noticia->n_pagina }}"></a>
                                     </div>
                                     <div class="col-lg-10 col-sm-10 mb-1"> 
                                         <div class="row">
                                             <div class="col-lg-12 col-md-12 col-sm-12 mb-1"> 
-                                                <p class="font-weight-bold mb-1">{{ $noticia->titulo }}</p>
-                                                <h6><a href="{{ url('fonte-impresso/'.$noticia->id_fonte.'/editar') }}" target="_BLANK">{{ ($noticia->fonte) ? $noticia->fonte->nome : '' }}</a></h6>  
-                                                <h6 style="color: #FF5722;">{{ ($noticia->cd_estado) ? $noticia->estado->nm_estado : '' }}{{ ($noticia->cd_cidade) ? "/".$noticia->cidade->nm_cidade : '' }}</h6>  
-                                                <h6 class="text-muted mb-1">{{ \Carbon\Carbon::parse($noticia->dt_pub)->format('d/m/Y') }} - {{ ($noticia->fonte) ? $noticia->fonte->nome : '' }}  {{ ($noticia->id_sessao_impresso) ? "- ".$noticia->secao->ds_sessao : '' }}</h6> 
-                                                <p class="mb-1">
-                                                    @if($noticia->nu_pagina_atual)
-                                                        Página <strong>{{ $noticia->nu_pagina_atual }}</strong>/<strong>{{ $noticia->nu_paginas_total }}</strong>
-                                                    @else
-                                                        <span class="text-danger">Página não informada</span>
-                                                    @endif
-                                                </p>  
-                                                <div>
-                                                    @forelse($noticia->clientes as $cliente)
-                                                        <p class="mb-2">
-                                                            <span>{{ $cliente->nome }}</span>
-                                                            @switch($cliente->pivot->sentimento)
-                                                                @case(-1)
-                                                                        <i class="fa fa-frown-o text-danger"></i>
-                                                                        <a href="{{ url('noticia/'.$cliente->pivot->noticia_id.'/tipo/'.$cliente->pivot->tipo_id.'/cliente/'.$cliente->pivot->cliente_id.'/sentimento/0/atualizar') }}"><i class="fa fa-ban op-2"></i></a>
-                                                                        <a href="{{ url('noticia/'.$cliente->pivot->noticia_id.'/tipo/'.$cliente->pivot->tipo_id.'/cliente/'.$cliente->pivot->cliente_id.'/sentimento/1/atualizar') }}"><i class="fa fa-smile-o op-2"></i></a>
-                                                                    @break
-                                                                @case(0)
-                                                                        <a href="{{ url('noticia/'.$cliente->pivot->noticia_id.'/tipo/'.$cliente->pivot->tipo_id.'/cliente/'.$cliente->pivot->cliente_id.'/sentimento/-1/atualizar') }}"><i class="fa fa-frown-o op-2"></i></a> 
-                                                                        <i class="fa fa-ban text-primary"></i>
-                                                                        <a href="{{ url('noticia/'.$cliente->pivot->noticia_id.'/tipo/'.$cliente->pivot->tipo_id.'/cliente/'.$cliente->pivot->cliente_id.'/sentimento/1/atualizar') }}"><i class="fa fa-smile-o op-2"></i></a>                                                
-                                                                    @break
-                                                                @case(1)
-                                                                        <a href="{{ url('noticia/'.$cliente->pivot->noticia_id.'/tipo/'.$cliente->pivot->tipo_id.'/cliente/'.$cliente->pivot->cliente_id.'/sentimento/-1/atualizar') }}"><i class="fa fa-frown-o op-2"></i></a>
-                                                                        <a href="{{ url('noticia/'.$cliente->pivot->noticia_id.'/tipo/'.$cliente->pivot->tipo_id.'/cliente/'.$cliente->pivot->cliente_id.'/sentimento/0/atualizar') }}"><i class="fa fa-ban op-2"></i></a>
-                                                                        <i class="fa fa-smile-o text-success"></i>
-                                                                    @break                                            
-                                                            @endswitch
-                                                        </p>
-                                                    @empty
-                                                        <p class="text-danger mb-1">Nenhum cliente associada à notícia</p>
-                                                    @endforelse
-                                                </div>
-                                                <div>
-                                                    @forelse($noticia->tags as $tag)
-                                                        <span>#{{ $tag->nome }}</span>
-                                                    @empty
-                                                        <p class="text-danger mb-1">#Nenhuma tag associada à notícia</p>
-                                                    @endforelse
-                                                </div>
-                                                <p class="mb-0"><strong>Sinopse</strong>: {!! ($noticia->sinopse) ? $noticia->sinopse : '<span class="text-danger">Não cadastrada</span>' !!}</p>  
-                                                <div class="d-none conteudo-{{ $noticia->id }}">
-                                                    {!! ($noticia->texto) ?  $noticia->texto  : '<span class="text-danger center">Notícia não possui texto</span>' !!}
+                                                <div class="conteudo-{{ $noticia->id }}">
+                                                    <p class="font-weight-bold mb-1">{{ $noticia->titulo }}</p>
+                                                    <h6><a href="{{ url('fonte-impresso/'.$noticia->id_fonte.'/editar') }}" target="_BLANK">{{ ($noticia->fonte) ? $noticia->fonte->nome : '' }}</a></h6>  
+                                                    <h6 style="color: #FF5722;">{{ ($noticia->cd_estado) ? $noticia->estado->nm_estado : '' }}{{ ($noticia->cd_cidade) ? "/".$noticia->cidade->nm_cidade : '' }}</h6>  
+                                                    <h6 class="text-muted mb-1">{{ \Carbon\Carbon::parse($noticia->dt_pub)->format('d/m/Y') }} - {{ ($noticia->fonte) ? $noticia->fonte->nome : '' }}  {{ ($noticia->id_sessao_impresso) ? "- ".$noticia->secao->ds_sessao : '' }}</h6> 
+                                                    <p class="mb-1">
+                                                        @if($noticia->nu_pagina_atual)
+                                                            Página <strong>{{ $noticia->nu_pagina_atual }}</strong>/<strong>{{ $noticia->nu_paginas_total }}</strong>
+                                                        @else
+                                                            <span class="text-danger">Página não informada</span>
+                                                        @endif
+                                                    </p>  
+                                                    <div>
+                                                        @forelse($noticia->clientes as $cliente)
+                                                            <p class="mb-2">
+                                                                <span>{{ $cliente->nome }}</span>
+                                                                @switch($cliente->pivot->sentimento)
+                                                                    @case(-1)
+                                                                            <i class="fa fa-frown-o text-danger"></i>
+                                                                            <a href="{{ url('noticia/'.$cliente->pivot->noticia_id.'/tipo/'.$cliente->pivot->tipo_id.'/cliente/'.$cliente->pivot->cliente_id.'/sentimento/0/atualizar') }}"><i class="fa fa-ban op-2"></i></a>
+                                                                            <a href="{{ url('noticia/'.$cliente->pivot->noticia_id.'/tipo/'.$cliente->pivot->tipo_id.'/cliente/'.$cliente->pivot->cliente_id.'/sentimento/1/atualizar') }}"><i class="fa fa-smile-o op-2"></i></a>
+                                                                        @break
+                                                                    @case(0)
+                                                                            <a href="{{ url('noticia/'.$cliente->pivot->noticia_id.'/tipo/'.$cliente->pivot->tipo_id.'/cliente/'.$cliente->pivot->cliente_id.'/sentimento/-1/atualizar') }}"><i class="fa fa-frown-o op-2"></i></a> 
+                                                                            <i class="fa fa-ban text-primary"></i>
+                                                                            <a href="{{ url('noticia/'.$cliente->pivot->noticia_id.'/tipo/'.$cliente->pivot->tipo_id.'/cliente/'.$cliente->pivot->cliente_id.'/sentimento/1/atualizar') }}"><i class="fa fa-smile-o op-2"></i></a>                                                
+                                                                        @break
+                                                                    @case(1)
+                                                                            <a href="{{ url('noticia/'.$cliente->pivot->noticia_id.'/tipo/'.$cliente->pivot->tipo_id.'/cliente/'.$cliente->pivot->cliente_id.'/sentimento/-1/atualizar') }}"><i class="fa fa-frown-o op-2"></i></a>
+                                                                            <a href="{{ url('noticia/'.$cliente->pivot->noticia_id.'/tipo/'.$cliente->pivot->tipo_id.'/cliente/'.$cliente->pivot->cliente_id.'/sentimento/0/atualizar') }}"><i class="fa fa-ban op-2"></i></a>
+                                                                            <i class="fa fa-smile-o text-success"></i>
+                                                                        @break                                            
+                                                                @endswitch
+                                                            </p>
+                                                        @empty
+                                                            <p class="text-danger mb-1">Nenhum cliente associada à notícia</p>
+                                                        @endforelse
+                                                    </div>
+                                                    <div>
+                                                        @forelse($noticia->tags as $tag)
+                                                            <span>#{{ $tag->nome }}</span>
+                                                        @empty
+                                                            <p class="text-danger mb-1">#Nenhuma tag associada à notícia</p>
+                                                        @endforelse
+                                                    </div>
+                                                </div> 
+                                                <div class="sinopse-{{ $noticia->id }}">
+                                                    {!! ($noticia->sinopse) ?  $noticia->sinopse  : '<span class="text-danger center">Notícia não possui texto</span>' !!}
                                                 </div>  
                                             </div>
                                         </div>
@@ -189,15 +190,8 @@
         </div>
         <div class="modal-body" style="padding: 15px;">
             <div class="row">
-                <div class="col-md-12 modal-cabecalho">
-                    <h6 class="modal-fonte mt-0 mb-1"></h6>
-                    <h6 class="text-muted modal-estado mt-0 mb-1"></h6>
-                    <p class="modal-pagina mt-0 mb-2"></p>
-                </div>
-                <hr/>
-                <div class="col-md-12 modal-conteudo">
-                    
-                </div>
+                <div class="col-md-12 modal-conteudo"></div>
+                <div class="col-md-12 modal-sinopse"></div>
             </div>
             <div class="center">
                 <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
@@ -219,18 +213,15 @@
                
             });
 
-             $(".btn-visualizar-noticia").click(function(){
+            $(".btn-visualizar-noticia").click(function(){
 
                 var id = $(this).data("id");
                 var chave = ".conteudo-"+id;
-                var pagina = ".paginas-"+id;
-                var estado = ".conteudo-estado-"+id;
-                var fonte = ".conteudo-fonte-"+id;
+                var sinopse = ".sinopse-"+id;
 
-                $(".modal-fonte").html($(fonte).text());
-                $(".modal-estado").html($(estado).text());
-                $(".modal-pagina").html($(pagina).text());
-                $(".modal-conteudo").html($(chave).text().replace(/\n/g, "<br />"));
+                $(".modal-conteudo").html($(chave).html());
+              
+                $(".modal-sinopse").html($(sinopse).text().replace(/\n/g, "<br />"));
 
                 $("#showNoticia").modal("show");
 

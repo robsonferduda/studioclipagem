@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use DB;
 use Auth;
 use File;
-use App\Models\Cliente;
+use Storage;
+use App\Utils;
 use Carbon\Carbon;
+use App\Models\Cliente;
 use App\Models\NoticiaCliente;
 use App\Models\FonteImpressa;
 use App\Models\FilaImpresso;
@@ -14,12 +16,11 @@ use App\Models\JornalImpresso;
 use App\Models\NoticiaImpresso;
 use App\Models\Fonte;
 use App\Models\Tag;
-use Laracasts\Flash\Flash;
-use Illuminate\Http\Request;
-use App\Jobs\ProcessarImpressos as JobProcessarImpressos;
 use App\Models\Cidade;
 use App\Models\Estado;
-use App\Utils;
+use App\Jobs\ProcessarImpressos as JobProcessarImpressos;
+use Laracasts\Flash\Flash;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -245,6 +246,13 @@ class NoticiaImpressaController extends Controller
         }
 
         return $file_noticia;
+    }
+
+    //Busca e faz o download da imagem vinculada a notícia
+    public function getImagem($id)
+    {
+        $noticia = NoticiaImpresso::find($id);
+        return response()->download(public_path('img/noticia-impressa/'.$noticia->ds_caminho_img));
     }
 
     public function getSecoes($id_fonte)
