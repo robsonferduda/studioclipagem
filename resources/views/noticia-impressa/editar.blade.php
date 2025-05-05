@@ -220,29 +220,47 @@
 @section('script')
 <script src="{{ asset('js/formulario-cadastro.js') }}"></script>
 <script>
+
+    Dropzone.autoDiscover = false;
+
     $( document ).ready(function() {
 
         var host = $('meta[name="base-url"]').attr('content');
         var id_fonte = $('#id_fonte').val();
 
+        //Inicializar o Dropzone
+        var myDropzone = new Dropzone("#dropzone", {
+            url: host + "/noticia-impressa/upload", // URL para onde os arquivos serão enviados
+            method: "post", // Método HTTP
+            paramName: "picture", // Nome do parâmetro no backend
+            maxFilesize: 1, // Tamanho máximo do arquivo em MB
+            acceptedFiles: ".jpeg,.jpg,.png,.pdf", // Tipos de arquivos aceitos
+            addRemoveLinks: true, // Adicionar links para remover arquivos
+            dictRemoveFile: "Remover", // Texto do botão de remoção
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"), // Token CSRF para Laravel
+            },
+            init: function () {
+                this.on("success", function (file, response) {
+                    $("#ds_caminho_img").val(response);
+                });
+
+                this.on("error", function (file, response) {
+                    console.error("Erro ao enviar arquivo:", response);
+                });
+
+                this.on("removedfile", function (file) {
+                    console.log("Arquivo removido:", file.name);
+                    // Opcional: envie uma requisição para remover o arquivo do servidor
+                });
+            },
+        });
+
         if(id_fonte != ''){
             buscarSecoes(id_fonte);
         }
 
-        $(document).on('change', '.monetario', function() {
-                
-            var retorno = 0;
-            var altura = ($("#nu_altura").val()) ? $("#nu_altura").val() : 1;
-            var largura = ($("#nu_largura").val()) ? $("#nu_largura").val() : 1;
-            var colunas = ($("#nu_colunas").val()) ? $("#nu_colunas").val() : 1;
-
-            retorno = altura * largura * colunas;
-
-            // Truncar o valor com duas casas decimais
-            retorno = retorno.toFixed(2);
-
-            $("#valor_retorno").val(retorno);
-        });
+      
 
         $(document).on('change', '#id_fonte', function() {
                 

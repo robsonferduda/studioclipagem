@@ -339,21 +339,6 @@
             }
         });
 
-        $(document).on('change', '.monetario', function() {
-                
-            var retorno = 0;
-            var altura = ($("#nu_altura").val()) ? $("#nu_altura").val() : 1;
-            var largura = ($("#nu_largura").val()) ? $("#nu_largura").val() : 1;
-            var colunas = ($("#nu_colunas").val()) ? $("#nu_colunas").val() : 1;
-
-            retorno = altura * largura * colunas;
-
-            // Truncar o valor com duas casas decimais
-            retorno = retorno.toFixed(2);
-
-            $("#valor_retorno").val(retorno);
-        });
-
 
         $(document).on('change', '#id_fonte', function() {
                 

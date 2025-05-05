@@ -180,8 +180,6 @@ class NoticiaImpressaController extends Controller
     {
         $noticia = NoticiaImpresso::find($id);
 
-        flash('Mensagem flash de teste')->success();
-
         try {
 
             $dt_cadastro = ($request->dt_cadastro) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_cadastro)->format('Y-m-d') : date("Y-m-d");
@@ -191,6 +189,8 @@ class NoticiaImpressaController extends Controller
             $request->merge(['dt_clipagem' => $dt_clipagem]);
 
             $request->merge(['cd_cidade' => $request->cidade]);
+
+            $request->merge(['ds_caminho_img' => ($request->ds_caminho_img) ? $request->ds_caminho_img : $noticia->ds_caminho_img]);
 
             $noticia->update($request->all());
 
