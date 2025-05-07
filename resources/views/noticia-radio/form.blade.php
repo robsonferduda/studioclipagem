@@ -94,7 +94,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <input type="hidden" name="cd_emissora" id="cd_emissora" value="{{ ($noticia->emissora_id) ? $noticia->emissora_id : 0  }}">
+                                        <input type="hidden" name="cd_emissora" id="cd_emissora" value="{{ ($noticia and $noticia->emissora_id) ? $noticia->emissora_id : 0  }}">
                                         <label>Emissora <span class="text-danger">Obrigatório</span></label>
                                         <select class="form-control select2" name="emissora_id" id="emissora_id" required="true">
                                             <option value="">Selecione uma emissora</option>
@@ -109,7 +109,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Programa</label>
-                                        <input type="hidden" name="cd_programa" id="cd_programa" value="{{ ($noticia->programa_id) ? $noticia->programa_id : 0  }}">
+                                        <input type="hidden" name="cd_programa" id="cd_programa" value="{{ ($noticia and $noticia->programa_id) ? $noticia->programa_id : 0  }}">
                                         <select class="form-control selector-select2" name="programa" id="programa" disabled>
                                             <option value="">Selecione um programa</option>
                                         </select>
@@ -118,7 +118,7 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Horário</label>
-                                        <input type="text" class="form-control horario" name="horario" id="horario" value="{{ ($noticia->horario) ? $noticia->horario : ''  }}" placeholder="Horário">
+                                        <input type="text" class="form-control horario" name="horario" id="horario" value="{{ ($noticia and $noticia->horario) ? $noticia->horario : ''  }}" placeholder="Horário">
                                     </div>
                                 </div>
                             </div>
@@ -129,7 +129,7 @@
                                         <select class="form-control selector-select2" name="cd_estado" id="cd_estado">
                                             <option value="">Selecione um estado</option>
                                             @foreach ($estados as $estado)
-                                                <option value="{{ $estado->cd_estado }}" {!! $noticia->cd_estado == $estado->cd_estado ? " selected" : '' !!}>
+                                                <option value="{{ $estado->cd_estado }}" {!! ($noticia and $noticia->cd_estado == $estado->cd_estado) ? " selected" : '' !!}>
                                                     {{ $estado->nm_estado }}
                                                 </option>
                                             @endforeach
@@ -139,7 +139,7 @@
                                 <div class="col-md-8">
                                     <div class="form-group">
                                         <label>Cidade </label>
-                                        <input type="hidden" name="cd_cidade" id="cd_cidade" value="{{ ($noticia->cd_cidade) ? $noticia->cd_cidade : 0  }}">
+                                        <input type="hidden" name="cd_cidade" id="cd_cidade" value="{{ ($noticia and $noticia->cd_cidade) ? $noticia->cd_cidade : 0  }}">
                                         <select class="form-control select2" name="cidade" id="cidade" disabled="disabled">
                                             <option value="">Selecione uma cidade</option>
                                         </select>
@@ -162,19 +162,19 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Duração <span class="text-danger">Obrigatório</span></label>
-                                        <input type="text" class="form-control duracao" name="duracao" id="duracao" placeholder="00:00:00" value="{{ $noticia->duracao }}" required>
+                                        <input type="text" class="form-control duracao" name="duracao" id="duracao" placeholder="00:00:00" value="{{ ($noticia) ? $noticia->duracao : '' }}" required>
                                     </div>
                                 </div>                            
                                 <div class="col-md-10">
                                     <div class="form-group">
                                         <label>Link</label>
-                                        <input type="text" class="form-control" name="link" id="link" placeholder="Link" value="{{ $noticia->link }}">
+                                        <input type="text" class="form-control" name="link" id="link" placeholder="Link" value="{{ ($noticia) ? $noticia->link : '' }}">
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <label for="sinopse">Sinopse</label>
                                     <div class="form-group">
-                                        <textarea class="form-control" name="sinopse" id="sinopse" rows="10">{!! nl2br($noticia->sinopse) !!}</textarea>
+                                        <textarea class="form-control" name="sinopse" id="sinopse" rows="10">{!! ($noticia) ? nl2br($noticia->sinopse) : '' !!}</textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-12">

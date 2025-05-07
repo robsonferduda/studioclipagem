@@ -223,7 +223,7 @@ class NoticiaRadioController extends Controller
         $tags = Tag::orderBy('nome')->get();
         $emissoras = Emissora::orderBy('nome_emissora')->get();
 
-        return view('noticia-radio/form', compact('noticia','cliente', 'dados', 'estados', 'cidades', 'areas','tags','emissoras'));
+        return view('noticia-radio/form', compact('noticia','estados', 'cidades', 'tags','emissoras'));
     }
 
     public function editar(int $id, int $cliente = null)
