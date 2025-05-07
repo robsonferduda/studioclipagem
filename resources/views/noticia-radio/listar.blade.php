@@ -87,8 +87,15 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-lg-2 col-md-2 col-sm-12 mb-1">
-                                        <a href="{{ url('noticia-impressa/imagem/download/'.$noticia->id) }}" target="_BLANK"><img src="{{ asset('img/noticia-impressa/'.$noticia->ds_caminho_img) }}" alt="Página {{ $noticia->n_pagina }}"></a>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 mb-1">                                    
+                                        @if(true)
+                                            <audio width="100%" controls style="width: 100%;">
+                                                <source src="" type="audio/mpeg">
+                                                Seu navegador não suporta a execução de áudios, faça o download para poder ouvir.
+                                            </audio>
+                                        @else
+    
+                                        @endif
                                     </div>
                                     <div class="col-lg-10 col-sm-10 mb-1"> 
                                         <div class="row">
@@ -160,10 +167,10 @@
                                 <div class="stats">
                                     <i class="fa fa-refresh"></i>Última atualização em {{ \Carbon\Carbon::parse($noticia->updated_at)->format('d/m/Y H:i:s') }}
                                     <div class="pull-right">
-                                        <a title="Excluir" href="{{ url('noticia-impressa/'.$noticia->id.'/excluir') }}" class="btn btn-danger btn-fill btn-icon btn-sm btn-excluir" style="border-radius: 30px;">
+                                        <a title="Excluir" href="{{ url('noticia-radio/'.$noticia->id.'/excluir') }}" class="btn btn-danger btn-fill btn-icon btn-sm btn-excluir" style="border-radius: 30px;">
                                             <i class="fa fa-times fa-3x text-white"></i>
                                         </a>
-                                        <a title="Editar" href="{{ url('noticia-impressa/'.$noticia->id.'/editar') }}" class="btn btn-primary btn-fill btn-icon btn-sm" style="border-radius: 30px;">
+                                        <a title="Editar" href="{{ url('noticia-radio/'.$noticia->id.'/editar') }}" class="btn btn-primary btn-fill btn-icon btn-sm" style="border-radius: 30px;">
                                             <i class="fa fa-edit fa-3x text-white"></i>
                                         </a>
                                     </div>

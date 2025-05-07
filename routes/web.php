@@ -172,6 +172,8 @@ Route::middleware(['web'])->group(function () {
 
 	Route::resource('noticia-radio','NoticiaRadioController');
 	Route::match(array('GET', 'POST'),'noticias/radio','NoticiaRadioController@listar');
+	Route::get('noticia-radio/{id}/editar','NoticiaRadioController@editar');
+	Route::get('noticia-radio/{id}/excluir','NoticiaRadioController@excluir');
 
 	Route::get('radio/noticias/cadastrar','NoticiaRadioController@cadastrar');
 	Route::get('radio/noticias/{id}/editar','NoticiaRadioController@editar');

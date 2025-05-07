@@ -35,10 +35,10 @@
                 </div>
                 <div class="row">
                     <div class="col-lg-12 col-sm-12">
-                        @if(empty($dados->id))
-                            {!! Form::open(['id' => 'frm_noticia_radio_criar', 'url' => ['radio/noticias/inserir'], 'method' => 'post', 'files' => true]) !!}
+                        @if(empty($noticia))
+                            {!! Form::open(['id' => 'frm_noticia_radio_criar', 'url' => ['noticia-radio'], 'method' => 'post', 'files' => true]) !!}
                         @else
-                            {!! Form::open(['id' => 'frm_noticia_radio_editar', 'url' => ['radio/noticias/'. $dados->id. '/atualizar'], 'method' => 'post', 'files' => true]) !!}
+                            {!! Form::open(['id' => 'frm_noticia_radio_editar', 'url' => ['noticia-radio', $noticia->id], 'method' => 'patch', 'files' => true]) !!}
                         @endif
                         <div class="form-group m-3 w-70">
                             <div class="row">
@@ -94,12 +94,12 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <input type="hidden" name="cd_emissora" id="cd_emissora" value="{{ ($dados->emissora_id) ? $dados->emissora_id : 0  }}">
+                                        <input type="hidden" name="cd_emissora" id="cd_emissora" value="{{ ($noticia->emissora_id) ? $noticia->emissora_id : 0  }}">
                                         <label>Emissora <span class="text-danger">Obrigatório</span></label>
-                                        <select class="form-control select2" name="emissora" id="emissora" required>
+                                        <select class="form-control select2" name="emissora" id="emissora" required="true">
                                             <option value="">Selecione uma emissora</option>
                                             @foreach ($emissoras as $emissora)
-                                                <option value="{{ $emissora->cd_emissora }}" {!! $emissora->cd_emissora == $dados->cd_emissora ? " selected" : '' !!}>
+                                                <option value="{{ $emissora->cd_emissora }}" {!! ($noticia and $emissora->cd_emissora == $noticia->cd_emissora) ? "selected" : '' !!}>
                                                     {{ $emissora->nome_emissora }}
                                                 </option>
                                             @endforeach
@@ -109,7 +109,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Programa</label>
-                                        <input type="hidden" name="cd_programa" id="cd_programa" value="{{ ($dados->programa_id) ? $dados->programa_id : 0  }}">
+                                        <input type="hidden" name="cd_programa" id="cd_programa" value="{{ ($noticia->programa_id) ? $noticia->programa_id : 0  }}">
                                         <select class="form-control selector-select2" name="programa" id="programa" disabled>
                                             <option value="">Selecione um programa</option>
                                         </select>
@@ -118,7 +118,7 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Horário</label>
-                                        <input type="text" class="form-control horario" name="horario" id="horario" value="{{ ($dados->horario) ? $dados->horario : ''  }}" placeholder="Horário">
+                                        <input type="text" class="form-control horario" name="horario" id="horario" value="{{ ($noticia->horario) ? $noticia->horario : ''  }}" placeholder="Horário">
                                     </div>
                                 </div>
                             </div>
@@ -129,7 +129,7 @@
                                         <select class="form-control selector-select2" name="cd_estado" id="cd_estado">
                                             <option value="">Selecione um estado</option>
                                             @foreach ($estados as $estado)
-                                                <option value="{{ $estado->cd_estado }}" {!! $dados->cd_estado == $estado->cd_estado ? " selected" : '' !!}>
+                                                <option value="{{ $estado->cd_estado }}" {!! $noticia->cd_estado == $estado->cd_estado ? " selected" : '' !!}>
                                                     {{ $estado->nm_estado }}
                                                 </option>
                                             @endforeach
@@ -139,7 +139,7 @@
                                 <div class="col-md-8">
                                     <div class="form-group">
                                         <label>Cidade </label>
-                                        <input type="hidden" name="cd_cidade" id="cd_cidade" value="{{ ($dados->cd_cidade) ? $dados->cd_cidade : 0  }}">
+                                        <input type="hidden" name="cd_cidade" id="cd_cidade" value="{{ ($noticia->cd_cidade) ? $noticia->cd_cidade : 0  }}">
                                         <select class="form-control select2" name="cidade" id="cidade" disabled="disabled">
                                             <option value="">Selecione uma cidade</option>
                                         </select>
@@ -162,19 +162,19 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Duração <span class="text-danger">Obrigatório</span></label>
-                                        <input type="text" class="form-control duracao" name="duracao" id="duracao" placeholder="00:00:00" value="{{ $dados->duracao }}" required>
+                                        <input type="text" class="form-control duracao" name="duracao" id="duracao" placeholder="00:00:00" value="{{ $noticia->duracao }}" required>
                                     </div>
                                 </div>                            
                                 <div class="col-md-10">
                                     <div class="form-group">
                                         <label>Link</label>
-                                        <input type="text" class="form-control" name="link" id="link" placeholder="Link" value="{{ $dados->link }}">
+                                        <input type="text" class="form-control" name="link" id="link" placeholder="Link" value="{{ $noticia->link }}">
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <label for="sinopse">Sinopse</label>
                                     <div class="form-group">
-                                        <textarea class="form-control" name="sinopse" id="sinopse" rows="10">{!! nl2br($dados->sinopse) !!}</textarea>
+                                        <textarea class="form-control" name="sinopse" id="sinopse" rows="10">{!! nl2br($noticia->sinopse) !!}</textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
@@ -183,68 +183,17 @@
                                     <input type="hidden" name="arquivo" id="arquivo">
                                 </div>
                             </div>
+                            <div class="text-center mb-2 mt-3">
+                                <button type="submit" class="btn btn-success" name="btn_enviar" value="salvar"><i class="fa fa-save"></i> Salvar</button>
+                                <button type="submit" class="btn btn-warning" name="btn_enviar" value="salvar_e_copiar"><i class="fa fa-copy"></i> Salvar e Copiar</button>
+                                <a href="{{ url('noticias/radio') }}" class="btn btn-danger"><i class="fa fa-times"></i> Cancelar</a>
+                            </div>
                         </div>
                         {!! Form::close() !!}
                     </div>
                 </div>
             </div>
-            <div class="card-footer text-center mb-2">
-                <button type="submit" class="btn btn-success" name="btn_enviar" value="salvar"><i class="fa fa-save"></i> Salvar</button>
-                <button type="submit" class="btn btn-warning" name="btn_enviar" value="salvar_e_copiar"><i class="fa fa-copy"></i> Salvar e Copiar</button>
-                <a href="{{ url('radio/noticias') }}" class="btn btn-danger"><i class="fa fa-times"></i> Cancelar</a>
-            </div>
         </div>
-</div>
-<div class="modal fade" id="modalCliente" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-          <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-envelope"></i> Adicionar Endereço Eletrônico</h6>
-        </div>
-        <div class="modal-body">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label>Cliente <span class="text-danger">Obrigatório</span></label>
-                        <input hidden name="cliente_id" id="cliente_id" value="{{ ($dados and $dados->cliente) ? $dados->cliente->id : '' }}">
-                        <select class="form-control cliente select2" name="cliente" id="cliente">
-                            <option value="">Selecione um cliente</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label>Área do Cliente <span class="text-info">Opcional</span></label>
-                        <select class="form-control select2" name="area" id="area" disabled>
-                            <option value="">Selecione uma área</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label>Sentimento <span class="text-info">Opcional</span></label>
-                        <select class="form-control" name="sentimento" id="sentimento">
-                            <option value="">Selecione um sentimento</option>
-                            <option value="1">Positivo</option>
-                            <option value="0">Neutro</option>
-                            <option value="-1">Negativo</option>
-                        </select>
-                    </div>
-                </div>
-             
-                <div class="col-md-12 center">
-                    <div class="form-group mt-3">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
-                        <button type="button" class="btn btn-success btn-add-cliente"><i class="fa fa-plus"></i>Adicionar</button>
-                    </div>
-                </div>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
 @endsection
 @section('script')    

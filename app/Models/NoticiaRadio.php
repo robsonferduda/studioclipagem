@@ -14,15 +14,14 @@ class NoticiaRadio extends Model
     protected $table = 'noticia_radio';
 
     protected $fillable = [
-        'cliente_id',
-        'area_id',
         'emissora_id',
         'cd_estado',
         'cd_cidade',
         'titulo',
         'arquivo',
         'programa_id',
-        'dt_noticia',
+        'dt_cadastro',
+        'dt_clipagem',
         'fl_boletim',
         'sinopse',
         'link',

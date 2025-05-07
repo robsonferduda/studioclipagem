@@ -217,55 +217,42 @@ class NoticiaRadioController extends Controller
 
         $dados = new NoticiaRadio();
         $cidades = [];
-        $areas = [];
-        $cliente = null;
+        $noticia = null;
 
         $estados = Estado::orderBy('nm_estado')->get();
         $tags = Tag::orderBy('nome')->get();
         $emissoras = Emissora::orderBy('nome_emissora')->get();
 
-        return view('noticia-radio/form', compact('cliente', 'dados', 'estados', 'cidades', 'areas','tags','emissoras'));
+        return view('noticia-radio/form', compact('noticia','cliente', 'dados', 'estados', 'cidades', 'areas','tags','emissoras'));
     }
 
     public function editar(int $id, int $cliente = null)
     {
-        $dados = NoticiaRadio::find($id);
+        $noticia = NoticiaRadio::find($id);
         $cliente = NoticiaCliente::where('noticia_id', $id)->where('cliente_id', $cliente)->first();
         
         $estados = Estado::orderBy('nm_estado')->get();
-        $cidades = Cidade::where(['cd_estado' => $dados->cd_estado])->orderBy('nm_cidade')->get();
-        $areas = Area::select('area.id', 'area.descricao')
-            ->join('area_cliente', 'area_cliente.area_id', '=', 'area.id')
-            ->where(['cliente_id' => $dados->cliente_id,])
-            ->where(['ativo' => true])
-            ->orderBy('area.descricao')
-            ->get();
-
+        $cidades = Cidade::where(['cd_estado' => $noticia->cd_estado])->orderBy('nm_cidade')->get();
+      
         $tags = Tag::orderBy('nome')->get();
+        $emissoras = Emissora::orderBy('nome_emissora')->get();
 
-        return view('noticia-radio/form', compact('dados', 'cliente', 'estados', 'cidades', 'areas','tags'));
+        return view('noticia-radio/form', compact('noticia','cliente', 'estados', 'cidades','tags','emissoras'));
     }
 
-    public function inserir(Request $request)
+    public function store(Request $request)
     {
-        $carbon = new Carbon();
+        $dt_cadastro = ($request->dt_cadastro) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_cadastro)->format('Y-m-d') : date("Y-m-d");
+        $request->merge(['dt_cadastro' => $dt_cadastro]);
+
+        $dt_clipagem = ($request->dt_clipagem) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_clipagem)->format('Y-m-d') : date("Y-m-d");
+        $request->merge(['dt_clipagem' => $dt_clipagem]);
+
         try {
+
+            $noticia = NoticiaRadio::create($request->all());
            
-            $emissora = Emissora::find($request->emissora);
-           
-            $dados = array('dt_noticia' => ($request->data) ? $carbon->createFromFormat('d/m/Y', $request->data)->format('Y-m-d') : date("Y-m-d"),
-                           'duracao' => $request->duracao,
-                           'horario' => $request->horario,
-                           'emissora_id' => $request->emissora,
-                           'programa_id' => $request->programa,
-                           'arquivo' => $request->arquivo,
-                           'sinopse' => $request->sinopse,
-                           'cd_estado' => $emissora->cd_estado,
-                           'cd_cidade' => $emissora->cd_cidade,
-                           'link' => $request->link
-                        ); 
-           
-            if($noticia = NoticiaRadio::create($dados))
+            if($noticia)
             {
                 if($request->cd_cliente){
 
@@ -305,6 +292,8 @@ class NoticiaRadioController extends Controller
 
         } catch (\Illuminate\Database\QueryException $e) {
 
+            dd($e);
+
             $retorno = array('flag' => false,
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
 
@@ -318,7 +307,7 @@ class NoticiaRadioController extends Controller
             case 'salvar':
                 if ($retorno['flag']) {
                     Flash::success($retorno['msg']);
-                    return redirect('radios')->withInput();
+                    return redirect('noticias/radio')->withInput();
                 } else {
                     Flash::error($retorno['msg']);
                     return redirect('radio/noticias/cadastrar')->withInput();
