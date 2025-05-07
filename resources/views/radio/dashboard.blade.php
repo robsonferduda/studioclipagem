@@ -11,7 +11,7 @@
                     </h4>
                 </div>
                 <div class="col-md-4">
-                    <a href="{{ url('radio/noticias') }}" class="btn btn-info pull-right mr-3"><i class="fa fa-table"></i> Notícias</a>
+                    <a href="{{ url('noticias/radio') }}" class="btn btn-info pull-right mr-3"><i class="fa fa-table"></i> Notícias</a>
                     <a href="{{ url('radio/noticias/cadastrar') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-plus"></i> Cadastrar Notícia</a>                    
                 </div>
             </div>
