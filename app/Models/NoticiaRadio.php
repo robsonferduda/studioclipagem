@@ -67,7 +67,7 @@ class NoticiaRadio extends Model
 
     public function tags()
     {
-        return $this->belongsToMany(Tag::class,'tag_radio','noticia_id','tag_id')->withPivot('tipo_id')->withTimestamps();
+        return $this->belongsToMany(Tag::class,'noticia_tag','noticia_id','tag_id')->withPivot('tipo_id')->where('tipo_id', 3)->withTimestamps();
     }
 
     public function getTotais($dt_inicial, $dt_final)
