@@ -105,7 +105,7 @@ class NoticiaTvController extends Controller
                             'programa_emissora_web.tipo_programa',
                             'horario_start_gravacao',
                             'horario_end_gravacao',
-                            'misc_data',
+                            'videos_programa_emissora_web.misc_data',
                             'expressao',
                             'nm_estado',
                             'nm_cidade',
