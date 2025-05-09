@@ -115,6 +115,35 @@ class FonteImpressoController extends Controller
         return view('fonte-impresso/novo', compact('estados','paises','modelos'));
     }
 
+    public function getFontes()
+    {
+        $fontes = FonteImpressa::all();
+        return response()->json($fontes);
+    }
+
+    public function adicionar(Request $request)
+    {
+        $dados_insert = array('nome' => $request->nome);
+
+        $fonte = FonteImpressa::create($dados_insert);
+
+        if($fonte){
+
+            return Response::json(array(
+                    'code'      =>  200,
+                    'message'   =>  'Dados inseridos com sucesso'
+                ), 200);
+
+        }else{
+
+             return Response::json(array(
+                    'code'      =>  401,
+                    'message'   =>  'Erro ao inserir dados'
+                ), 401);
+
+        }
+    }
+
     public function sessao(int $id)
     {
         

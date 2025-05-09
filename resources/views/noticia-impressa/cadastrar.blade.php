@@ -77,7 +77,7 @@
                                 </div>
                                 <div class="col-md-4">
                                         <div class="form-group">
-                                            <label>Fonte</label>
+                                            <label>Fonte <span class="text-info add-fonte" data-toggle="modal" data-target="#modalFonte">Adicionar Fonte</span></label>
                                             <select class="form-control select2" name="id_fonte" id="id_fonte" required="true">
                                                 <option value="">Selecione uma fonte</option>
                                                 @foreach ($fontes as $fonte)
@@ -265,6 +265,34 @@
     </div>
   </div>
 </div>
+<div class="modal fade" id="modalFonte" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-database"></i> Adicionar Fonte</h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Fonte</label>
+                            <input type="text" class="form-control" name="nome" id="nome" placeholder="Descrição">
+                        </div>
+                    </div>             
+                    <div class="col-md-12 center">
+                        <div class="form-group mt-3">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
+                            <button type="button" class="btn btn-success btn-add-fonte"><i class="fa fa-plus"></i> Adicionar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 @section('script')
 <script src="{{ asset('js/formulario-cadastro.js') }}"></script>
@@ -302,6 +330,50 @@
                     // Opcional: envie uma requisição para remover o arquivo do servidor
                 });
             },
+        });
+
+        $(document).on("click", ".btn-add-fonte", function() {
+
+            var nome = $("#nome").val();
+          
+            $.ajax({url: host+'/fonte-impresso/adicionar',
+                type: 'POST',
+                data: {"_token": $('meta[name="csrf-token"]').attr('content'),
+                        "nome": nome
+                },
+                beforeSend: function() {
+            
+                },
+                success: function(data) {
+                        
+                    $.ajax({
+                        url: host+'/fonte-impresso/listar',
+                        type: 'GET',
+                        beforeSend: function() {
+                            $('#id_fonte').append('<option value="">Carregando...</option>').val('');
+                        },
+                        success: function(data) {
+
+                            $('#id_fonte').find('option').remove();                                    
+                            $('#id_fonte').append('<option value="">Selecione uma fonte</option>').val('');
+                            data.forEach(element => {
+                                let option = new Option(element.nome, element.id);
+                                $('#id_fonte').append(option);
+                            });             
+                        },
+                        complete: function(){
+                                    
+                        }
+                    });           
+                },
+                error: function(){
+                        
+                },
+                complete: function(){
+                    $('#modalFonte').modal('hide');
+                    $("#nome").val("");
+                }
+            });
         });
 
         $(".btn-salvar-secao").click(function(){
