@@ -139,6 +139,29 @@ class NoticiaRadioController extends Controller
         return view('noticia-radio/index', compact('clientes','fontes','dados','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo','monitoramento'));
     }
 
+    public function listar(Request $request)
+    {
+        Session::put('sub-menu','noticias-impresso');
+
+        $emissora = Emissora::orderBy('nome_emissora')->get();
+        $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
+
+        $tipo_data = ($request->tipo_data) ? $request->tipo_data : 'dt_clipagem';
+        $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
+        $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
+        $cliente_selecionado = ($request->cliente) ? $request->cliente : null;
+        $fonte = ($request->fontes) ? $request->fontes : null;
+        $termo = ($request->termo) ? $request->termo : null;
+
+        $dados = NoticiaRadio::with('emissora')
+                    ->whereBetween($tipo_data, [$dt_inicial." 00:00:00", $dt_final." 23:59:59"])
+                    ->orderBy('dt_clipagem')
+                    ->orderBy('titulo')
+                    ->paginate(10);
+
+        return view('noticia-radio/listar', compact('dados','emissora','clientes','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo'));
+    }
+
     public function dashboard()
     {
         Session::put('sub-menu','radio-dashboard');
@@ -194,55 +217,42 @@ class NoticiaRadioController extends Controller
 
         $dados = new NoticiaRadio();
         $cidades = [];
-        $areas = [];
-        $cliente = null;
+        $noticia = null;
 
         $estados = Estado::orderBy('nm_estado')->get();
         $tags = Tag::orderBy('nome')->get();
         $emissoras = Emissora::orderBy('nome_emissora')->get();
 
-        return view('noticia-radio/form', compact('cliente', 'dados', 'estados', 'cidades', 'areas','tags','emissoras'));
+        return view('noticia-radio/form', compact('noticia','estados', 'cidades', 'tags','emissoras'));
     }
 
     public function editar(int $id, int $cliente = null)
     {
-        $dados = NoticiaRadio::find($id);
+        $noticia = NoticiaRadio::find($id);
         $cliente = NoticiaCliente::where('noticia_id', $id)->where('cliente_id', $cliente)->first();
         
         $estados = Estado::orderBy('nm_estado')->get();
-        $cidades = Cidade::where(['cd_estado' => $dados->cd_estado])->orderBy('nm_cidade')->get();
-        $areas = Area::select('area.id', 'area.descricao')
-            ->join('area_cliente', 'area_cliente.area_id', '=', 'area.id')
-            ->where(['cliente_id' => $dados->cliente_id,])
-            ->where(['ativo' => true])
-            ->orderBy('area.descricao')
-            ->get();
-
+        $cidades = Cidade::where(['cd_estado' => $noticia->cd_estado])->orderBy('nm_cidade')->get();
+      
         $tags = Tag::orderBy('nome')->get();
+        $emissoras = Emissora::orderBy('nome_emissora')->get();
 
-        return view('noticia-radio/form', compact('dados', 'cliente', 'estados', 'cidades', 'areas','tags'));
+        return view('noticia-radio/form', compact('noticia','cliente', 'estados', 'cidades','tags','emissoras'));
     }
 
-    public function inserir(Request $request)
+    public function store(Request $request)
     {
-        $carbon = new Carbon();
+        $dt_cadastro = ($request->dt_cadastro) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_cadastro)->format('Y-m-d') : date("Y-m-d");
+        $request->merge(['dt_cadastro' => $dt_cadastro]);
+
+        $dt_clipagem = ($request->dt_clipagem) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_clipagem)->format('Y-m-d') : date("Y-m-d");
+        $request->merge(['dt_clipagem' => $dt_clipagem]);
+
         try {
+
+            $noticia = NoticiaRadio::create($request->all());
            
-            $emissora = Emissora::find($request->emissora);
-           
-            $dados = array('dt_noticia' => ($request->data) ? $carbon->createFromFormat('d/m/Y', $request->data)->format('Y-m-d') : date("Y-m-d"),
-                           'duracao' => $request->duracao,
-                           'horario' => $request->horario,
-                           'emissora_id' => $request->emissora,
-                           'programa_id' => $request->programa,
-                           'arquivo' => $request->arquivo,
-                           'sinopse' => $request->sinopse,
-                           'cd_estado' => $emissora->cd_estado,
-                           'cd_cidade' => $emissora->cd_cidade,
-                           'link' => $request->link
-                        ); 
-           
-            if($noticia = NoticiaRadio::create($dados))
+            if($noticia)
             {
                 if($request->cd_cliente){
 
@@ -282,6 +292,8 @@ class NoticiaRadioController extends Controller
 
         } catch (\Illuminate\Database\QueryException $e) {
 
+            dd($e);
+
             $retorno = array('flag' => false,
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
 
@@ -295,7 +307,7 @@ class NoticiaRadioController extends Controller
             case 'salvar':
                 if ($retorno['flag']) {
                     Flash::success($retorno['msg']);
-                    return redirect('radios')->withInput();
+                    return redirect('noticias/radio')->withInput();
                 } else {
                     Flash::error($retorno['msg']);
                     return redirect('radio/noticias/cadastrar')->withInput();
@@ -321,65 +333,39 @@ class NoticiaRadioController extends Controller
         }
     }
 
-    public function atualizar(Request $request, int $id)
+    public function update(Request $request, int $id)
     {
-        $carbon = new Carbon();
+        $noticia = NoticiaRadio::find($id);
 
         try {
 
-            $noticia = NoticiaRadio::find($id);
-
-            if(empty($noticia)) {
-                throw new \Exception('Notícia não encontrada');
-            }
-
-            $emissora = Emissora::find($request->emissora);
+            $dt_cadastro = ($request->dt_cadastro) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_cadastro)->format('Y-m-d') : date("Y-m-d");
+            $request->merge(['dt_cadastro' => $dt_cadastro]);
+    
+            $dt_clipagem = ($request->dt_clipagem) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_clipagem)->format('Y-m-d') : date("Y-m-d");
+            $request->merge(['dt_clipagem' => $dt_clipagem]);
             
-            $dados = array('dt_noticia' => ($request->data) ? $carbon->createFromFormat('d/m/Y', $request->data)->format('Y-m-d') : date("Y-m-d"),
-                            'duracao' => $request->duracao,
-                            'horario' => $request->horario,
-                            'emissora_id' => $request->emissora,
-                            'programa_id' => $request->programa,
-                            'arquivo' => ($request->arquivo) ? $request->arquivo : $noticia->arquivo,
-                            'sinopse' => $request->sinopse,
-                            'cd_estado' => $emissora->cd_estado,
-                            'cd_cidade' => $emissora->cd_cidade,
-                            'link' => $request->link
-            ); 
+            $noticia->update($request->all());
 
-            if($noticia->update($dados)){
+            $tags = collect($request->tags)->mapWithKeys(function($tag){
+                return [$tag => ['tipo_id' => 3]];
+            })->toArray();
 
-                if($request->cd_cliente){
+            $noticia->tags()->sync($tags);
 
-                    $chave = array('tipo_id' => 3,
-                                    'noticia_id' => $noticia->id,
-                                    'cliente_id' => $request->cd_cliente);
+            //Atualização de clientes
+            $clientes = json_decode($request->clientes[0]);
 
-                    $atualizar = array('area' => $request->cd_area,
-                                       'sentimento' => $request->cd_sentimento);
-                            
-                    NoticiaCliente::updateOrCreate($chave, $atualizar);
-                }
-
-                $tags = collect($request->tags)->mapWithKeys(function($tag){
-                    return [$tag => ['tipo_id' => 3]];
-                })->toArray();
-
-                $noticia->tags()->sync($tags);
-
-                $clientes = json_decode($request->clientes[0]);
-                if($clientes){
-
-                    for ($i=0; $i < count($clientes); $i++) { 
+            if($clientes){
+                for ($i=0; $i < count($clientes); $i++) { 
                         
-                        $dados = array('tipo_id' => 3,
+                    $dados = array('tipo_id' => 3,
                                 'noticia_id' => $noticia->id,
-                                'cliente_id' => $clientes[$i]->id_cliente,
-                                'area_id' => $clientes[$i]->id_area,
-                                'sentimento' => $clientes[$i]->id_sentimento);
-                    
-                        NoticiaCliente::create($dados);
-                    }
+                                'cliente_id' => (int) $clientes[$i]->id_cliente,
+                                'area' => (int) $clientes[$i]->id_area,
+                                'sentimento' => (int) $clientes[$i]->id_sentimento);
+
+                    $noticia_cliente = NoticiaCliente::create($dados);
                 }
             }
 
@@ -388,10 +374,14 @@ class NoticiaRadioController extends Controller
 
         } catch (\Illuminate\Database\QueryException $e) {
 
+            dd($e);
+
             $retorno = array('flag' => false,
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
 
         } catch (\Exception $e) {
+
+            dd($e);
 
             $retorno = array('flag' => false,
                              'msg' => "Ocorreu um erro ao atualizar o registro");
@@ -399,10 +389,10 @@ class NoticiaRadioController extends Controller
 
         if ($retorno['flag']) {
             Flash::success($retorno['msg']);
-            return redirect('radios')->withInput();
+            return redirect('noticias/radio')->withInput();
         } else {
             Flash::error($retorno['msg']);
-            return redirect('radio/noticias/'.$id.'/editar')->withInput();
+            return redirect('noticia-radio/'.$id.'/editar')->withInput();
         }
     }
 

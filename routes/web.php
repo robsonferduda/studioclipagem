@@ -156,7 +156,6 @@ Route::middleware(['web'])->group(function () {
 
 	Route::post('noticia-impressa/upload','NoticiaImpressaController@upload'); 
 
-
 	//Route::resource('noticia-impressa','NoticiaImpressaController');
 	Route::get('noticia-impressa/cadastrar','NoticiaImpressaController@cadastrar');  // Rota Antiga
 	Route::get('noticia-impressa/cliente/{cliente}/copiar/{id}','NoticiaImpressaController@copiar'); // Rota Antiga
@@ -169,13 +168,31 @@ Route::middleware(['web'])->group(function () {
 	Route::get('noticia/impresso/fonte/sessoes/{id}','NoticiaImpressaController@getSecoes');
 	Route::get('noticia-impressa/{id}/editar','NoticiaImpressaController@editar');
 	Route::get('noticia-impressa/{id}/excluir','NoticiaImpressaController@excluir');
+	Route::get('noticia-impressa/imagem/download/{id}','NoticiaImpressaController@getImagem');
+
+	Route::resource('noticia-radio','NoticiaRadioController');
+	Route::match(array('GET', 'POST'),'noticias/radio','NoticiaRadioController@listar');
+	Route::get('noticia-radio/{id}/editar','NoticiaRadioController@editar');
+	Route::get('noticia-radio/{id}/excluir','NoticiaRadioController@excluir');
+
+	Route::get('radio/noticias/cadastrar','NoticiaRadioController@cadastrar');
+	Route::get('radio/noticias/{id}/editar','NoticiaRadioController@editar');
+	Route::get('radio/noticias/{id}/remover','NoticiaRadioController@remover');
+	Route::get('radio/noticias/{id}/cliente/{cliente}/editar','NoticiaRadioController@editar');
+	Route::get('radio/noticias/{id}/cliente/{cliente}/remover','NoticiaRadioController@remover');
+	Route::get('radio/noticias/{id}/download','NoticiaRadioController@download');
+	Route::get('radio/noticias/estatisticas','NoticiaRadioController@getEstatisticas');
+	Route::get('radio/noticia/extrair/{tipo}/{id}','NoticiaRadioController@extrair');
+	Route::get('radio/conteudo/{id_noticia}/monitoramento/{id_monitoramento}','NoticiaRadioController@destacaConteudo');
+	Route::post('radio/noticias/inserir','NoticiaRadioController@inserir');
+	Route::post('radio/noticias/{id}/atualizar','NoticiaRadioController@atualizar');
+	Route::post('radio/noticias/upload','NoticiaRadioController@upload');
 
 
-	Route::get('noticia/web/valores','NoticiaWebController@valores');
 
 
 	//Route::match(array('GET', 'POST'),'buscar-web','JornalWebController@index');
-
+	Route::get('noticia/web/valores','NoticiaWebController@valores');
 	Route::match(array('GET', 'POST'),'buscar-web','NoticiaWebController@index');
 	Route::get('noticia/web','NoticiaWebController@index');
 	Route::get('noticia/web/cadastrar','NoticiaWebController@cadastrar');
@@ -251,18 +268,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('radio/estatisticas','NoticiaRadioController@estatisticas');
 	Route::match(array('GET', 'POST'),'radios','NoticiaRadioController@index');
 
-	Route::get('radio/noticias/cadastrar','NoticiaRadioController@cadastrar');
-	Route::get('radio/noticias/{id}/editar','NoticiaRadioController@editar');
-	Route::get('radio/noticias/{id}/remover','NoticiaRadioController@remover');
-	Route::get('radio/noticias/{id}/cliente/{cliente}/editar','NoticiaRadioController@editar');
-	Route::get('radio/noticias/{id}/cliente/{cliente}/remover','NoticiaRadioController@remover');
-	Route::get('radio/noticias/{id}/download','NoticiaRadioController@download');
-	Route::get('radio/noticias/estatisticas','NoticiaRadioController@getEstatisticas');
-	Route::get('radio/noticia/extrair/{tipo}/{id}','NoticiaRadioController@extrair');
-	Route::get('radio/conteudo/{id_noticia}/monitoramento/{id_monitoramento}','NoticiaRadioController@destacaConteudo');
-	Route::post('radio/noticias/inserir','NoticiaRadioController@inserir');
-	Route::post('radio/noticias/{id}/atualizar','NoticiaRadioController@atualizar');
-	Route::post('radio/noticias/upload','NoticiaRadioController@upload');
+
 
 	Route::get('tags','TagController@index');
 	Route::get('tags/cadastrar','TagController@cadastrar');

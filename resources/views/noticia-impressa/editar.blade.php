@@ -25,6 +25,44 @@
                     {!! Form::open(['id' => 'frm_user_edit', 'url' => ['noticia-impressa', $noticia->id], 'method' => 'patch']) !!}
                         <div class="form-group m-3 w-70">
                             <div class="row">
+                                <input type="hidden" name="clientes[]" id="clientes">
+                                <input type="hidden" name="ds_caminho_img" id="ds_caminho_img">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <label>Cliente</label>
+                                        <select class="form-control cliente select2" name="cd_cliente" id="cd_cliente">
+                                            <option value="">Selecione um cliente</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Área do Cliente <span class="text-info add-area" data-toggle="modal" data-target="#modalArea">Adicionar Área</span></label>
+                                        <select class="form-control area select2" name="cd_area" id="cd_area" disabled>
+                                            <option value="">Selecione uma área</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Sentimento </label>
+                                        <select class="form-control" name="cd_sentimento" id="cd_sentimento">
+                                            <option value="">Selecione um sentimento</option>
+                                            <option value="1">Positivo</option>
+                                            <option value="0">Neutro</option>
+                                            <option value="-1">Negativo</option>
+                                        </select>
+                                    </div>                        
+                                </div>
+                                <div class="col-md-1">
+                                    <button type="button" class="btn btn-success btn-add-cliente mt-4 w-100"><i class="fa fa-plus"></i></button>
+                                </div>
+                                
+                                <div class="col-md-12">
+                                    <ul class="list-unstyled metadados"></ul>
+                                </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
                                         <label>Data de Cadastro</label>
@@ -114,25 +152,25 @@
                                 <div class="col-md-3 col-sm-6">
                                     <div class="form-group">
                                         <label>Colunas</label>
-                                        <input type="text" class="form-control monetario" name="nu_colunas" id="nu_colunas" placeholder="Colunas" value="{{ ($noticia->nu_colunas) ? $noticia->nu_colunas : '' }}">
+                                        <input type="text" class="form-control monetario" name="nu_colunas" id="nu_colunas" placeholder="Colunas" value="{{ ($noticia->nu_colunas) ? $noticia->nu_colunas : 0 }}">
                                     </div>                                    
                                 </div>
                                 <div class="col-md-3 col-sm-6">
                                     <div class="form-group">
-                                        <label>Altura</label>
-                                        <input type="text" class="form-control monetario" name="nu_altura" id="nu_altura" placeholder="Altura" value="{{ ($noticia->nu_altura) ? $noticia->nu_altura : '' }}">
+                                        <label>Altura <span class="text-info">em cm</span></label>
+                                        <input type="text" class="form-control monetario" name="nu_altura" id="nu_altura" placeholder="Altura" value="{{ ($noticia->nu_altura) ? $noticia->nu_altura : 0 }}">
                                     </div>                                    
                                 </div>
                                 <div class="col-md-3 col-sm-6">
                                     <div class="form-group">
-                                        <label>Largura</label>
-                                        <input type="text" class="form-control monetario" name="nu_largura" id="nu_largura" placeholder="Largura" value="{{ $noticia->nu_largura }}">
+                                        <label>Largura <span class="text-info">em cm</span></label>
+                                        <input type="text" class="form-control monetario" name="nu_largura" id="nu_largura" placeholder="Largura" value="{{ ($noticia->nu_largura) ? $noticia->nu_largura : 0 }}">
                                     </div>                                    
                                 </div>
                                 <div class="col-md-3 col-sm-6">
                                     <div class="form-group">
                                         <label>Retorno</label>
-                                        <input type="text" class="form-control monetario" name="valor_retorno" id="valor_retorno" placeholder="Retorno" value="{{ $noticia->valor_retorno }}" readonly>
+                                        <input type="text" class="form-control monetario" name="valor_retorno" id="valor_retorno" placeholder="Retorno" value="{{ ($noticia->valor_retorno) ? $noticia->valor_retorno : 0 }}" readonly>
                                     </div>                                    
                                 </div>
                             </div>
@@ -180,30 +218,49 @@
 </div> 
 @endsection
 @section('script')
+<script src="{{ asset('js/formulario-cadastro.js') }}"></script>
 <script>
+
+    Dropzone.autoDiscover = false;
+
     $( document ).ready(function() {
 
         var host = $('meta[name="base-url"]').attr('content');
         var id_fonte = $('#id_fonte').val();
 
+        //Inicializar o Dropzone
+        var myDropzone = new Dropzone("#dropzone", {
+            url: host + "/noticia-impressa/upload", // URL para onde os arquivos serão enviados
+            method: "post", // Método HTTP
+            paramName: "picture", // Nome do parâmetro no backend
+            maxFilesize: 1, // Tamanho máximo do arquivo em MB
+            acceptedFiles: ".jpeg,.jpg,.png,.pdf", // Tipos de arquivos aceitos
+            addRemoveLinks: true, // Adicionar links para remover arquivos
+            dictRemoveFile: "Remover", // Texto do botão de remoção
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"), // Token CSRF para Laravel
+            },
+            init: function () {
+                this.on("success", function (file, response) {
+                    $("#ds_caminho_img").val(response);
+                });
+
+                this.on("error", function (file, response) {
+                    console.error("Erro ao enviar arquivo:", response);
+                });
+
+                this.on("removedfile", function (file) {
+                    console.log("Arquivo removido:", file.name);
+                    // Opcional: envie uma requisição para remover o arquivo do servidor
+                });
+            },
+        });
+
         if(id_fonte != ''){
             buscarSecoes(id_fonte);
         }
 
-        $(document).on('change', '.monetario', function() {
-                
-            var retorno = 0;
-            var altura = ($("#nu_altura").val()) ? $("#nu_altura").val() : 1;
-            var largura = ($("#nu_largura").val()) ? $("#nu_largura").val() : 1;
-            var colunas = ($("#nu_colunas").val()) ? $("#nu_colunas").val() : 1;
-
-            retorno = altura * largura * colunas;
-
-            // Truncar o valor com duas casas decimais
-            retorno = retorno.toFixed(2);
-
-            $("#valor_retorno").val(retorno);
-        });
+      
 
         $(document).on('change', '#id_fonte', function() {
                 

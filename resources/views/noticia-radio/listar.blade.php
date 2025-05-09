@@ -6,14 +6,14 @@
             <div class="row">
                 <div class="col-md-6">
                     <h4 class="card-title ml-3">
-                        <i class="fa fa-newspaper-o"></i> Impressos
+                        <i class="fa fa-volume-up"></i> Rádio
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Notícias
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Listar
                     </h4>
                 </div>
                 <div class="col-md-6">
-                    <a href="{{ url('impresso') }}" class="btn btn-warning pull-right mr-3"><i class="nc-icon nc-chart-pie-36"></i> Dashboard</a>
-                    <a href="{{ url('noticia/impresso/novo') }}" class="btn btn-primary pull-right mr-3"><i class="fa fa-newspaper-o"></i> Novo</a>
+                    <a href="{{ url('radio/dashboard') }}" class="btn btn-warning pull-right mr-3"><i class="nc-icon nc-chart-pie-36"></i> Dashboard</a>
+                    <a href="{{ url('radio/noticias/cadastrar') }}" class="btn btn-primary pull-right mr-3"><i class="fa fa-newspaper-o"></i> Novo</a>
                 </div>
             </div>
         </div>
@@ -23,7 +23,7 @@
             </div>
             <div class="row">
                 <div class="col-lg-12 col-md-12 col-sm-12">
-                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['noticias/impresso']]) !!}
+                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['noticias/radio']]) !!}
                         <div class="form-group m-3 w-70">
                             <div class="row">
                                 <div class="col-md-2">
@@ -87,8 +87,15 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-lg-2 col-md-2 col-sm-12 mb-1">
-                                        <a href="{{ url('noticia-impressa/imagem/download/'.$noticia->id) }}" target="_BLANK"><img src="{{ asset('img/noticia-impressa/'.$noticia->ds_caminho_img) }}" alt="Página {{ $noticia->n_pagina }}"></a>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 mb-1">                                    
+                                        @if(true)
+                                            <audio width="100%" controls style="width: 100%;">
+                                                <source src="" type="audio/mpeg">
+                                                Seu navegador não suporta a execução de áudios, faça o download para poder ouvir.
+                                            </audio>
+                                        @else
+    
+                                        @endif
                                     </div>
                                     <div class="col-lg-10 col-sm-10 mb-1"> 
                                         <div class="row">
@@ -160,10 +167,10 @@
                                 <div class="stats">
                                     <i class="fa fa-refresh"></i>Última atualização em {{ \Carbon\Carbon::parse($noticia->updated_at)->format('d/m/Y H:i:s') }}
                                     <div class="pull-right">
-                                        <a title="Excluir" href="{{ url('noticia-impressa/'.$noticia->id.'/excluir') }}" class="btn btn-danger btn-fill btn-icon btn-sm btn-excluir" style="border-radius: 30px;">
+                                        <a title="Excluir" href="{{ url('noticia-radio/'.$noticia->id.'/excluir') }}" class="btn btn-danger btn-fill btn-icon btn-sm btn-excluir" style="border-radius: 30px;">
                                             <i class="fa fa-times fa-3x text-white"></i>
                                         </a>
-                                        <a title="Editar" href="{{ url('noticia-impressa/'.$noticia->id.'/editar') }}" class="btn btn-primary btn-fill btn-icon btn-sm" style="border-radius: 30px;">
+                                        <a title="Editar" href="{{ url('noticia-radio/'.$noticia->id.'/editar') }}" class="btn btn-primary btn-fill btn-icon btn-sm" style="border-radius: 30px;">
                                             <i class="fa fa-edit fa-3x text-white"></i>
                                         </a>
                                     </div>

@@ -26,6 +26,7 @@
                         <div class="form-group m-3 w-70">
                             <div class="row">
                                 <input type="hidden" name="clientes[]" id="clientes">
+                                <input type="hidden" name="ds_caminho_img" id="ds_caminho_img">
                                 <div class="col-md-5">
                                     <div class="form-group">
                                         <label>Cliente</label>
@@ -155,13 +156,13 @@
                                 </div>
                                 <div class="col-md-3 col-sm-6">
                                     <div class="form-group">
-                                        <label>Altura</label>
+                                        <label>Altura <span class="text-info">em cm</span></label>
                                         <input type="text" class="form-control monetario" name="nu_altura" id="nu_altura" placeholder="Altura" value="{{ old('nu_altura') }}">
                                     </div>                                    
                                 </div>
                                 <div class="col-md-3 col-sm-6">
                                     <div class="form-group">
-                                        <label>Largura</label>
+                                        <label>Largura <span class="text-info">em cm</span></label>
                                         <input type="text" class="form-control monetario" name="nu_largura" id="nu_largura" placeholder="Largura" value="{{ old('nu_largura') }}">
                                     </div>                                    
                                 </div>
@@ -212,26 +213,54 @@
 </div> 
 <div class="modal fade" id="addSecao" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-bookmark "></i> Adicionar Seção</h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Nome da Seção</label>
+                            <input type="mail" class="form-control" name="ds_sessao" id="ds_sessao">
+                        </div>
+                    </div>
+                </div>
+                <div class="center">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
+                    <button type="button" class="btn btn-success btn-salvar-secao"><i class="fa fa-save"></i> Salvar</button>
+                </div>
+        </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalArea" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-bookmark "></i> Adicionar Seção</h6>
+          <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-tags"></i> Adicionar Área</h6>
         </div>
         <div class="modal-body">
             <div class="row">
                 <div class="col-md-12">
                     <div class="form-group">
-                        <label>Nome da Seção</label>
-                        <input type="mail" class="form-control" name="ds_sessao" id="ds_sessao">
+                        <label>Área</label>
+                        <input type="text" class="form-control" name="ds_area" id="ds_area" placeholder="Descrição">
                     </div>
+                </div>             
+            <div class="col-md-12 center">
+                <div class="form-group mt-3">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
+                    <button type="button" class="btn btn-success btn-add-area"><i class="fa fa-plus"></i> Adicionar</button>
                 </div>
             </div>
-            <div class="center">
-                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
-                <button type="button" class="btn btn-success btn-salvar-secao"><i class="fa fa-save"></i> Salvar</button>
-            </div>
+        </div>
       </div>
     </div>
   </div>
@@ -249,9 +278,9 @@
 
         //Inicializar o Dropzone
         var myDropzone = new Dropzone("#dropzone", {
-            url: host + "/upload", // URL para onde os arquivos serão enviados
+            url: host + "/noticia-impressa/upload", // URL para onde os arquivos serão enviados
             method: "post", // Método HTTP
-            paramName: "file", // Nome do parâmetro no backend
+            paramName: "picture", // Nome do parâmetro no backend
             maxFilesize: 1, // Tamanho máximo do arquivo em MB
             acceptedFiles: ".jpeg,.jpg,.png,.pdf", // Tipos de arquivos aceitos
             addRemoveLinks: true, // Adicionar links para remover arquivos
@@ -261,7 +290,7 @@
             },
             init: function () {
                 this.on("success", function (file, response) {
-                    console.log("Arquivo enviado com sucesso:", response);
+                    $("#ds_caminho_img").val(response);
                 });
 
                 this.on("error", function (file, response) {
@@ -280,37 +309,34 @@
             var ds_sessao = $("#ds_sessao").val();
             var font_id = $("#id_fonte").val();
 
-            $.ajax({
-                url: host+'/fonte-impresso/secao',
-                type: 'POST',
-                data: {
-                    "_token": $('meta[name="csrf-token"]').attr('content'),
-                    "ds_sessao": ds_sessao,
-                    "font_id": font_id
-                },
-                success: function(response) {
-                    $("#id_fonte").trigger("change");  
-                    $("#addSecao").modal("hide");            
-                },
-                error: function(response){
-                        
-                }
-            });
-        });
+            if(!font_id){
 
-        $(document).on('change', '.monetario', function() {
-                
-            var retorno = 0;
-            var altura = ($("#nu_altura").val()) ? $("#nu_altura").val() : 1;
-            var largura = ($("#nu_largura").val()) ? $("#nu_largura").val() : 1;
-            var colunas = ($("#nu_colunas").val()) ? $("#nu_colunas").val() : 1;
+                Swal.fire({
+                    text: 'Obrigatório informar uma fonte.',
+                    type: "warning",
+                    icon: "warning",
+                    confirmButtonText: '<i class="fa fa-check"></i> Ok',
+                });
 
-            retorno = altura * largura * colunas;
+            }else{
 
-            // Truncar o valor com duas casas decimais
-            retorno = retorno.toFixed(2);
-
-            $("#valor_retorno").val(retorno);
+                $.ajax({
+                    url: host+'/fonte-impresso/secao',
+                    type: 'POST',
+                    data: {
+                        "_token": $('meta[name="csrf-token"]').attr('content'),
+                        "ds_sessao": ds_sessao,
+                        "font_id": font_id
+                    },
+                    success: function(response) {
+                        $("#id_fonte").trigger("change");  
+                        $("#addSecao").modal("hide");            
+                    },
+                    error: function(response){
+                            
+                    }
+                });
+            }
         });
 
 

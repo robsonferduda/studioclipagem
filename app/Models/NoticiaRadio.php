@@ -14,15 +14,14 @@ class NoticiaRadio extends Model
     protected $table = 'noticia_radio';
 
     protected $fillable = [
-        'cliente_id',
-        'area_id',
         'emissora_id',
         'cd_estado',
         'cd_cidade',
         'titulo',
         'arquivo',
         'programa_id',
-        'dt_noticia',
+        'dt_cadastro',
+        'dt_clipagem',
         'fl_boletim',
         'sinopse',
         'link',
@@ -68,7 +67,7 @@ class NoticiaRadio extends Model
 
     public function tags()
     {
-        return $this->belongsToMany(Tag::class,'tag_radio','noticia_id','tag_id')->withPivot('tipo_id')->withTimestamps();
+        return $this->belongsToMany(Tag::class,'noticia_tag','noticia_id','tag_id')->withPivot('tipo_id')->where('tipo_id', 3)->withTimestamps();
     }
 
     public function getTotais($dt_inicial, $dt_final)

@@ -48,7 +48,7 @@
                                         </label>
                                     </div>
                                 </div>
-                                
+
                                 <div class="form-group">
                                     <div class="form-check">
                                         <label class="form-check-label mt-2">
@@ -136,6 +136,7 @@
                             </div>
                         </div>
                     </div>
+                    
                     <div class="col-md-12">
                         <p class="mb-0">
                             <i class="fa fa-lock fa-1x"></i> Usuários

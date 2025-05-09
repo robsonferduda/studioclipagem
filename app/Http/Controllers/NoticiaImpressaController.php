@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use DB;
 use Auth;
 use File;
-use App\Models\Cliente;
+use Storage;
+use App\Utils;
 use Carbon\Carbon;
+use App\Models\Cliente;
 use App\Models\NoticiaCliente;
 use App\Models\FonteImpressa;
 use App\Models\FilaImpresso;
@@ -14,12 +16,11 @@ use App\Models\JornalImpresso;
 use App\Models\NoticiaImpresso;
 use App\Models\Fonte;
 use App\Models\Tag;
-use Laracasts\Flash\Flash;
-use Illuminate\Http\Request;
-use App\Jobs\ProcessarImpressos as JobProcessarImpressos;
 use App\Models\Cidade;
 use App\Models\Estado;
-use App\Utils;
+use App\Jobs\ProcessarImpressos as JobProcessarImpressos;
+use Laracasts\Flash\Flash;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -179,8 +180,6 @@ class NoticiaImpressaController extends Controller
     {
         $noticia = NoticiaImpresso::find($id);
 
-        flash('Mensagem flash de teste')->success();
-
         try {
 
             $dt_cadastro = ($request->dt_cadastro) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_cadastro)->format('Y-m-d') : date("Y-m-d");
@@ -191,6 +190,8 @@ class NoticiaImpressaController extends Controller
 
             $request->merge(['cd_cidade' => $request->cidade]);
 
+            $request->merge(['ds_caminho_img' => ($request->ds_caminho_img) ? $request->ds_caminho_img : $noticia->ds_caminho_img]);
+
             $noticia->update($request->all());
 
             $tags = collect($request->tags)->mapWithKeys(function($tag){
@@ -198,6 +199,22 @@ class NoticiaImpressaController extends Controller
                 })->toArray();
 
             $noticia->tags()->sync($tags);
+
+            //Atualização de clientes
+            $clientes = json_decode($request->clientes[0]);
+
+            if($clientes){
+                for ($i=0; $i < count($clientes); $i++) { 
+                        
+                    $dados = array('tipo_id' => 1,
+                                'noticia_id' => $noticia->id,
+                                'cliente_id' => (int) $clientes[$i]->id_cliente,
+                                'area' => (int) $clientes[$i]->id_area,
+                                'sentimento' => (int) $clientes[$i]->id_sentimento);
+
+                    $noticia_cliente = NoticiaCliente::create($dados);
+                }
+            }
 
             $retorno = array('flag' => true,
                              'msg' => '<i class="fa fa-check"></i> Dados atualizados com sucesso');
@@ -229,20 +246,29 @@ class NoticiaImpressaController extends Controller
         $filesize = $image->getSize()/1024/1024;
         $filename = pathinfo($fileInfo, PATHINFO_FILENAME);
         $extension = "jpeg";
-        $file_name = $filename.'-'.time().'.'.$extension;
-        $file_noticia = $request->id.'.'.$extension;
+        $file_name = time().'.'.$extension;
+        $file_noticia = ($request->id) ? $request->id.'.'.$extension : $file_name;
 
        //dd($file_noticia);
 
         //$image->move(public_path('img/noticia-impressa/recorte'),$file_name);
         $image->move(public_path('img/noticia-impressa'),$file_noticia);
 
-        $noticia = NoticiaImpresso::find($request->id);
+        if($request->id){
+            $noticia = NoticiaImpresso::find($request->id);
 
-        $noticia->ds_caminho_img = $file_noticia;
-        $noticia->save();
+            $noticia->ds_caminho_img = $file_noticia;
+            $noticia->save();
+        }
 
         return $file_noticia;
+    }
+
+    //Busca e faz o download da imagem vinculada a notícia
+    public function getImagem($id)
+    {
+        $noticia = NoticiaImpresso::find($id);
+        return response()->download(public_path('img/noticia-impressa/'.$noticia->ds_caminho_img));
     }
 
     public function getSecoes($id_fonte)
