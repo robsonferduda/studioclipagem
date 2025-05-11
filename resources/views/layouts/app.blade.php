@@ -124,14 +124,14 @@
                          @permission('impresso-buscar') 
                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'jornal-impresso-buscar') ? 'active' : '' }}">
                             <a href="{{ url('jornal-impresso/buscar') }}">
-                              <span class="sidebar-normal">Buscar</span>
+                              <span class="sidebar-normal">Coletas</span>
                               </a>
                           </li> 
                           @endpermission                         
                           @permission('impresso-monitoramento')                           
                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'impresso/noticias') ? 'active' : '' }}">
                             <a href="{{ url('impresso/noticias') }}">
-                              <span class="sidebar-normal">Notícias (Páginas)</span>
+                              <span class="sidebar-normal">Monitoramento</span>
                               </a>
                           </li>
                           @endpermission
