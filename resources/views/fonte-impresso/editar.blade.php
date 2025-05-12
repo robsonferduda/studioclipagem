@@ -118,7 +118,7 @@
                             <select class="form-control" name="id_formato" id="id_formato">
                                 <option value="">Selecione o formato</option>
                                 @foreach ($formatos as $formato)
-                                    <option value="{{ $formato->id }}" {!! old('id_formato') == $formato->id ? " selected" : '' !!}>{{ $formato->ds_formato }}</option>
+                                    <option value="{{ $formato->id }}" {!! $fonte->id_formato == $formato->id ? " selected" : '' !!}>{{ $formato->ds_formato }}</option>
                                 @endforeach
                             </select>
                         </div>
