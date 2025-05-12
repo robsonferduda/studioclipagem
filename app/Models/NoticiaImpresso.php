@@ -28,6 +28,7 @@ class NoticiaImpresso extends Model
                             'nu_colunas',
                             'nu_altura', 
                             'nu_largura',
+                            'local_impressao',
                             'valor_retorno'];
 
     public function cidade()

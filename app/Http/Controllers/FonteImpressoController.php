@@ -123,6 +123,15 @@ class FonteImpressoController extends Controller
         return response()->json($fontes);
     }
 
+    public function getValores($id, $local)
+    {
+        $fonte = FonteImpressa::find($id);
+
+        $valor = (float) ($fonte->$local) ? $fonte->$local : 1;
+
+        return response()->json($valor);
+    }
+
     public function adicionar(Request $request)
     {
         $dados_insert = array('nome' => $request->nome);

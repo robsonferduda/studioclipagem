@@ -136,37 +136,36 @@
                                 </div>
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
-                                        <label>Total de Páginas</label>
-                                        <input type="text" class="form-control" name="nu_paginas_total" id="nu_paginas_total" placeholder="Número">
-                                    </div>                                    
-                                </div>
-                                <div class="col-md-8 col-sm-12">
-                                    <div class="form-group">
-                                        <label>Link</label>
-                                        <input type="text" class="form-control" name="ds_link" id="ds_link" placeholder="URL">
-                                    </div>                                    
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-3 col-sm-6">
-                                    <div class="form-group">
                                         <label>Colunas</label>
                                         <input type="text" class="form-control monetario" name="nu_colunas" id="nu_colunas" placeholder="Colunas" value="{{ old('nu_colunas') }}">
                                     </div>                                    
                                 </div>
-                                <div class="col-md-3 col-sm-6">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Local de Impressão</label>
+                                        <select class="form-control" name="local_impressao" id="local_impressao">
+                                            <option value="">Selecione um local</option>
+                                            <option value="valor_cm_capa_semana" {{ ($fonte->local_impressao == 'valor_cm_capa_semana') ? 'selected' : '' }}>Capa</option>
+                                            <option value="valor_cm_capa_fim_semana" {{ ($fonte->local_impressao == 'valor_cm_capa_fim_semana') ? 'selected' : '' }}>Capa FDS</option>
+                                            <option value="valor_cm_contracapa" {{ ($fonte->local_impressao == 'valor_cm_contracapa') ? 'selected' : '' }}>Contracapa</option>
+                                            <option value="valor_cm_demais_semana" {{ ($fonte->local_impressao == 'valor_cm_demais_semana') ? 'selected' : '' }}>Demais Páginas</option>
+                                            <option value="valor_cm_demais_fim_semana" {{ ($fonte->local_impressao == 'valor_cm_demais_fim_semana') ? 'selected' : '' }}>Demais Páginas FDS</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
                                         <label>Altura <span class="text-info">em cm</span></label>
                                         <input type="text" class="form-control monetario" name="nu_altura" id="nu_altura" placeholder="Altura" value="{{ old('nu_altura') }}">
                                     </div>                                    
                                 </div>
-                                <div class="col-md-3 col-sm-6">
+                                <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
                                         <label>Largura <span class="text-info">em cm</span></label>
                                         <input type="text" class="form-control monetario" name="nu_largura" id="nu_largura" placeholder="Largura" value="{{ old('nu_largura') }}">
                                     </div>                                    
                                 </div>
-                                <div class="col-md-3 col-sm-6">
+                                <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
                                         <label>Retorno</label>
                                         <input type="text" class="form-control monetario" name="valor_retorno" id="valor_retorno" placeholder="Retorno" value="{{ old('valor_retorno') }}" readonly>
@@ -330,6 +329,26 @@
                     // Opcional: envie uma requisição para remover o arquivo do servidor
                 });
             },
+        });
+
+        $(document).on("change", "#local_impressao", function() {
+           
+            var id = $("#id_fonte").val();
+            
+            $.ajax({
+                    url: host+'/fonte-impresso/'+id+'/valores/'+$(this).val(),
+                    type: 'GET',
+                    beforeSend: function() {
+                        
+                    },
+                    success: function(data) {
+
+                                        
+                    },
+                    complete: function(){
+                                    
+                    }
+            });  
         });
 
         $(document).on("click", ".btn-add-fonte", function() {
