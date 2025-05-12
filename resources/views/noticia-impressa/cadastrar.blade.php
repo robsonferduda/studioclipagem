@@ -347,7 +347,7 @@
                 success: function(data) {
                         
                     $.ajax({
-                        url: host+'/fonte-impresso/listar',
+                        url: host+'/fonte-impresso/todas',
                         type: 'GET',
                         beforeSend: function() {
                             $('#id_fonte').append('<option value="">Carregando...</option>').val('');
