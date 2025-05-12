@@ -6,11 +6,11 @@ $(document).ready(function() {
     $(document).on('keyup', '.monetario', function() {
                 
         var retorno = 0;
-        var altura = ($("#nu_altura").val()) ? $("#nu_altura").val() : 1;
+        var valor = ($("#nu_valor_fonte").val()) ? $("#nu_valor_fonte").val() : 1;
         var largura = ($("#nu_largura").val()) ? $("#nu_largura").val() : 1;
         var colunas = ($("#nu_colunas").val()) ? $("#nu_colunas").val() : 1;
 
-        retorno = altura * largura * colunas;
+        retorno = valor * largura * colunas;
 
         // Truncar o valor com duas casas decimais
         retorno = retorno.toFixed(2);

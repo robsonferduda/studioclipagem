@@ -141,8 +141,9 @@
                                     </div>                                    
                                 </div>
                                 <div class="col-md-2">
+                                    <input type="hidden" name="nu_valor_fonte" id="nu_valor_fonte">
                                     <div class="form-group">
-                                        <label>Local de Impressão</label>
+                                        <label>Localização <span class="valor_cm text-info"></span></label>
                                         <select class="form-control" name="local_impressao" id="local_impressao">
                                             <option value="">Selecione um local</option>
                                             <option value="valor_cm_capa_semana" {{ ($fonte->local_impressao == 'valor_cm_capa_semana') ? 'selected' : '' }}>Capa</option>
@@ -342,8 +343,8 @@
                         
                     },
                     success: function(data) {
-
-                                        
+                        $(".valor_cm").text("R$ "+data+" cm");     
+                        $("#nu_valor_fonte").val(data);            
                     },
                     complete: function(){
                                     
@@ -434,6 +435,9 @@
         $(document).on('change', '#id_fonte', function() {
                 
                 var fonte = $(this).val();
+
+                $(".valor_cm").text("");
+                $("#nu_valor_fonte").val(0);
 
                 buscarSecoes(fonte);
 
