@@ -107,19 +107,19 @@
                             </a>
                           </li>
                           @endpermission
-                         @permission('impresso-edicoes') 
-                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'jornal-impresso-edicoes') ? 'active' : '' }}">
-                            <a href="{{ url('jornal-impresso/edicoes') }}">
-                              <span class="sidebar-normal">Edições Impressos</span>
-                              </a>
-                          </li>
-                          @endpermission
                           @permission('impresso-arquivos') 
                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'upload') ? 'active' : '' }}">
                             <a href="{{ url('jornal-impresso/uploads') }}">
                               <span class="sidebar-normal">Processar Arquivos</span>
                               </a>
                           </li> 
+                          @endpermission
+                          @permission('impresso-edicoes') 
+                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'jornal-impresso-edicoes') ? 'active' : '' }}">
+                            <a href="{{ url('jornal-impresso/edicoes') }}">
+                              <span class="sidebar-normal">Edições Impressos</span>
+                              </a>
+                          </li>
                           @endpermission
                          @permission('impresso-buscar') 
                           <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'jornal-impresso-buscar') ? 'active' : '' }}">

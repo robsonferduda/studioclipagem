@@ -114,6 +114,17 @@
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
+                            <label>Formato</label>
+                            <select class="form-control" name="id_formato" id="id_formato">
+                                <option value="">Selecione o formato</option>
+                                @foreach ($formatos as $formato)
+                                    <option value="{{ $formato->id }}" {!! old('id_formato') == $formato->id ? " selected" : '' !!}>{{ $formato->ds_formato }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
                             <label>Valor Capa Semana</label>
                             <input type="text" class="form-control retorno_midia" name="valor_cm_capa_semana" id="valor_cm_capa_semana" placeholder="0,00" value="{{ number_format($fonte->valor_cm_capa_semana, 2, ".","") }}">
                         </div>

@@ -13,6 +13,7 @@ use App\Models\FonteImpressa;
 use App\Models\FilaImpresso;
 use App\Models\JornalImpresso;
 use App\Models\ModeloImpresso;
+use App\Models\Formato;
 use App\Models\Fonte;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
@@ -111,8 +112,9 @@ class FonteImpressoController extends Controller
         $estados = Estado::orderBy('nm_estado')->get();
         $paises = Pais::orderBy('nu_ordem','DESC')->orderBY('ds_pais')->get();
         $modelos = ModeloImpresso::all();
+        $formatos = Formato::all();
 
-        return view('fonte-impresso/novo', compact('estados','paises','modelos'));
+        return view('fonte-impresso/novo', compact('estados','paises','modelos','formatos'));
     }
 
     public function getFontes()
@@ -190,13 +192,14 @@ class FonteImpressoController extends Controller
         $estados = Estado::orderBy('nm_estado')->get();
         $paises = Pais::orderBy('nu_ordem','DESC')->orderBY('ds_pais')->get();
         $modelos = ModeloImpresso::all();
+        $formatos = Formato::all();
 
         $cidades = null;
         if($fonte->cd_estado) {
             $cidades = Cidade::where(['cd_estado' => $fonte->cd_estado])->orderBy('nm_cidade')->get();
         }
 
-        return view('fonte-impresso/editar')->with('modelos', $modelos)->with('paises', $paises)->with('fonte', $fonte)->with('estados', $estados)->with('cidades', $cidades);
+        return view('fonte-impresso/editar')->with('modelos', $modelos)->with('paises', $paises)->with('fonte', $fonte)->with('estados', $estados)->with('cidades', $cidades)->with('formatos', $formatos);
     }
 
     public function detalhes($id)
@@ -240,6 +243,7 @@ class FonteImpressoController extends Controller
                 'coleta' => $request->coleta,
                 'modelo' => $request->modelo,
                 'fl_ativo' => $flag,
+                'id_formato' => $request->id_formato,
                 'url' => $request->url                
             ]);
 
@@ -292,6 +296,7 @@ class FonteImpressoController extends Controller
                 'modelo' => $request->modelo,
                 'mapeamento_matinal' => $flag_preferencia,
                 'fl_ativo' => $flag,
+                'id_formato' => $request->id_formato,
                 'url' => $request->url
             ]);
 

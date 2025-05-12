@@ -129,7 +129,10 @@
                                         @if($fonte->tipoColeta and $fonte->tipoColeta->id == 1)
                                             <p class="mb-0"><a href="{{ $fonte->url }}" target="_BLANK">{{ $fonte->url }}</a></p>
                                         @endif
-                                        <p class="mb-0 text-muted font-weight-bold">{!! ($fonte->tipoImpresso) ? $fonte->tipoImpresso->ds_tipo_impresso : '<span class="text-danger">Não Informado</span>' !!}</p>
+                                        <p class="mb-0 text-muted font-weight-bold">
+                                            {!! ($fonte->tipoImpresso) ? $fonte->tipoImpresso->ds_tipo_impresso : '<span class="text-danger">Não Informado</span>' !!}
+                                            {!! ($fonte->formato) ? " - ".$fonte->formato->ds_formato : '<span class="text-danger"> - Não Informado</span>' !!}
+                                        </p>
                                     </td>
                                     <td>R$ {!! $fonte->valor_cm_capa_semana  !!}</td>
                                     <td>R$ {!! $fonte->valor_cm_capa_fim_semana !!}</td>

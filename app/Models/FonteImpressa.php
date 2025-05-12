@@ -29,6 +29,7 @@ class FonteImpressa extends Model
                             'valor_cm_demais_semana',
                             'valor_cm_demais_fim_semana',
                             'mapeamento_matinal',
+                            'id_formato',
                             'fl_ativo'];
 
     public function estado()
@@ -44,6 +45,11 @@ class FonteImpressa extends Model
     public function tipoImpresso()
     {
         return $this->hasOne(TipoImpresso::class, 'id', 'tipo');
+    }
+
+    public function formato()
+    {
+        return $this->hasOne(Formato::class, 'id', 'id_formato');
     }
 
     public function tipoColeta()
