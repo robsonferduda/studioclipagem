@@ -241,14 +241,14 @@
                             <div class="col-lg-12 col-sm-12">
                                 <div class="card">
                                     <div class="card-content ">
-                                        <div class="row">
+                                        <div class="row px-3">
                                         
                                             <div class="col-lg-9 col-md-9 col-sm-12">
                                                 <p><strong>{{ $area_cliente->area->descricao }}</strong></p>
                                                 <p>{{ $area_cliente->expressao }}</p>
                                             </div>
                                             <div class="col-lg-3 col-md-3 col-sm-12">
-                                                <div class="pull-right mr-2">
+                                                <div class="pull-right ">
                                                     @if($area_cliente->ativo)                                                        
                                                         <span class="badge badge-success">Ativo</span>
                                                     @else
