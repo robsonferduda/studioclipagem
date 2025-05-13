@@ -165,7 +165,7 @@ class AreaController extends Controller
                     break;
             }
 
-            $vinculo = NoticiaCliente::where('cliente_id', $id)->where('tipo_id', $tipo)->first();
+            $vinculo = NoticiaCliente::where('cliente_id', $match->id)->where('tipo_id', $tipo)->first();
             $vinculo->area = $match->area;
             $vinculo->save();
         }
