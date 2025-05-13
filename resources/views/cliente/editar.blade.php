@@ -198,7 +198,8 @@
                         </div>
                     </div>
                 <div class="col-md-12 mt-4">
-                    <p><i class="fa fa-tags"></i> Áreas do Cliente</p>
+                    <p class="mb-1"><i class="fa fa-tags"></i> Áreas do Cliente</p>
+                    <p class="text-danger mt-0">Para excluir áreas, consulte o administrador do sistema. Para editar, digite os novos valores para a área escolhida e clique em <strong>Salvar</strong>.</p>
                     {!! Form::open(['id' => 'frm_cliente_edit', 'url' => ['cliente', $cliente->id], 'method' => 'patch', 'files' => true]) !!}
                         <div class="row">
                             <div class="col-md-4">
@@ -230,7 +231,7 @@
                             </div>
                             <div class="col-md-1">
                                 <div class="form-group mt-3">
-                                    <button type="button" class="btn btn-success btn-add-area"><i class="fa fa-plus"></i></button>
+                                    <button type="button" class="btn btn-success btn-add-area">Salvar</button>
                                 </div>
                             </div>
                         </div>
@@ -239,7 +240,7 @@
                         @foreach ($cliente->areas as $area_cliente)
                             <div class="col-lg-12 col-sm-12">
                                 <div class="card">
-                                    <div class="card-content px-3">
+                                    <div class="card-content ">
                                         <div class="row">
                                         
                                             <div class="col-lg-9 col-md-9 col-sm-12">
@@ -247,7 +248,7 @@
                                                 <p>{{ $area_cliente->expressao }}</p>
                                             </div>
                                             <div class="col-lg-3 col-md-3 col-sm-12">
-                                                <div class="pull-right">
+                                                <div class="pull-right mr-2">
                                                     @if($area_cliente->ativo)                                                        
                                                         <span class="badge badge-success">Ativo</span>
                                                     @else
