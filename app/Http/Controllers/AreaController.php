@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Area;
 use DB;
 use Auth;
+use App\Models\NoticiaCliente;
 use App\Models\ClienteArea;
 use App\Models\JornalWeb;
 use App\Utils;
@@ -151,7 +152,7 @@ class AreaController extends Controller
     public function associar($dados)
     {
         $tipo = null;
-        
+
         foreach ($dados as $key => $match) {
 
             switch ($match->tipo) {
