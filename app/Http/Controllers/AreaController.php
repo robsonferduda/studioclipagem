@@ -123,7 +123,7 @@ class AreaController extends Controller
     public function executarWeb()
     {
         $sql = "SELECT id, tipo, area, cliente_id
-                FROM(SELECT t2.id, t1.area, 'web' as tipo, t3.expressao, t1.cliente_id, t4.conteudo_tsv as document 
+                FROM(SELECT t2.id, t3.area_id as area, 'web' as tipo, t3.expressao, t1.cliente_id, t4.conteudo_tsv as document 
                     FROM noticia_cliente t1
                     JOIN noticias_web t2 ON t2.id = t1.noticia_id AND t2.created_at > '2025-05-10'
                     JOIN area_cliente t3 ON t3.cliente_id = t1.cliente_id AND t3.expressao NOTNULL
@@ -138,7 +138,7 @@ class AreaController extends Controller
     public function executarImpresso()
     {
         $sql = "SELECT id, tipo, area, cliente_id
-                FROM(SELECT t2.id, t1.area, 'impresso' as tipo, t3.expressao, t3.cliente_id, to_tsvector(t2.sinopse) as document 
+                FROM(SELECT t2.id, t3.area_id as area, 'impresso' as tipo, t3.expressao, t3.cliente_id, to_tsvector(t2.sinopse) as document 
                     FROM noticia_cliente t1
                     JOIN noticia_impresso t2 ON t2.id = t1.noticia_id  
                     JOIN area_cliente t3 ON t3.cliente_id = t1.cliente_id AND t3.expressao NOTNULL) as p_search
