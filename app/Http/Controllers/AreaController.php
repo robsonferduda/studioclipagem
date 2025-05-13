@@ -122,7 +122,17 @@ class AreaController extends Controller
 
     public function executarWeb()
     {
+        $sql = "SELECT id, tipo, area, cliente_id
+                FROM(SELECT t2.id, t1.area, 'web' as tipo, t3.expressao, t1.cliente_id, t4.conteudo_tsv as document 
+                    FROM noticia_cliente t1
+                    JOIN noticias_web t2 ON t2.id = t1.noticia_id AND t2.created_at > '2025-05-10'
+                    JOIN area_cliente t3 ON t3.cliente_id = t1.cliente_id AND t3.expressao NOTNULL
+                    JOIN conteudo_noticia_web t4 ON t4.id_noticia_web = t1.noticia_id) as p_search
+                WHERE p_search.document @@ plainto_tsquery(expressao)";
 
+        $dados = DB::select($sql);
+
+        $total_associado = $this->associar($dados);
     }
 
     public function executarImpresso()
