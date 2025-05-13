@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Jobs\GerarRelatorioJob;
 use Carbon\Carbon;
+use App\Models\NoticiaImpresso;
+use App\Jobs\GerarRelatorioJob;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -126,6 +127,16 @@ class RelatorioController extends Controller
 
         return view('relatorio/index', compact('dados'));
         
+    }
+
+    function pdfIndividual($tipo, $id)
+    {
+        $noticia = NoticiaImpresso::where('id', $id)->first();
+        $nome_arquivo = date("YmdHis").'_impresso_'.$id.'.pdf';
+
+        $pdf = \App::make('dompdf.wrapper');
+        $pdf->loadView('relatorio/pdf/individual', compact('noticia'));
+        return $pdf->download($nome_arquivo);
     }
 
     public function dadosTv()

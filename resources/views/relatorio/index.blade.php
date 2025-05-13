@@ -223,8 +223,7 @@
                                 </div>
                                 <div class="col-lg-6 col-sm-12">
                                     <div style="text-align: right">
-                                        <a class="" download target="_blank" href="" role="button"><i class="fa fa-file-pdf-o"> </i></a>
-                                        <a class="" href="" role="button"><i class="fa fa-external-link"> </i></a>
+                                        <a class="" href="{{ url("relatorios/".$noticia->tipo."/pdf/".$noticia->id) }}" role="button"><i class="fa fa-file-pdf-o"> </i></a>
                                     </div>
                                 </div>
                             </div>

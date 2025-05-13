@@ -366,6 +366,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('processamento','ProcessamentoController@index');
 
 	Route::match(array('GET', 'POST'),'relatorios','RelatorioController@index');
+	Route::get('relatorios/{tipo}/pdf/{id}','RelatorioController@pdfIndividual');
 
 	Route::match(array('GET', 'POST'),'relatorios/teste','RelatorioController@teste');
 
