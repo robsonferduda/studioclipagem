@@ -35,6 +35,8 @@ Route::middleware(['web'])->group(function () {
 	Route::get('areas/cadastrar','AreaController@cadastrar');
 	Route::get('areas/{id}/editar','AreaController@editar');
 	Route::get('areas/{id}/remover','AreaController@remover');
+	Route::get('areas/executar/web','AreaController@executarWeb');
+	Route::get('areas/executar/impresso','AreaController@executarImpresso');
 
 	Route::get('assessorias/clientes','AssessoriaController@clientes');
 
@@ -155,6 +157,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('jornal-impresso/noticia/{id}','JornalImpressoController@detalhes');
 	Route::post('jornal-impresso/upload','JornalImpressoController@uploadFiles');
 
+	Route::get('noticias/estatisticas/areas','NoticiaController@estatisticasArea');
 	Route::get('noticia/{id}/tipo/{tipo}/cliente/{cliente}/sentimento/{sentimento}/atualizar','NoticiaController@atualizarSentimento');
 
 	Route::post('noticia-impressa/upload','NoticiaImpressaController@upload'); 

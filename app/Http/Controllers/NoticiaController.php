@@ -109,4 +109,19 @@ class NoticiaController extends Controller
 
         return response()->json($dados);
     }
+
+    public function estatisticasArea()
+    {
+        $areas = array();
+
+        $sql = 'SELECT t2.descricao, count(*) as total 
+                FROM noticia_cliente t1
+                JOIN area t2 ON t2.id = t1.area 
+                WHERE area > 0 
+                GROUP BY descricao';
+
+        $areas = DB::select($sql);
+
+        return response()->json($areas);
+    }
 }

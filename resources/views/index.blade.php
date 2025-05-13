@@ -255,14 +255,10 @@
                         </div>
                         <div class="timeline-panel">
                             <div class="timeline-heading">
-                                <h6 class="text-dark"><i class="fa fa-tags fa-1x mt-1"></i> CATEGORIAS <span class="badge badge-pill badge-success pull-right"> NOTÍCIAS</span></h6>
+                                <h6 class="text-dark"><i class="fa fa-tags fa-1x mt-1"></i> ÁREAS <span class="badge badge-pill badge-success pull-right"> NOTÍCIAS</span></h6>
                             </div>
-                            <div class="timeline-body">
-                                @if(false)
-                                    <p>Existem  notícias sem identificação de categoria.</p>
-                                @else
-                                    <p class="text-danger"><i class="fa fa-exclamation-circle mr-1"></i>Identificação de categorias não realizada</p>
-                                @endif
+                            <div class="timeline-body estatisticas-areas">
+                               
                             </div>
                         </div>
                      </li>
@@ -278,6 +274,28 @@
     $(document).ready(function() {
 
         var host =  $('meta[name="base-url"]').attr('content');
+
+        $.ajax({
+            url: host+'/noticias/estatisticas/areas',
+            type: 'GET',
+            success: function(data) {
+                if(data.length){
+                    
+                    data.forEach(element => {                    
+                        $(".estatisticas-areas").append('<span class="badge badge-pill badge-default ml-2">'+element.descricao+' + '+element.total+'</span>');
+                    });
+
+                }else{
+                    $(".estatisticas-areas").html('<p class="text-danger"><i class="fa fa-exclamation-circle mr-1"></i>Identificação de áreas não realizada</p>');
+                }
+            },
+            error: function(response){
+                
+            },
+            complete: function(){
+                    
+            }
+        });
 
         $('.total-coletas').each(function(i, obj) {
             
