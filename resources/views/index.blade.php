@@ -282,7 +282,7 @@
                 if(data.length){
                     
                     data.forEach(element => {                    
-                        $(".estatisticas-areas").append('<span class="badge badge-pill badge-default ml-2">'+element.descricao+' + '+element.total+'</span>');
+                        $(".estatisticas-areas").append('<span class="badge badge-pill badge-default ml-2">'+element.descricao+' ('+element.total+')</span>');
                     });
 
                 }else{
