@@ -677,7 +677,6 @@ class MonitoramentoController extends Controller
                         programa_emissora_web pew 
                             ON pew.id = n.id_programa_emissora_web
                         WHERE 1=1
-                            AND n.created_at >= now() - interval '24' hour
                             AND n.created_at BETWEEN '$dt_inicial' AND '$dt_final' ";
 
                 if($monitoramento->filtro_tv){
@@ -859,8 +858,7 @@ class MonitoramentoController extends Controller
                         JOIN 
                         programa_emissora_web pew 
                         ON pew.id = n.id_programa_emissora_web
-                        WHERE 1=1
-                        AND n.created_at >= now() - interval '24' hour "; 
+                        WHERE 1=1 "; 
 
                 if($monitoramento->filtro_tv){
                     $sql .= "AND n.id_programa_emissora_web IN($monitoramento->filtro_tv)";
