@@ -927,7 +927,7 @@ class MonitoramentoController extends Controller
 
                 if($tipo == 2){
 
-                    $valor_fonte = FonteWeb::find($noticia->id_fonte)->nu_valor;
+                    $valor_fonte = (FonteWeb::find($noticia->id_fonte)) ? FonteWeb::find($noticia->id_fonte)->nu_valor : 0;
 
                     if($valor_fonte){
                         $valor_retorno = $valor_fonte;
