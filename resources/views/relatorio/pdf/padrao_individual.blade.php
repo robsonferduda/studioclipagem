@@ -66,9 +66,10 @@
                 position: absolute;
                 top: 0;
                 left: 0;
-                color: transparent; /* Torna o texto invisível */
-                z-index: 1;
+                color: white; /* Torna o texto invisível */
+                z-index: -1000;
                 pointer-events: none; /* Impede interação com o texto */
+
             }
         </style>
     </head>
