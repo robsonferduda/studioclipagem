@@ -56,6 +56,20 @@
             .borda {
                 border-bottom: 1px solid gray;
             }
+            .image-container {
+                position: relative;
+                display: inline-block;
+                z-index: 1000;
+            }
+            .hidden-text {
+                position: absolute;
+                top: 0;
+                left: 0;
+                color: white; /* Torna o texto invisível */
+                z-index: -1000;
+                pointer-events: none; /* Impede interação com o texto */
+
+            }
         </style>
     </head>
     <body style="margin: 0px; padding: 0px;">

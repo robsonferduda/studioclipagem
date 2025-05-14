@@ -70,7 +70,8 @@ class RelatorioController extends Controller
                                 TO_CHAR(dt_clipagem, 'DD/MM/YYYY') AS data_formatada,
                                 t2.nome as fonte,
                                 t1.sinopse,
-                                t3.sentimento
+                                t3.sentimento,
+                                ds_caminho_img
                             FROM noticia_impresso t1
                             JOIN jornal_online t2 ON t2.id = t1.id_fonte
                             LEFT JOIN noticia_cliente t3 ON t3.noticia_id = t1.id";

@@ -13,9 +13,11 @@
                         {{ $noticia->data_formatada }}
                     </div>
                 </div>
-                <div style="clear: both;">
-                    <span style="font-size: 8px;">SINOPSE</span>   
-                    <p style="font-size: 13px; margin:0px; padding: 0px;">{!! $noticia->sinopse !!}</p> 
+                <div class="image-container" style="background: white;">
+                    <img style="width: 98%; margin-top: 10px;" src="{{ asset('img/noticia-impressa/'.$noticia->ds_caminho_img) }}"/>
+                    <div class="hidden-text">
+                        {{ $noticia->sinopse }}
+                    </div>
                 </div>
             </div>          
         @endforeach
