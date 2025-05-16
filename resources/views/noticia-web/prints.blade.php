@@ -49,7 +49,7 @@
                     <p class="text-info">São listadas somente notícias que foram vinculadas a algum cliente via monitoramento</p>
                     
                     <h6>RESUMO</h6>
-                    <table id="datatable" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                    <table class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
                                 <th>Fonte</th>
