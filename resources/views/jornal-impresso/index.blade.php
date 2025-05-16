@@ -23,7 +23,7 @@
             </div>
             <div class="row">
                 <div class="col-lg-12 col-md-12 col-sm-12">
-                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['jornal-impresso/noticias']]) !!}
+                    {!! Form::open(['id' => 'frm_social_search', 'class' => '', 'url' => ['jornal-impresso/noticias']]) !!}
                         <div class="form-group m-3 w-70">
                             <div class="row">
                                 <div class="col-md-2">

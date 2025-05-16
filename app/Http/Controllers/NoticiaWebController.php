@@ -190,6 +190,27 @@ class NoticiaWebController extends Controller
         return view('jornal-web/fontes',compact('fontes'));
     }
 
+    public function prints()
+    {
+        Session::put('sub-menu','prints');
+
+        $prints = array();
+
+        $sql = "SELECT t3.id, t3.nome, count(*) as total 
+                FROM noticias_web t1 
+                JOIN noticia_cliente t2 ON t2.noticia_id = t1.id 
+                JOIN fonte_web t3 On t3.id = t1.id_fonte 
+                WHERE t1.path_screenshot like 'ERROR'
+                GROUP BY t3.id, t3.nome 
+                ORDER BY total DESC";
+
+        $resumo = DB::select($sql);
+
+        $erros = NoticiaWeb::where('path_screenshot','ilike','ERROR')->get();
+
+        return view('noticia-web/prints',compact('prints'));
+    }
+
     public function cadastrar()
     {
         Session::put('sub-menu','web-cadastrar');

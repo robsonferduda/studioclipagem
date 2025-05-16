@@ -30,6 +30,8 @@
   <link href="{{ asset('css/dropzone.min.css') }}" rel="stylesheet" />
   <link href="{{ asset('css/select2.min.css') }}" rel="stylesheet" />
   <link href="{{ asset('css/cropper.css') }}" rel="stylesheet" />
+  <link href="{{ asset('css/introjs.min.css') }}" rel="stylesheet" />
+  <link href="{{ asset('css/w3.css') }}" rel="stylesheet" />
   <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
   @yield('style')
 </head>
@@ -189,6 +191,11 @@
                       <span class="sidebar-normal">Inconsistências</span>
                       </a>
                    </li>
+                       <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'fonte-web-prints') ? 'active' : '' }}">
+                          <a href="{{ url('noticia/web/prints') }}">
+                          <span class="sidebar-normal">Prints</span>
+                          </a>
+                       </li>
                        </ul>
                     </div>
                  </li>                  

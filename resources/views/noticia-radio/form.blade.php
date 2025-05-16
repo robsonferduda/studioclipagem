@@ -182,7 +182,72 @@
                                     <div style="min-height: 302px;" class="dropzone" id="dropzone"><div class="dz-message" data-dz-message><span>CLIQUE AQUI<br/> ou <br/>ARRASTE</span></div></div>
                                     <input type="hidden" name="arquivo" id="arquivo">
                                 </div>
+                                <div class="col-md-12 mt-5">
+
+                                    <audio id="audioPlayer" width="100%" controls style="width: 100%;">
+                                            <source src="{{ asset('audios/sample-3s.mp3') }}" type="audio/mpeg">
+                                            Seu navegador não suporta a execução de áudios, faça o download para poder ouvir.
+                                        </audio>
+
+
+<div class="w3-container">
+      <br>
+      <div id="waveform" class="w3-border w3-round-large" 
+        data-step="3" data-intro="Click and drag to select section">    
+      </div>
+      <br>
+        <div class="w3-row">
+        <div class="w3-half w3-container w3-hide" id="audio-buttons">
+        <button class="w3-button w3-border w3-border-green w3-round-xlarge" onClick="playAndPause()">
+            <i id="play-pause-icon" class="fa fa-play"></i>
+        </button>
+
+        <b id="time-current">0.00</b> / <b id="time-total">0.00</b>
+        </div>
+        
+        </div>
+      <hr>
+          <div data-step="4" data-intro="Would you like to know how to merge tracks. Click Next.">
+          <table class="w3-table-all w3-card-4" id="audio-tracks" 
+            data-step="5" data-intro="Select atleast 2 checkboxes for merging. Click Next.">
+            <thead>
+            <tr class="w3-border w3-border-teal w3-text-teal">
+              <th></th>
+              <th>Início</th>
+              <th>Fim</th>
+              <th></th>
+              <th></th>
+              <th></th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+            <tfoot></tfoot>
+          </table>
+          </div>
+          <br>
+          <div id="merge-option" class="w3-hide">
+            <button class="w3-button w3-border w3-border-teal w3-round-xlarge" onClick="mergeTrack()"
+                data-step="6" data-intro="Click to merge selected tracks. Bye bye!! :)">
+                <i>Merge tracks</i>
+            </button>    
+            <br><br>
+            <div class="w3-row w3-hide" id="merged-track-div">
+            <b class="w3-col l1 w3-text-olive"><i>Merged Audio : </i></b>   
+            <audio controls="controls" class="w3-col l11" id="merged-track">
+                <source src="" type="">
+            </audio>
+            </div>
+          </div>
+      <footer class="w3-display-bottom">
+        <hr>
+        <image id="tour-button" class="w3-right" src="assets/tutorial.png" width="40" height="40" onClick="startTour()" data-step="1" data-intro="Hey User, Welcome. Click me for a walkthrough. To skip click Skip.">
+      </footer>
+    </div>
+
+
+                                </div>
                             </div>
+                             
                             <div class="text-center mb-2 mt-3">
                                 <button type="submit" class="btn btn-success" name="btn_enviar" value="salvar"><i class="fa fa-save"></i> Salvar</button>
                                 <button type="submit" class="btn btn-warning" name="btn_enviar" value="salvar_e_copiar"><i class="fa fa-copy"></i> Salvar e Copiar</button>
@@ -197,17 +262,29 @@
 </div>
 @endsection
 @section('script')    
+
 <script src="{{ asset('js/formulario-cadastro.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/1.2.3/wavesurfer.min.js"></script>
+<!-- wavesurfer.js regions -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/1.2.3/plugin/wavesurfer.regions.min.js"></script>
+<!--Enjoy Hints-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.9.3/intro.min.js"></script>
+
+<script src="{{ asset('js/actionhelper.js') }}"></script>
+<script src="{{ asset('js/audio.js') }}"></script>
 <script>
-        Dropzone.autoDiscover = false;
+        //Dropzone.autoDiscover = false;
         var host = $('meta[name="base-url"]').attr('content');
         var token = $('meta[name="csrf-token"]').attr('content');
 
         $(document).ready(function(){
+
+
+           loadAudio();
             
             var cd_emissora = $("#cd_emissora").val();
             var cliente_id = $("#cliente_id").val();
-            
+            /*
             $(".dropzone").dropzone({ 
                 acceptedFiles: ".mp3",
                 maxFiles: 1,
@@ -227,35 +304,9 @@
                         timer: 1000
                     });
                 }
-            });
+            });*/
 
-            $.ajax({
-                url: host+'/api/emissora/buscarEmissoras',
-                type: 'GET',
-                beforeSend: function() {
-                    $('.content').loader('show');
-                },
-                success: function(data) {
-                    if(!data) {
-                        Swal.fire({
-                            text: 'Não foi possível buscar as emissoras. Entre em contato com o suporte.',
-                            type: "warning",
-                            icon: "warning",
-                        });
-                        return;
-                    }
-
-                    data.forEach(element => {
-                        let option = new Option(element.text, element.id);
-                        $('#emissora').append(option);
-                    });
-                },
-                complete: function(){
-                    if(cd_emissora > 0)
-                        $('#emissora').val(cd_emissora);
-                    $('.content').loader('hide');
-                }
-            });
+           
           
             $(document).on('change', '#emissora', function() {
                 
