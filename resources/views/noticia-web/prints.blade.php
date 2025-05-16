@@ -80,7 +80,10 @@
                                         </div>
                                         <div class="float-left">
                                             <p class="mb-1"><strong>{{ $noticia->titulo_noticia }}</strong></p>
-                                            <p class="mb-1 text-muted"> {!! ($noticia->data_noticia) ? date('d/m/Y', strtotime($noticia->data_noticia)) : date('d/m/Y', strtotime($noticia->data_noticia)) !!} - {{ $noticia->fonte->nome_fonte }}</p> 
+                                            <p class="mb-1 text-muted"> 
+                                                {!! ($noticia->data_noticia) ? date('d/m/Y', strtotime($noticia->data_noticia)) : date('d/m/Y', strtotime($noticia->data_noticia)) !!} - 
+                                                {{ $noticia->fonte }}
+                                            </p> 
                                             <p>Notícia cadastrada em {{ \Carbon\Carbon::parse($noticia->created_at)->format('d/m/Y H:i:s') }}</p>
                                         </div>
                                         <a title="Visualizar" href="{{ url('noticia/web/'.$noticia->id.'/ver') }}" class="btn btn-warning btn-link btn-icon pull-right"><i class="fa fa-link fa-2x"></i></a>
