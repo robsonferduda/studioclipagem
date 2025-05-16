@@ -46,19 +46,45 @@
                 </div>
                 <div class="col-lg-12 col-md-3 mb-12">
                     <h6>NOTÍCIAS COM ERRO DE PRINT</h6>
+                    <p class="text-info">São listadas somente notícias que foram vinculadas a algum cliente via monitoramento</p>
+                    
+                    <h6>RESUMO</h6>
+                    <table id="datatable" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Fonte</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($resumo as $dado)
+                                <tr>
+                                    <td>{!! $dado->nome !!}</td>
+                                    <td>{!! $dado->total !!}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="2">Não foram encontrados prints com problemas</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+        
                     @forelse($erros as $key => $noticia)
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="float-left">
-                                            <i class="fa fa-file-image-o text-danger mr-3 mt-4" aria-hidden="true" style="font-size: 35px;"></i>
+                                            <i class="fa fa-window-close-o text-danger mr-3 mt-4" aria-hidden="true" style="font-size: 35px;"></i>
                                         </div>
                                         <div class="float-left">
                                             <p class="mb-1"><strong>{{ $noticia->titulo_noticia }}</strong></p>
-                                            <p class="mb-1 text-muted"><a href="{{ url('jornal-impresso/web/download/'.$noticia->id) }}">Ver notícia</a></p>
+                                            <p class="mb-1 text-muted"> {!! ($noticia->data_noticia) ? date('d/m/Y', strtotime($noticia->data_noticia)) : date('d/m/Y', strtotime($noticia->data_noticia)) !!} - {{ $noticia->nome_fonte }}</p> 
                                             <p>Notícia cadastrada em {{ \Carbon\Carbon::parse($noticia->created_at)->format('d/m/Y H:i:s') }}</p>
                                         </div>
+                                        <a title="Visualizar" href="{{ url('noticia/web/'.$noticia->id.'/ver') }}" class="btn btn-warning btn-link btn-icon pull-right"><i class="fa fa-link fa-2x"></i></a>
+                                        <a title="Editar" href="{{ url('noticia/web/'.$noticia->id.'/editar') }}" class="btn btn-primary btn-link btn-icon pull-right"><i class="fa fa-edit fa-2x"></i></a>
                                     </div>
                                 </div>
                             </div>
@@ -70,7 +96,7 @@
                             </div>
                         </div>
                     @endforelse
-            </div>
+                </div>
             </div>
         </div>
     </div>
