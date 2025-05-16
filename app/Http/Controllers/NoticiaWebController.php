@@ -190,25 +190,35 @@ class NoticiaWebController extends Controller
         return view('jornal-web/fontes',compact('fontes'));
     }
 
-    public function prints()
+    public function prints(Request $request)
     {
         Session::put('sub-menu','prints');
+        $dt_inicial = date("Y-m-d")." 00:00:00";
+        $dt_final = date("Y-m-d")." 23:59:59";
 
         $prints = array();
+
+        if($request->isMethod('POST')){
+            $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00";
+            $dt_final = $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59";
+        }
 
         $sql = "SELECT t3.id, t3.nome, count(*) as total 
                 FROM noticias_web t1 
                 JOIN noticia_cliente t2 ON t2.noticia_id = t1.id 
                 JOIN fonte_web t3 On t3.id = t1.id_fonte 
                 WHERE t1.path_screenshot like 'ERROR'
+                AND t1.created_at BETWEEN '$dt_inicial' AND '$dt_final'
                 GROUP BY t3.id, t3.nome 
                 ORDER BY total DESC";
 
         $resumo = DB::select($sql);
 
-        $erros = NoticiaWeb::where('path_screenshot','ilike','ERROR')->get();
+        $erros = NoticiaWeb::where('path_screenshot','ilike','ERROR')
+                            ->whereBetween('created_at', [$dt_inicial, $dt_final])
+                            ->get();
 
-        return view('noticia-web/prints',compact('prints'));
+        return view('noticia-web/prints',compact('resumo','erros','dt_inicial','dt_final'));
     }
 
     public function cadastrar()

@@ -21,9 +21,56 @@
                 @include('layouts.mensagens')
             </div>
             <div class="row">
-                <div class="col col-lg-12 col-sm-12">                        
-                    
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['noticia/web/prints']]) !!}
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-2 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Data Inicial</label>
+                                        <input type="text" class="form-control datepicker" name="dt_inicial" required="true" value="{{ \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y') }}" placeholder="__/__/____">
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Data Final</label>
+                                        <input type="text" class="form-control datepicker" name="dt_final" required="true" value="{{ \Carbon\Carbon::parse($dt_final)->format('d/m/Y') }}" placeholder="__/__/____">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="submit" id="btn-find" class="btn btn-primary mb-3" style="margin-top: 25px;"><i class="fa fa-search"></i> Buscar</button>
+                                </div>
+                            </div>
+                        </div>
+                    {!! Form::close() !!}
                 </div>
+                <div class="col-lg-12 col-md-3 mb-12">
+                    <h6>NOTÍCIAS COM ERRO DE PRINT</h6>
+                    @forelse($erros as $key => $noticia)
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="float-left">
+                                            <i class="fa fa-file-image-o text-danger mr-3 mt-4" aria-hidden="true" style="font-size: 35px;"></i>
+                                        </div>
+                                        <div class="float-left">
+                                            <p class="mb-1"><strong>{{ $noticia->titulo_noticia }}</strong></p>
+                                            <p class="mb-1 text-muted"><a href="{{ url('jornal-impresso/web/download/'.$noticia->id) }}">Ver notícia</a></p>
+                                            <p>Notícia cadastrada em {{ \Carbon\Carbon::parse($noticia->created_at)->format('d/m/Y H:i:s') }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <p class="text-danger">Não foram encontrados prints com problemas</p>
+                            </div>
+                        </div>
+                    @endforelse
+            </div>
             </div>
         </div>
     </div>
