@@ -676,9 +676,7 @@ class MonitoramentoController extends Controller
                             JOIN 
                         programa_emissora_web pew 
                             ON pew.id = n.id_programa_emissora_web
-                        WHERE 1=1
-                            AND n.created_at >= now() - interval '24' hour
-                            AND n.created_at BETWEEN '$dt_inicial' AND '$dt_final' ";
+                        WHERE 1=1 ";
 
                 if($monitoramento->filtro_tv){
                     $sql .= "AND n.id_programa_emissora_web IN($monitoramento->filtro_tv)";
@@ -859,8 +857,7 @@ class MonitoramentoController extends Controller
                         JOIN 
                         programa_emissora_web pew 
                         ON pew.id = n.id_programa_emissora_web
-                        WHERE 1=1
-                        AND n.created_at >= now() - interval '24' hour "; 
+                        WHERE 1=1 "; 
 
                 if($monitoramento->filtro_tv){
                     $sql .= "AND n.id_programa_emissora_web IN($monitoramento->filtro_tv)";
@@ -929,7 +926,7 @@ class MonitoramentoController extends Controller
 
                 if($tipo == 2){
 
-                    $valor_fonte = FonteWeb::find($noticia->id_fonte)->nu_valor;
+                    $valor_fonte = (FonteWeb::find($noticia->id_fonte)) ? FonteWeb::find($noticia->id_fonte)->nu_valor : 0;
 
                     if($valor_fonte){
                         $valor_retorno = $valor_fonte;
