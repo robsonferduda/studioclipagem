@@ -66,7 +66,7 @@
                                 <tr>
                                     <td colspan="2">Não foram encontrados prints com problemas</td>
                                 </tr>
-                            @endforeach
+                            @endforelse
                         </tbody>
                     </table>
         
