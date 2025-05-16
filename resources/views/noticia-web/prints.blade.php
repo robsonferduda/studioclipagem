@@ -82,11 +82,11 @@
                                             <p class="mb-1"><strong>{{ $noticia->titulo_noticia }}</strong></p>
                                             <p class="mb-1 text-muted"> 
                                                 {!! ($noticia->data_noticia) ? date('d/m/Y', strtotime($noticia->data_noticia)) : date('d/m/Y', strtotime($noticia->data_noticia)) !!} - 
-                                                {{ $noticia->fonte->nome }}
+                                                {{ ($noticia->fonte) ? $noticia->fonte->nome : 'Fonte não cadastrada' }}
                                             </p> 
                                             <p>Notícia cadastrada em {{ \Carbon\Carbon::parse($noticia->created_at)->format('d/m/Y H:i:s') }}</p>
                                         </div>
-                                        <a title="Notícia" href="{{ $noticia->url }}" class="btn btn-success btn-link btn-icon pull-right"><i class="fa fa-globe fa-2x"></i></a>
+                                        <a title="Notícia" href="{{ $noticia->url_noticia }}" class="btn btn-success btn-link btn-icon pull-right"><i class="fa fa-globe fa-2x"></i></a>
                                         <a title="Visualizar" href="{{ url('noticia/web/'.$noticia->id.'/ver') }}" class="btn btn-warning btn-link btn-icon pull-right"><i class="fa fa-link fa-2x"></i></a>
                                         <a title="Editar" href="{{ url('noticia/web/'.$noticia->id.'/editar') }}" class="btn btn-primary btn-link btn-icon pull-right"><i class="fa fa-edit fa-2x"></i></a>
                                     </div>
