@@ -171,16 +171,7 @@
                           <span class="sidebar-normal">Dashboard</span>
                           </a>
                         </li>
-                         <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'jornal-web') ? 'active' : '' }}">
-                          <a href="{{ url('noticia/web') }}">
-                          <span class="sidebar-normal">Notícias</span>
-                          </a>
-                       </li>
-                         <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'web-cadastrar') ? 'active' : '' }}">
-                          <a href="{{ url('noticia/web/cadastrar') }}">
-                          <span class="sidebar-normal">Nova Notícia</span>
-                          </a>
-                       </li>
+                         
                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'fonte-web') ? 'active' : '' }}">
                         <a href="{{ url('fonte-web/listar') }}">
                         <span class="sidebar-normal">Fontes Web</span>
@@ -194,6 +185,26 @@
                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'fonte-web-prints') ? 'active' : '' }}">
                           <a href="{{ url('noticia/web/prints') }}">
                           <span class="sidebar-normal">Prints</span>
+                          </a>
+                       </li>
+                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'noticia-web-coletas') ? 'active' : '' }}">
+                          <a href="{{ url('noticia/web/coletas') }}">
+                          <span class="sidebar-normal">Coletas</span>
+                          </a>
+                       </li>
+                       <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'noticia-web-monitoramento') ? 'active' : '' }}">
+                          <a href="{{ url('noticia/web/monitoramento') }}">
+                          <span class="sidebar-normal">Monitoramento</span>
+                          </a>
+                       </li>
+                       <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'jornal-web') ? 'active' : '' }}">
+                          <a href="{{ url('noticia/web') }}">
+                          <span class="sidebar-normal">Notícias</span>
+                          </a>
+                       </li>
+                         <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'web-cadastrar') ? 'active' : '' }}">
+                          <a href="{{ url('noticia/web/novo') }}">
+                          <span class="sidebar-normal">Nova Notícia</span>
                           </a>
                        </li>
                        </ul>

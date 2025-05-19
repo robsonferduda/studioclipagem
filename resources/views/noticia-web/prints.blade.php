@@ -87,8 +87,8 @@
                                             <p>Notícia cadastrada em {{ \Carbon\Carbon::parse($noticia->created_at)->format('d/m/Y H:i:s') }}</p>
                                         </div>
                                         <a title="Notícia" href="{{ $noticia->url_noticia }}" target="_BLANK" class="btn btn-success btn-link btn-icon pull-right"><i class="fa fa-globe fa-2x"></i></a>
-                                        <a title="Visualizar" href="{{ url('noticia/web/'.$noticia->id.'/ver') }}" class="btn btn-warning btn-link btn-icon pull-right"><i class="fa fa-link fa-2x"></i></a>
-                                        <a title="Editar" href="{{ url('noticia/web/'.$noticia->id.'/editar') }}" class="btn btn-primary btn-link btn-icon pull-right"><i class="fa fa-edit fa-2x"></i></a>
+                                        <a title="Visualizar" href="{{ url('noticia/web/'.$noticia->id.'/ver') }}" target="_BLANK" class="btn btn-warning btn-link btn-icon pull-right"><i class="fa fa-link fa-2x"></i></a>
+                                        <a title="Editar" href="{{ url('noticia/web/'.$noticia->id.'/editar') }}" target="_BLANK" class="btn btn-primary btn-link btn-icon pull-right"><i class="fa fa-edit fa-2x"></i></a>
                                     </div>
                                 </div>
                             </div>

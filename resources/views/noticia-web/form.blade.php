@@ -2,16 +2,18 @@
 @section('content')
 <div class="col-md-12">
     <div class="card">
-        <div class="card-header">
-            <div class="row">
+       <div class="card-header">
+            <div class="row ml-1">
                 <div class="col-md-6">
                     <h4 class="card-title">
-                        <i class="fa fa-globe"></i> Jornal Web 
-                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Cadastrar Notícia 
+                        <i class="fa fa-globe"></i> Web 
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Notícias 
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Cadastrar 
                     </h4>
                 </div>
                 <div class="col-md-6">
-                    <a href="{{ url('fonte-web/listar') }}" class="btn btn-info pull-right mr-3"><i class="fa fa-globe"></i> Fontes Web</a>
+                    <a href="{{ url('noticia/web/dashboard') }}" class="btn btn-warning pull-right mr-3"><i class="nc-icon nc-chart-pie-36"></i> Dashboard</a>
+                    <a href="{{ url('noticia/web') }}" class="btn btn-info pull-right mr-3"><i class="fa fa-newspaper-o"></i> Listar Notícias</a>
                 </div>
             </div>
         </div>
@@ -47,7 +49,7 @@
                                 <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Fonte <span class="text-danger">Campo Obrigatório</span></label>
-                                            <select class="form-control select2" name="id_fonte" id="id_fonte">
+                                            <select class="form-control" name="id_fonte" id="id_fonte" required="required">
                                                 <option value="">Selecione uma fonte</option>
                                                 @foreach ($fontes as $fonte)
                                                     <option value="{{ $fonte->id }}" {{ (old('id_fonte') == $fonte->id) ? 'selected' : ''  }}>{{ $fonte->nome }}</option>
@@ -59,8 +61,8 @@
                             <div class="row">
                                 <div class="col-md-12 col-sm-12">
                                     <div class="form-group">
-                                        <label>Título</label>
-                                        <input type="text" class="form-control" name="titulo_noticia" id="titulo_noticia" minlength="3" placeholder="Título" value="{{ old('titulo_noticia') }}">
+                                        <label>Título <span class="text-danger">Campo Obrigatório</span></label>
+                                        <input type="text" class="form-control" name="titulo_noticia" id="titulo_noticia" minlength="3" placeholder="Título" value="{{ old('titulo_noticia') }}" required>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -71,13 +73,13 @@
                                 <div class="col-md-9">
                                     <label for="sinopse">Texto <span class="text-danger">Campo Obrigatório</span></label>
                                     <div class="form-group">
-                                        <textarea class="form-control" name="conteudo" id="conteudo" rows="10"></textarea>
+                                        <textarea class="form-control" name="conteudo" id="conteudo" rows="10" required></textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label>URL da Notícia <span class="text-danger">Campo Obrigatório</span></label>
-                                        <input type="text" class="form-control" name="url_noticia" id="url_noticia" placeholder="URL Notícia" value="{{ old('url_noticia') }}">
+                                        <input type="text" class="form-control" name="url_noticia" id="url_noticia" placeholder="URL Notícia" value="{{ old('url_noticia') }}" required>
                                     </div>
                                 </div>                                
                             </div>     

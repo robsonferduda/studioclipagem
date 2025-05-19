@@ -31,6 +31,50 @@ class NoticiaWebController extends Controller
 
     public function index(Request $request)
     {
+        Session::put('sub-menu','noticias-impresso');
+
+        $fontes = FonteWeb::orderBy('nome')->get();
+        $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
+
+        $tipo_data = ($request->tipo_data) ? $request->tipo_data : 'data_noticia';
+        $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
+        $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
+        $cliente_selecionado = ($request->cliente) ? $request->cliente : null;
+        $fonte = ($request->fontes) ? $request->fontes : null;
+        $termo = ($request->termo) ? $request->termo : null;
+
+        $dados = NoticiaWeb::with('fonte')
+                    ->whereBetween($tipo_data, [$dt_inicial." 00:00:00", $dt_final." 23:59:59"])
+                    ->orderBy('data_noticia')
+                    ->paginate(10);
+
+        return view('noticia-web/index', compact('dados','fontes','clientes','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo'));
+    }
+
+    public function coletas(Request $request)
+    {
+        Session::put('sub-menu','noticias-impresso');
+
+        $fontes = FonteWeb::orderBy('nome')->get();
+        $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
+
+        $tipo_data = ($request->tipo_data) ? $request->tipo_data : 'data_noticia';
+        $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
+        $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
+        $fonte = ($request->fontes) ? $request->fontes : null;
+        $termo = ($request->termo) ? $request->termo : null;
+
+        $dados = NoticiaWeb::with('fonte')
+                    ->whereBetween($tipo_data, [$dt_inicial." 00:00:00", $dt_final." 23:59:59"])
+                    ->orderBy('data_noticia')
+                    ->orderBy('id_fonte')
+                    ->paginate(10);
+
+        return view('noticia-web/coletas', compact('dados','fontes','clientes','tipo_data','dt_inicial','dt_final','fonte','termo'));
+    }
+
+    public function monitoramento(Request $request)
+    {
         Session::put('sub-menu','jornal-web');
 
         $fontes = FonteWeb::orderBy('nome')->get();
@@ -140,7 +184,71 @@ class NoticiaWebController extends Controller
                     ->orderBy('data_noticia','DESC')
                     ->paginate(10);
 
-        return view('noticia-web/index',compact('clientes','fontes','dados','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo','monitoramento','fl_print'));
+        return view('noticia-web/monitoramento',compact('clientes','fontes','dados','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo','monitoramento','fl_print'));
+    }
+
+    public function show()
+    {
+        Session::put('sub-menu','web-cadastrar');
+
+        $fontes = FonteWeb::orderBy('nome')->get();
+        return view('noticia-web/form',compact('fontes'));
+    }
+
+    public function create()
+    {
+        Session::put('sub-menu','web-cadastrar');
+
+        $fontes = FonteWeb::orderBy('nome')->get();
+        return view('noticia-web/form',compact('fontes'));
+    }
+
+    public function edit()
+    {
+        Session::put('sub-menu','web-cadastrar');
+
+        $fontes = FonteWeb::orderBy('nome')->get();
+        return view('noticia-web/form',compact('fontes'));
+    }
+
+    public function store(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+
+            $noticia = NoticiaWeb::create($request->all());
+
+            if($noticia){
+                $request->merge(['id_noticia_web' => $noticia->id]);
+                ConteudoNoticiaWeb::create($request->all());
+            }
+
+            DB::commit();
+
+            $retorno = array('flag' => true,
+                             'msg' => "Dados inseridos com sucesso");
+
+        } catch (\Illuminate\Database\QueryException $e) {
+
+            dd($e);
+
+            DB::rollback();
+            $retorno = array('flag' => false,
+                             'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
+
+        } catch (Exception $e) {
+            DB::rollback();
+            $retorno = array('flag' => true,
+                             'msg' => "Ocorreu um erro ao inserir o registro");
+        }
+
+        if ($retorno['flag']) {
+            Flash::success($retorno['msg']);
+            return redirect('noticia/web')->withInput();
+        } else {
+            Flash::error($retorno['msg']);
+            return redirect('noticia/web/novo')->withInput();
+        }
     }
 
     public function dashboard()
@@ -221,14 +329,6 @@ class NoticiaWebController extends Controller
         return view('noticia-web/prints',compact('resumo','erros','dt_inicial','dt_final'));
     }
 
-    public function cadastrar()
-    {
-        Session::put('sub-menu','web-cadastrar');
-
-        $fontes = FonteWeb::orderBy('nome')->get();
-        return view('noticia-web/cadastrar',compact('fontes'));
-    }
-
     public function listar()
     {
         $sites = FonteWeb::all();
@@ -255,41 +355,6 @@ class NoticiaWebController extends Controller
     {
         $noticia = NoticiaWeb::find($id);
         return view('noticia-web/estatisticas',compact('noticia'));
-    }
-
-    public function store(Request $request)
-    {
-        DB::beginTransaction();
-        try {
-            $noticia = NoticiaWeb::create($request->all());
-
-            if($noticia){
-                $request->merge(['id_noticia_web' => $noticia->id]);
-                ConteudoNoticiaWeb::create($request->all());
-            }
-
-            DB::commit();
-            $retorno = array('flag' => true,
-                             'msg' => "Dados inseridos com sucesso");
-
-        } catch (\Illuminate\Database\QueryException $e) {
-            DB::rollback();
-            $retorno = array('flag' => false,
-                             'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
-
-        } catch (Exception $e) {
-            DB::rollback();
-            $retorno = array('flag' => true,
-                             'msg' => "Ocorreu um erro ao inserir o registro");
-        }
-
-        if ($retorno['flag']) {
-            Flash::success($retorno['msg']);
-            return redirect('noticia/web')->withInput();
-        } else {
-            Flash::error($retorno['msg']);
-            return redirect('noticia/web/cadastrar')->withInput();
-        }
     }
 
     public function destacaConteudo($id_noticia, $id_monitoramento)

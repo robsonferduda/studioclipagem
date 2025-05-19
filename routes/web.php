@@ -194,14 +194,15 @@ Route::middleware(['web'])->group(function () {
 	Route::post('radio/noticias/{id}/atualizar','NoticiaRadioController@atualizar');
 	Route::post('radio/noticias/upload','NoticiaRadioController@upload');
 
-
-
-
 	//Route::match(array('GET', 'POST'),'buscar-web','JornalWebController@index');
 	Route::get('noticia/web/valores','NoticiaWebController@valores');
 	Route::match(array('GET', 'POST'),'buscar-web','NoticiaWebController@index');
 	Route::get('noticia/web','NoticiaWebController@index');
-	Route::get('noticia/web/cadastrar','NoticiaWebController@cadastrar');
+	Route::get('noticia/web/novo','NoticiaWebController@create');
+	Route::get('noticia/web/{id}/editar','NoticiaWebController@edit');
+	Route::get('noticia/web/{id}/editar','NoticiaWebController@show');
+	Route::match(array('GET', 'POST'),'noticia/web/coletas','NoticiaWebController@coletas');
+	Route::match(array('GET', 'POST'),'noticia/web/monitoramento','NoticiaWebController@monitoramento');
 	Route::get('noticia/web/dashboard','JornalWebController@dashboard');
 	Route::get('noticia/web/detalhes/{id}','NoticiaWebController@detalhes');
 	Route::get('noticia/web/estatisticas/{id}','NoticiaWebController@getEstatisticas');
