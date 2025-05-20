@@ -3,16 +3,17 @@
 <div class="col-md-12">
     <div class="card">
         <div class="card-header">
-            <div class="row">
-                <div class="col-md-8">
+            <div class="row ml-1">
+                <div class="col-md-6">
                     <h4 class="card-title">
-                        <i class="fa fa-globe"></i> Jornal Web 
-                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> {{ ($noticia->fonte) ? $noticia->fonte->nome : 'Não identificada' }} 
+                        <i class="fa fa-globe"></i> Web 
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Notícias 
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Detalhes 
                     </h4>
                 </div>
-                <div class="col-md-4">
-                    <a href="{{ url()->previous() }}" class="btn btn-warning pull-right" style="margin-right: 12px;"><i class="nc-icon nc-minimal-left"></i> Voltar</a>
+                <div class="col-md-6">
+                    <a href="{{ url('noticia/web/dashboard') }}" class="btn btn-warning pull-right mr-3"><i class="nc-icon nc-chart-pie-36"></i> Dashboard</a>
+                    <a href="{{ url('noticia/web') }}" class="btn btn-info pull-right mr-3"><i class="fa fa-newspaper-o"></i> Listar Notícias</a>
                 </div>
             </div>
         </div>
@@ -21,7 +22,7 @@
                 <div class="col-md-12">
                     @include('layouts.mensagens')
                 </div>
-                <div class="col-lg-12 col-md-12">
+                <div class="col-lg-12 col-md-12 m-3">
                     <p><strong>{{ $noticia->titulo_noticia }}</strong></p>
                     <p>{{ ($noticia->fonte) ? $noticia->fonte->nome : 'Não identificada' }} - {{ \Carbon\Carbon::parse($noticia->data_noticia)->format('d/m/Y') }} - Coletada em {{ \Carbon\Carbon::parse($noticia->data_insert)->format('d/m/Y H:i:s') }}</p>
                     <p>

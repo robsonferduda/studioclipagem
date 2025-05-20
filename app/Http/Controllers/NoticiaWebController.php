@@ -187,12 +187,13 @@ class NoticiaWebController extends Controller
         return view('noticia-web/monitoramento',compact('clientes','fontes','dados','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo','monitoramento','fl_print'));
     }
 
-    public function show()
+    public function show($id)
     {
         Session::put('sub-menu','web-cadastrar');
 
-        $fontes = FonteWeb::orderBy('nome')->get();
-        return view('noticia-web/form',compact('fontes'));
+        $noticia = NoticiaWeb::find($id);
+
+        return view('noticia-web/detalhes',compact('noticia'));
     }
 
     public function create()
@@ -200,21 +201,27 @@ class NoticiaWebController extends Controller
         Session::put('sub-menu','web-cadastrar');
 
         $fontes = FonteWeb::orderBy('nome')->get();
-        return view('noticia-web/form',compact('fontes'));
+        $noticia = null;
+
+        return view('noticia-web/form',compact('fontes','noticia'));
     }
 
-    public function edit()
+    public function edit($id)
     {
         Session::put('sub-menu','web-cadastrar');
 
         $fontes = FonteWeb::orderBy('nome')->get();
-        return view('noticia-web/form',compact('fontes'));
+        $noticia = NoticiaWeb::find($id);
+
+        return view('noticia-web/form',compact('fontes','noticia'));
     }
 
     public function store(Request $request)
     {
         DB::beginTransaction();
         try {
+
+            $request->merge(['fl_boletim' => true]);
 
             $noticia = NoticiaWeb::create($request->all());
 
@@ -248,6 +255,51 @@ class NoticiaWebController extends Controller
         } else {
             Flash::error($retorno['msg']);
             return redirect('noticia/web/novo')->withInput();
+        }
+    }
+
+    public function update(Request $request, $id)
+    {
+        DB::beginTransaction();
+
+        $noticia = NoticiaWeb::find($id);
+
+        try {
+
+           
+            $noticia->update($request->all());
+
+            if($noticia){
+                $conteudo = ConteudoNoticiaWeb::where('id_noticia_web', $noticia->id)->first();
+                $conteudo->conteudo = $request->conteudo;
+                $conteudo->save();
+            }
+
+            DB::commit();
+
+            $retorno = array('flag' => true,
+                             'msg' => "Dados inseridos com sucesso");
+
+        } catch (\Illuminate\Database\QueryException $e) {
+
+            dd($e);
+
+            DB::rollback();
+            $retorno = array('flag' => false,
+                             'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
+
+        } catch (Exception $e) {
+            DB::rollback();
+            $retorno = array('flag' => true,
+                             'msg' => "Ocorreu um erro ao inserir o registro");
+        }
+
+        if ($retorno['flag']) {
+            Flash::success($retorno['msg']);
+            return redirect('noticia/web')->withInput();
+        } else {
+            Flash::error($retorno['msg']);
+            return redirect('noticia/web/'.$id.'/editar')->withInput();
         }
     }
 

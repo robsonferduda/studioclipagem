@@ -12,7 +12,7 @@ class NoticiaWeb extends Model
     protected $connection = 'pgsql';
     protected $table = 'noticias_web';
 
-    protected $fillable = ['id_fonte','data_insert','data_noticia','titulo_noticia','url_noticia','nu_valor'];
+    protected $fillable = ['id_fonte','data_insert','data_noticia','titulo_noticia','url_noticia','nu_valor','fl_boletim','sinopse'];
 
     public function fonte()
     {

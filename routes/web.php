@@ -196,18 +196,19 @@ Route::middleware(['web'])->group(function () {
 
 	//Route::match(array('GET', 'POST'),'buscar-web','JornalWebController@index');
 	Route::get('noticia/web/valores','NoticiaWebController@valores');
-	Route::match(array('GET', 'POST'),'buscar-web','NoticiaWebController@index');
-	Route::get('noticia/web','NoticiaWebController@index');
 	Route::get('noticia/web/novo','NoticiaWebController@create');
 	Route::get('noticia/web/{id}/editar','NoticiaWebController@edit');
-	Route::get('noticia/web/{id}/editar','NoticiaWebController@show');
-	Route::match(array('GET', 'POST'),'noticia/web/coletas','NoticiaWebController@coletas');
-	Route::match(array('GET', 'POST'),'noticia/web/monitoramento','NoticiaWebController@monitoramento');
+	Route::get('noticia/web/{id}/ver','NoticiaWebController@show');
 	Route::get('noticia/web/dashboard','JornalWebController@dashboard');
 	Route::get('noticia/web/detalhes/{id}','NoticiaWebController@detalhes');
 	Route::get('noticia/web/estatisticas/{id}','NoticiaWebController@getEstatisticas');
-	Route::match(array('GET', 'POST'),'noticia/web/prints','NoticiaWebController@prints');
 	Route::get('web/conteudo/{id_noticia}/monitoramento/{id_monitoramento}','NoticiaWebController@destacaConteudo');
+	Route::post('noticia-web/upload','NoticiaWebController@upload');
+	Route::match(array('GET', 'POST'),'noticia/web','NoticiaWebController@index');
+	Route::match(array('GET', 'POST'),'noticia/web/coletas','NoticiaWebController@coletas');
+	Route::match(array('GET', 'POST'),'noticia/web/monitoramento','NoticiaWebController@monitoramento');
+	Route::match(array('GET', 'POST'),'noticia/web/prints','NoticiaWebController@prints');
+	Route::match(array('GET', 'POST'),'buscar-web','NoticiaWebController@index');
 	Route::resource('noticia-web','NoticiaWebController');
 
 	Route::get('jornal-web','JornalWebController@index');

@@ -937,6 +937,7 @@ class MonitoramentoController extends Controller
                     $noticia_web = NoticiaWeb::find($noticia->id);
                     $noticia_web->screenshot = true;
                     $noticia_web->nu_valor = $valor_retorno;
+                    $noticia_web->fl_boletim = true;
                     $noticia_web->save();
                 }
             }            
