@@ -197,7 +197,7 @@
                           <span class="sidebar-normal">Monitoramento</span>
                           </a>
                        </li>
-                       <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'jornal-web') ? 'active' : '' }}">
+                       <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'noticias-web') ? 'active' : '' }}">
                           <a href="{{ url('noticia/web') }}">
                           <span class="sidebar-normal">Notícias</span>
                           </a>

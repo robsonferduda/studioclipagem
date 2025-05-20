@@ -31,7 +31,7 @@ class NoticiaWebController extends Controller
 
     public function index(Request $request)
     {
-        Session::put('sub-menu','noticias-impresso');
+        Session::put('sub-menu','noticias-web');
 
         $fontes = FonteWeb::orderBy('nome')->get();
         $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
@@ -53,7 +53,7 @@ class NoticiaWebController extends Controller
 
     public function coletas(Request $request)
     {
-        Session::put('sub-menu','noticias-impresso');
+        Session::put('sub-menu','noticia-web-coletas');
 
         $fontes = FonteWeb::orderBy('nome')->get();
         $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
@@ -75,7 +75,7 @@ class NoticiaWebController extends Controller
 
     public function monitoramento(Request $request)
     {
-        Session::put('sub-menu','jornal-web');
+        Session::put('sub-menu','noticia-web-monitoramento');
 
         $fontes = FonteWeb::orderBy('nome')->get();
         $fontes = array();
@@ -352,7 +352,8 @@ class NoticiaWebController extends Controller
 
     public function prints(Request $request)
     {
-        Session::put('sub-menu','prints');
+        Session::put('sub-menu','fonte-web-prints');
+        
         $dt_inicial = date("Y-m-d")." 00:00:00";
         $dt_final = date("Y-m-d")." 23:59:59";
 
