@@ -53,14 +53,14 @@
                         <thead>
                             <tr>
                                 <th>Fonte</th>
-                                <th>Total</th>
+                                <th class="center">Total</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($resumo as $dado)
                                 <tr>
                                     <td>{!! $dado->nome !!}</td>
-                                    <td>{!! $dado->total !!}</td>
+                                    <td class="center">{!! $dado->total !!}</td>
                                 </tr>
                             @empty
                                 <tr>
