@@ -248,10 +248,7 @@
                 var id = $(this).data("id");
                 var monitoramento = $(this).data("monitoramento");
 
-                var dados = getDadosAudio(id, monitoramento);   
-
-                $(".modal-audio").html("");
-                $(".modal-sinopse").html(dados.prev.transcricao);
+                getDadosAudio(id, monitoramento);   
             });
 
             function getDadosAudio(id, monitoramento){
@@ -262,7 +259,7 @@
                             
                     },
                     success: function(data) {
-                        $(".modal-sinopse").html(data.texto);
+                        $(".modal-sinopse").html(data.prev.transcricao);
                     },
                     error: function(){
                        
