@@ -214,9 +214,9 @@
 
                 $(".modal-conteudo").html($(chave).html());
                 $(".modal-controle").html('<div class="center">'+
-                                            '<button title="Anterior" id="btn-back" data-id="'+id+'" type="button" class="btn btn-primary btn-sm"><i class="fa fa-step-backward fa-2x" aria-hidden="true"></i></button>'+
-                                            '<button title="Atual" id="btn-home" data-id="'+id+'" type="button" class="btn btn-primary btn-sm"><i class="fa fa-stop fa-2x" aria-hidden="true"></i></button>'+
-                                            '<button title="Próximo" id="btn-prev" data-id="'+id+'" type="button" class="btn btn-primary btn-sm"><i class="fa fa-step-forward fa-2x" aria-hidden="true"></i></button>'+
+                                            '<button title="Anterior" id="btn-back" data-id="'+id+'" data-monitoramento="'+monitoramento+'" type="button" class="btn btn-primary btn-sm"><i class="fa fa-step-backward fa-2x" aria-hidden="true"></i></button>'+
+                                            '<button title="Atual" id="btn-home" data-id="'+id+'" data-monitoramento="'+monitoramento+'" type="button" class="btn btn-primary btn-sm"><i class="fa fa-stop fa-2x" aria-hidden="true"></i></button>'+
+                                            '<button title="Próximo" id="btn-prev" data-id="'+id+'" data-monitoramento="'+monitoramento+'" type="button" class="btn btn-primary btn-sm"><i class="fa fa-step-forward fa-2x" aria-hidden="true"></i></button>'+
                                         '</div>');
                 $(".modal-audio").html($(audio).html());
                 $(".modal-sinopse").html($(sinopse).html());
