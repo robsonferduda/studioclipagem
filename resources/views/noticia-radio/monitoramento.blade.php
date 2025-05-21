@@ -226,8 +226,11 @@
             });
 
             $(document).on('click', '#btn-back', function() {
-                $(".modal-audio").html("");
-                $(".modal-sinopse").html("Anterior");
+                
+                var id = $(this).data("id");
+                var monitoramento = $(this).data("monitoramento");
+
+                getDadosAudio(id, monitoramento, "back");
             });
 
             $(document).on('click', '#btn-home', function() {
@@ -248,10 +251,10 @@
                 var id = $(this).data("id");
                 var monitoramento = $(this).data("monitoramento");
 
-                getDadosAudio(id, monitoramento);   
+                getDadosAudio(id, monitoramento, "prev");   
             });
 
-            function getDadosAudio(id, monitoramento){
+            function getDadosAudio(id, monitoramento, tipo){
                 $.ajax({
                     url: host+'/radio/adjacentes/'+id+'/monitoramento/'+monitoramento,
                     type: 'GET',
@@ -259,7 +262,11 @@
                             
                     },
                     success: function(data) {
-                        $(".modal-sinopse").html(data.prev.transcricao);
+                        
+                        if(tipo == "back") 
+                            $(".modal-sinopse").html(data.back.transcricao);
+                        else
+                            $(".modal-sinopse").html(data.prev.transcricao);
                     },
                     error: function(){
                        

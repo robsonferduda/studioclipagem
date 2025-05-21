@@ -524,10 +524,10 @@ class NoticiaRadioController extends Controller
         $sql_prev = "SELECT transcricao, path_s3 FROM gravacao_emissora_radio WHERE id_emissora = $id_emissora AND id > $id LIMIT 1";
         $prev = DB::select($sql_prev)[0];
 
-        $sql_next = "SELECT transcricao, path_s3 FROM gravacao_emissora_radio WHERE id_emissora = $id_emissora AND id < $id ORDER BY id DESC LIMIT 1";
-        $next = DB::select($sql_next)[0];
+        $sql_back = "SELECT transcricao, path_s3 FROM gravacao_emissora_radio WHERE id_emissora = $id_emissora AND id < $id ORDER BY id DESC LIMIT 1";
+        $back = DB::select($sql_back)[0];
 
-        $dados = array('prev' => $prev, 'next' => $next);
+        $dados = array('prev' => $prev, 'back' => $back);
 
         return response()->json($dados);
     }
