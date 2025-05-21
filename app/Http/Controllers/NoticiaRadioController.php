@@ -513,13 +513,21 @@ class NoticiaRadioController extends Controller
 
     public function getDadosAudio($id, $monitoramento)
     {
-        $sql = "SELECT t2.transcricao 
+        $sql = "SELECT t2.id_emissora 
                 FROM noticia_cliente t1
                 JOIN gravacao_emissora_radio t2 ON t2.id = t1.noticia_id
                 WHERE t1.monitoramento_id = $monitoramento
                 AND t1.noticia_id = $id";
 
-        $dados = DB::select($sql)[0];
+        $id_emissora = DB::select($sql)[0];
+
+        $sql_prev = "SELECT transcricao, path_s3 FROM gravacao_emissora_radio WHERE id_emissora = $id_emissora AND id > $id LIMIT 1";
+        $prev = DB::select($sql_prev)[0];
+
+        $sql_next = "SELECT transcricao, path_s3 FROM gravacao_emissora_radio WHERE id_emissora = $id_emissora AND id < $id ORDER BY id DESC LIMIT 1";
+        $next = DB::select($sql_next)[0];
+
+        $dados = array('prev' => $prev, 'next' => $next);
 
         return response()->json($dados);
     }
