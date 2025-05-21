@@ -244,8 +244,14 @@
             });
 
             $(document).on('click', '#btn-prev', function() {
+
+                var id = $(this).data("id");
+                var monitoramento = $(this).data("monitoramento");
+
+                var dados = getDadosAudio(id, monitoramento);   
+
                 $(".modal-audio").html("");
-                $(".modal-sinopse").html("Pŕoximo");
+                $(".modal-sinopse").html(dados.prev.transcricao);
             });
 
             function getDadosAudio(id, monitoramento){
