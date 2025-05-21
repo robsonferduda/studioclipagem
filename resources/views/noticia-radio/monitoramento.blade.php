@@ -144,9 +144,11 @@
                                         <div class="panel-body conteudo-{{ $audio->noticia_id }}-{{ $audio->monitoramento_id }}">
                                             {!! ($audio->transcricao) ?  $audio->transcricao  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
                                         </div>
-                                        <div class="panel-heading">
-                                            <h3 class="panel-title"><span class="btn-show">Mostrar Mais</span></h3>
-                                        </div>
+                                        <!--
+                                            <div class="panel-heading">
+                                                <h3 class="panel-title"><span class="btn-show">Mostrar Mais</span></h3>
+                                            </div>
+                                        -->
                                     </div> 
                                     <div>
                                         <a href="{{ url('noticia/radio/extrair',$audio->id_audio) }}" target="BLANK" class="btn btn-warning btn-sm"><i class="fa fa-database"></i> Extrair Notícia</a> 
