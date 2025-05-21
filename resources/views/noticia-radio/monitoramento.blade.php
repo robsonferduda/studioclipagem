@@ -212,7 +212,11 @@
                 var sinopse = ".conteudo-"+id+"-"+monitoramento;
 
                 $(".modal-conteudo").html($(chave).html());
-                $(".modal-audio").html($(audio).html()+'<div class="center"><i class="fa fa-step-backward fa-2x" aria-hidden="true"></i> <i class="fa fa-step-forward fa-2x" aria-hidden="true"></i></div>');
+                $(".modal-audio").html($(audio).html()+
+                                        '<div class="center">'+
+                                            '<button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-step-backward fa-2x" aria-hidden="true"></i></button>'+
+                                            '<button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-step-forward fa-2x" aria-hidden="true"></i></button>'+
+                                        '</div>');
                 $(".modal-sinopse").html($(sinopse).html());
 
                 $("#showNoticia").modal("show");
