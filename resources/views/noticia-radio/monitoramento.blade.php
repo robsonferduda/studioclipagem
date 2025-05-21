@@ -8,6 +8,7 @@
                     <h4 class="card-title">
                         <i class="fa fa-volume-up ml-3"></i> Rádio
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Notícias
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Monitoramento
                     </h4>
                 </div>
                 <div class="col-md-4">

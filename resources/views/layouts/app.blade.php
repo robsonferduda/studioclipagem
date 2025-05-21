@@ -193,12 +193,12 @@
                           </a>
                        </li>
                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'noticia-web-monitoramento') ? 'active' : '' }}">
-                          <a href="{{ url('noticia/web/monitoramento') }}">
+                          <a href="{{ url('noticia/web/monitoramento') }}" title="Listagem de notícias vinculadas aos clientes via monitoramento automático">
                           <span class="sidebar-normal">Monitoramento</span>
                           </a>
                        </li>
                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'noticias-web') ? 'active' : '' }}">
-                          <a href="{{ url('noticia/web') }}">
+                          <a href="{{ url('noticia/web') }}" title="Listagem de notícias dos clientes">
                           <span class="sidebar-normal">Notícias</span>
                           </a>
                        </li>
@@ -239,18 +239,18 @@
                            </a>
                         </li>
                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'radio-coletas') ? 'active' : '' }}">
-                          <a href="{{ url('noticia/radio/coletas') }}">
+                          <a href="{{ url('noticia/radio/coletas') }}" title="Listagem de arquivos coletados pelo sistema">
                           <span class="sidebar-normal">Coletas</span>
                           </a>
                         </li> 
                         <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'radio-monitoramento') ? 'active' : '' }}">
-                          <a href="{{ url('noticia/radio/monitoramento') }}">
+                          <a href="{{ url('noticia/radio/monitoramento') }}" title="Listagem de notícias vinculadas aos clientes via monitoramento automático">
                           <span class="sidebar-normal">Monitoramento</span>
                           </a>
                         </li>                                             
                         
                         <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'noticia-radio') ? 'active' : '' }}">
-                          <a href="{{ url('noticias/radio') }}">
+                          <a href="{{ url('noticias/radio') }}" title="Listagem de notícias dos clientes">
                           <span class="sidebar-normal">Notícias</span>
                           </a>
                         </li>

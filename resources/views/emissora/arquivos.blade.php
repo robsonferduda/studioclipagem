@@ -7,8 +7,8 @@
                 <div class="col-md-6">
                     <h4 class="card-title ml-3">
                         <i class="fa fa-volume-up"></i> Rádio
-                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Arquivos
-                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Listar
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Notícias
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Coletas
                     </h4>
                 </div>
                 <div class="col-md-6">
