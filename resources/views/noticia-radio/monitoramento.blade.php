@@ -212,7 +212,7 @@
                 var sinopse = ".conteudo-"+id+"-"+monitoramento;
 
                 $(".modal-conteudo").html($(chave).html());
-                $(".modal-audio").html($(audio).html());
+                $(".modal-audio").html('<i class="fa fa-step-backward" aria-hidden="true"></i>'+$(audio).html()+'<i class="fa fa-step-forward" aria-hidden="true"></i>');
                 $(".modal-sinopse").html($(sinopse).html());
 
                 $("#showNoticia").modal("show");
