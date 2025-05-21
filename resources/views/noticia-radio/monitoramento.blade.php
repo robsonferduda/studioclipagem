@@ -147,7 +147,7 @@
                                         </div>
                                     </div> 
                                     <div>
-                                        <a href="{{ url('noticia/radio/extrair/',$audio->id) }}" target="BLANK" class="btn btn-success btn-sm"><i class="fa fa-database"></i> Extrair Notícia</a> 
+                                        <a href="{{ url('noticia/radio/extrair/',$audio->id_audio) }}" target="BLANK" class="btn btn-success btn-sm"><i class="fa fa-database"></i> Extrair Notícia</a> 
                                     </div>               
                                 </div>
                             </div>     
