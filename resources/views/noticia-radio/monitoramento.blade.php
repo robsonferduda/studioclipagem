@@ -181,6 +181,7 @@
         <div class="modal-body" style="padding: 15px;">
             <div class="row">
                 <div class="col-md-12 modal-conteudo"></div>
+                <div class="col-md-12 modal-controle"></div>
                 <div class="col-md-12 modal-audio mt-1 mb-0"></div>
                 <div class="col-md-12 modal-sinopse"></div>
             </div>
@@ -212,12 +213,12 @@
                 var sinopse = ".conteudo-"+id+"-"+monitoramento;
 
                 $(".modal-conteudo").html($(chave).html());
-                $(".modal-audio").html($(audio).html()+
-                                        '<div class="center">'+
+                $(".modal-controle").html('<div class="center">'+
                                             '<button type="button" class="btn btn-primary btn-sm"><i class="fa fa-step-backward fa-2x" aria-hidden="true"></i></button>'+
                                             '<button type="button" class="btn btn-primary btn-sm"><i class="fa fa-stop fa-2x" aria-hidden="true"></i></button>'+
                                             '<button type="button" class="btn btn-primary btn-sm"><i class="fa fa-step-forward fa-2x" aria-hidden="true"></i></button>'+
                                         '</div>');
+                $(".modal-audio").html($(audio).html());
                 $(".modal-sinopse").html($(sinopse).html());
 
                 $("#showNoticia").modal("show");
