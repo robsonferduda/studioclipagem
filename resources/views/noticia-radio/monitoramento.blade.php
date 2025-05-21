@@ -147,7 +147,8 @@
                                         </div>
                                     </div> 
                                     <div>
-                                        <a href="{{ url('noticia/radio/extrair/',$audio->id_audio) }}" target="BLANK" class="btn btn-success btn-sm"><i class="fa fa-database"></i> Extrair Notícia</a> 
+                                        <a href="{{ url('noticia/radio/extrair/',$audio->id_audio) }}" target="BLANK" class="btn btn-warning btn-sm"><i class="fa fa-database"></i> Extrair Notícia</a> 
+                                        <button class="btn btn-primary btn-visualizar-noticia" data-id="{{ $audio->id_audio }}"><i class="fa fa fa-eye"></i> Visualizar</button> 
                                     </div>               
                                 </div>
                             </div>     
@@ -164,6 +165,27 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="showNoticia" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-dialog-scrollable modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="padding: 15px !important;">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-newspaper-o"></i><span></span> Dodos da Notícia</h6>
+        </div>
+        <div class="modal-body" style="padding: 15px;">
+            <div class="row">
+                <div class="col-md-12 modal-conteudo"></div>
+                <div class="col-md-12 modal-sinopse"></div>
+            </div>
+            <div class="center">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
+            </div>
+      </div>
+    </div>
+  </div>
+</div>
 @endsection
 @section('script')
     <script>
@@ -174,6 +196,20 @@
             var demo2 = $('.demo1').bootstrapDualListbox({
                 nonSelectedListLabel: 'Disponíveis',
                 selectedListLabel: 'Selecionadas',               
+            });
+
+            $(".btn-visualizar-noticia").click(function(){
+
+                var id = $(this).data("id");
+                var chave = ".conteudo-"+id;
+                var sinopse = ".sinopse-"+id;
+
+                $(".modal-conteudo").html($(chave).html());
+              
+                $(".modal-sinopse").html($(sinopse).text().replace(/\n/g, "<br />"));
+
+                $("#showNoticia").modal("show");
+
             });
 
             $(".panel-heading").click(function() {
