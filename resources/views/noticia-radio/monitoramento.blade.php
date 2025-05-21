@@ -253,7 +253,7 @@
 
             function getDadosAudio(id, monitoramento){
                 $.ajax({
-                    url: host+'/radio/conteudo/'+id+'/monitoramento/'+monitoramento,
+                    url: host+'/radio/adjacentes/'+id+'/monitoramento/'+monitoramento,
                     type: 'GET',
                     beforeSend: function() {
                             
