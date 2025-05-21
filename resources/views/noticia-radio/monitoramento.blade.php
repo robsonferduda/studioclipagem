@@ -209,7 +209,7 @@
 
                 $(".modal-conteudo").html($(chave).html());
               
-                $(".modal-sinopse").html($(sinopse).text().replace(/\n/g, "<br />"));
+                $(".modal-sinopse").html($(sinopse).html());
 
                 $("#showNoticia").modal("show");
 
