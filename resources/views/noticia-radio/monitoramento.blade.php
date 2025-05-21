@@ -179,7 +179,7 @@
         <div class="modal-body" style="padding: 15px;">
             <div class="row">
                 <div class="col-md-12 modal-conteudo"></div>
-                <div class="col-md-12 modal-audio"></div>
+                <div class="col-md-12 modal-audio mt-1 mb-0"></div>
                 <div class="col-md-12 modal-sinopse"></div>
             </div>
             <div class="center">
