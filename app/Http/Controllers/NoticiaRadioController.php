@@ -519,9 +519,7 @@ class NoticiaRadioController extends Controller
                 WHERE t1.monitoramento_id = $monitoramento
                 AND t1.noticia_id = $id";
 
-        $id_emissora = DB::select($sql)[0];
-
-        dd($id_emissora);
+        $id_emissora = DB::select($sql)[0]->id_emissora;
 
         $sql_prev = "SELECT transcricao, path_s3 FROM gravacao_emissora_radio WHERE id_emissora = $id_emissora AND id > $id LIMIT 1";
         $prev = DB::select($sql_prev)[0];
