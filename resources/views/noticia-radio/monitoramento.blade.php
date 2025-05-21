@@ -214,9 +214,9 @@
 
                 $(".modal-conteudo").html($(chave).html());
                 $(".modal-controle").html('<div class="center">'+
-                                            '<button title="Anterior" id="btn-back" type="button" class="btn btn-primary btn-sm"><i class="fa fa-step-backward fa-2x" aria-hidden="true"></i></button>'+
-                                            '<button title="Atual" id="btn-home" type="button" class="btn btn-primary btn-sm"><i class="fa fa-stop fa-2x" aria-hidden="true"></i></button>'+
-                                            '<button title="Próximo" id="btn-prev" type="button" class="btn btn-primary btn-sm"><i class="fa fa-step-forward fa-2x" aria-hidden="true"></i></button>'+
+                                            '<button title="Anterior" id="btn-back" data-id="'+id+'" type="button" class="btn btn-primary btn-sm"><i class="fa fa-step-backward fa-2x" aria-hidden="true"></i></button>'+
+                                            '<button title="Atual" id="btn-home" data-id="'+id+'" type="button" class="btn btn-primary btn-sm"><i class="fa fa-stop fa-2x" aria-hidden="true"></i></button>'+
+                                            '<button title="Próximo" id="btn-prev" data-id="'+id+'" type="button" class="btn btn-primary btn-sm"><i class="fa fa-step-forward fa-2x" aria-hidden="true"></i></button>'+
                                         '</div>');
                 $(".modal-audio").html($(audio).html());
                 $(".modal-sinopse").html($(sinopse).html());
@@ -231,8 +231,16 @@
             });
 
             $(document).on('click', '#btn-home', function() {
-                $(".modal-audio").html("");
-                $(".modal-sinopse").html("Anterior");
+                
+                var id = $(this).data("id");
+                var monitoramento = $(this).data("monitoramento");
+                var audio = ".audio-"+id;
+                var chave = ".conteudo-"+id;
+                var sinopse = ".conteudo-"+id+"-"+monitoramento;
+
+                $(".modal-audio").html($(audio).html());
+                $(".modal-sinopse").html($(sinopse).html());
+
             });
 
             $(document).on('click', '#btn-prev', function() {
