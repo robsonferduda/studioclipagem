@@ -215,6 +215,7 @@
                 $(".modal-audio").html($(audio).html()+
                                         '<div class="center">'+
                                             '<button type="button" class="btn btn-primary btn-sm"><i class="fa fa-step-backward fa-2x" aria-hidden="true"></i></button>'+
+                                            '<button type="button" class="btn btn-primary btn-sm"><i class="fa fa-stop fa-2x" aria-hidden="true"></i></button>'+
                                             '<button type="button" class="btn btn-primary btn-sm"><i class="fa fa-step-forward fa-2x" aria-hidden="true"></i></button>'+
                                         '</div>');
                 $(".modal-sinopse").html($(sinopse).html());
