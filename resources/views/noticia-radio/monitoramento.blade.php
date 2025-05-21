@@ -248,6 +248,25 @@
                 $(".modal-sinopse").html("Pŕoximo");
             });
 
+            function getDadosAudio(id, monitoramento){
+                $.ajax({
+                    url: host+'/radio/conteudo/'+id+'/monitoramento/'+monitoramento,
+                    type: 'GET',
+                    beforeSend: function() {
+                            
+                    },
+                    success: function(data) {
+                        $(".modal-sinopse").html(data.texto);
+                    },
+                    error: function(){
+                       
+                    },
+                    complete: function(){
+                            
+                    }
+                });
+            }
+
             $(".panel-heading").click(function() {
                 $(this).parent().addClass('active').find('.panel-body').slideToggle('fast');
                 $(".panel-heading").not(this).parent().removeClass('active').find('.panel-body').slideUp('fast');

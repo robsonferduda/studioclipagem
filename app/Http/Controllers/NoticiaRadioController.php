@@ -510,4 +510,17 @@ class NoticiaRadioController extends Controller
 
         return response()->json($dados); 
     }
+
+    public function getDadosAudio($id, $monitoramento)
+    {
+        $sql = "SELECT t2.transcricao 
+                FROM noticia_cliente t1
+                JOIN gravacao_emissora_radio t2 ON t2.id = t1.noticia_id
+                WHERE t1.monitoramento_id = $monitoramento
+                AND t1.noticia_id = $id";
+
+        $dados = DB::select($sql)[0];
+
+        return response()->json($dados);
+    }
 }
