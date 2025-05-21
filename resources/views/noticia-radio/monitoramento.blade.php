@@ -109,7 +109,7 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-lg-12 col-md-12 col-sm-12 mb-1">                                    
+                                <div class="col-lg-12 col-md-12 col-sm-12 mb-1 audio-{{ $audio->id_audio }}">                                    
                                     @if(Storage::disk('s3')->temporaryUrl($audio->path_s3, '+30 minutes'))
                                         <audio width="100%" controls style="width: 100%;">
                                             <source src="{{ Storage::disk('s3')->temporaryUrl($audio->path_s3, '+30 minutes') }}" type="audio/mpeg">
@@ -179,6 +179,7 @@
         <div class="modal-body" style="padding: 15px;">
             <div class="row">
                 <div class="col-md-12 modal-conteudo"></div>
+                <div class="col-md-12 modal-audio"></div>
                 <div class="col-md-12 modal-sinopse"></div>
             </div>
             <div class="center">
@@ -204,11 +205,12 @@
 
                 var id = $(this).data("id");
                 var monitoramento = $(this).data("monitoramento");
+                var audio = ".audio-"+id;
                 var chave = ".conteudo-"+id;
                 var sinopse = ".conteudo-"+id+"-"+monitoramento;
 
                 $(".modal-conteudo").html($(chave).html());
-              
+                $(".modal-audio").html($(audio).html());
                 $(".modal-sinopse").html($(sinopse).html());
 
                 $("#showNoticia").modal("show");
