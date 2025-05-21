@@ -83,10 +83,10 @@ class EmissoraController extends Controller
         return view('emissora/index', compact('emissoras','codigo','descricao','estados'));
     }
 
-    public function arquivos(Request $request)
+    public function coletas(Request $request)
     {
         Session::put('url', 'radio');
-        Session::put('sub-menu', "radio-arquivos");
+        Session::put('sub-menu', "radio-coletas");
 
         $fontes = Emissora::orderBy('nome_emissora')->get();
 

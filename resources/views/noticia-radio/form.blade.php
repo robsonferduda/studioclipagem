@@ -21,7 +21,7 @@
                     <div class="col-md-6">
                         <h4 class="card-title ml-2"><i class="fa fa-volume-up"></i> Rádio
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Notícias
-                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> {!! empty($dados->id) ? 'Cadastrar' : 'Atualizar' !!}</h4>
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> {!! empty($noticia->id) ? 'Cadastrar' : 'Atualizar' !!}</h4>
                     </div>
                     <div class="col-md-6">
                         <a href="{{ url('radio/dashboard') }}" class="btn btn-warning pull-right mr-3"><i class="nc-icon nc-chart-pie-36"></i> Dashboard</a>
@@ -140,7 +140,7 @@
                                     <div class="form-group">
                                         <label>Cidade </label>
                                         <input type="hidden" name="cd_cidade" id="cd_cidade" value="{{ ($noticia and $noticia->cd_cidade) ? $noticia->cd_cidade : 0  }}">
-                                        <select class="form-control select2" name="cidade" id="cidade" disabled="disabled">
+                                        <select class="form-control select2" name="cd_cidade" id="cidade" disabled="disabled">
                                             <option value="">Selecione uma cidade</option>
                                         </select>
                                     </div>
@@ -161,8 +161,8 @@
                             <div class="row">
                                 <div class="col-md-2">
                                     <div class="form-group">
-                                        <label>Duração <span class="text-danger">Obrigatório</span></label>
-                                        <input type="text" class="form-control duracao" name="duracao" id="duracao" placeholder="00:00:00" value="{{ ($noticia) ? $noticia->duracao : '' }}" required>
+                                        <label>Duração</label>
+                                        <input type="text" class="form-control duracao" name="duracao" id="duracao" placeholder="00:00:00" value="{{ ($noticia) ? $noticia->duracao : '' }}">
                                     </div>
                                 </div>                            
                                 <div class="col-md-10">

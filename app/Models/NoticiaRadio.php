@@ -25,9 +25,9 @@ class NoticiaRadio extends Model
         'fl_boletim',
         'sinopse',
         'link',
-        'sentimento',
         'duracao',
-        'horario'
+        'horario',
+        'ds_caminho_video'
     ];
 
     public function cliente()
