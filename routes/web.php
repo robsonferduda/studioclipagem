@@ -188,7 +188,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('radio/noticias/{id}/cliente/{cliente}/remover','NoticiaRadioController@remover');
 	Route::get('radio/noticias/{id}/download','NoticiaRadioController@download');
 	Route::get('radio/noticias/estatisticas','NoticiaRadioController@getEstatisticas');
-	Route::get('radio/noticia/extrair/{tipo}/{id}','NoticiaRadioController@extrair');
+	
 	Route::get('radio/conteudo/{id_noticia}/monitoramento/{id_monitoramento}','NoticiaRadioController@destacaConteudo');
 	Route::post('radio/noticias/inserir','NoticiaRadioController@inserir');
 	Route::post('radio/noticias/{id}/atualizar','NoticiaRadioController@atualizar');
@@ -266,6 +266,7 @@ Route::middleware(['web'])->group(function () {
 	Route::match(array('GET', 'POST'),'emissoras','EmissoraController@index');
 	Route::match(array('GET', 'POST'),'noticia/radio/coletas','EmissoraController@coletas');
 	Route::match(array('GET', 'POST'),'noticia/radio/monitoramento','NoticiaRadioController@monitoramento');
+	Route::get('noticia/radio/extrair/{id}','NoticiaRadioController@extrair');
 	Route::get('emissoras/{tipo}/novo','EmissoraController@novo');
 	Route::get('emissoras/radio/limpar','EmissoraController@limpar');
 	Route::get('radio/emissora/{id}/horarios','EmissoraController@horarios');

@@ -145,7 +145,10 @@
                                         <div class="panel-heading">
                                             <h3 class="panel-title"><span class="btn-show">Mostrar Mais</span></h3>
                                         </div>
-                                    </div>                
+                                    </div> 
+                                    <div>
+                                        <a href="{{ url('noticia/radio/extrair/',$audio->id) }}" target="BLANK" class="btn btn-success btn-sm"><i class="fa fa-database"></i> Extrair Notícia</a> 
+                                    </div>               
                                 </div>
                             </div>     
                         </div>

@@ -97,9 +97,6 @@
                                             De {{ \Carbon\Carbon::parse($audio->data_hora_inicio)->format('H:i:s') }} às {{ \Carbon\Carbon::parse($audio->data_hora_fim)->format('H:i:s') }}
                                         </h6> 
                                         <p class="mb-2"><strong>Retorno de Mídia</strong>: {!! ($audio->valor_retorno) ? "R$ ".$audio->valor_retorno : '<span class="text-danger">Não calculado</span>' !!}</p>
-                                        <div>
-                                            <a href="{{ url('radio/noticia/extrair/web',$audio->id) }}" target="BLANK" class="btn btn-success btn-sm"><i class="fa fa-database"></i> Extrair Notícia</a> 
-                                        </div>
                                         <div class="panel panel-success">
                                             <div class="conteudo-noticia mb-1">
                                                 {!! ($audio->transcricao) ?  Str::limit($audio->transcricao, 1000, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
