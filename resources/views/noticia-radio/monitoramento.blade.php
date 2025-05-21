@@ -120,23 +120,25 @@
                                     @endif
                                 </div>
                                 <div class="col-lg-12 col-sm-12 mb-1"> 
-                                    <h6><a href="{{ url('emissora/'.$audio->id_fonte.'/edit') }}" target="_BLANK">{{ ($audio->nome_fonte) ? $audio->nome_fonte : '' }}</a></h6>  
-                                    <h6 style="color: #FF5722;">{{ ($audio->nm_estado) ? $audio->nm_estado : '' }}{{ ($audio->nm_cidade) ? "/".$audio->nm_cidade : '' }}</h6>  
-                                    <h6 class="text-muted mb-1">
-                                        {{ ($audio->nome_fonte) ? $audio->nome_fonte : '' }} - 
-                                        {{ \Carbon\Carbon::parse($audio->data_hora_inicio)->format('d/m/Y') }} - 
-                                        De {{ \Carbon\Carbon::parse($audio->data_hora_inicio)->format('H:i:s') }} às {{ \Carbon\Carbon::parse($audio->data_hora_fim)->format('H:i:s') }}
-                                    </h6> 
-                                    <p class="mb-1"><i class="nc-icon nc-briefcase-24"></i> {{ ($audio->nome_cliente) ? $audio->nome_cliente : '' }}</p>
-                                    
-                                    <div style="margin-bottom: 5px;" class="tags destaque-{{ $audio->noticia_id }}-{{ $audio->monitoramento_id }}" data-monitoramento="{{ $audio->monitoramento_id }}" data-chave="{{ $audio->noticia_id }}-{{ $audio->monitoramento_id }}" data-noticia="{{ $audio->noticia_id }}">
-                                            
+                                    <div class="conteudo-{{ $audio->id_audio }}">
+                                        <h6><a href="{{ url('emissora/'.$audio->id_fonte.'/edit') }}" target="_BLANK">{{ ($audio->nome_fonte) ? $audio->nome_fonte : '' }}</a></h6>  
+                                        <h6 style="color: #FF5722;">{{ ($audio->nm_estado) ? $audio->nm_estado : '' }}{{ ($audio->nm_cidade) ? "/".$audio->nm_cidade : '' }}</h6>  
+                                        <h6 class="text-muted mb-1">
+                                            {{ ($audio->nome_fonte) ? $audio->nome_fonte : '' }} - 
+                                            {{ \Carbon\Carbon::parse($audio->data_hora_inicio)->format('d/m/Y') }} - 
+                                            De {{ \Carbon\Carbon::parse($audio->data_hora_inicio)->format('H:i:s') }} às {{ \Carbon\Carbon::parse($audio->data_hora_fim)->format('H:i:s') }}
+                                        </h6> 
+                                        <p class="mb-1"><i class="nc-icon nc-briefcase-24"></i> {{ ($audio->nome_cliente) ? $audio->nome_cliente : '' }}</p>
+                                        
+                                        <div style="margin-bottom: 5px;" class="tags destaque-{{ $audio->noticia_id }}-{{ $audio->monitoramento_id }}" data-monitoramento="{{ $audio->monitoramento_id }}" data-chave="{{ $audio->noticia_id }}-{{ $audio->monitoramento_id }}" data-noticia="{{ $audio->noticia_id }}">
+                                                
+                                        </div>
+                                        <code>
+                                            <a href="{{ url('monitoramento/'.$audio->monitoramento_id.'/editar') }}" target="_BLANK">{{ $audio->expressao }}</a>
+                                        </code>
                                     </div>
-                                    <code>
-                                        <a href="{{ url('monitoramento/'.$audio->monitoramento_id.'/editar') }}" target="_BLANK">{{ $audio->expressao }}</a>
-                                    </code>
                                     <div class="panel panel-success">
-                                        <div class="conteudo-noticia mb-1">
+                                        <div class="conteudo-noticia mb-1 sinopse-{{ $audio->id_audio }}">
                                             {!! ($audio->transcricao) ?  Str::limit($audio->transcricao, 1000, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
                                         </div>
                                         <div class="panel-body conteudo-{{ $audio->noticia_id }}-{{ $audio->monitoramento_id }}">
@@ -147,7 +149,7 @@
                                         </div>
                                     </div> 
                                     <div>
-                                        <a href="{{ url('noticia/radio/extrair/',$audio->id_audio) }}" target="BLANK" class="btn btn-warning btn-sm"><i class="fa fa-database"></i> Extrair Notícia</a> 
+                                        <a href="{{ url('noticia/radio/extrair',$audio->id_audio) }}" target="BLANK" class="btn btn-warning btn-sm"><i class="fa fa-database"></i> Extrair Notícia</a> 
                                         <button class="btn btn-primary btn-visualizar-noticia" data-id="{{ $audio->id_audio }}"><i class="fa fa fa-eye"></i> Visualizar</button> 
                                     </div>               
                                 </div>
