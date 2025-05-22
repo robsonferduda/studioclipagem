@@ -1201,9 +1201,6 @@ class MonitoramentoController extends Controller
     {
         $filtro = "filtro_".$tipo;
 
-        $fontes = DB::table('monitoramento')->select($filtro)->where('id', $id_monitoramento)->first()->$filtro;
-        $fontesArray = explode(',', $fontes);
-
         if($tipo == 'web'){
             $fonte = FonteWeb::select('id', 'nome', 'nm_cidade as cidade', 'sg_estado as uf');
             $fonte->leftJoin('cidade', 'cidade.cd_cidade', '=', 'fonte_web.cd_cidade');
@@ -1233,9 +1230,15 @@ class MonitoramentoController extends Controller
             $emissoras = $fonte->orderBy('sg_estado')->orderBy('nm_cidade')->orderBy('nome_emissora', 'asc')->get();
         }
 
-        foreach ($emissoras as $key => $emissora) {
-            $emissoras[$key]->fl_filtro = in_array($emissora->id, $fontesArray);
-        }
+        if($id_monitoramento > 0){
+
+            $fontes = DB::table('monitoramento')->select($filtro)->where('id', $id_monitoramento)->first()->$filtro;
+            $fontesArray = explode(',', $fontes);
+
+            foreach ($emissoras as $key => $emissora) {
+                $emissoras[$key]->fl_filtro = in_array($emissora->id, $fontesArray);
+            }
+        }        
 
         return response()->json($emissoras);
     }

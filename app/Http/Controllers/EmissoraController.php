@@ -111,8 +111,8 @@ class EmissoraController extends Controller
 
         if($request->isMethod('POST')){
 
-            if($request->fontes){
-                Session::put('radio_arquivos_fonte', $request->fontes);
+            if($request->selecionadas[0]){
+                Session::put('radio_arquivos_fonte', $request->selecionadas[0]);
             }else{
                 Session::forget('radio_arquivos_fonte');
                 $fonte = null;
@@ -137,6 +137,10 @@ class EmissoraController extends Controller
                         return $q->whereRaw("transcricao_tsv @@ to_tsquery('simple', '$expressao')");
                     })
                     ->when($fonte, function ($q) use ($fonte) {
+                        if(!is_array($fonte)){
+                            $fonte = array($fonte);
+                        }
+                        $fonte = array_map('intval', $fonte);
                         return $q->whereIn('emissora_radio.id', $fonte);
                     })
                     ->when($dt_inicial, function ($q) use ($dt_inicial, $dt_final) {
