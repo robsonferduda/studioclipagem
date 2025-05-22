@@ -127,7 +127,7 @@
                                     <div class="row">
                                         <div class="col-lg-2 col-sm-12">   
                                             @if($dado->path_screenshot)                                         
-                                                <img src="" alt="Print">
+                                                <img src="{{ Storage::disk('s3')->temporaryUrl($dado->path_screenshot, '+30 minutes') }}" alt="Print notícia {{ $dado->noticia_id }}" class="img-fluid img-thumbnail" style="width: 100%; height: auto;">
                                             @endif
                                         </div>
                                         <div class="col-lg-10 col-sm-12"> 
