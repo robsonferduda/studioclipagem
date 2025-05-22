@@ -125,7 +125,7 @@
                             <div class="card">
                                 <div class="card-body">
                                     <div class="row">
-                                        <div class="col-lg-2 col-sm-12">   
+                                        <div class="col-lg-2 col-sm-12" style="max-height: 300px; overflow: hidden;">   
                                             @if($dado->path_screenshot)                                         
                                                 <img src="{{ Storage::disk('s3')->temporaryUrl($dado->path_screenshot, '+30 minutes') }}" alt="Print notícia {{ $dado->noticia_id }}" class="img-fluid img-thumbnail" style="width: 100%; height: auto;">
                                             @endif
