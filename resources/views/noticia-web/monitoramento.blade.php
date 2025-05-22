@@ -131,6 +131,11 @@
                                                 alt="Print notícia {{ $dado->noticia_id }}" 
                                                 class="img-fluid img-thumbnail" 
                                                 style="width: 100%; height: auto; border: none;">
+                                            @else
+                                                <img src="{{ asset('img/no-print.png') }}" 
+                                                alt="Sem Print" 
+                                                class="img-fluid img-thumbnail" 
+                                                style="width: 100%; height: auto; border: none;">
                                             @endif
                                         </div>
                                         <div class="col-lg-10 col-sm-12"> 
