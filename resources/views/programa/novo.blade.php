@@ -13,8 +13,8 @@
                         </h4>
                     </div>
                     <div class="col-md-3">
-                        <a href="{{ url('programas/'.$tipo) }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-signal"></i> Programas</a>
-                        <a href="{{ url('emissoras/'.$tipo) }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-signal"></i> Emissoras</a>
+                        <a href="{{ url('radio/emissoras/programas') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-signal"></i> Programas</a>
+                        <a href="{{ url('radio/emissoras') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-signal"></i> Emissoras</a>
                     </div>
                 </div>
             </div>
@@ -24,15 +24,14 @@
                 </div>
                 <div class="col-md-12">
                     {!! Form::open(['id' => 'frm_user_create', 'url' => ['programa']]) !!}
-                    <input type="hidden" name="tipo" value="{{ $tipo }}">
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Emissora <span class="text-danger">Obrigatório</span></label>
-                                <select class="form-control select2" name="emissora_id" id="emissora_id" required="required">
+                                <select class="form-control select2" name="id_emissora" id="id_emissora" required="required">
                                     <option value="">Selecione uma emissora</option>
                                     @foreach($emissoras as $emissora)
-                                        <option value="{{ $emissora->id }}">{{ $emissora->ds_emissora }}</option>
+                                        <option value="{{ $emissora->id }}">{{ $emissora->nome_emissora }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -40,7 +39,7 @@
                         <div class="col-md-8">
                             <div class="form-group">
                                 <label>Nome <span class="text-danger">Obrigatório</span></label>
-                                <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome" value="{{ old('nome') }}" required="required">
+                                <input type="text" class="form-control" name="nome_programa" id="nome_programa" placeholder="Nome" value="{{ old('nome_programa') }}" required="required">
                             </div>
                         </div>
                         <div class="col-md-2 col-sm-6">

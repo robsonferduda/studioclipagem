@@ -22,16 +22,16 @@
                     @include('layouts.mensagens')
                 </div>
                 {!! Form::open(['id' => 'frm_user_create', 'url' =>  ['programa', $programa->id], 'method' => 'patch']) !!}
-                    
+
                     <div class="col-md-12">
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Emissora <span class="text-danger">Obrigatório</span></label>
-                                    <select class="form-control select2" name="emissora_id" id="emissora_id" required="required">
+                                    <select class="form-control select2" name="id_emissora" id="id_emissora" required="required">
                                         <option value="">Selecione uma emissora</option>
                                         @foreach($emissoras as $emissora)
-                                            <option value="{{ $emissora->id }}" {{ ($emissora->id == $programa->emissora_id) ? 'selected' : '' }}>{{ $emissora->ds_emissora }}</option>
+                                            <option value="{{ $emissora->id }}" {{ ($emissora->id == $programa->id_emissora) ? 'selected' : '' }}>{{ $emissora->nome_emissora }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -39,7 +39,7 @@
                             <div class="col-md-8">
                                 <div class="form-group">
                                     <label>Nome <span class="text-danger">Obrigatório</span></label>
-                                    <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome" value="{{ $programa->nome }}" required="required">
+                                    <input type="text" class="form-control" name="nome_programa" id="nome_programa" placeholder="Nome" value="{{ $programa->nome_programa }}" required="required">
                                 </div>
                             </div>
                             <div class="col-md-2 col-sm-6">

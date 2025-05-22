@@ -11,7 +11,7 @@
                     </h4>
                 </div>
                 <div class="col-md-4">
-                    <a href="{{ url('emissoras/'.$tipo.'/novo') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-plus"></i> Novo</a>
+                    <a href="{{ url('emissoras/tipo/novo') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-plus"></i> Novo</a>
                 </div>
             </div>
         </div>
@@ -21,7 +21,7 @@
             </div>
             
                 <div class="col-md-12">
-                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['emissoras/'.$tipo]]) !!}
+                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['radio/emissoras']]) !!}
                         <div class="form-group w-70">
                             <div class="row">
                                 <div class="col-md-2 col-sm-12">

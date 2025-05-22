@@ -183,7 +183,7 @@ class EmissoraController extends Controller
 
     }
 
-    public function listar(Request $request, $tipo)
+    public function listar(Request $request)
     {
         Session::put('url', 'radio');
         Session::put('sub-menu', "emissoras-radio");
@@ -228,7 +228,7 @@ class EmissoraController extends Controller
 
         $emissoras = $emissora->orderBy('id_situacao','DESC')->orderBy('nome_emissora')->paginate(20);        
 
-        return view('emissora/index', compact('emissoras','nome','estados','tipo','cd_estado','cd_cidade','gravar'));
+        return view('emissora/index', compact('emissoras','nome','estados','cd_estado','cd_cidade','gravar'));
     }
 
     public function limpar()

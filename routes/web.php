@@ -74,9 +74,6 @@ Route::middleware(['web'])->group(function () {
 	Route::post('emissora/{tipo}/atualizar','EmissoraController@update');
 	Route::post('emissoras/horario/adicionar','EmissoraController@adicionarHorarios');
 
-	Route::match(array('GET', 'POST'),'programas/{tipo}','ProgramaController@index');
-	Route::get('programa/{tipo}/novo','ProgramaController@novo');
-
 	Route::get('email/cliente/excluir/{id}','EmailController@excluir');
 	Route::post('email/cliente/cadastrar','EmailController@cadastrar');
 
@@ -181,6 +178,8 @@ Route::middleware(['web'])->group(function () {
 	Route::get('noticia-radio/{id}/editar','NoticiaRadioController@editar');
 	Route::get('noticia-radio/{id}/excluir','NoticiaRadioController@excluir');
 
+	Route::match(array('GET', 'POST'),'radio/emissoras','EmissoraController@listar');
+
 	Route::get('radio/noticias/cadastrar','NoticiaRadioController@cadastrar');
 	Route::get('radio/noticias/{id}/editar','NoticiaRadioController@editar');
 	Route::get('radio/noticias/{id}/remover','NoticiaRadioController@remover');
@@ -278,6 +277,10 @@ Route::middleware(['web'])->group(function () {
 
 	Route::get('radio/estatisticas','NoticiaRadioController@estatisticas');
 	Route::match(array('GET', 'POST'),'radios','NoticiaRadioController@index');
+
+	Route::match(array('GET', 'POST'),'radio/emissoras/programas','ProgramaController@index');
+	Route::get('radio/emissoras/programas/novo','ProgramaController@novo');
+	Route::get('radio/emissoras/programas/editar/{id}','ProgramaController@editar');
 
 
 

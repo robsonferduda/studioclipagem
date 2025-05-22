@@ -16,7 +16,7 @@ class Programa extends Model
 
     public function emissora()
     {
-        return $this->hasOne(Emissora::class, 'id', 'emissora_id');
+        return $this->hasOne(Emissora::class, 'id', 'id_emissora');
     }
 
     public function noticiaRadio()

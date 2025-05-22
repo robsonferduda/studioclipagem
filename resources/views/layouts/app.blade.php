@@ -229,12 +229,12 @@
                           </li>
                         @endpermission
                         <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'emissoras-radio') ? 'active' : '' }}">
-                           <a href="{{ url('emissoras/radio') }}">
+                           <a href="{{ url('radio/emissoras') }}">
                            <span class="sidebar-normal">Emissoras</span>
                            </a>
                         </li>
                         <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'programas-radio') ? 'active' : '' }}">
-                           <a href="{{ url('programas/radio') }}">
+                           <a href="{{ url('radio/emissoras/programas') }}">
                            <span class="sidebar-normal">Programas</span>
                            </a>
                         </li>

@@ -35,7 +35,7 @@
                                 <div class="col-md-5">
                                     <div class="form-group">
                                         <label>Cliente</label>
-                                        <select class="form-control cliente select2" name="cd_cliente" id="cd_cliente">
+                                        <select class="form-control cliente" name="cd_cliente" id="cd_cliente">
                                             <option value="">Selecione um cliente</option>
                                         </select>
                                     </div>
@@ -43,7 +43,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Área do Cliente <span class="text-info add-area" data-toggle="modal" data-target="#modalArea">Adicionar Área</span></label>
-                                        <select class="form-control area select2" name="cd_area" id="cd_area" disabled>
+                                        <select class="form-control area" name="cd_area" id="cd_area" disabled>
                                             <option value="">Selecione uma área</option>
                                         </select>
                                     </div>

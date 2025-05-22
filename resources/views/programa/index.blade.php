@@ -12,7 +12,7 @@
                     </h4>
                 </div>
                 <div class="col-md-4">
-                    <a href="{{ url('programa/'.$tipo.'/novo') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-plus"></i> Novo</a>
+                    <a href="{{ url('radio/emissoras/programas/novo') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-plus"></i> Novo</a>
                 </div>
             </div>
         </div>
@@ -21,7 +21,7 @@
                 @include('layouts.mensagens')
             </div>
             <div class="col-md-12 px-0">
-                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['emissoras/programas']]) !!}
+                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['radio/emissoras/programas']]) !!}
                         <div class="form-group m-3 w-70">
                             <div class="row">
                                 <div class="col-md-6 col-sm-12">
@@ -30,7 +30,7 @@
                                         <select class="form-control select2" name="emissora_id" id="emissora_id">
                                             <option value="">Selecione uma emissora</option>
                                             @foreach ($emissoras as $emissora)
-                                                <option value="{{ $emissora->id }}">{{ $emissora->ds_emissora }}</option>
+                                                <option value="{{ $emissora->id }}" {{ ($emissora->id == $emissora_search) ? 'selected' : '' }}>{{ $emissora->nome_emissora }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -44,7 +44,8 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-12 checkbox-radios mb-0">
-                                    <button type="submit" id="btn-find" class="btn btn-primary mb-3"><i class="fa fa-search"></i> Buscar</button>
+                                    <a href="{{ url('radio/emissoras/programas') }}" class="btn btn-warning btn-limpar"><i class="fa fa-refresh"></i> Limpar</a>
+                                    <button type="submit" id="btn-find" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>     
                         </div>
@@ -57,8 +58,8 @@
                         <tr>
                             <th class="">Emissora</th>
                             <th class="">Programa</th>
-                            <th>Início</th>
-                            <th>Término</th>
+                            <th class="center">Início</th>
+                            <th class="center">Término</th>
                             <th>Valor</th>
                             <th class="disabled-sorting text-center">Ações</th>
                         </tr>
@@ -67,20 +68,20 @@
                         <tr>
                             <th>Emissora</th>
                             <th>Programa</th>
-                            <th>Início</th>
-                            <th>Término</th>
+                            <th class="center">Início</th>
+                            <th class="center">Término</th>
                             <th>Valor</th>
                             <th class="disabled-sorting text-center">Ações</th>
                         </tr>
                     </tfoot>
                     <tbody>
-                        @foreach($programas as $programa)
+                        @forelse($programas as $programa)
                             <tr>
-                                <td>{{ ($programa->emissora) ? $programa->emissora->ds_emissora : 'Não informado' }}</td>
-                                <td>{{ $programa->nome }}</td>
-                                <td>{{ date('H:i', strtotime($programa->hora_inicio)) }}</td>
-                                <td>{{ date('H:i', strtotime($programa->hora_fim)) }}</td>
-                                <td>R$ {{ $programa->valor_segundo }}</td>
+                                <td>{{ ($programa->emissora) ? $programa->emissora->nome_emissora : 'Não informado' }}</td>
+                                <td>{{ $programa->nome_programa }}</td>
+                                <td class="center">{{ date('H:i', strtotime($programa->hora_inicio)) }}</td>
+                                <td class="center">{{ date('H:i', strtotime($programa->hora_fim)) }}</td>
+                                <td>{{ ($programa->valor_segundo) ? "R$ ".$programa->valor_segundo : '--' }}</td>
                                 <td class="text-center">
                                     <a title="Editar" href="{{ route('programa.edit',$programa->id) }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
                                     <form class="form-delete" style="display: inline;" action="{{ route('programa.destroy',$programa->id) }}" method="POST">
@@ -92,7 +93,11 @@
                                     </form>
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="6" class="text-center">Nenhum programa encontrado</td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
                 {{ $programas->onEachSide(1)->links('vendor.pagination.bootstrap-4') }}                
