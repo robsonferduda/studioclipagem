@@ -148,7 +148,7 @@
                                                 <div class="conteudo-noticia mb-1 transcricao">
                                                     {!! ($dado->conteudo) ?  Str::limit($dado->conteudo, 700, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
                                                 </div>
-                                                <div class="panel-body transcricao-total">
+                                                <div class="panel-body transcricao-total conteudo-{{ $dado->noticia_id }}-{{ $dado->monitoramento_id }}">
                                                     {!! ($dado->conteudo) ?  $dado->conteudo  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
                                                 </div>
                                                 <div class="panel-heading">
@@ -306,7 +306,7 @@
 
             });
 
-             $(".tags").each(function() {
+            $(".tags").each(function() {
                
                 var monitoramento = $(this).data("monitoramento");
                 var noticia = $(this).data("noticia");
