@@ -103,30 +103,23 @@
                                             @endif
                                         </div>
                                         <div class="col-lg-10 col-sm-12"> 
-                                            <div class="conteudo-{{ $dado->noticia_id }}">
+                                            <div class="conteudo-{{ $dado->id }}">
                                                 <p class="font-weight-bold mb-1">{{ $dado->titulo_noticia }}</p>
-                                                <h6><a href="{{ url('fonte-web/editar', $dado->id_fonte) }}" target="_BLANK">{{ ($dado->nome_fonte) ? $dado->nome_fonte : '' }}</a></h6>  
-                                                <h6 style="color: #FF5722;">{{ ($dado->nm_estado) ? $dado->nm_estado : '' }}{{ ($dado->nm_cidade) ? "/".$dado->nm_cidade : '' }}</h6> 
-                                                <p class="text-muted mb-1"> {!! ($dado->data_noticia) ? date('d/m/Y', strtotime($dado->data_noticia)) : date('d/m/Y', strtotime($dado->data_noticia)) !!} - {{ $dado->nome_fonte }}</p> 
-                                                <p class="mb-1"><i class="nc-icon nc-briefcase-24"></i> {{ ($dado->nome_cliente) ? $dado->nome_cliente : '' }}</p>
-                                                <div style="margin-bottom: 5px;" class="tags destaque-{{ $dado->noticia_id }}-{{ $dado->monitoramento_id }}" data-monitoramento="{{ $dado->monitoramento_id }}" data-chave="{{ $dado->noticia_id }}-{{ $dado->monitoramento_id }}" data-noticia="{{ $dado->noticia_id }}">
-                                                
-                                                </div>
-                                                <code>
-                                                    <a href="{{ url('monitoramento/'.$dado->monitoramento_id.'/editar') }}" target="_BLANK">{{ $dado->expressao }}</a>
-                                                </code>
+                                                <h6><a href="{{ url('fonte-web/editar', $dado->fonte->id_fonte) }}" target="_BLANK">{{ ($dado->fonte->nome) ? $dado->nome : '' }}</a></h6>  
+                                                <h6 style="color: #FF5722;">{{ ($dado->estado->nm_estado) ? $dado->estado->nm_estado : '' }}{{ ($dado->cidade->nm_cidade) ? "/".$dado->cidae->nm_cidade : '' }}</h6> 
+                                                <p class="text-muted mb-1"> {!! ($dado->data_noticia) ? date('d/m/Y', strtotime($dado->data_noticia)) : date('d/m/Y', strtotime($dado->data_noticia)) !!} - {{ $dado->fonte->nome }}</p> 
                                             </div>
                                             <div class="panel panel-success">
                                                 <div class="conteudo-noticia mb-1 transcricao">
-                                                    {!! ($dado->conteudo) ?  Str::limit($dado->conteudo, 700, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                                    {!! ($dado->conteudo->conteudo) ?  Str::limit($dado->conteudo->conteudo, 700, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
                                                 </div>
-                                                <div class="panel-body transcricao-total conteudo-{{ $dado->noticia_id }}-{{ $dado->monitoramento_id }}">
+                                                <div class="panel-body transcricao-total conteudo-{{ $dado->id }}">
                                                     {!! ($dado->conteudo) ?  $dado->conteudo  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
                                                 </div>
                                                 
                                             </div> 
                                             <div>
-                                                <button class="btn btn-primary btn-sm btn-visualizar-noticia" data-id="{{ $dado->noticia_id }}" data-monitoramento="{{ $dado->monitoramento_id }}"><i class="fa fa fa-eye"></i> Visualizar</button> 
+                                                <button class="btn btn-primary btn-sm btn-visualizar-noticia" data-id="{{ $dado->id }}"><i class="fa fa fa-eye"></i> Visualizar</button> 
                                             </div>                                            
                                         </div>
                                     </div>
