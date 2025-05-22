@@ -29,6 +29,16 @@ class NoticiaWeb extends Model
         return $this->hasMany(LogAcesso::class, 'id_noticia', 'id')->where('tipo','web');
     }
 
+    public function clientes()
+    {
+        return $this->belongsToMany(Cliente::class,'noticia_cliente','noticia_id','cliente_id')->withPivot('tipo_id','sentimento','area')->where('tipo_id', 2)->withTimestamps();
+    }
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class,'noticia_tag','noticia_id','tag_id')->withPivot('tipo_id')->where('tipo_id', 1)->withTimestamps();
+    }
+
     protected static function booted () {
         static::deleting(function(NoticiaWeb $noticia) { 
             $noticia->conteudo()->delete();
