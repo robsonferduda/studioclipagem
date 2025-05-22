@@ -119,6 +119,8 @@ class EmissoraController extends Controller
             }
         }
 
+         
+
         $dados = DB::table('gravacao_emissora_radio')
                     ->select('gravacao_emissora_radio.id AS id',
                             'emissora_radio.id AS id_fonte',
@@ -140,7 +142,7 @@ class EmissoraController extends Controller
                         if(!is_array($fonte)){
                             $fonte = array($fonte);
                         }
-                        $fonte = array_map('intval', $fonte);
+                      
                         return $q->whereIn('emissora_radio.id', $fonte);
                     })
                     ->when($dt_inicial, function ($q) use ($dt_inicial, $dt_final) {
