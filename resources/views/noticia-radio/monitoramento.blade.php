@@ -170,7 +170,7 @@
     </div>
 </div>
 <div class="modal fade" id="showNoticia" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog  modal-dialog-scrollable modal-lg" role="document" style="max-width: 80% !important;">
+    <div class="modal-dialog  modal-dialog-scrollable modal-lg" role="document" style="max-width: 78% !important; position: relative; right: -8%;">
       <div class="modal-content">
         <div class="modal-header" style="padding: 15px !important;">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
