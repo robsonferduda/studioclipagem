@@ -6,6 +6,7 @@ use DB;
 use DateTime;
 use DateInterval;
 use DatePeriod;
+use Storage;
 use App\Models\Area;
 use App\Models\Cliente;
 use App\Models\Cidade;
