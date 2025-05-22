@@ -41,7 +41,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Emissora <span class="text-danger">Obrigatório</span></label>
-                                        <select class="form-control select2" name="emissora" id="emissora" required="true">
+                                        <select class="form-control select2" name="emissora" id="emissora">
                                             <option value="">Selecione uma emissora</option>
                                             @foreach ($emissoras as $emissora)
                                                 <option value="{{ $emissora->id }}" {!! ($emissora_search == $emissora->id) ? "selected" : '' !!}>
@@ -67,6 +67,13 @@
                                         <textarea class="form-control" name="expressao" id="expressao" rows="3">{{ $expressao }}</textarea>
                                     </div>
                                 </div>
+                                @if($erro)
+                                    <div class="col-md-12 col-sm-12">
+                                        <div class="alert alert-danger" role="alert">
+                                            <strong>Erro!</strong> {{ $erro }}
+                                        </div>
+                                    </div>
+                                @endif
                                 <div class="col-md-12 checkbox-radios mb-0">
                                     <button type="submit" id="btn-find" class="btn btn-primary mb-3"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
@@ -125,13 +132,14 @@
                             </div>
                         </div>
                     @endforeach
-
-                    {{ $dados->onEachSide(1)->appends(['dt_inicial' => \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y'), 
-                                                            'dt_final' => \Carbon\Carbon::parse($dt_final)->format('d/m/Y'),
-                                                            'emissora' => $emissora_search,
-                                                            'programa' => $programa_search,
-                                                            'expressao' => $expressao])
-                                                            ->links('vendor.pagination.bootstrap-4') }}
+                    @if(count($dados) > 0)
+                        {{ $dados->onEachSide(1)->appends(['dt_inicial' => \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y'), 
+                                                                'dt_final' => \Carbon\Carbon::parse($dt_final)->format('d/m/Y'),
+                                                                'emissora' => $emissora_search,
+                                                                'programa' => $programa_search,
+                                                                'expressao' => $expressao])
+                                                                ->links('vendor.pagination.bootstrap-4') }}
+                    @endif
                 </div>
             </div>
         </div>
