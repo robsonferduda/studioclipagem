@@ -259,7 +259,8 @@
                     url: host+'/radio/adjacentes/'+id+'/monitoramento/'+monitoramento,
                     type: 'GET',
                     beforeSend: function() {
-                            
+                        $('.modal-audio').loader('show');     
+                        $('.modal-sinopse').loader('show'); 
                     },
                     success: function(data) {
                         
@@ -281,7 +282,8 @@
                        
                     },
                     complete: function(){
-                            
+                        $('.modal-audio').loader('hide'); 
+                        $('.modal-sinopse').loader('hide'); 
                     }
                 });
             }
