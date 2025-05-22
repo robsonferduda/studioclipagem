@@ -70,22 +70,33 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-12 col-sm-12">
-                                <label>Fontes</label>
-                                <div class="form-group">
-                                    <select multiple="multiple" size="10" name="fontes[]" id="fontes" class="demo1 form-control">
-                                        @foreach ($fontes as $fonte)
-                                            <option value="{{ $fonte->id }}" {{ (Session::get('radio_filtro_fonte') and in_array($fonte->id, Session::get('radio_filtro_fonte'))) ? 'selected' : '' }}>{{ $fonte->nome_emissora }}</option>
-                                        @endforeach
-                                    </select>
+                            <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Emissora <span class="text-danger">Obrigatório</span></label>
+                                        <select class="form-control select2" name="emissora" id="emissora">
+                                            <option value="">Selecione uma emissora</option>
+                                            @foreach ($emissoras as $emissora)
+                                                <option value="{{ $emissora->id }}" {!! ($emissora_search == $emissora->id) ? "selected" : '' !!}>
+                                                    {{ $emissora->nome_emissora }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Programa</label>
+                                        <select class="form-control selector-select2" name="programa" id="programa" disabled>
+                                            <option value="">Selecione um programa</option>
+                                        </select>
+                                    </div>
+                                </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12 col-sm-12">
                                 <div class="form-group">
                                     <label>Buscar por <span class="text-primary">Digite o termo ou expressão de busca</span></label>
-                                    <input type="text" class="form-control" name="termo" id="termo" minlength="3" placeholder="Termo" value="{{ $termo }}">
+                                    <textarea class="form-control" name="termo" id="termo" rows="3">{{ $termo }}</textarea>
                                 </div>
                             </div>
                             <div class="col-md-12 checkbox-radios mb-0">

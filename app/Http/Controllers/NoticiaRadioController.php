@@ -64,13 +64,15 @@ class NoticiaRadioController extends Controller
     {
         Session::put('sub-menu','radio-monitoramento');
 
-        $fontes = Emissora::orderBy('nome_emissora')->get();
+        $emissoras = Emissora::orderBy('nome_emissora')->get();
         $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
 
         $tipo_data = $request->tipo_data;
         $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
         $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
         $cliente_selecionado = ($request->cliente) ? $request->cliente : null;
+        $emissora_search = ($request->emissora) ? $request->emissora : null;
+        $programa_search = ($request->programa) ? $request->programa : null;
         $termo = ($request->termo) ? $request->termo : null;
         
         if($request->fontes or Session::get('radio_filtro_fonte')){
@@ -160,7 +162,7 @@ class NoticiaRadioController extends Controller
                     ->orderBy('gravacao_emissora_radio.data_hora_inicio','DESC')
                     ->paginate(10);
 
-        return view('noticia-radio/monitoramento', compact('clientes','fontes','dados','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo','monitoramento'));
+        return view('noticia-radio/monitoramento', compact('clientes','emissoras','dados','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo','monitoramento','emissora_search','programa_search'));
     }
 
     public function dashboard()
