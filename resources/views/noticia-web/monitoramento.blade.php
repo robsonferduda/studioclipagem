@@ -135,6 +135,7 @@
                                                 <p class="font-weight-bold mb-1">{{ $dado->titulo_noticia }}</p>
                                                 <p class="text-muted"> {!! ($dado->data_noticia) ? date('d/m/Y', strtotime($dado->data_noticia)) : date('d/m/Y', strtotime($dado->data_noticia)) !!} - {{ $dado->nome_fonte }}</p> 
                                             </div>
+                                            <p class="mb-1"><i class="nc-icon nc-briefcase-24"></i> {{ ($dado->nome_cliente) ? $dado->nome_cliente : '' }}</p>
                                             <div style="margin-bottom: 5px;" class="tags destaque-{{ $dado->noticia_id }}-{{ $dado->monitoramento_id }}" data-monitoramento="{{ $dado->monitoramento_id }}" data-chave="{{ $dado->noticia_id }}-{{ $dado->monitoramento_id }}" data-noticia="{{ $dado->noticia_id }}">
                                                 
                                             </div>
