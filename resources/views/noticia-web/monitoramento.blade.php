@@ -201,7 +201,7 @@
         <div class="modal-body" style="padding: 15px;">
             <div class="row">
                 <div class="col-md-12 modal-conteudo"></div>
-                <div class="col-md-12 modal-sinopse"></div>
+                <div class="col-md-12 modal-texto"></div>
             </div>
             <div class="center">
                 <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
@@ -230,8 +230,10 @@
                 var monitoramento = $(this).data("monitoramento");
               
                 var chave = ".conteudo-"+id;
+                var chave_texto = ".conteudo-"+id+"-"+monitoramento;
 
                 $(".modal-conteudo").html($(chave).html());
+                $(".modal-texto").html($(chave_texto).html());
                 $("#showNoticia").modal("show");
 
             });
