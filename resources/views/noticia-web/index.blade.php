@@ -85,36 +85,64 @@
                 </div>
                 <div class="col-lg-12">
                     @if(count($dados) > 0)
-                        @foreach ($dados as $key => $noticia)
+                        @foreach ($dados as $key => $dado)
                             <div class="card">
                                 <div class="card-body">
                                     <div class="row">
-                                        <div class="col-lg-12 col-sm-12">                                        
-                                            <div class="conteudo-noticia mb-1">
-                                                <p class="font-weight-bold mb-1">{{ $noticia->titulo_noticia }}</p>
-                                                <p class="text-muted mb-1"> 
-                                                    {!! ($noticia->data_noticia) ? date('d/m/Y', strtotime($noticia->data_noticia)) : date('d/m/Y', strtotime($noticia->data_noticia)) !!} - 
-                                                    {{ $noticia->fonte->nome }}
-                                                </p> 
-                                                <div>
-                                                    {!! ($noticia->conteudo) ?  Str::limit($noticia->conteudo->conteudo, 700, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                        <div class="col-lg-2 col-sm-12 img-{{ $dado->noticia_id }}" style="max-height: 300px; overflow: hidden;">   
+                                            @if($dado->path_screenshot)                                         
+                                                <img src="{{ Storage::disk('s3')->temporaryUrl($dado->path_screenshot, '+30 minutes') }}" 
+                                                alt="Print notícia {{ $dado->noticia_id }}" 
+                                                class="img-fluid img-thumbnail" 
+                                                style="width: 100%; height: auto; border: none;">
+                                            @else
+                                                <img src="{{ asset('img/no-print.png') }}" 
+                                                alt="Sem Print" 
+                                                class="img-fluid img-thumbnail" 
+                                                style="width: 100%; height: auto; border: none;">
+                                            @endif
+                                        </div>
+                                        <div class="col-lg-10 col-sm-12"> 
+                                            <div class="conteudo-{{ $dado->noticia_id }}">
+                                                <p class="font-weight-bold mb-1">{{ $dado->titulo_noticia }}</p>
+                                                <h6><a href="{{ url('fonte-web/editar', $dado->id_fonte) }}" target="_BLANK">{{ ($dado->nome_fonte) ? $dado->nome_fonte : '' }}</a></h6>  
+                                                <h6 style="color: #FF5722;">{{ ($dado->nm_estado) ? $dado->nm_estado : '' }}{{ ($dado->nm_cidade) ? "/".$dado->nm_cidade : '' }}</h6> 
+                                                <p class="text-muted mb-1"> {!! ($dado->data_noticia) ? date('d/m/Y', strtotime($dado->data_noticia)) : date('d/m/Y', strtotime($dado->data_noticia)) !!} - {{ $dado->nome_fonte }}</p> 
+                                                <p class="mb-1"><i class="nc-icon nc-briefcase-24"></i> {{ ($dado->nome_cliente) ? $dado->nome_cliente : '' }}</p>
+                                                <div style="margin-bottom: 5px;" class="tags destaque-{{ $dado->noticia_id }}-{{ $dado->monitoramento_id }}" data-monitoramento="{{ $dado->monitoramento_id }}" data-chave="{{ $dado->noticia_id }}-{{ $dado->monitoramento_id }}" data-noticia="{{ $dado->noticia_id }}">
+                                                
                                                 </div>
+                                                <code>
+                                                    <a href="{{ url('monitoramento/'.$dado->monitoramento_id.'/editar') }}" target="_BLANK">{{ $dado->expressao }}</a>
+                                                </code>
+                                            </div>
+                                            <div class="panel panel-success">
+                                                <div class="conteudo-noticia mb-1 transcricao">
+                                                    {!! ($dado->conteudo) ?  Str::limit($dado->conteudo, 700, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                                </div>
+                                                <div class="panel-body transcricao-total conteudo-{{ $dado->noticia_id }}-{{ $dado->monitoramento_id }}">
+                                                    {!! ($dado->conteudo) ?  $dado->conteudo  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                                </div>
+                                                
                                             </div> 
+                                            <div>
+                                                <button class="btn btn-primary btn-sm btn-visualizar-noticia" data-id="{{ $dado->noticia_id }}" data-monitoramento="{{ $dado->monitoramento_id }}"><i class="fa fa fa-eye"></i> Visualizar</button> 
+                                            </div>                                            
                                         </div>
                                     </div>
                                 </div>
                                 <div class="card-footer">
                                 <hr>
                                     <div class="stats">
-                                        <i class="fa fa-refresh"></i>Notícia cadastrada em {{ \Carbon\Carbon::parse($noticia->created_at)->format('d/m/Y H:i:s') }}
+                                        <i class="fa fa-refresh"></i>Notícia cadastrada em {{ \Carbon\Carbon::parse($dado->created_at)->format('d/m/Y H:i:s') }}
                                         <div class="pull-right">
-                                            <a title="Excluir" href="{{ url('noticia/web/'.$noticia->id.'/excluir') }}" class="btn btn-danger btn-fill btn-icon btn-sm btn-excluir" style="border-radius: 30px;">
+                                            <a title="Excluir" href="{{ url('noticia/web/'.$dado->id.'/excluir') }}" class="btn btn-danger btn-fill btn-icon btn-sm btn-excluir" style="border-radius: 30px;">
                                                 <i class="fa fa-times fa-3x text-white"></i>
                                             </a>
-                                            <a title="Editar" href="{{ url('noticia/web/'.$noticia->id.'/editar') }}" class="btn btn-primary btn-fill btn-icon btn-sm" style="border-radius: 30px;">
+                                            <a title="Editar" href="{{ url('noticia/web/'.$dado->id.'/editar') }}" class="btn btn-primary btn-fill btn-icon btn-sm" style="border-radius: 30px;">
                                                 <i class="fa fa-edit fa-3x text-white"></i>
                                             </a>
-                                            <a title="Visualizar" href="{{ url('noticia/web/'.$noticia->id.'/ver') }}" class="btn btn-warning btn-fill btn-icon btn-sm" style="border-radius: 30px;"><i class="fa fa-link fa-3x text-white"></i></a>
+                                            <a title="Visualizar" href="{{ url('noticia/web/'.$dado->id.'/ver') }}" class="btn btn-warning btn-fill btn-icon btn-sm" style="border-radius: 30px;"><i class="fa fa-link fa-3x text-white"></i></a>
                                         </div>
                                     </div>
                                 </div>
