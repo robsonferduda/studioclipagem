@@ -154,9 +154,7 @@
                                                 <div class="panel-body transcricao-total conteudo-{{ $dado->noticia_id }}-{{ $dado->monitoramento_id }}">
                                                     {!! ($dado->conteudo) ?  $dado->conteudo  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
                                                 </div>
-                                                <div class="panel-heading">
-                                                    <h3 class="panel-title"><span class="btn-show">Mostrar Mais</span></h3>
-                                                </div>
+                                                
                                             </div> 
                                             <div>
                                                 <button class="btn btn-primary btn-sm btn-visualizar-noticia" data-id="{{ $dado->noticia_id }}" data-monitoramento="{{ $dado->monitoramento_id }}"><i class="fa fa fa-eye"></i> Visualizar</button> 
