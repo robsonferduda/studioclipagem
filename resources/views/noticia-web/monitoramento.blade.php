@@ -157,7 +157,10 @@
                                                 <div class="panel-heading">
                                                     <h3 class="panel-title"><span class="btn-show">Mostrar Mais</span></h3>
                                                 </div>
-                                            </div>                                             
+                                            </div> 
+                                            <div>
+                                                <button class="btn btn-primary btn-sm btn-visualizar-noticia" data-id="{{ $dado->noticia_id }}" data-monitoramento="{{ $dado->monitoramento_id }}"><i class="fa fa fa-eye"></i> Visualizar</button> 
+                                            </div>                                            
                                         </div>
                                     </div>
                                 </div>
@@ -186,6 +189,27 @@
         </div>
     </div>
 </div> 
+<div class="modal fade" id="showNoticia" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-dialog-scrollable modal-lg" role="document" style="max-width: 78% !important; position: relative; right: -8%;">
+      <div class="modal-content">
+        <div class="modal-header" style="padding: 15px !important;">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-newspaper-o"></i><span></span> Dodos da Notícia</h6>
+        </div>
+        <div class="modal-body" style="padding: 15px;">
+            <div class="row">
+                <div class="col-md-12 modal-conteudo"></div>
+                <div class="col-md-12 modal-sinopse"></div>
+            </div>
+            <div class="center">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
+            </div>
+      </div>
+    </div>
+  </div>
+</div>
 @endsection
 @section('script')
 <script>
@@ -200,6 +224,17 @@
                
             });
        
+            $(".btn-visualizar-noticia").click(function(){
+
+                var id = $(this).data("id");
+                var monitoramento = $(this).data("monitoramento");
+              
+                var chave = ".conteudo-"+id;
+
+                $(".modal-conteudo").html($(chave).html());
+                $("#showNoticia").modal("show");
+
+            });
 
         $(".panel-heading").click(function() {
             $(this).parent().addClass('active').find('.panel-body').slideToggle('fast');
