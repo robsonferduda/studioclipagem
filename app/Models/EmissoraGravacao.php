@@ -9,7 +9,7 @@ class EmissoraGravacao extends Model
     protected $connection = 'pgsql';
     protected $table = 'gravacao_emissora_radio';
 
-    protected $fillable = [];
+    protected $fillable = [];  
 
     public function emissora()
     {

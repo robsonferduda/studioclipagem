@@ -10,9 +10,9 @@ class Programa extends Model
     use SoftDeletes;
 
     protected $connection = 'pgsql';
-    protected $table = 'programa';
+    protected $table = 'programa_emissora_radio';
 
-    protected $fillable = ['nome','emissora_id','hora_inicio','hora_fim','valor_segundo'];
+    protected $fillable = ['id_emissora','nome_programa','hora_inicio','hora_fim','valor_segundo','ordem'];
 
     public function emissora()
     {
