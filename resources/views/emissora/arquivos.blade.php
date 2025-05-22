@@ -122,9 +122,7 @@
                                             <div class="panel-body conteudo-{{ $audio->id }}">
                                                 {!! ($audio->transcricao) ?  $audio->transcricao  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
                                             </div>
-                                            <div class="panel-heading">
-                                                <h3 class="panel-title"><span class="btn-show">Mostrar Mais</span></h3>
-                                            </div>
+                                            
                                         </div>                
                                     </div>
                                 </div>     
