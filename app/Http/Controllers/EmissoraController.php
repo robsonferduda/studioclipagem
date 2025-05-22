@@ -88,38 +88,14 @@ class EmissoraController extends Controller
         Session::put('url', 'radio');
         Session::put('sub-menu', "radio-coletas");
 
-        $fontes = Emissora::orderBy('nome_emissora')->get();
+        $emissoras = Emissora::orderBy('nome_emissora')->get();
 
         $tipo_data = $request->tipo_data;
         $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
         $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
+        $emissora_search = ($request->emissora) ? $request->emissora : null;
         $expressao = ($request->expressao) ? $request->expressao : null;
         $dados = array();
-
-        if($request->fontes or Session::get('radio_arquivos_fonte')){
-            if($request->fontes){
-                $fonte = $request->fontes;
-            }elseif(Session::get('radio_arquivos_fonte')){
-                $fonte = Session::get('radio_arquivos_fonte');
-            }else{
-                $fonte = null;
-            }
-        }else{
-            $fonte = null;
-            Session::forget('radio_arquivos_fonte');
-        }
-
-        if($request->isMethod('POST')){
-
-            if($request->selecionadas[0]){
-                Session::put('radio_arquivos_fonte', $request->selecionadas[0]);
-            }else{
-                Session::forget('radio_arquivos_fonte');
-                $fonte = null;
-            }
-        }
-
-         
 
         $dados = DB::table('gravacao_emissora_radio')
                     ->select('gravacao_emissora_radio.id AS id',
@@ -138,12 +114,8 @@ class EmissoraController extends Controller
                     ->when($expressao, function ($q) use ($expressao) {
                         return $q->whereRaw("transcricao_tsv @@ to_tsquery('simple', '$expressao')");
                     })
-                    ->when($fonte, function ($q) use ($fonte) {
-                        if(!is_array($fonte)){
-                            $fonte = array($fonte);
-                        }
-                      
-                        return $q->whereIn('emissora_radio.id', $fonte);
+                    ->when($emissora_search, function ($q) use ($emissora_search) {        
+                        return $q->where('emissora_radio.id', $emissora_search);
                     })
                     ->when($dt_inicial, function ($q) use ($dt_inicial, $dt_final) {
                         return $q->whereBetween('gravacao_emissora_radio.data_hora_inicio', [$dt_inicial." 00:00:00", $dt_final." 23:59:59"]);
@@ -152,7 +124,7 @@ class EmissoraController extends Controller
                     ->paginate(10);
         
 
-        return view('emissora/arquivos', compact('fontes','dados','tipo_data','dt_inicial','dt_final','fonte','expressao'));
+        return view('emissora/arquivos', compact('emissoras','dados','tipo_data','dt_inicial','dt_final','emissora_search','expressao'));
     }
 
     public function atualizarHorarios(Request $request)

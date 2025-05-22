@@ -37,18 +37,27 @@
                                         <label>Data Final</label>
                                         <input type="text" class="form-control datepicker" name="dt_final" required="true" value="{{ \Carbon\Carbon::parse($dt_final)->format('d/m/Y') }}" placeholder="__/__/____">
                                     </div>
+                                </div>                        
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Emissora <span class="text-danger">Obrigatório</span></label>
+                                        <select class="form-control select2" name="emissora" id="emissora" required="true">
+                                            <option value="">Selecione uma emissora</option>
+                                            @foreach ($emissoras as $emissora)
+                                                <option value="{{ $emissora->id }}" {!! ($emissora_search == $emissora->id) ? "selected" : '' !!}>
+                                                    {{ $emissora->nome_emissora }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12 col-sm-12 mt-1">
-                                    <p class="mb-0">
-                                        <i class="fa fa-filter fa-1x"></i> Filtrar Fontes
-                                        <button type="button" class="btn btn-sm btn-primary btn-icon btn-email" style="border-radius: 50%; height: 1.5rem;
-                                        min-width: 1.5rem;
-                                        width: 1.5rem;" data-toggle="modal" data-target="#modalFontes"><i class="fa fa-check fa-2x"></i></button>
-                                    </p>
-                                    <p id="selecionadasTexto" class="mt-1">Fontes selecionadas: <span id="loadingSpinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span></p>
-                                    <input type="hidden" name="selecionadas[]" id="selecionadas">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Programa</label>
+                                        <select class="form-control selector-select2" name="programa" id="programa" disabled>
+                                            <option value="">Selecione um programa</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row">
