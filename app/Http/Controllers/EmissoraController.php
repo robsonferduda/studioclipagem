@@ -94,6 +94,7 @@ class EmissoraController extends Controller
         $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
         $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
         $emissora_search = ($request->emissora) ? $request->emissora : null;
+        $programa_search = ($request->programa) ? $request->programa : null;
         $expressao = ($request->expressao) ? $request->expressao : null;
         $dados = array();
 
@@ -124,7 +125,7 @@ class EmissoraController extends Controller
                     ->paginate(10);
         
 
-        return view('emissora/arquivos', compact('emissoras','dados','tipo_data','dt_inicial','dt_final','emissora_search','expressao'));
+        return view('emissora/arquivos', compact('emissoras','dados','tipo_data','dt_inicial','dt_final','emissora_search','programa_search','expressao'));
     }
 
     public function atualizarHorarios(Request $request)
