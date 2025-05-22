@@ -125,7 +125,7 @@
                             <div class="card">
                                 <div class="card-body">
                                     <div class="row">
-                                        <div class="col-lg-2 col-sm-12" style="max-height: 300px; overflow: hidden;">   
+                                        <div class="col-lg-2 col-sm-12 img-{{ $dado->noticia_id }}" style="max-height: 300px; overflow: hidden;">   
                                             @if($dado->path_screenshot)                                         
                                                 <img src="{{ Storage::disk('s3')->temporaryUrl($dado->path_screenshot, '+30 minutes') }}" 
                                                 alt="Print notícia {{ $dado->noticia_id }}" 
@@ -200,6 +200,7 @@
             <div class="row">
                 <div class="col-md-12 modal-conteudo"></div>
                 <div class="col-md-12 modal-texto"></div>
+                <div class="col-md-12 modal-img"></div>
             </div>
             <div class="center">
                 <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
@@ -229,9 +230,11 @@
               
                 var chave = ".conteudo-"+id;
                 var chave_texto = ".conteudo-"+id+"-"+monitoramento;
+                var chave_img = ".img-"+id;
 
                 $(".modal-conteudo").html($(chave).html());
                 $(".modal-texto").html($(chave_texto).html());
+                $(".modal-img").html($(chave_img).html());
                 $("#showNoticia").modal("show");
 
             });
