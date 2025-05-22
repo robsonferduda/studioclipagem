@@ -263,10 +263,19 @@
                     },
                     success: function(data) {
                         
-                        if(tipo == "back") 
+                        if(tipo == "back"){ 
                             $(".modal-sinopse").html(data.back.transcricao);
-                        else
+                            $(".modal-audio").html('<audio width="100%" controls style="width: 100%;">'+
+                                                    '<source src="'+data.back.path_s3+'" type="audio/mpeg">'+
+                                                    'Seu navegador não suporta a execução de áudios, faça o download para poder ouvir.'+
+                                                    '</audio>');
+                        }else{
                             $(".modal-sinopse").html(data.prev.transcricao);
+                            $(".modal-audio").html('<audio width="100%" controls style="width: 100%;">'+
+                                                    '<source src="'+data.prev.path_s3+'" type="audio/mpeg">'+
+                                                    'Seu navegador não suporta a execução de áudios, faça o download para poder ouvir.'+
+                                                    '</audio>');
+                        }
                     },
                     error: function(){
                        
