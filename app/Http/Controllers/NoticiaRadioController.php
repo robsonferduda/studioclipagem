@@ -184,34 +184,32 @@ class NoticiaRadioController extends Controller
         return view('radio/dashboard', compact('total_noticia_radio', 'total_emissora_radio', 'ultima_atualizacao','ultima_atualizacao_radio','data_final','data_inicial','total_emissora_gravando','ultima_atualizacao_gravando'));
     }
 
-    public function extrair($tipo, $id)
+    public function extrair($id)
     {
-        switch ($tipo) {
-            case 'web':
-                $conteudo = PaginaJornalImpresso::find($id);
+        $conteudo = EmissoraGravacao::find($id);
 
-                $arquivo = Storage::disk('s3')->get($conteudo->path_pagina_s3);
-                $filename = $id.".jpg";
+        //Array de dados para inserção
+        $dados = array("emissora_id" => $conteudo->id_emissora,
+                       "horario" => $conteudo->data_hora_inicio,
+                       "sinopse" => $conteudo->transcricao,
+                       "dt_cadastro" => $conteudo->data_hora_inicio,
+                       "dt_clipagem" => $conteudo->data_hora_inicio);
 
-                $nova_noticia = array("id_fonte" => $conteudo->edicao->id_jornal_online,
-                                      "dt_clipagem" => $conteudo->edicao->dt_coleta,
-                                      "texto" => $conteudo->texto_extraido,
-                                      "nu_paginas_total" => $conteudo->edicao->paginas->count(),
-                                      "nu_pagina_atual" => $conteudo->n_pagina,
-                                      "ds_caminho_img" => $filename);
+        $noticia = NoticiaRadio::create($dados);
 
-                $noticia = NoticiaImpresso::create($nova_noticia);
+        //Inserção de arquivo
+        $arquivo = Storage::disk('s3')->get($conteudo->path_s3);
+        $filename = $noticia->id.".mp3";
 
-                Storage::disk('impresso-img')->put($filename, $arquivo);
+        Storage::disk('impresso-img')->put($filename, $arquivo);
 
-                return redirect('jornal-impresso/noticia/editar/'.$noticia->id);
+        $noticia->ds_caminho_audio = $filename;
+        $noticia->save();
 
-                break;
-            
-            case 'impresso':
-                # code...
-                break;                
-        }
+        //Relacionamento de clientes
+
+
+        return redirect('jornal-impresso/noticia/editar/'.$noticia->id);
     }
 
     public function cadastrar()

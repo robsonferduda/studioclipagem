@@ -27,7 +27,7 @@ class NoticiaRadio extends Model
         'link',
         'duracao',
         'horario',
-        'ds_caminho_video'
+        'ds_caminho_audio'
     ];
 
     public function cliente()
