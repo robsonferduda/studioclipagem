@@ -201,7 +201,7 @@ class NoticiaRadioController extends Controller
         $arquivo = Storage::disk('s3')->get($conteudo->path_s3);
         $filename = $noticia->id.".mp3";
 
-        Storage::disk('impresso-img')->put($filename, $arquivo);
+        Storage::disk('radio-audio')->put($filename, $arquivo);
 
         $noticia->ds_caminho_audio = $filename;
         $noticia->save();

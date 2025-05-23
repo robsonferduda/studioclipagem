@@ -88,13 +88,16 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-lg-12 col-md-12 col-sm-12 mb-1">                                    
-                                        @if(file_exists(public_path('audio/noticia-radio'.$noticia->id.'.mp3')))
+                                        @if($noticia->ds_caminho_audio)
                                             <audio width="100%" controls style="width: 100%;">
                                                 <source src="{{ Storage::disk('s3')->temporaryUrl($audio->path_s3, '+30 minutes') }}" type="audio/mpeg">
                                                 Seu navegador não suporta a execução de áudios, faça o download para poder ouvir.
                                             </audio>
                                         @else
-
+                                            <img src="{{ asset('img/no-audio.png') }}" 
+                                            alt="Sem Print" 
+                                            class="img-fluid img-thumbnail" 
+                                            style="width: 100%; height: auto; border: none;">
                                         @endif
                                     </div>
                                     <div class="col-lg-10 col-sm-10 mb-1"> 
