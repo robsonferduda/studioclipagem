@@ -534,4 +534,16 @@ class NoticiaRadioController extends Controller
 
         return response()->json($dados);
     }
+
+    public function excluir($id)
+    {
+        $noticia = NoticiaRadio::find($id);
+
+        if($noticia->delete())
+            Flash::success('<i class="fa fa-check"></i> Notícia excluída com sucesso');
+        else
+            Flash::error("Erro ao excluir o registro");
+
+        return redirect('noticias/radio')->withInput();
+    }
 }

@@ -94,7 +94,7 @@
                                                 Seu navegador não suporta a execução de áudios, faça o download para poder ouvir.
                                             </audio>
                                         @else
-                                            <h1 class="mb-1 mt-1" style="color: #ef8157;">Notícia sem áudio vinculado</h1>
+                                            <h6 class="mb-1 mt-1" style="color: #ef8157;">Notícia sem áudio vinculado</h6>
                                         @endif
                                     </div>
                                     <div class="col-lg-10 col-sm-10 mb-1"> 
