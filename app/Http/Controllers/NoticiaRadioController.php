@@ -209,7 +209,7 @@ class NoticiaRadioController extends Controller
         //Relacionamento de clientes
 
 
-        return redirect('jornal-impresso/noticia/editar/'.$noticia->id);
+        return redirect('noticia-radio/'.$noticia->id.'/editar');
     }
 
     public function cadastrar()

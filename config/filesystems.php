@@ -90,6 +90,13 @@ return [
             'visibility' => 'public',
         ],
 
+        'radio-audio' => [
+            'driver' => 'local',
+            'root' => public_path('audio/noticia-radio'),
+            'url' => env('APP_URL').'/radios',
+            'visibility' => 'public',
+        ],
+
         'impresso-img-original' => [
             'driver' => 'local',
             'root' => public_path('img/impresso-img'),
