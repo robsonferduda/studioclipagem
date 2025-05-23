@@ -94,10 +94,7 @@
                                                 Seu navegador não suporta a execução de áudios, faça o download para poder ouvir.
                                             </audio>
                                         @else
-                                            <img src="{{ asset('img/no-audio.png') }}" 
-                                            alt="Sem Print" 
-                                            class="img-fluid img-thumbnail" 
-                                            style="width: 100%; height: auto; border: none;">
+                                            <h1 class="mb-1 mt-1" style="color: #ef8157;">Notícia sem áudio vinculado</h1>
                                         @endif
                                     </div>
                                     <div class="col-lg-10 col-sm-10 mb-1"> 
