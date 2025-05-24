@@ -104,7 +104,7 @@ class RelatorioController extends Controller
                     t2.nome as fonte,
                     t4.conteudo,
                     t3.sentimento
-                FROM noticia_web t1
+                FROM noticias_web t1
                 JOIN fonte_web t2 ON t2.id = t1.id_fonte
                 LEFT JOIN noticia_cliente t3 ON t3.noticia_id = t1.id
                 JOIN conteudo_noticia_web t4 ON t4.id_noticia_web = t1.id";
