@@ -26,7 +26,8 @@
         }
 
         img{
-           
+            max-width: 100%;
+            height: auto;
         }
 
         .footer {
@@ -57,7 +58,7 @@
                             </p> 
                         </div>
                         <div style="text-align: center;">
-                            <img style="margin: 0 auto; border: 1px solid black;" src="{{ asset('img/noticia-impressa/'.$noticia->midia) }}">
+                            <img style="margin: 0 auto;" src="https://studioclipagem.com/img/noticia-impressa/1748101443.jpeg">
                         </div>
             @if($key < count($dados_impresso) -1)
                 <div style="page-break-before: always;"></div>                        
@@ -65,7 +66,7 @@
         @endforeach
     @endif
 
-    @if(count($dados_web) > 0)
+    @if(count($dados_web) > 4555550)
         <!-- Nome da Fonte - Seção - Página - Data - Cidade/UF -->
         @foreach($dados_web as $key => $noticia)
             <table>

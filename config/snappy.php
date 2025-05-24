@@ -42,8 +42,8 @@ return [
     ],
     
     'image' => [
-        'enabled' => true,
-        'binary'  => env('WKHTML_IMG_BINARY', '/usr/local/bin/wkhtmltoimage'),
+        'enabled' => false,
+        'binary'  => env('WKHTML_IMG_BINARY', '/usr/local/bin/wkhtmltoimageggg'),
         'timeout' => false,
         'options' => [],
         'env'     => [],
