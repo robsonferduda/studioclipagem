@@ -83,7 +83,9 @@
                             </p>  
                         </div>
                         <div style="text-align: center;">
-                            <img style="margin: 0 auto;" src="{{ public_path('img/noticia-web/'.$noticia->midia) }}">
+                            @if($noticia->midia)
+                                <img style="margin: 0 auto;" src="{{ public_path('img/noticia-web/'.$noticia->midia) }}">
+                            @endif
                         </div>  
                  @if($key < count($dados_impresso) -1)
                 <div style="page-break-before: always;"></div>                        
