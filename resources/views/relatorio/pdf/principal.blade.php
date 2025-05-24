@@ -53,7 +53,7 @@
                             <h5 style="text-align: justify; margin-bottom: 0px; padding-bottom: 5px; margin-top: 26px; font-size: 17px; border-bottom: 1px solid black;">Clipagem de Jornal</h5>
                             <p style="text-align: justify; color: #eb8e06; margin: 0; margin-bottom: 5px; margin-top: 3px;"><strong>Período: {{ $dt_inicial_formatada }} à {{ $dt_final_formatada }}</strong></p>
                             <p style="text-align: justify; color: #eb8e06; margin: 0; margin-top: -3px;">{{ $noticia->cliente }}</p>      
-                            <p style="font-size: 16px; margin:0px; padding: 0px; margin-top: 8px; margin-bottom: 8px;">
+                            <p style="text-align: justify; font-size: 16px; margin:0px; padding: 0px; margin-top: 8px; margin-bottom: 8px;">
                                 {{ $noticia->fonte }}
                                 {{ ($noticia->secao) ? " - ".$noticia->secao  : '' }}
                                 {{ " - Página: ".$noticia->pagina }}
@@ -83,10 +83,10 @@
                 <tr>
                     <td style="text-align: center;">
                         <div class="header">
-                            <h5 style="text-align: justify; margin-bottom: 0px; padding-bottom: 5px; margin-top: 26px; font-size: 17px; border-bottom: 1px solid black;">Clipagem de Jornal</h5>
+                            <h5 style="text-align: justify; margin-bottom: 0px; padding-bottom: 5px; margin-top: 26px; font-size: 17px; border-bottom: 1px solid black;">Clipagem de Web</h5>
                             <p style="text-align: justify; color: #eb8e06; margin: 0; margin-bottom: 5px; margin-top: 3px;"><strong>Período: {{ $dt_inicial_formatada }} à {{ $dt_final_formatada }}</strong></p>
                             <p style="text-align: justify; color: #eb8e06; margin: 0; margin-top: -3px;">{{ $noticia->cliente }}</p>      
-                            <p style="font-size: 16px; margin:0px; padding: 0px; margin-top: 8px; margin-bottom: 8px;">
+                            <p style="text-align: justify; font-size: 16px; margin:0px; padding: 0px; margin-top: 8px; margin-bottom: 8px;">
                                 {{ $noticia->fonte }}
                                 {{ ($noticia->secao) ? " - ".$noticia->secao  : '' }}
                                 {{ " - ".$noticia->data_formatada." - " }}
@@ -97,6 +97,7 @@
                         @if($noticia->tipo_midia == 'imagem')
                             <div style="width: 100% text-align: center;">
                                 <img src="{{ asset('img/noticia-impressa/'.$noticia->midia) }}"/>
+                                <img src="{{ Storage::disk('s3')->temporaryUrl($noticia->midia, '+30 minutes') }}"/>
                             </div>
                         @endif   
                     </td>
