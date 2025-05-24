@@ -60,15 +60,12 @@ class RelatorioController extends Controller
                              'isRemoteEnabled' => true,
                          ]);
 
-                    foreach($dados_impresso as $key => $di){
-                        $partesDaImagem = $this->dividirImagem(public_path('img/noticia-impressa/'.$di->midia), 100); // 800px por página
-                    }
+                    
 
                     $pdf->loadView('relatorio/pdf/principal', compact('dt_inicial',
                                                                       'dt_final',
                                                                       'dt_inicial_formatada',
                                                                       'dt_final_formatada',
-                                                                      'partesDaImagem',
                                                                       'nome',
                                                                       'dados_impresso',
                                                                       'dados_radio',
