@@ -219,6 +219,27 @@ class NoticiaWebController extends Controller
         return view('noticia-web/form',compact('fontes','noticia'));
     }
 
+    public function copiaImagens()
+    {
+
+        $dados = NoticiaWeb::with('fonte')
+            ->whereHas('clientes', function($query){
+                $query->where('noticia_cliente.tipo_id', 2);
+            })
+            ->whereBetween('data_noticia', ["23/05/2025 00:00:00", date("Y-m-d H:i:s")])
+            ->orderBy('data_noticia')
+            ->get();
+
+        foreach ($dados as $key => $noticia) {
+            $arquivo = Storage::disk('s3')->get($noticia->path_screenshot);
+            $filename = $noticia->id.".jpg";
+            Storage::disk('web-img')->put($filename, $arquivo);
+
+            $noticia->ds_caminho_img = $filename;
+            $noticia->save();
+        }
+    }
+
     public function store(Request $request)
     {
         DB::beginTransaction();

@@ -195,6 +195,7 @@ Route::middleware(['web'])->group(function () {
 	Route::post('radio/noticias/upload','NoticiaRadioController@upload');
 
 	//Route::match(array('GET', 'POST'),'buscar-web','JornalWebController@index');
+	Route::get('noticia/web/importar-imagens','NoticiaWebController@copiaImagens');
 	Route::get('noticia/web/valores','NoticiaWebController@valores');
 	Route::get('noticia/web/novo','NoticiaWebController@create');
 	Route::get('noticia/web/{id}/editar','NoticiaWebController@edit');

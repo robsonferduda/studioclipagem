@@ -90,6 +90,13 @@ return [
             'visibility' => 'public',
         ],
 
+        'web-img' => [
+            'driver' => 'local',
+            'root' => public_path('img/noticia-web'),
+            'url' => env('APP_URL').'/web',
+            'visibility' => 'public',
+        ],
+
         'radio-audio' => [
             'driver' => 'local',
             'root' => public_path('audio/noticia-radio'),
