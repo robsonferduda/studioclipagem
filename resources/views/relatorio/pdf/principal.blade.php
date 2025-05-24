@@ -30,7 +30,7 @@
         img{
             max-width: 100%; /* Garante que a imagem caiba na largura da página */
             height: auto;   /* Mantém a proporção da imagem */
-            
+            page-break-inside: auto;
         }
 
         .footer {
@@ -63,9 +63,7 @@
                             </p>  
                         </div>
                         @if($noticia->tipo_midia == 'imagem')
-                            <div style="width: 100% text-align: center;">
-                                <img src="{{ asset('img/noticia-impressa/'.$noticia->midia) }}"/>
-                            </div>
+                            <img src="{{ asset('img/noticia-impressa/'.$noticia->midia) }}"/>
                         @endif   
                     </td>
                 </tr>
@@ -92,9 +90,7 @@
                             </p>  
                         </div>
                         @if($noticia->tipo_midia == 'imagem')
-                            <div style="width: 100% text-align: center;">
-                                <img src="{{ Storage::disk('s3')->temporaryUrl($noticia->midia, '+30 minutes') }}"/>
-                            </div>
+                            <img src="{{ Storage::disk('s3')->temporaryUrl($noticia->midia, '+30 minutes') }}"/>
                         @endif   
                     </td>
                 </tr>
