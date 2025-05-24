@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use PDFS;
 use Carbon\Carbon;
 use App\Models\NoticiaImpresso;
 use App\Jobs\GerarRelatorioJob;
@@ -46,6 +47,17 @@ class RelatorioController extends Controller
             switch($request->acao) {
 
                 case 'gerar-pdf':
+
+                $data = [
+                    'dados_impresso' => $dados_impresso,
+                    'dados_web' => $dados_web,
+                    'dt_inicial_formatada' => $dt_inicial_formatada,
+                    'dt_final_formatada' => $dt_final_formatada
+                ];
+
+              $pdf = PDFS::loadView('relatorio/pdf/principal', $data);
+                return $pdf->download('invoice.pdf');
+
 
                     $nome = "Relatório Completo";
                     $nome_arquivo = date('YmdHis').".pdf";

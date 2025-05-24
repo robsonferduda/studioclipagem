@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $nome }}</title>
+    <title>Relatório</title>
     <style>
         .page-break {
             page-break-after: always; /* Força uma quebra de página depois */
