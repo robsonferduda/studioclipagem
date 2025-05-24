@@ -61,7 +61,7 @@ class RelatorioController extends Controller
                          ]);
 
                     foreach($dados_impresso as $key => $di){
-                        $partesDaImagem = $this->dividirImagem(public_path('img/noticia-impressa/179404.jpeg'), 100); // 800px por página
+                        $partesDaImagem = $this->dividirImagem(public_path('img/noticia-impressa/'.$noticia->midia), 100); // 800px por página
                     }
 
                     $pdf->loadView('relatorio/pdf/principal', compact('dt_inicial',
