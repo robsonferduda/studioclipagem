@@ -10,7 +10,6 @@
         }
 
         .header {
-            font-weight: bold;
             margin-bottom: 5mm; /* Espaço entre o cabeçalho e a imagem */
         }
 
@@ -27,8 +26,7 @@
         }
 
         img{
-            width: 100%; /* Garante que a imagem caiba na largura da página */
-            height: auto;   /* Mantém a proporção da imagem */
+           
         }
 
         .footer {
@@ -57,12 +55,13 @@
                                 {{ ($noticia->nm_cidade) ? " - ".trim($noticia->nm_cidade."/".$noticia->sg_estado) : '' }}
                                 {{ ($noticia->nm_estado and !$noticia->nm_cidade) ? " - ".trim($noticia->sg_estado) : ''}}
                             </p> 
+                        </div>
+                        <div style="text-align: center;">
                             <img style="margin: 0 auto; border: 1px solid black;" src="{{ asset('img/noticia-impressa/'.$noticia->midia) }}">
                         </div>
-                        
-                        
-
-                  
+            @if($key < count($dados_impresso) -1)
+                <div style="page-break-before: always;"></div>                        
+            @endif                  
         @endforeach
     @endif
 
