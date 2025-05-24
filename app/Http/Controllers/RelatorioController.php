@@ -32,6 +32,12 @@ class RelatorioController extends Controller
 
         if($request->isMethod('POST')){
 
+            $dados_impresso = $this->dadosImpresso($dt_inicial, $dt_final);
+            $dados_radio    = $this->dadosRadio($dt_inicial, $dt_final);
+            $dados_web      = $this->dadosWeb($dt_inicial, $dt_final);
+
+            $dados = array_merge($dados_impresso, $dados_radio, $dados_web);
+
             switch($request->acao) {
 
                 case 'gerar-pdf':
@@ -47,12 +53,6 @@ class RelatorioController extends Controller
             
                 case 'pesquisar': 
                     
-                    $dados_impresso = $this->dadosImpresso($dt_inicial, $dt_final);
-                    $dados_radio    = $this->dadosRadio($dt_inicial, $dt_final);
-                    $dados_web      = $this->dadosWeb($dt_inicial, $dt_final);
-
-                    $dados = array_merge($dados_impresso, $dados_radio, $dados_web);
-
                     return view('relatorio/index', compact('dados'));
 
                 break;
@@ -67,6 +67,7 @@ class RelatorioController extends Controller
     {
         $sql = "SELECT t1.id, 
                     titulo, 
+                    t4.nome as cliente,
                     'impresso' as tipo, 
                     TO_CHAR(dt_clipagem, 'DD/MM/YYYY') AS data_formatada,
                     t2.nome as fonte,
@@ -76,6 +77,7 @@ class RelatorioController extends Controller
                 FROM noticia_impresso t1
                 JOIN jornal_online t2 ON t2.id = t1.id_fonte
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 1
+                JOIN clientes t4 ON t4.id = t3.cliente_id
                 WHERE t1.dt_clipagem BETWEEN '$dt_inicial' AND '$dt_final'";
 
         return $dados = DB::select($sql);
@@ -85,6 +87,7 @@ class RelatorioController extends Controller
     {
         $sql = "SELECT t1.id, 
                     titulo, 
+                    t4.nome as cliente,
                     'radio' as tipo, 
                     TO_CHAR(dt_clipagem, 'DD/MM/YYYY') AS data_formatada,
                     t2.nome_emissora as fonte,
@@ -93,6 +96,7 @@ class RelatorioController extends Controller
                 FROM noticia_radio t1
                 JOIN emissora_radio t2 ON t2.id = t1.emissora_id
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 3
+                JOIN clientes t4 ON t4.id = t3.cliente_id
                 WHERE t1.dt_clipagem BETWEEN '$dt_inicial' AND '$dt_final'";
 
         return $dados = DB::select($sql);
@@ -102,6 +106,7 @@ class RelatorioController extends Controller
     {
         $sql = "SELECT t1.id, 
                     titulo_noticia as titulo, 
+                    t5.nome as cliente,
                     'web' as tipo, 
                     TO_CHAR(data_noticia, 'DD/MM/YYYY') AS data_formatada,
                     t2.nome as fonte,
@@ -111,6 +116,7 @@ class RelatorioController extends Controller
                 JOIN fonte_web t2 ON t2.id = t1.id_fonte
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 2
                 JOIN conteudo_noticia_web t4 ON t4.id_noticia_web = t1.id
+                JOIN clientes t5 ON t5.id = t3.cliente_id
                 WHERE t1.data_noticia BETWEEN '$dt_inicial' AND '$dt_final'";
 
         return $dados = DB::select($sql);

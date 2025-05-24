@@ -214,39 +214,39 @@
                                             @endphp
                                         @break                                    
                                     @endswitch
-                                    <p style="text-transform: uppercase; font-weight: 600;">{!! $tipo_formatado !!}</p>
-                            
-                                    <h6 style="font-weight: 500;">{{ $noticia->titulo }}</h6>
+                                    <p style="text-transform: uppercase; font-weight: 600;">{!! $tipo_formatado !!}</p>                            
+                                    <h6 style="font-weight: 600;">{{ $noticia->titulo }}</h6>
+                                    <h6 style="font-weight: 600;" class="text-muted">{{ $noticia->data_formatada }} - {{ $noticia->fonte }}</h6>
+                                    <p class="mb-2">
+                                        <span>{{ $noticia->cliente }}</span>
+                                        @switch($noticia->sentimento)
+                                            @case(-1)
+                                                <i class="fa fa-frown-o text-danger"></i>
+                                                <a href="{{ url('noticia/'.$noticia->id.'/tipo/'.$noticia->tipo.'/cliente/'.$noticia->tipo.'/sentimento/0/atualizar') }}"><i class="fa fa-ban op-2"></i></a>
+                                                <a href="{{ url('noticia/'.$noticia->id.'/tipo/'.$noticia->tipo.'/cliente/'.$noticia->tipo.'/sentimento/1/atualizar') }}"><i class="fa fa-smile-o op-2"></i></a>
+                                            @break
+                                            @case(0)
+                                                <a href="{{ url('noticia/'.$noticia->id.'/tipo/'.$noticia->tipo.'/cliente/'.$noticia->tipo.'/sentimento/-1/atualizar') }}"><i class="fa fa-frown-o op-2"></i></a> 
+                                                <i class="fa fa-ban text-primary"></i>
+                                                <a href="{{ url('noticia/'.$noticia->id.'/tipo/'.$noticia->tipo.'/cliente/'.$noticia->tipo.'/sentimento/1/atualizar') }}"><i class="fa fa-smile-o op-2"></i></a>                                            
+                                            @break
+                                            @case(1)
+                                                <a href="{{ url('noticia/'.$noticia->id.'/tipo/'.$noticia->tipo.'/cliente/'.$noticia->tipo.'/sentimento/-1/atualizar') }}"><i class="fa fa-frown-o op-2"></i></a>
+                                                <a href="{{ url('noticia/'.$noticia->id.'/tipo/'.$noticia->tipo.'/cliente/'.$noticia->tipo.'/sentimento/0/atualizar') }}"><i class="fa fa-ban op-2"></i></a>
+                                                <i class="fa fa-smile-o text-success"></i>
+                                            @break                                            
+                                        @endswitch
+                                    </p>
                                     <p>
                                         {!! $noticia->sinopse !!}
                                     </p>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-6 col-sm-12">
-                                    <div style="font-size: 18px;">
-                                        @switch($noticia->sentimento)
-                                            @case("Negativo")
-                                                    <i class="fa fa-frown-o text-danger"></i>
-                                                    <i class="fa fa-ban op-2"></i>
-                                                    <i class="fa fa-smile-o op-2"></i>
-                                                @break
-                                            @case("Neutro")
-                                                    <i class="fa fa-frown-o op-2"></i>
-                                                    <i class="fa fa-ban text-primary"></i>
-                                                    <i class="fa fa-smile-o op-2"></i>                                               
-                                                @break
-                                            @case("Positivo")
-                                                    <i class="fa fa-frown-o op-2"></i>
-                                                    <i class="fa fa-ban op-2"></i>
-                                                    <i class="fa fa-smile-o text-success"></i>
-                                            @break                                            
-                                        @endswitch
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 col-sm-12">
+                                <div class="col-lg-12 col-sm-12">
                                     <div style="text-align: right">
-                                        <a class="" href="{{ url("relatorios/".$noticia->tipo."/pdf/".$noticia->id) }}" role="button"><i class="fa fa-file-pdf-o"> </i></a>
+                                        <a class="" href="{{ url("relatorios/".$noticia->tipo."/pdf/".$noticia->id) }}" role="button"><i class="fa fa-file-pdf-o text-danger"> </i></a>
+                                        <a class="" href="{{ url("relatorios/".$noticia->tipo."/pdf/".$noticia->id) }}" role="button"><i class="fa fa-edit text-info"> </i></a>
                                     </div>
                                 </div>
                             </div>
