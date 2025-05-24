@@ -58,7 +58,7 @@
                             </p> 
                         </div>
                         <div style="text-align: center;">
-                            <img style="margin: 0 auto;" src="https://studioclipagem.com/img/noticia-impressa/1748101443.jpeg">
+                            <img style="margin: 0 auto;" src="{{ public_path('img/user.png') }}">
                         </div>
             @if($key < count($dados_impresso) -1)
                 <div style="page-break-before: always;"></div>                        
