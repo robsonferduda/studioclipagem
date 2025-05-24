@@ -100,7 +100,7 @@ class RelatorioController extends Controller
         $sql = "SELECT t1.id, 
                     titulo_noticia, 
                     'web' as tipo, 
-                    TO_CHAR(dt_clipagem, 'DD/MM/YYYY') AS data_formatada,
+                    TO_CHAR(data_noticia, 'DD/MM/YYYY') AS data_formatada,
                     t2.nome as fonte,
                     t4.conteudo,
                     t3.sentimento
