@@ -30,6 +30,9 @@ class RelatorioController extends Controller
         $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00" : date("Y-m-d")." 00:00:00";
         $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d")." 23:59:59";
 
+        $dt_inicial_formatada = ($request->dt_inicial) ? $request->dt_inicial : date("d/m/Y");
+        $dt_final_formatada = ($request->dt_final) ? $request->dt_final : date("d/m/Y");
+
         if($request->isMethod('POST')){
 
             $dados_impresso = $this->dadosImpresso($dt_inicial, $dt_final);
@@ -47,7 +50,26 @@ class RelatorioController extends Controller
                     $nome_arquivo = date('YmdHis').".pdf";
 
                     $pdf = \App::make('dompdf.wrapper');
-                    $pdf->loadView('relatorio/pdf/principal', compact('dt_inicial','dt_final','nome','dados'));
+                    $pdf->setPaper('A4') // Define o tamanho do papel (ex.: A4, Letter)
+                         ->setOptions([
+                             'margin-top'    => 10, // Margem superior em mm
+                             'margin-right'  => 8, // Margem direita em mm
+                             'margin-bottom' => 8, // Margem inferior em mm
+                             'margin-left'   => 10, // Margem esquerda em mm
+                             'isRemoteEnabled' => true,
+                         ]);
+
+                    $pdf->loadView('relatorio/pdf/principal', compact('dt_inicial',
+                                                                      'dt_final',
+                                                                      'dt_inicial_formatada',
+                                                                      'dt_final_formatada',
+                                                                      'nome',
+                                                                      'dados_impresso',
+                                                                      'dados_radio',
+                                                                      'dados_web',
+                                                                      'dados_tv'));
+
+
 
                     return $pdf->download($nome_arquivo);
                 break;
@@ -67,6 +89,11 @@ class RelatorioController extends Controller
     public function dadosImpresso($dt_inicial, $dt_final)
     {
         $sql = "SELECT t1.id, 
+                    sg_estado,
+                    nm_estado,
+                    nm_cidade,
+                    '' as secao,
+                    nu_pagina_atual as pagina,
                     titulo, 
                     t4.nome as cliente,
                     tipo_id,
@@ -81,6 +108,8 @@ class RelatorioController extends Controller
                 JOIN jornal_online t2 ON t2.id = t1.id_fonte
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 1
                 JOIN clientes t4 ON t4.id = t3.cliente_id
+                LEFT JOIN cidade t5 ON t5.cd_cidade = t1.cd_cidade
+                LEFT JOIN estado t6 ON t6.cd_estado = t1.cd_estado
                 WHERE t1.dt_clipagem BETWEEN '$dt_inicial' AND '$dt_final'";
 
         return $dados = DB::select($sql);
@@ -89,6 +118,11 @@ class RelatorioController extends Controller
     public function dadosRadio($dt_inicial, $dt_final)
     {
         $sql = "SELECT t1.id, 
+                    sg_estado,
+                    nm_estado,
+                    nm_cidade,
+                    '' as secao,
+                    '' as pagina,
                     titulo, 
                     t4.nome as cliente,
                     tipo_id,
@@ -103,6 +137,8 @@ class RelatorioController extends Controller
                 JOIN emissora_radio t2 ON t2.id = t1.emissora_id
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 3
                 JOIN clientes t4 ON t4.id = t3.cliente_id
+                LEFT JOIN cidade t5 ON t5.cd_cidade = t1.cd_cidade
+                LEFT JOIN estado t6 ON t6.cd_estado = t1.cd_estado
                 WHERE t1.dt_clipagem BETWEEN '$dt_inicial' AND '$dt_final'";
 
         return $dados = DB::select($sql);
@@ -111,6 +147,11 @@ class RelatorioController extends Controller
     public function dadosWeb($dt_inicial, $dt_final)
     {
         $sql = "SELECT t1.id, 
+                    sg_estado,
+                    nm_estado,
+                    nm_cidade,
+                    '' as secao,
+                    '' as pagina,
                     titulo_noticia as titulo, 
                     t5.nome as cliente,
                     tipo_id,
@@ -126,6 +167,8 @@ class RelatorioController extends Controller
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 2
                 JOIN conteudo_noticia_web t4 ON t4.id_noticia_web = t1.id
                 JOIN clientes t5 ON t5.id = t3.cliente_id
+                LEFT JOIN cidade t6 ON t6.cd_cidade = t1.cd_cidade
+                LEFT JOIN estado t7 ON t7.cd_estado = t1.cd_estado
                 WHERE t1.data_noticia BETWEEN '$dt_inicial' AND '$dt_final'";
 
         return $dados = DB::select($sql);
@@ -134,21 +177,27 @@ class RelatorioController extends Controller
     public function dadosTv($dt_inicial, $dt_final)
     {
         $sql = "SELECT t1.id, 
+                    sg_estado,
+                    nm_estado,
+                    nm_cidade,
+                    '' as secao,
+                    '' as pagina,
                     '' as titulo, 
-                    t5.nome as cliente,
+                    t4.nome as cliente,
                     tipo_id,
                     'tv' as tipo, 
                     TO_CHAR(dt_noticia, 'DD/MM/YYYY') AS data_formatada,
                     t2.nome_emissora as fonte,
-                    t4.conteudo as sinopse,
+                    sinopse,
                     t3.sentimento,
                     'imagem' as tipo_midia,
                     ds_caminho_video as midia
                 FROM noticia_tv t1
                 JOIN emissora_web t2 ON t2.id = t1.emissora_id
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 4
-                JOIN conteudo_noticia_web t4 ON t4.id_noticia_web = t1.id
-                JOIN clientes t5 ON t5.id = t3.cliente_id
+                JOIN clientes t4 ON t4.id = t3.cliente_id
+                LEFT JOIN cidade t5 ON t5.cd_cidade = t1.cd_cidade
+                LEFT JOIN estado t6 ON t6.cd_estado = t1.cd_estado
                 WHERE t1.dt_noticia BETWEEN '$dt_inicial' AND '$dt_final'";
 
         return $dados = DB::select($sql);
