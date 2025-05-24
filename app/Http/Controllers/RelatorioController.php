@@ -98,7 +98,7 @@ class RelatorioController extends Controller
     public function dadosWeb()
     {
         $sql = "SELECT t1.id, 
-                    titulo, 
+                    titulo_noticia, 
                     'web' as tipo, 
                     TO_CHAR(dt_clipagem, 'DD/MM/YYYY') AS data_formatada,
                     t2.nome as fonte,
