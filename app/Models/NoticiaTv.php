@@ -28,7 +28,8 @@ class NoticiaTv extends Model
         'link',
         'sentimento',
         'duracao',
-        'decupagem_id'
+        'decupagem_id',
+        'ds_caminho_video'
     ];
 
     public function cliente()

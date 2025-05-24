@@ -35,8 +35,9 @@ class RelatorioController extends Controller
             $dados_impresso = $this->dadosImpresso($dt_inicial, $dt_final);
             $dados_radio    = $this->dadosRadio($dt_inicial, $dt_final);
             $dados_web      = $this->dadosWeb($dt_inicial, $dt_final);
+            $dados_tv      = $this->dadosTv($dt_inicial, $dt_final);
 
-            $dados = array_merge($dados_impresso, $dados_radio, $dados_web);
+            $dados = array_merge($dados_impresso, $dados_radio, $dados_web, $dados_tv);
 
             switch($request->acao) {
 
@@ -68,12 +69,14 @@ class RelatorioController extends Controller
         $sql = "SELECT t1.id, 
                     titulo, 
                     t4.nome as cliente,
+                    tipo_id,
                     'impresso' as tipo, 
                     TO_CHAR(dt_clipagem, 'DD/MM/YYYY') AS data_formatada,
                     t2.nome as fonte,
                     t1.sinopse,
                     t3.sentimento,
-                    ds_caminho_img
+                    'imagem' as tipo_midia,
+                    ds_caminho_img as midia
                 FROM noticia_impresso t1
                 JOIN jornal_online t2 ON t2.id = t1.id_fonte
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 1
@@ -88,11 +91,14 @@ class RelatorioController extends Controller
         $sql = "SELECT t1.id, 
                     titulo, 
                     t4.nome as cliente,
+                    tipo_id,
                     'radio' as tipo, 
                     TO_CHAR(dt_clipagem, 'DD/MM/YYYY') AS data_formatada,
                     t2.nome_emissora as fonte,
                     t1.sinopse,
-                    t3.sentimento
+                    t3.sentimento,
+                    'audio' as tipo_midia,
+                    ds_caminho_audio as midia
                 FROM noticia_radio t1
                 JOIN emissora_radio t2 ON t2.id = t1.emissora_id
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 3
@@ -107,17 +113,43 @@ class RelatorioController extends Controller
         $sql = "SELECT t1.id, 
                     titulo_noticia as titulo, 
                     t5.nome as cliente,
+                    tipo_id,
                     'web' as tipo, 
                     TO_CHAR(data_noticia, 'DD/MM/YYYY') AS data_formatada,
                     t2.nome as fonte,
                     t4.conteudo as sinopse,
-                    t3.sentimento
+                    t3.sentimento,
+                    'imagem' as tipo_midia,
+                    ds_caminho_img as midia
                 FROM noticias_web t1
                 JOIN fonte_web t2 ON t2.id = t1.id_fonte
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 2
                 JOIN conteudo_noticia_web t4 ON t4.id_noticia_web = t1.id
                 JOIN clientes t5 ON t5.id = t3.cliente_id
                 WHERE t1.data_noticia BETWEEN '$dt_inicial' AND '$dt_final'";
+
+        return $dados = DB::select($sql);
+    }
+
+    public function dadosTv($dt_inicial, $dt_final)
+    {
+        $sql = "SELECT t1.id, 
+                    '' as titulo, 
+                    t5.nome as cliente,
+                    tipo_id,
+                    'tv' as tipo, 
+                    TO_CHAR(dt_noticia, 'DD/MM/YYYY') AS data_formatada,
+                    t2.nome_emissora as fonte,
+                    t4.conteudo as sinopse,
+                    t3.sentimento,
+                    'imagem' as tipo_midia,
+                    ds_caminho_video as midia
+                FROM noticia_tv t1
+                JOIN emissora_web t2 ON t2.id = t1.emissora_id
+                JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 4
+                JOIN conteudo_noticia_web t4 ON t4.id_noticia_web = t1.id
+                JOIN clientes t5 ON t5.id = t3.cliente_id
+                WHERE t1.dt_noticia BETWEEN '$dt_inicial' AND '$dt_final'";
 
         return $dados = DB::select($sql);
     }
@@ -130,36 +162,6 @@ class RelatorioController extends Controller
         $pdf = \App::make('dompdf.wrapper');
         $pdf->loadView('relatorio/pdf/individual', compact('noticia'));
         return $pdf->download($nome_arquivo);
-    }
-
-    public function dadosTv()
-    {
-        $sql = "SELECT 
-                        tv.id as id,
-                        CONCAT('','') as titulo, 
-                        tv.data as data,
-                        tv.segundos_totais as segundos, 
-                        tv.sinopse as sinopse, 
-                        tv.uf as uf, 
-                        CONCAT('','') as link, 
-                        tv.status as status, 
-                        '' as printurl,
-                        cidade.titulo as cidade_titulo, 
-                        veiculo.titulo as INFO1,
-                        parte.titulo as INFO2, 
-                        parte.hora as INFOHORA, 
-                        CONCAT('tv','') as clipagem,
-                        area.titulo as area,
-                        area.ordem as ordem
-                FROM app_tv as tv 
-                    LEFT JOIN app_tv_emissora as veiculo ON veiculo.id = tv.id_emissora
-                    LEFT JOIN app_tv_programa as parte ON parte.id = tv.id_programa 
-                    LEFT JOIN app_cidades as cidade ON cidade.id = tv.id_cidade 
-                    LEFT JOIN app_areasmodalidade as area ON (tv.id_area = area.id)
-                WHERE tv.data = '$this->data_atual'
-                LIMIT 8";
-
-        return DB::connection('mysql')->select($sql);
     }
 
     public function word()
