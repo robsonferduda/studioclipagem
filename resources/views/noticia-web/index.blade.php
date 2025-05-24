@@ -105,7 +105,9 @@
                                         <div class="col-lg-10 col-sm-12"> 
                                             <div class="conteudo-{{ $dado->id }}">
                                                 <p class="font-weight-bold mb-1">{{ $dado->titulo_noticia }}</p>
-                                                <h6><a href="{{ url('fonte-web/editar', $dado->fonte->id_fonte) }}" target="_BLANK">{{ ($dado->fonte->nome) ? $dado->nome : '' }}</a></h6>  
+                                                @if($dado->fonte)
+                                                    <h6><a href="{{ url('fonte-web/editar', $dado->fonte->id_fonte) }}" target="_BLANK">{{ ($dado->fonte) ? $dado->fonte->nome : '' }}</a></h6>  
+                                                @endif
                                                 <h6 style="color: #FF5722;">{{ ($dado->estado) ? $dado->estado->nm_estado : '' }}{{ ($dado->cidade) ? "/".$dado->cidae->nm_cidade : '' }}</h6> 
                                                 <p class="text-muted mb-1"> {!! ($dado->data_noticia) ? date('d/m/Y', strtotime($dado->data_noticia)) : date('d/m/Y', strtotime($dado->data_noticia)) !!} - {{ $dado->fonte->nome }}</p> 
                                             </div>
