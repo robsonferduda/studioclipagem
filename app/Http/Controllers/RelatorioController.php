@@ -27,8 +27,8 @@ class RelatorioController extends Controller
     public function index(Request $request)
     {   
         $dados = array();
-        $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
-        $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
+        $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00" : date("Y-m-d")." 00:00:00";
+        $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d")." 23:59:59";
 
         if($request->isMethod('POST')){
 
@@ -75,7 +75,7 @@ class RelatorioController extends Controller
                     ds_caminho_img
                 FROM noticia_impresso t1
                 JOIN jornal_online t2 ON t2.id = t1.id_fonte
-                LEFT JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 1
+                JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 1
                 WHERE t1.dt_clipagem BETWEEN '$dt_inicial' AND '$dt_final'";
 
         return $dados = DB::select($sql);
@@ -92,7 +92,7 @@ class RelatorioController extends Controller
                     t3.sentimento
                 FROM noticia_radio t1
                 JOIN emissora_radio t2 ON t2.id = t1.emissora_id
-                LEFT JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 3
+                JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 3
                 WHERE t1.dt_clipagem BETWEEN '$dt_inicial' AND '$dt_final'";
 
         return $dados = DB::select($sql);
@@ -109,7 +109,7 @@ class RelatorioController extends Controller
                     t3.sentimento
                 FROM noticias_web t1
                 JOIN fonte_web t2 ON t2.id = t1.id_fonte
-                LEFT JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 2
+                JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 2
                 JOIN conteudo_noticia_web t4 ON t4.id_noticia_web = t1.id
                 WHERE t1.data_noticia BETWEEN '$dt_inicial' AND '$dt_final'";
 
