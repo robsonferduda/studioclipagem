@@ -24,13 +24,13 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            page-break-inside: avoid; /* Evita quebra dentro da tabela */
+            
         }
 
         img{
             max-width: 100%; /* Garante que a imagem caiba na largura da página */
             height: auto;   /* Mantém a proporção da imagem */
-            page-break-inside: auto;
+            
         }
 
         .footer {
@@ -69,10 +69,7 @@
                         @endif   
                     </td>
                 </tr>
-            </table>
-            @if($key < count($dados_impresso) -1) 
-                <div style="page-break-after: always;"></div>   
-            @endif    
+            </table>  
         @endforeach
     @endif
 
