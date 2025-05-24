@@ -226,7 +226,7 @@ class NoticiaWebController extends Controller
             ->whereHas('clientes', function($query){
                 $query->where('noticia_cliente.tipo_id', 2);
             })
-            ->whereBetween('data_noticia', ["23/05/2025 00:00:00", date("Y-m-d H:i:s")])
+            ->whereBetween('data_noticia', ["2025-05-23 00:00:00", date("Y-m-d H:i:s")])
             ->orderBy('data_noticia')
             ->get();
 
