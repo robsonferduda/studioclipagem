@@ -175,7 +175,7 @@ class RelatorioController extends Controller
                     t4.conteudo as sinopse,
                     t3.sentimento,
                     'imagem' as tipo_midia,
-                    path_screenshot as midia
+                    ds_caminho_img as midia
                 FROM noticias_web t1
                 JOIN fonte_web t2 ON t2.id = t1.id_fonte
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 2

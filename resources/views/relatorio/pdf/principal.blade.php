@@ -66,12 +66,10 @@
         @endforeach
     @endif
 
-    @if(count($dados_web) > 4555550)
+    @if(count($dados_web) > 0)
         <!-- Nome da Fonte - Seção - Página - Data - Cidade/UF -->
         @foreach($dados_web as $key => $noticia)
-            <table>
-                <tr>
-                    <td style="text-align: center;">
+           
                         <div class="header">
                             <h5 style="text-align: justify; margin-bottom: 0px; padding-bottom: 5px; margin-top: 26px; font-size: 17px; border-bottom: 1px solid black;">Clipagem de Web</h5>
                             <p style="text-align: justify; color: #eb8e06; margin: 0; margin-bottom: 5px; margin-top: 3px;"><strong>Período: {{ $dt_inicial_formatada }} à {{ $dt_final_formatada }}</strong></p>
@@ -84,12 +82,12 @@
                                 {{ ($noticia->nm_estado and !$noticia->nm_cidade) ? trim($noticia->sg_estado) : ''}}
                             </p>  
                         </div>
-                        @if($noticia->tipo_midia == 'imagem')
-                            
-                        @endif   
-                    </td>
-                </tr>
-            </table>
+                        <div style="text-align: center;">
+                            <img style="margin: 0 auto;" src="{{ public_path('img/noticia-web/'.$noticia->midia) }}">
+                        </div>  
+                 @if($key < count($dados_impresso) -1)
+                <div style="page-break-before: always;"></div>                        
+            @endif 
               
         @endforeach
     @endif
