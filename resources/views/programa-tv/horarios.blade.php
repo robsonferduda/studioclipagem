@@ -8,6 +8,7 @@
                     <h4 class="card-title">
                         <i class="fa fa-tv ml-3"></i> TV 
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Emissoras 
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Programas 
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Horários 
                     </h4>
                 </div>
@@ -24,7 +25,8 @@
                 @php 
                     $label_dias = array('SEG','TER','QUA','QUI','SEX','SAB','DOM');
                 @endphp
-                {!! Form::open(['id' => 'frm_emissora_horarios', 'class' => 'form-horizontal', 'url' => ['tv/emissoras/horario/adicionar']]) !!}
+                {!! Form::open(['id' => 'frm_emissora_horarios', 'class' => 'form-horizontal', 'url' => ['tv/emissoras/programa/horario/adicionar']]) !!}
+                    <input type="hidden" name="id_emissora" value="{{ $id_emissora }}" />
                     <input type="hidden" name="id_programa" value="{{ $id_programa }}" />
                         <div class="form-group m-3 w-70">
                             <div class="row">
@@ -59,9 +61,9 @@
                     {!! Form::close() !!} 
             </div>
             <div class="col-md-12">
-                <h6 class="mt-4">Horários de Gravação</h6>
+                <h6 class="mt-4">{{ ($programa->emissora) ? $programa->emissora->nome_emissora : 'Emissora não informada' }}/{{ $programa->nome_programa }} - Horários de Gravação</h6>
                 <div>
-                    @foreach($horarios as $key => $horario)
+                    @forelse($horarios as $key => $horario)
                         <div class="box-horario box-horario-{{ $horario->id }}">
                             <h5>
                                 <span class="badge badge-default" style="background: #4CAF50 !important; border-color: #4CAF50 !important;"> {{ $horario->horario_start }}</span> 
@@ -99,7 +101,9 @@
                             @endif
                             <div class="clear"></div>
                         </div>                    
-                    @endforeach
+                    @empty
+                        <p class="text-danger">Nenhum horário cadastrado para esta emissora</p>                   
+                    @endforelse
                 </div>
             </div>
         </div>

@@ -24,7 +24,7 @@
                 @php 
                     $label_dias = array('SEG','TER','QUA','QUI','SEX','SAB','DOM');
                 @endphp
-                {!! Form::open(['id' => 'frm_emissora_horarios', 'class' => 'form-horizontal', 'url' => ['emissoras/horario/adicionar']]) !!}
+                {!! Form::open(['id' => 'frm_emissora_horarios', 'class' => 'form-horizontal', 'url' => ['radio/emissora/horario/adicionar']]) !!}
                     <input type="hidden" name="id_emissora" value="{{ $id_emissora }}" />
                         <div class="form-group m-3 w-70">
                             <div class="row">
@@ -61,7 +61,7 @@
             <div class="col-md-12">
                 <h6 class="mt-4">{{ $emissora->nome_emissora }} - Horários de Gravação</h6>
                 <div>
-                    @foreach($horarios as $key => $horario)
+                    @forelse($horarios as $key => $horario)
                         <div class="box-horario box-horario-{{ $horario->id }}">
                             <h5>
                                 <span class="badge badge-default" style="background: #4CAF50 !important; border-color: #4CAF50 !important;"> {{ $horario->horario_start }}</span> 
@@ -98,8 +98,10 @@
                                 @endfor
                             @endif
                             <div class="clear"></div>
-                        </div>                    
-                    @endforeach
+                        </div> 
+                    @empty
+                        <p class="text-danger">Nenhum horário cadastrado para esta emissora</p>                   
+                    @endforelse
                 </div>
             </div>
         </div>

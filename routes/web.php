@@ -271,6 +271,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('emissoras/radio/limpar','EmissoraController@limpar');
 	Route::get('radio/emissora/{id}/horarios','EmissoraController@horarios');
 	Route::post('radio/emissora/horario/atualizar','EmissoraController@atualizarHorarios');
+	Route::post('radio/emissora/horario/adicionar','EmissoraController@adicionarHorarios');
 	Route::get('radio/emissora/horario/excluir/{horario}','EmissoraController@excluirHorario');
 	Route::get('radio/arquivos/detalhes/{id}','EmissoraController@detalhes');
 	Route::get('radio/dashboard','NoticiaRadioController@dashboard');
@@ -289,10 +290,14 @@ Route::middleware(['web'])->group(function () {
 	Route::get('tags/{id}/remover','TagController@destroy');
 
 	Route::get('tv/dashboard','NoticiaTvController@dashboard');
-	Route::get('tv/emissoras','EmissoraTvController@index');
+	Route::match(array('GET', 'POST'),'tv/emissoras','EmissoraTvController@index');
 	Route::get('tv/emissoras/editar/{id}','EmissoraTvController@editar');
 	Route::get('tv/emissoras/novo','EmissoraTvController@novo');
 	Route::get('tv/emissora/{id}/programas','EmissoraTvController@programas');
+	Route::get('tv/emissoras/limpar','EmissoraTvController@limpar');
+	Route::get('tv/emissora/{id}/gravacao/atualiza','EmissoraTvController@atualizaGravacao');
+	Route::get('tv/emissora/{id}/horarios','EmissoraTvController@horarios');
+	Route::post('tv/emissoras/horario/adicionar','EmissoraTvController@adicionarHorarios');
 	Route::post('tv/emissoras/adicionar','EmissoraTvController@adicionar');
 	Route::post('tv/emissoras/atualizar','EmissoraTvController@atualizar');
 
@@ -303,7 +308,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('tv/emissora/programas/{id}/horarios','ProgramaTvController@horarios');
 	Route::get('tv/emissora/programa/{id}/gravacao/atualiza','ProgramaTvController@atualizaGravacao');
 	Route::get('tv/emissora/horario/excluir/{horario}','ProgramaTvController@excluirHorario');
-	Route::post('tv/emissoras/horario/adicionar','ProgramaTvController@adicionarHorarios');
+	Route::post('tv/emissoras/programa/horario/adicionar','ProgramaTvController@adicionarHorarios');
 	Route::post('tv/emissora/horario/atualizar','ProgramaTvController@atualizarHorarios');
 	Route::post('tv/emissoras/programas/adicionar','ProgramaTvController@adicionar');
 	Route::post('tv/emissoras/programas/atualizar','ProgramaTvController@atualizar');

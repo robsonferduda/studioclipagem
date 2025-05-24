@@ -23,60 +23,11 @@ class RelatorioController extends Controller
         Session::put('url','relatorio');
     }
 
-    public function word()
-    {
-        //dd(public_path().'/word/word.docx');
-
-        $phpWord = IOFactory::createReader('Word2007')->load(public_path().'/word/word.docx');
-
-        foreach($phpWord->getSections() as $section) {
-            foreach($section->getElements() as $element) {
-
-                switch (get_class($element)) {
-                    case 'PhpOffice\PhpWord\Element\Text' :
-                        $text[] = $element->getText();
-                        break;
-                    case 'PhpOffice\PhpWord\Element\TextRun':
-                        $textRunElements = $element->getElements();
-                        foreach ($textRunElements as $textRunElement) {
-                            $text[] = $textRunElement->getText();
-                        }
-                        break;
-                    case 'PhpOffice\PhpWord\Element\TextBreak':
-                        $text[] = " ";
-                        break;
-                    default:
-                        throw new Exception('Something went wrong...');
-                }
-            }
-        }
-
-        dd($text);
-    }
-
     public function index(Request $request)
     {   
         $dados = array();
 
-        if($request->isMethod('GET')){
-           
-        }
-
         if($request->isMethod('POST')){
-
-            $sql = "SELECT t1.id, 
-                                titulo, 
-                                'impresso' as tipo, 
-                                TO_CHAR(dt_clipagem, 'DD/MM/YYYY') AS data_formatada,
-                                t2.nome as fonte,
-                                t1.sinopse,
-                                t3.sentimento,
-                                ds_caminho_img
-                            FROM noticia_impresso t1
-                            JOIN jornal_online t2 ON t2.id = t1.id_fonte
-                            LEFT JOIN noticia_cliente t3 ON t3.noticia_id = t1.id";
-
-            $dados = DB::select($sql);
 
             switch($request->acao) {
 
@@ -88,37 +39,19 @@ class RelatorioController extends Controller
                     $nome_arquivo = date('YmdHis').".pdf";
 
                     $pdf = \App::make('dompdf.wrapper');
-                    //$pdf->getDomPDF()->set_option("enable_php", true);
-
                     $pdf->loadView('relatorio/pdf/principal', compact('dt_inicial','dt_final','nome','dados'));
 
-                    //$pdf->render();
-
-                    /*
-
-                    $canvas = $pdf->get_canvas();
-                    $canvas->page_script('
-                    if ($pdf->get_page_number() != $pdf->get_page_count()) {
-
-                        $width = $fontMetrics->get_text_width($text, $font, $size) / 2;
-                        $x = ($pdf->get_width() - $width) / 2;
-                        $x = ($pdf->get_width() - $width - 5);
-                        $y = $pdf->get_height() - 30;
-
-                        $font = Font_Metrics::get_font("helvetica", "12");                  
-                        $pdf->page_text($x, $y, "Page {PAGE_NUM} - {PAGE_COUNT}", $font, 10, array(0,0,0));
-                    }
-                    ');
-                    //$pdf = $dompdf->output();
-                    */
-
-                    //return $pdf->output();
-                    
                     return $pdf->download($nome_arquivo);
                 break;
             
                 case 'pesquisar': 
                     
+                    $dados_impresso = $this->dadosImpresso();
+                    $dados_radio    = $this->dadosRadio();
+                    $dados_web      = $this->dadosWeb();
+
+                    $dados = array_merge($dados_impresso, $dados_radio, $dados_web);
+
                     return view('relatorio/index', compact('dados'));
 
                 break;
@@ -127,7 +60,56 @@ class RelatorioController extends Controller
         }
 
         return view('relatorio/index', compact('dados'));
-        
+    }
+
+    public function dadosImpresso()
+    {
+        $sql = "SELECT t1.id, 
+                    titulo, 
+                    'impresso' as tipo, 
+                    TO_CHAR(dt_clipagem, 'DD/MM/YYYY') AS data_formatada,
+                    t2.nome as fonte,
+                    t1.sinopse,
+                    t3.sentimento,
+                    ds_caminho_img
+                FROM noticia_impresso t1
+                JOIN jornal_online t2 ON t2.id = t1.id_fonte
+                LEFT JOIN noticia_cliente t3 ON t3.noticia_id = t1.id";
+
+        return $dados = DB::select($sql);
+    }
+
+    public function dadosRadio()
+    {
+        $sql = "SELECT t1.id, 
+                    titulo, 
+                    'radio' as tipo, 
+                    TO_CHAR(dt_clipagem, 'DD/MM/YYYY') AS data_formatada,
+                    t2.nome_emissora as fonte,
+                    t1.sinopse,
+                    t3.sentimento
+                FROM noticia_radio t1
+                JOIN emissora_radio t2 ON t2.id = t1.emissora_id
+                LEFT JOIN noticia_cliente t3 ON t3.noticia_id = t1.id";
+
+        return $dados = DB::select($sql);
+    }
+
+    public function dadosWeb()
+    {
+        $sql = "SELECT t1.id, 
+                    titulo, 
+                    'web' as tipo, 
+                    TO_CHAR(dt_clipagem, 'DD/MM/YYYY') AS data_formatada,
+                    t2.nome as fonte,
+                    t4.conteudo,
+                    t3.sentimento
+                FROM noticia_web t1
+                JOIN fonte_web t2 ON t2.id = t1.id_fonte
+                LEFT JOIN noticia_cliente t3 ON t3.noticia_id = t1.id
+                JOIN conteudo_noticia_web t4 ON t4.id_noticia_web = t1.id";
+
+        return $dados = DB::select($sql);
     }
 
     function pdfIndividual($tipo, $id)
@@ -170,10 +152,33 @@ class RelatorioController extends Controller
         return DB::connection('mysql')->select($sql);
     }
 
-    public function diario()
+    public function word()
     {
-        
+        $phpWord = IOFactory::createReader('Word2007')->load(public_path().'/word/word.docx');
+
+        foreach($phpWord->getSections() as $section) {
+            foreach($section->getElements() as $element) {
+
+                switch (get_class($element)) {
+                    case 'PhpOffice\PhpWord\Element\Text' :
+                        $text[] = $element->getText();
+                        break;
+                    case 'PhpOffice\PhpWord\Element\TextRun':
+                        $textRunElements = $element->getElements();
+                        foreach ($textRunElements as $textRunElement) {
+                            $text[] = $textRunElement->getText();
+                        }
+                        break;
+                    case 'PhpOffice\PhpWord\Element\TextBreak':
+                        $text[] = " ";
+                        break;
+                    default:
+                        throw new Exception('Something went wrong...');
+                }
+            }
+        }
     }
+
 
     public function sqlDiario()
     {
@@ -290,32 +295,4 @@ class RelatorioController extends Controller
 
         return $pdf->download($nome_arquivo);
     }
-
-    public function teste()
-    {
-         // Medir o tempo de início
-    $startTime = microtime(true);
-
-    // Gerar um JSON dinâmico com 10.000 itens
-    $data = [
-        "nome" => "João Silva",
-        "email" => "joao@example.com",
-        "itens" => []
-    ];
-
-    for ($i = 1; $i <= 100; $i++) {
-        $data['itens'][] = [
-            'produto' => "Produto #$i",
-            'quantidade' => rand(1, 10),
-            'preco' => rand(50, 1000) / 100 // Preço entre 0.50 e 10.00
-        ];
-    }
-
-   // Enviar o job para a fila
-   GerarRelatorioJob::dispatch($data);
-
-   // Retornar uma resposta imediata ao usuário
-   return response()->json(['message' => 'Geração de PDF iniciada. Você será notificado quando estiver pronto.']);
-    }
-
 }

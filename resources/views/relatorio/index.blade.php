@@ -27,64 +27,16 @@
                                 <input type="text" class="form-control" name="termo" id="termo" placeholder="Termo" value="{{ old('nome') }}">
                             </div>
                         </div>
-                        <div class="col-md-3 col-sm-6">
+                        <div class="col-md-2 col-sm-6">
                             <div class="form-group">
                                 <label>Data Inicial</label>
                                 <input type="text" class="form-control" name="dt_inicio" id="dt_inicio" placeholder="__/__/____" value="{{ date('d/m/Y') }}">
                             </div>
                         </div>
-                        <div class="col-md-3 col-sm-6">
+                        <div class="col-md-2 col-sm-6">
                             <div class="form-group">
                                 <label>Data Final</label>
                                 <input type="text" class="form-control" name="dt_fim" id="dt_fim" placeholder="__/__/____" value="{{ date('d/m/Y') }}">
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-group">
-                                <label>Horário Inicial</label>
-                                <input type="text" class="form-control horario" name="hora_inicio" id="hora_inicio" placeholder="00:00" value="">
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-group">
-                                <label>Horário Final</label>
-                                <input type="text" class="form-control horario" name="hora_fim" id="hora_fim" placeholder="00:00" value="">
-                            </div>
-                        </div>
-                    </div>  
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label>Área</label>
-                                <select class="form-control select2" name="emissora_id" id="emissora_id">
-                                    <option value="">Selecione uma área</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label>Emissora</label>
-                                <select class="form-control select2" name="emissora_id" id="emissora_id">
-                                    <option value="">Selecione uma emissora</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label>Programa</label>
-                                <select class="form-control select2" name="emissora_id" id="emissora_id">
-                                    <option value="">Selecione um programa</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label>Cidade</label>
-                                <select class="form-control select2" name="emissora_id" id="emissora_id">
-                                    <option value="">Selecione uma cidade</option>
-                                </select>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -95,7 +47,15 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Área</label>
+                                <select class="form-control select2" name="emissora_id" id="emissora_id">
+                                    <option value="">Selecione uma área</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label>Status</label>
                                 <select class="form-control select2" name="emissora_id" id="emissora_id">
@@ -103,7 +63,7 @@
                                 </select>
                             </div>
                         </div>
-                    </div>
+                    </div>  
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-check mt-3">
@@ -116,28 +76,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="form-check mt-3">
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" name="is_active" value="true">
-                                        Clipagem de Rádio
-                                        <span class="form-check-sign"></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-check mt-3">
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" name="is_active" value="true">
-                                        Clipagem de TV
-                                        <span class="form-check-sign"></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
+                    </div>
+                    <hr/>
+                    <div class="row">
                         <div class="col-md-3">
                             <div class="form-check mt-3">
                                 <div class="form-check">
@@ -151,10 +92,92 @@
                         </div>
                     </div>
                     <hr/>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="form-check mt-3">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" name="is_active" value="true">
+                                        Clipagem de Rádio
+                                        <span class="form-check-sign"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Emissora</label>
+                                <select class="form-control select2" name="emissora_id" id="emissora_id">
+                                    <option value="">Selecione uma emissora</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Programa</label>
+                                <select class="form-control select2" name="emissora_id" id="emissora_id">
+                                    <option value="">Selecione um programa</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-sm-6">
+                            <div class="form-group">
+                                <label>Horário Inicial</label>
+                                <input type="text" class="form-control horario" name="hora_inicio" id="hora_inicio" placeholder="00:00" value="">
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-sm-6">
+                            <div class="form-group">
+                                <label>Horário Final</label>
+                                <input type="text" class="form-control horario" name="hora_fim" id="hora_fim" placeholder="00:00" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="form-check mt-3">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" name="is_active" value="true">
+                                        Clipagem de TV
+                                        <span class="form-check-sign"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>  
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Emissora</label>
+                                <select class="form-control select2" name="emissora_id" id="emissora_id">
+                                    <option value="">Selecione uma emissora</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Programa</label>
+                                <select class="form-control select2" name="emissora_id" id="emissora_id">
+                                    <option value="">Selecione um programa</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-sm-6">
+                            <div class="form-group">
+                                <label>Horário Inicial</label>
+                                <input type="text" class="form-control horario" name="hora_inicio" id="hora_inicio" placeholder="00:00" value="">
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-sm-6">
+                            <div class="form-group">
+                                <label>Horário Final</label>
+                                <input type="text" class="form-control horario" name="hora_fim" id="hora_fim" placeholder="00:00" value="">
+                            </div>
+                        </div>                 
+                    </div>             
                     <div class="card-footer text-center mb-3">
                         <button type="submit" class="btn btn-danger" name="acao" value="gerar-pdf"><i class="fa fa-file-pdf-o"></i> Gerar PDF</button>
                         <button type="submit" class="btn btn-info" name="acao" value="pesquisar"><i class="fa fa-search"></i> Pesquisar</button>
-                        <a href="{{ url('relatorios/teste') }}" class="btn btn-secondary"><i class="fa fa-refresh"></i> Teste</a>
                     </div>
                 {!! Form::close() !!} 
             </div>

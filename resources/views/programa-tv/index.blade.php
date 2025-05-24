@@ -37,12 +37,23 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-3 col-sm-12">
+                            <div class="col-md-2 col-sm-12">
                                 <div class="form-group">
                                     <label>Cidade</label>
                                     <select class="form-control select2" name="cd_cidade" id="cidade" disabled="disabled">
                                         <option value="">Selecione uma cidade</option>
                                         
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-12">
+                                <div class="form-group">
+                                    <label>Emissora</label>
+                                    <select class="form-control" name="id_emissora" id="id_emissora">
+                                        <option value="">Selecione uma emissora</option>
+                                        @foreach ($emissoras as $emi)
+                                            <option value="{{ $emi->id }}" {{ (Session::get('filtro_emissora') == $emi->id) ? 'selected' : '' }}>{{ $emi->nome_emissora }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -57,10 +68,10 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-3 col-sm-12">
+                            <div class="col-md-2 col-sm-12">
                                 <div class="form-group">
-                                    <label>Emissora</label>
-                                    <input type="text" class="form-control" name="descricao" id="descricao" placeholder="Emissora" value="{{ Session::get('filtro_nome') }}">
+                                    <label>Nome Programa</label>
+                                    <input type="text" class="form-control" name="descricao" id="descricao" placeholder="Nome Programa" value="{{ Session::get('filtro_nome') }}">
                                 </div>
                             </div>
                             <div class="col-md-2 col-sm-12">
@@ -118,43 +129,48 @@
                                 </tr>
                             </tfoot>
                             <tbody>
-                                @foreach($programas as $programa)
-                                <tr>
-                                    <td>{{ ($programa->estado) ? $programa->estado->sg_estado : 'Não Informado' }}</td>
-                                    <td>{{ ($programa->cidade) ? $programa->cidade->nm_cidade : 'Não Informado' }}</td>
-                                    <td>{{ ($programa->emissora) ? $programa->emissora->nome_emissora : 'Não Informado'  }}</td>
-                                    <td>{{ $programa->nome_programa }}</td>
-                                    <td>
-                                        <p class="mb-0" style="overflow: inherit; max-width: 450px;">{{ $programa->url }}</p>
-                                        @if($programa->tipo)
-                                            <span class="badge badge-primary" style="background: '.$programa->tipo->ds_color.'; border-color: '.$programa->tipo->ds_color.';"> {{ $programa->tipo->nome }}</span>
-                                        @else
-                                            <span class="text-danger">Não informado</span>
-                                        @endif                                       
-                                    </td>
-                                    <td class="text-center">
-                                        @if($programa->id_situacao == 1)
-                                            <span class="badge badge-pill badge-success">Normal</span>
-                                        @else
-                                            <span class="badge badge-pill badge-danger">Erro</span>
-                                        @endif
-                                    </td>
-                                    <td class="center">
-                                        <a href="{{ url('tv/emissora/programa/'.$programa->id.'/gravacao/atualiza') }}">{!! ($programa->gravar) ? '<span class="badge badge-pill badge-success">SIM</span>' : '<span class="badge badge-pill badge-danger">NÃO</span>' !!}</a>
-                                    </td>
-                                    <td class="right">{{ number_format($programa->nu_valor, 2, ".","") }}</td>
-                                    <td class="center acoes-3">
+                                @forelse($programas as $programa)
+                                    <tr>
+                                        <td>{{ ($programa->estado) ? $programa->estado->sg_estado : 'Não Informado' }}</td>
+                                        <td>{{ ($programa->cidade) ? $programa->cidade->nm_cidade : 'Não Informado' }}</td>
+                                        <td>{{ ($programa->emissora) ? $programa->emissora->nome_emissora : 'Não Informado'  }}</td>
+                                        <td>{{ $programa->nome_programa }}</td>
+                                        <td>
+                                            <p class="mb-0" style="overflow: inherit; max-width: 450px;">{{ $programa->url }}</p>
+                                            @if($programa->tipo)
+                                                <span class="badge badge-primary" style="background: '.$programa->tipo->ds_color.'; border-color: '.$programa->tipo->ds_color.';"> {{ $programa->tipo->nome }}</span>
+                                            @else
+                                                <span class="text-danger">Não informado</span>
+                                            @endif                                       
+                                        </td>
+                                        <td class="right">{{ number_format($programa->nu_valor, 2, ".","") }}</td>
+                                        <td class="text-center">
+                                            @if($programa->id_situacao == 1)
+                                                <span class="badge badge-pill badge-success">Normal</span>
+                                            @else
+                                                <span class="badge badge-pill badge-danger">Erro</span>
+                                            @endif
+                                        </td>
+                                        <td class="center">
+                                            <a href="{{ url('tv/emissora/programa/'.$programa->id.'/gravacao/atualiza') }}">{!! ($programa->gravar) ? '<span class="badge badge-pill badge-success">SIM</span>' : '<span class="badge badge-pill badge-danger">NÃO</span>' !!}</a>
+                                        </td>
                                         
-                                        @if(count($programa->horarios))
-                                            <a title="Horários de Coleta" href="{{ url('tv/emissora/programas/'.$programa->id.'/horarios') }}" class="btn btn-warning btn-link btn-icon"><i class="nc-icon nc-time-alarm font-25"></i></a>
-                                        @else
-                                            <a title="Horários de Coleta" href="{{ url('tv/emissora/programas/'.$programa->id.'/horarios') }}" class="btn btn-default btn-link btn-icon"><i class="nc-icon nc-time-alarm font-25"></i></a>
-                                        @endif                                        
-                                        <a title="Editar" href="{{ url('tv/emissoras/programas/editar',$programa->id) }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
-                                        <a title="Excluir" href="" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-times fa-2x"></i></a>
-                                    </td>
-                                </tr>
-                            @endforeach
+                                        <td class="center acoes-3">
+                                            
+                                            @if(count($programa->horarios))
+                                                <a title="Horários de Coleta" href="{{ url('tv/emissora/programas/'.$programa->id.'/horarios') }}" class="btn btn-warning btn-link btn-icon"><i class="nc-icon nc-time-alarm font-25"></i></a>
+                                            @else
+                                                <a title="Horários de Coleta" href="{{ url('tv/emissora/programas/'.$programa->id.'/horarios') }}" class="btn btn-default btn-link btn-icon"><i class="nc-icon nc-time-alarm font-25"></i></a>
+                                            @endif                                        
+                                            <a title="Editar" href="{{ url('tv/emissoras/programas/editar',$programa->id) }}" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
+                                            <a title="Excluir" href="" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-times fa-2x"></i></a>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="9">Não existem registros que correspondam aos critérios de busca</td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table> 
                         {{ $programas->onEachSide(1)->appends(['gravar' => $gravar, 'cd_estado' => $cd_estado, 'cd_cidade' => $cd_cidade, 'descricao' => $descricao])->links('vendor.pagination.bootstrap-4') }}
@@ -175,42 +191,6 @@
         var token = $('meta[name="csrf-token"]').attr('content');
        
         $("#cd_estado").trigger('change');
-
-        /*
-        var table = $('#bootstrap-table').DataTable({
-                "processing": true,
-                "paginate": true,
-                "serverSide": true,
-                "ordering": false,
-                "bFilter": true,
-                "ajax":{
-                    "url": "{{ url('tv/emissoras/programas') }}",
-                    "dataType": "json",
-                    "type": "GET",
-                    "data": function (d) {
-                        d._token   = "{{csrf_token()}}";
-                    }
-                },
-                "columns": [
-                    { data: "estado" },
-                    { data: "cidade" },
-                    { data: "emissora" },
-                    { data: "nome" },
-                    { data: "tipo" },
-                    { data: "url" },
-                    { data: "acoes" },
-                ],
-                'columnDefs': [
-                    {
-                        'targets': 0,
-                        'className': 'item',
-                        'checkboxes': true,
-                        'ordering': false,
-                        'sortable': false
-                    }
-                ],
-                "stateSave": true
-            }); */
     });
 </script>
 @endsection

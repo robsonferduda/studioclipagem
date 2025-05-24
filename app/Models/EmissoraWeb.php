@@ -19,4 +19,9 @@ class EmissoraWeb extends Model
     {
         return $this->hasMany(ProgramaEmissoraWeb::class, 'id_emissora', 'id');
     }
+
+    public function horarios()
+    {
+        return $this->hasMany(EmissoraWebHorario::class, 'id_emissora', 'id');
+    }
 }

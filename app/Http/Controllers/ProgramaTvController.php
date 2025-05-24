@@ -38,6 +38,7 @@ class ProgramaTvController extends Controller
         $cidades = Cidade::orderBy('nm_cidade')->get();
         $estados = Estado::orderBy('nm_estado')->get();
         $tipos = TipoProgramaEmissoraWeb::orderBy('nome')->get();
+        $emissoras = EmissoraWeb::orderBy("nome_emissora")->get();
 
         if($request->fl_gravacao){
             $gravar = ($request->fl_gravacao == 'gravando') ? 1 : 2;
@@ -49,12 +50,14 @@ class ProgramaTvController extends Controller
         $cd_cidade = ($request->cd_cidade) ? $request->cd_cidade : null;    
         $cd_estado = ($request->cd_estado) ? $request->cd_estado : null;   
         $tipo_programa = ($request->tipo_programa) ? $request->tipo_programa : null;
+        $id_emissora = ($request->id_emissora) ? $request->id_emissora : null;
 
         Session::put('filtro_estado', $cd_estado);
         Session::put('filtro_cidade', $cd_cidade);
         Session::put('filtro_gravar', $gravar);
         Session::put('filtro_nome', $descricao);
         Session::put('filtro_tipo', $tipo_programa);
+        Session::put('filtro_emissora', $id_emissora);
 
         $programa = ProgramaEmissoraWeb::query();
 
@@ -77,83 +80,17 @@ class ProgramaTvController extends Controller
             return $q->where('tipo_programa', Session::get('filtro_tipo'));
         });
 
+        $programa->when($id_emissora, function ($q) use ($id_emissora) {
+            return $q->where('id_emissora', Session::get('filtro_emissora'));
+        });
+
         $programa->when($descricao, function ($q) use ($descricao) {
             return $q->where('nome_programa','ilike','%'.$descricao.'%');
         });
 
         $programas = $programa->orderBY("id_situacao","DESC")->orderBy('nome_programa')->paginate(10);
         
-        return view('programa-tv/index', compact('programas','descricao','cidades','estados','cd_estado','cd_cidade','gravar','tipos'));
-
-        return view('emissora/index', compact('emissoras','descricao','estados','tipo','cd_estado','cd_cidade','gravar'));
-
-        /*
-        Session::put('sub-menu','programas-tv');
-
-        $cidades = Cidade::orderBy('nm_cidade')->get();
-        $estados = Estado::orderBy('nm_estado')->get();
-            
-        if($request->ajax()) {
-
-            $situacao = ($request->situacao) ? $request->situacao : "";
-            $nome = ($request->nome) ? $request->nome : "";
-            $estado = ($request->estado) ? $request->estado : "";
-            $cidade = ($request->cidade) ? $request->cidade : "";
-    
-            $programa = ProgramaEmissoraWeb::query();
-
-            $programa->when(Session::get('filtro-emissora'), function ($q) {
-                return $q->where('id_emissora', Session::get('filtro-emissora'));
-            });
-    
-            $programa->orderBy('nome_programa');
-    
-            $programas = $programa->get();
-
-            Session::forget('filtro-emissora');
-
-            return DataTables::of($programas)  
-                ->addColumn('estado', function ($programa) {
-                    return ($programa->estado) ? $programa->estado->nm_estado : '<span class="text-danger">Não informado</span>';
-                }) 
-                ->addColumn('cidade', function ($programa) {
-                    return ($programa->cidade) ? $programa->cidade->nm_cidade : '<span class="text-danger">Não informado</span>';
-                })
-                ->addColumn('emissora', function ($programa) {
-                    return ($programa->emissora) ? $programa->emissora->nome_emissora : '<span class="text-danger">Não informado</span>';
-                }) 
-                ->addColumn('nome', function ($programa) {
-                    return $programa->nome_programa;
-                })  
-                ->addColumn('tipo', function ($programa) {
-                    return ($programa->tipo) ? '<span class="badge badge-primary" style="background: '.$programa->tipo->ds_color.'; border-color: '.$programa->tipo->ds_color.';">'.$programa->tipo->nome.'</span>' : '<span class="text-danger">Não informado</span>';
-                })  
-                ->addColumn('url', function ($programa) {
-                    return ($programa->url) ? $programa->url : '<span class="text-danger">Não informado</span>';
-                })    
-                ->addColumn('acoes', function ($programa) {
-
-                    $acoes = '<div class="text-center">';
-
-                    if(count($programa->horarios))
-                        $acoes .= '<a title="Horários de Coleta" href="../emissora/programas/'.$programa->id.'/horarios" class="btn btn-warning btn-link btn-icon"><i class="nc-icon nc-time-alarm font-25"></i></a>';
-                    else
-                        $acoes .= '<a title="Horários de Coleta" href="../emissora/programas/'.$programa->id.'/horarios" class="btn btn-default btn-link btn-icon"><i class="nc-icon nc-time-alarm font-25"></i></a>';
-
-                    $acoes .= ' <a title="Editar" href="../emissoras/programas/editar/'.$programa->id.'" class="btn btn-primary btn-link btn-icon"><i class="fa fa-edit fa-2x"></i></a>
-                                <a title="Excluir" href="" class="btn btn-danger btn-link btn-icon btn-excluir"><i class="fa fa-times fa-2x"></i></a>';
-
-                    $acoes .= '</div>';
-
-                    return $acoes;
-                })   
-                ->rawColumns(['estado','cidade','emissora','tipo','url','acoes'])         
-                ->make(true);
-
-        }
-
-        return view('programa-tv/index', compact('cidades','estados'));
-        */
+        return view('programa-tv/index', compact('programas','descricao','emissoras','cidades','estados','cd_estado','cd_cidade','gravar','tipos'));
     }
 
     public function limpar()
@@ -163,6 +100,7 @@ class ProgramaTvController extends Controller
         Session::forget('filtro_gravar');
         Session::forget('filtro_nome');
         Session::forget('filtro_tipo');
+        Session::forget('filtro_emissora');
 
         return redirect('tv/emissoras/programas');
     }
@@ -194,10 +132,11 @@ class ProgramaTvController extends Controller
 
     public function horarios($id_programa)
     {
-        $emissora = ProgramaEmissoraWeb::find($id_programa);
-        $horarios = $emissora->horarios->sortBy('horario_start');
+        $programa = ProgramaEmissoraWeb::find($id_programa);
+        $horarios = $programa->horarios->sortBy('horario_start');
+        $id_emissora = ($programa->emissora) ? $programa->emissora->id : null;
 
-        return view('programa-tv/horarios',compact('horarios','id_programa'));
+        return view('programa-tv/horarios',compact('programa','horarios','id_programa','id_emissora'));
     }
 
     public function atualizaGravacao($id){
@@ -213,7 +152,8 @@ class ProgramaTvController extends Controller
 
     public function adicionarHorarios(Request $request)
     {
-        $emissora = $request->id_programa;
+        $emissora = $request->id_emissora;
+        $programa = $request->id_programa;
         $hora_inicial = $request->hora_inicial;
         $hora_final = $request->hora_final;
         $dias_da_semana = '';
@@ -228,7 +168,8 @@ class ProgramaTvController extends Controller
 
         $dias_da_semana = substr($dias_da_semana, -0, -1);
 
-        $dados_insercao = array('id_programa' => $emissora,
+        $dados_insercao = array('id_emissora' => $emissora,
+                                'id_programa' => $programa,
                                 'horario_start' => $hora_inicial,
                                 'horario_end' => $hora_final,
                                 'dias_da_semana' => $dias_da_semana);
