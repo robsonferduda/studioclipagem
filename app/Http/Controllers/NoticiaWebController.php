@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use DB;
 use Auth;
+use Storage;
 use App\Utils;
 use Carbon\Carbon;
 use App\Models\Cliente;
