@@ -77,9 +77,9 @@
                             <p style="text-align: justify; font-size: 16px; margin:0px; padding: 0px; margin-top: 8px; margin-bottom: 8px;">
                                 {{ $noticia->fonte }}
                                 {{ ($noticia->secao) ? " - ".$noticia->secao  : '' }}
-                                {{ " - ".$noticia->data_formatada." - " }}
-                                {{ ($noticia->nm_cidade) ? trim($noticia->nm_cidade."/".$noticia->sg_estado) : '' }}
-                                {{ ($noticia->nm_estado and !$noticia->nm_cidade) ? trim($noticia->sg_estado) : ''}}
+                                {{ " - ".$noticia->data_formatada }}
+                                {{ ($noticia->nm_cidade) ? " - ".trim($noticia->nm_cidade."/".$noticia->sg_estado) : '' }}
+                                {{ ($noticia->nm_estado and !$noticia->nm_cidade) ? " - ".trim($noticia->sg_estado) : ''}}
                             </p>  
                         </div>
                         <div style="text-align: center;">
