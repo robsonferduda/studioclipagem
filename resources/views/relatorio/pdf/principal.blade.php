@@ -84,7 +84,7 @@
                             </p>  
                         </div>
                         @if($noticia->tipo_midia == 'imagem')
-                            <img src="{{ Storage::disk('s3')->temporaryUrl($noticia->midia, '+30 minutes') }}"/>
+                            
                         @endif   
                     </td>
                 </tr>
