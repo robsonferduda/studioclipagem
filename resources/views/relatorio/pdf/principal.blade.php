@@ -23,14 +23,12 @@
 
         table {
             width: 100%;
-            border-collapse: collapse;
-            
+            border-collapse: collapse;            
         }
 
         img{
             max-width: 100%; /* Garante que a imagem caiba na largura da página */
             height: auto;   /* Mantém a proporção da imagem */
-            page-break-inside: auto;
         }
 
         .footer {
@@ -46,9 +44,7 @@
     @if(count($dados_impresso) > 0)
         <!-- Nome da Fonte - Seção - Página - Data - Cidade/UF -->
         @foreach($dados_impresso as $key => $noticia)
-            <table>
-                <tr>
-                    <td style="text-align: center;">
+            
                         <div class="header">
                             <h5 style="text-align: justify; margin-bottom: 0px; padding-bottom: 5px; margin-top: 26px; font-size: 17px; border-bottom: 1px solid black;">Clipagem de Jornal</h5>
                             <p style="text-align: justify; color: #eb8e06; margin: 0; margin-bottom: 5px; margin-top: 3px;"><strong>Período: {{ $dt_inicial_formatada }} à {{ $dt_final_formatada }}</strong></p>
@@ -62,16 +58,19 @@
                                 {{ ($noticia->nm_estado and !$noticia->nm_cidade) ? trim($noticia->sg_estado) : ''}}
                             </p>  
                         </div>
-                        @if($noticia->tipo_midia == 'imagem')
-                            <img src="{{ asset('img/noticia-impressa/'.$noticia->midia) }}"/>
-                        @endif   
-                    </td>
-                </tr>
-            </table>  
+                        
+                        @foreach ($partesDaImagem as $parte)
+                            <img src="{{ asset($parte) }}" alt="Parte da Imagem">
+                        @endforeach  
+
+                        @if($key < count($dados_impresso) -2)
+                            <div style="page-break-after: always;"></div>
+                        @endif
+                  
         @endforeach
     @endif
 
-    @if(count($dados_web) > 0)
+    @if(false)
         <!-- Nome da Fonte - Seção - Página - Data - Cidade/UF -->
         @foreach($dados_web as $key => $noticia)
             <table>

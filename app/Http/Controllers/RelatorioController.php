@@ -8,6 +8,7 @@ use App\Jobs\GerarRelatorioJob;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 use Laracasts\Flash\Flash;
 use PhpOffice\PhpWord\IOFactory;
 use Barryvdh\DomPDF\Facade\Pdf as DOMPDF;
@@ -59,18 +60,20 @@ class RelatorioController extends Controller
                              'isRemoteEnabled' => true,
                          ]);
 
+                    foreach($dados_impresso as $key => $di){
+                        $partesDaImagem = $this->dividirImagem(public_path('img/noticia-impressa/179404.jpeg'), 100); // 800px por página
+                    }
+
                     $pdf->loadView('relatorio/pdf/principal', compact('dt_inicial',
                                                                       'dt_final',
                                                                       'dt_inicial_formatada',
                                                                       'dt_final_formatada',
+                                                                      'partesDaImagem',
                                                                       'nome',
                                                                       'dados_impresso',
                                                                       'dados_radio',
                                                                       'dados_web',
                                                                       'dados_tv'));
-
-
-
                     return $pdf->download($nome_arquivo);
                 break;
             
@@ -238,6 +241,55 @@ class RelatorioController extends Controller
                 }
             }
         }
+    }
+
+    function dividirImagem($caminhoImagem, $alturaMaxima)
+    {
+
+        $larguraMaxima = 2480;
+
+        // Carregar a imagem
+        $imagemOriginal = imagecreatefromjpeg($caminhoImagem);
+        $larguraOriginal = imagesx($imagemOriginal);
+        $alturaOriginal = imagesy($imagemOriginal);
+
+        // Calcular a nova altura mantendo a proporção
+        $novaLargura = $larguraMaxima;
+        $novaAltura = intval(($alturaOriginal / $larguraOriginal) * $novaLargura);
+
+        // Criar a nova imagem redimensionada
+        $imagemRedimensionada = imagecreatetruecolor($novaLargura, $novaAltura);
+        imagecopyresampled($imagemRedimensionada, $imagemOriginal, 0, 0, 0, 0, $novaLargura, $novaAltura, $larguraOriginal, $alturaOriginal);
+
+        // Salvar a imagem redimensionada
+        $caminhoRedimensionado = storage_path("app/public/redimensionada.jpg");
+        imagejpeg($imagemRedimensionada, $caminhoRedimensionado, 90); // Qualidade 90%
+
+        // Liberar memória
+        imagedestroy($imagemOriginal);
+        imagedestroy($imagemRedimensionada);
+
+        $imagemOriginal = imagecreatefromjpeg($caminhoRedimensionado);
+
+        $imagemOriginal = imagecreatefromjpeg($caminhoImagem);
+        $largura = imagesx($imagemOriginal);
+        $alturaTotal = imagesy($imagemOriginal);
+
+        $partes = [];
+        for ($i = 0; $i < $alturaTotal; $i += $alturaMaxima) {
+            $novaAltura = min($alturaMaxima, $alturaTotal - $i);
+            $parte = imagecreatetruecolor($largura, $novaAltura);
+            imagecopy($parte, $imagemOriginal, 0, 0, 0, $i, $largura, $novaAltura);
+
+            // Salvar a parte temporariamente
+            $nomeParte = "parte_" . $i . ".jpg";
+            $caminhoParte = "partes/".$nomeParte;
+            imagejpeg($parte, $caminhoParte);
+            $partes[] = $caminhoParte;
+        }
+
+        imagedestroy($imagemOriginal);
+        return $partes;
     }
 
 
