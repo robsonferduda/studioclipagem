@@ -48,19 +48,21 @@ class RelatorioController extends Controller
 
                 case 'gerar-pdf':
 
-                $data = [
-                    'dados_impresso' => $dados_impresso,
-                    'dados_web' => $dados_web,
-                    'dt_inicial_formatada' => $dt_inicial_formatada,
-                    'dt_final_formatada' => $dt_final_formatada
-                ];
-
-              $pdf = PDFS::loadView('relatorio/pdf/principal', $data);
-                return $pdf->download('invoice.pdf');
-
-
                     $nome = "Relatório Completo";
                     $nome_arquivo = date('YmdHis').".pdf";
+
+                    $data = [
+                        'dados_impresso' => $dados_impresso,
+                        'dados_web' => $dados_web,
+                        'dt_inicial_formatada' => $dt_inicial_formatada,
+                        'dt_final_formatada' => $dt_final_formatada
+                    ];
+
+                    $pdf = PDFS::loadView('relatorio/pdf/principal', $data);
+                    return $pdf->download($nome_arquivo);
+
+
+                    
 
                     $pdf = \App::make('dompdf.wrapper');
                     $pdf->setPaper('A4') // Define o tamanho do papel (ex.: A4, Letter)
