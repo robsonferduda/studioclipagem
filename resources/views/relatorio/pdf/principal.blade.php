@@ -6,42 +6,31 @@
     <title>{{ $nome }}</title>
     <style>
         .page-break {
-            page-break-after: always; /* Força uma quebra de página antes */
+            page-break-after: always; /* Força uma quebra de página depois */
         }
 
-        .image-container {
-            page-break-inside: avoid;
+        .header {
+            font-weight: bold;
+            margin-bottom: 5mm; /* Espaço entre o cabeçalho e a imagem */
         }
+
         /* Estilos gerais */
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 2px;
             font-size: 12px;
-        }
-
-        h1 {
-            text-align: center;
-            font-size: 18px;
-            margin-bottom: 20px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            page-break-inside: avoid; /* Evita quebra dentro da tabela */
         }
 
-        table, th, td {
-            border: 1px solid #000;
-        }
-
-        th, td {
-            padding: 8px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f4f4f4;
+        img{
+            max-width: 100%; /* Garante que a imagem caiba na largura da página */
+            height: auto;   /* Mantém a proporção da imagem */
+            page-break-inside: auto;
         }
 
         .footer {
@@ -57,24 +46,30 @@
     @if(count($dados_impresso) > 0)
         <!-- Nome da Fonte - Seção - Página - Data - Cidade/UF -->
         @foreach($dados_impresso as $key => $noticia)
-            <div class="image-container" style="background: white;">
-            <div style="width: 100%;">
-                <h5 style="margin-bottom: 0px; padding-bottom: 5px; margin-top: 26px; font-size: 17px; border-bottom: 1px solid black;">Clipagem de Jornal</h5>
-                <p style="color: #eb8e06; margin: 0; margin-bottom: 5px; margin-top: 3px;"><strong>Período: {{ $dt_inicial_formatada }} à {{ $dt_final_formatada }}</strong></p>
-                <p style="color: #eb8e06; margin: 0; margin-top: -3px;">{{ $noticia->cliente }}</p>        
-            </div>
-                <p style="font-size: 16px; margin:0px; padding: 0px; text-align: justify; margin-top: 8px; margin-bottom: 8px;">
-                    {{ $noticia->fonte }}
-                    {{ ($noticia->secao) ? " - ".$noticia->secao  : '' }}
-                    {{ " - Página: ".$noticia->pagina }}
-                    {{ " - ".$noticia->data_formatada." - " }}
-                    {{ ($noticia->nm_cidade) ? trim($noticia->nm_cidade."/".$noticia->sg_estado) : '' }}
-                    {{ ($noticia->nm_estado and !$noticia->nm_cidade) ? trim($noticia->sg_estado) : ''}}
-                </p>
-                @if($noticia->tipo_midia == 'imagem')
-                    <img style="width: 100%;" src="{{ asset('img/noticia-impressa/'.$noticia->midia) }}"/>
-                @endif
-            </div>  
+            <table>
+                <tr>
+                    <td>
+                        <div class="header">
+                            <h5 style="margin-bottom: 0px; padding-bottom: 5px; margin-top: 26px; font-size: 17px; border-bottom: 1px solid black;">Clipagem de Jornal</h5>
+                            <p style="color: #eb8e06; margin: 0; margin-bottom: 5px; margin-top: 3px;"><strong>Período: {{ $dt_inicial_formatada }} à {{ $dt_final_formatada }}</strong></p>
+                            <p style="color: #eb8e06; margin: 0; margin-top: -3px;">{{ $noticia->cliente }}</p>      
+                            <p style="font-size: 16px; margin:0px; padding: 0px; text-align: justify; margin-top: 8px; margin-bottom: 8px;">
+                                {{ $noticia->fonte }}
+                                {{ ($noticia->secao) ? " - ".$noticia->secao  : '' }}
+                                {{ " - Página: ".$noticia->pagina }}
+                                {{ " - ".$noticia->data_formatada." - " }}
+                                {{ ($noticia->nm_cidade) ? trim($noticia->nm_cidade."/".$noticia->sg_estado) : '' }}
+                                {{ ($noticia->nm_estado and !$noticia->nm_cidade) ? trim($noticia->sg_estado) : ''}}
+                            </p>  
+                        </div>
+                        @if($noticia->tipo_midia == 'imagem')
+                            <div style="width: 100% text-align: center;">
+                                <img src="{{ asset('img/noticia-impressa/'.$noticia->midia) }}"/>
+                            </div>
+                        @endif   
+                    </td>
+                </tr>
+            </table>
             @if($key < count($dados_impresso) -1) 
                 <div style="page-break-after: always;"></div>   
             @endif    
