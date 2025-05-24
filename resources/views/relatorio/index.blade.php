@@ -30,13 +30,13 @@
                         <div class="col-md-2 col-sm-6">
                             <div class="form-group">
                                 <label>Data Inicial</label>
-                                <input type="text" class="form-control" name="dt_inicio" id="dt_inicio" placeholder="__/__/____" value="{{ date('d/m/Y') }}">
+                                <input type="text" class="form-control" name="dt_inicial" id="dt_inicial" placeholder="__/__/____" value="{{ date('d/m/Y') }}">
                             </div>
                         </div>
                         <div class="col-md-2 col-sm-6">
                             <div class="form-group">
                                 <label>Data Final</label>
-                                <input type="text" class="form-control" name="dt_fim" id="dt_fim" placeholder="__/__/____" value="{{ date('d/m/Y') }}">
+                                <input type="text" class="form-control" name="dt_final" id="dt_final" placeholder="__/__/____" value="{{ date('d/m/Y') }}">
                             </div>
                         </div>
                         <div class="col-md-4">

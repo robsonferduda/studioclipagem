@@ -21,11 +21,14 @@ class RelatorioController extends Controller
         $this->middleware('auth');
         $this->data_atual = session('data_atual');
         Session::put('url','relatorio');
+        $this->carbon = new Carbon();
     }
 
     public function index(Request $request)
     {   
         $dados = array();
+        $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
+        $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
 
         if($request->isMethod('POST')){
 
@@ -33,8 +36,6 @@ class RelatorioController extends Controller
 
                 case 'gerar-pdf':
 
-                    $dt_inicial = date('d/m/Y');
-                    $dt_final = date('d/m/Y');
                     $nome = "Relatório Completo";
                     $nome_arquivo = date('YmdHis').".pdf";
 
@@ -46,9 +47,9 @@ class RelatorioController extends Controller
             
                 case 'pesquisar': 
                     
-                    $dados_impresso = $this->dadosImpresso();
-                    $dados_radio    = $this->dadosRadio();
-                    $dados_web      = $this->dadosWeb();
+                    $dados_impresso = $this->dadosImpresso($dt_inicial, $dt_final);
+                    $dados_radio    = $this->dadosRadio($dt_inicial, $dt_final);
+                    $dados_web      = $this->dadosWeb($dt_inicial, $dt_final);
 
                     $dados = array_merge($dados_impresso, $dados_radio, $dados_web);
 
@@ -62,7 +63,7 @@ class RelatorioController extends Controller
         return view('relatorio/index', compact('dados'));
     }
 
-    public function dadosImpresso()
+    public function dadosImpresso($dt_inicial, $dt_final)
     {
         $sql = "SELECT t1.id, 
                     titulo, 
@@ -74,12 +75,13 @@ class RelatorioController extends Controller
                     ds_caminho_img
                 FROM noticia_impresso t1
                 JOIN jornal_online t2 ON t2.id = t1.id_fonte
-                LEFT JOIN noticia_cliente t3 ON t3.noticia_id = t1.id";
+                LEFT JOIN noticia_cliente t3 ON t3.noticia_id = t1.id
+                WHERE t1.dt_clipagem BETWEEN '$dt_inicial' AND '$dt_final'";
 
         return $dados = DB::select($sql);
     }
 
-    public function dadosRadio()
+    public function dadosRadio($dt_inicial, $dt_final)
     {
         $sql = "SELECT t1.id, 
                     titulo, 
@@ -90,24 +92,26 @@ class RelatorioController extends Controller
                     t3.sentimento
                 FROM noticia_radio t1
                 JOIN emissora_radio t2 ON t2.id = t1.emissora_id
-                LEFT JOIN noticia_cliente t3 ON t3.noticia_id = t1.id";
+                LEFT JOIN noticia_cliente t3 ON t3.noticia_id = t1.id
+                WHERE t1.dt_clipagem BETWEEN '$dt_inicial' AND '$dt_final'";
 
         return $dados = DB::select($sql);
     }
 
-    public function dadosWeb()
+    public function dadosWeb($dt_inicial, $dt_final)
     {
         $sql = "SELECT t1.id, 
-                    titulo_noticia, 
+                    titulo_noticia as titulo, 
                     'web' as tipo, 
                     TO_CHAR(data_noticia, 'DD/MM/YYYY') AS data_formatada,
                     t2.nome as fonte,
-                    t4.conteudo,
+                    t4.conteudo as sinopse,
                     t3.sentimento
                 FROM noticias_web t1
                 JOIN fonte_web t2 ON t2.id = t1.id_fonte
                 LEFT JOIN noticia_cliente t3 ON t3.noticia_id = t1.id
-                JOIN conteudo_noticia_web t4 ON t4.id_noticia_web = t1.id";
+                JOIN conteudo_noticia_web t4 ON t4.id_noticia_web = t1.id
+                WHERE t1.data_noticia BETWEEN '$dt_inicial' AND '$dt_final'";
 
         return $dados = DB::select($sql);
     }
