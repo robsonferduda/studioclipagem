@@ -96,16 +96,13 @@
                         </div>
                         @if($noticia->tipo_midia == 'imagem')
                             <div style="width: 100% text-align: center;">
-                                <img src="{{ asset('img/noticia-impressa/'.$noticia->midia) }}"/>
                                 <img src="{{ Storage::disk('s3')->temporaryUrl($noticia->midia, '+30 minutes') }}"/>
                             </div>
                         @endif   
                     </td>
                 </tr>
             </table>
-            @if($key < count($dados_web) -1) 
-                <div style="page-break-after: always;"></div>   
-            @endif    
+              
         @endforeach
     @endif
 </body>
