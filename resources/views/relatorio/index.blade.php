@@ -248,6 +248,9 @@
                             <div class="row">
                                 <div class="col-lg-12 col-sm-12">
                                     <div style="text-align: right">
+                                        @if($noticia->tipo == 'web')
+                                            <a class="" href="{{ url('noticia/web/importar-imagem',$noticia->id) }}" role="button"><i class="fa fa-file-pdf-o text-danger"> </i></a>
+                                        @endif
                                         <a class="" href="{{ url("relatorios/".$noticia->tipo."/pdf/".$noticia->id) }}" role="button"><i class="fa fa-file-pdf-o text-danger"> </i></a>
                                         <a class="" href="{{ url("relatorios/".$noticia->tipo."/pdf/".$noticia->id) }}" role="button"><i class="fa fa-edit text-info"> </i></a>
                                     </div>

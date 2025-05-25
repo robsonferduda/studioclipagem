@@ -245,6 +245,24 @@ class NoticiaWebController extends Controller
         }
     }
 
+    public function copiaImagemIndividual($id)
+    {
+
+        $noticia = NoticiaWeb::where('id', $id)->first();
+
+        if($noticia->path_screenshot AND $noticia->path_screenshot != 'ERROR'){
+
+            $arquivo = Storage::disk('s3')->get($noticia->path_screenshot);
+            $filename = $noticia->id.".jpg";
+            Storage::disk('web-img')->put($filename, $arquivo);
+
+            $noticia->ds_caminho_img = $filename;
+            $noticia->save();
+        }
+
+        return redirect()->back();
+    }
+
     public function store(Request $request)
     {
         DB::beginTransaction();

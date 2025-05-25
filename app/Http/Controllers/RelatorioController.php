@@ -180,7 +180,25 @@ class RelatorioController extends Controller
             $sql .= ' AND t3.cliente_id = '.$cliente_selecionado;
         }
 
-        return $dados = DB::select($sql);
+        $dados = DB::select($sql);
+
+        foreach($dados as $dado){
+
+            $noticia_web = NoticiaWeb::where('id', $dado->id)->where('ds_caminho_img','=',null)->first();
+
+            if($noticia_web){
+
+                $arquivo = Storage::disk('s3')->get($noticia_web->path_screenshot);
+                $filename = $noticia_web->id.".jpg";
+                Storage::disk('web-img')->put($filename, $arquivo);
+
+                $noticia_web->ds_caminho_img = $filename;
+                $noticia_web->save();
+
+            }
+        }            
+
+        return $dados;
     }
 
     public function dadosTv($dt_inicial, $dt_final,$cliente_selecionado)
