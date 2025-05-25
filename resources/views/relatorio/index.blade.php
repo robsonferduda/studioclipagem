@@ -249,10 +249,10 @@
                                 <div class="col-lg-12 col-sm-12">
                                     <div style="text-align: right">
                                         @if($noticia->tipo == 'web')
-                                            <a class="" href="{{ url('noticia/web/importar-imagem',$noticia->id) }}" role="button"><i class="fa fa-file-pdf-o text-danger"> </i></a>
+                                            <a title="Extrair Imagem" class="btn btn-warning btn-sm" href="{{ url('noticia/web/importar-imagem',$noticia->id) }}" role="button"><i class="fa fa-picture-o"> </i></a>
                                         @endif
-                                        <a class="" href="{{ url("relatorios/".$noticia->tipo."/pdf/".$noticia->id) }}" role="button"><i class="fa fa-file-pdf-o text-danger"> </i></a>
-                                        <a class="" href="{{ url("relatorios/".$noticia->tipo."/pdf/".$noticia->id) }}" role="button"><i class="fa fa-edit text-info"> </i></a>
+                                        <a title="Gerar PDF" class="btn btn-danger btn-sm" href="{{ url("relatorios/".$noticia->tipo."/pdf/".$noticia->id) }}" role="button"><i class="fa fa-file-pdf-o"> </i></a>
+                                        <a title="Editar" class="btn btn-info btn-sm" href="{{ url("relatorios/".$noticia->tipo."/pdf/".$noticia->id) }}" role="button"><i class="fa fa-edit"> </i></a>
                                     </div>
                                 </div>
                             </div>
