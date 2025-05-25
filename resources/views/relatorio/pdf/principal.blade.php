@@ -45,9 +45,7 @@
         @foreach($dados_impresso as $key => $noticia)
             
                         <div class="header">
-                            <h5 style="text-align: justify; margin-bottom: 0px; padding-bottom: 5px; margin-top: 26px; font-size: 17px; border-bottom: 1px solid black;">Clipagem de Jornal</h5>
-                            <p style="text-align: justify; color: #eb8e06; margin: 0; margin-bottom: 5px; margin-top: 3px;"><strong>Período: {{ $dt_inicial_formatada }} à {{ $dt_final_formatada }}</strong></p>
-                            <p style="text-align: justify; color: #eb8e06; margin: 0; margin-top: -3px;">{{ $noticia->cliente }}</p>      
+                            <h5 style="text-align: justify; margin-bottom: 0px; padding-bottom: 5px; margin-top: 26px; font-size: 17px; border-bottom: 1px solid black;">Clipagem de Jornal</h5>    
                             <p style="text-align: justify; font-size: 16px; margin:0px; padding: 0px; margin-top: 8px; margin-bottom: 8px;">
                                 {{ $noticia->fonte }}
                                 {{ ($noticia->secao) ? " - ".$noticia->secao  : '' }}
@@ -71,9 +69,7 @@
         @foreach($dados_web as $key => $noticia)
            
                         <div class="header">
-                            <h5 style="text-align: justify; margin-bottom: 0px; padding-bottom: 5px; margin-top: 26px; font-size: 17px; border-bottom: 1px solid black;">Clipagem de Web</h5>
-                            <p style="text-align: justify; color: #eb8e06; margin: 0; margin-bottom: 5px; margin-top: 3px;"><strong>Período: {{ $dt_inicial_formatada }} à {{ $dt_final_formatada }}</strong></p>
-                            <p style="text-align: justify; color: #eb8e06; margin: 0; margin-top: -3px;">{{ $noticia->cliente }}</p>      
+                            <h5 style="text-align: justify; margin-bottom: 0px; padding-bottom: 5px; margin-top: 26px; font-size: 17px; border-bottom: 1px solid black;">Clipagem de Web</h5>   
                             <p style="text-align: justify; font-size: 16px; margin:0px; padding: 0px; margin-top: 8px; margin-bottom: 8px;">
                                 {{ $noticia->fonte }}
                                 {{ ($noticia->secao) ? " - ".$noticia->secao  : '' }}
@@ -87,7 +83,7 @@
                                 <img style="margin: 0 auto;" src="{{ public_path('img/noticia-web/'.$noticia->midia) }}">
                             @endif
                         </div>  
-                 @if($key < count($dados_impresso) -1)
+                 @if($key < count($dados_web) -1)
                 <div style="page-break-before: always;"></div>                        
             @endif 
               

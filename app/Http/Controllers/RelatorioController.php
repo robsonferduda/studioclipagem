@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use PDFS;
+use App\Models\Cliente;
 use Carbon\Carbon;
 use App\Models\NoticiaImpresso;
 use App\Jobs\GerarRelatorioJob;
@@ -29,18 +30,23 @@ class RelatorioController extends Controller
     public function index(Request $request)
     {   
         $dados = array();
+        $clientes = array();
+
         $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00" : date("Y-m-d")." 00:00:00";
         $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d")." 23:59:59";
 
         $dt_inicial_formatada = ($request->dt_inicial) ? $request->dt_inicial : date("d/m/Y");
         $dt_final_formatada = ($request->dt_final) ? $request->dt_final : date("d/m/Y");
 
+        $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
+        $cliente_selecionado = ($request->id_cliente) ? $request->id_cliente : null;
+
         if($request->isMethod('POST')){
 
-            $dados_impresso = $this->dadosImpresso($dt_inicial, $dt_final);
-            $dados_radio    = $this->dadosRadio($dt_inicial, $dt_final);
-            $dados_web      = $this->dadosWeb($dt_inicial, $dt_final);
-            $dados_tv      = $this->dadosTv($dt_inicial, $dt_final);
+            $dados_impresso = $this->dadosImpresso($dt_inicial, $dt_final,$cliente_selecionado);
+            $dados_radio    = $this->dadosRadio($dt_inicial, $dt_final,$cliente_selecionado);
+            $dados_web      = $this->dadosWeb($dt_inicial, $dt_final,$cliente_selecionado);
+            $dados_tv      = $this->dadosTv($dt_inicial, $dt_final,$cliente_selecionado);
 
             $dados = array_merge($dados_impresso, $dados_radio, $dados_web, $dados_tv);
 
@@ -60,47 +66,21 @@ class RelatorioController extends Controller
 
                     $pdf = PDFS::loadView('relatorio/pdf/principal', $data);
                     return $pdf->download($nome_arquivo);
-
-
-                    
-
-                    $pdf = \App::make('dompdf.wrapper');
-                    $pdf->setPaper('A4') // Define o tamanho do papel (ex.: A4, Letter)
-                         ->setOptions([
-                             'margin-top'    => 10, // Margem superior em mm
-                             'margin-right'  => 8, // Margem direita em mm
-                             'margin-bottom' => 8, // Margem inferior em mm
-                             'margin-left'   => 10, // Margem esquerda em mm
-                             'isRemoteEnabled' => true,
-                         ]);
-
-                    
-
-                    $pdf->loadView('relatorio/pdf/principal', compact('dt_inicial',
-                                                                      'dt_final',
-                                                                      'dt_inicial_formatada',
-                                                                      'dt_final_formatada',
-                                                                      'nome',
-                                                                      'dados_impresso',
-                                                                      'dados_radio',
-                                                                      'dados_web',
-                                                                      'dados_tv'));
-                    return $pdf->download($nome_arquivo);
                 break;
             
                 case 'pesquisar': 
                     
-                    return view('relatorio/index', compact('dados'));
+                    return view('relatorio/index', compact('dados','clientes','cliente_selecionado','dt_inicial','dt_final'));
 
                 break;
             }
 
         }
 
-        return view('relatorio/index', compact('dados'));
+        return view('relatorio/index', compact('dados','clientes','cliente_selecionado','dt_inicial','dt_final'));
     }
 
-    public function dadosImpresso($dt_inicial, $dt_final)
+    public function dadosImpresso($dt_inicial, $dt_final,$cliente_selecionado)
     {
         $sql = "SELECT t1.id, 
                     sg_estado,
@@ -124,12 +104,17 @@ class RelatorioController extends Controller
                 JOIN clientes t4 ON t4.id = t3.cliente_id
                 LEFT JOIN cidade t5 ON t5.cd_cidade = t1.cd_cidade
                 LEFT JOIN estado t6 ON t6.cd_estado = t1.cd_estado
-                WHERE t1.dt_clipagem BETWEEN '$dt_inicial' AND '$dt_final'";
+                WHERE 1=1
+                AND t1.dt_clipagem BETWEEN '$dt_inicial' AND '$dt_final'";
+
+        if($cliente_selecionado){
+            $sql .= ' AND t3.cliente_id = '.$cliente_selecionado;
+        }
 
         return $dados = DB::select($sql);
     }
 
-    public function dadosRadio($dt_inicial, $dt_final)
+    public function dadosRadio($dt_inicial, $dt_final,$cliente_selecionado)
     {
         $sql = "SELECT t1.id, 
                     sg_estado,
@@ -153,12 +138,17 @@ class RelatorioController extends Controller
                 JOIN clientes t4 ON t4.id = t3.cliente_id
                 LEFT JOIN cidade t5 ON t5.cd_cidade = t1.cd_cidade
                 LEFT JOIN estado t6 ON t6.cd_estado = t1.cd_estado
-                WHERE t1.dt_clipagem BETWEEN '$dt_inicial' AND '$dt_final'";
+                WHERE 1=1
+                AND t1.dt_clipagem BETWEEN '$dt_inicial' AND '$dt_final'";
+
+        if($cliente_selecionado){
+            $sql .= ' AND t3.cliente_id = '.$cliente_selecionado;
+        }
 
         return $dados = DB::select($sql);
     }
 
-    public function dadosWeb($dt_inicial, $dt_final)
+    public function dadosWeb($dt_inicial, $dt_final,$cliente_selecionado)
     {
         $sql = "SELECT t1.id, 
                     sg_estado,
@@ -183,12 +173,17 @@ class RelatorioController extends Controller
                 JOIN clientes t5 ON t5.id = t3.cliente_id
                 LEFT JOIN cidade t6 ON t6.cd_cidade = t1.cd_cidade
                 LEFT JOIN estado t7 ON t7.cd_estado = t1.cd_estado
-                WHERE t1.data_noticia BETWEEN '$dt_inicial' AND '$dt_final'";
+                WHERE 1=1
+                AND t1.data_noticia BETWEEN '$dt_inicial' AND '$dt_final'";
+
+        if($cliente_selecionado){
+            $sql .= ' AND t3.cliente_id = '.$cliente_selecionado;
+        }
 
         return $dados = DB::select($sql);
     }
 
-    public function dadosTv($dt_inicial, $dt_final)
+    public function dadosTv($dt_inicial, $dt_final,$cliente_selecionado)
     {
         $sql = "SELECT t1.id, 
                     sg_estado,
@@ -212,7 +207,12 @@ class RelatorioController extends Controller
                 JOIN clientes t4 ON t4.id = t3.cliente_id
                 LEFT JOIN cidade t5 ON t5.cd_cidade = t1.cd_cidade
                 LEFT JOIN estado t6 ON t6.cd_estado = t1.cd_estado
-                WHERE t1.dt_noticia BETWEEN '$dt_inicial' AND '$dt_final'";
+                WHERE 1=1
+                AND t1.dt_noticia BETWEEN '$dt_inicial' AND '$dt_final'";
+
+        if($cliente_selecionado){
+            $sql .= ' AND t3.cliente_id = '.$cliente_selecionado;
+        }
 
         return $dados = DB::select($sql);
     }

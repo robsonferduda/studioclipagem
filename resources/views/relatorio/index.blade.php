@@ -30,20 +30,23 @@
                         <div class="col-md-2 col-sm-6">
                             <div class="form-group">
                                 <label>Data Inicial</label>
-                                <input type="text" class="form-control" name="dt_inicial" id="dt_inicial" placeholder="__/__/____" value="{{ date('d/m/Y') }}">
+                                <input type="text" class="form-control datepicker" name="dt_inicial" id="dt_inicial" placeholder="__/__/____" value="{{ ($dt_inicial) ? \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y') : '' }}">
                             </div>
                         </div>
                         <div class="col-md-2 col-sm-6">
                             <div class="form-group">
                                 <label>Data Final</label>
-                                <input type="text" class="form-control" name="dt_final" id="dt_final" placeholder="__/__/____" value="{{ date('d/m/Y') }}">
+                                <input type="text" class="form-control datepicker" name="dt_final" id="dt_final" placeholder="__/__/____" value="{{ ($dt_final) ? \Carbon\Carbon::parse($dt_final)->format('d/m/Y') : '' }}">
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Cliente</label>
-                                <select class="form-control select2" name="emissora_id" id="emissora_id">
+                                <select class="form-control select2" name="id_cliente" id="id_cliente">
                                     <option value="">Selecione um cliente</option>
+                                    @foreach($clientes as $cliente)
+                                        <option value="{{ $cliente->id }}" {{ ($cliente_selecionado ==  $cliente->id) ? 'selected' : '' }}>{{ $cliente->nome }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -253,7 +256,7 @@
                         </div>
                     </div>
                 @empty
-                    <h6>Nenhum dado para exibição</h6>
+                    
                 @endforelse
             </div>
         </div>

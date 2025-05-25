@@ -227,17 +227,21 @@ class NoticiaWebController extends Controller
             ->whereHas('clientes', function($query){
                 $query->where('noticia_cliente.tipo_id', 2);
             })
-            ->whereBetween('data_noticia', ["2025-05-23 00:00:00", date("Y-m-d H:i:s")])
+            ->where('ds_caminho_img','=',null)
             ->orderBy('data_noticia')
             ->get();
 
         foreach ($dados as $key => $noticia) {
-            $arquivo = Storage::disk('s3')->get($noticia->path_screenshot);
-            $filename = $noticia->id.".jpg";
-            Storage::disk('web-img')->put($filename, $arquivo);
 
-            $noticia->ds_caminho_img = $filename;
-            $noticia->save();
+            if($noticia->path_screenshot AND $noticia->path_screenshot != 'ERROR'){
+
+                $arquivo = Storage::disk('s3')->get($noticia->path_screenshot);
+                $filename = $noticia->id.".jpg";
+                Storage::disk('web-img')->put($filename, $arquivo);
+
+                $noticia->ds_caminho_img = $filename;
+                $noticia->save();
+            }
         }
     }
 
