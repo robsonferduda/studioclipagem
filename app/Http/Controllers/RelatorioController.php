@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use PDFS;
 use App\Models\Cliente;
+use App\Models\NoticiaWeb;
 use Carbon\Carbon;
 use App\Models\NoticiaImpresso;
 use App\Jobs\GerarRelatorioJob;
