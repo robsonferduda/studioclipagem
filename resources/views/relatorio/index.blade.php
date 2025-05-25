@@ -42,7 +42,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Cliente</label>
-                                <select class="form-control select2" name="id_cliente" id="id_cliente">
+                                <select class="form-control cliente" name="id_cliente" id="id_cliente">
                                     <option value="">Selecione um cliente</option>
                                     @foreach($clientes as $cliente)
                                         <option value="{{ $cliente->id }}" {{ ($cliente_selecionado ==  $cliente->id) ? 'selected' : '' }}>{{ $cliente->nome }}</option>
@@ -53,7 +53,7 @@
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label>Área</label>
-                                <select class="form-control select2" name="emissora_id" id="emissora_id">
+                                <select class="form-control area" name="id_area" id="id_area">
                                     <option value="">Selecione uma área</option>
                                 </select>
                             </div>
@@ -61,8 +61,12 @@
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label>Status</label>
-                                <select class="form-control select2" name="emissora_id" id="emissora_id">
+                                <select class="form-control select2" name="cd_sentimento" id="cd_sentimento">
                                     <option value="">Selecione um status</option>
+                                    <option value="">Selecione um sentimento</option>
+                                    <option value="1">Positivo</option>
+                                    <option value="0">Neutro</option>
+                                    <option value="-1">Negativo</option>
                                 </select>
                             </div>
                         </div>
@@ -72,7 +76,7 @@
                             <div class="form-check mt-3">
                                 <div class="form-check">
                                     <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" name="is_active" value="true">
+                                        <input class="form-check-input" type="checkbox" name="fl_impresso" {{ ($fl_impresso == true) ? 'checked' : '' }} value="true">
                                         Clipagem de Jornal
                                         <span class="form-check-sign"></span>
                                     </label>
@@ -86,7 +90,7 @@
                             <div class="form-check mt-3">
                                 <div class="form-check">
                                     <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" name="is_active" value="true">
+                                        <input class="form-check-input" type="checkbox" name="fl_web" {{ ($fl_web == true) ? 'checked' : '' }} value="true">
                                         Clipagem de Web
                                         <span class="form-check-sign"></span>
                                     </label>
@@ -100,7 +104,7 @@
                             <div class="form-check mt-3">
                                 <div class="form-check">
                                     <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" name="is_active" value="true">
+                                        <input class="form-check-input" type="checkbox" name="fl_radio" {{ ($fl_radio == true) ? 'checked' : '' }} value="true">
                                         Clipagem de Rádio
                                         <span class="form-check-sign"></span>
                                     </label>
@@ -142,7 +146,7 @@
                             <div class="form-check mt-3">
                                 <div class="form-check">
                                     <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" name="is_active" value="true">
+                                        <input class="form-check-input" type="checkbox" name="fl_tv" {{ ($fl_tv == true) ? 'checked' : '' }} value="true">
                                         Clipagem de TV
                                         <span class="form-check-sign"></span>
                                     </label>
@@ -265,4 +269,85 @@
         </div>
     </div>
 </div> 
+@endsection
+@section('script')
+<script>
+    $( document ).ready(function() {
+
+        var host =  $('meta[name="base-url"]').attr('content');
+
+        //Inicializa o combo de clientes
+        $.ajax({
+            url: host+'/api/cliente/buscarClientes',
+            type: 'GET',
+            beforeSend: function() {
+                    
+            },
+            success: function(data) {
+                if(!data) {
+                    Swal.fire({
+                        text: 'Não foi possível buscar os clientes. Entre em contato com o suporte.',
+                        type: "warning",
+                        icon: "warning",
+                    });
+                    return;
+                }
+
+                data.forEach(element => {
+                    let option = new Option(element.text, element.id);
+                    $('.cliente').append(option);
+                });
+            },
+            complete: function(){
+                       
+            }
+        });
+
+        $(document).on('change', '.cliente', function() {
+            var cliente = $(this).val();
+            buscarAreas(cliente);
+        });
+
+        function buscarAreas(cliente){
+
+            if(cliente == '') {
+                $('.area').attr('disabled', true);
+                $('.area').append('<option value="">Cliente não possui áreas</option>').val('');
+                return;
+            }
+
+            $.ajax({
+                url: host+'/api/cliente/getAreasCliente',
+                type: 'GET',
+                data: {
+                    "_token": $('meta[name="csrf-token"]').attr('content'),
+                    "cliente": cliente,
+                },
+                beforeSend: function() {
+                    $('.area').append('<option value="">Carregando...</option>').val('');
+                },
+                success: function(data) {
+
+                    $('.area').find('option').remove();
+                    $('.area').attr('disabled', false);
+
+                    if(data.length == 0) {                            
+                        $('.area').append('<option value="">Cliente não possui áreas vinculadas</option>').val('');
+                        return;
+                    }
+                            
+                    $('.area').append('<option value="">Selecione uma área</option>').val('');
+                    data.forEach(element => {
+                        let option = new Option(element.descricao, element.id);
+                        $('.area').append(option);
+                    });             
+                },
+                complete: function(){
+                            
+                }
+            });
+        }   
+
+    });
+</script>
 @endsection

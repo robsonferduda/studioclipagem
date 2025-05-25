@@ -42,12 +42,17 @@ class RelatorioController extends Controller
         $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
         $cliente_selecionado = ($request->id_cliente) ? $request->id_cliente : null;
 
+        $fl_web = $request->fl_web == true ? true : false;
+        $fl_tv = $request->fl_tv == true ? true : false;
+        $fl_impresso = $request->fl_impresso == true ? true : false;
+        $fl_radio = $request->fl_radio == true ? true : false;
+
         if($request->isMethod('POST')){
 
-            $dados_impresso = $this->dadosImpresso($dt_inicial, $dt_final,$cliente_selecionado);
-            $dados_radio    = $this->dadosRadio($dt_inicial, $dt_final,$cliente_selecionado);
-            $dados_web      = $this->dadosWeb($dt_inicial, $dt_final,$cliente_selecionado);
-            $dados_tv      = $this->dadosTv($dt_inicial, $dt_final,$cliente_selecionado);
+            $dados_impresso = ($fl_impresso) ? $this->dadosImpresso($dt_inicial, $dt_final,$cliente_selecionado) : array();
+            $dados_radio    = ($fl_radio) ? $this->dadosRadio($dt_inicial, $dt_final,$cliente_selecionado) : array();
+            $dados_web      = ($fl_web) ? $this->dadosWeb($dt_inicial, $dt_final,$cliente_selecionado) : array();
+            $dados_tv      = ($fl_tv) ? $this->dadosTv($dt_inicial, $dt_final,$cliente_selecionado) : array();
 
             $dados = array_merge($dados_impresso, $dados_radio, $dados_web, $dados_tv);
 
@@ -71,14 +76,14 @@ class RelatorioController extends Controller
             
                 case 'pesquisar': 
                     
-                    return view('relatorio/index', compact('dados','clientes','cliente_selecionado','dt_inicial','dt_final'));
+                    return view('relatorio/index', compact('dados','clientes','cliente_selecionado','dt_inicial','dt_final','fl_web','fl_tv','fl_radio','fl_impresso'));
 
                 break;
             }
 
         }
 
-        return view('relatorio/index', compact('dados','clientes','cliente_selecionado','dt_inicial','dt_final'));
+        return view('relatorio/index', compact('dados','clientes','cliente_selecionado','dt_inicial','dt_final','fl_web','fl_tv','fl_radio','fl_impresso'));
     }
 
     public function dadosImpresso($dt_inicial, $dt_final,$cliente_selecionado)
