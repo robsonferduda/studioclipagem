@@ -67,7 +67,8 @@ class BoletimController extends Controller
                     titulo_noticia AS titulo, 
                     'web' as tipo, 
                     TO_CHAR(data_noticia, 'DD/MM/YYYY') AS data_formatada,
-                    t2.nome as fonte
+                    t2.nome as fonte,
+                    t4.id_boletim as id_boletim
                 FROM noticias_web t1
                 JOIN fonte_web t2 ON t2.id = t1.id_fonte
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id
