@@ -25,6 +25,17 @@
                     {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['noticia/web/prints']]) !!}
                         <div class="form-group">
                             <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Cliente</label>
+                                        <select class="form-control select2" name="cliente" id="cliente">
+                                            <option value="">Selecione um cliente</option>
+                                            @foreach ($clientes as $cliente)
+                                                <option value="{{ $cliente->id }}" {{ ($cliente_selecionado == $cliente->id) ? 'selected' : '' }}>{{ $cliente->nome }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
                                         <label>Data Inicial</label>
@@ -85,7 +96,7 @@
                                                 {{ ($noticia->fonte) ? $noticia->fonte->nome : 'Fonte não cadastrada' }}
                                             </p> 
                                             @forelse($noticia->clientes as $cliente)
-                                                <p class="mb-2">
+                                                <p class="mb-1">
                                                     <span>{{ $cliente->nome }}</span>     
                                                 </p>
                                             @empty
