@@ -10,6 +10,7 @@ use App\Models\BoletimNoticias;
 use App\Models\SituacaoBoletim;
 use App\Models\Cliente;
 use App\Models\NoticiaImpresso;
+use App\Models\NoticiaWeb;
 use Illuminate\Http\Request;
 use Laracasts\Flash\Flash;
 use Illuminate\Support\Facades\DB;
