@@ -123,7 +123,17 @@ class BoletimController extends Controller
     public function adicionarNoticia(Request $request)
     {
         $boletim = Boletim::find($request->id_boletim);
-        $noticia = NoticiaImpresso::find($request->id_noticia);
+
+        switch ($request->tipo) {
+            case 'web':
+                $noticia = NoticiaWeb::find($request->id_noticia);
+                break;
+            case 'impresso':
+                $noticia = NoticiaImpresso::find($request->id_noticia);
+                break;
+            default:
+                return response()->json(['error' => 'Tipo de notícia inválido'], 400);
+        }
 
         $boletim_noticias = BoletimNoticias::where('id_boletim', $boletim->id)->where('id_noticia',$request->id_noticia)->first();
                 
