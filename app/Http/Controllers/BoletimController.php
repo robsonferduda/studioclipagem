@@ -61,15 +61,57 @@ class BoletimController extends Controller
     {   
         $noticias = array();
 
-        $sql = "SELECT t1.id, 
+        $sql_web = "SELECT t1.id, 
+                    titulo_noticia AS titulo, 
+                    'web' as tipo, 
+                    TO_CHAR(data_noticia, 'DD/MM/YYYY') AS data_formatada,
+                    t2.nome as fonte
+                FROM noticias_web t1
+                JOIN fonte_web t2 ON t2.id = t1.id_fonte
+                JOIN noticia_cliente t3 ON t3.noticia_id = t1.id
+                WHERE 1=1";
+
+        if ($request->has('dt_inicial') && $request->has('dt_final')) {
+            $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d');
+            $dt_final = $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d');
+            $sql_web .= " AND data_noticia BETWEEN '$dt_inicial 00:00:00' AND '$dt_final 23:59:59'";
+        }
+
+        if ($request->has('cliente')) {
+            $cliente = $request->cliente;
+            $sql_web .= " AND t3.cliente_id = $cliente";
+        }
+       
+        $sql_web .= " ORDER BY data_noticia DESC";
+        
+        $noticias_web = DB::select($sql_web);
+
+        $sql_impresso = "SELECT t1.id, 
                     titulo, 
                     'impresso' as tipo, 
                     TO_CHAR(dt_clipagem, 'DD/MM/YYYY') AS data_formatada,
                     t2.nome as fonte
                 FROM noticia_impresso t1
-                JOIN jornal_online t2 ON t2.id = t1.id_fonte";
+                JOIN jornal_online t2 ON t2.id = t1.id_fonte
+                JOIN noticia_cliente t3 ON t3.noticia_id = t1.id
+                WHERE 1=1";
 
-        $noticias = DB::select($sql);
+        if ($request->has('dt_inicial') && $request->has('dt_final')) {
+            $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d');
+            $dt_final = $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d');
+            $sql_impresso .= " AND dt_clipagem BETWEEN '$dt_inicial 00:00:00' AND '$dt_final 23:59:59'";
+        }
+
+        if ($request->has('cliente')) {
+            $cliente = $request->cliente;
+            $sql_impresso .= " AND t3.cliente_id = $cliente";
+        }
+       
+        $sql_impresso .= " ORDER BY dt_clipagem DESC";
+        
+        $noticias_impresso = DB::select($sql_impresso);
+
+        $noticias = array_merge($noticias_web, $noticias_impresso);
 
         return response()->json($noticias);
     }
@@ -83,11 +125,14 @@ class BoletimController extends Controller
 
     public function editar($id)
     {   
+        $dt_inicial = date("Y-m-d");
+        $dt_final = date("Y-m-d");
+
         $boletim = Boletim::find($id);
         $clientes = Cliente::orderBy('nome')->get();
         $situacoes = SituacaoBoletim::all();
 
-        return view('boletim/editar', compact('boletim','clientes','situacoes'));
+        return view('boletim/editar', compact('boletim','clientes','situacoes','dt_inicial','dt_final'));
     }
 
     public function store(Request $request)

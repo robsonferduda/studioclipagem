@@ -62,6 +62,30 @@
                     <div class="col-md-12">
                         <h6 class="mt-3"><i class="fa fa-check" style="font-size: 20px; vertical-align: sub;"></i> Selecionar Notícias <small>Notícias presentes no boletim aparecem destacadas</small></h6>
                     </div>
+                    
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Data Inicial</label>
+                            <input type="text" class="form-control datepicker" name="dt_inicial" id="dt_inicial" required="true" value="{{ \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y') }}" placeholder="__/__/____">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Data Final</label>
+                            <input type="text" class="form-control datepicker" name="dt_final" id="dt_final" required="true" value="{{ \Carbon\Carbon::parse($dt_final)->format('d/m/Y') }}" placeholder="__/__/____">
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label class="font-black"><i class="fa fa-filter"></i> Filtrar por cliente</label>
+                            <select class="form-control select2" name="cliente_busca" id="cliente_busca">
+                                <option value="">Selecione um cliente</option>
+                                @foreach ($clientes as $cliente)
+                                    <option value="{{ $cliente->id }}">{{ $cliente->nome }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
                     <div class="col-md-3">
                         <div class="form-check mt-3">
                             <div class="form-check">
@@ -141,6 +165,12 @@
             var token = $('meta[name="csrf-token"]').attr('content');
             var dados = [];
 
+            var cliente = $("#id_cliente").val();
+            if(cliente) {
+                $("#cliente_busca").val(cliente);
+            }
+
+    
             listaNoticias();
 
             $(".todas").change(function(){
@@ -149,7 +179,7 @@
 
             function listaNoticias(){
 
-                cliente = $("#cliente").val();
+                cliente = $("#cliente_busca").val();
                 flag_web = $("#midia-web").is(":checked");
                 flag_impresso = $("#midia-impresso").is(":checked");
                 flag_tv = $("#midia-tv").is(":checked");
@@ -221,6 +251,10 @@
                 });
             }
 
+            $("#cliente_busca").change(function(){
+                listaNoticias();
+            });
+
             $("#midia-impresso").change(function(){
                 listaNoticias();
             });
@@ -243,7 +277,7 @@
                 }
             });
 
-            $(".data-event").datetimepicker({
+            $(".datepicker").datetimepicker({
                 format: 'DD/MM/YYYY',
                 icons: {
                 time: "fa fa-clock-o",
@@ -256,7 +290,7 @@
                 clear: 'fa fa-trash',
                 close: 'fa fa-remove'
                 }
-            }).on('dp.change', function (ev) {
+            }).on('dp.change', function (e) {
                 listaNoticias() ;//your function call
             });
 
