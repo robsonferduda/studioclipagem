@@ -80,10 +80,17 @@
                                         </div>
                                         <div class="float-left">
                                             <p class="mb-1"><strong>{{ $noticia->titulo_noticia }}</strong></p>
-                                            <p class="mb-1 text-muted"> 
+                                            <p class="mb-1 text-muted" style="font-weight: 600;"> 
                                                 {!! ($noticia->data_noticia) ? date('d/m/Y', strtotime($noticia->data_noticia)) : date('d/m/Y', strtotime($noticia->data_noticia)) !!} - 
                                                 {{ ($noticia->fonte) ? $noticia->fonte->nome : 'Fonte não cadastrada' }}
                                             </p> 
+                                            @forelse($noticia->clientes as $cliente)
+                                                <p class="mb-2">
+                                                    <span>{{ $cliente->nome }}</span>     
+                                                </p>
+                                            @empty
+                                                <p class="text-danger mb-1">Nenhum cliente associada à notícia</p>
+                                            @endforelse
                                             <p>Notícia cadastrada em {{ \Carbon\Carbon::parse($noticia->created_at)->format('d/m/Y H:i:s') }}</p>
                                         </div>
                                         <a title="Notícia" href="{{ $noticia->url_noticia }}" target="_BLANK" class="btn btn-success btn-link btn-icon pull-right"><i class="fa fa-globe fa-2x"></i></a>
