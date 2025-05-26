@@ -7,7 +7,8 @@ use App\FbPagePost;
 use App\Media;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', 'HomeController@index');
+//Route::get('/', 'HomeController@index');
+Route::get('/', 'HomeController@site');
 Route::get('evento', 'HomeController@evento');
 Route::get('/home', 'HomeController@index');
 Route::get('/politica-de-privacidade', function () { return view('politica-de-privacidade'); });
@@ -52,10 +53,12 @@ Route::middleware(['web'])->group(function () {
 
 	Route::post('areas/cliente/cadastrar','AreaController@cadastrarAreaCliente');
 
-	Route::get('boletins','BoletimController@index');
+	Route::match(array('GET', 'POST'),'boletins','BoletimController@index');
+
 	Route::get('boletim/cadastrar','BoletimController@cadastrar');
 	Route::get('boletim/detalhes/{id}','BoletimController@detalhes');
 	Route::get('boletim/editar/{id}','BoletimController@editar');
+	Route::get('boletim/excluir/{id}','BoletimController@destroy');
 	Route::get('boletim/{id}/enviar','BoletimController@enviar');
 	Route::get('boletim/{id}/outlook','BoletimController@outlook');
 	Route::get('boletim/{id}/visualizar','BoletimController@visualizar');

@@ -21,6 +21,43 @@
                 @include('layouts.mensagens')
             </div>           
             <div class="col-lg-12 col-sm-12">
+                {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['boletim', $boletim->id], 'method' => 'patch']) !!}
+                    <div class="row mt-0">
+                        <div class="col-md-4 col-sm-6">
+                                <div class="form-group">
+                                    <label>Título</label>
+                                    <input type="text" class="form-control" name="titulo" id="titulo" required="true" value="Boletim Digital - Studio Clipagem - {{ date('d/m/Y') }}">
+                                </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <div class="form-group">
+                                <label>Cliente</label>
+                                <select class="form-control select2" name="id_cliente" id="id_cliente" required="true">
+                                    <option value="">Selecione um cliente</option>
+                                    @foreach($clientes as $cliente)
+                                        <option value="{!! $cliente->id !!}" {{ ($cliente->id == $boletim->id_cliente) ? 'selected' : ''}}>{!! $cliente->nome !!}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>  
+                        <div class="col-md-2 col-sm-12">
+                            <div class="form-group">
+                                <label>Situação</label>
+                                <select class="form-control select2" name="id_situacao" id="id_situacao" required="true">
+                                    <option value="">Selecione uma situação</option>
+                                    @foreach($situacoes as $situacao)
+                                        <option value="{!! $situacao->id !!}" {{ ($situacao->id == $boletim->id_situacao) ? 'selected' : '' }}>{!! $situacao->ds_situacao !!}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>  
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary mt-4 w-100" name="btn_enviar" value="salvar"><i class="fa fa-save"></i> Atualizar</button>
+                            </div>
+                        </div>
+                    </div>
+                {!! Form::close() !!} 
                 <div class="row mt-0">
                     <div class="col-md-12">
                         <h6 class="mt-3"><i class="fa fa-check" style="font-size: 20px; vertical-align: sub;"></i> Selecionar Notícias <small>Notícias presentes no boletim aparecem destacadas</small></h6>

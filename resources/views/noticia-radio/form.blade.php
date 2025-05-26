@@ -306,9 +306,7 @@
                 }
             });*/
 
-           
-          
-            $(document).on('change', '#emissora', function() {
+            $(document).on('change', '#emissora_id', function() {
                 
                 var emissora = $(this).val();
                 buscarProgramas(emissora);

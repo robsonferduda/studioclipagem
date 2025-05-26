@@ -12,7 +12,7 @@ class Boletim extends Model
     protected $connection = 'pgsql';
     protected $table = 'boletim';
 
-    protected $fillable = ['id_cliente','dt_boletim','titulo'];
+    protected $fillable = ['id_cliente','id_situacao','dt_boletim','titulo','total_views','id_usuario'];
 
     public function cliente()
     {
@@ -21,6 +21,16 @@ class Boletim extends Model
 
     public function situacao()
     {
-        return $this->hasMany('App\SiatuacaoBoletim','media_id','id');
+        return $this->hasOne('App\Models\SituacaoBoletim','id','id_situacao');
+    }
+
+    public function usuario()
+    {
+        return $this->hasOne('App\User','id','id_usuario');
+    }
+
+    public function noticias()
+    {
+        return array();
     }
 }

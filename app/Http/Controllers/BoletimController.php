@@ -6,6 +6,7 @@ use Auth;
 use Mail;
 use Carbon\Carbon;
 use App\Models\Boletim;
+use App\Models\SituacaoBoletim;
 use App\Models\Cliente;
 use App\Models\NoticiaImpresso;
 use Illuminate\Http\Request;
@@ -31,11 +32,21 @@ class BoletimController extends Controller
     {
         $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
         $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
+        $cliente_selecionado = ($request->cliente) ? $request->cliente : null;
 
         $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
-        $boletins = Boletim::whereBetween('dt_boletim', [$dt_inicial." 00:00:00", $dt_final." 23:59:59"])->get();
 
-        return view('boletim/index',compact('boletins','clientes','dt_inicial','dt_final'));
+        $boletim = Boletim::query();
+
+        $boletim->when($cliente_selecionado, function ($q) use ($cliente_selecionado) {
+            return $q->where('id_cliente', $cliente_selecionado);
+        });
+
+        $boletim->whereBetween('dt_boletim', [$dt_inicial." 00:00:00", $dt_final." 23:59:59"]);
+
+        $boletins = $boletim->get();
+
+        return view('boletim/index',compact('boletins','clientes','dt_inicial','dt_final','cliente_selecionado'));
     }
 
     public function detalhes($id)
@@ -74,14 +85,16 @@ class BoletimController extends Controller
     {   
         $boletim = Boletim::find($id);
         $clientes = Cliente::orderBy('nome')->get();
+        $situacoes = SituacaoBoletim::all();
 
-        return view('boletim/editar', compact('boletim','clientes'));
+        return view('boletim/editar', compact('boletim','clientes','situacoes'));
     }
 
     public function store(Request $request)
     {
         $dt_boletim = ($request->dt_boletim) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_boletim)->format('Y-m-d') : date("Y-m-d");
         $request->merge(['dt_boletim' => $dt_boletim]);
+        $request->merge(['id_usuario' => Auth::user()->id ]);
 
         try {
             
@@ -109,20 +122,50 @@ class BoletimController extends Controller
         }
     }
 
+    public function update(Request $request, $id)
+    {
+        $boletim = Boletim::find($id);
+
+        try {
+            
+            $boletim->update($request->all());
+
+            $retorno = array('flag' => true,
+                             'msg' => '<i class="fa fa-check"></i> Dados inseridos com sucesso');
+
+        } catch (\Illuminate\Database\QueryException $e) {
+
+            $retorno = array('flag' => false,
+                             'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
+
+        } catch (\Exception $e) {
+            $retorno = array('flag' => true,
+                             'msg' => '<i class="fa fa-times"></i> Ocorreu um erro ao inserir o registro');
+        }
+
+        if ($retorno['flag']) {
+            Flash::success($retorno['msg']);
+            return redirect('boletim/editar/'.$boletim->id)->withInput();
+        } else {
+            Flash::error($retorno['msg']);
+            return redirect('boletim/cadastrar')->withInput();
+        }
+    }
+
     public function visualizar($id)
     {   
-        $boletim = Boletim::where('id', $id)->first();
-        $dados = $this->getDadosBoletim($id);        
+        $boletim = Boletim::where('id', $id)->first(); 
+        $boletim->total_views = $boletim->total_views + 1;
+        $boletim->save();
     
-        return view('boletim/visualizar', compact('boletim', 'dados'));
+        return view('boletim/visualizar', compact('boletim'));
     }
 
     public function outlook($id)
     {   
-        $boletim = Boletim::where('id', $id)->first();
-        $dados = $this->getDadosBoletim($id);    
+        $boletim = Boletim::where('id', $id)->first();   
             
-        return view('boletim/outlook', compact('boletim', 'dados'));
+        return view('boletim/outlook', compact('boletim'));
     }
 
     public function enviar($id)
@@ -225,9 +268,14 @@ class BoletimController extends Controller
         return view('boletim/resumo', compact('boletim', 'logs'));
     }
  
-    public function getDadosBoletim($id)
+    public function destroy($id)
     {
-        
-      
+        $boletim = Boletim::find($id);
+        if($boletim->delete())
+            Flash::success('<i class="fa fa-check"></i> Boletim excluído com sucesso');
+        else
+            Flash::error("Erro ao excluir boletim");
+
+        return redirect('boletins')->withInput();
     }
 }

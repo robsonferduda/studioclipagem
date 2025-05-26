@@ -31,7 +31,7 @@ class HomeController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth',['except' => ['site']]);
 
         $cliente = null;
 
@@ -42,6 +42,11 @@ class HomeController extends Controller
         $this->data_atual = session('data_atual');
         
         Session::put('url','home');
+    }
+
+    public function site()
+    {
+        return view('site');
     }
 
     public function evento()

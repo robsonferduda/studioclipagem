@@ -136,17 +136,17 @@ class ProgramaController extends Controller
 
     public function buscarProgramas(Request $request)
     {
-        $programas = Programa::select('id', 'nome as text');
+        $programas = Programa::select('id', 'nome_programa as text');
         if(!empty($request->query('q'))) {
             $replace = preg_replace('!\s+!', ' ', $request->query('q'));
             $busca = str_replace(' ', '%', $replace);
-            $programas->whereRaw('nome ILIKE ?', ['%' . strtolower($busca) . '%']);
+            $programas->whereRaw('nome_programa ILIKE ?', ['%' . strtolower($busca) . '%']);
         }
         if(!empty($request->query('emissora'))) {
             $programas->where('emissora_id', $request->query('emissora'));
         }
 
-        $result = $programas->orderBy('nome', 'asc')->paginate(30);
+        $result = $programas->orderBy('nome_programa', 'asc')->paginate(30);
         return response()->json($result);
     }
 
@@ -154,8 +154,8 @@ class ProgramaController extends Controller
     {
         $emissora = $request->emissora;
 
-        $programas = Programa::select('id', 'nome as text');
-        $result = $programas->where('emissora_id', $emissora)->orderBy('nome', 'asc')->get();
+        $programas = Programa::select('id', 'nome_programa as text');
+        $result = $programas->where('id_emissora', $emissora)->orderBy('nome_programa', 'asc')->get();
         return response()->json($result);
     }
 

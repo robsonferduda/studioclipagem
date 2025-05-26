@@ -21,36 +21,43 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <div class="form-group m-3 w-70">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <p class="text-info">São listados todos os boletins gerados na data atual. Para selecionar outro período, utilize as opções na tela.</p>
-                            </div>
-                            <div class="col-md-8">
-                                <div class="form-group">
-                                    <label class="font-black"><i class="fa fa-filter"></i> Filtrar por cliente</label>
-                                    <select class="form-control select2" name="regra" id="regra">
-                                        <option value="">Selecione um cliente</option>
-                                        @foreach ($clientes as $cliente)
-                                            <option value="{{ $cliente->id }}">{{ $cliente->nome }}</option>
-                                        @endforeach
-                                    </select>
+                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['boletins']]) !!}
+                        <div class="form-group m-3 w-70">
+                            <div class="row">
+                                <div class="col-md-12 mt-0 mb-0">
+                                    <p class="text-info">São listados todos os boletins gerados na data atual. Para selecionar outro período, utilize as opções na tela.</p>
                                 </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label>Data Inicial</label>
-                                    <input type="text" class="form-control datepicker" name="dt_inicial" required="true" value="{{ \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y') }}" placeholder="__/__/____">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="font-black"><i class="fa fa-filter"></i> Filtrar por cliente</label>
+                                        <select class="form-control select2" name="cliente" id="cliente">
+                                            <option value="">Selecione um cliente</option>
+                                            @foreach ($clientes as $cliente)
+                                                <option value="{{ $cliente->id }}" {{ ($cliente_selecionado == $cliente->id) ? 'selected' : '' }}>{{ $cliente->nome }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label>Data Final</label>
-                                    <input type="text" class="form-control datepicker" name="dt_final" required="true" value="{{ \Carbon\Carbon::parse($dt_final)->format('d/m/Y') }}" placeholder="__/__/____">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Data Inicial</label>
+                                        <input type="text" class="form-control datepicker" name="dt_inicial" required="true" value="{{ \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y') }}" placeholder="__/__/____">
+                                    </div>
                                 </div>
-                            </div>
-                        </div>     
-                    </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Data Final</label>
+                                        <input type="text" class="form-control datepicker" name="dt_final" required="true" value="{{ \Carbon\Carbon::parse($dt_final)->format('d/m/Y') }}" placeholder="__/__/____">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-primary w-100 mt-4" name="btn_enviar" value="salvar"><i class="fa fa-search"></i> Buscar</button>
+                                    </div>
+                                </div>
+                            </div>     
+                        </div>
+                    {!! Form::close() !!} 
                 </div>   
             </div> 
             <div class="col-lg-12 col-md-3 mb-12">
@@ -64,16 +71,26 @@
                                     </div>
                                     <div class="float-left">
                                         <p class="mb-1"><strong>{{ $boletim->titulo }}</strong></p>
-                                        <h6 style="color: #FF5722;">{{ $boletim->cliente->nome }}</h6>
-                                        <p>Criado em {{ \Carbon\Carbon::parse($boletim->created_at)->format('d/m/Y H:i:s') }}</p>
+                                        <h6 class="mb-1" style="color: #FF5722;">{{ $boletim->cliente->nome }}</h6>
+                                        <p>
+                                            Cadastrado em {{ \Carbon\Carbon::parse($boletim->created_at)->format('d/m/Y H:i:s') }}
+                                            {!! ($boletim->usuario) ? "por <strong>".$boletim->usuario->name."</strong>" : '' !!}
+                                            @if($boletim->total_views == 0)
+                                                - Nenhuma visualização
+                                            @elseif($boletim->total_views == 1)
+                                                - Visualizado {{ $boletim->total_views }} vez
+                                            @else($boletim->total_views > 1)
+                                                - Visualizado {{ $boletim->total_views }} vezes
+                                            @endif
+                                        </p>
                                     </div>
-                    
-                                    <div class="pull-right">
-                                        <span class="badge badge-pill badge-success">Processado</span>
-                                        
+                     
+                                    <div class="pull-right" style="text-align: right;">
+                                        <span class="badge badge-pill badge-{{ $boletim->situacao->ds_color }} mb-0">{{ $boletim->situacao->ds_situacao }}</span>                        
                                         <div>
-                                            <a title="Excluir" href="{{ url('boletim/excluir/'.$boletim->id) }}" class="btn btn-danger btn-link btn-icon btn-excluir pull-right"><i class="fa fa-trash fa-2x"></i></a>
-                                            <a title="Excluir" href="{{ url('boletim/editar/'.$boletim->id) }}" class="btn btn-primary btn-link btn-icon pull-right"><i class="fa fa-edit fa-2x"></i></a>                                           
+                                            <a title="Visualizar" href="{{ url('boletim/'.$boletim->id.'/visualizar') }}" class="btn btn-warning btn-link btn-icon pull-right"><i class="fa fa-eye fa-2x"></i></a> 
+                                            <a title="Editar" href="{{ url('boletim/editar/'.$boletim->id) }}" class="btn btn-primary btn-link btn-icon pull-right"><i class="fa fa-edit fa-2x"></i></a>   
+                                                <a title="Excluir" href="{{ url('boletim/excluir/'.$boletim->id) }}" class="btn btn-danger btn-link btn-icon btn-excluir pull-right"><i class="fa fa-trash fa-2x"></i></a>                         
                                         </div>
                                     </div>
                                 </div>
@@ -82,8 +99,8 @@
                     </div>
                 @empty
                     <div class="row">
-                        <div class="col-lg-12">
-                            <p class="text-danger">Nenhum boletim cadastrado para a data selecionada</p>
+                        <div class="col-lg-12 mt-0">
+                            <p class="text-danger">Nenhum boletim corresponde aos dados selecionados</p>
                         </div>
                     </div>
                 @endforelse

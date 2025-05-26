@@ -24,25 +24,21 @@
             <div class="card">
                 <div class="card-header">
                     <div class="row">
-                        <div class="col-md-8">
-                            @if($boletim->id_cliente == 452)
-                                <img src="https://studiosocial.app/img/logo_offshore.jpg">
-                            @else
-                                <img src="https://studiosocial.app/img/logo_zurich.png">
-                            @endif
+                        <div class="col-md-12">
+                           <img src="{{ asset('img/clientes/logo_expandida/'.$boletim->cliente->logo) }}">
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
                     <div class="col-md-12">
-                        <span class="pull-right mr-3">Foram encontradas {{ count($dados) }} notícias</span>
+                        <span class="pull-right mr-3">Foram encontradas  notícias</span>
                         @php
                             $area = "";
                             $tipo = "";
                             $tipo_formatado = "";
                             $flag = false;
                         @endphp
-                        @foreach($dados as $key => $noticia)
+                        @foreach($boletim->noticias() as $key => $noticia)
                             @if($noticia->area != null)
 
                                 @if($noticia->area != $area and $flag)

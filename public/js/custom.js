@@ -18,8 +18,6 @@ $(document).ready(function() {
 
     $('body').on("click", ".fa-eye", function(e) {
 
-        alert("sdfsdf");
-
         var target = "#"+$(this).data('target');
 
         $(target).attr('type','text');
