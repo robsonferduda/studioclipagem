@@ -257,7 +257,6 @@ class BoletimController extends Controller
         $boletim->total_views = $boletim->total_views + 1;
         $boletim->save();
 
-
         $noticias_impresso = $boletim->noticiasImpresso()->get();        
 
         return view('boletim/visualizar', compact('boletim','noticias_impresso'));
@@ -274,25 +273,23 @@ class BoletimController extends Controller
     {
         $boletim = Boletim::where('id', $id)->first();
 
-        $emails = $boletim->cliente->listaemails;
+        $emails = $boletim->cliente->emails;
 
         $lista = explode(",",$emails);
 
-        dd($lista);
-
-        //$lista_email[] = 'robsonferduda@gmail.com';
+        $lista_email[] = 'robsonferduda@gmail.com';
 
         for ($i=0; $i < count($lista); $i++) { 
             $lista_email[] = trim($lista[$i]);
         }
-
+        
         return view('boletim/lista-envio', compact('boletim', 'lista_email'));
     }
 
     public function enviarLista(Request $request)
     {
-        $boletim = Boletim::where('id', $request->id)->first();
-        $dados = $this->getDadosBoletim($request->id);   
+        $boletim = Boletim::where('id', $request->id)->first();  
+        $dados = array();
         $logs = array();
         
         $data = array("dados"=> $dados, "boletim" => $boletim);
@@ -317,7 +314,7 @@ class BoletimController extends Controller
             $logs[] = array('email' => $emails[$i],'tipo' => $tipo, 'msg' => $msg);
         }
 
-        $boletim->status_envio = 'enviado';
+        
         $boletim->save();
 
         return view('boletim/resumo', compact('boletim', 'logs'));

@@ -20,6 +20,19 @@
             <div class="col-md-12">
                 @include('layouts.mensagens')
             </div>
+            <div class="col-md-12">
+                <div class="alert alert-info alert-with-icon" data-notify="container">
+                    <span data-notify="icon" class="ti-pie-chart">
+                        <i class="fa fa-send"></i>
+                    </span>
+                    <span data-notify="message">
+                        <strong class="d-block">Atenção!</strong>
+                        O boletim será enviado para <strong>todos</strong> os emails desta lista. 
+                        Caso deseje remover algum dos emails da lista de envio atual, basta desmarcar o endereço. 
+                        No caso de uma remoção definitiva, entre em contato com o suporte.
+                    </span>
+                </div>
+            </div>
             {!! Form::open(['id' => 'frm_user_create', 'url' => ['boletim/enviar/lista']]) !!}
                 <input type="hidden" name="id" value="{{ $boletim->id }}">
                 <div class="row px-3">
@@ -32,28 +45,17 @@
                             </label>
                             @foreach($lista_email as $key => $email)
                                 <label class="form-check-label d-block mb-3 txt-black">
-                                    <input class="form-check-input" type="checkbox" name="emails[]" value="{{ $email['email'] }}" checked="checked">
-                                        {{ $email['nome'] }} ({{ $email['email'] }})
+                                    <input class="form-check-input" type="checkbox" name="emails[]" value="{{ $email }}" checked="checked">
+                                        {{ $email }}
                                     <span class="form-check-sign"></span>
                                 </label>
                             @endforeach
                         </div>
                     </div>     
-                    <div class="col-md-6">
-                        <div class="alert alert-default alert-with-icon" data-notify="container">
-                            <span data-notify="icon" class="ti-pie-chart">
-                                <i class="fa fa-send"></i>
-                            </span>
-                            <span data-notify="message">
-                                <strong class="d-block">Atenção!</strong>
-                                O boletim será enviado para todos os emails desta lista. 
-                                Caso deseje remover algum dos emails da lista de envio atual, basta desmarcar o endereço. 
-                                No caso de uma remoção definitiva, entre em contato com o suporte.
-                            </span>
-                        </div>
-                        <button type="submit" class="btn btn-success btn-send-mail"><i class="fa fa-send"></i> Enviar</button>
+                    <div class="col-md-12 center">                      
+                        <button type="submit" class="btn btn-success btn-send-mail"><i class="fa fa-send"></i> Enviar</button> 
                     </div> 
-                </div>  
+                </div> 
             {!! Form::close() !!}  
         </div>
     </div>

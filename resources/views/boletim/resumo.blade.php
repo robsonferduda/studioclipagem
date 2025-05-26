@@ -45,7 +45,7 @@
                     </tbody>
                 </table>   
                 <div class="center">
-                    <a href="{{ url('boletim',$boletim->id) }}" class="btn btn-primary"><i class="fa fa-back"></i> Voltar Para Boletim</a>
+                    <a href="{{ url('boletim/'.$boletim->id.'/detalhes') }}" class="btn btn-primary"><i class="fa fa-back"></i> Voltar Para Boletim</a>
                 </div>
             </div>        
         </div>
