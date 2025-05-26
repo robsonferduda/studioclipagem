@@ -89,8 +89,9 @@
                                         <span class="badge badge-pill badge-{{ $boletim->situacao->ds_color }} mb-0">{{ $boletim->situacao->ds_situacao }}</span>                        
                                         <div>
                                             <a title="Visualizar" href="{{ url('boletim/'.$boletim->id.'/visualizar') }}" class="btn btn-warning btn-link btn-icon pull-right"><i class="fa fa-eye fa-2x"></i></a> 
+                                            <a title="Detalhes" href="{{ url('boletim/'.$boletim->id.'/detalhes') }}" class="btn btn-info btn-link btn-icon pull-right"><i class="fa fa-list fa-2x"></i></a> 
                                             <a title="Editar" href="{{ url('boletim/editar/'.$boletim->id) }}" class="btn btn-primary btn-link btn-icon pull-right"><i class="fa fa-edit fa-2x"></i></a>   
-                                                <a title="Excluir" href="{{ url('boletim/excluir/'.$boletim->id) }}" class="btn btn-danger btn-link btn-icon btn-excluir pull-right"><i class="fa fa-trash fa-2x"></i></a>                         
+                                            <a title="Excluir" href="{{ url('boletim/excluir/'.$boletim->id) }}" class="btn btn-danger btn-link btn-icon btn-excluir pull-right"><i class="fa fa-trash fa-2x"></i></a>                         
                                         </div>
                                     </div>
                                 </div>

@@ -13,5 +13,5 @@ class BoletimNoticias extends Model
     protected $table = 'boletim_noticia';
 
     protected $fillable = ['id_cliente'];
-
+    
 }

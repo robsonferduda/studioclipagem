@@ -12,7 +12,7 @@ class Boletim extends Model
     protected $connection = 'pgsql';
     protected $table = 'boletim';
 
-    protected $fillable = ['id_cliente','id_situacao','dt_boletim','titulo','total_views','id_usuario'];
+    protected $fillable = ['id_cliente','id_situacao','dt_boletim','titulo','total_views','id_usuario','dt_envio'];
 
     public function cliente()
     {
@@ -29,8 +29,8 @@ class Boletim extends Model
         return $this->hasOne('App\User','id','id_usuario');
     }
 
-    public function noticias()
+    public function noticiasImpresso()
     {
-        return array();
+        return $this->belongsToMany(NoticiaImpresso::class,'boletim_noticia','id_boletim','id_noticia')->withPivot('id_tipo')->where('id_tipo', 1)->withTimestamps();
     }
 }
