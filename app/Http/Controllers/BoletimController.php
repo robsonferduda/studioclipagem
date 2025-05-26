@@ -6,6 +6,7 @@ use Auth;
 use Mail;
 use Carbon\Carbon;
 use App\Models\Boletim;
+use App\Models\BoletimNoticias;
 use App\Models\SituacaoBoletim;
 use App\Models\Cliente;
 use App\Models\NoticiaImpresso;
@@ -87,13 +88,15 @@ class BoletimController extends Controller
         $noticias_web = DB::select($sql_web);
 
         $sql_impresso = "SELECT t1.id, 
-                    titulo, 
+                    t1.titulo, 
                     'impresso' as tipo, 
                     TO_CHAR(dt_clipagem, 'DD/MM/YYYY') AS data_formatada,
-                    t2.nome as fonte
+                    t2.nome as fonte,
+                    t4.id_boletim as id_boletim
                 FROM noticia_impresso t1
                 JOIN jornal_online t2 ON t2.id = t1.id_fonte
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id
+                LEFT JOIN boletim_noticia t4 ON t4.id_noticia = t3.noticia_id AND t4.id_boletim = $request->id_boletim
                 WHERE 1=1";
 
         if ($request->has('dt_inicial') && $request->has('dt_final')) {
@@ -114,6 +117,43 @@ class BoletimController extends Controller
         $noticias = array_merge($noticias_web, $noticias_impresso);
 
         return response()->json($noticias);
+    }
+
+    public function adicionarNoticia(Request $request)
+    {
+        $boletim = Boletim::find($request->id_boletim);
+        $noticia = NoticiaImpresso::find($request->id_noticia);
+
+        $boletim_noticias = BoletimNoticias::where('id_boletim', $boletim->id)->where('id_noticia',$request->id_noticia)->first();
+                
+        if($boletim && $noticia) {
+            // Verifica se existe boletim
+            if (!$boletim_noticias) {
+                $boletim_noticias = new BoletimNoticias();
+                $boletim_noticias->id_boletim = $boletim->id;
+                $boletim_noticias->id_noticia = $request->id_noticia;
+            }else{
+                // Se já existe, apenas atualiza a notícia
+                if ($boletim_noticias->id_noticia != $request->id_noticia) {
+                    $boletim_noticias->id_noticia = $request->id_noticia;
+                }
+            }
+
+            $boletim_noticias->save();
+        }        
+    }
+
+    public function removerNoticia(Request $request)
+    {
+        $boletim = Boletim::find($request->id_boletim);
+        $boletim_noticias = BoletimNoticias::where('id_boletim', $boletim->id)->where('id_noticia', $request->id_noticia)->withTrashed()->first();
+
+        if($boletim_noticias) {
+            // Verifica se existe boletim
+            if ($boletim_noticias) {
+                $boletim_noticias->forceDelete();
+            }
+        }        
     }
 
     public function cadastrar()

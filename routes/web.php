@@ -64,6 +64,8 @@ Route::middleware(['web'])->group(function () {
 	Route::get('boletim/{id}/visualizar','BoletimController@visualizar');
 	Route::post('boletim/noticias','BoletimController@noticias');
 	Route::post('boletim/enviar/lista','BoletimController@enviarLista');
+	Route::post('boletim/noticia/adicionar','BoletimController@adicionarNoticia');
+	Route::post('boletim/noticia/remover','BoletimController@removerNoticia');
 	Route::resource('boletim','BoletimController');
 
 	Route::resource('cliente','ClienteController');

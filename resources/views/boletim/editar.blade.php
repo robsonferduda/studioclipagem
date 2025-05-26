@@ -22,6 +22,7 @@
             </div>           
             <div class="col-lg-12 col-sm-12">
                 {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['boletim', $boletim->id], 'method' => 'patch']) !!}
+                    <input type="hidden" name="id_boletim" id="id_boletim" value="{{ $boletim->id }}">
                     <div class="row mt-0">
                         <div class="col-md-4 col-sm-6">
                                 <div class="form-group">
@@ -169,7 +170,6 @@
             if(cliente) {
                 $("#cliente_busca").val(cliente);
             }
-
     
             listaNoticias();
 
@@ -179,6 +179,7 @@
 
             function listaNoticias(){
 
+                boletim = $("#id_boletim").val();
                 cliente = $("#cliente_busca").val();
                 flag_web = $("#midia-web").is(":checked");
                 flag_impresso = $("#midia-impresso").is(":checked");
@@ -203,8 +204,8 @@
                         "flag_radio": flag_radio,
                         "cliente": cliente,
                         "dt_inicial": dt_inicial,
-                        "dt_final": dt_final,
-                        "termo": termo
+                        "id_boletim": boletim,
+                        "dt_final": dt_final                   
                     },
                     beforeSend: function() {
                         $('.table-noticias').loader('show');
@@ -234,9 +235,11 @@
 
                     var check = (false) ? 'checked' : '';
 
+                    var checked = (noticia.id_boletim) ? 'checked' : '';
+
                      $(".table-noticias tbody").append('<tr>'+
                                                         '<td><div class="form-check" style="margin-top: -20px !important;"><label class="form-check-label">'+
-                                                        '<input class="form-check-input item-noticia" type="checkbox" name="lista_noticia[]" '+check+' value="'+noticia.id+'" data-tipo="'+noticia.id+'"><span class="form-check-sign"></span></label></div></td>'+
+                                                        '<input class="form-check-input item-noticia" type="checkbox" '+checked+' name="lista_noticia[]" '+check+' value="'+noticia.id+'" data-tipo="'+noticia.tipo+'"><span class="form-check-sign"></span></label></div></td>'+
                                                         '<td><strong>'+titulo+'</strong><br/><strong style="color: #51cbce;">'+noticia.data_formatada+' - '+noticia.fonte+'</strong> <br/>'+icone+' </td>'+
                                                        '</tr>');
                    
@@ -292,6 +295,44 @@
                 }
             }).on('dp.change', function (e) {
                 listaNoticias() ;//your function call
+            });
+
+            $(document).on("change", ".item-noticia", function() {
+                var id = $(this).val();
+                var tipo = $(this).data('tipo');
+                var checked = $(this).is(':checked');
+
+                if(checked) {
+                    // Adiciona a notícia ao boletim
+                    $.ajax({
+                        url: host+'/boletim/noticia/adicionar',
+                        type: 'POST',
+                        data: {
+                            "_token": token,
+                            "id_noticia": id,
+                            "tipo": tipo,
+                            "id_boletim": {{ $boletim->id }}
+                        },
+                        success: function(response) {
+                            console.log(response);
+                        }
+                    });
+                } else {
+                    // Remove a notícia do boletim
+                    $.ajax({
+                        url: host+'/boletim/noticia/remover',
+                        type: 'POST',
+                        data: {
+                            "_token": token,
+                            "id_noticia": id,
+                            "tipo": tipo,
+                            "id_boletim": {{ $boletim->id }}
+                        },
+                        success: function(response) {
+                            console.log(response);
+                        }
+                    });
+                }
             });
 
         });
