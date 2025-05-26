@@ -13,6 +13,7 @@
                 <div class="col-md-4">
                     <a href="{{ url('boletins') }}" class="btn btn-primary pull-right"><i class="fa fa-file-o"></i> Boletins</a>
                     <a href="{{ url('boletim/'.$boletim->id.'/enviar') }}" class="btn btn-success pull-right"><i class="fa fa-send"></i> Verificar Envio</a>
+                    <a href="{{ url('boletim/'.$boletim->id.'/visualizar') }}" class="btn btn-warning pull-right"><i class="fa fa-eye"></i> Visualizar</a>
                 </div>
             </div>
         </div>
@@ -27,7 +28,7 @@
                         <p class="mb-0"><strong>Título:</strong> {{ $boletim->titulo }}</p>
                         <p class="mb-0"><strong>Data de Criação:</strong> {{ date('d/m/Y H:i', strtotime($boletim->created_at)) }}</p>
                         <p class="mb-0"><strong>Data de Envio:</strong> {{ ($boletim->dt_envio) ? date('d/m/Y H:i', strtotime($boletim->dt_envio)) : 'Não enviado' }}</p>
-                        <p class="mb-0"><strong>Responsável:</strong> {!! ($boletim->usuario) ? $boletim->usuario : '<span>Não informado</span>'  !!}</p>
+                        <p class="mb-0"><strong>Responsável:</strong> {!! ($boletim->usuario) ? $boletim->usuario->name : '<span>Não informado</span>'  !!}</p>
                         <p class="mb-0"><strong>Total de visualizações:</strong> {{ ( $boletim->total_views) ? $boletim->total_views : 0 }}</p>
                     </div>
                 </div>
