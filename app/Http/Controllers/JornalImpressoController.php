@@ -365,7 +365,7 @@ class JornalImpressoController extends Controller
                                 'noticia_id' => $noticia->id,
                                 'cliente_id' => (int) $vinculo->cliente_id,
                                 'area' => null,
-                                'sentimento' => 0;
+                                'sentimento' => 0);
 
                 $noticia_cliente = NoticiaCliente::create($dados);
 
