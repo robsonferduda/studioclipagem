@@ -148,7 +148,7 @@ Route::middleware(['web'])->group(function () {
 	Route::match(array('GET', 'POST'),'jornal-impresso/buscar','JornalImpressoController@buscar');
 	Route::post('jornal-impresso/monitoramento/{cliente}/listar','JornalImpressoController@listarMonitoramento');
 	Route::get('jornal-impresso/processar','JornalImpressoController@processar');
-	Route::get('jornal-impresso/noticia/extrair/{tipo}/{id}','JornalImpressoController@extrair');
+	Route::get('jornal-impresso/noticia/extrair/{$monitoramento}/{tipo}/{id}','JornalImpressoController@extrair');
 	Route::get('jornal-impresso/noticia/editar/{id}','JornalImpressoController@editar');
 	Route::get('jornal-impresso/conteudo/{id_noticia}/monitoramento/{id_monitoramento}','JornalImpressoController@destacaConteudo');
 	Route::get('jornal-impresso/{id}/remover','JornalImpressoController@remover');
