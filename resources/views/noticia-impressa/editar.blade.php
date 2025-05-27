@@ -88,8 +88,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>Seção</label>
-                                        <input type="hidden" name="valor_id_sessao_impresso" id="valor_id_sessao_impresso" value="{{ $noticia->id_sessao_impresso }}">
+                                        <label>Seção <span class="text-primary add-secao" data-toggle="modal" data-target="#addSecao">Adicionar Seção</span></label>
                                         <select class="form-control select2" name="id_sessao_impresso" id="id_sessao_impresso" disabled="true">
                                             <option value="">Selecione uma seção</option>
                                         </select>
@@ -216,6 +215,88 @@
         </div>
     </div>
 </div> 
+<div class="modal fade" id="addSecao" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-bookmark "></i> Adicionar Seção</h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Nome da Seção</label>
+                            <input type="mail" class="form-control" name="ds_sessao" id="ds_sessao">
+                        </div>
+                    </div>
+                </div>
+                <div class="center">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
+                    <button type="button" class="btn btn-success btn-salvar-secao"><i class="fa fa-save"></i> Salvar</button>
+                </div>
+        </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalArea" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-tags"></i> Adicionar Área</h6>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Área</label>
+                        <input type="text" class="form-control" name="ds_area" id="ds_area" placeholder="Descrição">
+                    </div>
+                </div>             
+            <div class="col-md-12 center">
+                <div class="form-group mt-3">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
+                    <button type="button" class="btn btn-success btn-add-area"><i class="fa fa-plus"></i> Adicionar</button>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="modalFonte" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-database"></i> Adicionar Fonte</h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Fonte</label>
+                            <input type="text" class="form-control" name="nome" id="nome" placeholder="Descrição">
+                        </div>
+                    </div>             
+                    <div class="col-md-12 center">
+                        <div class="form-group mt-3">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
+                            <button type="button" class="btn btn-success btn-add-fonte"><i class="fa fa-plus"></i> Adicionar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 @section('script')
 <script src="{{ asset('js/formulario-cadastro.js') }}"></script>
@@ -254,82 +335,7 @@
                     // Opcional: envie uma requisição para remover o arquivo do servidor
                 });
             },
-        });
-
-        if(id_fonte != ''){
-            buscarSecoes(id_fonte);
-        }
-
-        $(document).on("change", "#local_impressao", function() {
-           
-            var id = $("#id_fonte").val();
-            
-            $.ajax({
-                    url: host+'/fonte-impresso/'+id+'/valores/'+$(this).val(),
-                    type: 'GET',
-                    beforeSend: function() {
-                        
-                    },
-                    success: function(data) {
-                        $(".valor_cm").text("R$ "+data+" cm");   
-                        $("#nu_valor_fonte").val(data);                                      
-                    },
-                    complete: function(){
-                                    
-                    }
-            });  
-        });
-      
-
-        $(document).on('change', '#id_fonte', function() {
-                
-            var fonte = $(this).val();
-            $(".valor_cm").text("");
-            $("#nu_valor_fonte").val(0);
-            buscarSecoes(fonte);
-            return $('#id_sessao_impresso').prop('disabled', false);
-        });
-
-
-        function buscarSecoes(id_fonte){
-
-            var valor_id_sessao_impresso = $("#valor_id_sessao_impresso").val();
-
-            $.ajax({
-                    url: host+'/noticia/impresso/fonte/sessoes/'+id_fonte,
-                    type: 'GET',
-                    beforeSend: function() {
-                        $('.content').loader('show');
-                        $('#id_sessao_impresso').append('<option value="">Buscando seções...</option>').val('');
-                    },
-                    success: function(data) {
-
-                        $('#id_sessao_impresso').find('option').remove();
-                        $('#id_sessao_impresso').attr('disabled', false);
-
-                        if(data.length == 0) {                            
-                            $('#id_sessao_impresso').append('<option value="">Fonte não possui seções cadastradas</option>').val('');
-                            return;
-                        }
-
-                        $('#id_sessao_impresso').append('<option value="">Selecione uma seção</option>').val('');
-
-                        data.forEach(element => {
-                            let option = new Option(element.ds_sessao, element.id_sessao_impresso);
-                            $('#id_sessao_impresso').append(option);
-                        });
-                        
-                    },
-                    complete: function(){
-                    
-                        if(valor_id_sessao_impresso > 0)
-                            $('#id_sessao_impresso').val(valor_id_sessao_impresso);
-                    
-                        $('.content').loader('hide');
-                    }
-                });
-
-        };
+        });      
 
     });
 

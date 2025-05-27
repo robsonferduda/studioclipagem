@@ -23,14 +23,52 @@
             </div>
             <div class="row">
                 <div class="col-lg-12 col-sm-12">
-                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['noticia-impressa', $noticia->id], 'method' => 'patch']) !!}
+                    {!! Form::open(['id' => 'frm_impresso', 'class' => 'form-horizontal', 'url' => ['noticia-impressa', $noticia->id], 'method' => 'patch']) !!}
                         <input type="hidden" name="noticia_id" id="noticia_id" value="{{ $noticia->id }}">
                         <div class="form-group m-3 w-70">
+                            <div class="row">
+                                <input type="hidden" name="clientes[]" id="clientes">
+                                <input type="hidden" name="ds_caminho_img" id="ds_caminho_img">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <label>Cliente</label>
+                                        <select class="form-control cliente select2" name="cd_cliente" id="cd_cliente">
+                                            <option value="">Selecione um cliente</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Área do Cliente <span class="text-info add-area" data-toggle="modal" data-target="#modalArea">Adicionar Área</span></label>
+                                        <select class="form-control area select2" name="cd_area" id="cd_area" disabled>
+                                            <option value="">Selecione uma área</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Sentimento </label>
+                                        <select class="form-control" name="cd_sentimento" id="cd_sentimento">
+                                            <option value="">Selecione um sentimento</option>
+                                            <option value="1">Positivo</option>
+                                            <option value="0">Neutro</option>
+                                            <option value="-1">Negativo</option>
+                                        </select>
+                                    </div>                        
+                                </div>
+                                <div class="col-md-1">
+                                    <button type="button" class="btn btn-success btn-add-cliente mt-4 w-100"><i class="fa fa-plus"></i></button>
+                                </div>
+                                
+                                <div class="col-md-12">
+                                    <ul class="list-unstyled metadados"></ul>
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
                                         <label>Data de Cadastro</label>
-                                        <input type="text" class="form-control datepicker" name="dt_cadastro" required="true" value="{{ ($noticia->dt_cadastro) ? \Carbon\Carbon::parse($noticia->dt_cadastro)->format('d/m/Y') : '' }}" placeholder="__/__/____">
+                                        <input type="text" class="form-control datepicker" name="dt_cadastro" required="true" value="{{ date("d/m/Y") }}" placeholder="__/__/____">
                                     </div>
                                 </div>
                                 <div class="col-md-2 col-sm-6">
@@ -52,8 +90,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>Seção</label>
-                                        <input type="hidden" name="valor_id_sessao_impresso" id="valor_id_sessao_impresso" value="{{ $noticia->id_sessao_impresso }}">
+                                        <label>Seção <span class="text-primary add-secao" data-toggle="modal" data-target="#addSecao">Adicionar Seção</span></label>
                                         <select class="form-control select2" name="id_sessao_impresso" id="id_sessao_impresso" disabled="true">
                                             <option value="">Selecione uma seção</option>
                                         </select>
@@ -101,42 +138,54 @@
                                 </div>
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
-                                        <label>Total de Páginas</label>
-                                        <input type="text" class="form-control" name="nu_paginas_total" id="nu_paginas_total" placeholder="Número" value="{{ ($noticia->nu_paginas_total) ? $noticia->nu_paginas_total : '' }}">
+                                        <label>Colunas</label>
+                                        <input type="text" class="form-control monetario" name="nu_colunas" id="nu_colunas" placeholder="Colunas" value="{{ ($noticia->nu_colunas) ? $noticia->nu_colunas : 0 }}">
                                     </div>                                    
                                 </div>
-                                <div class="col-md-8 col-sm-12">
+                                 <div class="col-md-2">
+                                    <input type="hidden" name="nu_valor_fonte" id="nu_valor_fonte">
                                     <div class="form-group">
-                                        <label>Link</label>
-                                        <input type="text" class="form-control" name="ds_link" id="ds_link" placeholder="URL" value="{{ $noticia->ds_link }}">
+                                        <label>Localização <span class="valor_cm text-info"></span></label>
+                                        <select class="form-control" name="local_impressao" id="local_impressao">
+                                            <option value="">Selecione um local</option>
+                                            <option value="valor_cm_capa_semana" {{ ($noticia->local_impressao == 'valor_cm_capa_semana') ? 'selected' : '' }}>Capa</option>
+                                            <option value="valor_cm_capa_fim_semana" {{ ($noticia->local_impressao == 'valor_cm_capa_fim_semana') ? 'selected' : '' }}>Capa FDS</option>
+                                            <option value="valor_cm_contracapa" {{ ($noticia->local_impressao == 'valor_cm_contracapa') ? 'selected' : '' }}>Contracapa</option>
+                                            <option value="valor_cm_demais_semana" {{ ($noticia->local_impressao == 'valor_cm_demais_semana') ? 'selected' : '' }}>Demais Páginas</option>
+                                            <option value="valor_cm_demais_fim_semana" {{ ($noticia->local_impressao == 'valor_cm_demais_fim_semana') ? 'selected' : '' }}>Demais Páginas FDS</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Altura <span class="text-info">em cm</span></label>
+                                        <input type="text" class="form-control monetario" name="nu_altura" id="nu_altura" placeholder="Altura" value="{{ ($noticia->nu_altura) ? $noticia->nu_altura : 0 }}">
+                                    </div>                                    
+                                </div>
+                                <div class="col-md-2 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Largura <span class="text-info">em cm</span></label>
+                                        <input type="text" class="form-control monetario" name="nu_largura" id="nu_largura" placeholder="Largura" value="{{ ($noticia->nu_largura) ? $noticia->nu_largura : 0 }}">
+                                    </div>                                    
+                                </div>
+                                <div class="col-md-2 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Retorno</label>
+                                        <input type="text" class="form-control monetario" name="valor_retorno" id="valor_retorno" placeholder="Retorno" value="{{ ($noticia->valor_retorno) ? $noticia->valor_retorno : 0 }}">
                                     </div>                                    
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-3 col-sm-6">
-                                    <div class="form-group">
-                                        <label>Colunas</label>
-                                        <input type="text" class="form-control monetario" name="nu_colunas" id="nu_colunas" placeholder="Colunas" value="{{ ($noticia->nu_colunas) ? $noticia->nu_colunas : '' }}">
-                                    </div>                                    
-                                </div>
-                                <div class="col-md-3 col-sm-6">
-                                    <div class="form-group">
-                                        <label>Altura</label>
-                                        <input type="text" class="form-control monetario" name="nu_altura" id="nu_altura" placeholder="Altura" value="{{ ($noticia->nu_altura) ? $noticia->nu_altura : '' }}">
-                                    </div>                                    
-                                </div>
-                                <div class="col-md-3 col-sm-6">
-                                    <div class="form-group">
-                                        <label>Largura</label>
-                                        <input type="text" class="form-control monetario" name="nu_largura" id="nu_largura" placeholder="Largura" value="{{ $noticia->nu_largura }}">
-                                    </div>                                    
-                                </div>
-                                <div class="col-md-3 col-sm-6">
-                                    <div class="form-group">
-                                        <label>Retorno</label>
-                                        <input type="text" class="form-control monetario" name="valor_retorno" id="valor_retorno" placeholder="Retorno" value="{{ $noticia->valor_retorno }}" readonly>
-                                    </div>                                    
-                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">    
+                                        <label for="tags[]">TAGs</label>
+                                        <select name="tags[]" multiple="multiple" class="form-control select2">
+                                            @foreach ($tags as $tag)
+                                                <option value="{{ $tag->id }}" {{ ($noticia->tags->contains($tag->id)) ? 'selected'  : '' }}>{{ $tag->nome }}</option>
+                                            @endforeach
+                                        </select> 
+                                    </div>    
+                                </div> 
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
@@ -200,7 +249,7 @@
                                 </div>
                             </div>
                             <div class="text-center mb-2 mt-3">
-                                <button type="submit" class="btn btn-success" name="btn_enviar" value="salvar"><i class="fa fa-save"></i> Salvar</button>
+                                <button type="submit" class="btn btn-success" name="btn_enviar" id="btn_enviar" value="salvar"><i class="fa fa-save"></i> Salvar</button>
                                 <button type="submit" class="btn btn-warning" name="btn_enviar" value="salvar_e_copiar"><i class="fa fa-copy"></i> Salvar e Copiar</button>
                                 <a href="{{ url('noticias/impresso') }}" class="btn btn-danger"><i class="fa fa-times"></i> Cancelar</a>
                             </div>
@@ -211,7 +260,88 @@
         </div>
     </div>
 </div> 
-
+<div class="modal fade" id="addSecao" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-bookmark "></i> Adicionar Seção</h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Nome da Seção</label>
+                            <input type="mail" class="form-control" name="ds_sessao" id="ds_sessao">
+                        </div>
+                    </div>
+                </div>
+                <div class="center">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
+                    <button type="button" class="btn btn-success btn-salvar-secao"><i class="fa fa-save"></i> Salvar</button>
+                </div>
+        </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalArea" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-tags"></i> Adicionar Área</h6>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Área</label>
+                        <input type="text" class="form-control" name="ds_area" id="ds_area" placeholder="Descrição">
+                    </div>
+                </div>             
+            <div class="col-md-12 center">
+                <div class="form-group mt-3">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
+                    <button type="button" class="btn btn-success btn-add-area"><i class="fa fa-plus"></i> Adicionar</button>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="modalFonte" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-database"></i> Adicionar Fonte</h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Fonte</label>
+                            <input type="text" class="form-control" name="nome" id="nome" placeholder="Descrição">
+                        </div>
+                    </div>             
+                    <div class="col-md-12 center">
+                        <div class="form-group mt-3">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
+                            <button type="button" class="btn btn-success btn-add-fonte"><i class="fa fa-plus"></i> Adicionar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
         <!-- Show the cropped image in modal -->
         <div class="modal fade docs-cropped" id="getCroppedCanvasModal" aria-hidden="true" aria-labelledby="getCroppedCanvasTitle" role="dialog" tabindex="-1">
             <div class="modal-dialog">
@@ -237,10 +367,11 @@
           </div><!-- /.modal -->
 @endsection
 @section('script')
+<script src="{{ asset('js/formulario-cadastro.js') }}"></script>
 <script>
     $( document ).ready(function() {
 
-      
+
 
     });
 </script>

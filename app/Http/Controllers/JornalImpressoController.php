@@ -10,6 +10,7 @@ use DateTime;
 use DateInterval;
 use DatePeriod;
 use Carbon\Carbon;
+use App\Models\Tag;
 use App\Models\Cliente;
 use App\Models\JornalWeb;
 use App\Models\NoticiaImpresso;
@@ -328,8 +329,14 @@ class JornalImpressoController extends Controller
     {
         $clientes = Cliente::orderBy('nome')->get();
         $noticia = NoticiaImpresso::find($id);
+        $tags = Tag::orderBy('nome')->get();
+        $estados = Estado::orderBy('nm_estado')->get();
+        $cidades = Cidade::where(['cd_estado' => $noticia->cd_estado])->orderBy('nm_cidade')->get();
+        $fontes = FonteImpressa::orderBy("nome")->get();
+
+        dd("dadas");
     
-        return view('jornal-impresso/editar', compact('noticia','clientes'));
+        return view('jornal-impresso/editar', compact('noticia','clientes','fontes','estados','cidades','tags'));
     }
 
     public function extrair($tipo, $id)
@@ -356,8 +363,9 @@ class JornalImpressoController extends Controller
                 $cidades = Cidade::where(['cd_estado' => $noticia->cd_estado])->orderBy('nm_cidade')->get();
                 $fontes = FonteImpressa::orderBy("nome")->get();
                 $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
+                $tags = Tag::orderBy('nome')->get();
 
-                return view('jornal-impresso/editar', compact('noticia','clientes','fontes','estados','cidades'));
+                return view('jornal-impresso/editar', compact('noticia','clientes','fontes','estados','cidades','tags'));
 
                 return redirect('jornal-impresso/noticia/editar/'.$noticia->id);
 

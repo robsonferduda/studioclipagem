@@ -169,7 +169,7 @@
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
                                         <label>Retorno</label>
-                                        <input type="text" class="form-control monetario" name="valor_retorno" id="valor_retorno" placeholder="Retorno" value="{{ old('valor_retorno') }}" readonly>
+                                        <input type="text" class="form-control monetario" name="valor_retorno" id="valor_retorno" placeholder="Retorno" value="{{ old('valor_retorno') }}">
                                     </div>                                    
                                 </div>
                             </div>
@@ -332,25 +332,7 @@
             },
         });
 
-        $(document).on("change", "#local_impressao", function() {
-           
-            var id = $("#id_fonte").val();
-            
-            $.ajax({
-                    url: host+'/fonte-impresso/'+id+'/valores/'+$(this).val(),
-                    type: 'GET',
-                    beforeSend: function() {
-                        
-                    },
-                    success: function(data) {
-                        $(".valor_cm").text("R$ "+data+" cm");     
-                        $("#nu_valor_fonte").val(data);            
-                    },
-                    complete: function(){
-                                    
-                    }
-            });  
-        });
+    
 
         $(document).on("click", ".btn-add-fonte", function() {
 
@@ -395,96 +377,6 @@
                 }
             });
         });
-
-        $(".btn-salvar-secao").click(function(){
-
-            var ds_sessao = $("#ds_sessao").val();
-            var font_id = $("#id_fonte").val();
-
-            if(!font_id){
-
-                Swal.fire({
-                    text: 'Obrigatório informar uma fonte.',
-                    type: "warning",
-                    icon: "warning",
-                    confirmButtonText: '<i class="fa fa-check"></i> Ok',
-                });
-
-            }else{
-
-                $.ajax({
-                    url: host+'/fonte-impresso/secao',
-                    type: 'POST',
-                    data: {
-                        "_token": $('meta[name="csrf-token"]').attr('content'),
-                        "ds_sessao": ds_sessao,
-                        "font_id": font_id
-                    },
-                    success: function(response) {
-                        $("#id_fonte").trigger("change");  
-                        $("#addSecao").modal("hide");            
-                    },
-                    error: function(response){
-                            
-                    }
-                });
-            }
-        });
-
-
-        $(document).on('change', '#id_fonte', function() {
-                
-                var fonte = $(this).val();
-
-                $(".valor_cm").text("");
-                $("#nu_valor_fonte").val(0);
-
-                buscarSecoes(fonte);
-
-                return $('#id_sessao_impresso').prop('disabled', false);
-            });
-
-
-        function buscarSecoes(id_fonte){
-
-            //var cd_programa = $("#cd_programa").val();
-
-            $.ajax({
-                    url: host+'/noticia/impresso/fonte/sessoes/'+id_fonte,
-                    type: 'GET',
-                    beforeSend: function() {
-                        $('.content').loader('show');
-                        $('#id_sessao_impresso').append('<option value="">Buscando seções...</option>').val('');
-                    },
-                    success: function(data) {
-
-                        $('#id_sessao_impresso').find('option').remove();
-                        $('#id_sessao_impresso').attr('disabled', false);
-
-                        if(data.length == 0) {                            
-                            $('#id_sessao_impresso').append('<option value="">Fonte não possui seções cadastradas</option>').val('');
-                            return;
-                        }
-
-                        $('#id_sessao_impresso').append('<option value="">Selecione uma seção</option>').val('');
-
-                        data.forEach(element => {
-                            let option = new Option(element.ds_sessao, element.id_sessao_impresso);
-                            $('#id_sessao_impresso').append(option);
-                        });
-                        
-                    },
-                    complete: function(){
-                        /*
-                        if(cd_programa > 0)
-                            $('#programa').val(cd_programa);
-                        */
-                        $('.content').loader('hide');
-                    }
-                });
-
-        };
-
     });
 </script>
 @endsection
