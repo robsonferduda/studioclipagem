@@ -242,10 +242,10 @@ $(document).ready(function() {
                 $(".valor_cm").text("");
                 $("#nu_valor_fonte").val(0);
 
-                buscarSecoes(fonte);
-
                 return $('#id_sessao_impresso').prop('disabled', false);
             });
+
+    buscarSecoes(0);
 
      function buscarSecoes(id_fonte){
 

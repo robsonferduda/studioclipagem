@@ -90,7 +90,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Seção <span class="text-primary add-secao" data-toggle="modal" data-target="#addSecao">Adicionar Seção</span></label>
-                                        <select class="form-control select2" name="id_sessao_impresso" id="id_sessao_impresso" disabled="true">
+                                        <select class="form-control select2" name="id_sessao_impresso" id="id_sessao_impresso">
                                             <option value="">Selecione uma seção</option>
                                         </select>
                                     </div>

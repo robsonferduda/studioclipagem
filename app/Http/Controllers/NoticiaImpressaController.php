@@ -9,6 +9,7 @@ use Storage;
 use App\Utils;
 use Carbon\Carbon;
 use App\Models\Cliente;
+use App\Models\SecaoImpresso;
 use App\Models\NoticiaCliente;
 use App\Models\FonteImpressa;
 use App\Models\FilaImpresso;
@@ -302,8 +303,10 @@ class NoticiaImpressaController extends Controller
     public function getSecoes($id_fonte)
     {
         $secoes = array();
+
+        $secoes = SecaoImpresso::orderBy('ds_sessao')->get();
         
-        $secoes = FonteImpressa::find($id_fonte)->secoes()->orderBy('ds_sessao')->get();
+        //$secoes = FonteImpressa::find($id_fonte)->secoes()->orderBy('ds_sessao')->get();
         
         return response()->json($secoes);
     }
