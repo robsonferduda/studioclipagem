@@ -342,7 +342,7 @@ class JornalImpressoController extends Controller
     public function extrair($tipo, $id)
     {
         switch ($tipo) {
-            case 'web':
+            case 'impresso':
                 $conteudo = PaginaJornalImpresso::find($id);
 
                 $arquivo = Storage::disk('s3')->get($conteudo->path_pagina_s3);
@@ -360,6 +360,14 @@ class JornalImpressoController extends Controller
                 Storage::disk('impresso-img')->put($filename, $arquivo);
 
                 $vinculo = NoticiaCliente::where('noticia_id', $id)->where('monitoramento_id', )->where('tipo_id', 1)->first();
+
+                $dados = array('tipo_id' => 1,
+                                'noticia_id' => $noticia->id,
+                                'cliente_id' => (int) $vinculo->cliente_id,
+                                'area' => null,
+                                'sentimento' => 0;
+
+                $noticia_cliente = NoticiaCliente::create($dados);
 
                 $estados = Estado::orderBy('nm_estado')->get();
                 $cidades = Cidade::where(['cd_estado' => $noticia->cd_estado])->orderBy('nm_cidade')->get();
