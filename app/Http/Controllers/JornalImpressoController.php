@@ -367,7 +367,16 @@ class JornalImpressoController extends Controller
                                 'area' => null,
                                 'sentimento' => 0);
 
-                $noticia_cliente = NoticiaCliente::create($dados);
+                    $match = array('tipo_id' => 1,
+                                'noticia_id' => $noticia->id,
+                                'cliente_id' => (int) $vinculo->cliente_id);
+                        
+                    $dados = array('area' => null,
+                                   'sentimento' => 0);
+
+                    $noticia_cliente = NoticiaCliente::updateOrCreate($match, $dados);
+
+                
 
                 $estados = Estado::orderBy('nm_estado')->get();
                 $cidades = Cidade::where(['cd_estado' => $noticia->cd_estado])->orderBy('nm_cidade')->get();

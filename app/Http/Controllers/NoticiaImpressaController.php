@@ -234,14 +234,15 @@ class NoticiaImpressaController extends Controller
 
             if($clientes){
                 for ($i=0; $i < count($clientes); $i++) { 
-                        
-                    $dados = array('tipo_id' => 1,
-                                'noticia_id' => $noticia->id,
-                                'cliente_id' => (int) $clientes[$i]->id_cliente,
-                                'area' => (int) $clientes[$i]->id_area,
-                                'sentimento' => (int) $clientes[$i]->id_sentimento);
 
-                    $noticia_cliente = NoticiaCliente::create($dados);
+                    $match = array('tipo_id' => 1,
+                                'noticia_id' => $noticia->id,
+                                'cliente_id' => (int) $clientes[$i]->id_cliente);
+                        
+                    $dados = array('area' => (int) $clientes[$i]->id_area,
+                                   'sentimento' => (int) $clientes[$i]->id_sentimento);
+
+                    $noticia_cliente = NoticiaCliente::updateOrCreate($match, $dados);
                 }
             }
 
