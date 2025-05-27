@@ -126,6 +126,8 @@ $(document).ready(function() {
                 var sentimento = $("#cd_sentimento option:selected").text();
             else
                 var sentimento = "Nenhum sentimento selecionado";
+
+
                 
             var dados = { id_cliente: id_cliente, cliente: cliente, id_area: id_area, area: area, id_sentimento: id_sentimento, sentimento: sentimento };
             
@@ -184,7 +186,26 @@ $(document).ready(function() {
 
     function inicializaClientes(dados){
 
-        clientes.push(dados);
+        var index = -1;
+
+        // Procura pelo id_cliente (ou cliente, dependendo do que define unicidade)
+        for (var i = 0; i < clientes.length; i++) {
+            if (clientes[i].id_cliente == dados.id_cliente) {
+                index = i;
+                break;
+            }
+        }
+
+        if (index > -1) {
+            // Atualiza apenas area e sentimento
+            clientes[index].id_area     = dados.id_area;
+            clientes[index].area        = dados.area;
+            clientes[index].id_sentimento = dados.id_sentimento;
+            clientes[index].sentimento  = dados.sentimento;
+        } else {
+            // Adiciona novo cliente ao array
+            clientes.push(dados);
+        }
         
         $("#clientes").val(JSON.stringify(clientes));
 
