@@ -12,6 +12,6 @@ class BoletimNoticias extends Model
     protected $connection = 'pgsql';
     protected $table = 'boletim_noticia';
 
-    protected $fillable = ['id_cliente'];
+    protected $fillable = ['id_boletim','id_noticia','id_tipo'];
     
 }

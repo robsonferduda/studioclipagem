@@ -116,13 +116,16 @@ class BoletimController extends Controller
 
     public function adicionarNoticia(Request $request)
     {
+        $tipo = null;
         $boletim = Boletim::find($request->id_boletim);
 
         switch ($request->tipo) {
             case 'web':
+                $id_tipo = 2;
                 $noticia = NoticiaWeb::find($request->id_noticia);
                 break;
             case 'impresso':
+                $id_tipo = 1;
                 $noticia = NoticiaImpresso::find($request->id_noticia);
                 break;
             default:
@@ -136,11 +139,13 @@ class BoletimController extends Controller
             if (!$boletim_noticias) {
                 $boletim_noticias = new BoletimNoticias();
                 $boletim_noticias->id_boletim = $boletim->id;
+                $boletim_noticias->id_tipo = $id_tipo;
                 $boletim_noticias->id_noticia = $request->id_noticia;
             }else{
                 // Se já existe, apenas atualiza a notícia
                 if ($boletim_noticias->id_noticia != $request->id_noticia) {
                     $boletim_noticias->id_noticia = $request->id_noticia;
+                    $boletim_noticias->id_tipo = $id_tipo;
                 }
             }
 
