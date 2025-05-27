@@ -2,6 +2,7 @@ $(document).ready(function() {
 
     var host = $('meta[name="base-url"]').attr('content');
     var clientes = [];
+    var id_noticia = $("#id_noticia").val();
 
     $("#btn_enviar").click(function(){
 
@@ -85,6 +86,24 @@ $(document).ready(function() {
         $.each(clientes, function(index, value) {                
             $(".metadados").append('<li><div class="row"><div class="col-md-9 col-9"><span>'+value.cliente+'</span> | <span>'+value.area+'</span> | <span>'+value.sentimento+'</span></div><div class="col-md-3 col-3 text-right"><btn class="btn btn-sm btn-outline-danger btn-round btn-icon btn-remover-cliente" data-id="'+index+'"><i class="fa fa-times"></i></btn></div></div></li>');
         });
+    });
+
+    $.ajax({
+        url: host+'/noticia/impresso/clientes/'+id_noticia,
+        type: 'GET',
+        beforeSend: function() {
+            
+        },
+        success: function(data) {
+            $.each(data, function(index, value) {                
+               
+                var dados = { id_cliente: value.cliente_id, cliente: value.nome, id_area: value.area_id, area: value.area, id_sentimento: value.id_sentimento, sentimento: value.sentimento };
+                inicializaClientes(dados);
+            });
+        },
+        complete: function(){
+                        
+        }
     });
 
     $(document).on("click", ".btn-add-cliente", function(clientes) {

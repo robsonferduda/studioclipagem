@@ -218,6 +218,8 @@ Route::middleware(['web'])->group(function () {
 	Route::match(array('GET', 'POST'),'buscar-web','NoticiaWebController@index');
 	Route::resource('noticia-web','NoticiaWebController');
 
+	Route::get('noticia/impresso/clientes/{noticia}','NoticiaImpressaController@clientes');
+	
 	Route::get('jornal-web','JornalWebController@index');
 	Route::get('jornal-web/estatisticas','JornalWebController@estatisticas');
 	Route::get('jornal-web/cadastrar','JornalWebController@cadastrar');

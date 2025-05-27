@@ -25,6 +25,7 @@
                     {!! Form::open(['id' => 'frm_user_edit', 'url' => ['noticia-impressa', $noticia->id], 'method' => 'patch']) !!}
                         <div class="form-group m-3 w-70">
                             <div class="row">
+                                <input type="hidden" name="id_noticia" id="id_noticia" value="{{ $noticia->id }}">
                                 <input type="hidden" name="clientes[]" id="clientes">
                                 <input type="hidden" name="ds_caminho_img" id="ds_caminho_img">
                                 <div class="col-md-5">
