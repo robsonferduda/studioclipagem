@@ -25,6 +25,7 @@
                 <div class="col-lg-12 col-sm-12">
                     {!! Form::open(['id' => 'frm_impresso', 'class' => 'form-horizontal', 'url' => ['noticia-impressa', $noticia->id], 'method' => 'patch']) !!}
                         <input type="hidden" name="noticia_id" id="noticia_id" value="{{ $noticia->id }}">
+                        <input type="hidden" name="id_noticia" id="id_noticia" value="{{ $noticia->id }}">
                         <div class="form-group m-3 w-70">
                             <div class="row">
                                 <input type="hidden" name="clientes[]" id="clientes">
