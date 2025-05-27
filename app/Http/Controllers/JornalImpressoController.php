@@ -359,7 +359,7 @@ class JornalImpressoController extends Controller
 
                 Storage::disk('impresso-img')->put($filename, $arquivo);
 
-                $vinculo = NoticiaCliente::where('noticia_id', $id)->where('monitoramento_id', )->where('tipo_id', 1)->first();
+                $vinculo = NoticiaCliente::where('noticia_id', $id)->where('monitoramento_id', $monitoramento)->where('tipo_id', 1)->first();
 
                 $dados = array('tipo_id' => 1,
                                 'noticia_id' => $noticia->id,
