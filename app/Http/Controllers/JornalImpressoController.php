@@ -339,7 +339,7 @@ class JornalImpressoController extends Controller
         return view('jornal-impresso/editar', compact('noticia','clientes','fontes','estados','cidades','tags'));
     }
 
-    public function extrair($tipo, $id)
+    public function extrair($monitoramento, $tipo, $id)
     {
         switch ($tipo) {
             case 'impresso':
