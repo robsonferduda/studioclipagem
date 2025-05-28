@@ -89,7 +89,7 @@
                             <div class="card">
                                 <div class="card-body">
                                     <div class="row">
-                                        <div class="col-lg-2 col-sm-12 img-{{ $dado->noticia_id }}" style="max-height: 300px; overflow: hidden;">   
+                                        <div class="col-lg-2 col-sm-12 img-{{ $dado->id }}" style="max-height: 300px; overflow: hidden;">   
                                             @if($dado->ds_caminho_img)
                                                 <img src="{{ asset('img/noticia-web/'.$dado->ds_caminho_img) }}" alt="Página {{ $dado->ds_caminho_img }}">
                                             @elseif($dado->path_screenshot)                                         
@@ -150,7 +150,7 @@
                                                     </div>
                                             </div>
                                             <div class="sinopse-{{ $dado->id }}">
-                                                {!! ($dado->conteudo->conteudo) ?  Str::limit($dado->conteudo->conteudo, 700, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                                {!! ($dado->sinopse) ? $dado->sinopse : Str::limit($dado->conteudo->conteudo, 700, " ...") !!}
                                             </div>
                                             
                                             <div>
@@ -212,6 +212,7 @@
             <div class="row">
                 <div class="col-md-12 modal-conteudo"></div>
                 <div class="col-md-12 modal-sinopse"></div>
+                <div class="col-md-12 modal-img center"></div>
             </div>
             <div class="center">
                 <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
@@ -233,10 +234,11 @@
                 var id = $(this).data("id");
                 var chave = ".conteudo-"+id;
                 var sinopse = ".sinopse-"+id;
+                var img = ".img-"+id;
 
-                $(".modal-conteudo").html($(chave).html());
-              
+                $(".modal-conteudo").html($(chave).html());              
                 $(".modal-sinopse").html($(sinopse).text().replace(/\n/g, "<br />"));
+                $(".modal-img").html($(img).html());
 
                 $("#showNoticia").modal("show");
 
