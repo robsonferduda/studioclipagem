@@ -135,13 +135,7 @@
                                         <textarea class="form-control" name="conteudo" id="conteudo" rows="10" required>{{ (empty($noticia)) ? old('conteudo') : $noticia->conteudo->conteudo }}</textarea>
                                     </div>
                                 </div> 
-                                @if($noticia)    
-                                    <div class="col-md-12">
-                                        <label for="arquivo">Print da Notícia</label>
-                                        <div style="min-height: 200px;" class="dropzone" id="dropzone"><div class="dz-message" data-dz-message><span>CLIQUE AQUI<br/> ou <br/>ARRASTE</span></div></div>
-                                        <input type="hidden" name="arquivo" id="arquivo">
-                                    </div>        
-                                @else
+                                @if($noticia->ds_caminho_img)    
                                     <div class="col-md-3">
                                         <img src="{{ asset('img/noticia-web/'.$noticia->ds_caminho_img) }}" alt="Página {{ $noticia->ds_caminho_img }}">
                                     </div>
@@ -150,6 +144,12 @@
                                         <div style="min-height: 200px;" class="dropzone" id="dropzone"><div class="dz-message" data-dz-message><span>CLIQUE AQUI<br/> ou <br/>ARRASTE</span></div></div>
                                         <input type="hidden" name="arquivo" id="arquivo">
                                     </div>
+                                @else
+                                    <div class="col-md-12">
+                                        <label for="arquivo">Print da Notícia</label>
+                                        <div style="min-height: 200px;" class="dropzone" id="dropzone"><div class="dz-message" data-dz-message><span>CLIQUE AQUI<br/> ou <br/>ARRASTE</span></div></div>
+                                        <input type="hidden" name="arquivo" id="arquivo">
+                                    </div> 
                                 @endif                                                 
                             </div>     
                             <div class="text-center mb-2 mt-3">
@@ -166,7 +166,7 @@
 </div> 
 @endsection
 @section('script')
-<script src="{{ asset('js/formulario-cadastro.js') }}"></script>
+<script src="{{ asset('js/formulario-cadastro-web.js') }}"></script>
 <script>
 
     Dropzone.autoDiscover = false;
