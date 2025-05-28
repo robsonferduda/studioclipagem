@@ -350,6 +350,12 @@ class NoticiaWebController extends Controller
 
         $noticia = NoticiaWeb::find($id);
 
+        $data_insert = ($request->data_insert) ? $this->carbon->createFromFormat('d/m/Y', $request->data_insert)->format('Y-m-d') : date("Y-m-d");
+        $request->merge(['data_insert' => $data_insert]);
+
+        $data_noticia = ($request->data_noticia) ? $this->carbon->createFromFormat('d/m/Y', $request->data_noticia)->format('Y-m-d') : date("Y-m-d");
+        $request->merge(['data_noticia' => $data_noticia]);
+
         try {
 
             $noticia->update($request->all());
