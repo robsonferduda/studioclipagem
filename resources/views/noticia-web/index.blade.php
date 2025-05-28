@@ -147,17 +147,12 @@
                                                         @endforelse
                                                     </div>
                                             </div>
-                                            <div class="panel panel-success">
-                                                <div class="conteudo-noticia mb-1 transcricao">
-                                                    {!! ($dado->conteudo->conteudo) ?  Str::limit($dado->conteudo->conteudo, 700, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
-                                                </div>
-                                                <div class="panel-body transcricao-total conteudo-{{ $dado->id }}">
-                                                    {!! ($dado->conteudo) ?  $dado->conteudo  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
-                                                </div>
-                                                
-                                            </div> 
+                                            <div class="sinopse-{{ $dado->id }}">
+                                                {!! ($dado->conteudo->conteudo) ?  Str::limit($dado->conteudo->conteudo, 700, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                            </div>
+                                            
                                             <div>
-                                                <button class="btn btn-primary btn-sm btn-visualizar-noticia" data-id="{{ $dado->id }}"><i class="fa fa fa-eye"></i> Visualizar</button> 
+                                                <button class="btn btn-primary btn-visualizar-noticia" data-id="{{ $dado->id }}"><i class="fa fa-eye"></i> Visualizar</button>
                                             </div>                                            
                                         </div>
                                     </div>
@@ -202,6 +197,27 @@
         </div>
     </div>
 </div> 
+<div class="modal fade" id="showNoticia" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-dialog-scrollable modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="padding: 15px !important;">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-newspaper-o"></i><span></span> Dodos da Notícia</h6>
+        </div>
+        <div class="modal-body" style="padding: 15px;">
+            <div class="row">
+                <div class="col-md-12 modal-conteudo"></div>
+                <div class="col-md-12 modal-sinopse"></div>
+            </div>
+            <div class="center">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
+            </div>
+      </div>
+    </div>
+  </div>
+</div>
 @endsection
 @section('script')
     <script>
@@ -209,6 +225,20 @@
 
             var host =  $('meta[name="base-url"]').attr('content');
             var token = $('meta[name="csrf-token"]').attr('content');
+
+            $(".btn-visualizar-noticia").click(function(){
+
+                var id = $(this).data("id");
+                var chave = ".conteudo-"+id;
+                var sinopse = ".sinopse-"+id;
+
+                $(".modal-conteudo").html($(chave).html());
+              
+                $(".modal-sinopse").html($(sinopse).text().replace(/\n/g, "<br />"));
+
+                $("#showNoticia").modal("show");
+
+            });
 
         });
     </script>
