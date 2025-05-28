@@ -90,7 +90,9 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-lg-2 col-sm-12 img-{{ $dado->noticia_id }}" style="max-height: 300px; overflow: hidden;">   
-                                            @if($dado->path_screenshot)                                         
+                                            @if($dado->ds_caminho_img)
+                                                <img src="{{ asset('img/noticia-web/'.$dado->ds_caminho_img) }}" alt="Página {{ $dado->ds_caminho_img }}">
+                                            @elseif($dado->path_screenshot)                                         
                                                 <img src="{{ Storage::disk('s3')->temporaryUrl($dado->path_screenshot, '+30 minutes') }}" 
                                                 alt="Print notícia {{ $dado->noticia_id }}" 
                                                 class="img-fluid img-thumbnail" 
