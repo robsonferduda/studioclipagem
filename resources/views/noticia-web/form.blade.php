@@ -108,10 +108,20 @@
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label>URL da Notícia <span class="text-danger">Campo Obrigatório</span><a href="{{ (!empty($noticia)) ? $noticia->url_noticia : '' }}" target="_BLANK"></a></label>
+                                        <label>URL da Notícia<span class="text-danger"> Campo Obrigatório </span><a class="text-info" href="{{ ($noticia) ? $noticia->url_noticia : '' }}" target="_BLANK">Ver Notícia</a></label>
                                         <input type="text" class="form-control" name="url_noticia" id="url_noticia" placeholder="URL Notícia" value="{{ (empty($noticia)) ? old('url_noticia') : $noticia->url_noticia }}" required>
                                     </div>
                                 </div>  
+                                 <div class="col-md-12">
+                                        <div class="form-group">    
+                                            <label for="tags[]">TAGs</label>
+                                            <select name="tags[]" multiple="multiple" class="form-control select2">
+                                                @foreach ($tags as $tag)
+                                                    <option value="{{ $tag->id }}" {{ ($noticia and $noticia->tags->contains($tag->id)) ? 'selected'  : '' }}>{{ $tag->nome }}</option>
+                                                @endforeach
+                                            </select> 
+                                        </div>    
+                                    </div> 
                                 <div class="col-md-12">
                                     <label for="sinopse">Sinopse</label>
                                     <div class="form-group">

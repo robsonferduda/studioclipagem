@@ -36,7 +36,7 @@ class NoticiaWeb extends Model
 
     public function tags()
     {
-        return $this->belongsToMany(Tag::class,'noticia_tag','noticia_id','tag_id')->withPivot('tipo_id')->where('tipo_id', 1)->withTimestamps();
+        return $this->belongsToMany(Tag::class,'noticia_tag','noticia_id','tag_id')->withPivot('tipo_id')->where('tipo_id', 2)->withTimestamps();
     }
 
     protected static function booted () {

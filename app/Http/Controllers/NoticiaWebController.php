@@ -7,6 +7,7 @@ use Auth;
 use Storage;
 use App\Utils;
 use Carbon\Carbon;
+use App\Models\Tag;
 use App\Models\Cliente;
 use Laracasts\Flash\Flash;
 use App\Models\LogAcesso;
@@ -205,9 +206,10 @@ class NoticiaWebController extends Controller
         Session::put('sub-menu','web-cadastrar');
 
         $fontes = FonteWeb::orderBy('nome')->get();
+        $tags = Tag::orderBy('nome')->get();
         $noticia = null;
 
-        return view('noticia-web/form',compact('fontes','noticia'));
+        return view('noticia-web/form',compact('fontes','noticia','tags'));
     }
 
     public function edit($id)
@@ -216,8 +218,9 @@ class NoticiaWebController extends Controller
 
         $fontes = FonteWeb::orderBy('nome')->get();
         $noticia = NoticiaWeb::find($id);
+        $tags = Tag::orderBy('nome')->get();
 
-        return view('noticia-web/form',compact('fontes','noticia'));
+        return view('noticia-web/form',compact('fontes','noticia','tags'));
     }
 
     public function copiaImagens()
@@ -273,8 +276,32 @@ class NoticiaWebController extends Controller
             $noticia = NoticiaWeb::create($request->all());
 
             if($noticia){
+                
                 $request->merge(['id_noticia_web' => $noticia->id]);
                 ConteudoNoticiaWeb::create($request->all());
+
+                $tags = collect($request->tags)->mapWithKeys(function($tag){
+                    return [$tag => ['tipo_id' => 1]];
+                })->toArray();
+
+                $noticia->tags()->sync($tags);
+
+                $clientes = json_decode($request->clientes[0]);
+
+                if($clientes){
+
+                    for ($i=0; $i < count($clientes); $i++) { 
+                        
+                        $dados = array('tipo_id' => 2,
+                                'noticia_id' => $noticia->id,
+                                'cliente_id' => (int) $clientes[$i]->id_cliente,
+                                'area' => (int) $clientes[$i]->id_area,
+                                'sentimento' => (int) $clientes[$i]->id_sentimento);
+
+                        $noticia_cliente = NoticiaCliente::create($dados);
+
+                    }
+                }
             }
 
             DB::commit();
@@ -313,13 +340,35 @@ class NoticiaWebController extends Controller
 
         try {
 
-           
             $noticia->update($request->all());
 
             if($noticia){
                 $conteudo = ConteudoNoticiaWeb::where('id_noticia_web', $noticia->id)->first();
                 $conteudo->conteudo = $request->conteudo;
                 $conteudo->save();
+
+                $tags = collect($request->tags)->mapWithKeys(function($tag){
+                    return [$tag => ['tipo_id' => 2]];
+                })->toArray();
+
+                $noticia->tags()->sync($tags);
+
+                $clientes = json_decode($request->clientes[0]);
+
+                if($clientes){
+
+                    for ($i=0; $i < count($clientes); $i++) { 
+                        
+                        $dados = array('tipo_id' => 2,
+                                'noticia_id' => $noticia->id,
+                                'cliente_id' => (int) $clientes[$i]->id_cliente,
+                                'area' => (int) $clientes[$i]->id_area,
+                                'sentimento' => (int) $clientes[$i]->id_sentimento);
+
+                        $noticia_cliente = NoticiaCliente::create($dados);
+
+                    }
+                }
             }
 
             DB::commit();
