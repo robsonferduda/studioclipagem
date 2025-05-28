@@ -134,12 +134,23 @@
                                     <div class="form-group">
                                         <textarea class="form-control" name="conteudo" id="conteudo" rows="10" required>{{ (empty($noticia)) ? old('conteudo') : $noticia->conteudo->conteudo }}</textarea>
                                     </div>
-                                </div>     
-                                <div class="col-md-12">
-                                    <label for="arquivo">Print da Notícia</label>
-                                    <div style="min-height: 200px;" class="dropzone" id="dropzone"><div class="dz-message" data-dz-message><span>CLIQUE AQUI<br/> ou <br/>ARRASTE</span></div></div>
-                                    <input type="hidden" name="arquivo" id="arquivo">
-                                </div>                                                         
+                                </div> 
+                                @if($noticia)    
+                                    <div class="col-md-12">
+                                        <label for="arquivo">Print da Notícia</label>
+                                        <div style="min-height: 200px;" class="dropzone" id="dropzone"><div class="dz-message" data-dz-message><span>CLIQUE AQUI<br/> ou <br/>ARRASTE</span></div></div>
+                                        <input type="hidden" name="arquivo" id="arquivo">
+                                    </div>        
+                                @else
+                                    <div class="col-md-3">
+                                        <img src="{{ asset('img/noticia-web/'.$noticia->ds_caminho_img) }}" alt="Página {{ $noticia->ds_caminho_img }}">
+                                    </div>
+                                    <div class="col-md-9">
+                                        <label for="arquivo">Print da Notícia</label>
+                                        <div style="min-height: 200px;" class="dropzone" id="dropzone"><div class="dz-message" data-dz-message><span>CLIQUE AQUI<br/> ou <br/>ARRASTE</span></div></div>
+                                        <input type="hidden" name="arquivo" id="arquivo">
+                                    </div>
+                                @endif                                                 
                             </div>     
                             <div class="text-center mb-2 mt-3">
                                 <button type="submit" class="btn btn-success" name="btn_enviar" value="salvar"><i class="fa fa-save"></i> Salvar</button>
