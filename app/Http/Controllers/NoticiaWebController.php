@@ -46,8 +46,11 @@ class NoticiaWebController extends Controller
         $termo = ($request->termo) ? $request->termo : null;
 
         $dados = NoticiaWeb::with('fonte')
-                    ->whereHas('clientes', function($query) use ($fonte) {
-                        $query->where('noticia_cliente.tipo_id', 2);
+                    ->whereHas('clientes', function($query) use ($cliente_selecionado) {
+                        $query->where('noticia_cliente.tipo_id', 2)
+                        ->when($cliente_selecionado, function ($query) use ($cliente_selecionado) { 
+                            $query->where('noticia_cliente.cliente_id', $cliente_selecionado);
+                        });
                     })
                     ->whereBetween($tipo_data, [$dt_inicial." 00:00:00", $dt_final." 23:59:59"])
                     ->orderBy('data_noticia')
