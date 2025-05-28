@@ -76,7 +76,7 @@
                     <div class="col-md-2">
                         <div class="form-group">
                             <label>Valor</label>
-                            <input type="text" class="form-control" name="nu_valor" id="nu_valor" placeholder="0,00" value="{{ number_format($fonte->nu_valor, 2, ".","") }}">
+                            <input type="text" class="form-control monetario" name="nu_valor" id="nu_valor" value="{{ number_format($fonte->nu_valor, 2, ".","") }}">
                         </div>
                     </div>
                 </div>  

@@ -733,7 +733,7 @@ class FonteWebController extends Controller
                     $noticia->data_noticia = $carbon->createFromFormat('d/m/Y', $request->data_noticia)->format('Y-m-d')." 00:00:00";
                     $noticia->titulo_noticia = $request->titulo;
                     $noticia->url_noticia = $request->url_noticia;
-                    
+                                        
                     $noticia->save();
 
                     $conteudo = ConteudoNoticiaWeb::where('id_noticia_web', $noticia->id)->first();

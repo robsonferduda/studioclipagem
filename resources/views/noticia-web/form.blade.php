@@ -83,7 +83,8 @@
                                
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Fonte <span class="text-danger">Campo Obrigatório</span></label>
+                                        <label>Fonte <span class="text-danger">Campo Obrigatório </span><a class="text-info" href="{{ url("fonte-web/listar") }}" target="_BLANK">Listagem de Fontes</a></label>
+                                        <input type="hidden" name="id_fonte_selecionada" id="id_fonte_selecionada" value="{{ ($noticia) ? $noticia->id_fonte : 0 }}">
                                         <select class="form-control" name="id_fonte" id="id_fonte" required="required">
                                             <option value="">Selecione uma fonte</option>
                                             @foreach ($fontes as $fonte)
@@ -95,7 +96,7 @@
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
                                         <label>Retorno</label>
-                                        <input type="text" class="form-control monetario" name="valor_retorno" id="valor_retorno" placeholder="Retorno" value="{{ old('valor_retorno') }}" readonly>
+                                        <input type="text" class="form-control monetario" name="valor_retorno" id="valor_retorno" placeholder="Retorno" value="{{ old('valor_retorno') }}">
                                     </div>                                    
                                 </div>
                             </div>
@@ -168,7 +169,7 @@
             url: host + "/noticia-web/upload", // URL para onde os arquivos serão enviados
             method: "post", // Método HTTP
             paramName: "picture", // Nome do parâmetro no backend
-            maxFilesize: 1, // Tamanho máximo do arquivo em MB
+            maxFilesize: 10, // Tamanho máximo do arquivo em MB
             acceptedFiles: ".jpeg,.jpg,.png,.pdf", // Tipos de arquivos aceitos
             addRemoveLinks: true, // Adicionar links para remover arquivos
             dictRemoveFile: "Remover", // Texto do botão de remoção
@@ -190,6 +191,32 @@
                 });
             },
         });
+
+        $(document).on("change", "#id_fonte", function() {
+           
+            var id = $("#id_fonte").val();
+            
+            $.ajax({
+                    url: host+'/fonte-web/'+id+'/valores/'+$(this).val(),
+                    type: 'GET',
+                    beforeSend: function() {
+                        
+                    },
+                    success: function(data) {
+                        $("#valor_retorno").val(data);                                      
+                    },
+                    complete: function(){
+                                    
+                    }
+            });  
+        });
+
+        var id_fonte_selecionada = $("#id_fonte_selecionada").val();
+
+        if(id_fonte_selecionada){
+            $("#id_fonte").trigger("change");
+        }
+
     });
 </script>
 @endsection

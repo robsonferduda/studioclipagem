@@ -226,6 +226,15 @@ class NoticiaWebController extends Controller
         return view('noticia-web/form',compact('fontes','noticia','tags'));
     }
 
+    public function getValores($id)
+    {
+        $fonte = FonteWeb::find($id);
+
+        $valor = (float) $fonte->nu_valor;
+
+        return response()->json($valor);
+    }
+
     public function copiaImagens()
     {
 
@@ -534,6 +543,31 @@ class NoticiaWebController extends Controller
         $dados = DB::select($sql)[0];
 
         return response()->json($dados); 
+    }
+
+    public function upload(Request $request)
+    {
+        $image = $request->file('picture');
+        $fileInfo = $image->getClientOriginalName();
+        $filesize = $image->getSize()/1024/1024;
+        $filename = pathinfo($fileInfo, PATHINFO_FILENAME);
+        $extension = "jpeg";
+        $file_name = time().'.'.$extension;
+        $file_noticia = ($request->id) ? $request->id.'.'.$extension : $file_name;
+
+       //dd($file_noticia);
+
+        //$image->move(public_path('img/noticia-impressa/recorte'),$file_name);
+        $image->move(public_path('img/noticia-web'),$file_noticia);
+
+        if($request->id){
+            $noticia = NoticiaImpresso::find($request->id);
+
+            $noticia->ds_caminho_img = $file_noticia;
+            $noticia->save();
+        }
+
+        return $file_noticia;
     }
 
     public function valores()
