@@ -108,7 +108,7 @@
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label>URL da Notícia <span class="text-danger">Campo Obrigatório</span></label>
+                                        <label>URL da Notícia <span class="text-danger">Campo Obrigatório</span><a href="{{ (empty($noticia)) ? $noticia->url_noticia : '' }}" target="_BLANK"></a></label>
                                         <input type="text" class="form-control" name="url_noticia" id="url_noticia" placeholder="URL Notícia" value="{{ (empty($noticia)) ? old('url_noticia') : $noticia->url_noticia }}" required>
                                     </div>
                                 </div>  
