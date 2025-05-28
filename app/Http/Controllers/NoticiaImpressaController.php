@@ -89,7 +89,8 @@ class NoticiaImpressaController extends Controller
                 FROM noticia_cliente t1
                 JOIN clientes t2 ON t2.id = t1.cliente_id 
                 LEFT JOIN area t3 On t3.id = t1.area 
-                WHERE noticia_id = $noticia";
+                WHERE noticia_id = $noticia
+                AND t1.tipo_id = 1";
 
         $vinculos = DB::select($sql);
 

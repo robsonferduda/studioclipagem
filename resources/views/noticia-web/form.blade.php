@@ -30,6 +30,7 @@
                     @endif
                         <div class="form-group m-3 w-70">
                             <div class="row">
+                                <input type="hidden" name="id_noticia" id="id_noticia" value="{{ ($noticia) ? $noticia->id : 0 }}">
                                 <input type="hidden" name="clientes[]" id="clientes">
                                 <input type="hidden" name="ds_caminho_img" id="ds_caminho_img">
                                 <div class="col-md-5">
@@ -135,7 +136,7 @@
                                         <textarea class="form-control" name="conteudo" id="conteudo" rows="10" required>{{ (empty($noticia)) ? old('conteudo') : $noticia->conteudo->conteudo }}</textarea>
                                     </div>
                                 </div> 
-                                @if($noticia->ds_caminho_img)    
+                                @if($noticia and $noticia->ds_caminho_img)    
                                     <div class="col-md-3">
                                         <img src="{{ asset('img/noticia-web/'.$noticia->ds_caminho_img) }}" alt="Página {{ $noticia->ds_caminho_img }}">
                                     </div>

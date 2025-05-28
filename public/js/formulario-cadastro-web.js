@@ -84,12 +84,12 @@ $(document).ready(function() {
 
         $(".metadados").empty();
         $.each(clientes, function(index, value) {                
-            $(".metadados").append('<li><div class="row"><div class="col-md-9 col-9"><span>'+value.cliente+'</span> | <span>'+value.area+'</span> | <span>'+value.sentimento+'</span></div><div class="col-md-3 col-3 text-right"><btn class="btn btn-sm btn-outline-danger btn-round btn-icon btn-remover-cliente" data-id="'+index+'"><i class="fa fa-times"></i></btn></div></div></li>');
+            $(".metadados").append('<li><div class="row"><div class="col-md-12 col-12 mb-2"><span>'+value.cliente+'</span> | <span>'+value.area+'</span> | <span>'+value.sentimento+'</span> | <span class="text-danger btn-remover-cliente" data-id="'+index+'">Excluir</span></div></div></li>');
         });
     });
 
     $.ajax({
-        url: host+'/noticia/impresso/clientes/'+id_noticia,
+        url: host+'/noticia/web/clientes/'+id_noticia,
         type: 'GET',
         beforeSend: function() {
             

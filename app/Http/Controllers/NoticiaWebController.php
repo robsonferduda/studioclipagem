@@ -580,6 +580,35 @@ class NoticiaWebController extends Controller
         return $file_noticia;
     }
 
+    public function clientes($noticia)
+    {
+        $vinculos = array();
+
+        $sql = "SELECT t1.cliente_id, 
+                    nome, 
+                    area as area_id, 
+                    CASE 
+                        WHEN(t3.descricao IS NOT NULL) THEN t3.descricao 
+                        ELSE 'Nenhuma área selecionada'
+                    END as area,
+                    CASE
+                        WHEN (sentimento = '-1') THEN 'Negativo' 
+                        WHEN (sentimento = '0') THEN 'Neutro' 
+                        WHEN (sentimento = '1') THEN 'Positivo' 
+                        ELSE 'Nenhum sentimento selecionado'
+                    END as sentimento,
+                    sentimento AS id_sentimento
+                FROM noticia_cliente t1
+                JOIN clientes t2 ON t2.id = t1.cliente_id 
+                LEFT JOIN area t3 On t3.id = t1.area 
+                WHERE noticia_id = $noticia
+                AND t1.tipo_id = 2";
+
+        $vinculos = DB::select($sql);
+
+        return response()->json($vinculos);
+    }
+
     public function valores()
     {
         $noticias = NoticiaCliente::where('tipo_id',2)->where('created_at', '>', '2025-02-10')->where('created_at', '<', '2025-03-01')->get();
