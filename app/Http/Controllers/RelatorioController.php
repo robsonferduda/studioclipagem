@@ -194,12 +194,14 @@ class RelatorioController extends Controller
 
             if($noticia_web){
 
-                $arquivo = Storage::disk('s3')->get($noticia_web->path_screenshot);
-                $filename = $noticia_web->id.".jpg";
-                Storage::disk('web-img')->put($filename, $arquivo);
+                if (Storage::disk('s3')->exists($noticia_web->path_screenshot)) {
+                    $arquivo = Storage::disk('s3')->get($noticia_web->path_screenshot);
+                    $filename = $noticia_web->id.".jpg";
+                    Storage::disk('web-img')->put($filename, $arquivo);
 
-                $noticia_web->ds_caminho_img = $filename;
-                $noticia_web->save();
+                    $noticia_web->ds_caminho_img = $filename;
+                    $noticia_web->save();
+                }
 
             }
         }            
