@@ -97,7 +97,7 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <input type="hidden" name="cd_emissora" id="cd_emissora" value="{{ ($dados->emissora_id) ? $dados->emissora_id : 0  }}">
-                                    <label>Emissora <span class="text-danger">Obrigatório</span></label>
+                                    <label>Emissora <span class="text-danger">Obrigatório </span><a class="text-info" href="{{ url("tv/emissoras") }}" target="_BLANK">Listar Emissoras</a></label>
                                     <select class="form-control select2" name="emissora" id="emissora" required>
                                     <option value="">Selecione uma emissora</option>
                                     </select>
@@ -211,15 +211,11 @@
 @section('script')   
 <script src="{{ asset('js/formulario-cadastro-tv.js') }}"></script> 
     <script>
+        
         Dropzone.autoDiscover = false;
         var host = $('meta[name="base-url"]').attr('content');
 
         $(document).ready(function(){
-
-            $('#modalArea').on('shown.bs.modal', function () {
-                $("#ds_area").val("");
-                $("#ds_area").focus();
-            });
             
             var token = $('meta[name="csrf-token"]').attr('content');
             var cd_emissora = $("#cd_emissora").val();
@@ -243,35 +239,6 @@
                         type: 'info',
                         timer: 1000
                     });
-                }
-            });
-
-            $.ajax({
-                url: host+'/api/cliente/buscarClientes',
-                type: 'GET',
-                beforeSend: function() {
-                    $('.content').loader('show');
-                },
-                success: function(data) {
-                    if(!data) {
-                        Swal.fire({
-                            text: 'Não foi possível buscar os clientes. Entre em contato com o suporte.',
-                            type: "warning",
-                            icon: "warning",
-                        });
-                        return;
-                    }
-
-                    data.forEach(element => {
-                        let option = new Option(element.text, element.id);
-                        $('.cliente').append(option);
-                    });
-
-                },
-                complete: function(){
-                    if(cliente_id > 0)
-                        $('#cd_cliente').val(cliente_id);
-                    $('.content').loader('hide');
                 }
             });
 
@@ -301,11 +268,6 @@
                         $('#emissora').val(cd_emissora);
                     $('.content').loader('hide');
                 }
-            });
-
-            $(document).on('change', '.cliente', function() {
-                var cliente = $(this).val();
-                buscarAreas(cliente);
             });
 
             $(document).on('change', '#emissora', function() {
@@ -365,136 +327,12 @@
                 buscarAreas(cliente_id);
         });        
 
-        $(document).on("click", ".selecionar-arquivo", function() {
-            $('#arquivo').trigger('click');
-        });
-
-        $(document).on("click", ".btn-add-cliente", function(clientes) {
-
-            var id_cliente = $("#cd_cliente").val();
-
-            if(id_cliente){
-                
-                var cliente = $("#cd_cliente option:selected").text();
-
-                var id_area = $("#cd_area").val();
-                if(id_area)
-                    var area = $("#cd_area option:selected").text();
-                else
-                    var area = 'Nenhuma área selecionada';
-
-                var id_sentimento = $("#cd_sentimento").val();
-                if(id_sentimento)
-                    var sentimento = $("#cd_sentimento option:selected").text();
-                else
-                    var sentimento = "Nenhum sentimento selecionado";
-                
-                var dados = { id_cliente: id_cliente, cliente: cliente, id_area: id_area, area: area, id_sentimento: id_sentimento, sentimento: sentimento };
-                inicializaClientes(dados);
-
-            }else{
-                Swal.fire({
-                    text: 'Obrigatório informar um cliente.',
-                    type: "warning",
-                    icon: "warning",
-                    confirmButtonText: '<i class="fa fa-check"></i> Ok',
-                });
-            }
-        });
-
-        $(document).on("click", ".btn-add-area", function() {
-
-            var ds_area = $("#ds_area").val();
-            var id_cliente = $("#cd_cliente").val();
-
-            if(!id_cliente){
-
-                Swal.fire({
-                    text: 'Obrigatório informar um cliente.',
-                    type: "warning",
-                    icon: "warning",
-                    confirmButtonText: '<i class="fa fa-check"></i> Ok',
-                });
-
-            }else{
-
-                $.ajax({url: host+'/cliente/area/adicionar',
-                    type: 'POST',
-                    data: {"_token": $('meta[name="csrf-token"]').attr('content'),
-                            "ds_area": ds_area,
-                            "id_cliente": id_cliente
-                    },
-                    beforeSend: function() {
-            
-                    },
-                    success: function(data) {
-                        $("#cd_cliente").trigger('change');                           
-                    },
-                    error: function(){
-                        
-                    },
-                    complete: function(){
-                        $('#modalArea').modal('hide');
-                        $("#ds_area").val("");
-                    }
-                });
-
-            }
-        });
-
-        function buscarAreas(cliente){
-
-            var cd_area = $("#area_id").val();
-
-            if(cliente == '') {
-                    $('.area').attr('disabled', true);
-                    $('.area').append('<option value="">Cliente não possui áreas</option>').val('');
-                    return;
-                }
-
-                $.ajax({
-                    url: host+'/api/cliente/getAreasCliente',
-                    type: 'GET',
-                    data: {
-                        "_token": $('meta[name="csrf-token"]').attr('content'),
-                        "cliente": cliente,
-                    },
-                    beforeSend: function() {
-                        $('.content').loader('show');
-                        $('.area').append('<option value="">Carregando...</option>').val('');
-                    },
-                    success: function(data) {
-
-                        $('.area').find('option').remove();
-                        $('.area').attr('disabled', false);
-
-                        if(data.length == 0) {                            
-                            $('.area').append('<option value="">Cliente não possui áreas vinculadas</option>').val('');
-                            return;
-                        }
-                        
-                        $('.area').append('<option value="">Selecione uma área</option>').val('');
-                        data.forEach(element => {
-                            let option = new Option(element.descricao, element.id);
-                            $('.area').append(option);
-                        });
-                                    
-                    },
-                    complete: function(){
-                        if(cd_area > 0)
-                            $('#cd_area').val(cd_area);
-                        $('.content').loader('hide');
-                    }
-                });
-
-        }
-
         function buscarProgramas(emissora){
 
             var cd_programa = $("#cd_programa").val();
 
             $.ajax({
-                    url: host+'/api/programa/buscar-emissora/'+emissora,
+                    url: host+'/api/tv/emissora/'+emissora+'/programas/buscar',
                     type: 'GET',
                     beforeSend: function() {
                         $('.content').loader('show');
@@ -526,47 +364,5 @@
                 });
 
         };
-
-        function inicializaClientes(dados){
-
-            clientes.push(dados);
-            $("#clientes").val(JSON.stringify(clientes));
-
-            $(".metadados").empty();
-
-            $.each(clientes, function(index, value) {                
-                $(".metadados").append('<li><div class="row"><div class="col-md-12 col-12 mb-2"><span>'+value.cliente+'</span> | <span>'+value.area+'</span> | <span>'+value.sentimento+'</span> | <span class="text-danger btn-remover-cliente" data-id="'+index+'">Excluir</span></div></div></li>');
-            });
-        }
-
-        var clientes = [];
-
-        $(document).on('click', '.btn-remover-cliente', function() {
-            
-            id = $(this).data("id");
-            
-            clientes.splice(id, 1);
-            $("#clientes").val(JSON.stringify(clientes));
-
-            $(".metadados").empty();
-            $.each(clientes, function(index, value) {                
-                $(".metadados").append('<li><div class="row"><div class="col-md-9 col-9"><span>'+value.cliente+'</span> | <span>'+value.area+'</span> | <span>'+value.sentimento+'</span></div><div class="col-md-3 col-3 text-right"><btn class="btn btn-sm btn-outline-danger btn-round btn-icon btn-remover-cliente" data-id="'+index+'"><i class="fa fa-times"></i></btn></div></div></li>');
-            });
-        });
-
-        $(document).on('change', '#arquivo', function() {
-            let filename = ''
-            if($(this).val() != '') {
-                filename = $('#arquivo').val().replace(/C:\\fakepath\\/i, '');
-            }
-            $('#filename').val(filename);
-        });
-
-        $(document).on('click', '#remover-arquivo', function() {
-            $('#remover').val(true);
-            $('.upload-arquivo').slideDown();
-            $('.download-arquivo').slideUp();
-        })
-
     </script>
 @endsection

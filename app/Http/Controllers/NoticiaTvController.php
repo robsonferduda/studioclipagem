@@ -54,7 +54,7 @@ class NoticiaTvController extends Controller
 
         $dados = NoticiaTv::with('emissora')
                     ->whereBetween($tipo_data, [$dt_inicial." 00:00:00", $dt_final." 23:59:59"])
-                    ->orderBy('dt_noticia')                    
+                    ->orderBy('id')                    
                     ->paginate(10);
 
         return view('noticia-tv/index', compact('dados','emissora','clientes','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo'));
