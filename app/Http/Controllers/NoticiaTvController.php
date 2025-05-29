@@ -183,6 +183,50 @@ class NoticiaTvController extends Controller
         return view('noticia-tv/dashboard', compact('dt_inicial','dt_final','total_emissoras','total_programas','total_videos_tv','total_noticias_tv'));
     }
 
+    public function extrair($monitoramento, $id)
+    {
+        $conteudo = VideoEmissoraWeb::find($id);
+
+        //Array de dados para inserção
+        $dados = array("emissora_id" => $conteudo->id_emissora,
+                       "horario" => $conteudo->data_hora_inicio,
+                       "sinopse" => $conteudo->transcricao,
+                       "dt_cadastro" => $conteudo->data_hora_inicio,
+                       "dt_noticia" => $conteudo->data_hora_inicio);
+
+        $noticia = NoticiaTv::create($dados);
+
+        //Inserção de arquivo
+        $arquivo = Storage::disk('s3')->get($conteudo->video_path);
+        $filename = $noticia->id.".mp3";
+
+        Storage::disk('tv-video')->put($filename, $arquivo);
+
+        $noticia->ds_caminho_video = $filename;
+        $noticia->save();
+
+        //Relacionamento de clientes
+        $vinculo = NoticiaCliente::where('noticia_id', $id)->where('monitoramento_id', $monitoramento)->where('tipo_id', 4)->first();
+
+                $dados = array('tipo_id' => 4,
+                                'noticia_id' => $noticia->id,
+                                'cliente_id' => (int) $vinculo->cliente_id,
+                                'area' => null,
+                                'sentimento' => 0);
+
+                    $match = array('tipo_id' => 4,
+                                'noticia_id' => $noticia->id,
+                                'cliente_id' => (int) $vinculo->cliente_id);
+                        
+                    $dados = array('area' => null,
+                                   'sentimento' => 0);
+
+                    $noticia_cliente = NoticiaCliente::updateOrCreate($match, $dados);
+
+
+        return redirect('noticia-tv/'.$noticia->id.'/editar');
+    }
+
     public function getBasePath()
     {
         return storage_path().DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR;

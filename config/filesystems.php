@@ -104,6 +104,13 @@ return [
             'visibility' => 'public',
         ],
 
+        'tv-video' => [
+            'driver' => 'local',
+            'root' => public_path('video/noticia-tv'),
+            'url' => env('APP_URL').'/tvs',
+            'visibility' => 'public',
+        ],
+
         'impresso-img-original' => [
             'driver' => 'local',
             'root' => public_path('img/impresso-img'),
