@@ -89,7 +89,7 @@
                                     <div class="col-lg-12 col-md-12 col-sm-12 mb-1">                                    
                                         @if($noticia->ds_caminho_video)
                                             <video width="100%" height="240" controls>
-                                                <source src="{{ (Storage::disk('s3')) ? Storage::disk('s3')->temporaryUrl($video->video_path, '+30 minutes') : '' }}" type="video/mp4">
+                                                <source src="{{ (Storage::disk('s3')) ? Storage::disk('s3')->temporaryUrl($noticia->video_path, '+30 minutes') : '' }}" type="video/mp4">
                                                 <source src="movie.ogg" type="video/ogg">
                                                 Seu navegador não suporta a exibição de vídeos.
                                             </video>
