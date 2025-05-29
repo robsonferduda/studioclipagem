@@ -279,7 +279,7 @@ Route::middleware(['web'])->group(function () {
 	Route::match(array('GET', 'POST'),'emissoras','EmissoraController@index');
 	Route::match(array('GET', 'POST'),'noticia/radio/coletas','EmissoraController@coletas');
 	Route::match(array('GET', 'POST'),'noticia/radio/monitoramento','NoticiaRadioController@monitoramento');
-	Route::get('noticia/radio/extrair/{id}','NoticiaRadioController@extrair');
+	Route::get('noticia/radio/{monitoramento}/extrair/{id}','NoticiaRadioController@extrair');
 	Route::get('emissoras/{tipo}/novo','EmissoraController@novo');
 	Route::get('emissoras/radio/limpar','EmissoraController@limpar');
 	Route::get('radio/emissora/{id}/horarios','EmissoraController@horarios');

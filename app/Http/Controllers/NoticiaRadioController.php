@@ -184,7 +184,7 @@ class NoticiaRadioController extends Controller
         return view('radio/dashboard', compact('total_noticia_radio', 'total_emissora_radio', 'ultima_atualizacao','ultima_atualizacao_radio','data_final','data_inicial','total_emissora_gravando','ultima_atualizacao_gravando'));
     }
 
-    public function extrair($id)
+    public function extrair($monitoramento, $id)
     {
         $conteudo = EmissoraGravacao::find($id);
 
