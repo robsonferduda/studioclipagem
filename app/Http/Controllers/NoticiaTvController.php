@@ -188,10 +188,10 @@ class NoticiaTvController extends Controller
 
         //Array de dados para inserção
         $dados = array("emissora_id" => $conteudo->id_emissora,
-                       "horario" => $conteudo->data_hora_inicio,
+                       "horario" => $conteudo->horario_start_gravacao,
                        "sinopse" => $conteudo->transcricao,
-                       "dt_cadastro" => $conteudo->data_hora_inicio,
-                       "dt_noticia" => $conteudo->data_hora_inicio);
+                       "dt_cadastro" => date("Y-m-d H:i:s"),
+                       "dt_noticia" => $conteudo->horario_start_gravacao);
 
         $noticia = NoticiaTv::create($dados);
 
