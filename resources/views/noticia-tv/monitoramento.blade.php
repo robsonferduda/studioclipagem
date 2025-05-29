@@ -138,6 +138,7 @@
                                         {{ date('H:i:s', strtotime($video->horario_start_gravacao)) }} às 
                                         {{ date('H:i:s', strtotime($video->horario_end_gravacao)) }}
                                     </p>
+                                    <p class="mb-1"><i class="nc-icon nc-briefcase-24"></i> {{ ($video->nome_cliente) ? $video->nome_cliente : '' }}</p>
                                     <div style="margin-bottom: 5px;" class="tags destaque-{{ $video->noticia_id }}-{{ $video->monitoramento_id }}" data-monitoramento="{{ $video->monitoramento_id }}" data-chave="{{ $video->noticia_id }}-{{ $video->monitoramento_id }}" data-noticia="{{ $video->noticia_id }}">
                                                 
                                     </div>
