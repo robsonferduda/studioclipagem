@@ -42,9 +42,8 @@
                         @endif
                         <div class="form-group m-3 w-70">
                             <div class="row">
-                                <input type="hidden" name="id_noticia" id="id_noticia" value="{{ ($noticia) ? $noticia->id : 0 }}">
                                 <input type="hidden" name="clientes[]" id="clientes">
-                                <input type="hidden" name="ds_caminho_radio" id="ds_caminho_radio">
+                                <input type="hidden" name="ds_caminho_img" id="ds_caminho_img">
                                 <div class="col-md-5">
                                     <div class="form-group">
                                         <label>Cliente</label>
@@ -175,25 +174,78 @@
                                 <div class="col-md-12">
                                     <label for="sinopse">Sinopse</label>
                                     <div class="form-group">
-                                        <textarea class="form-control" name="sinopse" id="sinopse" rows="4">{!! ($noticia) ? nl2br($noticia->sinopse) : '' !!}</textarea>
+                                        <textarea class="form-control" name="sinopse" id="sinopse" rows="10">{!! ($noticia) ? nl2br($noticia->sinopse) : '' !!}</textarea>
                                     </div>
                                 </div>
-                                @if($noticia and $noticia->ds_caminho_audio)    
-                                    <div class="col-md-3">
-                                        <img src="{{ asset('img/noticia-web/'.$noticia->ds_caminho_img) }}" alt="Página {{ $noticia->ds_caminho_img }}">
-                                    </div>
-                                    <div class="col-md-9">
-                                        <label for="arquivo">Print da Notícia</label>
-                                        <div style="min-height: 200px;" class="dropzone" id="dropzone"><div class="dz-message" data-dz-message><span>CLIQUE AQUI<br/> ou <br/>ARRASTE</span></div></div>
-                                        <input type="hidden" name="arquivo" id="arquivo">
-                                    </div>
-                                @else
-                                    <div class="col-md-12">
-                                        <label for="arquivo">Áudio da Notícia</label>
-                                        <div style="min-height: 200px;" class="dropzone" id="dropzone"><div class="dz-message" data-dz-message><span>CLIQUE AQUI<br/> ou <br/>ARRASTE</span></div></div>
-                                        <input type="hidden" name="arquivo" id="arquivo">
-                                    </div> 
-                                @endif                                    
+                                <div class="col-md-12">
+                                    <label for="arquivo">Arquivo</label>
+                                    <div style="min-height: 302px;" class="dropzone" id="dropzone"><div class="dz-message" data-dz-message><span>CLIQUE AQUI<br/> ou <br/>ARRASTE</span></div></div>
+                                    <input type="hidden" name="arquivo" id="arquivo">
+                                </div>
+                                <div class="col-md-12 mt-5">
+
+                                    <audio id="audioPlayer" width="100%" controls style="width: 100%;">
+                                            <source src="{{ asset('audios/sample-3s.mp3') }}" type="audio/mpeg">
+                                            Seu navegador não suporta a execução de áudios, faça o download para poder ouvir.
+                                        </audio>
+
+
+<div class="w3-container">
+      <br>
+      <div id="waveform" class="w3-border w3-round-large" 
+        data-step="3" data-intro="Click and drag to select section">    
+      </div>
+      <br>
+        <div class="w3-row">
+        <div class="w3-half w3-container w3-hide" id="audio-buttons">
+        <button class="w3-button w3-border w3-border-green w3-round-xlarge" onClick="playAndPause()">
+            <i id="play-pause-icon" class="fa fa-play"></i>
+        </button>
+
+        <b id="time-current">0.00</b> / <b id="time-total">0.00</b>
+        </div>
+        
+        </div>
+      <hr>
+          <div data-step="4" data-intro="Would you like to know how to merge tracks. Click Next.">
+          <table class="w3-table-all w3-card-4" id="audio-tracks" 
+            data-step="5" data-intro="Select atleast 2 checkboxes for merging. Click Next.">
+            <thead>
+            <tr class="w3-border w3-border-teal w3-text-teal">
+              <th></th>
+              <th>Início</th>
+              <th>Fim</th>
+              <th></th>
+              <th></th>
+              <th></th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+            <tfoot></tfoot>
+          </table>
+          </div>
+          <br>
+          <div id="merge-option" class="w3-hide">
+            <button class="w3-button w3-border w3-border-teal w3-round-xlarge" onClick="mergeTrack()"
+                data-step="6" data-intro="Click to merge selected tracks. Bye bye!! :)">
+                <i>Merge tracks</i>
+            </button>    
+            <br><br>
+            <div class="w3-row w3-hide" id="merged-track-div">
+            <b class="w3-col l1 w3-text-olive"><i>Merged Audio : </i></b>   
+            <audio controls="controls" class="w3-col l11" id="merged-track">
+                <source src="" type="">
+            </audio>
+            </div>
+          </div>
+      <footer class="w3-display-bottom">
+        <hr>
+        <image id="tour-button" class="w3-right" src="assets/tutorial.png" width="40" height="40" onClick="startTour()" data-step="1" data-intro="Hey User, Welcome. Click me for a walkthrough. To skip click Skip.">
+      </footer>
+    </div>
+
+
+                                </div>
                             </div>
                              
                             <div class="text-center mb-2 mt-3">
@@ -210,53 +262,57 @@
 </div>
 @endsection
 @section('script')    
-<script src="{{ asset('js/formulario-cadastro-radio.js') }}"></script>
-<script>
-    
-    Dropzone.autoDiscover = false;
-    
-    $(document).ready(function(){
 
+<script src="{{ asset('js/formulario-cadastro.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/1.2.3/wavesurfer.min.js"></script>
+<!-- wavesurfer.js regions -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/1.2.3/plugin/wavesurfer.regions.min.js"></script>
+<!--Enjoy Hints-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.9.3/intro.min.js"></script>
+
+<script src="{{ asset('js/actionhelper.js') }}"></script>
+<script src="{{ asset('js/audio.js') }}"></script>
+<script>
+        //Dropzone.autoDiscover = false;
         var host = $('meta[name="base-url"]').attr('content');
         var token = $('meta[name="csrf-token"]').attr('content');
-        var cd_emissora = $("#cd_emissora").val();
 
-        //Inicializar o Dropzone
-        var myDropzone = new Dropzone("#dropzone", {
-            url: host + "/noticia-radio/upload", // URL para onde os arquivos serão enviados
-            method: "post", // Método HTTP
-            paramName: "audio", // Nome do parâmetro no backend
-            maxFilesize: 10, // Tamanho máximo do arquivo em MB
-            acceptedFiles: ".mp3", // Tipos de arquivos aceitos
-            addRemoveLinks: true, // Adicionar links para remover arquivos
-            dictRemoveFile: "Remover", // Texto do botão de remoção
-            headers: {
-                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"), // Token CSRF para Laravel
-            },
-            init: function () {
-                this.on("success", function (file, response) {
-                    $("#ds_caminho_video").val(response.arquivo);
-                    $("#duracao").val(response.duracao);
-                });
+        $(document).ready(function(){
 
-                this.on("error", function (file, response) {
-                    console.error("Erro ao enviar arquivo:", response);
-                });
 
-                this.on("removedfile", function (file) {
-                    console.log("Arquivo removido:", file.name);
-                    // Opcional: envie uma requisição para remover o arquivo do servidor
-                });
-            },
-        });
-
-        $(document).on('change', '#emissora_id', function() {
-                
-            var emissora = $(this).val();
+           loadAudio();
             
-            buscarProgramas(emissora);
-            return $('#programa').prop('disabled', false);
-        });
+            var cd_emissora = $("#cd_emissora").val();
+            var cliente_id = $("#cliente_id").val();
+            /*
+            $(".dropzone").dropzone({ 
+                acceptedFiles: ".mp3",
+                maxFiles: 1,
+                url: host+"/radio/noticias/upload",
+                headers: {
+                    'x-csrf-token': token,
+                },
+                success: function(file, responseText){
+                    $("#arquivo").val(responseText.arquivo);
+                    $("#duracao").val(responseText.duracao);
+
+                    $.notify({
+                        icon: 'fa fa-bell',
+                        message: "<b>Mensagem do Sistema</b><br/> Arquivo enviado e duração do arquivo registrada com sucesso"
+                    },{
+                        type: 'info',
+                        timer: 1000
+                    });
+                }
+            });*/
+
+            $(document).on('change', '#emissora_id', function() {
+                
+                var emissora = $(this).val();
+                buscarProgramas(emissora);
+
+                return $('#programa').prop('disabled', false);
+            });
 
             $(document).on("change", "#horario", function() {
             

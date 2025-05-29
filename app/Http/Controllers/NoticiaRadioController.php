@@ -439,6 +439,7 @@ class NoticiaRadioController extends Controller
 
     public function upload(Request $request)
     {
+        /*
         $arquivo = $request->file('file');
         $fileInfo = $arquivo->getClientOriginalName();
         $filename = pathinfo($fileInfo, PATHINFO_FILENAME);
@@ -453,7 +454,33 @@ class NoticiaRadioController extends Controller
 
         $dados = array('arquivo' => $file_name, 'duracao' => $duracao);
 
-        return response()->json($dados);
+        return response()->json($dados);*/
+
+        $audio = $request->file('audio');
+        $fileInfo = $audio->getClientOriginalName();
+        $filesize = $audio->getSize()/1024/1024;
+        $filename = pathinfo($fileInfo, PATHINFO_FILENAME);
+        $extension = "mp3";
+        $file_name = time().'.'.$extension;
+        $file_noticia = ($request->id) ? $request->id.'.'.$extension : $file_name;
+
+        $audio_mp3 = new \wapmorgan\Mp3Info\Mp3Info($audio, true);
+        $duracao = gmdate("H:i:s", $audio_mp3->duration);
+
+        $audio->move(public_path('audio/noticia-radio'),$file_noticia);
+
+        if($request->id){
+
+            $noticia = NoticiaRadio::find($request->id);
+
+            $noticia->ds_caminho_audio = $file_noticia;
+            $noticia->save();
+        }
+
+        $retorno = array('duracao' => $duracao, 
+                         'arquivo' => $file_noticia);
+
+        return $retorno;
     }
 
     public function getEstatisticas()

@@ -198,6 +198,7 @@ Route::middleware(['web'])->group(function () {
 	Route::post('radio/noticias/inserir','NoticiaRadioController@inserir');
 	Route::post('radio/noticias/{id}/atualizar','NoticiaRadioController@atualizar');
 	Route::post('radio/noticias/upload','NoticiaRadioController@upload');
+	Route::post('noticia-radio/upload','NoticiaRadioController@upload');
 
 	//Route::match(array('GET', 'POST'),'buscar-web','JornalWebController@index');
 	Route::get('noticia/web/importar-imagens','NoticiaWebController@copiaImagens');
@@ -338,6 +339,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('tv/noticias/{id}/remover','NoticiaTvController@remover');
 	Route::get('tv/noticias/{id}/cliente/{cliente}/editar','NoticiaTvController@editar');
 	Route::get('tv/noticias/{id}/cliente/{cliente}/remover','NoticiaTvController@remover');
+	Route::post('noticia-tv/upload','NoticiaTvController@upload');
 	Route::post('tv/noticias/inserir','NoticiaTvController@inserir');
 	Route::post('tv/noticias/{id}/atualizar','NoticiaTvController@atualizar');
 	Route::post('noticia_tv/decupagem/salvar','NoticiaTvController@salvarDecugem');
