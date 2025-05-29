@@ -93,14 +93,8 @@
                                                 <source src="movie.ogg" type="video/ogg">
                                                 Seu navegador não suporta a exibição de vídeos.
                                             </video>
-                                        @elseif($noticia->video_path)
-                                            <video width="100%" height="240" controls>
-                                                <source src="{{ (Storage::disk('s3')) ? Storage::disk('s3')->temporaryUrl($noticia->video_path, '+30 minutes') : '' }}" type="video/mp4">
-                                                <source src="movie.ogg" type="video/ogg">
-                                                Seu navegador não suporta a exibição de vídeos.
-                                            </video>
                                         @else
-                                            <h6 class="mb-1 mt-1" style="color: #ef8157;">Notícia sem áudio vinculado</h6>
+                                            <h6 class="mb-1 mt-1" style="color: #ef8157;">Notícia sem vídeo vinculado</h6>
                                         @endif
                                     </div>
                                     <div class="col-lg-10 col-sm-10 mb-1"> 
