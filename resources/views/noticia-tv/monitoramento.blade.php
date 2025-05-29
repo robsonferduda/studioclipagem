@@ -109,42 +109,44 @@
                     <div class="card ml-2 mr-2">
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-lg-4 col-sm-12">                                            
+                                <div class="col-lg-4 col-sm-12" video-{{ $video->noticia_id }}>                                            
                                     <video width="100%" height="240" controls>
                                         <source src="{{ (Storage::disk('s3')) ? Storage::disk('s3')->temporaryUrl($video->video_path, '+30 minutes') : '' }}" type="video/mp4">
                                         <source src="movie.ogg" type="video/ogg">
                                         Seu navegador não suporta a exibição de vídeos.
                                     </video>
                                 </div>
-                                <div class="col-lg-8 col-sm-12">                                        
-                                    <p class="mb-1">
-                                        @if($video->tipo_programa and in_array($video->tipo_programa, [4,5]))
-                                            <i class="fa fa-youtube text-danger" aria-hidden="true" style="font-size: 30px;"></i>
-                                        @endif
-                                        <strong>{{ ($video->nome_emissora) ? $video->nome_emissora : '' }}</strong> - 
-                                        <strong>{{ ($video->nome_programa) ? $video->nome_programa : '' }}</strong>
-                                    </p>
-                                    <p class="mb-1">
-                                        @if($video->tipo_programa and in_array($video->tipo_programa, [4,5]) and !$video->horario_start_gravacao)
-                                            @php 
-                                                $partes = explode(',', explode(')',explode('(', $video->misc_data)[1])[0]);
-                                                $data = str_pad($partes[2],2,"0",STR_PAD_LEFT).'/'.str_pad($partes[1],2,"0",STR_PAD_LEFT).'/'.$partes[0];                                                    
-                                            @endphp
-                                            {{ $data }}
-                                        @else
-                                        {{ date('d/m/Y', strtotime($video->horario_start_gravacao)) }}
-                                        @endif
-                                         - Das 
-                                        {{ date('H:i:s', strtotime($video->horario_start_gravacao)) }} às 
-                                        {{ date('H:i:s', strtotime($video->horario_end_gravacao)) }}
-                                    </p>
-                                    <p class="mb-1"><i class="nc-icon nc-briefcase-24"></i> {{ ($video->nome_cliente) ? $video->nome_cliente : '' }}</p>
-                                    <div style="margin-bottom: 5px;" class="tags destaque-{{ $video->noticia_id }}-{{ $video->monitoramento_id }}" data-monitoramento="{{ $video->monitoramento_id }}" data-chave="{{ $video->noticia_id }}-{{ $video->monitoramento_id }}" data-noticia="{{ $video->noticia_id }}">
-                                                
+                                <div class="col-lg-8 col-sm-12">  
+                                    <div class="conteudo-{{ $video->noticia_id }}">                                      
+                                        <p class="mb-1">
+                                            @if($video->tipo_programa and in_array($video->tipo_programa, [4,5]))
+                                                <i class="fa fa-youtube text-danger" aria-hidden="true" style="font-size: 30px;"></i>
+                                            @endif
+                                            <strong>{{ ($video->nome_emissora) ? $video->nome_emissora : '' }}</strong> - 
+                                            <strong>{{ ($video->nome_programa) ? $video->nome_programa : '' }}</strong>
+                                        </p>
+                                        <p class="mb-1">
+                                            @if($video->tipo_programa and in_array($video->tipo_programa, [4,5]) and !$video->horario_start_gravacao)
+                                                @php 
+                                                    $partes = explode(',', explode(')',explode('(', $video->misc_data)[1])[0]);
+                                                    $data = str_pad($partes[2],2,"0",STR_PAD_LEFT).'/'.str_pad($partes[1],2,"0",STR_PAD_LEFT).'/'.$partes[0];                                                    
+                                                @endphp
+                                                {{ $data }}
+                                            @else
+                                            {{ date('d/m/Y', strtotime($video->horario_start_gravacao)) }}
+                                            @endif
+                                            - Das 
+                                            {{ date('H:i:s', strtotime($video->horario_start_gravacao)) }} às 
+                                            {{ date('H:i:s', strtotime($video->horario_end_gravacao)) }}
+                                        </p>
+                                        <p class="mb-1"><i class="nc-icon nc-briefcase-24"></i> {{ ($video->nome_cliente) ? $video->nome_cliente : '' }}</p>
+                                        <div style="margin-bottom: 5px;" class="tags destaque-{{ $video->noticia_id }}-{{ $video->monitoramento_id }}" data-monitoramento="{{ $video->monitoramento_id }}" data-chave="{{ $video->noticia_id }}-{{ $video->monitoramento_id }}" data-noticia="{{ $video->noticia_id }}">
+                                                    
+                                        </div>
+                                        <code>
+                                            <a href="{{ url('monitoramento/'.$video->monitoramento_id.'/editar') }}" target="_BLANK">{{ $video->expressao }}</a>
+                                        </code>
                                     </div>
-                                    <code>
-                                        <a href="{{ url('monitoramento/'.$video->monitoramento_id.'/editar') }}" target="_BLANK">{{ $video->expressao }}</a>
-                                    </code>
                                     <div class="panel panel-success">
                                         <div class="conteudo-noticia mb-1 transcricao">
                                             {!! ($video->transcricao) ?  Str::limit($video->transcricao, 1000, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
@@ -155,6 +157,10 @@
                                         <div class="panel-heading">
                                             <h3 class="panel-title"><span class="btn-show">Mostrar Mais</span></h3>
                                         </div>
+                                    </div>  
+                                    <div>
+                                        <a href="{{ url('noticia/tv/'.$video->monitoramento_id .'/extrair',$video->noticia_id) }}" target="BLANK" class="btn btn-warning btn-sm"><i class="fa fa-database"></i> Extrair Notícia</a> 
+                                        <button class="btn btn-primary btn-sm btn-visualizar-noticia" data-id="{{ $video->noticia_id }}" data-monitoramento="{{ $video->monitoramento_id }}"><i class="fa fa fa-eye"></i> Visualizar</button> 
                                     </div>       
                                 </div>
                             </div>
@@ -171,6 +177,28 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="showNoticia" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-dialog-scrollable modal-lg" role="document" style="max-width: 78% !important; position: relative; right: -8%;">
+      <div class="modal-content">
+        <div class="modal-header" style="padding: 15px !important;">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-newspaper-o"></i><span></span> Dodos da Notícia</h6>
+        </div>
+        <div class="modal-body" style="padding: 15px;">
+            <div class="row">
+                <div class="col-md-12 modal-conteudo"></div>
+                <div class="col-md-12 modal-video mt-1 mb-0"></div>
+                <div class="col-md-12 modal-sinopse"></div>
+            </div>
+            <div class="center">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
+            </div>
+      </div>
+    </div>
+  </div>
+</div>
 @endsection
 @section('script')
     <script>
@@ -182,6 +210,22 @@
                 nonSelectedListLabel: 'Disponíveis',
                 selectedListLabel: 'Selecionadas',
                
+            });
+
+            $(".btn-visualizar-noticia").click(function(){
+
+                var id = $(this).data("id");
+                var monitoramento = $(this).data("monitoramento");
+                var video = ".video-"+id;
+                var chave = ".conteudo-"+id;
+                var sinopse = ".conteudo-"+id+"-"+monitoramento;
+
+                $(".modal-conteudo").html($(chave).html());
+                $(".modal-video").html($(video).html());
+                $(".modal-sinopse").html($(sinopse).html());
+
+                $("#showNoticia").modal("show");
+
             });
 
             $(".panel-heading").click(function() {
