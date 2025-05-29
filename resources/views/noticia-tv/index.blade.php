@@ -89,7 +89,7 @@
                                     <div class="col-lg-12 col-md-12 col-sm-12 mb-1">                                   
                                         @if($noticia->ds_caminho_video)
                                             <video width="100%" height="240" controls>
-                                                <source src="{{ asset('video/noticia-tv/'.$dado->ds_caminho_img) }}" type="video/mp4">
+                                                <source src="{{ asset('video/noticia-tv/'.$noticia->ds_caminho_video) }}" type="video/mp4">
                                                 <source src="movie.ogg" type="video/ogg">
                                                 Seu navegador não suporta a exibição de vídeos.
                                             </video>
