@@ -100,7 +100,7 @@
                                         <div class="row">
                                             <div class="col-lg-12 col-md-12 col-sm-12 mb-1"> 
                                                 <div class="conteudo-{{ $noticia->id }}">
-                                                    <p class="font-weight-bold mb-1">{{ $noticia->titulo }}</p>
+                                                    
                                                     <h6><a href="{{ url('fonte-impresso/'.$noticia->id_fonte.'/editar') }}" target="_BLANK">{{ ($noticia->fonte) ? $noticia->fonte->nome_emissora : '' }}</a></h6>  
                                                     <h6 style="color: #FF5722;">{{ ($noticia->cd_estado) ? $noticia->estado->nm_estado : '' }}{{ ($noticia->cd_cidade) ? "/".$noticia->cidade->nm_cidade : '' }}</h6>  
                                                     <h6 class="text-muted mb-1">
@@ -171,10 +171,10 @@
                                 <div class="stats">
                                     <i class="fa fa-refresh"></i>Última atualização em {{ \Carbon\Carbon::parse($noticia->updated_at)->format('d/m/Y H:i:s') }}
                                     <div class="pull-right">
-                                        <a title="Excluir" href="{{ url('noticia-radio/'.$noticia->id.'/excluir') }}" class="btn btn-danger btn-fill btn-icon btn-sm btn-excluir" style="border-radius: 30px;">
+                                        <a title="Excluir" href="{{ url('noticia/tv/'.$noticia->id.'/excluir') }}" class="btn btn-danger btn-fill btn-icon btn-sm btn-excluir" style="border-radius: 30px;">
                                             <i class="fa fa-times fa-3x text-white"></i>
                                         </a>
-                                        <a title="Editar" href="{{ url('noticia-radio/'.$noticia->id.'/editar') }}" class="btn btn-primary btn-fill btn-icon btn-sm" style="border-radius: 30px;">
+                                        <a title="Editar" href="{{ url('noticia/tv/'.$noticia->id.'/editar') }}" class="btn btn-primary btn-fill btn-icon btn-sm" style="border-radius: 30px;">
                                             <i class="fa fa-edit fa-3x text-white"></i>
                                         </a>
                                     </div>

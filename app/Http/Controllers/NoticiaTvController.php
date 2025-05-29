@@ -54,8 +54,7 @@ class NoticiaTvController extends Controller
 
         $dados = NoticiaTv::with('emissora')
                     ->whereBetween($tipo_data, [$dt_inicial." 00:00:00", $dt_final." 23:59:59"])
-                    ->orderBy('dt_noticia')
-                    ->orderBy('titulo')
+                    ->orderBy('dt_noticia')                    
                     ->paginate(10);
 
         return view('noticia-tv/index', compact('dados','emissora','clientes','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo'));
@@ -253,17 +252,10 @@ class NoticiaTvController extends Controller
         $cliente = NoticiaCliente::where('noticia_id', $id)->where('cliente_id', $cliente)->first();
         
         $estados = Estado::orderBy('nm_estado')->get();
-        $cidades = Cidade::where(['cd_estado' => $dados->cd_estado])->orderBy('nm_cidade')->get();
-        $areas = Area::select('area.id', 'area.descricao')
-            ->join('area_cliente', 'area_cliente.area_id', '=', 'area.id')
-            ->where(['cliente_id' => $dados->cliente_id,])
-            ->where(['ativo' => true])
-            ->orderBy('area.descricao')
-            ->get();
-
+       
         $tags = Tag::orderBy('nome')->get();
 
-        return view('noticia-tv/form', compact('dados', 'cliente', 'estados', 'cidades', 'areas','tags'));
+        return view('noticia-tv/form', compact('dados', 'cliente', 'estados','tags'));
     }
 
     public function inserir(Request $request)
@@ -330,7 +322,7 @@ class NoticiaTvController extends Controller
             case 'salvar':
                 if ($retorno['flag']) {
                     Flash::success($retorno['msg']);
-                    return redirect('tv/noticias')->withInput();
+                    return redirect('noticias/tv')->withInput();
                 } else {
                     Flash::error($retorno['msg']);
                     return redirect('tv/noticias/cadastrar')->withInput();
@@ -384,20 +376,8 @@ class NoticiaTvController extends Controller
 
             if($noticia->update($dados)){
 
-                if($request->cd_cliente){
-
-                    $chave = array('tipo_id' => 3,
-                                    'noticia_id' => $noticia->id,
-                                    'cliente_id' => $request->cd_cliente);
-
-                    $atualizar = array('area' => $request->cd_area,
-                                       'sentimento' => $request->cd_sentimento);
-                            
-                    NoticiaCliente::updateOrCreate($chave, $atualizar);
-                }
-
                 $tags = collect($request->tags)->mapWithKeys(function($tag){
-                    return [$tag => ['tipo_id' => 3]];
+                    return [$tag => ['tipo_id' => 4]];
                 })->toArray();
 
                 $noticia->tags()->sync($tags);
@@ -407,7 +387,7 @@ class NoticiaTvController extends Controller
 
                     for ($i=0; $i < count($clientes); $i++) { 
                         
-                        $dados = array('tipo_id' => 3,
+                        $dados = array('tipo_id' => 4,
                                 'noticia_id' => $noticia->id,
                                 'cliente_id' => $clientes[$i]->id_cliente,
                                 'area_id' => $clientes[$i]->id_area,
@@ -434,10 +414,10 @@ class NoticiaTvController extends Controller
 
         if ($retorno['flag']) {
             Flash::success($retorno['msg']);
-            return redirect('tv/noticias')->withInput();
+            return redirect('noticias/tv')->withInput();
         } else {
             Flash::error($retorno['msg']);
-            return redirect('tv/noticias/'.$id.'/editar')->withInput();
+            return redirect('noticia/tv/'.$id.'/editar')->withInput();
         }
     }
 
@@ -656,5 +636,34 @@ class NoticiaTvController extends Controller
         $dados = DB::select($sql)[0];
 
         return response()->json($dados); 
+    }
+
+    public function clientes($noticia)
+    {
+        $vinculos = array();
+
+        $sql = "SELECT t1.cliente_id, 
+                    nome, 
+                    area as area_id, 
+                    CASE 
+                        WHEN(t3.descricao IS NOT NULL) THEN t3.descricao 
+                        ELSE 'Nenhuma área selecionada'
+                    END as area,
+                    CASE
+                        WHEN (sentimento = '-1') THEN 'Negativo' 
+                        WHEN (sentimento = '0') THEN 'Neutro' 
+                        WHEN (sentimento = '1') THEN 'Positivo' 
+                        ELSE 'Nenhum sentimento selecionado'
+                    END as sentimento,
+                    sentimento AS id_sentimento
+                FROM noticia_cliente t1
+                JOIN clientes t2 ON t2.id = t1.cliente_id 
+                LEFT JOIN area t3 On t3.id = t1.area 
+                WHERE noticia_id = $noticia
+                AND t1.tipo_id = 4";
+
+        $vinculos = DB::select($sql);
+
+        return response()->json($vinculos);
     }
 }

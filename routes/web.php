@@ -355,6 +355,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('tv/video/detalhes/{id}','VideosController@detalhes');
 	Route::get('noticia/tv/{monitoramento}/extrair/{id}','NoticiaTvController@extrair');
 	Route::get('noticia/tv/{id}/editar','NoticiaTvController@editar');
+	Route::get('noticia/tv/clientes/{noticia}','NoticiaTvController@clientes');
 
 	Route::get('cliente/get/json','ClientController@json');
 	Route::get('client/accounts/facebook/{cliente}','ClientController@getFacebookAccounts');

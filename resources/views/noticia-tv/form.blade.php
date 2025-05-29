@@ -15,250 +15,200 @@
 @endsection
 @section('content')
 <div class="col-md-12">
-    @if(empty($dados->id))
-        {!! Form::open(['id' => 'frm_noticia_radio_criar', 'url' => ['tv/noticias/inserir'], 'method' => 'post', 'files' => true]) !!}
-    @else
-        {!! Form::open(['id' => 'frm_noticia_radio_editar', 'url' => ['tv/noticias/'. $dados->id. '/atualizar'], 'method' => 'post', 'files' => true]) !!}
-    @endif
-        <div class="card">
-            <div class="card-header">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h4 class="card-title ml-2"><i class="fa fa-tv"></i> TV
-                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Notícias
-                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> {!! empty($dados->id) ? 'Cadastrar' : 'Atualizar' !!}</h4>
-                    </div>
-                    <div class="col-md-6">
-                        <a href="{{ url('tv/dashboard') }}" class="btn btn-warning pull-right mr-3"><i class="nc-icon nc-chart-pie-36"></i> Dashboard</a>
-                        <a href="{{ url('noticias/tv') }}" class="btn btn-info pull-right mr-3"><i class="fa fa-tv"></i> Notícias</a>
-                    </div>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-12">
-                        @include('layouts.mensagens')
-                    </div>
-                </div>
-                <div class="row mr-1 ml-1">
-                    <div class="col-md-12">
-                        <h6>Dados da Notícia</h6>
-                    </div>
-                    <input type="hidden" name="clientes[]" id="clientes">
-                    <div class="col-md-5">
-                        <div class="form-group">
-                            <label>Cliente</label>
-                            <input hidden name="cliente_id" id="cliente_id" value="{{ ($cliente) ? $cliente->id : '' }}">
-                            <select class="form-control cliente select2" name="cd_cliente" id="cd_cliente">
-                                <option value="">Selecione um cliente</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label>Área do Cliente <span class="text-info add-area" data-toggle="modal" data-target="#modalArea">Adicionar Área</span></label>
-                            <input hidden name="area_id" id="area_id" value="{{ ($cliente) ? $cliente->area : '' }}">
-                            <select class="form-control area select2" name="cd_area" id="cd_area" disabled>
-                                <option value="">Selecione uma área</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label>Sentimento </label>
-                            <select class="form-control" name="cd_sentimento" id="cd_sentimento">
-                                <option value="">Selecione um sentimento</option>
-                                <option value="1" {{ ($cliente and $cliente->sentimento == 1) ? 'selected' : '' }}>Positivo</option>
-                                <option value="0" {{ ($cliente and $cliente->sentimento == 0) ? 'selected' : '' }}>Neutro</option>
-                                <option value="-1" {{ ($cliente and $cliente->sentimento == 11) ? 'selected' : '' }}>Negativo</option>
-                            </select>
-                        </div>                        
-                    </div>
-                    <div class="col-md-1">
-                        <button type="button" class="btn btn-success btn-add-cliente mt-4 w-100"><i class="fa fa-plus"></i></button>
-                    </div>
-                    
-                    <div class="col-md-12">
-                        <ul class="list-unstyled metadados"></ul>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label>Data <span class="text-danger">Obrigatório</span></label>
-                            <input type="text" class="form-control datepicker" name="data" id="data" placeholder="__/__/____" required value="{!! !empty($dados->dt_noticia) ? date('d/m/Y', strtotime($dados->dt_noticia)) : '' !!}">
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label>Duração <span class="text-danger">Obrigatório</span></label>
-                            <input type="text" class="form-control duracao" name="duracao" id="duracao" placeholder="00:00:00" value="{{ $dados->duracao }}" required>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>Estado </label>
-                            <select class="form-control selector-select2" name="cd_estado" id="cd_estado">
-                                <option value="">Selecione um estado</option>
-                                @foreach ($estados as $estado)
-                                    <option value="{{ $estado->cd_estado }}" {!! $dados->cd_estado == $estado->cd_estado ? " selected" : '' !!}>
-                                        {{ $estado->nm_estado }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>Cidade </label>
-                            <input type="hidden" name="cd_cidade" id="cd_cidade" value="{{ ($dados->cd_cidade) ? $dados->cd_cidade : 0  }}">
-                            <select class="form-control select2" name="cidade" id="cidade" disabled="disabled">
-                                <option value="">Selecione uma cidade</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-5">
-                        <div class="form-group">
-                            <input type="hidden" name="cd_emissora" id="cd_emissora" value="{{ ($dados->emissora_id) ? $dados->emissora_id : 0  }}">
-                            <label>Emissora <span class="text-danger">Obrigatório</span></label>
-                            <select class="form-control select2" name="emissora" id="emissora" required>
-                            <option value="">Selecione uma emissora</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label>Horário</label>
-                            <input type="text" class="form-control horario" name="horario" id="horario" value="{{ ($dados->horario) ? $dados->horario : ''  }}" placeholder="Horário">
-                        </div>
-                    </div>
-                    <div class="col-md-5">
-                        <div class="form-group">
-                            <label>Programa</label>
-                            <input type="hidden" name="cd_programa" id="cd_programa" value="{{ ($dados->programa_id) ? $dados->programa_id : 0  }}">
-                            <select class="form-control selector-select2" name="programa" id="programa" disabled>
-                                <option value="">Selecione um programa</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="form-group">    
-                            <label for="tags[]">TAGs</label>
-                            <select name="tags[]" multiple="multiple" class="form-control select2">
-                                @foreach ($tags as $tag)
-                                    <option value="{{ $tag->id }}">{{ $tag->nome }}</option>
-                                @endforeach
-                            </select> 
-                        </div>    
-                    </div> 
-                    <div class="col-md-3">
-                        <label for="arquivo">Arquivo</label>
-                        <div style="min-height: 302px;" class="dropzone" id="dropzone"><div class="dz-message" data-dz-message><span>CLIQUE AQUI<br/> ou <br/>ARRASTE</span></div></div>
-                        <input type="hidden" name="arquivo" id="arquivo">
-                    </div>
-                    <div class="col-md-9">
-                        <label for="sinopse">Sinopse</label>
-                        <div class="form-group">
-                            <textarea class="form-control" name="sinopse" id="sinopse" rows="10">{!! nl2br($dados->sinopse) !!}</textarea>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label>Link</label>
-                            <input type="text" class="form-control" name="link" id="link" placeholder="Link" value="{{ $dados->link }}">
-                        </div>
-                    </div>                 
-                </div>
-            </div>
-            <div class="card-footer text-center mb-2">
-                <button type="submit" class="btn btn-success" name="btn_enviar" value="salvar"><i class="fa fa-save"></i> Salvar</button>
-                <button type="submit" class="btn btn-warning" name="btn_enviar" value="salvar_e_copiar"><i class="fa fa-copy"></i> Salvar e Copiar</button>
-                <a href="{{ url('radio/noticias') }}" class="btn btn-danger"><i class="fa fa-times"></i> Cancelar</a>
-            </div>
-        </div>
-    {!! Form::close() !!}
-</div>
-
-<div class="modal fade" id="modalArea" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-          <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-tags"></i> Adicionar Área</h6>
-        </div>
-        <div class="modal-body">
+    <div class="card">
+        <div class="card-header">
             <div class="row">
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label>Área</label>
-                        <input type="text" class="form-control" name="ds_area" id="ds_area" placeholder="Descrição">
-                    </div>
-                </div>             
-            <div class="col-md-12 center">
-                <div class="form-group mt-3">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
-                    <button type="button" class="btn btn-success btn-add-area"><i class="fa fa-plus"></i> Adicionar</button>
+                <div class="col-md-6">
+                    <h4 class="card-title ml-2"><i class="fa fa-tv"></i> TV
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i> Notícias
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i> {!! empty($dados->id) ? 'Cadastrar' : 'Atualizar' !!}</h4>
+                </div>
+                <div class="col-md-6">
+                    <a href="{{ url('tv/dashboard') }}" class="btn btn-warning pull-right mr-3"><i class="nc-icon nc-chart-pie-36"></i> Dashboard</a>
+                    <a href="{{ url('noticias/tv') }}" class="btn btn-info pull-right mr-3"><i class="fa fa-tv"></i> Notícias</a>
                 </div>
             </div>
         </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal fade" id="modalCliente" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-          <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-envelope"></i> Adicionar Endereço Eletrônico</h6>
-        </div>
-        <div class="modal-body">
+        <div class="card-body">
+            <div class="col-md-12">
+                @include('layouts.mensagens')
+            </div>
             <div class="row">
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label>Cliente <span class="text-danger">Obrigatório</span></label>
-                        <input hidden name="cliente_id" id="cliente_id" value="{{ ($dados and $dados->cliente) ? $dados->cliente->id : '' }}">
-                        <select class="form-control cliente select2" name="cliente" id="cliente">
-                            <option value="">Selecione um cliente</option>
-                        </select>
+                <div class="col-lg-12 col-sm-12">
+                    <div class="form-group m-3 w-70">
+                        @if(empty($dados->id))
+                            {!! Form::open(['id' => 'frm_noticia_radio_criar', 'url' => ['tv/noticias/inserir'], 'method' => 'post', 'files' => true]) !!}
+                        @else
+                            {!! Form::open(['id' => 'frm_noticia_radio_editar', 'url' => ['tv/noticias/'. $dados->id. '/atualizar'], 'method' => 'post', 'files' => true]) !!}
+                        @endif
+                        <div class="row">
+                                <input type="hidden" name="id_noticia" id="id_noticia" value="{{ ($dados) ? $dados->id : 0 }}">
+                                <input type="hidden" name="clientes[]" id="clientes">
+                                <input type="hidden" name="ds_caminho_video" id="ds_caminho_video">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <label>Cliente</label>
+                                        <select class="form-control cliente" name="cd_cliente" id="cd_cliente">
+                                            <option value="">Selecione um cliente</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Área do Cliente <span class="text-info add-area" data-toggle="modal" data-target="#modalArea">Adicionar Área</span></label>
+                                        <select class="form-control area" name="cd_area" id="cd_area" disabled>
+                                            <option value="">Selecione uma área</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Sentimento </label>
+                                        <select class="form-control" name="cd_sentimento" id="cd_sentimento">
+                                            <option value="">Selecione um sentimento</option>
+                                            <option value="1">Positivo</option>
+                                            <option value="0">Neutro</option>
+                                            <option value="-1">Negativo</option>
+                                        </select>
+                                    </div>                        
+                                </div>
+                                <div class="col-md-1">
+                                    <button type="button" class="btn btn-success btn-add-cliente mt-4 w-100"><i class="fa fa-plus"></i></button>
+                                </div>
+                                
+                                <div class="col-md-12">
+                                    <ul class="list-unstyled metadados"></ul>
+                                </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2 col-sm-6">
+                                <div class="form-group">
+                                    <label>Data de Cadastro</label>
+                                    <input type="text" class="form-control datepicker" name="dt_cadastro" required="true" value="{{ date("d/m/Y") }}" placeholder="__/__/____">
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-6">
+                                <div class="form-group">
+                                    <label>Data do Clipping</label>
+                                    <input type="text" class="form-control datepicker" name="dt_clipagem" required="true" value="{{ date("d/m/Y") }}" placeholder="__/__/____">
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <input type="hidden" name="cd_emissora" id="cd_emissora" value="{{ ($dados->emissora_id) ? $dados->emissora_id : 0  }}">
+                                    <label>Emissora <span class="text-danger">Obrigatório</span></label>
+                                    <select class="form-control select2" name="emissora" id="emissora" required>
+                                    <option value="">Selecione uma emissora</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Programa</label>
+                                    <input type="hidden" name="cd_programa" id="cd_programa" value="{{ ($dados->programa_id) ? $dados->programa_id : 0  }}">
+                                    <select class="form-control selector-select2" name="programa" id="programa" disabled>
+                                        <option value="">Selecione um programa</option>
+                                    </select>
+                                </div>
+                            </div>
+                             <div class="col-md-2">
+                                <div class="form-group">
+                                    <label>Horário</label>
+                                    <input type="text" class="form-control horario" name="horario" id="horario" value="{{ ($dados->horario) ? $dados->horario : ''  }}" placeholder="Horário">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Estado </label>
+                                    <select class="form-control selector-select2" name="cd_estado" id="cd_estado">
+                                        <option value="">Selecione um estado</option>
+                                        @foreach ($estados as $estado)
+                                            <option value="{{ $estado->cd_estado }}" {!! $dados->cd_estado == $estado->cd_estado ? " selected" : '' !!}>
+                                                {{ $estado->nm_estado }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label>Cidade </label>
+                                    <input type="hidden" name="cd_cidade" id="cd_cidade" value="{{ ($dados->cd_cidade) ? $dados->cd_cidade : 0  }}">
+                                    <select class="form-control select2" name="cidade" id="cidade" disabled="disabled">
+                                        <option value="">Selecione uma cidade</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div> 
+                        <div class="row">                       
+                            <div class="col-md-12">
+                                <div class="form-group">    
+                                    <label for="tags[]">TAGs</label>
+                                    <select name="tags[]" multiple="multiple" class="form-control select2">
+                                        @foreach ($tags as $tag)
+                                            <option value="{{ $tag->id }}">{{ $tag->nome }}</option>
+                                        @endforeach
+                                    </select> 
+                                </div>    
+                            </div> 
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Link</label>
+                                    <input type="text" class="form-control" name="link" id="link" placeholder="Link" value="{{ $dados->link }}">
+                                </div>
+                            </div> 
+                            <div class="col-md-12">
+                                <label for="sinopse">Sinopse</label>
+                                <div class="form-group">
+                                    <textarea class="form-control" name="sinopse" id="sinopse" rows="10">{!! nl2br($dados->sinopse) !!}</textarea>
+                                </div>
+                            </div>
+                            @if($dados and $dados->ds_caminho_video)    
+                                <div class="col-md-12">
+                                    <audio width="100%" controls style="width: 100%;">
+                                        <source src="{{ asset('audio/noticia-radio/'.$dados->ds_caminho_video) }}" type="audio/mpeg">
+                                                Seu navegador não suporta a execução de áudios, faça o download para poder ouvir.
+                                    </audio>
+                                </div>
+                                <div class="col-md-12">
+                                    <label for="arquivo">Vídeo da Notícia</label>
+                                    <div style="min-height: 200px;" class="dropzone" id="dropzone"><div class="dz-message" data-dz-message><span>CLIQUE AQUI<br/> ou <br/>ARRASTE</span></div></div>
+                                    <input type="hidden" name="arquivo" id="arquivo">
+                                </div>
+                            @else
+                                <div class="col-md-12">
+                                    <label for="arquivo">Vídeo da Notícia</label>
+                                    <div style="min-height: 200px;" class="dropzone" id="dropzone"><div class="dz-message" data-dz-message><span>CLIQUE AQUI<br/> ou <br/>ARRASTE</span></div></div>
+                                    <input type="hidden" name="arquivo" id="arquivo">
+                                </div> 
+                            @endif 
+                        </div>
+                        <div class="row"> 
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Duração <span class="text-danger">Obrigatório</span></label>
+                                    <input type="text" class="form-control duracao" name="duracao" id="duracao" placeholder="00:00:00" value="{{ $dados->duracao }}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center mb-2">
+                            <button type="submit" class="btn btn-success" name="btn_enviar" value="salvar"><i class="fa fa-save"></i> Salvar</button>
+                            <button type="submit" class="btn btn-warning" name="btn_enviar" value="salvar_e_copiar"><i class="fa fa-copy"></i> Salvar e Copiar</button>
+                            <a href="{{ url('noticias/tv') }}" class="btn btn-danger"><i class="fa fa-times"></i> Cancelar</a>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label>Área do Cliente <span class="text-info">Opcional</span></label>
-                        <select class="form-control select2" name="area" id="area" disabled>
-                            <option value="">Selecione uma área</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label>Sentimento <span class="text-info">Opcional</span></label>
-                        <select class="form-control" name="sentimento" id="sentimento">
-                            <option value="">Selecione um sentimento</option>
-                            <option value="1">Positivo</option>
-                            <option value="0">Neutro</option>
-                            <option value="-1">Negativo</option>
-                        </select>
-                    </div>
-                </div>
-             
-                <div class="col-md-12 center">
-                    <div class="form-group mt-3">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
-                        <button type="button" class="btn btn-success btn-add-cliente"><i class="fa fa-plus"></i>Adicionar</button>
-                    </div>
-                </div>
+                    {!! Form::close() !!} 
+                </div>              
+            </div>
         </div>
-      </div>
     </div>
-  </div>
-</div>
+</div>  
 @endsection
-@section('script')    
+@section('script')   
+<script src="{{ asset('js/formulario-cadastro-tv.js') }}"></script> 
     <script>
         Dropzone.autoDiscover = false;
         var host = $('meta[name="base-url"]').attr('content');
