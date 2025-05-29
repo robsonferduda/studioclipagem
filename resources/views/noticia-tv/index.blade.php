@@ -86,8 +86,14 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-lg-12 col-md-12 col-sm-12 mb-1">                                    
+                                    <div class="col-lg-12 col-md-12 col-sm-12 mb-1">                                   
                                         @if($noticia->ds_caminho_video)
+                                            <video width="100%" height="240" controls>
+                                                <source src="{{ asset('video/noticia-tv/'.$dado->ds_caminho_img) }}" type="video/mp4">
+                                                <source src="movie.ogg" type="video/ogg">
+                                                Seu navegador não suporta a exibição de vídeos.
+                                            </video>
+                                        @elseif($noticia->video_path)
                                             <video width="100%" height="240" controls>
                                                 <source src="{{ (Storage::disk('s3')) ? Storage::disk('s3')->temporaryUrl($noticia->video_path, '+30 minutes') : '' }}" type="video/mp4">
                                                 <source src="movie.ogg" type="video/ogg">
