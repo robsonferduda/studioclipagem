@@ -109,7 +109,7 @@
                     <div class="card ml-2 mr-2">
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-lg-4 col-sm-12" video-{{ $video->noticia_id }}>                                            
+                                <div class="col-lg-4 col-sm-12 video-{{ $video->noticia_id }}">                                            
                                     <video width="100%" height="240" controls>
                                         <source src="{{ (Storage::disk('s3')) ? Storage::disk('s3')->temporaryUrl($video->video_path, '+30 minutes') : '' }}" type="video/mp4">
                                         <source src="movie.ogg" type="video/ogg">
@@ -154,9 +154,6 @@
                                         <div class="panel-body conteudo-{{ $video->noticia_id }}-{{ $video->monitoramento_id }}">
                                             {!! ($video->transcricao) ?  $video->transcricao  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
                                         </div>
-                                        <div class="panel-heading">
-                                            <h3 class="panel-title"><span class="btn-show">Mostrar Mais</span></h3>
-                                        </div>
                                     </div>  
                                     <div>
                                         <a href="{{ url('noticia/tv/'.$video->monitoramento_id .'/extrair',$video->noticia_id) }}" target="BLANK" class="btn btn-warning btn-sm"><i class="fa fa-database"></i> Extrair Notícia</a> 
@@ -188,9 +185,17 @@
         </div>
         <div class="modal-body" style="padding: 15px;">
             <div class="row">
-                <div class="col-md-12 modal-conteudo"></div>
-                <div class="col-md-12 modal-video mt-1 mb-0"></div>
-                <div class="col-md-12 modal-sinopse"></div>
+                <div class="col-md-4"></div>
+                    <div class="row">
+                        <div class="col-md-12 modal-video mt-1 mb-0"></div>
+                    </div>
+                </div>
+                <div class="col-md-12"></div>
+                    <div class="row">
+                        <div class="col-md-12 modal-conteudo"></div>                
+                        <div class="col-md-12 modal-sinopse"></div>
+                    </div>
+                </div>
             </div>
             <div class="center">
                 <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>

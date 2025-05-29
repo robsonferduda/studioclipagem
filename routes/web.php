@@ -353,6 +353,7 @@ Route::middleware(['web'])->group(function () {
 	Route::match(array('GET', 'POST'),'noticia/tv/monitoramento','NoticiaTvController@monitoramento');
 	Route::match(array('GET', 'POST'),'noticias/tv','NoticiaTvController@index');
 	Route::get('tv/video/detalhes/{id}','VideosController@detalhes');
+	Route::get('noticia/tv/{monitoramento}/extrair/{id}','NoticiaTvController@extrair');
 
 	Route::get('cliente/get/json','ClientController@json');
 	Route::get('client/accounts/facebook/{cliente}','ClientController@getFacebookAccounts');
