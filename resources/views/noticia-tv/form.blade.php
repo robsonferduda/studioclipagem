@@ -167,13 +167,14 @@
                                 </div>
                             </div>
                             @if($dados and $dados->ds_caminho_video)    
-                                <div class="col-md-12">
-                                    <audio width="100%" controls style="width: 100%;">
-                                        <source src="{{ asset('audio/noticia-radio/'.$dados->ds_caminho_video) }}" type="audio/mpeg">
-                                                Seu navegador não suporta a execução de áudios, faça o download para poder ouvir.
-                                    </audio>
+                                <div class="col-md-4">
+                                    <video width="100%" height="240" controls>
+                                        <source src="{{ (Storage::disk('s3')) ? Storage::disk('s3')->temporaryUrl($dados->video_path, '+30 minutes') : '' }}" type="video/mp4">
+                                        <source src="movie.ogg" type="video/ogg">
+                                                Seu navegador não suporta a exibição de vídeos.
+                                    </video>
                                 </div>
-                                <div class="col-md-12">
+                                <div class="col-md-8">
                                     <label for="arquivo">Vídeo da Notícia</label>
                                     <div style="min-height: 200px;" class="dropzone" id="dropzone"><div class="dz-message" data-dz-message><span>CLIQUE AQUI<br/> ou <br/>ARRASTE</span></div></div>
                                     <input type="hidden" name="arquivo" id="arquivo">

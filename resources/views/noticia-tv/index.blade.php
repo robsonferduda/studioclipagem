@@ -87,11 +87,12 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-lg-12 col-md-12 col-sm-12 mb-1">                                    
-                                        @if($noticia->ds_caminho_audio)
-                                            <audio width="100%" controls style="width: 100%;">
-                                                <source src="{{ asset('audio/noticia-radio/'.$noticia->ds_caminho_audio) }}" type="audio/mpeg">
-                                                Seu navegador não suporta a execução de áudios, faça o download para poder ouvir.
-                                            </audio>
+                                        @if($noticia->ds_caminho_video)
+                                            <video width="100%" height="240" controls>
+                                                <source src="{{ (Storage::disk('s3')) ? Storage::disk('s3')->temporaryUrl($video->video_path, '+30 minutes') : '' }}" type="video/mp4">
+                                                <source src="movie.ogg" type="video/ogg">
+                                                Seu navegador não suporta a exibição de vídeos.
+                                            </video>
                                         @else
                                             <h6 class="mb-1 mt-1" style="color: #ef8157;">Notícia sem áudio vinculado</h6>
                                         @endif
