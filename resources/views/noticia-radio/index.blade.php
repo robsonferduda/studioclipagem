@@ -155,7 +155,7 @@
                                                     </div>
                                                 </div> 
                                                 <div class="sinopse-{{ $noticia->id }}">
-                                                    {!! ($noticia->sinopse) ?  $noticia->sinopse  : '<span class="text-danger center">Notícia não possui texto</span>' !!}
+                                                    {!! ($noticia->sinopse) ? Str::limit($noticia->sinopse, 1000, " ...") : '<span class="text-danger center">Notícia não possui texto</span>' !!}
                                                 </div>  
                                             </div>
                                         </div>
