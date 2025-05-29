@@ -207,6 +207,22 @@ class NoticiaRadioController extends Controller
         $noticia->save();
 
         //Relacionamento de clientes
+        $vinculo = NoticiaCliente::where('noticia_id', $id)->where('monitoramento_id', $monitoramento)->where('tipo_id', 3)->first();
+
+                $dados = array('tipo_id' => 3,
+                                'noticia_id' => $noticia->id,
+                                'cliente_id' => (int) $vinculo->cliente_id,
+                                'area' => null,
+                                'sentimento' => 0);
+
+                    $match = array('tipo_id' => 3,
+                                'noticia_id' => $noticia->id,
+                                'cliente_id' => (int) $vinculo->cliente_id);
+                        
+                    $dados = array('area' => null,
+                                   'sentimento' => 0);
+
+                    $noticia_cliente = NoticiaCliente::updateOrCreate($match, $dados);
 
 
         return redirect('noticia-radio/'.$noticia->id.'/editar');
