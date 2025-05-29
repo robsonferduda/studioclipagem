@@ -97,7 +97,7 @@
                                             <h6 class="mb-1 mt-1" style="color: #ef8157;">Notícia sem vídeo vinculado</h6>
                                         @endif
                                     </div>
-                                    <div class="col-lg-10 col-sm-10 mb-1"> 
+                                    <div class="col-lg-8 col-sm-8 mb-1"> 
                                         <div class="row">
                                             <div class="col-lg-8 col-md-8 col-sm-12 mb-1"> 
                                                 <div class="conteudo-{{ $noticia->id }}">
