@@ -224,7 +224,7 @@ class NoticiaTvController extends Controller
                     $noticia_cliente = NoticiaCliente::updateOrCreate($match, $dados);
 
 
-        return redirect('noticia-tv/'.$noticia->id.'/editar');
+        return redirect('noticia/tv/'.$noticia->id.'/editar');
     }
 
     public function getBasePath()
