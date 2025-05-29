@@ -7,7 +7,8 @@
                 <div class="col-md-8">
                     <h4 class="card-title">
                         <i class="fa fa-tv ml-3"></i> TV
-                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Vídeos
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Notícias
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Coletas
                     </h4>
                 </div>
                 <div class="col-md-4">
@@ -20,7 +21,7 @@
                 @include('layouts.mensagens')
             </div>
             <div class="col-md-12">
-                {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['tv/videos']]) !!}
+                {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['noticia/tv/coletas']]) !!}
                         <div class="form-group m-3 w-70">
                             <div class="row">
                                 <div class="col-md-2">

@@ -30,7 +30,7 @@ class VideosController extends Controller
 
     public function index(Request $request)
     {
-        Session::put('sub-menu','tv-videos');
+        Session::put('sub-menu','noticia-tv/monitoramento');
         
         $fontes_disponiveis = DB::select("SELECT id, nome_programa as nome, t2.sg_estado FROM programa_emissora_web t1 LEFT JOIN estado t2 ON t2.cd_estado = t1.cd_estado ORDER BY t2.sg_estado, nome"); 
 

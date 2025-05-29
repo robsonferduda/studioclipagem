@@ -328,7 +328,6 @@ Route::middleware(['web'])->group(function () {
 
 	Route::get('tv/estatisticas','NoticiaTvController@estatisticas');
 
-	Route::match(array('GET', 'POST'),'tv/noticias','NoticiaTvController@index');
 	Route::get('tv/decupagem','NoticiaTvController@decupagem');
 
 	Route::get('tv/decupar','NoticiaTvController@decupar');
@@ -349,7 +348,10 @@ Route::middleware(['web'])->group(function () {
 	Route::post('tv/decupagem/upload','NoticiaTvController@uploadWord');
 	Route::get('tv/conteudo/{id_noticia}/monitoramento/{id_monitoramento}','NoticiaTvController@destacaConteudo');
 
-	Route::match(array('GET', 'POST'),'tv/videos','VideosController@index');
+	/* Notícas TV */
+	Route::match(array('GET', 'POST'),'noticia/tv/coletas','VideosController@index');
+	Route::match(array('GET', 'POST'),'noticia/tv/monitoramento','NoticiaTvController@monitoramento');
+	Route::match(array('GET', 'POST'),'noticias/tv','NoticiaTvController@index');
 	Route::get('tv/video/detalhes/{id}','VideosController@detalhes');
 
 	Route::get('cliente/get/json','ClientController@json');

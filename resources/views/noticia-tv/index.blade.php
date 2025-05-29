@@ -3,15 +3,15 @@
 <div class="col-md-12">
     <div class="card">
         <div class="card-header">
-            <div class="row ml-1">
+            <div class="row">
                 <div class="col-md-6">
-                    <h4 class="card-title">
+                    <h4 class="card-title ml-3">
                         <i class="fa fa-tv ml-3"></i> TV
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Notícias
                     </h4>
                 </div>
                 <div class="col-md-6">
-                    <a href="{{ url('tv/dashboard') }}" class="btn btn-warning pull-right mr-3"><i class="nc-icon nc-chart-pie-36"></i> Dashboard</a>
+                     <a href="{{ url('tv/dashboard') }}" class="btn btn-warning pull-right mr-3"><i class="nc-icon nc-chart-pie-36"></i> Dashboard</a>
                     <a href="{{ url('tv/noticias/cadastrar') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-plus"></i> Cadastrar Notícia</a>
                 </div>
             </div>
@@ -20,16 +20,17 @@
             <div class="col-md-12">
                 @include('layouts.mensagens')
             </div>
-            <div class="col-md-12">
-                {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['tv/noticias']]) !!}
-                         <div class="form-group m-3 w-70">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    {!! Form::open(['id' => 'frm_social_search', 'class' => 'form-horizontal', 'url' => ['noticias/tv']]) !!}
+                        <div class="form-group m-3 w-70">
                             <div class="row">
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Tipo de Data</label>
-                                        <select class="form-control select2" name="tipo_data" id="tipo_data">
-                                            <option value="created_at" {{ ($tipo_data == "created_at") ? 'selected' : '' }}>Data de Cadastro</option>
-                                            <option value="dt_pub" {{ ($tipo_data == "dt_pub") ? 'selected' : '' }}>Data do Clipping</option>
+                                        <select class="form-control" name="tipo_data" id="tipo_data">
+                                            <option value="dt_cadastro" {{ ($tipo_data == "dt_cadastro") ? 'selected' : '' }}>Data de Cadastro</option>
+                                            <option value="dt_noticia" {{ ($tipo_data == "dt_clipagem") ? 'selected' : '' }}>Data do Clipping</option>
                                         </select>
                                     </div>
                                 </div>
@@ -58,29 +59,6 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-12">
-                                    <label>Monitoramento</label>
-                                    <input type="hidden" name="monitoramento_id" id="monitoramento_id" value="{{ Session::get('tv_monitoramento') }}">
-                                    <div class="form-group">
-                                        <select class="form-control" name="monitoramento" id="monitoramento" disabled>
-                                            <option value="">Selecione um monitoramento</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12 col-sm-12">
-                                    <label>Fontes</label>
-                                    <div class="form-group">
-                                        <select multiple="multiple" size="10" name="fontes[]" class="demo1 form-control">
-                                            @foreach ($fontes as $fonte)
-                                                <option value="{{ $fonte->id }}">{{ $fonte->nome_programa }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
                                 <div class="col-md-12 col-sm-12">
                                     <div class="form-group">
                                         <label>Buscar por <span class="text-primary">Digite o termo ou expressão de busca</span></label>
@@ -92,82 +70,149 @@
                                 </div>
                             </div>
                         </div>
-                {!! Form::close() !!}
+                    {!! Form::close() !!}
 
-                    @if(count($dados))
-                        <h6 class="px-3">Mostrando {{ $dados->count() }} de {{ $dados->total() }} Notícias</h6>
-                        {{ $dados->onEachSide(1)->appends(['dt_inicial' => \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y'), 
+                    @if($dados->count())
+                        <h6 class="px-3">Mostrando {{ $dados->count() }} de {{ $dados->total() }} Páginas</h6>
+                    @endif
+
+                    {{ $dados->onEachSide(1)->appends(['dt_inicial' => \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y'), 
                                                         'dt_final' => \Carbon\Carbon::parse($dt_final)->format('d/m/Y'),
                                                         'cliente' => $cliente_selecionado,
                                                         'termo' => $termo])
                                                         ->links('vendor.pagination.bootstrap-4') }}
-                    @endif 
-            </div>
-            <div class="col-md-12">
-                @foreach($dados as $video)
-                    <div class="card ml-2 mr-2">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-4 col-sm-12">                                            
-                                    <video width="100%" height="240" controls>
-                                        <source src="{{ (Storage::disk('s3')) ? Storage::disk('s3')->temporaryUrl($video->video_path, '+30 minutes') : '' }}" type="video/mp4">
-                                        <source src="movie.ogg" type="video/ogg">
-                                        Seu navegador não suporta a exibição de vídeos.
-                                    </video>
-                                </div>
-                                <div class="col-lg-8 col-sm-12">                                        
-                                    <p class="mb-1">
-                                        @if($video->tipo_programa and in_array($video->tipo_programa, [4,5]))
-                                            <i class="fa fa-youtube text-danger" aria-hidden="true" style="font-size: 30px;"></i>
-                                        @endif
-                                        <strong>{{ ($video->nome_emissora) ? $video->nome_emissora : '' }}</strong> - 
-                                        <strong>{{ ($video->nome_programa) ? $video->nome_programa : '' }}</strong>
-                                    </p>
-                                    <p class="mb-1">
-                                        @if($video->tipo_programa and in_array($video->tipo_programa, [4,5]) and !$video->horario_start_gravacao)
-                                            @php 
-                                                $partes = explode(',', explode(')',explode('(', $video->misc_data)[1])[0]);
-                                                $data = str_pad($partes[2],2,"0",STR_PAD_LEFT).'/'.str_pad($partes[1],2,"0",STR_PAD_LEFT).'/'.$partes[0];                                                    
-                                            @endphp
-                                            {{ $data }}
+
+                    @foreach ($dados as $key => $noticia)
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 mb-1">                                    
+                                        @if($noticia->ds_caminho_audio)
+                                            <audio width="100%" controls style="width: 100%;">
+                                                <source src="{{ asset('audio/noticia-radio/'.$noticia->ds_caminho_audio) }}" type="audio/mpeg">
+                                                Seu navegador não suporta a execução de áudios, faça o download para poder ouvir.
+                                            </audio>
                                         @else
-                                        {{ date('d/m/Y', strtotime($video->horario_start_gravacao)) }}
+                                            <h6 class="mb-1 mt-1" style="color: #ef8157;">Notícia sem áudio vinculado</h6>
                                         @endif
-                                         - Das 
-                                        {{ date('H:i:s', strtotime($video->horario_start_gravacao)) }} às 
-                                        {{ date('H:i:s', strtotime($video->horario_end_gravacao)) }}
-                                    </p>
-                                    <div style="margin-bottom: 5px;" class="tags destaque-{{ $video->noticia_id }}-{{ $video->monitoramento_id }}" data-monitoramento="{{ $video->monitoramento_id }}" data-chave="{{ $video->noticia_id }}-{{ $video->monitoramento_id }}" data-noticia="{{ $video->noticia_id }}">
-                                                
                                     </div>
-                                    <code>
-                                        <a href="{{ url('monitoramento/'.$video->monitoramento_id.'/editar') }}" target="_BLANK">{{ $video->expressao }}</a>
-                                    </code>
-                                    <div class="panel panel-success">
-                                        <div class="conteudo-noticia mb-1 transcricao">
-                                            {!! ($video->transcricao) ?  Str::limit($video->transcricao, 1000, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                    <div class="col-lg-10 col-sm-10 mb-1"> 
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 mb-1"> 
+                                                <div class="conteudo-{{ $noticia->id }}">
+                                                    <p class="font-weight-bold mb-1">{{ $noticia->titulo }}</p>
+                                                    <h6><a href="{{ url('fonte-impresso/'.$noticia->id_fonte.'/editar') }}" target="_BLANK">{{ ($noticia->fonte) ? $noticia->fonte->nome_emissora : '' }}</a></h6>  
+                                                    <h6 style="color: #FF5722;">{{ ($noticia->cd_estado) ? $noticia->estado->nm_estado : '' }}{{ ($noticia->cd_cidade) ? "/".$noticia->cidade->nm_cidade : '' }}</h6>  
+                                                    <h6 class="text-muted mb-1">
+                                                        {{ \Carbon\Carbon::parse($noticia->dt_pub)->format('d/m/Y') }} 
+                                                        {{ ($noticia->horario) ? $noticia->horario : '' }}
+                                                        {{ ($noticia->emissora) ? " - ".$noticia->emissora->nome_emissora : '' }}
+                                                        {{ ($noticia->programa) ? "/".$noticia->programa->nome_programa : '' }}
+                                                    </h6> 
+                                                    <p class="mb-1">
+                                                        @if($noticia->duracao)
+                                                            Duração <strong>{{ $noticia->duracao }}</strong></strong>
+                                                        @else
+                                                            <span class="text-danger">Duração não informada</span>
+                                                        @endif
+                                                    </p>  
+                                                    <p class="mb-1">
+                                                        <strong>Retorno de Mídia: </strong>{{ ($noticia->valor_retorno) ? "R$ ".$noticia->valor_retorno : 'Não calculado' }}
+                                                    </p> 
+                                                    <div>
+                                                        @forelse($noticia->clientes as $cliente)
+                                                            <p class="mb-2">
+                                                                <span>{{ $cliente->nome }}</span>
+                                                                @switch($cliente->pivot->sentimento)
+                                                                    @case(-1)
+                                                                            <i class="fa fa-frown-o text-danger"></i>
+                                                                            <a href="{{ url('noticia/'.$cliente->pivot->noticia_id.'/tipo/'.$cliente->pivot->tipo_id.'/cliente/'.$cliente->pivot->cliente_id.'/sentimento/0/atualizar') }}"><i class="fa fa-ban op-2"></i></a>
+                                                                            <a href="{{ url('noticia/'.$cliente->pivot->noticia_id.'/tipo/'.$cliente->pivot->tipo_id.'/cliente/'.$cliente->pivot->cliente_id.'/sentimento/1/atualizar') }}"><i class="fa fa-smile-o op-2"></i></a>
+                                                                        @break
+                                                                    @case(0)
+                                                                            <a href="{{ url('noticia/'.$cliente->pivot->noticia_id.'/tipo/'.$cliente->pivot->tipo_id.'/cliente/'.$cliente->pivot->cliente_id.'/sentimento/-1/atualizar') }}"><i class="fa fa-frown-o op-2"></i></a> 
+                                                                            <i class="fa fa-ban text-primary"></i>
+                                                                            <a href="{{ url('noticia/'.$cliente->pivot->noticia_id.'/tipo/'.$cliente->pivot->tipo_id.'/cliente/'.$cliente->pivot->cliente_id.'/sentimento/1/atualizar') }}"><i class="fa fa-smile-o op-2"></i></a>                                                
+                                                                        @break
+                                                                    @case(1)
+                                                                            <a href="{{ url('noticia/'.$cliente->pivot->noticia_id.'/tipo/'.$cliente->pivot->tipo_id.'/cliente/'.$cliente->pivot->cliente_id.'/sentimento/-1/atualizar') }}"><i class="fa fa-frown-o op-2"></i></a>
+                                                                            <a href="{{ url('noticia/'.$cliente->pivot->noticia_id.'/tipo/'.$cliente->pivot->tipo_id.'/cliente/'.$cliente->pivot->cliente_id.'/sentimento/0/atualizar') }}"><i class="fa fa-ban op-2"></i></a>
+                                                                            <i class="fa fa-smile-o text-success"></i>
+                                                                        @break                                            
+                                                                @endswitch
+                                                            </p>
+                                                        @empty
+                                                            <p class="text-danger mb-1">Nenhum cliente associada à notícia</p>
+                                                        @endforelse
+                                                    </div>
+                                                    <div>
+                                                        @forelse($noticia->tags as $tag)
+                                                            <span>#{{ $tag->nome }}</span>
+                                                        @empty
+                                                            <p class="text-danger mb-1">#Nenhuma tag associada à notícia</p>
+                                                        @endforelse
+                                                    </div>
+                                                </div> 
+                                                <div class="sinopse-{{ $noticia->id }}">
+                                                    {!! ($noticia->sinopse) ? Str::limit($noticia->sinopse, 1000, " ...") : '<span class="text-danger center">Notícia não possui texto</span>' !!}
+                                                </div>  
+                                            </div>
                                         </div>
-                                        <div class="panel-body conteudo-{{ $video->noticia_id }}-{{ $video->monitoramento_id }}">
-                                            {!! ($video->transcricao) ?  $video->transcricao  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 mb-1"> 
+                                                <button class="btn btn-primary btn-visualizar-noticia" data-id="{{ $noticia->id }}"><i class="fa fa-eye"></i> Visualizar</button> 
+                                            </div>
                                         </div>
-                                        <div class="panel-heading">
-                                            <h3 class="panel-title"><span class="btn-show">Mostrar Mais</span></h3>
-                                        </div>
-                                    </div>       
+                                    </div>
+                                </div>     
+                            </div>
+                            <div class="card-footer ">
+                                <hr>
+                                <div class="stats">
+                                    <i class="fa fa-refresh"></i>Última atualização em {{ \Carbon\Carbon::parse($noticia->updated_at)->format('d/m/Y H:i:s') }}
+                                    <div class="pull-right">
+                                        <a title="Excluir" href="{{ url('noticia-radio/'.$noticia->id.'/excluir') }}" class="btn btn-danger btn-fill btn-icon btn-sm btn-excluir" style="border-radius: 30px;">
+                                            <i class="fa fa-times fa-3x text-white"></i>
+                                        </a>
+                                        <a title="Editar" href="{{ url('noticia-radio/'.$noticia->id.'/editar') }}" class="btn btn-primary btn-fill btn-icon btn-sm" style="border-radius: 30px;">
+                                            <i class="fa fa-edit fa-3x text-white"></i>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                @endforeach
-                
-                   {{ $dados->onEachSide(1)->appends(['dt_inicial' => \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y'), 
+                    @endforeach
+
+                    {{ $dados->onEachSide(1)->appends(['dt_inicial' => \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y'), 
                                                         'dt_final' => \Carbon\Carbon::parse($dt_final)->format('d/m/Y'),
                                                         'cliente' => $cliente_selecionado,
                                                         'termo' => $termo])
                                                         ->links('vendor.pagination.bootstrap-4') }}
-            </div>            
+                </div>
+            </div>
         </div>
     </div>
+</div>
+<div class="modal fade" id="showNoticia" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-dialog-scrollable modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="padding: 15px !important;">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-newspaper-o"></i><span></span> Dodos da Notícia</h6>
+        </div>
+        <div class="modal-body" style="padding: 15px;">
+            <div class="row">
+                <div class="col-md-12 modal-conteudo"></div>
+                <div class="col-md-12 modal-sinopse"></div>
+            </div>
+            <div class="center">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
+            </div>
+      </div>
+    </div>
+  </div>
 </div>
 @endsection
 @section('script')
@@ -180,6 +225,20 @@
                 nonSelectedListLabel: 'Disponíveis',
                 selectedListLabel: 'Selecionadas',
                
+            });
+
+            $(".btn-visualizar-noticia").click(function(){
+
+                var id = $(this).data("id");
+                var chave = ".conteudo-"+id;
+                var sinopse = ".sinopse-"+id;
+
+                $(".modal-conteudo").html($(chave).html());
+              
+                $(".modal-sinopse").html($(sinopse).text().replace(/\n/g, "<br />"));
+
+                $("#showNoticia").modal("show");
+
             });
 
             $(".panel-heading").click(function() {
@@ -213,7 +272,7 @@
                 if(cliente_selecionado){
 
                     $.ajax({
-                        url: host+'/monitoramento/cliente/'+cliente_selecionado+'/fl_tv',
+                        url: host+'/monitoramento/cliente/'+cliente_selecionado+'/fl_impresso',
                         type: 'GET',
                         beforeSend: function() {
                             $('#monitoramento').find('option').remove().end();
@@ -264,9 +323,9 @@
                                                        
                         },
                         success: function(data) {
-                            if(data.filtro_tv){
+                            if(data.filtro_impresso){
 
-                                const lista_fontes = JSON.parse("[" + data.filtro_tv + "]");
+                                const lista_fontes = JSON.parse("[" + data.filtro_impresso + "]");
 
                                 console.log(lista_fontes);
 
@@ -299,14 +358,14 @@
                 var chave_conteudo = ".conteudo-"+$(this).data("chave");
 
                 $.ajax({
-                    url: host+'/tv/conteudo/'+noticia+'/monitoramento/'+monitoramento,
+                    url: host+'/jornal-impresso/conteudo/'+noticia+'/monitoramento/'+monitoramento,
                     type: 'GET',
                     beforeSend: function() {
                             
                     },
                     success: function(data) {
                         
-                        $(chave_conteudo).html(data.texto);
+                        $(chave_conteudo).html(data.texto.replace(/\n/g, "<br />"));
 
                         var marks = [];                 
                         

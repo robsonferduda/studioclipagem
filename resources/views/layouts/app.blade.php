@@ -280,12 +280,6 @@
                             </a>
                          </li>
 
-                         <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'tv-videos') ? 'active' : '' }}">
-                          <a href="{{ url('tv/videos') }}">
-                          <span class="sidebar-normal">Vídeos TV</span>
-                          </a>
-                       </li>
-
                         <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'tv-emissoras') ? 'active' : '' }}">
                           <a href="{{ url('tv/emissoras') }}">
                           <span class="sidebar-normal">Emissoras</span>
@@ -304,8 +298,20 @@
                           </a>
                        </li>
 
-                       <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'tv-noticias') ? 'active' : '' }}">
-                        <a href="{{ url('tv/noticias') }}">
+                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'noticia-tv/coletas') ? 'active' : '' }}">
+                          <a href="{{ url('noticia/tv/coletas') }}">
+                          <span class="sidebar-normal">Coletas</span>
+                          </a>
+                       </li>
+
+                       <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'noticia-tv/monitoramento') ? 'active' : '' }}">
+                        <a href="{{ url('noticia/tv/monitoramento') }}">
+                        <span class="sidebar-normal">Monitoramento</span>
+                        </a>
+                     </li>
+
+                     <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'noticias-tv') ? 'active' : '' }}">
+                        <a href="{{ url('noticias/tv') }}">
                         <span class="sidebar-normal">Notícias</span>
                         </a>
                      </li>
