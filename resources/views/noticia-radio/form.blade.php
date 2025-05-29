@@ -44,11 +44,11 @@
                             <div class="row">
                                 <input type="hidden" name="id_noticia" id="id_noticia" value="{{ ($noticia) ? $noticia->id : 0 }}">
                                 <input type="hidden" name="clientes[]" id="clientes">
-                                <input type="hidden" name="ds_caminho_radio" id="ds_caminho_radio">
+                                <input type="hidden" name="ds_caminho_audio" id="ds_caminho_audio">
                                 <div class="col-md-5">
                                     <div class="form-group">
                                         <label>Cliente</label>
-                                        <select class="form-control cliente select2" name="cd_cliente" id="cd_cliente">
+                                        <select class="form-control cliente" name="cd_cliente" id="cd_cliente">
                                             <option value="">Selecione um cliente</option>
                                         </select>
                                     </div>
@@ -56,7 +56,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Área do Cliente <span class="text-info add-area" data-toggle="modal" data-target="#modalArea">Adicionar Área</span></label>
-                                        <select class="form-control area select2" name="cd_area" id="cd_area" disabled>
+                                        <select class="form-control area" name="cd_area" id="cd_area" disabled>
                                             <option value="">Selecione uma área</option>
                                         </select>
                                     </div>
@@ -159,14 +159,8 @@
                                     </div>    
                                 </div> 
                             </div>
-                            <div class="row">
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label>Duração</label>
-                                        <input type="text" class="form-control duracao" name="duracao" id="duracao" placeholder="00:00:00" value="{{ ($noticia) ? $noticia->duracao : '' }}">
-                                    </div>
-                                </div>                            
-                                <div class="col-md-10">
+                            <div class="row">                          
+                                <div class="col-md-12">
                                     <div class="form-group">
                                         <label>Link</label>
                                         <input type="text" class="form-control" name="link" id="link" placeholder="Link" value="{{ ($noticia) ? $noticia->link : '' }}">
@@ -179,11 +173,14 @@
                                     </div>
                                 </div>
                                 @if($noticia and $noticia->ds_caminho_audio)    
-                                    <div class="col-md-3">
-                                        <img src="{{ asset('img/noticia-web/'.$noticia->ds_caminho_img) }}" alt="Página {{ $noticia->ds_caminho_img }}">
+                                    <div class="col-md-12">
+                                        <audio width="100%" controls style="width: 100%;">
+                                            <source src="{{ asset('audio/noticia-radio/'.$noticia->ds_caminho_audio) }}" type="audio/mpeg">
+                                                Seu navegador não suporta a execução de áudios, faça o download para poder ouvir.
+                                        </audio>
                                     </div>
-                                    <div class="col-md-9">
-                                        <label for="arquivo">Print da Notícia</label>
+                                    <div class="col-md-12">
+                                        <label for="arquivo">Áudio da Notícia</label>
                                         <div style="min-height: 200px;" class="dropzone" id="dropzone"><div class="dz-message" data-dz-message><span>CLIQUE AQUI<br/> ou <br/>ARRASTE</span></div></div>
                                         <input type="hidden" name="arquivo" id="arquivo">
                                     </div>
@@ -193,7 +190,13 @@
                                         <div style="min-height: 200px;" class="dropzone" id="dropzone"><div class="dz-message" data-dz-message><span>CLIQUE AQUI<br/> ou <br/>ARRASTE</span></div></div>
                                         <input type="hidden" name="arquivo" id="arquivo">
                                     </div> 
-                                @endif                                    
+                                @endif 
+                                <div class="col-md-12 mt-2">
+                                    <div class="form-group">
+                                        <label>Duração <span class="text-danger">Será preenchida automaticamente ao fazer o upload. Caso falhe, insira manualmente.</span></label>
+                                        <input type="text" class="form-control duracao" name="duracao" id="duracao" placeholder="00:00:00" value="{{ ($noticia) ? $noticia->duracao : '' }}">
+                                    </div>
+                                </div>                                    
                             </div>
                              
                             <div class="text-center mb-2 mt-3">
@@ -214,11 +217,11 @@
 <script>
     
     Dropzone.autoDiscover = false;
+    var host = $('meta[name="base-url"]').attr('content');
+    var token = $('meta[name="csrf-token"]').attr('content');
     
     $(document).ready(function(){
 
-        var host = $('meta[name="base-url"]').attr('content');
-        var token = $('meta[name="csrf-token"]').attr('content');
         var cd_emissora = $("#cd_emissora").val();
 
         //Inicializar o Dropzone
@@ -235,7 +238,7 @@
             },
             init: function () {
                 this.on("success", function (file, response) {
-                    $("#ds_caminho_video").val(response.arquivo);
+                    $("#ds_caminho_audio").val(response.arquivo);
                     $("#duracao").val(response.duracao);
                 });
 

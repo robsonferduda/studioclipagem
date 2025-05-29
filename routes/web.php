@@ -195,6 +195,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('radio/adjacentes/{id}/monitoramento/{monitoramento}','NoticiaRadioController@getDadosAudio');
 	
 	Route::get('radio/conteudo/{id_noticia}/monitoramento/{id_monitoramento}','NoticiaRadioController@destacaConteudo');
+	Route::get('noticia/radio/clientes/{noticia}','NoticiaRadioController@clientes');
 	Route::post('radio/noticias/inserir','NoticiaRadioController@inserir');
 	Route::post('radio/noticias/{id}/atualizar','NoticiaRadioController@atualizar');
 	Route::post('radio/noticias/upload','NoticiaRadioController@upload');

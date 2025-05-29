@@ -255,17 +255,7 @@ class NoticiaRadioController extends Controller
            
             if($noticia)
             {
-                if($request->cd_cliente){
-
-                    $inserir = array('tipo_id' => 3,
-                                        'noticia_id' => $noticia->id,
-                                        'cliente_id' => $request->cd_cliente,
-                                        'area' => $request->cd_area,
-                                        'sentimento' => $request->cd_sentimento);
-                            
-                    NoticiaCliente::create($inserir);
-                }
-
+        
                 $tags = collect($request->tags)->mapWithKeys(function($tag){
                     return [$tag => ['tipo_id' => 3]];
                 })->toArray();
@@ -273,17 +263,19 @@ class NoticiaRadioController extends Controller
                 $noticia->tags()->sync($tags);
 
                 $clientes = json_decode($request->clientes[0]);
+
                 if($clientes){
 
                     for ($i=0; $i < count($clientes); $i++) { 
                         
                         $dados = array('tipo_id' => 3,
                                 'noticia_id' => $noticia->id,
-                                'cliente_id' => $clientes[$i]->id_cliente,
-                                'area' => $clientes[$i]->id_area,
-                                'sentimento' => $clientes[$i]->id_sentimento);
-                    
-                        NoticiaCliente::create($dados);
+                                'cliente_id' => (int) $clientes[$i]->id_cliente,
+                                'area' => (int) ($clientes[$i]->id_area) ? $clientes[$i]->id_area : null,
+                                'sentimento' => (int) $clientes[$i]->id_sentimento);
+
+                        $noticia_cliente = NoticiaCliente::create($dados);
+
                     }
                 }
             }
@@ -293,7 +285,7 @@ class NoticiaRadioController extends Controller
 
         } catch (\Illuminate\Database\QueryException $e) {
 
-            dd($e);
+             DB::rollback();
 
             $retorno = array('flag' => false,
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
@@ -359,14 +351,15 @@ class NoticiaRadioController extends Controller
 
             if($clientes){
                 for ($i=0; $i < count($clientes); $i++) { 
-                        
-                    $dados = array('tipo_id' => 3,
-                                'noticia_id' => $noticia->id,
-                                'cliente_id' => (int) $clientes[$i]->id_cliente,
-                                'area' => (int) $clientes[$i]->id_area,
-                                'sentimento' => (int) $clientes[$i]->id_sentimento);
 
-                    $noticia_cliente = NoticiaCliente::create($dados);
+                    $match = array('tipo_id' => 3,
+                                'noticia_id' => $noticia->id,
+                                'cliente_id' => (int) $clientes[$i]->id_cliente);
+                        
+                    $dados = array('area' => (int) $clientes[$i]->id_area,
+                                   'sentimento' => (int) $clientes[$i]->id_sentimento);
+
+                    $noticia_cliente = NoticiaCliente::updateOrCreate($match, $dados);
                 }
             }
 
@@ -439,23 +432,6 @@ class NoticiaRadioController extends Controller
 
     public function upload(Request $request)
     {
-        /*
-        $arquivo = $request->file('file');
-        $fileInfo = $arquivo->getClientOriginalName();
-        $filename = pathinfo($fileInfo, PATHINFO_FILENAME);
-        $extension = pathinfo($fileInfo, PATHINFO_EXTENSION);
-        $file_name = date('Y-m-d-H-i-s').'.'.$extension;
-
-        $audio = new \wapmorgan\Mp3Info\Mp3Info($arquivo, true);
-        $duracao = gmdate("H:i:s", $audio->duration);
-
-        $path = 'noticias-radio'.DIRECTORY_SEPARATOR.date('Y-m-d').DIRECTORY_SEPARATOR;
-        $arquivo->move(public_path($path), $file_name);
-
-        $dados = array('arquivo' => $file_name, 'duracao' => $duracao);
-
-        return response()->json($dados);*/
-
         $audio = $request->file('audio');
         $fileInfo = $audio->getClientOriginalName();
         $filesize = $audio->getSize()/1024/1024;
@@ -481,6 +457,35 @@ class NoticiaRadioController extends Controller
                          'arquivo' => $file_noticia);
 
         return $retorno;
+    }
+
+    public function clientes($noticia)
+    {
+        $vinculos = array();
+
+        $sql = "SELECT t1.cliente_id, 
+                    nome, 
+                    area as area_id, 
+                    CASE 
+                        WHEN(t3.descricao IS NOT NULL) THEN t3.descricao 
+                        ELSE 'Nenhuma área selecionada'
+                    END as area,
+                    CASE
+                        WHEN (sentimento = '-1') THEN 'Negativo' 
+                        WHEN (sentimento = '0') THEN 'Neutro' 
+                        WHEN (sentimento = '1') THEN 'Positivo' 
+                        ELSE 'Nenhum sentimento selecionado'
+                    END as sentimento,
+                    sentimento AS id_sentimento
+                FROM noticia_cliente t1
+                JOIN clientes t2 ON t2.id = t1.cliente_id 
+                LEFT JOIN area t3 On t3.id = t1.area 
+                WHERE noticia_id = $noticia
+                AND t1.tipo_id = 3";
+
+        $vinculos = DB::select($sql);
+
+        return response()->json($vinculos);
     }
 
     public function getEstatisticas()
