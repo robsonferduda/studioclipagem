@@ -1,11 +1,83 @@
-@extends('relatorio.pdf.padrao_individual')
-@section('content')
-    @include("relatorio/pdf/cabecalho_individual")
-    <p style="font-weight: bold; margin-top: 0px; margin-bottom: 5px;">{{ $noticia->titulo }}</p>
-    <div class="image-container" style="background: white;">
-        <img style="width: 98%; margin-top: 10px;" src="{{ asset('img/noticia-impressa/'.$noticia->ds_caminho_img) }}"/>
-        <div class="hidden-text">
-            {{ $noticia->sinopse }}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório</title>
+    <style>
+        .page-break {
+            page-break-after: always; /* Força uma quebra de página depois */
+        }
+
+        .header {
+            margin-bottom: 5mm; /* Espaço entre o cabeçalho e a imagem */
+        }
+
+        /* Estilos gerais */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 2px;
+            font-size: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;            
+        }
+
+        img{
+            max-width: 100%;
+            height: auto;
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 10px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <!-- Listagem de notícias de jornal -->
+    @if($tipo == 'impresso')
+        <div class="header">
+            <h5 style="text-align: justify; margin-bottom: 0px; padding-bottom: 5px; margin-top: 26px; font-size: 17px; border-bottom: 1px solid black;">Clipagem de Jornal</h5>    
+            <p style="text-align: justify; font-size: 16px; margin:0px; padding: 0px; margin-top: 8px; margin-bottom: 8px;">
+                {{ $noticia->fonte }}
+                {{ ($noticia->secao) ? " - ".$noticia->secao  : '' }}
+                {{ ($noticia->pagina) ? " - Página: ".$noticia->pagina : '' }}
+                {{ " - ".$noticia->data_formatada }}
+                {{ ($noticia->nm_cidade) ? " - ".trim($noticia->nm_cidade."/".$noticia->sg_estado) : '' }}
+                {{ ($noticia->nm_estado and !$noticia->nm_cidade) ? " - ".trim($noticia->sg_estado) : ''}}
+            </p> 
+            <div style="text-align: center;">
+                <img style="margin: 0 auto;" src="">
+            </div>
         </div>
-    </div>
-@endsection
+    @endif
+
+    @if($tipo == 'web')
+    
+                        <div class="header">
+                            <h5 style="text-align: justify; margin-bottom: 0px; padding-bottom: 5px; margin-top: 26px; font-size: 17px; border-bottom: 1px solid black;">Clipagem de Web</h5>   
+                            <p style="text-align: justify; font-size: 16px; margin:0px; padding: 0px; margin-top: 8px; margin-bottom: 8px;">
+                                {{ $noticia->fonte }}
+                                {{ ($noticia->secao) ? " - ".$noticia->secao  : '' }}
+                                {{ " - ".$noticia->data_formatada }}
+                                {{ ($noticia->nm_cidade) ? " - ".trim($noticia->nm_cidade."/".$noticia->sg_estado) : '' }}
+                                {{ ($noticia->nm_estado and !$noticia->nm_cidade) ? " - ".trim($noticia->sg_estado) : ''}}
+                            </p>  
+                        </div>
+                        <div style="text-align: center;">
+                            @if($noticia->midia)
+                                <img style="margin: 0 auto;" src="{{ public_path('img/noticia-web/'.$noticia->midia) }}">
+                            @endif
+                        </div>  
+       
+                <div style="page-break-before: always;"></div>                        
+    
+    @endif
+</body>
+</html>
+    

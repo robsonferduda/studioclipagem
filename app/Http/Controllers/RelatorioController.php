@@ -86,6 +86,20 @@ class RelatorioController extends Controller
         return view('relatorio/index', compact('dados','clientes','cliente_selecionado','dt_inicial','dt_final','fl_web','fl_tv','fl_radio','fl_impresso'));
     }
 
+    function pdfIndividual($tipo, $id)
+    {
+        $noticia = NoticiaImpresso::where('id', $id)->first();
+        $nome_arquivo = date("YmdHis").'_'.$tipo.'_'.$id.'.pdf';
+        
+        $data = [
+            'noticia' => $noticia,
+            'tipo' => $tipo
+        ];
+
+        $pdf = PDFS::loadView('relatorio/pdf/individual', $data);
+        return $pdf->download($nome_arquivo);
+    }
+
     public function dadosImpresso($dt_inicial, $dt_final,$cliente_selecionado)
     {
         $sql = "SELECT t1.id, 
@@ -241,16 +255,6 @@ class RelatorioController extends Controller
         }
 
         return $dados = DB::select($sql);
-    }
-
-    function pdfIndividual($tipo, $id)
-    {
-        $noticia = NoticiaImpresso::where('id', $id)->first();
-        $nome_arquivo = date("YmdHis").'_impresso_'.$id.'.pdf';
-
-        $pdf = \App::make('dompdf.wrapper');
-        $pdf->loadView('relatorio/pdf/individual', compact('noticia'));
-        return $pdf->download($nome_arquivo);
     }
 
     public function word()
