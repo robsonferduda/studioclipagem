@@ -364,7 +364,6 @@ class JornalImpressoController extends Controller
                 $dados = array('tipo_id' => 1,
                                 'noticia_id' => $noticia->id,
                                 'cliente_id' => (int) $vinculo->cliente_id,
-                                'monitoramento_id' = $monitoramento,
                                 'area' => null,
                                 'sentimento' => 0);
 
