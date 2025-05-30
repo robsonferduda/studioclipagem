@@ -24,6 +24,30 @@
     </div>
 </div>
 @endpermission
+@permission('dashboard-tv')
+<div class="row">   
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="card card-stats">
+                    <div class="card-body ">
+                        <div class="row mb-2">
+                            <div class="col-12 col-md-12" style="min-height: 100px">
+                                @forelse(Auth::user()->roles as $role)
+                                    <span class="badge pull-right" style="background: {{ $role->display_color }}; border-color: {{ $role->display_color }};">{{ $role->display_name }}</span>
+                                @empty
+                                    <span class="text-danger">Nenhum perfil associado</span>
+                                @endforelse
+                                Olá, <strong>{{ Auth::user()->name }}</strong>! <br>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>  
+        </div>
+    </div>
+</div>
+@endpermission
 @permission('dashboard')
     <div class="row">   
         <div class="col-md-4">

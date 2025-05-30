@@ -228,8 +228,8 @@
                     
                     if(noticia.tipo == 'web') icone = '<i class="fa fa-globe"></i> Web';
                     if(noticia.tipo == 'impresso') icone = '<i class="fa fa-newspaper-o"></i> Impresso';
-                    if(noticia.tipo == 'radio') icone = '<i class="fa fa-globe"></i> Web';
-                    if(noticia.tipo == 'tv') icone = '<i class="fa fa-globe"></i> Web';
+                    if(noticia.tipo == 'radio') icone = '<i class="fa fa-volume-up"></i> Rádio';
+                    if(noticia.tipo == 'tv') icone = '<i class="fa fa-tv"></i> TV';
 
                     titulo = (noticia.titulo) ? noticia.titulo : 'Sem Título';
 

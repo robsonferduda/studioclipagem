@@ -65,7 +65,7 @@ class BoletimController extends Controller
                 FROM noticias_web t1
                 JOIN fonte_web t2 ON t2.id = t1.id_fonte
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id
-                LEFT JOIN boletim_noticia t4 ON t4.id_noticia = t3.noticia_id AND t4.id_boletim = $request->id_boletim
+                LEFT JOIN boletim_noticia t4 ON t4.id_noticia = t3.noticia_id AND id_tipo = 2 AND t4.id_boletim = $request->id_boletim
                 WHERE 1=1";
 
         if ($request->has('dt_inicial') && $request->has('dt_final')) {
@@ -93,7 +93,7 @@ class BoletimController extends Controller
                 FROM noticia_impresso t1
                 JOIN jornal_online t2 ON t2.id = t1.id_fonte
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id
-                LEFT JOIN boletim_noticia t4 ON t4.id_noticia = t3.noticia_id AND t4.id_boletim = $request->id_boletim
+                LEFT JOIN boletim_noticia t4 ON t4.id_noticia = t3.noticia_id AND id_tipo = 1 AND t4.id_boletim = $request->id_boletim
                 WHERE 1=1";
 
         if ($request->has('dt_inicial') && $request->has('dt_final')) {
@@ -113,13 +113,61 @@ class BoletimController extends Controller
 
         //Notícias de Rádio
 
+        $sql_radio = "SELECT t1.id, 
+                    t1.titulo, 
+                    'radio' as tipo, 
+                    TO_CHAR(dt_cadastro, 'DD/MM/YYYY') AS data_formatada,
+                    t2.nome_emissora as fonte,
+                    t4.id_boletim as id_boletim
+                FROM noticia_radio t1
+                JOIN emissora_radio t2 ON t2.id = t1.emissora_id
+                JOIN noticia_cliente t3 ON t3.noticia_id = t1.id
+                LEFT JOIN boletim_noticia t4 ON t4.id_noticia = t3.noticia_id AND id_tipo = 3 AND t4.id_boletim = $request->id_boletim
+                WHERE 1=1";
 
-        $noticias_radio = DB::select($sql_impresso);
+        if ($request->has('dt_inicial') && $request->has('dt_final')) {
+            $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d');
+            $dt_final = $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d');
+            $sql_radio .= " AND dt_cadastro BETWEEN '$dt_inicial 00:00:00' AND '$dt_final 23:59:59'";
+        }
+
+        if ($request->has('cliente')) {
+            $cliente = $request->cliente;
+            $sql_radio .= " AND t3.cliente_id = $cliente";
+        }
+       
+        $sql_radio .= " ORDER BY dt_cadastro DESC";
+
+        $noticias_radio = DB::select($sql_radio);
 
         //Notícias de TV
 
-        $noticias_tv = DB::select($sql_impresso);
+        $sql_tv = "SELECT t1.id, 
+                    '' AS titulo, 
+                    'tv' as tipo, 
+                    TO_CHAR(dt_noticia, 'DD/MM/YYYY') AS data_formatada,
+                    t2.nome_emissora as fonte,
+                    t4.id_boletim as id_boletim
+                FROM noticia_tv t1
+                JOIN emissora_web t2 ON t2.id = t1.emissora_id
+                JOIN noticia_cliente t3 ON t3.noticia_id = t1.id
+                LEFT JOIN boletim_noticia t4 ON t4.id_noticia = t3.noticia_id AND id_tipo = 4 AND t4.id_boletim = $request->id_boletim
+                WHERE 1=1";
 
+        if ($request->has('dt_inicial') && $request->has('dt_final')) {
+            $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d');
+            $dt_final = $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d');
+            $sql_tv .= " AND dt_noticia BETWEEN '$dt_inicial 00:00:00' AND '$dt_final 23:59:59'";
+        }
+
+        if ($request->has('cliente')) {
+            $cliente = $request->cliente;
+            $sql_tv .= " AND t3.cliente_id = $cliente";
+        }
+       
+        $sql_tv .= " ORDER BY dt_noticia DESC";
+
+        $noticias_tv = DB::select($sql_tv);
 
         $noticias = array_merge($noticias_web, $noticias_impresso, $noticias_tv, $noticias_radio);
 
