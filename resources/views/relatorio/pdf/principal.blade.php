@@ -76,6 +76,10 @@
                                 {{ " - ".$noticia->data_formatada }}
                                 {{ ($noticia->nm_cidade) ? " - ".trim($noticia->nm_cidade."/".$noticia->sg_estado) : '' }}
                                 {{ ($noticia->nm_estado and !$noticia->nm_cidade) ? " - ".trim($noticia->sg_estado) : ''}}
+                                <a href="{{ $noticia->url_noticia }}" style="position: absolute; right: 0px;" 
+                                   target="_BLANK">
+                                    <img style="width: 20px; height: 20px;" src="{{ public_path('img/globe.png') }}">
+                                </a>
                             </p>  
                         </div>
                         <div style="text-align: center;">
