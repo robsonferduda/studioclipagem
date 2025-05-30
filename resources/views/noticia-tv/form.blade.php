@@ -239,7 +239,6 @@
                 success: function(file, response){
 
                     $("#ds_caminho_video").val(response.arquivo);
-                    $("#duracao").val(response.duracao);
                     $("#duracao").focus();
                 }
             });
