@@ -64,12 +64,16 @@
     @if($tipo == 'web')
         <div class="header">
             <h5 style="text-align: justify; margin-bottom: 0px; padding-bottom: 5px; margin-top: 26px; font-size: 17px; border-bottom: 1px solid black;">Clipagem de Web</h5>   
-            <p style="text-align: justify; font-size: 16px; margin:0px; padding: 0px; margin-top: 8px; margin-bottom: 8px;">
+            <p style="text-align: justify; font-size: 16px; margin:0px; padding: 0px; margin-top: 8px; margin-bottom: 8px; position: relative;">
                 {{ $noticia->fonte->nome }}
                 {{ ($noticia->secao) ? " - ".$noticia->secao->ds_sessao  : '' }}
                 {{ " - ".\Carbon\Carbon::parse($noticia->data_noticia)->format('d/m/Y') }}
                 {{ ($noticia->cidade) ? " - ".trim($noticia->cidade->nm_cidade."/".$noticia->estado->sg_estado) : '' }}
                 {{ ($noticia->estado and !$noticia->cidade) ? " - ".trim($noticia->estado->sg_estado) : ''}}
+                <a href="{{ $noticia->url_noticia }}" style="position: absolute; right: 0px;" 
+                   target="_BLANK">
+                    <img style="width: 20px; height: 20px;" src="{{ public_path('img/globe.png') }}">
+                </a>
             </p>  
             <div style="text-align: center;">
                 @if($noticia->ds_caminho_img)
