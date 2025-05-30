@@ -52,7 +52,7 @@
                 {{ ($noticia->nm_estado and !$noticia->nm_cidade) ? " - ".trim($noticia->sg_estado) : ''}}
             </p> 
             <div style="text-align: center;">
-                <img style="margin: 0 auto;" src="">
+                <img style="margin: 0 auto;" src="{{ public_path('img/noticia-impressa/'.$noticia->midia) }}">
             </div>
         </div>
     @endif
