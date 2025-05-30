@@ -20,3 +20,6 @@ worker.log
 /public/planilhas
 /public/img/noticia-impressa
 /public/img/noticia-impressa/recorte
+/public/img/noticia-web
+/public/audio/noticia-radio
+/public/video/noticia-tv
