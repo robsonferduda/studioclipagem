@@ -54,12 +54,12 @@ class NoticiaTv extends Model
 
     public function emissora()
     {
-        return $this->hasOne(Emissora::class, 'id', 'emissora_id');
+        return $this->hasOne(EmissoraWeb::class, 'id', 'emissora_id');
     }
 
     public function programa()
     {
-        return $this->hasOne(Programa::class, 'id', 'programa_id');
+        return $this->hasOne(ProgramaEmissoraWeb::class, 'id', 'programa_id');
     }
 
     public function clientes()
