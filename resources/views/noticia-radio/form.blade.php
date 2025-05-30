@@ -44,7 +44,7 @@
                             <div class="row">
                                 <input type="hidden" name="id_noticia" id="id_noticia" value="{{ ($noticia) ? $noticia->id : 0 }}">
                                 <input type="hidden" name="clientes[]" id="clientes">
-                                <input type="hidden" name="ds_caminho_audio" id="ds_caminho_audio">
+                                <input type="hidden" name="ds_caminho_audio" id="ds_caminho_audio" value="{{ ($noticia->ds_caminho_audio) ? $noticia->ds_caminho_audio : '' }}">
                                 <div class="col-md-5">
                                     <div class="form-group">
                                         <label>Cliente</label>

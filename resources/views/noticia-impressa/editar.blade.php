@@ -27,7 +27,7 @@
                             <div class="row">
                                 <input type="hidden" name="id_noticia" id="id_noticia" value="{{ $noticia->id }}">
                                 <input type="hidden" name="clientes[]" id="clientes">
-                                <input type="hidden" name="ds_caminho_img" id="ds_caminho_img">
+                                <input type="hidden" name="ds_caminho_img" id="ds_caminho_img" value="{{ ($noticia->ds_caminho_img) ? $noticia->ds_caminho_img : '' }}">
                                 <div class="col-md-5">
                                     <div class="form-group">
                                         <label>Cliente</label>
