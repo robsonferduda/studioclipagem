@@ -188,6 +188,14 @@ class BoletimController extends Controller
                 $id_tipo = 1;
                 $noticia = NoticiaImpresso::find($request->id_noticia);
                 break;
+            case 'radio':
+                $id_tipo = 3;
+                $noticia = NoticiaRadio::find($request->id_noticia);
+                break;
+             case 'tv':
+                $id_tipo = 4;
+                $noticia = NoticiaTv::find($request->id_noticia);
+                break;
             default:
                 return response()->json(['error' => 'Tipo de notícia inválido'], 400);
         }
@@ -322,9 +330,12 @@ class BoletimController extends Controller
         $boletim->total_views = $boletim->total_views + 1;
         $boletim->save();
 
-        $noticias_impresso = $boletim->noticiasImpresso()->get();        
+        $noticias_impresso = $boletim->noticiasImpresso()->get();
+        $noticias_web = $boletim->noticiasWeb()->get(); 
+        $noticias_radio = $boletim->noticiasRadio()->get(); 
+        $noticias_tv = $boletim->noticiasTv()->get();         
 
-        return view('boletim/visualizar', compact('boletim','noticias_impresso'));
+        return view('boletim/visualizar', compact('boletim','noticias_impresso','noticias_web','noticias_radio','noticias_tv'));
     }
 
     public function outlook($id)

@@ -6,6 +6,7 @@
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
   <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet" />
   <link href="{{ asset('css/paper-dashboard.css?v=2.0.1') }}" rel="stylesheet" />
+  <title>{{ $boletim->titulo }}</title>
   <style>
       .corpo_boletim{
         background: #f7f7f7;
@@ -31,7 +32,7 @@
                 </div>
                 <div class="card-body">
                     <div class="col-md-12">
-                        <span class="pull-right mr-3">Total de notícias: {{ count($noticias_impresso) }}</span>
+                        <span class="pull-right mr-3">Total de notícias: {{ count($noticias_impresso) + count($noticias_web) + count($noticias_radio) + count($noticias_tv) }}</span>
                         @if(count($noticias_impresso) > 0)
                             <p style="text-transform: uppercase; font-weight: 600;"><i class="fa fa-newspaper-o"></i> Clipagens de Jornal</p>
                         @endif
@@ -40,9 +41,23 @@
                                 <p style="margin-bottom: 0px;"><strong>Título:</strong> {!! ($noticia->titulo) ? : '<span class="text-danger">Notícia sem título</span>' !!}</p>
                                 <p style="margin-bottom: 0px;"><strong>Data:</strong> {{ date('d/m/Y', strtotime($noticia->dt_clipagem)) }}</p>
                                 <p style="margin-bottom: 0px;"><strong>Veículo:</strong> {{ $noticia->fonte->nome }}</p>
-                                <p style="margin-bottom: 0px;"><strong>Seção:</strong> {{ $noticia->INFO2 }}</p>
+                                <p style="margin-bottom: 0px;"><strong>Seção:</strong> {{ ($noticia->secao) ? $noticia->secao->ds_sessao : 'Não informado' }}</p>
                                 <p style="margin-bottom: 0px;"><strong>Sinopse:</strong> {!! $sinopse = strip_tags(str_replace('Sinopse 1 - ', '', $noticia->sinopse)) !!}</p>
-                                <p style="margin-bottom: 10px;"><strong>Link:</strong> <a href="{{ asset('img/noticia-impressa/'.$noticia->ds_caminho_img) }}" download>Download</a></p>
+                                <p style="margin-bottom: 10px;"><strong>Link:</strong> <a href="{{ asset('img/noticia-impressa/'.$noticia->ds_caminho_img) }}" target="_blank">Veja</a></p>
+                            </div>
+                        @endforeach
+
+                        @if(count($noticias_web) > 0)
+                            <p style="text-transform: uppercase; font-weight: 600;"><i class="fa fa-globe"></i> Clipagens de Web</p>
+                        @endif
+                        @foreach($noticias_web as $key => $noticia)
+                            <div style="border-bottom: 1px solid #e3e3e3; margin-bottom: 10px; padding-bottom: 10px;">
+                                <p style="margin-bottom: 0px;"><strong>Título:</strong> {!! ($noticia->titulo) ? : '<span class="text-danger">Notícia sem título</span>' !!}</p>
+                                <p style="margin-bottom: 0px;"><strong>Data:</strong> {{ date('d/m/Y', strtotime($noticia->data_noticia)) }}</p>
+                                <p style="margin-bottom: 0px;"><strong>Veículo:</strong> {{ $noticia->fonte->nome }}</p>
+                                <p style="margin-bottom: 0px;"><strong>Seção:</strong> {{ ($noticia->secao) ? $noticia->secao->ds_sessao : 'Não informado' }}</p>
+                                <p style="margin-bottom: 0px;"><strong>Sinopse:</strong> {!! $sinopse = strip_tags(str_replace('Sinopse 1 - ', '', $noticia->sinopse)) !!}</p>
+                                <p style="margin-bottom: 10px;"><strong>Link:</strong> <a href="{{ asset('img/noticia-web/'.$noticia->ds_caminho_img) }}" target="_blank">Veja</a></p>
                             </div>
                         @endforeach
                     </div>        
