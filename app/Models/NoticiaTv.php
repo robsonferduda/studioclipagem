@@ -27,6 +27,7 @@ class NoticiaTv extends Model
         'sinopse',
         'link',
         'sentimento',
+        'valor_retorno',
         'duracao',
         'decupagem_id',
         'ds_caminho_video'

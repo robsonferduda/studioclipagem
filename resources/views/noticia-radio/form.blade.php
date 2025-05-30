@@ -124,6 +124,14 @@
                                 </div>
                             </div>
                             <div class="row">
+                                 <div class="col-md-12 col-sm-12">
+                                    <div class="form-group">
+                                        <label>Retorno</label>
+                                        <input type="text" class="form-control retorno_midia" name="valor_retorno" id="valor_retorno" placeholder="Retorno" value="{{ old('valor_retorno') }}">
+                                    </div>                                    
+                                </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Estado </label>

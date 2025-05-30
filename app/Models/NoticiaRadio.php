@@ -24,6 +24,7 @@ class NoticiaRadio extends Model
         'dt_clipagem',
         'fl_boletim',
         'sinopse',
+        'valor_retorno',
         'link',
         'duracao',
         'horario',

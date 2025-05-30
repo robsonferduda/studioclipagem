@@ -9,9 +9,10 @@ $(document).ready(function() {
     $('.duracao').mask('00:00:00');
     $('.horario').mask('00:00', { "placeholder": "00:00" });
     $('.swal2-input').mask('00/00/0000',{ "placeholder": "dd/mm/YYYY" });
-    $('.monetario').mask("###0.00" , {reverse: true});
-    $('#nu_valor').mask("###0.00" , {reverse: true});
-    $('.retorno_midia').mask("###0.00" , {reverse: true});
+    
+    $('.monetario').mask("#######0.00" , {reverse: true});
+    $('#nu_valor').mask("#######0.00" , {reverse: true});
+    $('.retorno_midia').mask("#######0.00" , {reverse: true});
     
     var host =  $('meta[name="base-url"]').attr('content');
     var token = $('meta[name="csrf-token"]').attr('content');

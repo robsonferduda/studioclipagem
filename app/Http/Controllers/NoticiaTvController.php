@@ -273,6 +273,7 @@ class NoticiaTvController extends Controller
                            'programa_id' => $request->cd_programa,
                            'arquivo' => $request->arquivo,
                            'sinopse' => $request->sinopse,
+                           'valor_retorno' => $request->valor_retorno,
                            'cd_estado' => $request->cd_estado,
                            'cd_cidade' => $request->cd_cidade,
                            'ds_caminho_video' => $request->ds_caminho_video,
@@ -371,8 +372,10 @@ class NoticiaTvController extends Controller
                             'programa_id' => $request->programa,
                             'arquivo' => ($request->arquivo) ? $request->arquivo : $noticia->arquivo,
                             'sinopse' => $request->sinopse,
+                            'valor_retorno' => $request->valor_retorno,
                             'cd_estado' => $emissora->cd_estado,
                             'cd_cidade' => $emissora->cd_cidade,
+                            'ds_caminho_video' => $request->ds_caminho_video,
                             'link' => $request->link
             ); 
 
