@@ -621,7 +621,7 @@ class NoticiaTvController extends Controller
 
         if($cliente){
 
-            $noticia_cliente = NoticiaCliente::where('noticia_id', $id)->where('cliente_id', $cliente)->first();
+            $noticia_cliente = NoticiaCliente::where('noticia_id', $id)->where('tipo_id', 4)->where('cliente_id', $cliente)->first();
 
             if($noticia_cliente->delete()){
 
@@ -642,7 +642,7 @@ class NoticiaTvController extends Controller
                 Flash::error("Erro ao excluir o registro");
         }
 
-        return redirect('tv/noticias')->withInput();
+        return redirect('noticias/tv')->withInput();
     }
 
     public function destacaConteudo($id_noticia, $id_monitoramento)

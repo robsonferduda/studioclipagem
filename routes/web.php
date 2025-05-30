@@ -338,6 +338,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('noticia-tv/decupagem/listar','NoticiaTvController@listarArquivos');
 	Route::get('tv/noticias/{id}/editar','NoticiaTvController@editar');
 	Route::get('tv/noticias/{id}/remover','NoticiaTvController@remover');
+	Route::get('noticia/tv/{id}/excluir','NoticiaTvController@remover');
 	Route::get('tv/noticias/{id}/cliente/{cliente}/editar','NoticiaTvController@editar');
 	Route::get('tv/noticias/{id}/cliente/{cliente}/remover','NoticiaTvController@remover');
 	Route::post('noticia-tv/upload','NoticiaTvController@upload');
