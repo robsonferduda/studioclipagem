@@ -155,7 +155,7 @@ class ProgramaController extends Controller
         $emissora = $request->emissora;
 
         $programas = Programa::select('id', 'nome_programa as text');
-        $result = $programas->where('id_emissora', $emissora)->orderBy('nome_programa', 'asc')->get();
+        $result = $programas->orderBy('nome_programa', 'asc')->get();
         return response()->json($result);
     }
 

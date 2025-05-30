@@ -498,15 +498,15 @@ class NoticiaWebController extends Controller
 
         $resumo = DB::select($sql);
 
-        $erros = NoticiaWeb::where('path_screenshot','ilike','ERROR')
-                            ->orWhereNull('path_screenshot')
-                            ->whereBetween('created_at', [$dt_inicial, $dt_final])
+        $erros = NoticiaWeb::where('path_screenshot','ilike','ERROR')                            
                             ->whereHas('clientes', function($query) use ($cliente_selecionado) {
                                 $query->where('noticia_cliente.tipo_id', 1)
                                 ->when($cliente_selecionado, function ($query) use ($cliente_selecionado) { 
                                     $query->where('noticia_cliente.cliente_id', $cliente_selecionado);
                                 });
                             })
+                            ->whereBetween('created_at', [$dt_inicial, $dt_final])
+                            ->orWhereNull('path_screenshot')
                             ->orderBy('id_fonte')
                             ->get();
 

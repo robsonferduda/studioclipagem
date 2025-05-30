@@ -243,7 +243,7 @@ class EmissoraTvController extends Controller
     public function buscarProgramas($id)
     {
 
-        $programas = ProgramaEmissoraWeb::select('id', 'nome_programa as text')->where('id_emissora', $id);
+        $programas = ProgramaEmissoraWeb::select('id', 'nome_programa as text');
         $result = $programas->orderBy('nome_programa', 'asc')->get();
 
         return response()->json($result);
