@@ -232,14 +232,7 @@
 
                     $("#ds_caminho_video").val(response.arquivo);
                     $("#duracao").val(response.duracao);
-
-                    $.notify({
-                        icon: 'fa fa-bell',
-                        message: "<b>Mensagem do Sistema</b><br/> Arquivo enviado e duração do arquivo registrada com sucesso"
-                    },{
-                        type: 'info',
-                        timer: 1000
-                    });
+                    $("#duracao").focus();
                 }
             });
 
