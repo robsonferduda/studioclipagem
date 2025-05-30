@@ -485,7 +485,7 @@ class NoticiaWebController extends Controller
 
         $sql = "SELECT t3.id, t3.nome, count(*) as total 
                 FROM noticias_web t1 
-                JOIN noticia_cliente t2 ON t2.noticia_id = t1.id 
+                JOIN noticia_cliente t2 ON t2.noticia_id = t1.id AND tipo_id = 2 
                 JOIN fonte_web t3 On t3.id = t1.id_fonte 
                 WHERE t1.path_screenshot like 'ERROR'
                 AND t1.created_at BETWEEN '$dt_inicial' AND '$dt_final'";
@@ -500,7 +500,7 @@ class NoticiaWebController extends Controller
 
         $erros = NoticiaWeb::where('path_screenshot','ilike','ERROR')                            
                             ->whereHas('clientes', function($query) use ($cliente_selecionado) {
-                                $query->where('noticia_cliente.tipo_id', 1)
+                                $query->where('noticia_cliente.tipo_id', 2)
                                 ->when($cliente_selecionado, function ($query) use ($cliente_selecionado) { 
                                     $query->where('noticia_cliente.cliente_id', $cliente_selecionado);
                                 });
