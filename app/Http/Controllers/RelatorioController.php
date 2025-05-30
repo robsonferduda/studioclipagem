@@ -125,7 +125,8 @@ class RelatorioController extends Controller
                     t1.sinopse,
                     t3.sentimento,
                     'imagem' as tipo_midia,
-                    ds_caminho_img as midia
+                    ds_caminho_img as midia,
+                    '' as url_noticia
                 FROM noticia_impresso t1
                 JOIN jornal_online t2 ON t2.id = t1.id_fonte
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 1
@@ -159,7 +160,8 @@ class RelatorioController extends Controller
                     t1.sinopse,
                     t3.sentimento,
                     'audio' as tipo_midia,
-                    ds_caminho_audio as midia
+                    ds_caminho_audio as midia,
+                     '' as url_noticia
                 FROM noticia_radio t1
                 JOIN emissora_radio t2 ON t2.id = t1.emissora_id
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 3
@@ -193,7 +195,8 @@ class RelatorioController extends Controller
                     t4.conteudo as sinopse,
                     t3.sentimento,
                     'imagem' as tipo_midia,
-                    ds_caminho_img as midia
+                    ds_caminho_img as midia,
+                    url_noticia
                 FROM noticias_web t1
                 JOIN fonte_web t2 ON t2.id = t1.id_fonte
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 2
@@ -248,7 +251,8 @@ class RelatorioController extends Controller
                     sinopse,
                     t3.sentimento,
                     'imagem' as tipo_midia,
-                    ds_caminho_video as midia
+                    ds_caminho_video as midia,
+                    '' as url_noticia
                 FROM noticia_tv t1
                 JOIN emissora_web t2 ON t2.id = t1.emissora_id
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 4
