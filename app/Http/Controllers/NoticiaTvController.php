@@ -373,9 +373,9 @@ class NoticiaTvController extends Controller
                             'arquivo' => ($request->arquivo) ? $request->arquivo : $noticia->arquivo,
                             'sinopse' => $request->sinopse,
                             'valor_retorno' => $request->valor_retorno,
-                            'cd_estado' => $emissora->cd_estado,
-                            'cd_cidade' => $emissora->cd_cidade,
-                            'ds_caminho_video' => $request->ds_caminho_video,
+                            'cd_estado' => $request->cd_estado,
+                            'cd_cidade' => $request->cd_cidade,
+                            'ds_caminho_video' => ($request->ds_caminho_video) ? $request->ds_caminho_video : $noticia->ds_caminho_video,
                             'link' => $request->link
             ); 
 
