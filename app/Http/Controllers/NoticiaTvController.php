@@ -578,13 +578,15 @@ class NoticiaTvController extends Controller
 
         $arquivo->move(public_path('video/noticia-tv'),$file_noticia);
 
+        /*
         $ffmpeg = FFMpeg\FFMpeg::create();
         $video = $ffmpeg->open(public_path('video/noticia-tv/').$file_noticia);
 
         $durationFilter = new FFMpeg\Filters\Video\VideoFilters($video);
         $duracao = $video->getFormat()->get('duration'); // em segundos
 
-        $duracao = gmdate("H:i:s", $duracao);
+        $duracao = gmdate("H:i:s", $duracao);*/
+        $duracao = null;
 
         if($request->id){
 
