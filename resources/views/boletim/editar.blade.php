@@ -241,16 +241,7 @@
                                                         '<td><div class="form-check" style="margin-top: -20px !important;"><label class="form-check-label">'+
                                                         '<input class="form-check-input item-noticia" type="checkbox" '+checked+' name="lista_noticia[]" '+check+' value="'+noticia.id+'" data-tipo="'+noticia.tipo+'"><span class="form-check-sign"></span></label></div></td>'+
                                                         '<td><strong>'+titulo+'</strong><br/><strong style="color: #51cbce;">'+noticia.data_formatada+' - '+noticia.fonte+'</strong> <br/>'+icone+' </td>'+
-                                                       '</tr>');
-                   
-
-                    /*
-                    $(".table-noticias tbody").append('<tr>'+
-                                                        '<td><div class="form-check" style="margin-top: -20px !important;"><label class="form-check-label">'+
-                                                        '<input class="form-check-input item-noticia" type="checkbox" name="lista_noticia[]" '+check+' value="'+noticia.id+'" data-tipo="'+noticia.tipo+'"><span class="form-check-sign"></span></label></div></td>'+
-                                                        '<td><strong>'+noticia.titulo+'</strong><br/>'+icone+' '+noticia.dt_noticia+' '+noticia.fonte+' <br/>'+noticia.texto.substring(0, 200)+'</td>'+
-                                                       '</tr>');*/
-                   
+                                                       '</tr>');                   
                 });
             }
 

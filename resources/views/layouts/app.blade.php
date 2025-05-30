@@ -263,7 +263,7 @@
                   </div>
                </li>
                 @endrole
-                @role('administradores')
+                @permission('menu-televisao')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'tv') ? 'active' : '' }}">
                       <a data-toggle="collapse" href="#submenu-tv" class="{{ (Session::has('url') and Session::get('url') == 'tv') ? '' : 'collapsed' }}" aria-expanded="{{ (Session::has('url') and Session::get('url') == 'tv') ? 'true' : 'false' }}">
                         <i class="fa fa-tv"></i>
@@ -325,7 +325,7 @@
                         </ul>
                      </div>
                   </li>
-                @endrole
+                @endpermission
                 @role('administradores')
                 <li class="{{ (Session::has('url') and Session::get('url') == 'pautas') ? 'active' : '' }}">
                   <a data-toggle="collapse" href="#submenu-pauta" class="{{ (Session::has('url') and Session::get('url') == 'pautas') ? '' : 'collapsed' }}" aria-expanded="{{ (Session::has('url') and Session::get('url') == 'jornal-web') ? 'true' : 'false' }}">
@@ -379,22 +379,22 @@
                     </div>
                  </li>              
                 @endrole
-                @role('administradores')
+                
                   <li class="{{ (Session::has('url') and Session::get('url') == 'boletins') ? 'active' : '' }}">
                     <a href="{{ url('boletins') }}">
                     <i class="fa fa-file-o"></i>
                     <p>Boletins</p>
                     </a>
                   </li>
-                @endrole
-                @role('administradores')
+                
+                
                   <li class="{{ (Session::has('url') and Session::get('url') == 'relatorios') ? 'active' : '' }}">
                     <a href="{{ url('relatorios') }}">
                     <i class="fa fa-file-pdf-o"></i>
                     <p>Relatórios</p>
                     </a>
                   </li>
-                @endrole
+                
               
                 <hr/>
 
