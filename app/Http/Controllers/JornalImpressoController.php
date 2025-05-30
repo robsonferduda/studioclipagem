@@ -364,6 +364,7 @@ class JornalImpressoController extends Controller
                 $dados = array('tipo_id' => 1,
                                 'noticia_id' => $noticia->id,
                                 'cliente_id' => (int) $vinculo->cliente_id,
+                                'monitoramento_id' = $monitoramento,
                                 'area' => null,
                                 'sentimento' => 0);
 
@@ -372,6 +373,7 @@ class JornalImpressoController extends Controller
                                 'cliente_id' => (int) $vinculo->cliente_id);
                         
                     $dados = array('area' => null,
+                                   'monitoramento_id' = $monitoramento,
                                    'sentimento' => 0);
 
                     $noticia_cliente = NoticiaCliente::updateOrCreate($match, $dados);

@@ -220,6 +220,7 @@ class NoticiaRadioController extends Controller
                                 'cliente_id' => (int) $vinculo->cliente_id);
                         
                     $dados = array('area' => null,
+                                   'monitoramento_id' = $monitoramento,
                                    'sentimento' => 0);
 
                     $noticia_cliente = NoticiaCliente::updateOrCreate($match, $dados);
