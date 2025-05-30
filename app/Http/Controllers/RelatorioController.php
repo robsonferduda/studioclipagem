@@ -88,9 +88,17 @@ class RelatorioController extends Controller
 
     function pdfIndividual($tipo, $id)
     {
-        $noticia = NoticiaImpresso::where('id', $id)->first();
         $nome_arquivo = date("YmdHis").'_'.$tipo.'_'.$id.'.pdf';
-        
+
+        switch ($tipo) {
+            case 'web':
+                $noticia = NoticiaWeb::where('id', $id)->first();
+                break;
+            case 'impresso':
+                $noticia = NoticiaImpresso::where('id', $id)->first();
+                break;
+        }
+
         $data = [
             'noticia' => $noticia,
             'tipo' => $tipo

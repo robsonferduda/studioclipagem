@@ -256,7 +256,7 @@
                                             <a title="Extrair Imagem" class="btn btn-warning btn-sm" href="{{ url('noticia/web/importar-imagem',$noticia->id) }}" role="button"><i class="fa fa-picture-o"> </i></a>
                                         @endif
                                         <a title="Gerar PDF" class="btn btn-danger btn-sm" href="{{ url("relatorios/".$noticia->tipo."/pdf/".$noticia->id) }}" role="button"><i class="fa fa-file-pdf-o"> </i></a>
-                                        <a title="Editar" class="btn btn-info btn-sm" href="{{ url("relatorios/".$noticia->tipo."/pdf/".$noticia->id) }}" role="button"><i class="fa fa-edit"> </i></a>
+                                        <a title="Editar" class="btn btn-info btn-sm" href="{{ url('noticia-impressa/'.$noticia->id.'/editar') }}" target="_BLANK" role="button"><i class="fa fa-edit"> </i></a>
                                     </div>
                                 </div>
                             </div>

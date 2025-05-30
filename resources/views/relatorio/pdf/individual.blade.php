@@ -44,39 +44,41 @@
         <div class="header">
             <h5 style="text-align: justify; margin-bottom: 0px; padding-bottom: 5px; margin-top: 26px; font-size: 17px; border-bottom: 1px solid black;">Clipagem de Jornal</h5>    
             <p style="text-align: justify; font-size: 16px; margin:0px; padding: 0px; margin-top: 8px; margin-bottom: 8px;">
-                {{ $noticia->fonte }}
-                {{ ($noticia->secao) ? " - ".$noticia->secao  : '' }}
-                {{ ($noticia->pagina) ? " - Página: ".$noticia->pagina : '' }}
-                {{ " - ".$noticia->data_formatada }}
-                {{ ($noticia->nm_cidade) ? " - ".trim($noticia->nm_cidade."/".$noticia->sg_estado) : '' }}
-                {{ ($noticia->nm_estado and !$noticia->nm_cidade) ? " - ".trim($noticia->sg_estado) : ''}}
+                {{ $noticia->fonte->nome }}
+                {{ ($noticia->secao) ? " - ".$noticia->secao->ds_sessao  : '' }}
+                {{ ($noticia->nu_pagina_atual) ? " - Página: ".$noticia->nu_pagina_atual : '' }}
+                {{ " - ".\Carbon\Carbon::parse($noticia->dt_pub)->format('d/m/Y') }}
+                {{ ($noticia->cidade) ? " - ".trim($noticia->cidade->nm_cidade."/".$noticia->estado->sg_estado) : '' }}
+                {{ ($noticia->estado and !$noticia->cidade) ? " - ".trim($noticia->estado->sg_estado) : ''}}
             </p> 
             <div style="text-align: center;">
-                <img style="margin: 0 auto;" src="{{ public_path('img/noticia-impressa/'.$noticia->midia) }}">
+                @if($noticia->ds_caminho_img)
+                    <img style="margin: 0 auto;" src="{{ public_path('img/noticia-impressa/'.$noticia->ds_caminho_img) }}">
+                @else
+                    <img style="margin: 0 auto;" src="{{ public_path('img/no-print.png') }}">
+                @endif
             </div>
         </div>
     @endif
 
     @if($tipo == 'web')
-    
-                        <div class="header">
-                            <h5 style="text-align: justify; margin-bottom: 0px; padding-bottom: 5px; margin-top: 26px; font-size: 17px; border-bottom: 1px solid black;">Clipagem de Web</h5>   
-                            <p style="text-align: justify; font-size: 16px; margin:0px; padding: 0px; margin-top: 8px; margin-bottom: 8px;">
-                                {{ $noticia->fonte }}
-                                {{ ($noticia->secao) ? " - ".$noticia->secao  : '' }}
-                                {{ " - ".$noticia->data_formatada }}
-                                {{ ($noticia->nm_cidade) ? " - ".trim($noticia->nm_cidade."/".$noticia->sg_estado) : '' }}
-                                {{ ($noticia->nm_estado and !$noticia->nm_cidade) ? " - ".trim($noticia->sg_estado) : ''}}
-                            </p>  
-                        </div>
-                        <div style="text-align: center;">
-                            @if($noticia->midia)
-                                <img style="margin: 0 auto;" src="{{ public_path('img/noticia-web/'.$noticia->midia) }}">
-                            @endif
-                        </div>  
-       
-                <div style="page-break-before: always;"></div>                        
-    
+        <div class="header">
+            <h5 style="text-align: justify; margin-bottom: 0px; padding-bottom: 5px; margin-top: 26px; font-size: 17px; border-bottom: 1px solid black;">Clipagem de Web</h5>   
+            <p style="text-align: justify; font-size: 16px; margin:0px; padding: 0px; margin-top: 8px; margin-bottom: 8px;">
+                {{ $noticia->fonte->nome }}
+                {{ ($noticia->secao) ? " - ".$noticia->secao->ds_sessao  : '' }}
+                {{ " - ".\Carbon\Carbon::parse($noticia->data_noticia)->format('d/m/Y') }}
+                {{ ($noticia->cidade) ? " - ".trim($noticia->cidade->nm_cidade."/".$noticia->estado->sg_estado) : '' }}
+                {{ ($noticia->estado and !$noticia->cidade) ? " - ".trim($noticia->estado->sg_estado) : ''}}
+            </p>  
+            <div style="text-align: center;">
+                @if($noticia->ds_caminho_img)
+                    <img style="margin: 0 auto;" src="{{ public_path('img/noticia-web/'.$noticia->ds_caminho_img) }}">
+                @else
+                    <img style="margin: 0 auto;" src="{{ public_path('img/no-print.png') }}">
+                @endif
+            </div>       
+        </div>                  
     @endif
 </body>
 </html>
