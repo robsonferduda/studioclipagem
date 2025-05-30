@@ -487,7 +487,7 @@ class NoticiaWebController extends Controller
                 FROM noticias_web t1 
                 JOIN noticia_cliente t2 ON t2.noticia_id = t1.id 
                 JOIN fonte_web t3 On t3.id = t1.id_fonte 
-                WHERE t1.path_screenshot like 'ERROR' OR t1.path_screenshot IS NULL
+                WHERE t1.path_screenshot like 'ERROR'
                 AND t1.created_at BETWEEN '$dt_inicial' AND '$dt_final'";
 
         if($cliente_selecionado){
@@ -506,7 +506,6 @@ class NoticiaWebController extends Controller
                                 });
                             })
                             ->whereBetween('created_at', [$dt_inicial, $dt_final])
-                            ->orWhereNull('path_screenshot')
                             ->orderBy('id_fonte')
                             ->get();
 
