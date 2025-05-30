@@ -512,6 +512,15 @@ class NoticiaWebController extends Controller
         return view('noticia-web/prints',compact('resumo','erros','dt_inicial','dt_final','clientes','cliente_selecionado'));
     }
 
+    public function reprint($id)
+    {
+        $noticia = NoticiaWeb::find($id);
+        $noticia->path_screenshot = null;
+        $noticia->save();
+
+        return redirect('noticia/web/prints');
+    }
+    
     public function listar()
     {
         $sites = FonteWeb::all();
