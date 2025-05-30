@@ -504,7 +504,8 @@ class NoticiaWebController extends Controller
                             ->whereHas('clientes', function($query) use ($cliente_selecionado) {
                                 $query->->whereHas('clientes', function($query) use ($cliente_selecionado) {
                                     $query->where('noticia_cliente.cliente_id', $cliente_selecionado);
-                                });
+                                })
+                            )
                             ->orderBy('id_fonte')
                             ->get();
 
