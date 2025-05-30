@@ -270,11 +270,12 @@ class NoticiaTvController extends Controller
                            'duracao' => $request->duracao,
                            'horario' => $request->horario,
                            'emissora_id' => $request->emissora,
-                           'programa_id' => $request->programa,
+                           'programa_id' => $request->cd_programa,
                            'arquivo' => $request->arquivo,
                            'sinopse' => $request->sinopse,
                            'cd_estado' => $request->cd_estado,
                            'cd_cidade' => $request->cd_cidade,
+                           'ds_caminho_video' => $request->ds_caminho_video,
                            'link' => $request->link
                         ); 
            
