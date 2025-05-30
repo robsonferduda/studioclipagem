@@ -503,7 +503,7 @@ class NoticiaWebController extends Controller
                             ->whereBetween('created_at', [$dt_inicial, $dt_final])
                             ->whereHas('clientes', function($query) use ($cliente_selecionado) {
                                 $query->whereHas('clientes', function($query) use ($cliente_selecionado) {
-                                    $query->where('noticia_cliente.cliente_id', $cliente_selecionado);
+                                    return $query->where('noticia_cliente.cliente_id', $cliente_selecionado);
                                 })
                             })
                             ->orderBy('id_fonte')
