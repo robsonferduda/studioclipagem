@@ -47,7 +47,7 @@
             <div class="sidebar-wrapper">
                 <ul class="nav">
                 <li class="{{ (Session::has('url') and Session::get('url') == 'home') ? 'active' : '' }}">
-                    <a href="{{ url('/') }}">
+                    <a href="{{ url('/home') }}">
                     <i class="nc-icon nc-chart-pie-36"></i>
                     <p>Dashboard</p>
                     </a>

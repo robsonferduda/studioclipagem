@@ -192,7 +192,7 @@
                 //Limpas os dados
                 dados = [];
                 
-                //Carrega os dados web
+                //Carrega os dados 
                 $.ajax({
                     url: host+'/boletim/noticias',
                     type: 'POST',

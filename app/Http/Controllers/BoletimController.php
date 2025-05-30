@@ -55,6 +55,7 @@ class BoletimController extends Controller
     {   
         $noticias = array();
 
+        //Notícias de Web
         $sql_web = "SELECT t1.id, 
                     titulo_noticia AS titulo, 
                     'web' as tipo, 
@@ -82,6 +83,7 @@ class BoletimController extends Controller
         
         $noticias_web = DB::select($sql_web);
 
+        //Notícias de Impresso
         $sql_impresso = "SELECT t1.id, 
                     t1.titulo, 
                     'impresso' as tipo, 
@@ -109,7 +111,17 @@ class BoletimController extends Controller
         
         $noticias_impresso = DB::select($sql_impresso);
 
-        $noticias = array_merge($noticias_web, $noticias_impresso);
+        //Notícias de Rádio
+
+
+        $noticias_radio = DB::select($sql_impresso);
+
+        //Notícias de TV
+
+        $noticias_tv = DB::select($sql_impresso);
+
+
+        $noticias = array_merge($noticias_web, $noticias_impresso, $noticias_tv, $noticias_radio);
 
         return response()->json($noticias);
     }
