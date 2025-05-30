@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use DB;
 use File;
 use Storage;
+use FFMpeg;
 use App\Utils;
 use Carbon\Carbon;
 use App\Models\Decupagem;
@@ -572,16 +573,30 @@ class NoticiaTvController extends Controller
         $filename = pathinfo($fileInfo, PATHINFO_FILENAME);
         $extension = pathinfo($fileInfo, PATHINFO_EXTENSION);
         $file_name = date('Y-m-d-H-i-s').'.'.$extension;
+        $file_noticia = ($request->id) ? $request->id.'.'.$extension : $file_name;
 
-        //$audio = new \wapmorgan\Mp3Info\Mp3Info($arquivo, true);
-        //$duracao = gmdate("H:i:s", $audio->duration);
+        $arquivo->move(public_path('video/noticia-tv'),$file_noticia);
 
-        $path = 'noticias-tv'.DIRECTORY_SEPARATOR.date('Y-m-d').DIRECTORY_SEPARATOR;
-        $arquivo->move(public_path($path), $file_name);
+        $ffmpeg = FFMpeg\FFMpeg::create();
+        $video = $ffmpeg->open(public_path('video/noticia-tv/').$file_noticia);
 
-        $dados = array('arquivo' => $file_name);
+        $durationFilter = new FFMpeg\Filters\Video\VideoFilters($video);
+        $duracao = $video->getFormat()->get('duration'); // em segundos
 
-        return response()->json($dados);
+        $duracao = gmdate("H:i:s", $duracao);
+
+        if($request->id){
+
+            $noticia = NoticiaTv::find($request->id);
+
+            $noticia->ds_caminho_video = $file_noticia;
+            $noticia->save();
+        }
+
+        $retorno = array('duracao' => $duracao, 
+                         'arquivo' => $file_noticia);
+
+        return $retorno;
     }
 
     public function getEstatisticas()

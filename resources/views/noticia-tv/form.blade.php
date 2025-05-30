@@ -228,9 +228,10 @@
                 headers: {
                     'x-csrf-token': token,
                 },
-                success: function(file, responseText){
-                    $("#arquivo").val(responseText.arquivo);
-                    $("#duracao").val(responseText.duracao);
+                success: function(file, response){
+
+                    $("#ds_caminho_video").val(response.arquivo);
+                    $("#duracao").val(response.duracao);
 
                     $.notify({
                         icon: 'fa fa-bell',
