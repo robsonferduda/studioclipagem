@@ -309,7 +309,7 @@
             var cliente_id = $("#cliente_id").val();
 
             $("#cd_estado").trigger('change');
-
+            $("#cd_emissora").trigger('change');
            
         });
         
