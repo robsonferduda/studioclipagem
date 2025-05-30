@@ -320,6 +320,7 @@
             var cliente_id = $("#cliente_id").val();
 
             $("#cd_estado").trigger('change');
+            $("#emissora").trigger('change');
 
             if(cd_emissora > 0)
                 buscarProgramas(cd_emissora);
