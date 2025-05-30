@@ -502,6 +502,7 @@ class NoticiaWebController extends Controller
                             ->orWhereNull('path_screenshot')
                             ->whereBetween('created_at', [$dt_inicial, $dt_final])
                             ->whereHas('clientes', function($query) use ($cliente_selecionado) {
+                                $query->where('noticia_cliente.tipo_id', 1)
                                 ->when($cliente_selecionado, function ($query) use ($cliente_selecionado) { 
                                     $query->where('noticia_cliente.cliente_id', $cliente_selecionado);
                                 });
