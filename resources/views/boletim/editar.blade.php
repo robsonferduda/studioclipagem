@@ -289,6 +289,7 @@
             });
 
             $(document).on("change", ".item-noticia", function() {
+
                 var id = $(this).val();
                 var tipo = $(this).data('tipo');
                 var checked = $(this).is(':checked');
@@ -304,8 +305,17 @@
                             "tipo": tipo,
                             "id_boletim": {{ $boletim->id }}
                         },
+                        beforeSend: function() {
+                            $('.table-noticias').loader('show');
+                        },
                         success: function(response) {
-                            console.log(response);
+                            $('.table-noticias').loader('hide');
+                            
+            $.notify({
+      icon: "nc-icon nc-bell-55",
+      message: "Welcome to <b>Paper Dashboard</b> - a beautiful bootstrap dashboard for every web developer."
+    });
+
                         }
                     });
                 } else {
