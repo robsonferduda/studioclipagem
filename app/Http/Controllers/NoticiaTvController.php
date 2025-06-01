@@ -323,6 +323,7 @@ class NoticiaTvController extends Controller
         }
 
         switch ($request->btn_enviar) {
+
             case 'salvar':
                 if ($retorno['flag']) {
                     Flash::success($retorno['msg']);
@@ -335,20 +336,15 @@ class NoticiaTvController extends Controller
 
             case 'salvar_e_copiar':
 
-                $dados = $noticia;
-                $estados = Estado::orderBy('nm_estado')->get();
-                $cidades = Cidade::where(['cd_estado' => $dados->cd_estado])->orderBy('nm_cidade')->get();
-                $areas = Area::select('area.id', 'area.descricao')
-                    ->join('area_cliente', 'area_cliente.area_id', '=', 'area.id')
-                    ->where(['cliente_id' => $dados->cliente_id,])
-                    ->where(['ativo' => true])
-                    ->orderBy('area.descricao')
-                    ->get();
+               $nova_noticia = $noticia->replicate();
+               $nova_noticia->sinopse = null;
+               $nova_noticia->ds_caminho_video = null;
+               $nova_noticia->duracao = null;
+               $nova_noticia->save();
 
-                $tags = Tag::orderBy('nome')->get();
-                
-                return view('noticia-radio/form', compact('dados', 'estados', 'cidades', 'areas','tags'));
-                break;
+                return redirect('noticia/tv/'.$nova_noticia->id.'/editar');
+
+               break;
         }
     }
 

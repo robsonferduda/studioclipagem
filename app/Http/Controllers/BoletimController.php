@@ -341,8 +341,13 @@ class BoletimController extends Controller
     public function outlook($id)
     {   
         $boletim = Boletim::where('id', $id)->first();   
+
+        $noticias_impresso = $boletim->noticiasImpresso()->get();
+        $noticias_web = $boletim->noticiasWeb()->get(); 
+        $noticias_radio = $boletim->noticiasRadio()->get(); 
+        $noticias_tv = $boletim->noticiasTv()->get(); 
             
-        return view('boletim/outlook', compact('boletim'));
+        return view('boletim/outlook', compact('boletim','noticias_impresso','noticias_web','noticias_radio','noticias_tv'));
     }
 
     public function enviar($id)
