@@ -233,6 +233,7 @@
                 acceptedFiles: ".mp4",
                 maxFiles: 1,
                 url: host+"/tv/noticias/upload",
+                maxFilesize: 100, // Tamanho máximo do arquivo em MB
                 headers: {
                     'x-csrf-token': token,
                 },
