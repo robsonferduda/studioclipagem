@@ -83,7 +83,7 @@ class BoletimController extends Controller
        
         $sql_web .= " ORDER BY data_noticia DESC";
         
-        $noticias_web = DB::select($sql_web);
+        $noticias_web = ($flag_web) ? DB::select($sql_web) : array();
 
         //Notícias de Impresso
         $sql_impresso = "SELECT t1.id, 
@@ -111,7 +111,7 @@ class BoletimController extends Controller
        
         $sql_impresso .= " ORDER BY dt_clipagem DESC";
         
-        $noticias_impresso = DB::select($sql_impresso);
+        $noticias_impresso = ($flag_impresso) ? DB::select($sql_impresso) : array();
 
         //Notícias de Rádio
 
@@ -140,7 +140,7 @@ class BoletimController extends Controller
        
         $sql_radio .= " ORDER BY dt_cadastro DESC";
 
-        $noticias_radio = DB::select($sql_radio);
+        $noticias_radio = ($flag_radio) ? DB::select($sql_radio) : array();
 
         //Notícias de TV
 
@@ -169,7 +169,7 @@ class BoletimController extends Controller
        
         $sql_tv .= " ORDER BY dt_noticia DESC";
 
-        $noticias_tv = DB::select($sql_tv);
+        $noticias_tv = ($flag_tv) ? DB::select($sql_tv) : array();
 
         $noticias = array_merge($noticias_web, $noticias_impresso, $noticias_tv, $noticias_radio);
 
