@@ -84,7 +84,7 @@
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
                                         <label>Data de Cadastro</label>
-                                        <input type="text" class="form-control datepicker" name="dt_cadastro" required="true" value="{{ date("d/m/Y") }}" placeholder="__/__/____">
+                                        <input type="text" class="form-control datepicker" name="dt_cadastro" readonly required="true" value="{{ date("d/m/Y") }}" placeholder="__/__/____">
                                     </div>
                                 </div>
                                 <div class="col-md-2 col-sm-6">

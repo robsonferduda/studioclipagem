@@ -68,6 +68,7 @@ class BoletimController extends Controller
                     titulo_noticia AS titulo, 
                     'web' as tipo, 
                     TO_CHAR(data_noticia, 'DD/MM/YYYY') AS data_formatada,
+                    TO_CHAR(data_insert, 'DD/MM/YYYY') AS data_coleta,
                     t2.nome as fonte,
                     t4.id_boletim as id_boletim,
                     t3.fl_enviada as flag
@@ -101,6 +102,7 @@ class BoletimController extends Controller
                     t1.titulo, 
                     'impresso' as tipo, 
                     TO_CHAR(dt_clipagem, 'DD/MM/YYYY') AS data_formatada,
+                    TO_CHAR(dt_cadastro, 'DD/MM/YYYY') AS data_coleta,
                     t2.nome as fonte,
                     t4.id_boletim as id_boletim,
                     t3.fl_enviada as flag
@@ -135,6 +137,7 @@ class BoletimController extends Controller
                     t1.titulo, 
                     'radio' as tipo, 
                     TO_CHAR(dt_cadastro, 'DD/MM/YYYY') AS data_formatada,
+                    TO_CHAR(dt_cadastro, 'DD/MM/YYYY') AS data_coleta,
                     t2.nome_emissora as fonte,
                     t4.id_boletim as id_boletim,
                     t3.fl_enviada as flag
@@ -169,6 +172,7 @@ class BoletimController extends Controller
                     '' AS titulo, 
                     'tv' as tipo, 
                     TO_CHAR(dt_noticia, 'DD/MM/YYYY') AS data_formatada,
+                    TO_CHAR(dt_cadastro, 'DD/MM/YYYY') AS data_coleta,
                     t2.nome_emissora as fonte,
                     t4.id_boletim as id_boletim,
                     t3.fl_enviada as flag

@@ -313,6 +313,8 @@ class NoticiaTvController extends Controller
 
         } catch (\Illuminate\Database\QueryException $e) {
 
+            dd($e);
+
             $retorno = array('flag' => false,
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
 

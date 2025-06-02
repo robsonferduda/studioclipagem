@@ -302,7 +302,7 @@ class NoticiaRadioController extends Controller
 
         } catch (\Illuminate\Database\QueryException $e) {
 
-             DB::rollback();
+            DB::rollback();
 
             $retorno = array('flag' => false,
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
