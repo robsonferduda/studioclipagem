@@ -164,7 +164,7 @@
                                     <div>
                                         <a href="{{ url('noticia/radio/'.$audio->monitoramento_id .'/extrair',$audio->id_audio) }}" target="BLANK" class="btn btn-warning btn-sm"><i class="fa fa-database"></i> Extrair Notícia</a> 
                                         <button class="btn btn-primary btn-sm btn-visualizar-noticia" data-id="{{ $audio->id_audio }}" data-monitoramento="{{ $audio->monitoramento_id }}"><i class="fa fa fa-eye"></i> Visualizar</button> 
-                                        @if($audio->monitoramento)
+                                        @if($audio)
                                             
                                         @endif
                                     </div>               
