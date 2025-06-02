@@ -370,6 +370,7 @@
         $(document).on('keypress',function(e) {
             if(e.which == 13) {
                 $('#btnBuscarFonte').trigger('click');
+                return false; // Previne o comportamento padrão do Enter
             }
         });
 
