@@ -56,10 +56,12 @@ class BoletimController extends Controller
     public function noticias(Request $request)
     {   
         $noticias = array();
-        $flag_tv = $request->flag_tv == true ? true : false;
-        $flag_impresso = $request->flag_impresso == true ? true : false;
-        $flag_web = $request->flag_web == true ? true : false;
-        $flag_radio = $request->flag_radio == true ? true : false;
+        $flag_tv = $request->flag_tv == "true" ? true : false;
+        $flag_impresso = $request->flag_impresso == "true" ? true : false;
+        $flag_web = $request->flag_web == "true" ? true : false;
+        $flag_radio = $request->flag_radio == "true" ? true : false;
+
+
 
         //Notícias de Web
         $sql_web = "SELECT t1.id, 
@@ -175,6 +177,13 @@ class BoletimController extends Controller
 
         $noticias_tv = ($flag_tv) ? DB::select($sql_tv) : array();
 
+        if(!$flag_impresso && !$flag_web && !$flag_radio && !$flag_tv) {
+            $noticias_tv = DB::select($sql_tv);
+            $noticias_impresso = DB::select($sql_impresso);
+            $noticias_web = DB::select($sql_web);
+            $noticias_radio = DB::select($sql_radio);
+        }
+            
         $noticias = array_merge($noticias_web, $noticias_impresso, $noticias_tv, $noticias_radio);
 
         return response()->json($noticias);
