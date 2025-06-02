@@ -321,9 +321,12 @@ class BoletimController extends Controller
     {   
         $boletim = Boletim::where('id', $id)->first();         
 
-        $noticias_impresso = $boletim->noticiasImpresso()->get();        
+        $noticias_impresso = $boletim->noticiasImpresso()->get();
+        $noticias_web = $boletim->noticiasWeb()->get(); 
+        $noticias_radio = $boletim->noticiasRadio()->get(); 
+        $noticias_tv = $boletim->noticiasTv()->get();       
 
-        return view('boletim/detalhes', compact('boletim','noticias_impresso'));
+        return view('boletim/detalhes', compact('boletim','noticias_impresso','noticias_web','noticias_radio','noticias_tv'));
     }
 
     public function visualizar($id)
