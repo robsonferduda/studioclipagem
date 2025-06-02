@@ -190,8 +190,6 @@
                 dt_final = $("#dt_final").val();
                 termo = $("#termo").val();
 
-                alert(boletim + ' - ' + cliente + ' - ' + flag_web + ' - ' + flag_impresso + ' - ' + flag_tv + ' - ' + flag_radio + ' - ' + dt_inicial + ' - ' + dt_final);
-
                 //Limpas os dados
                 dados = [];
                 
