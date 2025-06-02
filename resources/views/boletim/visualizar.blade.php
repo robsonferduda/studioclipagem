@@ -26,7 +26,7 @@
                 <div class="card-header">
                     <div class="row">
                         <div class="col-md-12">
-                           <img src="{{ asset('img/clientes/logo_expandida/'.$boletim->cliente->logo) }}">
+                           <img src="{{ asset('img/clientes/logo_expandida/'.$boletim->cliente->logo_expandida) }}">
                         </div>
                     </div>
                 </div>
