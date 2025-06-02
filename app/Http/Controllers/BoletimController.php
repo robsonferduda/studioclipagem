@@ -420,6 +420,8 @@ class BoletimController extends Controller
             }
             catch (\Swift_TransportException $e) {
 
+                dd($e->getMessage());
+
                 $msg = "Erro ao enviar para o endereço especificado";
                 $tipo = "error";
             }
