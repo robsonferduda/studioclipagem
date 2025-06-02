@@ -390,7 +390,7 @@ class BoletimController extends Controller
         $logs = array();
         $boletim = Boletim::where('id', $request->id)->first();  
 
-         $noticias_impresso = $boletim->noticiasImpresso()->get();
+        $noticias_impresso = $boletim->noticiasImpresso()->get();
         $noticias_web = $boletim->noticiasWeb()->get(); 
         $noticias_radio = $boletim->noticiasRadio()->get(); 
         $noticias_tv = $boletim->noticiasTv()->get(); 
@@ -407,15 +407,19 @@ class BoletimController extends Controller
         for ($i=0; $i < count($emails); $i++) { 
 
             try{
-                $nail_status = Mail::send('boletim.outlook', $data, function($message) use ($emails, $i) {
+                $mail_status = Mail::send('boletim.outlook', $data, function($message) use ($emails, $i) {
                 $message->to($emails[$i])
                 ->subject('Boletim de Clipagens');
                     $message->from('boletins@clipagens.com.br','Studio Clipagem');
                 });
                 $msg = "Email enviado com sucesso";
                 $tipo = "success";
+
+                $boletim->id_situacao = 3; // Enviado
+                $boletim->save();
             }
             catch (\Swift_TransportException $e) {
+
                 $msg = "Erro ao enviar para o endereço especificado";
                 $tipo = "error";
             }

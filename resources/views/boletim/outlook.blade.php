@@ -21,7 +21,7 @@
                     <tbody>
                         <tr>
                             <td>
-                                <img src="{{ asset('img/clientes/logo_expandida/'.$boletim->cliente->logo) }}">
+                                <img src="{{ asset('img/clientes/logo_expandida/'.$boletim->cliente->logo_expandida) }}">
                             </td>
                         </tr>
                     </tbody>
