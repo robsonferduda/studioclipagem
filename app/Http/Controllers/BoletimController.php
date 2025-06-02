@@ -434,7 +434,7 @@ class BoletimController extends Controller
             try{
                 $mail_status = Mail::send('boletim.outlook', $data, function($message) use ($emails, $i, $boletim) {
                 $message->to($emails[$i])
-                ->subject('Boletim de Clipagens - '.$boletim->titulo);
+                ->subject($boletim->titulo);
                     $message->from('noreply@clipagens.com.br','Studio Clipagem');
                 });
                 $msg = "Email enviado com sucesso";
