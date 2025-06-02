@@ -309,8 +309,8 @@
             url: host + "/noticia-impressa/upload", // URL para onde os arquivos serão enviados
             method: "post", // Método HTTP
             paramName: "picture", // Nome do parâmetro no backend
-            maxFilesize: 10, // Tamanho máximo do arquivo em MB
-            acceptedFiles: ".jpeg,.jpg,.png,.pdf", // Tipos de arquivos aceitos
+            maxFilesize: 100, // Tamanho máximo do arquivo em MB
+            acceptedFiles: ".jpeg,.jpg,.png,.pdf,.JPG", // Tipos de arquivos aceitos
             addRemoveLinks: true, // Adicionar links para remover arquivos
             dictRemoveFile: "Remover", // Texto do botão de remoção
             headers: {
