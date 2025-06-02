@@ -15,6 +15,7 @@ class Cliente extends Model
                         'fl_ativo',
                         'emails',
                         'logo',
+                        'logo_expandida',
                         'fl_audiencia',
                         'cod_unico',
                         'fl_print',

@@ -131,8 +131,6 @@ class ClienteController extends Controller
 
         } catch (\Illuminate\Database\QueryException $e) {
 
-            dd($e);
-
             $retorno = array('flag' => false,
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
 
@@ -231,8 +229,6 @@ class ClienteController extends Controller
             );
 
         } catch (\Illuminate\Database\QueryException $e) {
-
-            dd($e);
 
             $retorno = array(
                 'flag' => false,

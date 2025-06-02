@@ -21,7 +21,7 @@
             <div class="col-md-12">
                 @include('layouts.mensagens')
             </div>
-            <div class="col-md-12">
+            <div class="col-md-8">
                 <div class="row">
                     <div class="col-md-12">
                         <p class="mb-0"><strong>Cliente:</strong> {{ $boletim->cliente->nome }}</p>
@@ -32,6 +32,9 @@
                         <p class="mb-0"><strong>Total de visualizações:</strong> {{ ( $boletim->total_views) ? $boletim->total_views : 0 }}</p>
                     </div>
                 </div>
+            </div>
+            <div class="col-md-4">
+                <span class="pull-right mr-3">Total de notícias: {{ count($noticias_impresso) + count($noticias_web) + count($noticias_radio) + count($noticias_tv) }}</span>
             </div>
             <div class="col-md-12">
                 <hr/>
