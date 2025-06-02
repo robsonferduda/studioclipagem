@@ -84,14 +84,16 @@
                                
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Fonte <span class="text-danger">Campo Obrigatório </span><a class="text-info" href="{{ url("fonte-web/listar") }}" target="_BLANK">Listagem de Fontes</a></label>
-                                        <input type="hidden" name="id_fonte_selecionada" id="id_fonte_selecionada" value="{{ ($noticia) ? $noticia->id_fonte : 0 }}">
-                                        <select class="form-control" name="id_fonte" id="id_fonte" required="required">
-                                            <option value="">Selecione uma fonte</option>
-                                            @foreach ($fontes as $fonte)
-                                                <option value="{{ $fonte->id }}" {{ (empty($noticia)) ? ((old('id_fonte') == $fonte->id) ? 'selected' : '') : (($noticia->id_fonte == $fonte->id) ? 'selected' : '')  }}>{{ $fonte->nome }}</option>
-                                            @endforeach
-                                        </select>
+                                        <label>Fonte <span class="text-danger">Campo Obrigatório </span>
+                                            <a class="text-info" href="{{ url('fonte-web/listar') }}" target="_BLANK">Listagem de Fontes</a>
+                                        </label>
+                                        <input type="hidden" name="id_fonte" id="id_fonte" value="{{ ($noticia) ? $noticia->id_fonte : '' }}">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" style="height: 40px;" id="nome_fonte" placeholder="Selecione uma fonte" value="{{ ($noticia && $noticia->fonte) ? $noticia->fonte->nome : '' }}" readonly required>
+                                            <div class="input-group-append">
+                                                <button type="button" style="margin: 0px;" class="btn btn-primary" data-toggle="modal" data-target="#modalFonte">Buscar Fonte</button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-2 col-sm-6">
@@ -99,6 +101,30 @@
                                         <label>Retorno</label>
                                         <input type="text" class="form-control retorno_midia" name="valor_retorno" id="valor_retorno" placeholder="Retorno" value="{{ old('valor_retorno') }}">
                                     </div>                                    
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Estado </label>
+                                        <select class="form-control selector-select2" name="cd_estado" id="cd_estado">
+                                            <option value="">Selecione um estado</option>
+                                            @foreach ($estados as $estado)
+                                                <option value="{{ $estado->cd_estado }}" {!! ($noticia and $noticia->cd_estado == $estado->cd_estado) ? " selected" : '' !!}>
+                                                    {{ $estado->nm_estado }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label>Cidade </label>
+                                        <input type="hidden" name="cd_cidade" id="cd_cidade" value="{{ ($noticia and $noticia->cd_cidade) ? $noticia->cd_cidade : 0  }}">
+                                        <select class="form-control select2" name="cd_cidade" id="cidade" disabled="disabled">
+                                            <option value="">Selecione uma cidade</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row">
@@ -165,6 +191,46 @@
         </div>
     </div>
 </div> 
+<div class="modal fade" id="modalFonte" tabindex="-1" role="dialog" aria-labelledby="modalFonteLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-dialog-scrollable modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="padding: 15px !important;">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-newspaper-o"></i><span></span> Dodos da Notícia</h6>
+        </div>
+        <div class="modal-body" style="padding: 15px;">
+            <form id="formBuscaFonte" class="form-inline mb-3">
+                <div class="row">
+                    <div class="col-md-12">
+                        <input type="text" class="form-control mr-2 mb-2" id="filtro_nome" placeholder="Nome da Fonte" style="width: 35%;">
+                        <select class="form-control mr-2 mb-2" name="cd_estado" id="filtro_estado" style="width: 30%;">
+                            <option value="">Selecione um estado</option>
+                            @foreach ($estados as $estado)
+                                <option value="{{ $estado->cd_estado }}" {!! ($noticia and $noticia->cd_estado == $estado->cd_estado) ? " selected" : '' !!}>
+                                    {{ $estado->nm_estado }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <select class="form-control mr-2 mb-2" name="cd_cidade" id="filtro_cidade" style="width: 30%;" disabled="disabled">
+                            <option value="">Selecione uma cidade</option>
+                        </select>
+                    </div>
+                    <div class="col-md-12 center">
+                        <button type="button" class="btn btn-info mb-2" id="btnBuscarFonte"><i class="fa fa-search"></i> Buscar</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
+                    </div>
+                </div>
+            </form>
+        <div id="resultadoFontes">
+          <!-- Resultados AJAX aqui -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 @endsection
 @section('script')
 <script src="{{ asset('js/formulario-cadastro-web.js') }}"></script>
@@ -228,6 +294,102 @@
         if(id_fonte_selecionada){
             $("#id_fonte").trigger("change");
         }
+
+        function buscarFontes(pagina = 1) {
+            var nome = $('#filtro_nome').val();
+            var estado = $('#filtro_estado').val();
+            var cidade = $('#filtro_cidade').val();
+
+            // Limpa o resultado antes de buscar
+            $('#resultadoFontes').html('');
+
+            $.ajax({
+                url: '{{ url("fonte-web/buscar/combo") }}',
+                type: 'GET',
+                data: {
+                    nome: nome,
+                    estado: estado,
+                    cidade: cidade,
+                    page: pagina
+                },
+                success: function(res) {
+                    var html = '<table class="table table-bordered"><tr><th>Nome</th><th>Estado</th><th>Cidade</th><th>Ação</th></tr>';
+                    if(res.data.length == 0) {
+                        html += '<tr><td colspan="4">Nenhuma fonte encontrada.</td></tr>';
+                    } else {
+                        $.each(res.data, function(i, fonte) {
+                            html += '<tr>';
+                            html += '<td>' + fonte.nome + '</td>';
+                            html += '<td>' + (fonte.estado || '') + '</td>';
+                            html += '<td>' + (fonte.cidade || '') + '</td>';
+                            html += '<td><button type="button" class="btn btn-success btn-sm selecionar-fonte" data-id="'+fonte.id+'" data-nome="'+fonte.nome+'">Selecionar</button></td>';
+                            html += '</tr>';
+                        });
+                    }
+                    html += '</table>';
+
+                     // Paginação customizada
+                    var current = res.current_page;
+                    var last = res.last_page;
+                    var start = Math.max(1, current - 5);
+                    var end = Math.min(last, start + 9);
+                    start = Math.max(1, end - 9); // Garante que sempre mostre até 10 páginas
+
+                    html += '<nav><ul class="pagination justify-content-center">';
+
+                    // Botão anterior
+                    if(current > 1) {
+                        html += '<li class="page-item"><a class="page-link paginacao-fonte" href="#" data-pagina="'+(current-1)+'">&laquo; Anterior</a></li>';
+                    } else {
+                        html += '<li class="page-item disabled"><span class="page-link">&laquo; Anterior</span></li>';
+                    }
+
+                    // Números das páginas
+                    for(var i = start; i <= end; i++) {
+                        html += '<li class="page-item '+(i==current?'active':'')+'"><a class="page-link paginacao-fonte" href="#" data-pagina="'+i+'">'+i+'</a></li>';
+                    }
+
+                    // Botão próxima
+                    if(current < last) {
+                        html += '<li class="page-item"><a class="page-link paginacao-fonte" href="#" data-pagina="'+(current+1)+'">Próxima &raquo;</a></li>';
+                    } else {
+                        html += '<li class="page-item disabled"><span class="page-link">Próxima &raquo;</span></li>';
+                    }
+
+                    html += '</ul></nav>';
+
+                    $('#resultadoFontes').html(html);
+                }
+            });
+        }
+
+        $('#btnBuscarFonte').on('click', function() {
+            buscarFontes(1);
+        });
+
+        $(document).on('keypress',function(e) {
+            if(e.which == 13) {
+                $('#btnBuscarFonte').trigger('click');
+            }
+        });
+
+        // Paginação
+        $(document).on('click', '.paginacao-fonte', function(e) {
+            e.preventDefault();
+            var pagina = $(this).data('pagina');
+            buscarFontes(pagina);
+        });
+
+        // Selecionar fonte
+        $(document).on('click', '.selecionar-fonte', function() {
+            var id = $(this).data('id');
+            var nome = $(this).data('nome');
+            $('#id_fonte').val(id);
+            $('#nome_fonte').val(nome);
+            $('#modalFonte').modal('hide');
+            // Se quiser disparar o evento de change para buscar valor_retorno:
+            $('#id_fonte').trigger('change');
+        });
 
     });
 </script>

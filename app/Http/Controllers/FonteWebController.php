@@ -519,6 +519,42 @@ class FonteWebController extends Controller
         return response()->json($dados);
     }
 
+    public function buscar(Request $request)
+    {
+        $query = FonteWeb::query();
+
+        if ($request->filled('nome')) {
+            $query->where('nome', 'ilike', '%' . $request->nome . '%');
+        }
+        if ($request->filled('estado')) {
+            $query->where('cd_estado', $request->estado);
+        }
+        if ($request->filled('cidade')) {
+            $query->where('cd_cidade', $request->cidade);
+        }
+
+        $perPage = 10;
+
+        $fontes = $query->paginate($perPage);
+        
+        $dados = array();
+
+        foreach ($fontes->items() as $key => $fonte) {
+            $dados[$key]['id'] = $fonte->id;
+            $dados[$key]['nome'] = $fonte->nome;
+            $dados[$key]['estado'] = ($fonte->estado) ? $fonte->estado->nm_estado : 'Não informado';
+            $dados[$key]['cidade'] = ($fonte->cidade) ? $fonte->cidade->nm_cidade : 'Não informado';      
+        }
+
+        return response()->json([
+                'data' => $dados,
+                'current_page' => $fontes->currentPage(),
+                'last_page' => $fontes->lastPage(),
+                'total' => $fontes->total()
+        ]);
+
+    }
+
     public function buscarFontes()
     {
         $dados = FonteWeb::all();

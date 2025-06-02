@@ -11,6 +11,7 @@ use App\Models\Tag;
 use App\Models\Cliente;
 use Laracasts\Flash\Flash;
 use App\Models\LogAcesso;
+use App\Models\Estado;
 use App\Models\FonteWeb;
 use App\Models\NoticiaWeb;
 use App\Models\NoticiaCliente;
@@ -46,13 +47,13 @@ class NoticiaWebController extends Controller
         $termo = ($request->termo) ? $request->termo : null;
 
         $dados = NoticiaWeb::with('fonte')
-                    ->whereHas('clientes', function($query) use ($cliente_selecionado) {
-                        $query->where('noticia_cliente.tipo_id', 2)
-                        ->when($cliente_selecionado, function ($query) use ($cliente_selecionado) { 
-                            $query->where('noticia_cliente.cliente_id', $cliente_selecionado);
+                    ->when($cliente_selecionado, function ($query) use ($cliente_selecionado) { 
+                        return $query->whereHas('clientes', function($q) use ($cliente_selecionado) {
+                            $q->where('noticia_cliente.cliente_id', $cliente_selecionado);
                         });
                     })
                     ->whereBetween($tipo_data, [$dt_inicial." 00:00:00", $dt_final." 23:59:59"])
+                    ->where('fl_boletim', true)
                     ->orderBy('data_noticia')
                     ->paginate(10);
 
@@ -208,22 +209,26 @@ class NoticiaWebController extends Controller
     {
         Session::put('sub-menu','web-cadastrar');
 
+        $estados = Estado::orderBy('nm_estado')->get();
+        $cidades = array();
         $fontes = FonteWeb::orderBy('nome')->get();
         $tags = Tag::orderBy('nome')->get();
         $noticia = null;
 
-        return view('noticia-web/form',compact('fontes','noticia','tags'));
+        return view('noticia-web/form',compact('fontes','noticia','tags','estados','cidades'));
     }
 
     public function edit($id)
     {
         Session::put('sub-menu','web-cadastrar');
 
+        $estados = Estado::orderBy('nm_estado')->get();
+         $cidades = array();
         $fontes = FonteWeb::orderBy('nome')->get();
         $noticia = NoticiaWeb::find($id);
         $tags = Tag::orderBy('nome')->get();
 
-        return view('noticia-web/form',compact('fontes','noticia','tags'));
+        return view('noticia-web/form',compact('fontes','noticia','tags','estados','cidades'));
     }
 
     public function getValores($id)

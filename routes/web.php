@@ -126,6 +126,8 @@ Route::middleware(['web'])->group(function () {
 	Route::get('fonte-web/estatisticas/sem/{top}','FonteWebController@getSemColetas');
 	Route::get('fonte-web/estatisticas/coletas/{fonte}','FonteWebController@getColetasByFonte');
 
+	Route::get('fonte-web/buscar/combo', 'FonteWebController@buscar');
+
 	Route::get('fonte-web/atualizar-estado','FonteWebController@atualizarEstado');
 	Route::get('fonte-web/atualizar-valor','FonteWebController@atualizarValor');
 
