@@ -13,6 +13,7 @@ use App\Models\NoticiaImpresso;
 use App\Models\NoticiaWeb;
 use App\Models\NoticiaRadio;
 use App\Models\NoticiaTv;
+use App\Models\NoticiaCliente;
 use Illuminate\Http\Request;
 use Laracasts\Flash\Flash;
 use Illuminate\Support\Facades\DB;
@@ -60,8 +61,7 @@ class BoletimController extends Controller
         $flag_impresso = $request->flag_impresso == "true" ? true : false;
         $flag_web = $request->flag_web == "true" ? true : false;
         $flag_radio = $request->flag_radio == "true" ? true : false;
-
-
+        $flag_enviadas = $request->flag_enviadas == "true" ? true : false;
 
         //Notícias de Web
         $sql_web = "SELECT t1.id, 
@@ -69,11 +69,12 @@ class BoletimController extends Controller
                     'web' as tipo, 
                     TO_CHAR(data_noticia, 'DD/MM/YYYY') AS data_formatada,
                     t2.nome as fonte,
-                    t4.id_boletim as id_boletim
+                    t4.id_boletim as id_boletim,
+                    t3.fl_enviada as flag
                 FROM noticias_web t1
                 JOIN fonte_web t2 ON t2.id = t1.id_fonte
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id
-                LEFT JOIN boletim_noticia t4 ON t4.id_noticia = t3.noticia_id AND id_tipo = 2 AND t4.id_boletim = $request->id_boletim
+                LEFT JOIN boletim_noticia t4 ON t4.id_noticia = t3.noticia_id AND t4.id_tipo = 2 AND t4.id_boletim = $request->id_boletim
                 WHERE 1=1";
 
         if ($request->has('dt_inicial') && $request->has('dt_final')) {
@@ -81,6 +82,10 @@ class BoletimController extends Controller
             $dt_final = $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d');
             $sql_web .= " AND data_noticia BETWEEN '$dt_inicial 00:00:00' AND '$dt_final 23:59:59'";
         }
+
+        if( $flag_enviadas) {
+            $sql_web .= " AND t3.fl_enviada = false";
+        } 
 
         if ($request->has('cliente')) {
             $cliente = $request->cliente;
@@ -97,7 +102,8 @@ class BoletimController extends Controller
                     'impresso' as tipo, 
                     TO_CHAR(dt_clipagem, 'DD/MM/YYYY') AS data_formatada,
                     t2.nome as fonte,
-                    t4.id_boletim as id_boletim
+                    t4.id_boletim as id_boletim,
+                    t3.fl_enviada as flag
                 FROM noticia_impresso t1
                 JOIN jornal_online t2 ON t2.id = t1.id_fonte
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id
@@ -108,6 +114,10 @@ class BoletimController extends Controller
             $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d');
             $dt_final = $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d');
             $sql_impresso .= " AND dt_clipagem BETWEEN '$dt_inicial 00:00:00' AND '$dt_final 23:59:59'";
+        }
+
+        if( $flag_enviadas) {
+            $sql_impresso .= " AND t3.fl_enviada = false";
         }
 
         if ($request->has('cliente')) {
@@ -126,7 +136,8 @@ class BoletimController extends Controller
                     'radio' as tipo, 
                     TO_CHAR(dt_cadastro, 'DD/MM/YYYY') AS data_formatada,
                     t2.nome_emissora as fonte,
-                    t4.id_boletim as id_boletim
+                    t4.id_boletim as id_boletim,
+                    t3.fl_enviada as flag
                 FROM noticia_radio t1
                 JOIN emissora_radio t2 ON t2.id = t1.emissora_id
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id
@@ -137,6 +148,10 @@ class BoletimController extends Controller
             $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d');
             $dt_final = $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d');
             $sql_radio .= " AND dt_cadastro BETWEEN '$dt_inicial 00:00:00' AND '$dt_final 23:59:59'";
+        }
+
+        if( $flag_enviadas) {
+            $sql_radio .= " AND t3.fl_enviada = false";
         }
 
         if ($request->has('cliente')) {
@@ -155,7 +170,8 @@ class BoletimController extends Controller
                     'tv' as tipo, 
                     TO_CHAR(dt_noticia, 'DD/MM/YYYY') AS data_formatada,
                     t2.nome_emissora as fonte,
-                    t4.id_boletim as id_boletim
+                    t4.id_boletim as id_boletim,
+                    t3.fl_enviada as flag
                 FROM noticia_tv t1
                 JOIN emissora_web t2 ON t2.id = t1.emissora_id
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id
@@ -166,6 +182,10 @@ class BoletimController extends Controller
             $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d');
             $dt_final = $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d');
             $sql_tv .= " AND dt_noticia BETWEEN '$dt_inicial 00:00:00' AND '$dt_final 23:59:59'";
+        }
+
+        if( $flag_enviadas) {
+            $sql_tv .= " AND t3.fl_enviada = false";
         }
 
         if ($request->has('cliente')) {
@@ -231,6 +251,11 @@ class BoletimController extends Controller
                     $boletim_noticias->id_tipo = $id_tipo;
                 }
             }
+
+            //Marca que a notícia já foi enviada para o cliente
+            $noticia_cliente = NoticiaCliente::where('noticia_id', $request->id_noticia)->where('cliente_id', $boletim->id_cliente)->where('tipo_id', $id_tipo)->first();
+            $noticia_cliente->fl_enviada =  true;
+            $noticia_cliente->save();
 
             $boletim_noticias->save();
         }        

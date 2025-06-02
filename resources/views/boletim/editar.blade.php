@@ -77,7 +77,7 @@
                             <input type="text" class="form-control datepicker" name="dt_final" id="dt_final" required="true" value="{{ \Carbon\Carbon::parse($dt_final)->format('d/m/Y') }}" placeholder="__/__/____">
                         </div>
                     </div>
-                    <div class="col-md-8">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label class="font-black"><i class="fa fa-filter"></i> Filtrar por cliente</label>
                             <select class="form-control select2" name="cliente_busca" id="cliente_busca">
@@ -86,6 +86,17 @@
                                     <option value="{{ $cliente->id }}">{{ $cliente->nome }}</option>
                                 @endforeach
                             </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2 mt-3">
+                        <div class="form-check mt-3">
+                            <div class="form-check mt-3">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox" name="is_active" id="nao-enviadas" value="true">
+                                    Somente Não Enviadas
+                                    <span class="form-check-sign"></span>
+                                </label>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -186,6 +197,7 @@
                 flag_impresso = $("#midia-impresso").is(":checked");
                 flag_tv = $("#midia-tv").is(":checked");
                 flag_radio = $("#midia-radio").is(":checked");
+                flag_enviadas = $("#nao-enviadas").is(":checked");
                 dt_inicial = $("#dt_inicial").val();
                 dt_final = $("#dt_final").val();
                 termo = $("#termo").val();
@@ -203,6 +215,7 @@
                         "flag_impresso": flag_impresso,
                         "flag_tv": flag_tv,
                         "flag_radio": flag_radio,
+                        "flag_enviadas": flag_enviadas,
                         "cliente": cliente,
                         "dt_inicial": dt_inicial,
                         "id_boletim": boletim,
@@ -235,13 +248,13 @@
                     titulo = (noticia.titulo) ? noticia.titulo : 'Sem Título';
 
                     var check = (false) ? 'checked' : '';
-
+                    var boletim = (noticia.flag) ? '<span class="badge badge-pill badge-success"> Enviada</span>' : '';
                     var checked = (noticia.id_boletim) ? 'checked' : '';
 
-                     $(".table-noticias tbody").append('<tr>'+
+                    $(".table-noticias tbody").append('<tr>'+
                                                         '<td><div class="form-check" style="margin-top: -20px !important;"><label class="form-check-label">'+
                                                         '<input class="form-check-input item-noticia" type="checkbox" '+checked+' name="lista_noticia[]" '+check+' value="'+noticia.id+'" data-tipo="'+noticia.tipo+'"><span class="form-check-sign"></span></label></div></td>'+
-                                                        '<td><strong>'+titulo+'</strong><br/><strong style="color: #51cbce;">'+noticia.data_formatada+' - '+noticia.fonte+'</strong> <br/>'+icone+' </td>'+
+                                                        '<td><strong>'+titulo+'</strong><br/><strong style="color: #51cbce;">'+noticia.data_formatada+' - '+noticia.fonte+'</strong> <br/>'+icone+' '+boletim+'</td>'+
                                                        '</tr>');                   
                 });
             }
@@ -263,6 +276,10 @@
             });
 
             $("#midia-radio").change(function(){
+                listaNoticias();
+            });
+
+            $("#nao-enviadas").change(function(){
                 listaNoticias();
             });
 
