@@ -56,6 +56,10 @@ class BoletimController extends Controller
     public function noticias(Request $request)
     {   
         $noticias = array();
+        $flag_web = $request->flag_web;
+        $flag_impresso = $request->flag_impresso;
+        $flag_radio = $request->flag_radio;
+        $flag_tv = $request->flag_tv;
 
         //Notícias de Web
         $sql_web = "SELECT t1.id, 
