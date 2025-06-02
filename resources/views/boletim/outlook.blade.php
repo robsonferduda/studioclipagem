@@ -27,16 +27,12 @@
                     </tbody>
                 </table>
                 <div style="text-align: right;">
-                    @if(count($noticias_impresso) > 1)
-                        <span>Foram encontradas  {{ count($noticias_impresso) }} notícias</span>
-                    @else
-                        <span>Foi encontrada  {{ count($noticias_impresso) }} notícia</span>
-                    @endif
+                    <span style="position: absolute; bottom: 0px; right: 0px;">Total de notícias: {{ count($noticias_impresso) + count($noticias_web) + count($noticias_radio) + count($noticias_tv) }}</span>
                 </div>  
                 <div style="text-align: right; margin-top: 5px;">
                     <span><a href="{{ url('boletim/'.$boletim->id.'/visualizar') }}">Clique aqui</a> para ver o boletim no navegador</span>
                 </div>
-                @if(count($noticias_impresso) > 0)
+               @if(count($noticias_impresso) > 0)
                             <p style="text-transform: uppercase; font-weight: 600;"><i class="fa fa-newspaper-o"></i> Clipagens de Jornal</p>
                         @endif
                         @foreach($noticias_impresso as $key => $noticia)
@@ -55,7 +51,7 @@
                         @endif
                         @foreach($noticias_web as $key => $noticia)
                             <div style="border-bottom: 1px solid #e3e3e3; margin-bottom: 10px; padding-bottom: 10px;">
-                                <p style="margin-bottom: 0px;"><strong>Título:</strong> {!! ($noticia->titulo) ? : '<span class="text-danger">Notícia sem título</span>' !!}</p>
+                                <p style="margin-bottom: 0px;"><strong>Título:</strong> {!! ($noticia->titulo_noticia) ? : '<span class="text-danger">Notícia sem título</span>' !!}</p>
                                 <p style="margin-bottom: 0px;"><strong>Data:</strong> {{ date('d/m/Y', strtotime($noticia->data_noticia)) }}</p>
                                 <p style="margin-bottom: 0px;"><strong>Veículo:</strong> {{ $noticia->fonte->nome }}</p>
                                 <p style="margin-bottom: 0px;"><strong>Seção:</strong> {{ ($noticia->secao) ? $noticia->secao->ds_sessao : 'Não informado' }}</p>
@@ -63,6 +59,36 @@
                                 <p style="margin-bottom: 10px;"><strong>Link:</strong> <a href="{{ asset('img/noticia-web/'.$noticia->ds_caminho_img) }}" target="_blank">Veja</a></p>
                             </div>
                         @endforeach
+
+                        @if(count($noticias_tv) > 0)
+                            <p style="text-transform: uppercase; font-weight: 600;"><i class="fa fa-tv"></i> Clipagens de TV</p>
+                        @endif
+                        @foreach($noticias_tv as $key => $noticia)
+                            <div style="border-bottom: 1px solid #e3e3e3; margin-bottom: 10px; padding-bottom: 10px;">
+                                <p style="margin-bottom: 0px;"><strong>Título:</strong> {!! ($noticia->titulo) ? : '<span class="text-danger">Notícia sem título</span>' !!}</p>
+                                <p style="margin-bottom: 0px;"><strong>Data:</strong> {{ date('d/m/Y', strtotime($noticia->dt_noticia)) }}</p>
+                                <p style="margin-bottom: 0px;"><strong>Veículo:</strong> {{ $noticia->emissora->nome_emissora }}</p>
+                                <p style="margin-bottom: 0px;"><strong>Seção:</strong> {{ ($noticia->secao) ? $noticia->secao->ds_sessao : 'Não informado' }}</p>
+                                <p style="margin-bottom: 0px;"><strong>Sinopse:</strong> {!! $sinopse = strip_tags(str_replace('Sinopse 1 - ', '', $noticia->sinopse)) !!}</p>
+                                <p style="margin-bottom: 10px;"><strong>Link:</strong> <a href="{{ asset('img/noticia-web/'.$noticia->ds_caminho_img) }}" target="_blank">Veja</a></p>
+                            </div>
+                        @endforeach
+
+
+                        @if(count($noticias_radio) > 0)
+                            <p style="text-transform: uppercase; font-weight: 600;"><i class="fa fa-volume-up"></i> Clipagens de TV</p>
+                        @endif
+                        @foreach($noticias_radio as $key => $noticia)
+                            <div style="border-bottom: 1px solid #e3e3e3; margin-bottom: 10px; padding-bottom: 10px;">
+                                <p style="margin-bottom: 0px;"><strong>Título:</strong> {!! ($noticia->titulo) ? : '<span class="text-danger">Notícia sem título</span>' !!}</p>
+                                <p style="margin-bottom: 0px;"><strong>Data:</strong> {{ date('d/m/Y', strtotime($noticia->dt_noticia)) }}</p>
+                                <p style="margin-bottom: 0px;"><strong>Veículo:</strong> {{ $noticia->emissora->nome_emissora }}</p>
+                                <p style="margin-bottom: 0px;"><strong>Seção:</strong> {{ ($noticia->secao) ? $noticia->secao->ds_sessao : 'Não informado' }}</p>
+                                <p style="margin-bottom: 0px;"><strong>Sinopse:</strong> {!! $sinopse = strip_tags(str_replace('Sinopse 1 - ', '', $noticia->sinopse)) !!}</p>
+                                <p style="margin-bottom: 10px;"><strong>Link:</strong> <a href="{{ asset('img/noticia-web/'.$noticia->ds_caminho_img) }}" target="_blank">Veja</a></p>
+                            </div>
+                        @endforeach
+
             </td>
         </tr>
     </table>

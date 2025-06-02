@@ -52,7 +52,7 @@
                         @endif
                         @foreach($noticias_web as $key => $noticia)
                             <div style="border-bottom: 1px solid #e3e3e3; margin-bottom: 10px; padding-bottom: 10px;">
-                                <p style="margin-bottom: 0px;"><strong>Título:</strong> {!! ($noticia->titulo) ? : '<span class="text-danger">Notícia sem título</span>' !!}</p>
+                                <p style="margin-bottom: 0px;"><strong>Título:</strong> {!! ($noticia->titulo_noticia) ? : '<span class="text-danger">Notícia sem título</span>' !!}</p>
                                 <p style="margin-bottom: 0px;"><strong>Data:</strong> {{ date('d/m/Y', strtotime($noticia->data_noticia)) }}</p>
                                 <p style="margin-bottom: 0px;"><strong>Veículo:</strong> {{ $noticia->fonte->nome }}</p>
                                 <p style="margin-bottom: 0px;"><strong>Seção:</strong> {{ ($noticia->secao) ? $noticia->secao->ds_sessao : 'Não informado' }}</p>
