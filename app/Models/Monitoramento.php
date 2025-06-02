@@ -42,6 +42,21 @@ class Monitoramento extends Model implements Auditable
         return $this->hasMany(NoticiaCliente::class, 'monitoramento_id', 'id')->where("tipo_id",2);
     }
 
+    public function noticiasImpresso()
+    {
+        return $this->hasMany(NoticiaCliente::class, 'monitoramento_id', 'id')->where("tipo_id",1);
+    }
+
+    public function noticiasRadio()
+    {
+        return $this->hasMany(NoticiaCliente::class, 'monitoramento_id', 'id')->where("tipo_id",3);
+    }
+
+    public function noticiasTv()
+    {
+        return $this->hasMany(NoticiaCliente::class, 'monitoramento_id', 'id')->where("tipo_id",4);
+    }
+
     public function historico()
     {
         return $this->hasMany(MonitoramentoExecucao::class, 'monitoramento_id', 'id')->orderBy('created_at','DESC');
