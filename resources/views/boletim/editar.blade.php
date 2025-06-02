@@ -4,15 +4,16 @@
     <div class="card">
         <div class="card-header">
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-6">
                     <h4 class="card-title">
                         <i class="fa fa-file-o ml-3"></i> Boletim 
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Cadastrar
                     </h4>
                 </div>
-                <div class="col-md-4">
-                    <a href="{{ url('boletins') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-table"></i> Boletins</a>
-                    <a href="{{ url('boletim/cadastrar') }}" class="btn btn-primary pull-right mr-3"><i class="fa fa-plus"></i> Cadastrar Boletim</a>
+                <div class="col-md-6">
+                    <a href="{{ url('boletins') }}" class="btn btn-primary pull-right mr-2"><i class="fa fa-table"></i> Boletins</a>
+                    <a href="{{ url('boletim/'.$boletim->id.'/visualizar') }}" class="btn btn-warning pull-right mr-1" target="_blank"><i class="fa fa-eye"></i> Visualizar</a>
+                    <a href="{{ url('boletim/cadastrar') }}" class="btn btn-primary pull-right mr-1"><i class="fa fa-plus"></i> Cadastrar Boletim</a>
                 </div>
             </div>
         </div>
@@ -309,13 +310,38 @@
                             $('.table-noticias').loader('show');
                         },
                         success: function(response) {
-                            $('.table-noticias').loader('hide');
-                            
-            $.notify({
-      icon: "nc-icon nc-bell-55",
-      message: "Welcome to <b>Paper Dashboard</b> - a beautiful bootstrap dashboard for every web developer."
-    });
+                                                    
+                            $.notify({
+                              icon: "nc-icon nc-bell-55",
+                              message: "<b>Operação Realizada com Sucesso</b> - a notícia foi adicionada com sucesso ao boletim."
+                            }, {
+                              type: 'success',
+                              timer: 8000,
+                              placement: {
+                                from: 'top',
+                                align: 'right'
+                              }
+                            });
 
+                        },
+                        error: function(response){
+
+                            $(this).trigger('change');
+
+                            $.notify({
+                              icon: "fa fa-times",
+                              message: "<b>Erro ao Realizar Operação</b> - a notícia não foi adicionada ao boletim. Código da notícia: <strong>"+id+"</strong>"
+                            }, {
+                              type: 'danger',
+                              timer: 8000,
+                              placement: {
+                                from: 'top',
+                                align: 'right'
+                              }
+                            });
+                        },
+                        complete: function(response){
+                            $('.table-noticias').loader('hide');
                         }
                     });
                 } else {

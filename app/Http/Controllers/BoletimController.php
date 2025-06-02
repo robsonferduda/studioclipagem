@@ -11,6 +11,8 @@ use App\Models\SituacaoBoletim;
 use App\Models\Cliente;
 use App\Models\NoticiaImpresso;
 use App\Models\NoticiaWeb;
+use App\Models\NoticiaRadio;
+use App\Models\NoticiaTv;
 use Illuminate\Http\Request;
 use Laracasts\Flash\Flash;
 use Illuminate\Support\Facades\DB;
@@ -333,7 +335,7 @@ class BoletimController extends Controller
         $noticias_impresso = $boletim->noticiasImpresso()->get();
         $noticias_web = $boletim->noticiasWeb()->get(); 
         $noticias_radio = $boletim->noticiasRadio()->get(); 
-        $noticias_tv = $boletim->noticiasTv()->get();         
+        $noticias_tv = $boletim->noticiasTv()->get();       
 
         return view('boletim/visualizar', compact('boletim','noticias_impresso','noticias_web','noticias_radio','noticias_tv'));
     }
