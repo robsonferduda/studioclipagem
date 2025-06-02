@@ -198,7 +198,7 @@
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-newspaper-o"></i><span></span> Dodos da Notícia</h6>
+          <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-newspaper-o"></i><span></span> SELEÇÃO DE FONTES</h6>
         </div>
         <div class="modal-body" style="padding: 15px;">
             <form id="formBuscaFonte" class="form-inline mb-3">
