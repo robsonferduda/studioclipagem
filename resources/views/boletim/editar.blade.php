@@ -257,7 +257,7 @@
                                                         '<td><div class="form-check" style="margin-top: -20px !important;"><label class="form-check-label">'+
                                                         '<input class="form-check-input item-noticia" type="checkbox" '+checked+' name="lista_noticia[]" '+check+' value="'+noticia.id+'" data-tipo="'+noticia.tipo+'"><span class="form-check-sign"></span></label></div></td>'+
                                                         '<td>'+
-                                                        titulo+'<strong style="color: #51cbce;">'+noticia.data_formatada+' - '+noticia.fonte+'</strong> - Coletada em '+noticia.data_coleta+''+
+                                                        titulo+'<strong style="color: #51cbce;">'+noticia.data_noticia+' - '+noticia.fonte+'</strong> - Cadastrada em '+noticia.data_coleta+''+
                                                         '<br/>'+sinopse+'<br/>'+icone+' '+boletim+'</td>'+
                                                        '</tr>');                   
                 });

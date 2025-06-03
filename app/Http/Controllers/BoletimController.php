@@ -69,7 +69,7 @@ class BoletimController extends Controller
                     titulo_noticia AS titulo, 
                     sinopse,
                     'web' as tipo, 
-                    TO_CHAR(data_noticia, 'DD/MM/YYYY') AS data_formatada,
+                    TO_CHAR(data_noticia, 'DD/MM/YYYY') AS data_noticia,
                     TO_CHAR(data_insert, 'DD/MM/YYYY') AS data_coleta,
                     t2.nome as fonte,
                     t4.id_boletim as id_boletim,
@@ -83,7 +83,7 @@ class BoletimController extends Controller
         if ($request->has('dt_inicial') && $request->has('dt_final')) {
             $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d');
             $dt_final = $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d');
-            $sql_web .= " AND data_noticia BETWEEN '$dt_inicial 00:00:00' AND '$dt_final 23:59:59'";
+            $sql_web .= " AND data_insert BETWEEN '$dt_inicial 00:00:00' AND '$dt_final 23:59:59'";
         }
 
         if( $flag_enviadas) {
@@ -104,8 +104,8 @@ class BoletimController extends Controller
                     t1.titulo, 
                     sinopse,
                     'impresso' as tipo, 
-                    TO_CHAR(dt_clipagem, 'DD/MM/YYYY') AS data_formatada,
-                    TO_CHAR(dt_cadastro, 'DD/MM/YYYY') AS data_coleta,
+                    TO_CHAR(dt_clipagem, 'DD/MM/YYYY') AS data_noticia,
+                    TO_CHAR(t1.created_at, 'DD/MM/YYYY') AS data_coleta,
                     t2.nome as fonte,
                     t4.id_boletim as id_boletim,
                     t3.fl_enviada as flag
@@ -118,7 +118,7 @@ class BoletimController extends Controller
         if ($request->has('dt_inicial') && $request->has('dt_final')) {
             $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d');
             $dt_final = $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d');
-            $sql_impresso .= " AND dt_clipagem BETWEEN '$dt_inicial 00:00:00' AND '$dt_final 23:59:59'";
+            $sql_impresso .= " AND t1.created_at BETWEEN '$dt_inicial 00:00:00' AND '$dt_final 23:59:59'";
         }
 
         if( $flag_enviadas) {
@@ -140,7 +140,7 @@ class BoletimController extends Controller
                     t1.titulo, 
                     sinopse,
                     'radio' as tipo, 
-                    TO_CHAR(dt_cadastro, 'DD/MM/YYYY') AS data_formatada,
+                    TO_CHAR(dt_clipagem, 'DD/MM/YYYY') AS data_noticia,
                     TO_CHAR(dt_cadastro, 'DD/MM/YYYY') AS data_coleta,
                     t2.nome_emissora as fonte,
                     t4.id_boletim as id_boletim,
@@ -154,7 +154,7 @@ class BoletimController extends Controller
         if ($request->has('dt_inicial') && $request->has('dt_final')) {
             $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d');
             $dt_final = $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d');
-            $sql_radio .= " AND dt_cadastro BETWEEN '$dt_inicial 00:00:00' AND '$dt_final 23:59:59'";
+            $sql_radio .= " AND t1.created_at BETWEEN '$dt_inicial 00:00:00' AND '$dt_final 23:59:59'";
         }
 
         if( $flag_enviadas) {
@@ -176,7 +176,7 @@ class BoletimController extends Controller
                     '' AS titulo, 
                     sinopse,
                     'tv' as tipo, 
-                    TO_CHAR(dt_noticia, 'DD/MM/YYYY') AS data_formatada,
+                    TO_CHAR(dt_noticia, 'DD/MM/YYYY') AS data_noticia,
                     TO_CHAR(dt_cadastro, 'DD/MM/YYYY') AS data_coleta,
                     t2.nome_emissora as fonte,
                     t4.id_boletim as id_boletim,
@@ -190,7 +190,7 @@ class BoletimController extends Controller
         if ($request->has('dt_inicial') && $request->has('dt_final')) {
             $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d');
             $dt_final = $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d');
-            $sql_tv .= " AND dt_noticia BETWEEN '$dt_inicial 00:00:00' AND '$dt_final 23:59:59'";
+            $sql_tv .= " AND dt_cadastro BETWEEN '$dt_inicial 00:00:00' AND '$dt_final 23:59:59'";
         }
 
         if( $flag_enviadas) {
