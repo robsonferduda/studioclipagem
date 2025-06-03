@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Auth;
 use Mail;
+use App\Mail\BoletimMail;
 use Carbon\Carbon;
 use App\Models\Boletim;
 use App\Models\BoletimNoticias;
@@ -18,7 +19,7 @@ use Illuminate\Http\Request;
 use Laracasts\Flash\Flash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
-
+use PHPMailer\PHPMailer\PHPMailer;
 
 class BoletimController extends Controller
 {
@@ -447,10 +448,43 @@ class BoletimController extends Controller
 
         $emails = $request->emails;
 
+
+        
+
+        $mail = new PHPMailer();
+        $mail->Encoding = "base64";
+        $mail->SMTPAuth = true;
+        $mail->Host = "smtp.zeptomail.com";
+        $mail->Port = 587;
+        $mail->Username = "emailapikey";
+        $mail->Password = 'wSsVR60i+EPzC694nGKlcbsxmVpRA1PzER900VHzunOvGfuT8sdpkk2bVlWmSqQbR2c4FDJEo7gumh1T1WIGi94ozVkIXCiF9mqRe1U4J3x17qnvhDzOVmVdlhGMLogOwglpnGNnEsgj+g==';
+        $mail->SMTPSecure = 'TLS';
+        $mail->isSMTP();
+        $mail->IsHTML(true);
+        $mail->CharSet = "UTF-8";
+        $mail->From = "noreply@clipagens.com.br";
+        $mail->addAddress('robsonferduda@gmail.com');
+        $mail->Body="Test email sent successfully.";
+        $mail->Subject="Test Email";
+        $mail->SMTPDebug = 1;
+        $mail->Debugoutput = function($str, $level) {echo "debug level $level; message: $str"; echo "<br>";};
+        if(!$mail->Send()) {
+            echo "Erro ao enviar email";
+        } else {
+            echo "Email enviado com sucesso";
+        }
+        
+
+        dd("Fim do Teste de Email");
+
         for ($i=0; $i < count($emails); $i++) { 
 
+            Mail::to($emails[$i])->send(new BoletimMail());
+
+            /*
+
             try{
-                $mail_status = Mail::send('boletim.outlook', $data, function($message) use ($emails, $i, $boletim) {
+                $mail_status = Mail::send('boletim.teste', $data, function($message) use ($emails, $i, $boletim) {
                 $message->to($emails[$i])
                 ->subject($boletim->titulo);
                     $message->from('noreply@clipagens.com.br','Studio Clipagem');
@@ -466,7 +500,7 @@ class BoletimController extends Controller
                 $msg = "Erro ao enviar para o endereço especificado";
                 $detalhe = $e->getMessage();
                 $tipo = "error";
-            }
+            }*/
 
             $logs[] = array('email' => $emails[$i],'tipo' => $tipo, 'detalhe' => $detalhe, 'msg' => $msg);
         }
