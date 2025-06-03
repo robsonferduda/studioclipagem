@@ -52,6 +52,14 @@
                     <p>Dashboard</p>
                     </a>
                 </li>
+                @role('cliente')
+                  <li class="{{ (Session::has('url') and Session::get('url') == 'cliente-noticias') ? 'active' : '' }}">
+                    <a href="{{ url('noticias') }}">
+                    <i class="fa fa-newspaper-o"></i>
+                    <p>Notícias</p>
+                    </a>
+                  </li>
+                @endrole
                 @permission('menu-clientes')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'cliente') ? 'active' : '' }}">
                     <a href="{{ url('cliente') }}">

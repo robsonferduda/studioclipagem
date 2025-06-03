@@ -8,6 +8,7 @@ use App\Models\ClienteArea;
 use App\Models\EnderecoEletronico;
 use App\Models\Pessoa;
 use App\Utils;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -24,6 +25,7 @@ class ClienteController extends Controller
     {
         $this->middleware('auth');
         Session::put('url','cliente');
+        $this->carbon = new Carbon();
     }
 
     public function index(Request $request): View
@@ -158,6 +160,24 @@ class ClienteController extends Controller
         //$emails = json_decode($emails);
 
         return view('cliente/editar',compact('cliente', 'emails', 'areas'));
+    }
+
+    public function noticias(Request $request)
+    {
+        $dados = array();
+      
+        $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00" : date("Y-m-d")." 00:00:00";
+        $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d")." 23:59:59";
+
+        $dt_inicial_formatada = ($request->dt_inicial) ? $request->dt_inicial : date("d/m/Y");
+        $dt_final_formatada = ($request->dt_final) ? $request->dt_final : date("d/m/Y");
+
+        $fl_web = $request->fl_web == true ? true : false;
+        $fl_tv = $request->fl_tv == true ? true : false;
+        $fl_impresso = $request->fl_impresso == true ? true : false;
+        $fl_radio = $request->fl_radio == true ? true : false;
+
+        return view('cliente/noticias', compact('dados','dt_inicial','dt_final','fl_web','fl_tv','fl_radio','fl_impresso'));
     }
 
     public function update(Request $request, int $id): RedirectResponse

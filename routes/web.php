@@ -386,6 +386,8 @@ Route::middleware(['web'])->group(function () {
 
 	Route::get('pdf','RelatorioController@pdf');
 
+	Route::match(array('GET', 'POST'),'noticias','ClienteController@noticias');
+
 	Route::get('perfil','UserController@perfil');
 
 	Route::get('usuarios','UserController@index');
