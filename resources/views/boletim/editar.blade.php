@@ -245,7 +245,8 @@
                     if(noticia.tipo == 'radio') icone = '<i class="fa fa-volume-up"></i> Rádio';
                     if(noticia.tipo == 'tv') icone = '<i class="fa fa-tv"></i> TV';
 
-                    titulo = (noticia.titulo) ? noticia.titulo : 'Sem Título';
+                    titulo = (noticia.tipo == 'web' || noticia.tipo == 'impresso') ? ((noticia.titulo) ? '<strong>'+noticia.titulo+'</strong><br/>' : '<strong>Título não informado</strong><br/>' ) : '';
+                    sinopse = (noticia.sinopse) ? noticia.sinopse : 'Sinopse não informada';
 
                     var check = (false) ? 'checked' : '';
                     var boletim = (noticia.flag) ? '<span class="badge badge-pill badge-success"> Enviada</span>' : '';
@@ -254,7 +255,9 @@
                     $(".table-noticias tbody").append('<tr>'+
                                                         '<td><div class="form-check" style="margin-top: -20px !important;"><label class="form-check-label">'+
                                                         '<input class="form-check-input item-noticia" type="checkbox" '+checked+' name="lista_noticia[]" '+check+' value="'+noticia.id+'" data-tipo="'+noticia.tipo+'"><span class="form-check-sign"></span></label></div></td>'+
-                                                        '<td><strong>'+titulo+'</strong><br/><strong style="color: #51cbce;">'+noticia.data_formatada+' - '+noticia.fonte+'</strong> <br/>'+icone+' '+boletim+'</td>'+
+                                                        '<td>'+
+                                                        titulo+'<strong style="color: #51cbce;">'+noticia.data_formatada+' - '+noticia.fonte+'</strong> - Coletada em '+noticia.data_coleta+''+
+                                                        '<br/>'+sinopse+'<br/>'+icone+' '+boletim+'</td>'+
                                                        '</tr>');                   
                 });
             }

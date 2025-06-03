@@ -111,7 +111,7 @@
                                     <div class="form-group">
                                         <label>Programa</label>
                                         <input type="hidden" name="cd_programa" id="cd_programa" value="{{ ($noticia and $noticia->programa_id) ? $noticia->programa_id : 0  }}">
-                                        <select class="form-control selector-select2" name="programa" id="programa" disabled>
+                                        <select class="form-control selector-select2" name="programa_id" id="programa" disabled>
                                             <option value="">Selecione um programa</option>
                                         </select>
                                     </div>

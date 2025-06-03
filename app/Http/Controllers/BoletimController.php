@@ -66,6 +66,7 @@ class BoletimController extends Controller
         //Notícias de Web
         $sql_web = "SELECT t1.id, 
                     titulo_noticia AS titulo, 
+                    sinopse,
                     'web' as tipo, 
                     TO_CHAR(data_noticia, 'DD/MM/YYYY') AS data_formatada,
                     TO_CHAR(data_insert, 'DD/MM/YYYY') AS data_coleta,
@@ -100,6 +101,7 @@ class BoletimController extends Controller
         //Notícias de Impresso
         $sql_impresso = "SELECT t1.id, 
                     t1.titulo, 
+                    sinopse,
                     'impresso' as tipo, 
                     TO_CHAR(dt_clipagem, 'DD/MM/YYYY') AS data_formatada,
                     TO_CHAR(dt_cadastro, 'DD/MM/YYYY') AS data_coleta,
@@ -135,6 +137,7 @@ class BoletimController extends Controller
 
         $sql_radio = "SELECT t1.id, 
                     t1.titulo, 
+                    sinopse,
                     'radio' as tipo, 
                     TO_CHAR(dt_cadastro, 'DD/MM/YYYY') AS data_formatada,
                     TO_CHAR(dt_cadastro, 'DD/MM/YYYY') AS data_coleta,
@@ -170,6 +173,7 @@ class BoletimController extends Controller
 
         $sql_tv = "SELECT t1.id, 
                     '' AS titulo, 
+                    sinopse,
                     'tv' as tipo, 
                     TO_CHAR(dt_noticia, 'DD/MM/YYYY') AS data_formatada,
                     TO_CHAR(dt_cadastro, 'DD/MM/YYYY') AS data_coleta,
