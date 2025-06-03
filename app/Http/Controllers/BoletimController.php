@@ -452,7 +452,7 @@ class BoletimController extends Controller
         for ($i=0; $i < count($emails); $i++) { 
 
             try{
-                $mail_status = Mail::send('boletim.teste', $data, function($message) use ($emails, $i, $boletim) {
+                $mail_status = Mail::send('boletim.outlook', $data, function($message) use ($emails, $i, $boletim) {
                 $message->to($emails[$i])
                 ->subject($boletim->titulo);
                     $message->from('noreply@clipagens.com.br','Studio Clipagem');
