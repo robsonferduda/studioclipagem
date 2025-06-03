@@ -37,9 +37,9 @@
                 <div class="col-lg-12 col-sm-12">
                     <div class="form-group m-3 w-70">
                         @if(empty($dados->id))
-                            {!! Form::open(['id' => 'frm_noticia_radio_criar', 'url' => ['tv/noticias/inserir'], 'method' => 'post', 'files' => true]) !!}
+                            {!! Form::open(['id' => 'frm_tv', 'url' => ['tv/noticias/inserir'], 'method' => 'post', 'files' => true]) !!}
                         @else
-                            {!! Form::open(['id' => 'frm_noticia_radio_editar', 'url' => ['tv/noticias/'. $dados->id. '/atualizar'], 'method' => 'post', 'files' => true]) !!}
+                            {!! Form::open(['id' => 'frm_tv', 'url' => ['tv/noticias/'. $dados->id. '/atualizar'], 'method' => 'post', 'files' => true]) !!}
                         @endif
                         <div class="row">
                                 <input type="hidden" name="id_noticia" id="id_noticia" value="{{ ($dados) ? $dados->id : 0 }}">
@@ -90,7 +90,13 @@
                             <div class="col-md-2 col-sm-6">
                                 <div class="form-group">
                                     <label>Data do Clipping</label>
-                                    <input type="text" class="form-control datepicker" name="dt_clipagem" required="true" value="{{ date("d/m/Y") }}" placeholder="__/__/____">
+                                    <input 
+                                        type="text" 
+                                        class="form-control datepicker" 
+                                        name="dt_noticia" 
+                                        required="true" 
+                                        value="{{ ($dados and $dados->dt_noticia) ? \Carbon\Carbon::parse($dados->dt_noticia)->format('d/m/Y') : date("d/m/Y") }}" 
+                                        placeholder="__/__/____">
                                 </div>
                             </div>
 
@@ -107,7 +113,7 @@
                                 <div class="form-group">
                                     <label>Programa</label>
                                     <input type="hidden" name="cd_programa" id="cd_programa" value="{{ ($dados->programa_id) ? $dados->programa_id : 0  }}">
-                                    <select class="form-control selector-select2" name="programa" id="programa" disabled>
+                                    <select class="form-control selector-select2" name="programa_id" id="programa_id" disabled>
                                         <option value="">Selecione um programa</option>
                                     </select>
                                 </div>
@@ -144,8 +150,8 @@
                             <div class="col-md-8">
                                 <div class="form-group">
                                     <label>Cidade </label>
-                                    <input type="hidden" name="cd_cidade" id="cd_cidade" value="{{ ($dados->cd_cidade) ? $dados->cd_cidade : 0  }}">
-                                    <select class="form-control select2" name="cidade" id="cidade" disabled="disabled">
+                                    <input type="hidden" name="cd_cidade_selecionada" id="cd_cidade_selecionada" value="{{ ($dados->cd_cidade) ? $dados->cd_cidade : 0  }}">
+                                    <select class="form-control select2" name="cd_cidade" id="cidade" disabled="disabled">
                                         <option value="">Selecione uma cidade</option>
                                     </select>
                                 </div>
@@ -157,7 +163,7 @@
                                     <label for="tags[]">TAGs</label>
                                     <select name="tags[]" multiple="multiple" class="form-control select2">
                                         @foreach ($tags as $tag)
-                                            <option value="{{ $tag->id }}">{{ $tag->nome }}</option>
+                                            <option value="{{ $tag->id }}" {{ ($dados->tags->contains($tag->id)) ? 'selected'  : '' }}>{{ $tag->nome }}</option>
                                         @endforeach
                                     </select> 
                                 </div>    
@@ -275,10 +281,8 @@
             $(document).on('change', '#emissora', function() {
                 
                 var emissora = $(this).val();
-
                 buscarProgramas(emissora);
 
-                return $('#programa').prop('disabled', false);
             });
 
             $(document).on("change", "#horario", function() {
@@ -314,20 +318,13 @@
         });
 
         $(document).ready(function(){
-
-            var cd_emissora = $("#cd_emissora").val();
-            var cd_programa = $("#cd_programa").val();
-            var cd_area = $("#area_id").val();
-            var cliente_id = $("#cliente_id").val();
-
             $("#cd_estado").trigger('change');
-            $("#emissora").trigger('change');
+            var cd_emissora = $("#cd_emissora").val();
 
-            if(cd_emissora > 0)
+            if(cd_emissora){
                 buscarProgramas(cd_emissora);
+            }
 
-            if(cliente_id)
-                buscarAreas(cliente_id);
         });        
 
         function buscarProgramas(emissora){
@@ -339,29 +336,29 @@
                     type: 'GET',
                     beforeSend: function() {
                         $('.content').loader('show');
-                        $('#programa').append('<option value="">Carregando...</option>').val('');
+                        $('#programa_id').append('<option value="">Carregando...</option>').val('');
                     },
                     success: function(data) {
 
-                        $('#programa').find('option').remove();
-                        $('#programa').attr('disabled', false);
+                        $('#programa_id').find('option').remove();
+                        $('#programa_id').attr('disabled', false);
 
                         if(data.length == 0) {                            
-                            $('#programa').append('<option value="">Emissora não possui programas cadastrados</option>').val('');
+                            $('#programa_id').append('<option value="">Emissora não possui programas cadastrados</option>').val('');
                             return;
                         }
 
-                        $('#programa').append('<option value="">Selecione um programa</option>').val('');
+                        $('#programa_id').append('<option value="">Selecione um programa</option>').val('');
 
                         data.forEach(element => {
                             let option = new Option(element.text, element.id);
-                            $('#programa').append(option);
+                            $('#programa_id').append(option);
                         });
                         
                     },
                     complete: function(){
                         if(cd_programa > 0)
-                            $('#programa').val(cd_programa);
+                            $('#programa_id').val(cd_programa);
                         $('.content').loader('hide');
                     }
                 });

@@ -19,7 +19,7 @@ $(document).ready(function() {
               confirmButtonText: "Sim, salvar mesmo assim!"
             }).then((result) => {
               if (result.isConfirmed) {
-                $("#frm_impresso").submit();
+                $("#frm_tv").submit();
               }
             });
 

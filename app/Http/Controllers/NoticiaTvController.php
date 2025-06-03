@@ -263,15 +263,17 @@ class NoticiaTvController extends Controller
     public function inserir(Request $request)
     {
         $carbon = new Carbon();
+        
         try {
            
             $emissora = EmissoraWeb::find($request->emissora);
            
-            $dados = array('dt_noticia' => ($request->data) ? $carbon->createFromFormat('d/m/Y', $request->data)->format('Y-m-d') : date("Y-m-d"),
+            $dados = array('dt_cadastro' => ($request->dt_cadastro) ? $carbon->createFromFormat('d/m/Y', $request->dt_cadastro)->format('Y-m-d') : date("Y-m-d"),
                            'duracao' => $request->duracao,
                            'horario' => $request->horario,
+                           'dt_noticia' => ($request->dt_noticia) ? $carbon->createFromFormat('d/m/Y', $request->dt_noticia)->format('Y-m-d') : date("Y-m-d"),
                            'emissora_id' => $request->emissora,
-                           'programa_id' => $request->cd_programa,
+                           'programa_id' => $request->programa_id,
                            'arquivo' => $request->arquivo,
                            'sinopse' => $request->sinopse,
                            'valor_retorno' => $request->valor_retorno,
@@ -338,15 +340,15 @@ class NoticiaTvController extends Controller
 
             case 'salvar_e_copiar':
 
-               $nova_noticia = $noticia->replicate();
-               $nova_noticia->sinopse = null;
-               $nova_noticia->ds_caminho_video = null;
-               $nova_noticia->duracao = null;
-               $nova_noticia->save();
+                $nova_noticia = $noticia->replicate();
+                $nova_noticia->sinopse = null;
+                $nova_noticia->ds_caminho_video = null;
+                $nova_noticia->duracao = null;
+                $nova_noticia->save();
 
                 return redirect('noticia/tv/'.$nova_noticia->id.'/editar');
 
-               break;
+            break;
         }
     }
 
@@ -364,18 +366,19 @@ class NoticiaTvController extends Controller
 
             $emissora = EmissoraWeb::find($request->emissora);
             
-            $dados = array('dt_noticia' => ($request->data) ? $carbon->createFromFormat('d/m/Y', $request->data)->format('Y-m-d') : date("Y-m-d"),
-                            'duracao' => $request->duracao,
-                            'horario' => $request->horario,
-                            'emissora_id' => $request->emissora,
-                            'programa_id' => $request->programa,
-                            'arquivo' => ($request->arquivo) ? $request->arquivo : $noticia->arquivo,
-                            'sinopse' => $request->sinopse,
-                            'valor_retorno' => $request->valor_retorno,
-                            'cd_estado' => $request->cd_estado,
-                            'cd_cidade' => $request->cidade,
-                            'ds_caminho_video' => ($request->ds_caminho_video) ? $request->ds_caminho_video : $noticia->ds_caminho_video,
-                            'link' => $request->link
+            $dados = array('dt_cadastro' => ($request->dt_cadastro) ? $carbon->createFromFormat('d/m/Y', $request->dt_cadastro)->format('Y-m-d') : date("Y-m-d"),
+                           'duracao' => $request->duracao,
+                           'horario' => $request->horario,
+                           'dt_noticia' => ($request->dt_noticia) ? $carbon->createFromFormat('d/m/Y', $request->dt_noticia)->format('Y-m-d') : date("Y-m-d"),
+                           'emissora_id' => $request->emissora,
+                           'programa_id' => $request->programa_id,
+                           'arquivo' => $request->arquivo,
+                           'sinopse' => $request->sinopse,
+                           'valor_retorno' => $request->valor_retorno,
+                           'cd_estado' => $request->cd_estado,
+                           'cd_cidade' => $request->cd_cidade,
+                           'ds_caminho_video' => $request->ds_caminho_video,
+                           'link' => $request->link
             ); 
 
             if($noticia->update($dados)){
@@ -419,12 +422,29 @@ class NoticiaTvController extends Controller
                              'msg' => "Ocorreu um erro ao atualizar o registro");
         }
 
-        if ($retorno['flag']) {
-            Flash::success($retorno['msg']);
-            return redirect('noticias/tv')->withInput();
-        } else {
-            Flash::error($retorno['msg']);
-            return redirect('noticia/tv/'.$id.'/editar')->withInput();
+        switch ($request->btn_enviar) {
+
+            case 'salvar':
+                if ($retorno['flag']) {
+                    Flash::success($retorno['msg']);
+                    return redirect('noticias/tv')->withInput();
+                } else {
+                    Flash::error($retorno['msg']);
+                    return redirect('tv/noticias/cadastrar')->withInput();
+                }
+                break;
+
+            case 'salvar_e_copiar':
+
+                $nova_noticia = $noticia->replicate();
+                $nova_noticia->sinopse = null;
+                $nova_noticia->ds_caminho_video = null;
+                $nova_noticia->duracao = null;
+                $nova_noticia->save();
+
+                return redirect('noticia/tv/'.$nova_noticia->id.'/editar');
+
+            break;
         }
     }
 
