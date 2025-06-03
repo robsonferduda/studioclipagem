@@ -192,6 +192,7 @@ class NoticiaTvController extends Controller
         $dados = array("emissora_id" => $conteudo->id_emissora,
                        "horario" => $conteudo->horario_start_gravacao,
                        "sinopse" => $conteudo->transcricao,
+                       "cd_usuario" => Auth::user()->id,
                        "dt_cadastro" => date("Y-m-d H:i:s"),
                        "dt_noticia" => $conteudo->horario_start_gravacao);
 
