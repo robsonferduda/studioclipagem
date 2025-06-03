@@ -459,12 +459,10 @@ class BoletimController extends Controller
                 $tipo = "success";
 
                 $boletim->id_situacao = 3; // Enviado
-                $boletim->save();
             }
             catch (\Swift_TransportException $e) {
 
-                dd($e->getMessage());
-
+                $boletim->id_situacao = 4; // Envio Incompleto
                 $msg = "Erro ao enviar para o endereço especificado";
                 $tipo = "error";
             }
@@ -472,7 +470,6 @@ class BoletimController extends Controller
             $logs[] = array('email' => $emails[$i],'tipo' => $tipo, 'msg' => $msg);
         }
 
-        
         $boletim->save();
 
         return view('boletim/resumo', compact('boletim', 'logs'));
