@@ -80,7 +80,7 @@
                     @endforeach
 
                     @if(count($noticias_radio) > 0)
-                        <p style="text-transform: uppercase; font-weight: 600;"><i class="fa fa-volume-up"></i> Clipagens de TV</p>
+                        <p style="text-transform: uppercase; font-weight: 600;"><i class="fa fa-volume-up"></i> Clipagens de Rádio</p>
                     @endif
                     @foreach($noticias_radio as $key => $noticia)
                         <div style="border-bottom: 1px solid #e3e3e3; margin-bottom: 10px; padding-bottom: 10px;">
