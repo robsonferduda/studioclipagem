@@ -171,7 +171,7 @@
                                         </span>
                                     @endforeach
                                 @else
-                                    <p class="text-danger">Nenhum endereço eletrônico cadastrado</p>
+                                    <p class="text-danger">Nenhum usuário cadastrado</p>
                                 @endif
                             </div>
                         </div>
