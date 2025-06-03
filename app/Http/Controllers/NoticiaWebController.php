@@ -308,7 +308,7 @@ class NoticiaWebController extends Controller
                 ConteudoNoticiaWeb::create($request->all());
 
                 $tags = collect($request->tags)->mapWithKeys(function($tag){
-                    return [$tag => ['tipo_id' => 1]];
+                    return [$tag => ['tipo_id' => 2]];
                 })->toArray();
 
                 $noticia->tags()->sync($tags);
