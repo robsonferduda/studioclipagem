@@ -32,7 +32,9 @@
                         @foreach($logs as $log)
                             <tr>
                                 <td>{{ $log['email'] }}</td>
-                                <td>{{ $log['msg'] }}</td>
+                                <td>
+                                    {{ $log['msg'] }} - {{ $log['detalhe'] }}
+                                </td>
                                 <td class="text-center">
                                     @if($log['tipo'] == 'success')
                                         <span class="badge badge-success">Enviado</span>
@@ -40,9 +42,6 @@
                                         <span class="badge badge-danger">Não enviado</span>
                                     @endif
                                 </td>
-                            </tr>
-                            <tr>
-                                <td colspan="3">{{ $log['detalhe'] }}</td>
                             </tr>
                         @endforeach
                     </tbody>
