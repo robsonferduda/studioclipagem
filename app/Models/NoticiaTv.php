@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use DB;
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -23,6 +24,7 @@ class NoticiaTv extends Model
         'arquivo',
         'programa_id',
         'dt_noticia',
+        'dt_cadastro',
         'fl_boletim',
         'sinopse',
         'link',
@@ -30,8 +32,14 @@ class NoticiaTv extends Model
         'valor_retorno',
         'duracao',
         'decupagem_id',
+        'cd_usuario',
         'ds_caminho_video'
     ];
+
+    public function usuario()
+    {
+        return $this->hasOne(User::class, 'id', 'cd_usuario');
+    }
 
     public function cliente()
     {

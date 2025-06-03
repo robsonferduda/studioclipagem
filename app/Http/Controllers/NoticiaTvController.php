@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use DB;
 use File;
 use Storage;
@@ -55,7 +56,7 @@ class NoticiaTvController extends Controller
 
         $dados = NoticiaTv::with('emissora')
                     ->whereBetween($tipo_data, [$dt_inicial." 00:00:00", $dt_final." 23:59:59"])
-                    ->orderBy('id')                    
+                    ->orderBy('created_at','DESC')                    
                     ->paginate(10);
 
         return view('noticia-tv/index', compact('dados','emissora','clientes','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo'));
@@ -263,7 +264,7 @@ class NoticiaTvController extends Controller
     public function inserir(Request $request)
     {
         $carbon = new Carbon();
-        
+
         try {
            
             $emissora = EmissoraWeb::find($request->emissora);
@@ -279,6 +280,7 @@ class NoticiaTvController extends Controller
                            'valor_retorno' => $request->valor_retorno,
                            'cd_estado' => $request->cd_estado,
                            'cd_cidade' => $request->cd_cidade,
+                           'cd_usuario' => Auth::user()->id,
                            'ds_caminho_video' => $request->ds_caminho_video,
                            'link' => $request->link
                         ); 
