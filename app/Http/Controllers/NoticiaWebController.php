@@ -296,7 +296,7 @@ class NoticiaWebController extends Controller
             $request->merge(['data_noticia' => $data_noticia]);
 
             $ds_caminho_img = ($request->ds_caminho_img) ? ($request->ds_caminho_img) : $noticia->ds_caminho_img;
-            request->merge(['ds_caminho_img' => $ds_caminho_img]);
+            $request->merge(['ds_caminho_img' => $ds_caminho_img]);
 
             $request->merge(['fl_boletim' => true]);
 
