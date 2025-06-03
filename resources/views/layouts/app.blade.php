@@ -379,21 +379,22 @@
                     </div>
                  </li>              
                 @endrole
-                
+                @permission('menu-boletim')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'boletins') ? 'active' : '' }}">
                     <a href="{{ url('boletins') }}">
                     <i class="fa fa-file-o"></i>
                     <p>Boletins</p>
                     </a>
                   </li>
-                
-                
+                 @endpermission
+                @permission('menu-relatorio')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'relatorios') ? 'active' : '' }}">
                     <a href="{{ url('relatorios') }}">
                     <i class="fa fa-file-pdf-o"></i>
                     <p>Relatórios</p>
                     </a>
                   </li>
+                   @endpermission
                 
               
                 <hr/>

@@ -390,7 +390,8 @@ Route::middleware(['web'])->group(function () {
 
 	Route::get('usuarios','UserController@index');
 	Route::get('usuario/historico/{id}','UserController@historico');
-	Route::get('usuarios/excluir/{id}','UserController@excluir');
+	Route::get('usuarios/excluir/{id}','UserController@excluirUsuarioCliente');
+	Route::post('usuario/cliente/cadastrar','UserController@usuarioCliente');
 
 	Route::get('role/permissions/{role}','RoleController@permissions');
 	Route::post('role/permission/{role}','RoleController@addPermission');

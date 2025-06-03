@@ -130,6 +130,22 @@ class UserController extends Controller
         
     }
 
+    public function usuarioCliente(Request $request)
+    {
+        $user = array('name' => $request->nome,
+                      'email' => $request->usuario,
+                      'password' => \Hash::make($request->senha),
+                      'client_id' => $request->cliente,
+                      'is_active' => $request->ativo == "true" ? true : false);
+
+        $user = User::create($user);
+
+        if($user){
+            $user_role = array('role_id' => 2, 'user_id' => $user->id);
+            RoleUser::create($user_role);
+        }
+    }
+
     public function store(UserRequest $request)
     {
         $flag = $request->is_active == true ? true : false;
@@ -240,4 +256,18 @@ class UserController extends Controller
 
         return redirect('usuarios')->withInput();
     }
+
+    public function excluirUsuarioCliente($id)
+    {
+        $user = User::find($id);
+        $cliente = $user->client_id;
+
+        if($user->delete())
+            Flash::success('<i class="fa fa-check"></i> Usuário <strong>'.$user->name.'</strong> excluído com sucesso');
+        else
+            Flash::error("Erro ao excluir o registro");
+
+        return redirect('cliente/'.$cliente.'/edit')->withInput();
+    }
+    
 }
