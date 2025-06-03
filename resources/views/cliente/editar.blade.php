@@ -165,7 +165,7 @@
                                             <a title="Remover" href="{{ url('usuarios/excluir', $usuario->id) }}" class="btn-excluir">
                                                 <i class="fa fa-trash fa-2x text-danger ml-1 mr-2"></i>
                                             </a>
-                                            <a title="Editar" href="{{ url('usuarios/excluir', $usuario->id) }}" class="btn-excluir">
+                                            <a title="Editar" href="{{ url('usuarios/excluir', $usuario->id) }}" class="btn-editar">
                                                 <i class="fa fa-edit fa-2x text-info ml-1 mr-3"></i>
                                             </a>
                                         </span>
