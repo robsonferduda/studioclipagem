@@ -378,8 +378,8 @@
             $(".btn-salvar-usuario").click(function(){
 
                 var cliente = $("#cliente_id").val();
-                var usuario = $("#nome_usuario").val();
-                var nome = $("#nome").val();
+                var usuario = $("#usuario").val();
+                var nome = $("#nome_usuario").val();
                 var senha = $("#password").val();
                 var ativo = $("#ativo").is(":checked");
 
