@@ -8,7 +8,6 @@
                     <h4 class="card-title">
                         <i class="fa fa-globe"></i> Web 
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Notícias 
-                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Coletas 
                     </h4>
                 </div>
                 <div class="col-md-6">
