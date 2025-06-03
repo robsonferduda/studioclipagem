@@ -30,7 +30,7 @@
                                         <label>Tipo de Data</label>
                                         <select class="form-control" name="tipo_data" id="tipo_data">
                                             <option value="dt_cadastro" {{ ($tipo_data == "dt_cadastro") ? 'selected' : '' }}>Data de Cadastro</option>
-                                            <option value="dt_noticia" {{ ($tipo_data == "dt_clipagem") ? 'selected' : '' }}>Data do Clipping</option>
+                                            <option value="dt_noticia" {{ ($tipo_data == "dt_noticia") ? 'selected' : '' }}>Data do Clipping</option>
                                         </select>
                                     </div>
                                 </div>
@@ -105,7 +105,7 @@
                                                     <h6><a href="{{ url('fonte-impresso/'.$noticia->id_fonte.'/editar') }}" target="_BLANK">{{ ($noticia->fonte) ? $noticia->fonte->nome_emissora : '' }}</a></h6>  
                                                     <h6 style="color: #FF5722;">{{ ($noticia->cd_estado) ? $noticia->estado->nm_estado : '' }}{{ ($noticia->cd_cidade) ? "/".$noticia->cidade->nm_cidade : '' }}</h6>  
                                                     <h6 class="text-muted mb-1">
-                                                        {{ \Carbon\Carbon::parse($noticia->dt_pub)->format('d/m/Y') }} 
+                                                        {{ \Carbon\Carbon::parse($noticia->dt_noticia)->format('d/m/Y') }} 
                                                         {{ ($noticia->horario) ? $noticia->horario : '' }}
                                                         {{ ($noticia->emissora) ? " - ".$noticia->emissora->nome_emissora : '' }}
                                                         {{ ($noticia->programa) ? "/".$noticia->programa->nome_programa : '' }}
