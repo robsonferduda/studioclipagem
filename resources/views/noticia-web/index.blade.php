@@ -79,6 +79,7 @@
                         {{ $dados->onEachSide(1)->appends(['dt_inicial' => \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y'), 
                                                             'dt_final' => \Carbon\Carbon::parse($dt_final)->format('d/m/Y'),
                                                             'cliente' => $cliente_selecionado,
+                                                            'tipo_data' =>$tipo_data,
                                                             'termo' => $termo])
                                                             ->links('vendor.pagination.bootstrap-4') }}
                     @endif
@@ -162,7 +163,7 @@
                                 <div class="card-footer">
                                 <hr>
                                     <div class="stats">
-                                        <i class="fa fa-refresh"></i>Notícia cadastrada em {{ \Carbon\Carbon::parse($dado->created_at)->format('d/m/Y H:i:s') }}
+                                        <<i class="fa fa-refresh"></i>Cadastrado por <strong>{{ ($dado->usuario) ? $dado->usuario->name : 'Sistema' }}</strong> em {{ \Carbon\Carbon::parse($dado->created_at)->format('d/m/Y H:i:s') }}. Última atualização em {{ \Carbon\Carbon::parse($dado->updated_at)->format('d/m/Y H:i:s') }}
                                         <div class="pull-right">
                                             <a title="Excluir" href="{{ url('noticia/web/'.$dado->id.'/excluir') }}" class="btn btn-danger btn-fill btn-icon btn-sm btn-excluir" style="border-radius: 30px;">
                                                 <i class="fa fa-times fa-3x text-white"></i>
@@ -184,6 +185,7 @@
                     {{ $dados->onEachSide(1)->appends(['dt_inicial' => \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y'), 
                                                         'dt_final' => \Carbon\Carbon::parse($dt_final)->format('d/m/Y'),
                                                         'cliente' => $cliente_selecionado,
+                                                        'tipo_data' =>$tipo_data,
                                                         'termo' => $termo])
                                                         ->links('vendor.pagination.bootstrap-4') }}
                     @endif
