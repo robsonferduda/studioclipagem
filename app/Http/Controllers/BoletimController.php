@@ -464,10 +464,11 @@ class BoletimController extends Controller
 
                 $boletim->id_situacao = 4; // Envio Incompleto
                 $msg = "Erro ao enviar para o endereço especificado";
+                $detalhe = $e->getMessage();
                 $tipo = "error";
             }
 
-            $logs[] = array('email' => $emails[$i],'tipo' => $tipo, 'msg' => $msg);
+            $logs[] = array('email' => $emails[$i],'tipo' => $tipo, 'detalhe' => $detalhe, 'msg' => $msg);
         }
 
         $boletim->save();

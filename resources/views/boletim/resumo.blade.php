@@ -41,6 +41,9 @@
                                     @endif
                                 </td>
                             </tr>
+                            <tr>
+                                <td colspan="3">{{ $log['detalhe'] }}</td>
+                            </tr>
                         @endforeach
                     </tbody>
                 </table>   
