@@ -432,6 +432,7 @@ class BoletimController extends Controller
     public function enviarLista(Request $request)
     {
         $logs = array();
+        $detalhe = '';
         $boletim = Boletim::where('id', $request->id)->first();  
 
         $noticias_impresso = $boletim->noticiasImpresso()->get();
