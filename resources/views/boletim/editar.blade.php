@@ -336,7 +336,7 @@
                               message: "<b>Operação Realizada com Sucesso</b> - a notícia foi adicionada com sucesso ao boletim."
                             }, {
                               type: 'success',
-                              timer: 8000,
+                              timer: 1000,
                               placement: {
                                 from: 'top',
                                 align: 'right'
@@ -353,7 +353,7 @@
                               message: "<b>Erro ao Realizar Operação</b> - a notícia não foi adicionada ao boletim. Código da notícia: <strong>"+id+"</strong>"
                             }, {
                               type: 'danger',
-                              timer: 8000,
+                              timer: 1000,
                               placement: {
                                 from: 'top',
                                 align: 'right'
