@@ -95,10 +95,4 @@
             </div>
         </div>
     </div>
-</body> 
-
-
-<p style="margin-bottom: 0px;"><strong>Emissora:</strong> {{ $noticia->INFO1 }}</p>
-                                        <p style="margin-bottom: 0px;"><strong>Programa:</strong> {{ $noticia->INFO2 }}</p>
-                                        <p style="margin-bottom: 0px;"><strong>Duração:</strong> {{ gmdate("H:i:s", $noticia->segundos)}}</p>
-                                        <p style="margin-bottom: 0px;"><strong>Sinopse:</strong> {!! $sinopse = strip_tags(str_replace('Sinopse 1 - ', '', $noticia->sinopse)) !!}</p>
+</body>
