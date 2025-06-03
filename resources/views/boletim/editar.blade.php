@@ -13,6 +13,7 @@
                 <div class="col-md-6">
                     <a href="{{ url('boletins') }}" class="btn btn-primary pull-right mr-2"><i class="fa fa-table"></i> Boletins</a>
                     <a href="{{ url('boletim/'.$boletim->id.'/visualizar') }}" class="btn btn-warning pull-right mr-1" target="_blank"><i class="fa fa-eye"></i> Visualizar</a>
+                    <a href="{{ url('boletim/'.$boletim->id.'/enviar') }}" class="btn btn-success pull-right mr-1"><i class="fa fa-send"></i> Verificar e Enviar</a>
                     <a href="{{ url('boletim/cadastrar') }}" class="btn btn-primary pull-right mr-1"><i class="fa fa-plus"></i> Cadastrar Boletim</a>
                 </div>
             </div>
@@ -103,7 +104,7 @@
                         <div class="form-check mt-3">
                             <div class="form-check">
                                 <label class="form-check-label">
-                                    <input class="form-check-input" type="checkbox" name="is_active" id="midia-impresso" value="true">
+                                    <input class="form-check-input" type="checkbox" name="is_active" id="midia-impresso" {{ ($boletim->fl_impresso) ? 'checked' : '' }} value="true">
                                     Clipagem de Jornal
                                     <span class="form-check-sign"></span>
                                 </label>
@@ -114,7 +115,7 @@
                         <div class="form-check mt-3">
                             <div class="form-check">
                                 <label class="form-check-label">
-                                    <input class="form-check-input" type="checkbox" name="is_active" id="midia-radio" value="true">
+                                    <input class="form-check-input" type="checkbox" name="is_active" id="midia-radio" {{ ($boletim->fl_radio) ? 'checked' : '' }} value="true">
                                     Clipagem de Rádio
                                     <span class="form-check-sign"></span>
                                 </label>
@@ -125,7 +126,7 @@
                         <div class="form-check mt-3">
                             <div class="form-check">
                                 <label class="form-check-label">
-                                    <input class="form-check-input" type="checkbox" name="is_active" id="midia-tv" value="true">
+                                    <input class="form-check-input" type="checkbox" name="is_active" id="midia-tv" {{ ($boletim->fl_tv) ? 'checked' : '' }} value="true">
                                     Clipagem de TV
                                     <span class="form-check-sign"></span>
                                 </label>
@@ -136,7 +137,7 @@
                         <div class="form-check mt-3">
                             <div class="form-check">
                                 <label class="form-check-label">
-                                    <input class="form-check-input" type="checkbox" name="is_active" id="midia-web" value="true">
+                                    <input class="form-check-input" type="checkbox" name="is_active" id="midia-web" {{ ($boletim->fl_web) ? 'checked' : '' }} value="true">
                                     Clipagem de Web
                                     <span class="form-check-sign"></span>
                                 </label>

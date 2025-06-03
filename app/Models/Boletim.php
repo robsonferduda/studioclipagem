@@ -12,7 +12,12 @@ class Boletim extends Model
     protected $connection = 'pgsql';
     protected $table = 'boletim';
 
-    protected $fillable = ['id_cliente','id_situacao','dt_boletim','titulo','total_views','id_usuario','dt_envio'];
+    protected $fillable = ['id_cliente','id_situacao','dt_boletim','titulo','total_views','id_usuario',
+                            'dt_envio',
+                            'fl_impresso',
+                            'fl_radio',
+                            'fl_tv',
+                            'fl_web'];
 
     public function cliente()
     {

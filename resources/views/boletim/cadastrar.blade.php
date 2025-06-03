@@ -45,11 +45,60 @@
                                 <input type="text" class="form-control" name="titulo" id="titulo" required="true" value="Boletim Digital - Studio Clipagem - {{ date('d/m/Y') }}">
                             </div>
                         </div>
+                    </div>  
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h6 class="mt-2">Tipos de Mídia <small class="text-info">Utilizado para filtrar os tipos de mídia na hora da montagem do boletim</small></h6>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check mt-3">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" name="fl_impresso" id="fl_impresso" value="true">
+                                        Clipagem de Jornal
+                                        <span class="form-check-sign"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check mt-3">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" name="fl_radio" id="fl_radio" value="true">
+                                        Clipagem de Rádio
+                                        <span class="form-check-sign"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check mt-3">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" name="fl_tv" id="fl_tv" value="true">
+                                        Clipagem de TV
+                                        <span class="form-check-sign"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check mt-3">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" name="fl_web" id="fl_web" value="true">
+                                        Clipagem de Web
+                                        <span class="form-check-sign"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
                         <div class="col-md-12 text-center">
                             <button type="submit" class="btn btn-success" name="btn_enviar" value="salvar"><i class="fa fa-save"></i> Salvar</button>
                             <a href="{{ url('boletins') }}" class="btn btn-danger"><i class="fa fa-times"></i> Cancelar</a>
                         </div>
-                    </div>  
+                    </div>
                 {!! Form::close() !!} 
             </div>      
         </div>
