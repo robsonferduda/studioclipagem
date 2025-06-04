@@ -1,41 +1,31 @@
-<?php 
+<?php
 
 namespace App\Jobs;
 
+use PDFS;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Support\Facades\Storage;
 
 class GerarRelatorioJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $data;
+    public $data;
+    public $nome_arquivo;
 
-    public function __construct($data)
+    public function __construct($data, $nome_arquivo)
     {
-        $this->data = $data; // Dados JSON para gerar o PDF
+        $this->data = $data;
+        $this->nome_arquivo = $nome_arquivo;
     }
 
     public function handle()
     {
-        // Renderizar a view com os dados
-        $pdf = PDF::loadView('pdf.document', ['data' => $this->data]);
-
-        // Salvar o PDF em disco (ex.: storage/app/public)
-        $filePath = 'pdfs/relatorio_' . time() . '.pdf';
-        Storage::disk('public')->put($filePath, $pdf->output());
-
-        // Opcional: Notificar o usuário que o PDF está pronto
-        // Exemplo: Enviar um email ou salvar o caminho do PDF no banco de dados
-
-        // Notificar o usuário
-        $user = User::find(1); // Substitua pelo ID do usuário real
-        $url = Storage::disk('public')->url($filePath);
-        Notification::send($user, new PdfProntoNotification($url));
+        $pdf = PDFS::loadView('relatorio/pdf/principal', $this->data);
+        Storage::disk('public')->put('relatorios-pdf/'.$this->nome_arquivo, $pdf->output());        
     }
 }

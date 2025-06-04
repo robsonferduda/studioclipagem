@@ -58,6 +58,24 @@ class RelatorioController extends Controller
 
             switch($request->acao) {
 
+                /*
+                case 'gerar-pdf':
+
+                    $nome_arquivo = date('YmdHis').".pdf";
+                    $data = [
+                        'dados_impresso' => $dados_impresso,
+                        'dados_web' => $dados_web,
+                        'dt_inicial_formatada' => $dt_inicial_formatada,
+                        'dt_final_formatada' => $dt_final_formatada
+                    ];
+
+                    GerarRelatorioJob::dispatch($data, $nome_arquivo);
+                    // Retorne uma mensagem para o usuário
+                    return back()->with('success', 'Seu relatório está sendo gerado. Você será avisado quando estiver pronto!');
+                
+                break;    */
+                
+
                 case 'gerar-pdf':
 
                     $nome = "Relatório Completo";
@@ -71,6 +89,7 @@ class RelatorioController extends Controller
                     ];
 
                     $pdf = PDFS::loadView('relatorio/pdf/principal', $data);
+                    Storage::disk('public')->put('relatorios-pdf/'.$nome_arquivo, $pdf->output()); 
                     return $pdf->download($nome_arquivo);
                 break;
             
