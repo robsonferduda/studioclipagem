@@ -58,7 +58,6 @@ class RelatorioController extends Controller
 
             switch($request->acao) {
 
-                /*
                 case 'gerar-pdf':
 
                     $nome_arquivo = date('YmdHis').".pdf";
@@ -73,9 +72,9 @@ class RelatorioController extends Controller
                     // Retorne uma mensagem para o usuário
                     return back()->with('success', 'Seu relatório está sendo gerado. Você será avisado quando estiver pronto!');
                 
-                break;    */
+                break;    
                 
-
+                /*
                 case 'gerar-pdf':
 
                     $nome = "Relatório Completo";
@@ -91,8 +90,8 @@ class RelatorioController extends Controller
                     $pdf = PDFS::loadView('relatorio/pdf/principal', $data);
                     $ver = Storage::disk('public')->put('relatorios-pdf/'.$nome_arquivo, $pdf->output()); 
 
-                    dd($ver);
                     return $pdf->download($nome_arquivo);
+                    */
                 break;
             
                 case 'pesquisar': 
