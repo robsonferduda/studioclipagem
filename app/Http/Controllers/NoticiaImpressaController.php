@@ -54,10 +54,9 @@ class NoticiaImpressaController extends Controller
         $termo = ($request->termo) ? $request->termo : null;
 
         $dados = NoticiaImpresso::with('fonte')
-                    ->whereHas('clientes', function($query) use ($cliente_selecionado) {
-                        $query->where('noticia_cliente.tipo_id', 1)
-                        ->when($cliente_selecionado, function ($query) use ($cliente_selecionado) { 
-                            $query->where('noticia_cliente.cliente_id', $cliente_selecionado);
+                    ->when($cliente_selecionado, function ($query) use ($cliente_selecionado) { 
+                        return $query->whereHas('clientes', function($q) use ($cliente_selecionado) {
+                            $q->where('noticia_cliente.cliente_id', $cliente_selecionado)->where('noticia_cliente.tipo_id', 1);
                         });
                     })
                     ->whereBetween($tipo_data, [$dt_inicial." 00:00:00", $dt_final." 23:59:59"])
