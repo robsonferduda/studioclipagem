@@ -23,8 +23,8 @@ class ProcessarImpressos implements ShouldQueue
 
     public function handle()
     {
-        $command = escapeshellcmd("python3 ".base_path()."/read-pdf-convert-to-jpg.py");
-        $output = shell_exec($command);
+        //$command = escapeshellcmd("python3 ".base_path()."/read-pdf-convert-to-jpg.py");
+        //$output = shell_exec($command);
         /*
         $data['dados'] = null;
 

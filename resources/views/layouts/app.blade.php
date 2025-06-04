@@ -624,7 +624,7 @@
   </script>
   <script src="https://js.pusher.com/8.4.0/pusher.min.js"></script>
   <script>
-
+    /*
     // Enable pusher logging - don't include this in production
     Pusher.logToConsole = true;
 
@@ -636,7 +636,7 @@
     channel.bind('my-event', function(data) {
       alert("Received my-event with data: ");
       alert(JSON.stringify(data));
-    });
+    });*/
   </script>
   
 </body>
