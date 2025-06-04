@@ -385,6 +385,8 @@ Route::middleware(['web'])->group(function () {
 	Route::get('perfil/novo','RoleController@create');
 
 	Route::get('pdf','RelatorioController@pdf');
+	Route::get('relatorios/clipping','RelatorioController@clipping');
+	Route::get('relatorios/clipping/{arquivo}','RelatorioController@getClipping');
 
 	Route::match(array('GET', 'POST'),'noticias','ClienteController@noticias');
 

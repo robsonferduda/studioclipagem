@@ -70,7 +70,6 @@ class RelatorioController extends Controller
                         'ds_nome' => $nome_arquivo,
                         'cd_usuario' => Auth::user()->id,
                         'dt_requisicao' => now(),
-                        // outros campos se necessário
                     ]);
 
                     $data = [
@@ -80,10 +79,8 @@ class RelatorioController extends Controller
                         'dt_final_formatada' => $dt_final_formatada
                     ];
 
-                    GerarRelatorioJob::dispatch($data, $nome_arquivo,$relatorio);
-                
-                break;    
-                
+                    GerarRelatorioJob::dispatch($data, $nome_arquivo, $relatorio);
+                  
                 /*
                 case 'gerar-pdf':
 
@@ -114,6 +111,18 @@ class RelatorioController extends Controller
         }
 
         return view('relatorio/index', compact('dados','clientes','cliente_selecionado','dt_inicial','dt_final','fl_web','fl_tv','fl_radio','fl_impresso'));
+    }
+
+    public function clipping(Request $request)
+    {
+        $relatorios = Relatorio::orderBy('created_at','DESC')->get();
+
+        return view('relatorio/clipping', compact('relatorios'));
+    }
+
+    public function getClipping($arquivo)
+    {
+        return Storage::disk('public')->download('relatorios-pdf/'.$arquivo); 
     }
 
     function pdfIndividual($tipo, $id)

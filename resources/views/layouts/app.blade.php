@@ -402,6 +402,13 @@
                     <p>Relatórios</p>
                     </a>
                   </li>
+
+                  <li class="{{ (Session::has('url') and Session::get('url') == 'relatorios') ? 'active' : '' }}">
+                    <a href="{{ url('relatorios/clipping') }}">
+                    <i class="fa fa-file-pdf-o"></i>
+                    <p>Clipping</p>
+                    </a>
+                  </li>
                    @endpermission
                 
               

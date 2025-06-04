@@ -32,6 +32,7 @@ class GerarRelatorioJob implements ShouldQueue
     public function handle()
     {
         try {
+
             $pdf = PDFS::loadView('relatorio/pdf/principal', $this->data);
             Storage::disk('public')->put('relatorios-pdf/'.$this->nome_arquivo, $pdf->output());
 
@@ -39,7 +40,9 @@ class GerarRelatorioJob implements ShouldQueue
             $this->relatorio->situacao = 1;
             $this->relatorio->dt_finalizacao = now();
             $this->relatorio->save();
+
         } catch (\Exception $e) {
+            
             // Erro: atualiza situação para "erro" (ex: 3)
             $this->relatorio->situacao = 2;
             $this->relatorio->dt_finalizacao = now();
