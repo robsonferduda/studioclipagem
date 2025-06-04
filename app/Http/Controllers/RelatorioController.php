@@ -62,6 +62,7 @@ class RelatorioController extends Controller
 
                 case 'gerar-pdf':
 
+                    /*
                     $nome_arquivo = date('YmdHis').".pdf";
 
                     // Cria o registro do relatório no banco
@@ -81,11 +82,17 @@ class RelatorioController extends Controller
 
                     GerarRelatorioJob::dispatch($data, $nome_arquivo, $relatorio);
                   
-                /*
-                case 'gerar-pdf':
+                    */
 
                     $nome = "Relatório Completo";
                     $nome_arquivo = date('YmdHis').".pdf";
+
+                    $relatorio = Relatorio::create([
+                        'id_tipo' => 1, // Clipping
+                        'ds_nome' => $nome_arquivo,
+                        'cd_usuario' => Auth::user()->id,
+                        'dt_requisicao' => now(),
+                    ]);
 
                     $data = [
                         'dados_impresso' => $dados_impresso,
@@ -94,11 +101,28 @@ class RelatorioController extends Controller
                         'dt_final_formatada' => $dt_final_formatada
                     ];
 
-                    $pdf = PDFS::loadView('relatorio/pdf/principal', $data);
-                    $ver = Storage::disk('public')->put('relatorios-pdf/'.$nome_arquivo, $pdf->output()); 
+                    try {
 
-                    return $pdf->download($nome_arquivo);
-                    */
+                        $pdf = PDFS::loadView('relatorio/pdf/principal', $data);
+                        Storage::disk('public')->put('relatorios-pdf/'.$nome_arquivo, $pdf->output());
+
+                        // Sucesso: atualiza situação para "pronto" (ex: 2)
+                        $relatorio->situacao = 1;
+                        $relatorio->dt_finalizacao = now();
+                        $relatorio->save();
+
+                    } catch (\Exception $e) {
+
+                        // Erro: atualiza situação para "erro" (ex: 3)
+                        $relatorio->situacao = 2;
+                        $relatorio->dt_finalizacao = now();
+                        $relatorio->save();
+
+                        // Opcional: log do erro
+                        \Log::error('Erro ao gerar relatório: '.$e->getMessage());
+                        throw $e; // para o job marcar como falha
+                    }      
+
                 break;
             
                 case 'pesquisar': 
