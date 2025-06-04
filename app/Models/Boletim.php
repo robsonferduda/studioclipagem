@@ -34,6 +34,11 @@ class Boletim extends Model
         return $this->hasOne('App\User','id','id_usuario');
     }
 
+    public function envios()
+    {
+        return $this->hasMany(BoletimEnvio::class,'id_boletim','id');
+    }
+
     public function noticiasImpresso()
     {
         return $this->belongsToMany(NoticiaImpresso::class,'boletim_noticia','id_boletim','id_noticia')->withPivot('id_tipo')->where('id_tipo', 1)->withTimestamps();

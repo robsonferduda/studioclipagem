@@ -23,20 +23,22 @@
                 <table class="table table-hover">
                     <thead class="">
                         <tr>
+                            <th>Data Envio</th>
                             <th>Email</th>
                             <th>Mensagem</th>
+                            <th>Responsável</th>
                             <th class="center">Status</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($logs as $log)
+                        @foreach($boletim->envios as $envio)
                             <tr>
-                                <td>{{ $log['email'] }}</td>
-                                <td>
-                                    {{ $log['msg'] }} - {{ $log['detalhe'] }}
-                                </td>
+                                <td>{{ \Carbon\Carbon::parse($envio->created_at)->format('d/m/Y H:i:s') }}</td>
+                                <td>{{ $envio->ds_email }}</td>
+                                <td>{{ $envio->ds_mensagem }}</td>
+                                <td>{{ ($envio->usuario) ? $envio->usuario->name : 'Envio Automático' }}</td>
                                 <td class="text-center">
-                                    @if($log['tipo'] == 'success')
+                                    @if($envio->id_situacao == 2)
                                         <span class="badge badge-success">Enviado</span>
                                     @else
                                         <span class="badge badge-danger">Não enviado</span>

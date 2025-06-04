@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Auth;
 use Mail;
+use App\Utils;
 use App\Mail\BoletimMail;
 use Carbon\Carbon;
 use App\Models\Boletim;
@@ -20,6 +21,7 @@ use Laracasts\Flash\Flash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use PHPMailer\PHPMailer\PHPMailer;
+use Illuminate\Support\Facades\Http;
 
 class BoletimController extends Controller
 {
@@ -449,33 +451,56 @@ class BoletimController extends Controller
 
         $emails = $request->emails;
 
-        for ($i=0; $i < count($emails); $i++) { 
+        $htmlContent = view('boletim.outlook', [
+                'boletim' => $boletim,
+                'noticias_impresso' => $noticias_impresso,
+                'noticias_web' => $noticias_web,
+                'noticias_radio' => $noticias_radio,
+                'noticias_tv' => $noticias_tv
+            ])->render();
 
-            try{
-                $mail_status = Mail::send('boletim.outlook', $data, function($message) use ($emails, $i, $boletim) {
-                $message->to($emails[$i])
-                ->subject($boletim->titulo);
-                    $message->from('noreply@clipagens.com.br','Studio Clipagem');
-                });
+        for ($i=0; $i < count($emails); $i++) { 
+     
+            $url = 'https://147.93.71.189:38257/mail_sys/send_mail_http.json';
+    
+            $data = [
+                'mail_from' => 'boletins@clipagens.com.br',
+                'password' => 'asdas1#@!SAD',
+                'mail_to' => $emails[$i],
+                'subject' => $boletim->titulo,
+                'content' => $htmlContent,
+                'subtype' => 'html'
+            ];
+
+            $response = Http::withoutVerifying()->asForm()->post($url, $data);
+            $retorno = $response->json();
+
+            $boletim_envio = new \App\Models\BoletimEnvio();
+            $boletim_envio->id_boletim = $boletim->id;  
+            $boletim_envio->ds_email = $emails[$i];
+            $boletim_envio->cd_usuario = Auth::user()->id;
+            
+            if ($response->json()['status']) {
                 $msg = "Email enviado com sucesso";
                 $tipo = "success";
-
-                $boletim->id_situacao = 3; // Enviado
-            }
-            catch (\Swift_TransportException $e) {
-
-                $boletim->id_situacao = 4; // Envio Incompleto
+                $boletim_envio->id_situacao = 2; // Enviado
+                $boletim_envio->ds_mensagem = $msg;
+                    
+            } else {
+                $detalhe = $response->body();
                 $msg = "Erro ao enviar para o endereço especificado";
-                $detalhe = $e->getMessage();
                 $tipo = "error";
-            }
+                $boletim_envio->id_situacao = 1; // Pendente
+                $boletim_envio->ds_mensagem = $msg; 
+            }            
+                        
+            $boletim_envio->save();
 
-            $logs[] = array('email' => $emails[$i],'tipo' => $tipo, 'detalhe' => $detalhe, 'msg' => $msg);
         }
 
         $boletim->save();
 
-        return view('boletim/resumo', compact('boletim', 'logs'));
+        return view('boletim/resumo', compact('boletim'));
     }
  
     public function destroy($id)
