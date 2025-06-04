@@ -14,6 +14,7 @@ class Relatorio extends Model
         'dt_requisicao',
         'dt_finalizacao',
         'total_view',
+        'situacao'
     ];
 
     public $timestamps = true;

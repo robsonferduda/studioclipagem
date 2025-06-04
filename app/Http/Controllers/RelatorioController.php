@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use PDFS;
 use App\Models\Cliente;
+use App\Models\Relatorio;
 use App\Models\NoticiaWeb;
 use Carbon\Carbon;
 use App\Models\NoticiaImpresso;
@@ -61,6 +63,16 @@ class RelatorioController extends Controller
                 case 'gerar-pdf':
 
                     $nome_arquivo = date('YmdHis').".pdf";
+
+                    // Cria o registro do relatório no banco
+                    $relatorio = Relatorio::create([
+                        'id_tipo' => 1, // Clipping
+                        'ds_nome' => $nome_arquivo,
+                        'cd_usuario' => Auth::user()->id,
+                        'dt_requisicao' => now(),
+                        // outros campos se necessário
+                    ]);
+
                     $data = [
                         'dados_impresso' => $dados_impresso,
                         'dados_web' => $dados_web,
@@ -68,9 +80,7 @@ class RelatorioController extends Controller
                         'dt_final_formatada' => $dt_final_formatada
                     ];
 
-                    GerarRelatorioJob::dispatch($data, $nome_arquivo);
-                    // Retorne uma mensagem para o usuário
-                    return back()->with('success', 'Seu relatório está sendo gerado. Você será avisado quando estiver pronto!');
+                    GerarRelatorioJob::dispatch($data, $nome_arquivo,$relatorio);
                 
                 break;    
                 
