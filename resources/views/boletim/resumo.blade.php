@@ -20,6 +20,10 @@
                 @include('layouts.mensagens')
             </div>
             <div class="col-md-12">
+                <h5 class="mb-1">{{ $boletim->titulo }} | <small>{{ $boletim->cliente->nome }}</small></h5>
+                <p>Total de envios: {{ count($boletim->envios) }}</p>
+            </div>
+            <div class="col-md-12">
                 <table class="table table-hover">
                     <thead class="">
                         <tr>
