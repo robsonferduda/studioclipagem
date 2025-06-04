@@ -89,7 +89,9 @@ class RelatorioController extends Controller
                     ];
 
                     $pdf = PDFS::loadView('relatorio/pdf/principal', $data);
-                    Storage::disk('public')->put('relatorios-pdf/'.$nome_arquivo, $pdf->output()); 
+                    $ver = Storage::disk('public')->put('relatorios-pdf/'.$nome_arquivo, $pdf->output()); 
+
+                    dd($ver);
                     return $pdf->download($nome_arquivo);
                 break;
             
