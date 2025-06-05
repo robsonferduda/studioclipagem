@@ -209,6 +209,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('noticia/web/valores','NoticiaWebController@valores');
 	Route::get('noticia/web/novo','NoticiaWebController@create');
 	Route::get('noticia/web/{id}/editar','NoticiaWebController@edit');
+	Route::get('noticia/web/{id}/excluir','NoticiaWebController@excluir');
 	Route::get('noticia/web/{id}/ver','NoticiaWebController@show');
 	Route::get('noticia/web/dashboard','JornalWebController@dashboard');
 	Route::get('noticia/web/detalhes/{id}','NoticiaWebController@detalhes');

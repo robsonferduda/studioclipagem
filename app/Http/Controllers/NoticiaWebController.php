@@ -640,42 +640,15 @@ class NoticiaWebController extends Controller
         return response()->json($vinculos);
     }
 
-    public function valores()
+    public function excluir($id)
     {
-        $noticias = NoticiaCliente::where('tipo_id',2)->where('created_at', '>', '2025-02-10')->where('created_at', '<', '2025-03-01')->get();
+        $noticia = NoticiaWeb::find($id);
 
-        $sql = "SELECT t1.created_at, t2.nu_valor, t2.id 
-                FROM noticia_cliente t1
-                JOIN noticias_web t2 ON t2.id = t1.noticia_id 
-                WHERE t1.created_at > '2025-02-01'
-                AND t2.nu_valor IS null";
+        if($noticia->delete())
+            Flash::success('<i class="fa fa-check"></i> Notícia excluída com sucesso');
+        else
+            Flash::error("Erro ao excluir o registro");
 
-        $dados = DB::select($sql);
-
-        foreach($dados as $dado){
-
-            if($dado){
-
-                $noticia = NoticiaWeb::find($dado->id);
-
-                if($noticia){
-
-                    $fonte = FonteWeb::find($noticia->id_fonte);
-
-                    if($fonte){
-                        $valor = $fonte->nu_valor;
-
-                        if($valor){
-                            $noticia->nu_valor = $valor;
-                            $noticia->save();
-                        }
-                    }else{
-                        $noticia->nu_valor = 0;
-                        $noticia->save();
-                    }
-                }
-            }
-
-        }
+        return redirect('noticia/web')->withInput();
     }
 }
