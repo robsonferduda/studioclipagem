@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -31,6 +32,11 @@ class NoticiaImpresso extends Model
                             'local_impressao',
                             'cd_usuario',
                             'valor_retorno'];
+
+    public function usuario()
+    {
+        return $this->hasOne(User::class, 'id', 'cd_usuario');
+    }
 
     public function cidade()
     {

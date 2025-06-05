@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use DB;
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -31,6 +32,11 @@ class NoticiaRadio extends Model
         'cd_usuario',
         'ds_caminho_audio'
     ];
+
+    public function usuario()
+    {
+        return $this->hasOne(User::class, 'id', 'cd_usuario');
+    }
 
     public function cliente()
     {
