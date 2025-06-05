@@ -52,6 +52,11 @@ class NoticiaWebController extends Controller
                             $q->where('noticia_cliente.cliente_id', $cliente_selecionado)->where('noticia_cliente.tipo_id', 2);
                         });
                     })
+                    ->when($termo, function ($query) use ($termo) {
+                        return $query->whereHas('conteudo', function($q) use ($termo) {
+                            $q->where('conteudo', 'ILIKE', '%'.trim($termo).'%');
+                        });
+                    })
                     ->whereBetween($tipo_data, [$dt_inicial." 00:00:00", $dt_final." 23:59:59"])
                     ->where('fl_boletim', true)
                     ->orderBy('data_noticia')

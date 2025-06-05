@@ -55,6 +55,14 @@ class NoticiaTvController extends Controller
         $termo = ($request->termo) ? $request->termo : null;
 
         $dados = NoticiaTv::with('emissora')
+                    ->when($cliente_selecionado, function ($query) use ($cliente_selecionado) { 
+                        return $query->whereHas('clientes', function($q) use ($cliente_selecionado) {
+                            $q->where('noticia_cliente.cliente_id', $cliente_selecionado)->where('noticia_cliente.tipo_id', 4);
+                        });
+                    })
+                    ->when($termo, function ($q) use ($termo) {
+                        return $q->where('sinopse', 'ILIKE', '%'.trim($termo).'%');
+                    })
                     ->whereBetween($tipo_data, [$dt_inicial." 00:00:00", $dt_final." 23:59:59"])
                     ->orderBy('created_at','DESC')                    
                     ->paginate(10);

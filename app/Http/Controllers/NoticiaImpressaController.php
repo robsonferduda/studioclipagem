@@ -59,6 +59,9 @@ class NoticiaImpressaController extends Controller
                             $q->where('noticia_cliente.cliente_id', $cliente_selecionado)->where('noticia_cliente.tipo_id', 1);
                         });
                     })
+                    ->when($termo, function ($q) use ($termo) {
+                        return $q->where('sinopse', 'ILIKE', '%'.trim($termo).'%');
+                    })
                     ->whereBetween($tipo_data, [$dt_inicial." 00:00:00", $dt_final." 23:59:59"])
                     ->orderBy('dt_clipagem')
                     ->orderBy('titulo')
