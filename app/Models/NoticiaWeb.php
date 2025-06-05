@@ -46,7 +46,7 @@ class NoticiaWeb extends Model
 
     public function clientes()
     {
-        return $this->belongsToMany(Cliente::class,'noticia_cliente','noticia_id','cliente_id')->withPivot('tipo_id','sentimento','area','fl_enviada')->where('tipo_id', 2)->withTimestamps();
+        return $this->belongsToMany(Cliente::class,'noticia_cliente','noticia_id','cliente_id')->withPivot('id','tipo_id','sentimento','area','fl_enviada')->where('tipo_id', 2)->withTimestamps();
     }
 
     public function tags()
