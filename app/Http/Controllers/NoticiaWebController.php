@@ -59,7 +59,7 @@ class NoticiaWebController extends Controller
                     })
                     ->whereBetween($tipo_data, [$dt_inicial." 00:00:00", $dt_final." 23:59:59"])
                     ->where('fl_boletim', true)
-                    ->orderBy('data_noticia')
+                    ->orderBy('created_at', 'DESC')
                     ->paginate(10);
 
         return view('noticia-web/index', compact('dados','fontes','clientes','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo'));
@@ -343,8 +343,6 @@ class NoticiaWebController extends Controller
                              'msg' => "Dados inseridos com sucesso");
 
         } catch (\Illuminate\Database\QueryException $e) {
-
-            dd($e);
 
             DB::rollback();
             $retorno = array('flag' => false,
