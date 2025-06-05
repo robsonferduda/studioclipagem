@@ -683,6 +683,6 @@ class NoticiaWebController extends Controller
         else
             Flash::error("Erro ao excluir o registro");
 
-        return redirect('noticia/web')->withInput();
+        return redirect()->back();
     }
 }
