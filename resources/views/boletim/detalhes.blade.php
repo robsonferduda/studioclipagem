@@ -61,7 +61,15 @@
                             <p style="margin-bottom: 0px;"><strong>Veículo:</strong> {!! ($noticia->fonte) ? $noticia->fonte->nome : '<span class="text-danger">Fonte não informada</span>' !!}</p>
                             <p style="margin-bottom: 0px;"><strong>Seção:</strong> {{ ($noticia->secao) ? $noticia->secao->ds_sessao : 'Não informado' }}</p>
                             <p style="margin-bottom: 0px;"><strong>Sinopse:</strong> {!! $sinopse = strip_tags(str_replace('Sinopse 1 - ', '', $noticia->sinopse)) !!}</p>
-                            <p style="margin-bottom: 10px;"><strong>Link:</strong> <a href="{{ asset('img/noticia-web/'.$noticia->ds_caminho_img) }}" target="_blank">Veja</a></p>
+                            <p style="margin-bottom: 0px;"><strong>Link:</strong> <a href="{{ $noticia->url_noticia }}" target="_blank">Acesse</a></p>
+                            <p style="margin-bottom: 10px;">
+                                <strong>Print:</strong> 
+                                 @if($noticia->ds_caminho_img)
+                                    <a href="{{ asset('img/noticia-web/'.$noticia->ds_caminho_img) }}" target="_blank">Veja</a>
+                                @else
+                                    <a href="{{ Storage::disk('s3')->temporaryUrl($noticia->path_screenshot, '+30 minutes') }}" target="_blank">Veja</a>
+                                @endif
+                            </p>
                         </div>
                     @endforeach
 
