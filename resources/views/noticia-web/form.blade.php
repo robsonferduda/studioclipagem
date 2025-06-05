@@ -170,7 +170,7 @@
                                 <div class="col-md-12">
                                     <label for="sinopse">Texto <span class="text-danger">Campo Obrigatório</span></label>
                                     <div class="form-group">
-                                        <textarea class="form-control" name="conteudo" id="conteudo" rows="10" required>{{ (empty($noticia)) ? old('conteudo') : $noticia->conteudo->conteudo }}</textarea>
+                                        <textarea class="form-control" name="conteudo" id="conteudo" rows="10" required>{{ (empty($noticia and $noticia->conteudo)) ? old('conteudo') : $noticia->conteudo->conteudo }}</textarea>
                                     </div>
                                 </div> 
                                 @if($noticia and $noticia->ds_caminho_img)    

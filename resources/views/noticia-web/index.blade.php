@@ -152,7 +152,7 @@
                                                     </div>
                                             </div>
                                             <div class="sinopse-{{ $dado->id }}">
-                                                {!! ($dado->sinopse) ? $dado->sinopse : Str::limit($dado->conteudo->conteudo, 700, " ...") !!}
+                                                {!! ($dado->conteudo) ? Str::limit($dado->conteudo->conteudo, 700, " ...") : 'Notícia sem conteúdo' !!}
                                             </div>
                                             
                                             <div>

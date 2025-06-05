@@ -354,12 +354,29 @@ class NoticiaWebController extends Controller
                              'msg' => "Ocorreu um erro ao inserir o registro");
         }
 
-        if ($retorno['flag']) {
-            Flash::success($retorno['msg']);
-            return redirect('noticia/web')->withInput();
-        } else {
-            Flash::error($retorno['msg']);
-            return redirect('noticia/web/novo')->withInput();
+        switch ($request->btn_enviar) {
+
+            case 'salvar':
+                if ($retorno['flag']) {
+                    Flash::success($retorno['msg']);
+                    return redirect('noticia/web')->withInput();
+                } else {
+                    Flash::error($retorno['msg']);
+                    return redirect('noticia/web/novo')->withInput();
+                }
+                break;
+
+            case 'salvar_e_copiar':
+
+                $nova_noticia = $noticia->replicate();
+                $nova_noticia->save();
+
+                $request->merge(['id_noticia_web' => $nova_noticia->id]);
+                ConteudoNoticiaWeb::create($request->all());
+
+                return redirect('noticia/web/'.$nova_noticia->id.'/editar');
+
+            break;
         }
     }
 
@@ -433,12 +450,29 @@ class NoticiaWebController extends Controller
                              'msg' => "Ocorreu um erro ao inserir o registro");
         }
 
-        if ($retorno['flag']) {
-            Flash::success($retorno['msg']);
-            return redirect('noticia/web')->withInput();
-        } else {
-            Flash::error($retorno['msg']);
-            return redirect('noticia/web/'.$id.'/editar')->withInput();
+        switch ($request->btn_enviar) {
+
+            case 'salvar':
+                if ($retorno['flag']) {
+                    Flash::success($retorno['msg']);
+                    return redirect('noticia/web')->withInput();
+                } else {
+                    Flash::error($retorno['msg']);
+                    return redirect('noticia/web/'.$id.'/editar')->withInput();
+                }
+                break;
+
+            case 'salvar_e_copiar':
+
+                $nova_noticia = $noticia->replicate();
+                $nova_noticia->save();
+
+                $request->merge(['id_noticia_web' => $nova_noticia->id]);
+                ConteudoNoticiaWeb::create($request->all());
+
+                return redirect('noticia/web/'.$nova_noticia->id.'/editar');
+
+            break;
         }
     }
 
