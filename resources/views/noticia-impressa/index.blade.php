@@ -131,6 +131,7 @@
                                                                             <i class="fa fa-smile-o text-success"></i>
                                                                         @break                                            
                                                                 @endswitch
+                                                                <a class="text-danger btn-excluir" href="{{ url('noticia/'.$cliente->pivot->id.'/vinculo/excluir') }}">Remover Cliente</a>
                                                             </p>
                                                         @empty
                                                             <p class="text-danger mb-1">Nenhum cliente associada à notícia</p>
