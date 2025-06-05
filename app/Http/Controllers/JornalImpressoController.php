@@ -387,8 +387,6 @@ class JornalImpressoController extends Controller
 
                 return view('jornal-impresso/editar', compact('noticia','clientes','fontes','estados','cidades','tags'));
 
-                return redirect('jornal-impresso/noticia/editar/'.$noticia->id);
-
                 break;
             
             case 'impresso':
