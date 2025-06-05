@@ -460,7 +460,37 @@ class BoletimController extends Controller
             ])->render();
 
         for ($i=0; $i < count($emails); $i++) { 
+
+            $boletim_envio = new \App\Models\BoletimEnvio();
+            $boletim_envio->id_boletim = $boletim->id;  
+            $boletim_envio->ds_email = $emails[$i];
+            $boletim_envio->cd_usuario = Auth::user()->id;
+
+            try{
+                $mail_status = Mail::send('boletim.outlook', $data, function($message) use ($emails, $i) {
+                $message->to($emails[$i])
+                ->subject('Boletim de Clipagens');
+                    $message->from('boletins@clipagem.online','Studio Clipagem');
+                });
+                $msg = "Email enviado com sucesso";
+                $tipo = "success";
+
+                $msg = "Email enviado com sucesso";
+                $tipo = "success";
+                $boletim_envio->id_situacao = 2; // Enviado
+                $boletim_envio->ds_mensagem = $msg;
+            }
+            catch (\Swift_TransportException $e) {
+                $msg = "Erro ao enviar para o endereço especificado";
+                $tipo = "error";
+
+                $msg = "Erro ao enviar para o endereço especificado";
+                $tipo = "error";
+                $boletim_envio->id_situacao = 1; // Pendente
+                $boletim_envio->ds_mensagem = $msg;
+            }
      
+            /*
             $url = 'https://147.93.71.189:38257/mail_sys/send_mail_http.json';
     
             $data = [
@@ -474,12 +504,7 @@ class BoletimController extends Controller
 
             $response = Http::withoutVerifying()->asForm()->post($url, $data);
             $retorno = $response->json();
-
-            $boletim_envio = new \App\Models\BoletimEnvio();
-            $boletim_envio->id_boletim = $boletim->id;  
-            $boletim_envio->ds_email = $emails[$i];
-            $boletim_envio->cd_usuario = Auth::user()->id;
-            
+                        
             if ($response->json()['status']) {
                 $msg = "Email enviado com sucesso";
                 $tipo = "success";
@@ -492,7 +517,7 @@ class BoletimController extends Controller
                 $tipo = "error";
                 $boletim_envio->id_situacao = 1; // Pendente
                 $boletim_envio->ds_mensagem = $msg; 
-            }            
+            }*/            
                         
             $boletim_envio->save();
 
