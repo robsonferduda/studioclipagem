@@ -592,13 +592,14 @@ class BoletimController extends Controller
                 $tipo = "success";
                 $boletim_envio->id_situacao = 2; // Enviado
                 $boletim_envio->ds_mensagem = $msg;
-                    
+                $boletim->id_situacao = 3;
             } else {
                 $detalhe = $response->body();
                 $msg = "Erro ao enviar para o endereço especificado";
                 $tipo = "error";
                 $boletim_envio->id_situacao = 1; // Pendente
                 $boletim_envio->ds_mensagem = $msg; 
+                $boletim->id_situacao = 4;
             }           
                         
             $boletim_envio->save();
