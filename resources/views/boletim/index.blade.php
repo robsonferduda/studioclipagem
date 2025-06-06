@@ -27,7 +27,7 @@
                                 <div class="col-md-12 mt-0 mb-0">
                                     <p class="text-info">São listados todos os boletins gerados na data atual. Para selecionar outro período, utilize as opções na tela.</p>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label class="font-black"><i class="fa fa-filter"></i> Filtrar por cliente</label>
                                         <select class="form-control select2" name="cliente" id="cliente">
@@ -74,9 +74,9 @@
                                         <input type="text" class="form-control datepicker" name="dt_final" required="true" value="{{ \Carbon\Carbon::parse($dt_final)->format('d/m/Y') }}" placeholder="__/__/____">
                                     </div>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-1">
                                     <div class="form-group">
-                                        <button type="submit" class="btn btn-primary w-100 mt-4" name="btn_enviar" value="salvar"><i class="fa fa-search"></i> Buscar</button>
+                                        <button type="submit" class="btn btn-primary w-100 mt-4" name="btn_enviar" value="salvar"><i class="fa fa-search"></i></button>
                                     </div>
                                 </div>
                             </div>     
