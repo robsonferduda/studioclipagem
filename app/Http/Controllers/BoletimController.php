@@ -43,7 +43,7 @@ class BoletimController extends Controller
         $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
         $cliente_selecionado = ($request->cliente) ? $request->cliente : null;
         $flag = $request->flag;
-        $situacao = $request->situacao;
+        $situacao = $request->id_situacao;
 
         $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
 

@@ -53,7 +53,7 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label class="font-black">Situação</label>
-                                        <select class="form-control" name="flag" id="flag">
+                                        <select class="form-control" name="id_situacao" id="id_situacao">
                                             <option value="">Selecione uma situação</option>
                                             <option value="1" {{ ($situacao == '1') ? 'selected' : '' }}>Criado</option>
                                             <option value="2" {{ ($situacao == '2') ? 'selected' : '' }}>Revisado</option>
