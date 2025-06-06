@@ -162,6 +162,7 @@ Route::middleware(['web'])->group(function () {
 	Route::post('jornal-impresso/upload','JornalImpressoController@uploadFiles');
 
 	Route::get('noticias/estatisticas/areas','NoticiaController@estatisticasArea');
+	Route::get('noticia/{id}/vinculo/excluir','NoticiaController@removerVinculo');
 	Route::get('noticia/{id}/tipo/{tipo}/cliente/{cliente}/sentimento/{sentimento}/atualizar','NoticiaController@atualizarSentimento');
 
 	Route::post('noticia-impressa/upload','NoticiaImpressaController@upload'); 
@@ -209,6 +210,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('noticia/web/valores','NoticiaWebController@valores');
 	Route::get('noticia/web/novo','NoticiaWebController@create');
 	Route::get('noticia/web/{id}/editar','NoticiaWebController@edit');
+	Route::get('noticia/web/{id}/excluir','NoticiaWebController@excluir');
 	Route::get('noticia/web/{id}/ver','NoticiaWebController@show');
 	Route::get('noticia/web/dashboard','JornalWebController@dashboard');
 	Route::get('noticia/web/detalhes/{id}','NoticiaWebController@detalhes');

@@ -137,6 +137,7 @@
                                                                             <i class="fa fa-smile-o text-success"></i>
                                                                         @break                                            
                                                                 @endswitch
+                                                                <a class="text-danger btn-excluir" href="{{ url('noticia/'.$cliente->pivot->id.'/vinculo/excluir') }}">Remover Cliente</a>
                                                             </p>
                                                         @empty
                                                             <p class="text-danger mb-1">Nenhum cliente associada à notícia</p>
@@ -151,7 +152,7 @@
                                                     </div>
                                             </div>
                                             <div class="sinopse-{{ $dado->id }}">
-                                                {!! ($dado->sinopse) ? $dado->sinopse : Str::limit($dado->conteudo->conteudo, 700, " ...") !!}
+                                                {!! ($dado->conteudo) ? Str::limit($dado->conteudo->conteudo, 700, " ...") : 'Notícia sem conteúdo' !!}
                                             </div>
                                             
                                             <div>
@@ -163,7 +164,7 @@
                                 <div class="card-footer">
                                 <hr>
                                     <div class="stats">
-                                        <<i class="fa fa-refresh"></i>Cadastrado por <strong>{{ ($dado->usuario) ? $dado->usuario->name : 'Sistema' }}</strong> em {{ \Carbon\Carbon::parse($dado->created_at)->format('d/m/Y H:i:s') }}. Última atualização em {{ \Carbon\Carbon::parse($dado->updated_at)->format('d/m/Y H:i:s') }}
+                                        <i class="fa fa-refresh"></i>Cadastrado por <strong>{{ ($dado->usuario) ? $dado->usuario->name : 'Sistema' }}</strong> em {{ \Carbon\Carbon::parse($dado->created_at)->format('d/m/Y H:i:s') }}. Última atualização em {{ \Carbon\Carbon::parse($dado->updated_at)->format('d/m/Y H:i:s') }}
                                         <div class="pull-right">
                                             <a title="Excluir" href="{{ url('noticia/web/'.$dado->id.'/excluir') }}" class="btn btn-danger btn-fill btn-icon btn-sm btn-excluir" style="border-radius: 30px;">
                                                 <i class="fa fa-times fa-3x text-white"></i>

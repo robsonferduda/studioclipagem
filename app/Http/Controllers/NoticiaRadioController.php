@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use DB;
+use Auth;
 use DateTime;
 use DateInterval;
 use DatePeriod;
@@ -61,8 +62,7 @@ class NoticiaRadioController extends Controller
                         return $q->where('sinopse', 'ILIKE', '%'.trim($termo).'%');
                     })
                     ->whereBetween($tipo_data, [$dt_inicial." 00:00:00", $dt_final." 23:59:59"])
-                    ->orderBy('dt_clipagem')
-                    ->orderBy('titulo')
+                    ->orderBy('created_at','DESC') 
                     ->paginate(10);
 
         return view('noticia-radio/index', compact('dados','emissora','clientes','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo'));
@@ -200,6 +200,7 @@ class NoticiaRadioController extends Controller
         $dados = array("emissora_id" => $conteudo->id_emissora,
                        "horario" => $conteudo->data_hora_inicio,
                        "sinopse" => $conteudo->transcricao,
+                       "cd_usuario" => Auth::user()->id,
                        "dt_cadastro" => $conteudo->data_hora_inicio,
                        "dt_clipagem" => $conteudo->data_hora_inicio);
 
@@ -273,6 +274,8 @@ class NoticiaRadioController extends Controller
 
         $dt_clipagem = ($request->dt_clipagem) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_clipagem)->format('Y-m-d') : date("Y-m-d");
         $request->merge(['dt_clipagem' => $dt_clipagem]);
+
+        $request->merge(['cd_usuario' => Auth::user()->id]);
 
         try {
 
@@ -362,6 +365,8 @@ class NoticiaRadioController extends Controller
     
             $dt_clipagem = ($request->dt_clipagem) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_clipagem)->format('Y-m-d') : date("Y-m-d");
             $request->merge(['dt_clipagem' => $dt_clipagem]);
+
+            $request->merge(['cd_usuario' => Auth::user()->id]);
             
             $noticia->update($request->all());
 

@@ -33,6 +33,14 @@ class NoticiaController extends Controller
         return redirect()->back();
     }
 
+    public function removerVinculo($id)
+    {
+        $noticia = NoticiaCliente::withTrashed()->find($id);
+        $noticia->forceDelete();
+
+        return redirect()->back();
+    }
+
     public function todas(Request $request)
     {
         $dados = array();

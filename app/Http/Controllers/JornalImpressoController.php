@@ -351,6 +351,7 @@ class JornalImpressoController extends Controller
                 $nova_noticia = array("id_fonte" => $conteudo->edicao->id_jornal_online,
                                       "dt_clipagem" => $conteudo->edicao->dt_coleta,
                                       "texto" => $conteudo->texto_extraido,
+                                      "cd_usuario" => Auth::user()->id,
                                       "nu_paginas_total" => $conteudo->edicao->paginas->count(),
                                       "nu_pagina_atual" => $conteudo->n_pagina,
                                       "ds_caminho_img" => $filename);
@@ -386,8 +387,6 @@ class JornalImpressoController extends Controller
                 $tags = Tag::orderBy('nome')->get();
 
                 return view('jornal-impresso/editar', compact('noticia','clientes','fontes','estados','cidades','tags'));
-
-                return redirect('jornal-impresso/noticia/editar/'.$noticia->id);
 
                 break;
             

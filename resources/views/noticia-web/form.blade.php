@@ -71,14 +71,25 @@
                             <div class="row">
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
-                                        <label>Data Clipagem <span class="text-danger">Campo Obrigatório</span></label>
-                                        <input type="text" class="form-control datepicker" name="data_insert" required="true" value="{{ date("d/m/Y") }}" placeholder="__/__/____">
+                                        <label>Data de Cadastro <span class="text-danger">Campo Obrigatório</span></label>
+                                        <input type="text" 
+                                        class="form-control datepicker" 
+                                        name="data_insert" 
+                                        required="true" 
+                                        readonly
+                                        value="{{ ($noticia and $noticia->data_insert) ? \Carbon\Carbon::parse($noticia->data_insert)->format('d/m/Y') : date("d/m/Y") }}" 
+                                        placeholder="__/__/____">
                                     </div>
                                 </div>
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
-                                        <label>Data Noticia <span class="text-danger">Campo Obrigatório</span></label>
-                                        <input type="text" class="form-control datepicker" name="data_noticia" required="true" value="{{ date("d/m/Y") }}" placeholder="__/__/____">
+                                        <label>Data do Clipping <span class="text-danger">Campo Obrigatório</span></label>
+                                        <input type="text" 
+                                        class="form-control datepicker" 
+                                        name="data_noticia" 
+                                        required="true" 
+                                        value="{{ ($noticia and $noticia->data_noticia) ? \Carbon\Carbon::parse($noticia->data_noticia)->format('d/m/Y') : date("d/m/Y") }}" 
+                                        placeholder="__/__/____">
                                     </div>
                                 </div>
                                
@@ -159,7 +170,7 @@
                                 <div class="col-md-12">
                                     <label for="sinopse">Texto <span class="text-danger">Campo Obrigatório</span></label>
                                     <div class="form-group">
-                                        <textarea class="form-control" name="conteudo" id="conteudo" rows="10" required>{{ (empty($noticia)) ? old('conteudo') : $noticia->conteudo->conteudo }}</textarea>
+                                        <textarea class="form-control" name="conteudo" id="conteudo" rows="10" required>{{ (empty($noticia and $noticia->conteudo)) ? old('conteudo') : $noticia->conteudo->conteudo }}</textarea>
                                     </div>
                                 </div> 
                                 @if($noticia and $noticia->ds_caminho_img)    

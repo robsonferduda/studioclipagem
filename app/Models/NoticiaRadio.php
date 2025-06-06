@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use DB;
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -32,6 +33,11 @@ class NoticiaRadio extends Model
         'ds_caminho_audio'
     ];
 
+    public function usuario()
+    {
+        return $this->hasOne(User::class, 'id', 'cd_usuario');
+    }
+
     public function cliente()
     {
         return $this->hasOne(Cliente::class, 'id', 'cliente_id');
@@ -39,7 +45,7 @@ class NoticiaRadio extends Model
 
     public function clientes()
     {
-        return $this->belongsToMany(Cliente::class,'noticia_cliente','noticia_id','cliente_id')->withTimestamps()->whereNull('noticia_cliente.deleted_at');
+        return $this->belongsToMany(Cliente::class,'noticia_cliente','noticia_id','cliente_id')->withPivot('id','tipo_id','sentimento','area')->where('tipo_id', 3)->withTimestamps();
     }
 
     public function area()

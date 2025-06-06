@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -23,6 +24,11 @@ class NoticiaWeb extends Model
                             'sinopse',
                             'ds_caminho_img'];
 
+    public function usuario()
+    {
+        return $this->hasOne(User::class, 'id', 'cd_usuario');
+    }
+
     public function fonte()
     {
         return $this->hasOne(FonteWeb::class, 'id', 'id_fonte');
@@ -40,7 +46,7 @@ class NoticiaWeb extends Model
 
     public function clientes()
     {
-        return $this->belongsToMany(Cliente::class,'noticia_cliente','noticia_id','cliente_id')->withPivot('tipo_id','sentimento','area','fl_enviada')->where('tipo_id', 2)->withTimestamps();
+        return $this->belongsToMany(Cliente::class,'noticia_cliente','noticia_id','cliente_id')->withPivot('id','tipo_id','sentimento','area','fl_enviada')->where('tipo_id', 2)->withTimestamps();
     }
 
     public function tags()

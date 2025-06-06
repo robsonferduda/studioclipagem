@@ -6,7 +6,7 @@
             <div class="row">
                 <div class="col-md-8">
                     <h4 class="card-title">
-                        <i class="fa fa-file-pdf-o ml-3"></i> Relatórios 
+                        <i class="fa fa-file-pdf-o ml-3"></i> Clipping 
                     </h4>
                 </div>
                 <div class="col-md-4">
@@ -26,6 +26,7 @@
                                     <th>Data de Requisição</th>
                                     <th>Data de Término</th>
                                     <th>Arquivo</th>
+                                    <th>Responsável</th>
                                     <th class="center">Situação</th>
                                 </tr>
                             </thead>
@@ -41,6 +42,7 @@
                                                 <span>Arquivo não disponível</span>
                                             @endif
                                         </td>
+                                        <td>{{ ($relatorio->usuario) ? $relatorio->usuario->name : 'Sistema' }}</td>
                                         <td class="center">
                                             {!! ($relatorio->situacao == 1) ? '<span class="badge badge-pill badge-success">PROCESSADO</span>' : '<span class="badge badge-pill badge-danger">ERRO</span>' !!}
                                         </td>

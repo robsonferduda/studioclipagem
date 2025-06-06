@@ -63,8 +63,7 @@ class NoticiaImpressaController extends Controller
                         return $q->where('sinopse', 'ILIKE', '%'.trim($termo).'%');
                     })
                     ->whereBetween($tipo_data, [$dt_inicial." 00:00:00", $dt_final." 23:59:59"])
-                    ->orderBy('dt_clipagem')
-                    ->orderBy('titulo')
+                    ->orderBy('created_at', 'DESC')
                     ->paginate(10);
 
         return view('noticia-impressa/index', compact('dados','fontes','clientes','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo'));
@@ -161,6 +160,8 @@ class NoticiaImpressaController extends Controller
         $dt_clipagem = ($request->dt_clipagem) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_clipagem)->format('Y-m-d') : date("Y-m-d");
         $request->merge(['dt_clipagem' => $dt_clipagem]);
 
+        $request->merge(['cd_usuario' => Auth::user()->id]);
+
         try {
             
             $noticia = NoticiaImpresso::create($request->all());
@@ -229,6 +230,8 @@ class NoticiaImpressaController extends Controller
             $request->merge(['cd_cidade' => $request->cidade]);
 
             $request->merge(['ds_caminho_img' => ($request->ds_caminho_img) ? $request->ds_caminho_img : $noticia->ds_caminho_img]);
+
+            $request->merge(['cd_usuario' => Auth::user()->id]);
 
             $noticia->update($request->all());
 

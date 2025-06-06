@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -32,6 +33,11 @@ class NoticiaImpresso extends Model
                             'cd_usuario',
                             'valor_retorno'];
 
+    public function usuario()
+    {
+        return $this->hasOne(User::class, 'id', 'cd_usuario');
+    }
+
     public function cidade()
     {
         return $this->hasOne(Cidade::class,'cd_cidade','cd_cidade');
@@ -54,7 +60,7 @@ class NoticiaImpresso extends Model
 
     public function clientes()
     {
-        return $this->belongsToMany(Cliente::class,'noticia_cliente','noticia_id','cliente_id')->withPivot('tipo_id','sentimento','area')->where('tipo_id', 1)->withTimestamps();
+        return $this->belongsToMany(Cliente::class,'noticia_cliente','noticia_id','cliente_id')->withPivot('id','tipo_id','sentimento','area')->where('tipo_id', 1)->withTimestamps();
     }
 
     public function tags()

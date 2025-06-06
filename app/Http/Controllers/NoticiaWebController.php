@@ -39,7 +39,7 @@ class NoticiaWebController extends Controller
         $fontes = FonteWeb::orderBy('nome')->get();
         $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
 
-        $tipo_data = ($request->tipo_data) ? $request->tipo_data : 'data_noticia';
+        $tipo_data = ($request->tipo_data) ? $request->tipo_data : 'data_insert';
         $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
         $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
         $cliente_selecionado = ($request->cliente) ? $request->cliente : null;
@@ -59,7 +59,7 @@ class NoticiaWebController extends Controller
                     })
                     ->whereBetween($tipo_data, [$dt_inicial." 00:00:00", $dt_final." 23:59:59"])
                     ->where('fl_boletim', true)
-                    ->orderBy('data_noticia')
+                    ->orderBy('created_at', 'DESC')
                     ->paginate(10);
 
         return view('noticia-web/index', compact('dados','fontes','clientes','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo'));
@@ -303,6 +303,7 @@ class NoticiaWebController extends Controller
             $ds_caminho_img = ($request->ds_caminho_img) ? ($request->ds_caminho_img) : '';
             $request->merge(['ds_caminho_img' => $ds_caminho_img]);
 
+            $request->merge(['cd_usuario' => Auth::user()->id]);
             $request->merge(['fl_boletim' => true]);
 
             $noticia = NoticiaWeb::create($request->all());
@@ -353,12 +354,29 @@ class NoticiaWebController extends Controller
                              'msg' => "Ocorreu um erro ao inserir o registro");
         }
 
-        if ($retorno['flag']) {
-            Flash::success($retorno['msg']);
-            return redirect('noticia/web')->withInput();
-        } else {
-            Flash::error($retorno['msg']);
-            return redirect('noticia/web/novo')->withInput();
+        switch ($request->btn_enviar) {
+
+            case 'salvar':
+                if ($retorno['flag']) {
+                    Flash::success($retorno['msg']);
+                    return redirect('noticia/web')->withInput();
+                } else {
+                    Flash::error($retorno['msg']);
+                    return redirect('noticia/web/novo')->withInput();
+                }
+                break;
+
+            case 'salvar_e_copiar':
+
+                $nova_noticia = $noticia->replicate();
+                $nova_noticia->save();
+
+                $request->merge(['id_noticia_web' => $nova_noticia->id]);
+                ConteudoNoticiaWeb::create($request->all());
+
+                return redirect('noticia/web/'.$nova_noticia->id.'/editar');
+
+            break;
         }
     }
 
@@ -376,6 +394,8 @@ class NoticiaWebController extends Controller
 
         $ds_caminho_img = ($request->ds_caminho_img) ? ($request->ds_caminho_img) : $noticia->ds_caminho_img;
         $request->merge(['ds_caminho_img' => $ds_caminho_img]);
+
+        $request->merge(['cd_usuario' => Auth::user()->id]);
 
         try {
 
@@ -430,12 +450,29 @@ class NoticiaWebController extends Controller
                              'msg' => "Ocorreu um erro ao inserir o registro");
         }
 
-        if ($retorno['flag']) {
-            Flash::success($retorno['msg']);
-            return redirect('noticia/web')->withInput();
-        } else {
-            Flash::error($retorno['msg']);
-            return redirect('noticia/web/'.$id.'/editar')->withInput();
+        switch ($request->btn_enviar) {
+
+            case 'salvar':
+                if ($retorno['flag']) {
+                    Flash::success($retorno['msg']);
+                    return redirect('noticia/web')->withInput();
+                } else {
+                    Flash::error($retorno['msg']);
+                    return redirect('noticia/web/'.$id.'/editar')->withInput();
+                }
+                break;
+
+            case 'salvar_e_copiar':
+
+                $nova_noticia = $noticia->replicate();
+                $nova_noticia->save();
+
+                $request->merge(['id_noticia_web' => $nova_noticia->id]);
+                ConteudoNoticiaWeb::create($request->all());
+
+                return redirect('noticia/web/'.$nova_noticia->id.'/editar');
+
+            break;
         }
     }
 
@@ -637,42 +674,15 @@ class NoticiaWebController extends Controller
         return response()->json($vinculos);
     }
 
-    public function valores()
+    public function excluir($id)
     {
-        $noticias = NoticiaCliente::where('tipo_id',2)->where('created_at', '>', '2025-02-10')->where('created_at', '<', '2025-03-01')->get();
+        $noticia = NoticiaWeb::find($id);
 
-        $sql = "SELECT t1.created_at, t2.nu_valor, t2.id 
-                FROM noticia_cliente t1
-                JOIN noticias_web t2 ON t2.id = t1.noticia_id 
-                WHERE t1.created_at > '2025-02-01'
-                AND t2.nu_valor IS null";
+        if($noticia->delete())
+            Flash::success('<i class="fa fa-check"></i> Notícia excluída com sucesso');
+        else
+            Flash::error("Erro ao excluir o registro");
 
-        $dados = DB::select($sql);
-
-        foreach($dados as $dado){
-
-            if($dado){
-
-                $noticia = NoticiaWeb::find($dado->id);
-
-                if($noticia){
-
-                    $fonte = FonteWeb::find($noticia->id_fonte);
-
-                    if($fonte){
-                        $valor = $fonte->nu_valor;
-
-                        if($valor){
-                            $noticia->nu_valor = $valor;
-                            $noticia->save();
-                        }
-                    }else{
-                        $noticia->nu_valor = 0;
-                        $noticia->save();
-                    }
-                }
-            }
-
-        }
+        return redirect()->back();
     }
 }
