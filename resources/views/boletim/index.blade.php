@@ -43,10 +43,10 @@
                                         <label class="font-black">Tipo de mídia</label>
                                         <select class="form-control" name="flag" id="flag">
                                             <option value="">Selecione um tipo</option>
-                                            <option value="fl_impresso">Impresso</option>
-                                            <option value="fl_web">Web</option>
-                                            <option value="fl_radio">Rádio</option>
-                                            <option value="fl_tv">TV</option>
+                                            <option value="fl_impresso" {{ ($flag == 'fl_impresso') ? 'selected' : '' }}>Impresso</option>
+                                            <option value="fl_web" {{ ($flag == 'fl_web') ? 'selected' : '' }}>Web</option>
+                                            <option value="fl_radio" {{ ($flag == 'fl_radio') ? 'selected' : '' }}>Rádio</option>
+                                            <option value="fl_tv" {{ ($flag == 'fl_tv') ? 'selected' : '' }}>TV</option>
                                         </select>
                                     </div>
                                 </div>
