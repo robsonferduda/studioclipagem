@@ -82,9 +82,8 @@
                                         <i class="fa fa-file-pdf-o text-danger mr-3 mt-4" aria-hidden="true" style="font-size: 35px;"></i>
                                     </div>
                                     <div class="float-left">
-                                        <p class="mb-1"><strong>{{ $boletim->titulo }}</strong></p>
-                                        <h6 class="mb-1" style="color: #FF5722;">
-                                            {{ $boletim->cliente->nome }}
+                                        <p class="mb-1">
+                                            <strong>{{ $boletim->titulo }}</strong>
                                             @if($boletim->fl_web)
                                                 <span class="text-muted"><i class="fa fa-globe"></i> Web</span>
                                             @endif
@@ -97,6 +96,9 @@
                                             @if($boletim->fl_tv)
                                                 <span class="text-muted"><i class="fa fa-tv"></i> TV</span>
                                             @endif
+                                        </p>
+                                        <h6 class="mb-1" style="color: #FF5722;">
+                                            {{ $boletim->cliente->nome }}
                                         </h6>
                                         <p>
                                             Cadastrado em {{ \Carbon\Carbon::parse($boletim->created_at)->format('d/m/Y H:i:s') }}
