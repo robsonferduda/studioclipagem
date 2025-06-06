@@ -515,11 +515,12 @@ class BoletimController extends Controller
         $detalhe = '';
         $boletim = Boletim::where('id', $request->id)->first();  
 
-        $noticias_impresso = $boletim->noticiasImpresso()->get();
-        $noticias_web = $boletim->noticiasWeb()->get(); 
-        $noticias_radio = $boletim->noticiasRadio()->get(); 
-        $noticias_tv = $boletim->noticiasTv()->get(); 
-        
+        $dados = $this->getDadosBoletim($request->id);
+
+        $noticias_impresso = $dados['impresso'];
+        $noticias_web = $dados['web']; 
+        $noticias_radio = $dados['radio']; 
+        $noticias_tv = $dados['tv'];        
         
         $data = array("noticias_impresso"=> $noticias_impresso,
                       "noticias_web" => $noticias_web,
@@ -544,6 +545,8 @@ class BoletimController extends Controller
             $boletim_envio->ds_email = $emails[$i];
             $boletim_envio->cd_usuario = Auth::user()->id;
 
+            /*
+
             try{
                 $mail_status = Mail::send('boletim.outlook', $data, function($message) use ($emails, $i) {
                 $message->to($emails[$i])
@@ -567,8 +570,9 @@ class BoletimController extends Controller
                 $boletim_envio->id_situacao = 1; // Pendente
                 $boletim_envio->ds_mensagem = $msg;
             }
+
+            */
      
-            /*
             $url = 'https://147.93.71.189:38257/mail_sys/send_mail_http.json';
     
             $data = [
@@ -595,7 +599,7 @@ class BoletimController extends Controller
                 $tipo = "error";
                 $boletim_envio->id_situacao = 1; // Pendente
                 $boletim_envio->ds_mensagem = $msg; 
-            }*/            
+            }           
                         
             $boletim_envio->save();
 
