@@ -397,8 +397,8 @@ class BoletimController extends Controller
 
         $noticias_impresso = array();
         $noticias_web = array(); 
-        $noticias_radio = array(); 
-        $noticias_tv = array();  
+        $noticias_radio = $boletim->noticiasRadio(); 
+        $noticias_tv = $boletim->noticiasTv();  
 
         foreach ($boletim->noticiasImpresso()->get() as $key => $noticia_impresso) {
             $noticias_impresso[] = array('titulo' => $noticia_impresso->titulo,
