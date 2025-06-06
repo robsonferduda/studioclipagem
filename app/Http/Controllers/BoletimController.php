@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Auth;
 use Mail;
+use Storage;
 use App\Utils;
 use App\Mail\BoletimMail;
 use Carbon\Carbon;
@@ -86,7 +87,8 @@ class BoletimController extends Controller
                 JOIN fonte_web t2 ON t2.id = t1.id_fonte
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id
                 LEFT JOIN boletim_noticia t4 ON t4.id_noticia = t3.noticia_id AND t4.id_tipo = 2 AND t4.id_boletim = $request->id_boletim
-                WHERE 1=1";
+                WHERE 1=1
+                AND t1.deleted_at IS NULL ";
 
         if ($request->has('dt_inicial') && $request->has('dt_final')) {
             $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d');
@@ -122,7 +124,8 @@ class BoletimController extends Controller
                 JOIN jornal_online t2 ON t2.id = t1.id_fonte
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id
                 LEFT JOIN boletim_noticia t4 ON t4.id_noticia = t3.noticia_id AND id_tipo = 1 AND t4.id_boletim = $request->id_boletim
-                WHERE 1=1";
+                WHERE 1=1
+                AND t1.deleted_at IS NULL ";
 
         if ($request->has('dt_inicial') && $request->has('dt_final')) {
             $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d');
@@ -159,7 +162,8 @@ class BoletimController extends Controller
                 JOIN emissora_radio t2 ON t2.id = t1.emissora_id
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id
                 LEFT JOIN boletim_noticia t4 ON t4.id_noticia = t3.noticia_id AND id_tipo = 3 AND t4.id_boletim = $request->id_boletim
-                WHERE 1=1";
+                WHERE 1=1
+                AND t1.deleted_at IS NULL ";
 
         if ($request->has('dt_inicial') && $request->has('dt_final')) {
             $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d');
@@ -196,7 +200,8 @@ class BoletimController extends Controller
                 JOIN emissora_web t2 ON t2.id = t1.emissora_id
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id
                 LEFT JOIN boletim_noticia t4 ON t4.id_noticia = t3.noticia_id AND id_tipo = 4 AND t4.id_boletim = $request->id_boletim
-                WHERE 1=1";
+                WHERE 1=1
+                AND t1.deleted_at IS NULL ";
 
         if ($request->has('dt_inicial') && $request->has('dt_final')) {
             $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d');
@@ -385,14 +390,72 @@ class BoletimController extends Controller
         }
     }
 
+    public function getDadosBoletim($id)
+    {
+        $dados = array();
+        $boletim = Boletim::where('id', $id)->first(); 
+
+        $noticias_impresso = array();
+        $noticias_web = array(); 
+        $noticias_radio = array(); 
+        $noticias_tv = array();  
+
+        foreach ($boletim->noticiasImpresso()->get() as $key => $noticia_impresso) {
+            $noticias_impresso[] = array('titulo' => $noticia_impresso->titulo,
+                                         'dt_clipagem' => $noticia_impresso->dt_clipagem,
+                                         'fonte' => ($noticia_impresso->fonte) ? $noticia_impresso->fonte->nome : 'Fonte não informada',
+                                         'secao' => ($noticia_impresso->secao) ? $noticia_impresso->secao->ds_sessao : null,
+                                         'sinopse' => strip_tags(str_replace('Sinopse 1 - ', '', $noticia_impresso->sinopse)),
+                                         'path_midia' => 'img/noticia-impressa/'.$noticia_impresso->ds_caminho_img,
+                                         'erro' => '');
+        }
+
+        foreach ($boletim->noticiasWeb()->get() as $key => $noticia_web) {
+
+            $erro = '';
+
+            if($noticia_web->ds_caminho_img){
+                $path = 'img/noticia-web/'.$noticia_web->ds_caminho_img;
+            }else{
+                try {
+                    $path = Storage::disk('s3')->temporaryUrl($noticia_web->path_screenshot, '+30 minutes');
+                } catch (Exception $e) {
+                    $path = '';
+                    $erro = 'Erro na imagem';
+                } catch (\Throwable $e){
+                    $path = '';
+                    $erro = 'Erro na imagem';
+                }
+            }
+
+            $noticias_web[] = array('titulo' => $noticia_web->titulo_noticia,
+                                         'data_noticia' => $noticia_web->data_noticia,
+                                         'fonte' => ($noticia_web->fonte) ? $noticia_web->fonte->nome : 'Fonte não informada',
+                                         'secao' => ($noticia_web->secao) ? $noticia_web->secao->ds_sessao : null,
+                                         'sinopse' => strip_tags(str_replace('Sinopse 1 - ', '', $noticia_web->sinopse)),
+                                         'url_noticia' => $noticia_web->url_noticia, 
+                                         'path_midia' => $path,
+                                         'erro' => $erro);
+        }
+
+        $dados['impresso'] = $noticias_impresso;
+        $dados['web'] = $noticias_web;
+        $dados['radio'] = $noticias_radio;
+        $dados['tv'] = $noticias_tv;
+
+        return $dados;
+
+    }
+
     public function detalhes($id)
     {   
-        $boletim = Boletim::where('id', $id)->first();         
+        $boletim = Boletim::where('id', $id)->first();    
+        $dados = $this->getDadosBoletim($id);     
 
-        $noticias_impresso = $boletim->noticiasImpresso()->get();
-        $noticias_web = $boletim->noticiasWeb()->get(); 
-        $noticias_radio = $boletim->noticiasRadio()->get(); 
-        $noticias_tv = $boletim->noticiasTv()->get();       
+        $noticias_impresso = $dados['impresso'];
+        $noticias_web = $dados['web']; 
+        $noticias_radio = $dados['radio']; 
+        $noticias_tv = $dados['tv'];       
 
         return view('boletim/detalhes', compact('boletim','noticias_impresso','noticias_web','noticias_radio','noticias_tv'));
     }
@@ -403,22 +466,28 @@ class BoletimController extends Controller
         $boletim->total_views = $boletim->total_views + 1;
         $boletim->save();
 
-        $noticias_impresso = $boletim->noticiasImpresso()->get();
-        $noticias_web = $boletim->noticiasWeb()->get(); 
-        $noticias_radio = $boletim->noticiasRadio()->get(); 
-        $noticias_tv = $boletim->noticiasTv()->get();       
+        $dados = $this->getDadosBoletim($id);
+
+        $noticias_impresso = $dados['impresso'];
+        $noticias_web = $dados['web']; 
+        $noticias_radio = $dados['radio']; 
+        $noticias_tv = $dados['tv'];       
 
         return view('boletim/visualizar', compact('boletim','noticias_impresso','noticias_web','noticias_radio','noticias_tv'));
     }
 
     public function outlook($id)
     {   
-        $boletim = Boletim::where('id', $id)->first();   
+        $boletim = Boletim::where('id', $id)->first(); 
+        $boletim->total_views_email = $boletim->total_views_email + 1;
+        $boletim->save();
 
-        $noticias_impresso = $boletim->noticiasImpresso()->get();
-        $noticias_web = $boletim->noticiasWeb()->get(); 
-        $noticias_radio = $boletim->noticiasRadio()->get(); 
-        $noticias_tv = $boletim->noticiasTv()->get(); 
+        $dados = $this->getDadosBoletim($id);
+
+        $noticias_impresso = $dados['impresso'];
+        $noticias_web = $dados['web']; 
+        $noticias_radio = $dados['radio']; 
+        $noticias_tv = $dados['tv'];
             
         return view('boletim/outlook', compact('boletim','noticias_impresso','noticias_web','noticias_radio','noticias_tv'));
     }
