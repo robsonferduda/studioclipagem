@@ -60,6 +60,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('boletim/editar/{id}','BoletimController@editar');
 	Route::get('boletim/excluir/{id}','BoletimController@destroy');
 	Route::get('boletim/{id}/enviar','BoletimController@enviar');
+	Route::get('boletim/{id}/resumo','BoletimController@resumo');
 	Route::get('boletim/{id}/outlook','BoletimController@outlook');
 	Route::get('boletim/{id}/visualizar','BoletimController@visualizar');
 	Route::post('boletim/noticias','BoletimController@noticias');

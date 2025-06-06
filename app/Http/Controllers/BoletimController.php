@@ -492,6 +492,12 @@ class BoletimController extends Controller
         return view('boletim/outlook', compact('boletim','noticias_impresso','noticias_web','noticias_radio','noticias_tv'));
     }
 
+    public function resumo($id)
+    {   
+        $boletim = Boletim::where('id', $id)->first();             
+        return view('boletim/resumo', compact('boletim'));
+    }
+
     public function enviar($id)
     {
         $boletim = Boletim::where('id', $id)->first();
@@ -608,7 +614,7 @@ class BoletimController extends Controller
 
         $boletim->save();
 
-        return view('boletim/resumo', compact('boletim'));
+        return redirect('boletim/'.$request->id.'/resumo')->withInput();
     }
  
     public function destroy($id)
