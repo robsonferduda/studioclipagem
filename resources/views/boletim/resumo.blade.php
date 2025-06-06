@@ -35,7 +35,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($boletim->envios as $envio)
+                        @foreach($boletim->envios->sortByDesc('created_at') as $envio)
                             <tr>
                                 <td>{{ \Carbon\Carbon::parse($envio->created_at)->format('d/m/Y H:i:s') }}</td>
                                 <td>{{ $envio->ds_email }}</td>
