@@ -27,7 +27,7 @@
                                 <div class="col-md-12 mt-0 mb-0">
                                     <p class="text-info">São listados todos os boletins gerados na data atual. Para selecionar outro período, utilize as opções na tela.</p>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="font-black"><i class="fa fa-filter"></i> Filtrar por cliente</label>
                                         <select class="form-control select2" name="cliente" id="cliente">
@@ -35,6 +35,18 @@
                                             @foreach ($clientes as $cliente)
                                                 <option value="{{ $cliente->id }}" {{ ($cliente_selecionado == $cliente->id) ? 'selected' : '' }}>{{ $cliente->nome }}</option>
                                             @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label class="font-black">Tipo de mídia</label>
+                                        <select class="form-control" name="flag" id="flag">
+                                            <option value="">Selecione um tipo</option>
+                                            <option value="fl_impresso">Impresso</option>
+                                            <option value="fl_web">Web</option>
+                                            <option value="fl_radio">Rádio</option>
+                                            <option value="fl_tv">TV</option>
                                         </select>
                                     </div>
                                 </div>
@@ -71,7 +83,21 @@
                                     </div>
                                     <div class="float-left">
                                         <p class="mb-1"><strong>{{ $boletim->titulo }}</strong></p>
-                                        <h6 class="mb-1" style="color: #FF5722;">{{ $boletim->cliente->nome }}</h6>
+                                        <h6 class="mb-1" style="color: #FF5722;">
+                                            {{ $boletim->cliente->nome }}
+                                            @if($boletim->fl_web)
+                                                <span class="text-muted"><i class="fa fa-globe"></i> Web</span>
+                                            @endif
+                                            @if($boletim->fl_impresso)
+                                                <span class="text-muted"><i class="fa fa-newspaper-o"></i> Impresso</span>
+                                            @endif
+                                            @if($boletim->fl_radio)
+                                                <span class="text-muted"><i class="fa fa-volume-up"></i> Rádio</span>
+                                            @endif
+                                            @if($boletim->fl_tv)
+                                                <span class="text-muted"><i class="fa fa-tv"></i> TV</span>
+                                            @endif
+                                        </h6>
                                         <p>
                                             Cadastrado em {{ \Carbon\Carbon::parse($boletim->created_at)->format('d/m/Y H:i:s') }}
                                             {!! ($boletim->usuario) ? "por <strong>".$boletim->usuario->name."</strong>" : '' !!}
