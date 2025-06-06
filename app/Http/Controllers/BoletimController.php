@@ -397,8 +397,8 @@ class BoletimController extends Controller
 
         $noticias_impresso = array();
         $noticias_web = array(); 
-        $noticias_radio = $boletim->noticiasRadio(); 
-        $noticias_tv = $boletim->noticiasTv();  
+        $noticias_radio = $boletim->noticiasRadio()->get(); 
+        $noticias_tv = $boletim->noticiasTv()->get();  
 
         foreach ($boletim->noticiasImpresso()->get() as $key => $noticia_impresso) {
             $noticias_impresso[] = array('titulo' => $noticia_impresso->titulo,
@@ -471,7 +471,7 @@ class BoletimController extends Controller
         $noticias_impresso = $dados['impresso'];
         $noticias_web = $dados['web']; 
         $noticias_radio = $dados['radio']; 
-        $noticias_tv = $dados['tv'];       
+        $noticias_tv = $dados['tv'];      
 
         return view('boletim/visualizar', compact('boletim','noticias_impresso','noticias_web','noticias_radio','noticias_tv'));
     }
