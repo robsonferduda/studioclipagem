@@ -52,6 +52,18 @@
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group">
+                                        <label class="font-black">Situação</label>
+                                        <select class="form-control" name="flag" id="flag">
+                                            <option value="">Selecione uma situação</option>
+                                            <option value="1" {{ ($situacao == '1') ? 'selected' : '' }}>Criado</option>
+                                            <option value="2" {{ ($situacao == '2') ? 'selected' : '' }}>Revisado</option>
+                                            <option value="3" {{ ($situacao == '3') ? 'selected' : '' }}>Enviado</option>
+                                            <option value="4" {{ ($situacao == '4') ? 'selected' : '' }}>Envio Incompleto</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
                                         <label>Data Inicial</label>
                                         <input type="text" class="form-control datepicker" name="dt_inicial" required="true" value="{{ \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y') }}" placeholder="__/__/____">
                                     </div>

@@ -43,6 +43,7 @@ class BoletimController extends Controller
         $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
         $cliente_selecionado = ($request->cliente) ? $request->cliente : null;
         $flag = $request->flag;
+        $situacao = $request->situacao;
 
         $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
 
@@ -56,11 +57,15 @@ class BoletimController extends Controller
             return $q->where($flag, true);
         });
 
+        $boletim->when($situacao, function ($q) use ($situacao) {
+            return $q->where('id_situacao', $situacao);
+        });
+
         $boletim->whereBetween('dt_boletim', [$dt_inicial." 00:00:00", $dt_final." 23:59:59"]);
 
         $boletins = $boletim->get();
 
-        return view('boletim/index',compact('boletins','clientes','dt_inicial','dt_final','cliente_selecionado','flag'));
+        return view('boletim/index',compact('boletins','clientes','dt_inicial','dt_final','cliente_selecionado','flag','situacao'));
     }
 
     public function noticias(Request $request)
