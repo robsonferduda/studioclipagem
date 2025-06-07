@@ -522,7 +522,7 @@ class BoletimController extends Controller
 
         for ($i=0; $i < count($lista); $i++) { 
             $lista_email[] = array('email' => trim($lista[$i]), 
-                                   'fl_envio' => (BoletimEnvio::where('id_boletim', $id)->where('ds_email', trim($lista[$i]))->first()) ? true : false);
+                                   'fl_envio' => (BoletimEnvio::where('id_boletim', $id)->where('ds_email', trim($lista[$i]))->where('id_situacao', 2)->first()) ? true : false);
         }
         
         return view('boletim/lista-envio', compact('boletim', 'lista_email'));
