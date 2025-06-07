@@ -252,12 +252,13 @@
                     var check = (false) ? 'checked' : '';
                     var boletim = (noticia.flag) ? '<span class="badge badge-pill badge-success"> Enviada</span>' : '';
                     var checked = (noticia.id_boletim) ? 'checked' : '';
+                    var programa = (noticia.programa) ? ' - '+noticia.programa : '';
 
                     $(".table-noticias tbody").append('<tr>'+
                                                         '<td><div class="form-check" style="margin-top: -20px !important;"><label class="form-check-label">'+
                                                         '<input class="form-check-input item-noticia" type="checkbox" '+checked+' name="lista_noticia[]" '+check+' value="'+noticia.id+'" data-tipo="'+noticia.tipo+'"><span class="form-check-sign"></span></label></div></td>'+
                                                         '<td>'+
-                                                        titulo+'<strong style="color: #51cbce;">'+noticia.data_noticia+' - '+noticia.fonte+'</strong> - Cadastrada em '+noticia.data_coleta+''+
+                                                        titulo+'<strong class="text-muted">'+noticia.data_noticia+' - '+noticia.fonte+' '+programa+'</strong> - Cadastrada em '+noticia.data_coleta+''+
                                                         '<br/>'+sinopse+'<br/>'+icone+' '+boletim+'</td>'+
                                                        '</tr>');                   
                 });

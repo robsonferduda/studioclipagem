@@ -87,6 +87,7 @@ class BoletimController extends Controller
                     TO_CHAR(data_noticia, 'DD/MM/YYYY') AS data_noticia,
                     TO_CHAR(data_insert, 'DD/MM/YYYY') AS data_coleta,
                     t2.nome as fonte,
+                    '' as programa,
                     t4.id_boletim as id_boletim,
                     t3.fl_enviada as flag
                 FROM noticias_web t1
@@ -124,6 +125,7 @@ class BoletimController extends Controller
                     TO_CHAR(dt_clipagem, 'DD/MM/YYYY') AS data_noticia,
                     TO_CHAR(t1.created_at, 'DD/MM/YYYY') AS data_coleta,
                     t2.nome as fonte,
+                    '' as programa,
                     t4.id_boletim as id_boletim,
                     t3.fl_enviada as flag
                 FROM noticia_impresso t1
@@ -162,12 +164,14 @@ class BoletimController extends Controller
                     TO_CHAR(dt_clipagem, 'DD/MM/YYYY') AS data_noticia,
                     TO_CHAR(dt_cadastro, 'DD/MM/YYYY') AS data_coleta,
                     t2.nome_emissora as fonte,
+                    t5.nome_programa as programa,
                     t4.id_boletim as id_boletim,
                     t3.fl_enviada as flag
                 FROM noticia_radio t1
                 JOIN emissora_radio t2 ON t2.id = t1.emissora_id
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id
                 LEFT JOIN boletim_noticia t4 ON t4.id_noticia = t3.noticia_id AND id_tipo = 3 AND t4.id_boletim = $request->id_boletim
+                LEFT JOIN programa_emissora_radio t5 ON t5.id = t1.programa_id
                 WHERE 1=1
                 AND t1.deleted_at IS NULL ";
 
@@ -200,12 +204,14 @@ class BoletimController extends Controller
                     TO_CHAR(dt_noticia, 'DD/MM/YYYY') AS data_noticia,
                     TO_CHAR(dt_cadastro, 'DD/MM/YYYY') AS data_coleta,
                     t2.nome_emissora as fonte,
+                    t5.nome_programa as programa,
                     t4.id_boletim as id_boletim,
                     t3.fl_enviada as flag
                 FROM noticia_tv t1
                 JOIN emissora_web t2 ON t2.id = t1.emissora_id
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id
                 LEFT JOIN boletim_noticia t4 ON t4.id_noticia = t3.noticia_id AND id_tipo = 4 AND t4.id_boletim = $request->id_boletim
+                LEFT JOIN programa_emissora_web t5 ON t5.id = t1.programa_id
                 WHERE 1=1
                 AND t1.deleted_at IS NULL ";
 
