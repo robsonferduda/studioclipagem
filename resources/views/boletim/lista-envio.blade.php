@@ -45,9 +45,10 @@
                             </label>
                             @foreach($lista_email as $key => $email)
                                 <label class="form-check-label d-block mb-3 txt-black">
-                                    <input class="form-check-input" type="checkbox" name="emails[]" value="{{ $email }}" checked="checked">
-                                        {{ $email }}
+                                    <input class="form-check-input" type="checkbox" name="emails[]" value="{{ $email['email'] }}" checked="checked">
+                                        {{ $email['email'] }} 
                                     <span class="form-check-sign"></span>
+                                    {!! ($email['fl_envio']) ? '<span class="text-danger"><i class="fa fa-exclamation"></i> Email já enviado</span>' : '' !!}
                                 </label>
                             @endforeach
                         </div>

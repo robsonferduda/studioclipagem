@@ -8,6 +8,7 @@ use Storage;
 use App\Utils;
 use App\Mail\BoletimMail;
 use Carbon\Carbon;
+use App\Models\BoletimEnvio;
 use App\Models\Boletim;
 use App\Models\BoletimNoticias;
 use App\Models\SituacaoBoletim;
@@ -511,10 +512,11 @@ class BoletimController extends Controller
 
         $lista = explode(",",$emails);
 
-        $lista_email[] = 'robsonferduda@gmail.com';
+        $lista_email[] = array('email' => 'robsonferduda@gmail.com', 'fl_envio' => BoletimEnvio::where('id_boletim', $id)->where('ds_email', 'robsonferduda@gmail.com')->first());
 
         for ($i=0; $i < count($lista); $i++) { 
-            $lista_email[] = trim($lista[$i]);
+            $lista_email[] = array('email' => trim($lista[$i]), 
+                                   'fl_envio' => (BoletimEnvio::where('id_boletim', $id)->where('ds_email', trim($lista[$i]))->first()) ? true : false);
         }
         
         return view('boletim/lista-envio', compact('boletim', 'lista_email'));
