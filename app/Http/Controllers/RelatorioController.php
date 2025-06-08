@@ -119,7 +119,7 @@ class RelatorioController extends Controller
                         // Executa o comando
                         exec($command, $output, $return_var);
 
-                        dd($return_var);
+                        dd($output);
 
                         if ($return_var === 0) {
 
