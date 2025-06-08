@@ -110,7 +110,7 @@ class RelatorioController extends Controller
 
                         // Comando para executar o script Python
                         $command = sprintf(
-                            'python3 %s "%s" %s 2>&1',
+                            'python3 %s "%s" %s 2>/dev/null',
                             base_path('python/gera-pdf-html.py'),
                             $htmlEscaped,
                             $nome_arquivo
