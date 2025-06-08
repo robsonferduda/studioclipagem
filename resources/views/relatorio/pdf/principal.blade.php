@@ -84,7 +84,7 @@
                         </div>
                         <div style="text-align: center;">
                             @if($noticia->midia)
-                                <img style="margin: 0 auto;" src="{{ public_path('img/noticia-web/'.$noticia->midia) }}">
+                                <img style="margin: 0 auto;" src="https://studioclipagem.com/img/noticia-web/{{ $noticia->midia }}">
                             @endif
                         </div>  
                  @if($key < count($dados_web) -1)
