@@ -3,6 +3,7 @@ import asyncio
 import sys
 import os
 from pyppeteer import launch
+from playwright.async_api import async_playwright
 
 # Define onde o Pyppeteer vai salvar o Chromium
 os.environ['PYPPETEER_HOME'] = '/tmp/pyppeteer_cache'
