@@ -564,19 +564,18 @@ class BoletimController extends Controller
             $boletim_envio->ds_email = $emails[$i];
             $boletim_envio->cd_usuario = Auth::user()->id;
 
-            /*
-
             try{
                 $mail_status = Mail::send('boletim.outlook', $data, function($message) use ($emails, $i) {
                 $message->to($emails[$i])
                 ->subject('Boletim de Clipagens');
-                    $message->from('boletins@clipagem.online','Studio Clipagem');
+                    $message->from('boletins@clipagem.online','Clipping de Notícias');
                 });
                 $msg = "Email enviado com sucesso";
                 $tipo = "success";
 
                 $msg = "Email enviado com sucesso";
                 $tipo = "success";
+                $boletim->id_situacao = 3;
                 $boletim_envio->id_situacao = 2; // Enviado
                 $boletim_envio->ds_mensagem = $msg;
             }
@@ -584,14 +583,14 @@ class BoletimController extends Controller
                 $msg = "Erro ao enviar para o endereço especificado";
                 $tipo = "error";
 
-                $msg = "Erro ao enviar para o endereço especificado";
+                $msg = "Erro ao enviar para o endereço especificado".$e->getMessage();
                 $tipo = "error";
+                $boletim->id_situacao = 4;
                 $boletim_envio->id_situacao = 1; // Pendente
                 $boletim_envio->ds_mensagem = $msg;
             }
 
-            */
-     
+            /*
             $url = 'https://147.93.71.189:38257/mail_sys/send_mail_http.json';
     
             $data = [
@@ -619,7 +618,7 @@ class BoletimController extends Controller
                 $boletim_envio->id_situacao = 1; // Pendente
                 $boletim_envio->ds_mensagem = $msg; 
                 $boletim->id_situacao = 4;
-            }           
+            } */          
                         
             $boletim_envio->save();
 
