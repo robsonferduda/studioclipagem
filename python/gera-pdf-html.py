@@ -1,38 +1,35 @@
-# generate_pdf.py
+# gera-pdf-html.py
 import asyncio
 import sys
 import os
-from pyppeteer import launch
 from playwright.async_api import async_playwright
-
-# Define onde o Pyppeteer vai salvar o Chromium
-os.environ['PYPPETEER_HOME'] = '/tmp/pyppeteer_cache'
 
 PDF_OUTPUT_DIR = "/var/www/studioclipagem/storage/app/public/relatorios-pdf"
 
-async def main(html_content, filename):
+async def main(html_file_path, filename):
     try:
+        with open(html_file_path, 'r', encoding='utf-8') as f:
+            html_content = f.read()
+
         os.makedirs(PDF_OUTPUT_DIR, exist_ok=True)
-        pdf_path = os.path.join(PDF_OUTPUT_DIR, f"{filename}")
+        pdf_path = os.path.join(PDF_OUTPUT_DIR, filename)
 
-        browser = await launch(headless=True)
-        page = await browser.newPage()
-        await page.setContent(html_content)
-        await asyncio.sleep(10)
+        async with async_playwright() as p:
+            browser = await p.chromium.launch(headless=True)
+            page = await browser.new_page()
+            await page.set_content(html_content, wait_until="networkidle")
 
-        await page.pdf({
-            'path': pdf_path,
-            'format': 'A4',
-            'printBackground': True,
-            'margin': {
-                'top': '20mm',
-                'bottom': '20mm',
-                'left': '10mm',
-                'right': '10mm'
-            }
-        })
-
-        await browser.close()
+            await page.pdf(
+                path=pdf_path,
+                format="A4",
+                print_background=True,
+                margin={
+                    "top": "20mm",
+                    "bottom": "20mm",
+                    "left": "10mm",
+                    "right": "10mm"
+                }
+            )
 
         print(pdf_path)
 
@@ -43,10 +40,10 @@ async def main(html_content, filename):
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print("ERRO: Forneça o HTML e o nome do arquivo como argumentos.", file=sys.stderr)
+        print("ERRO: Forneça o caminho do HTML e o nome do arquivo como argumentos.", file=sys.stderr)
         sys.exit(1)
 
-    html = sys.argv[1]
+    html_file_path = sys.argv[1]
     filename = sys.argv[2]
 
-    asyncio.run(main(html, filename))
+    asyncio.run(main(html_file_path, filename))
