@@ -1,34 +1,27 @@
 import asyncio
-from pyppeteer import launch
+from playwright.async_api import async_playwright
 
 async def gerar_pdf():
-    # Lê o HTML local
+    # Lê o conteúdo HTML
     with open("relatorio.html", "r", encoding="utf-8") as f:
         conteudo_html = f.read()
 
-    # Inicia o navegador
-    browser = await launch(headless=True, args=['--no-sandbox'])
-    page = await browser.newPage()
+    async with async_playwright() as p:
+        browser = await p.chromium.launch(headless=True)
+        page = await browser.new_page()
 
-    # Define o conteúdo da página
-    await page.setContent(conteudo_html)
-    await asyncio.sleep(10) 
+        # Define o conteúdo HTML e espera o carregamento completo
+        await page.set_content(conteudo_html, wait_until='networkidle')
 
+        # Gera o PDF
+        await page.pdf(
+            path="relatorio.pdf",
+            format="A4",
+            margin={"top": "20mm", "bottom": "20mm", "left": "10mm", "right": "10mm"},
+            print_background=True
+        )
 
-    # Gera o PDF
-    await page.pdf({
-        'path': 'relatorio.pdf',
-        'format': 'A4',
-        'printBackground': True,
-        'margin': {
-            'top': '20mm',
-            'bottom': '20mm',
-            'left': '10mm',
-            'right': '10mm'
-        }
-    })
+        await browser.close()
 
-    await browser.close()
-
-# Executa a função
-asyncio.get_event_loop().run_until_complete(gerar_pdf())
+# Executa o script
+asyncio.run(gerar_pdf())
