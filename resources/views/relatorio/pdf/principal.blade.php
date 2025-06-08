@@ -45,7 +45,7 @@
         @foreach($dados_impresso as $key => $noticia)
             
                         <div class="header">
-                            <h5 style="text-align: justify; margin-bottom: 0px; padding-bottom: 5px; margin-top: 26px; font-size: 17px; border-bottom: 1px solid black;">Clipagem de Jornal</h5>    
+                            <h5 style="text-align: justify; margin-bottom: 0px; padding-bottom: 5px; margin-top: 26px; font-size: 17px; border-bottom: 1px solid black; color: red;">Clipagem de Jornal</h5>    
                             <p style="text-align: justify; font-size: 16px; margin:0px; padding: 0px; margin-top: 8px; margin-bottom: 8px;">
                                 {{ $noticia->fonte }}
                                 {{ ($noticia->secao) ? " - ".$noticia->secao  : '' }}

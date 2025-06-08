@@ -103,8 +103,30 @@ class RelatorioController extends Controller
 
                     try {
 
-                        $pdf = PDFS::loadView('relatorio/pdf/principal', $data);
-                        Storage::disk('public')->put('relatorios-pdf/'.$nome_arquivo, $pdf->output());
+                        $htmlContent = view('relatorio/pdf/principal', compact('dados_impresso','dados_web'))->render();
+
+                        // Limpa o HTML para garantir que não tenha aspas quebrando a string
+                        $htmlEscaped = addslashes($htmlContent);
+
+                        // Comando para executar o script Python
+                        $command = sprintf(
+                            'python3 %s "%s" %s 2>&1',
+                            base_path('python/gera-pdf-html.py'),
+                            $htmlEscaped,
+                            $nome_arquivo
+                        );
+
+                        // Executa o comando
+                        exec($command, $output, $return_var);
+
+                        if ($return_var === 0) {
+                            
+                        }else{
+                           
+                        }
+
+                        //$pdf = PDFS::loadView('relatorio/pdf/principal', $data);
+                        //Storage::disk('public')->put('relatorios-pdf/'.$nome_arquivo, $pdf->output());
 
                         // Sucesso: atualiza situação para "pronto" (ex: 2)
                         $relatorio->situacao = 1;
