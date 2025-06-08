@@ -36,6 +36,11 @@
             font-size: 10px;
             color: #666;
         }
+
+        .no-break {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
     </style>
 </head>
 <body>
@@ -67,7 +72,7 @@
     @if(count($dados_web) > 0)
         <!-- Nome da Fonte - Seção - Página - Data - Cidade/UF -->
         @foreach($dados_web as $key => $noticia)
-           
+            <div class="no-break">
                         <div class="header">
                             <h5 style="text-align: justify; margin-bottom: 0px; padding-bottom: 5px; margin-top: 26px; font-size: 17px; border-bottom: 1px solid black;">Clipagem de Web</h5>   
                             <p style="text-align: justify; font-size: 16px; margin:0px; padding: 0px; margin-top: 8px; margin-bottom: 8px;">
@@ -87,6 +92,7 @@
                                 <img style="margin: 0 auto;" src="https://studioclipagem.com/img/noticia-web/{{ $noticia->midia }}">
                             @endif
                         </div>  
+                </div>
                  @if($key < count($dados_web) -1)
                 <div style="page-break-before: always;"></div>                        
             @endif 
