@@ -7,7 +7,7 @@ from pyppeteer import launch
 # Define onde o Pyppeteer vai salvar o Chromium
 os.environ['PYPPETEER_HOME'] = '/tmp/pyppeteer_cache'
 
-PDF_OUTPUT_DIR = "/var/www/html/studioclipagem/storage/app/public/relatorios-pdf"
+PDF_OUTPUT_DIR = "/var/www/studioclipagem/storage/app/public/relatorios-pdf"
 
 async def main(html_content, filename):
     try:
