@@ -120,18 +120,23 @@ class RelatorioController extends Controller
                         exec($command, $output, $return_var);
 
                         if ($return_var === 0) {
+
+                             // Sucesso: atualiza situação para "pronto" (ex: 2)
+                            $relatorio->situacao = 1;
+                            $relatorio->dt_finalizacao = now();
+                            $relatorio->save();
                             
                         }else{
-                           
+                           // Erro: atualiza situação para "erro" (ex: 3)
+                            $relatorio->situacao = 2;
+                            $relatorio->dt_finalizacao = now();
+                            $relatorio->save();
                         }
 
                         //$pdf = PDFS::loadView('relatorio/pdf/principal', $data);
                         //Storage::disk('public')->put('relatorios-pdf/'.$nome_arquivo, $pdf->output());
 
-                        // Sucesso: atualiza situação para "pronto" (ex: 2)
-                        $relatorio->situacao = 1;
-                        $relatorio->dt_finalizacao = now();
-                        $relatorio->save();
+                       
 
                     } catch (\Exception $e) {
 
