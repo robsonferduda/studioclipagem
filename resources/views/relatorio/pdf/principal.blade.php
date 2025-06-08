@@ -25,11 +25,6 @@
             border-collapse: collapse;            
         }
 
-        img{
-            max-width: 100%;
-            height: auto;
-        }
-
         .footer {
             margin-top: 30px;
             text-align: center;
