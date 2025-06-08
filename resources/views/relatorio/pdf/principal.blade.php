@@ -78,7 +78,7 @@
                                 {{ ($noticia->nm_estado and !$noticia->nm_cidade) ? " - ".trim($noticia->sg_estado) : ''}}
                                 <a href="{{ $noticia->url_noticia }}" style="position: absolute; right: 0px;" 
                                    target="_BLANK">
-                                    <img style="width: 20px; height: 20px;" src="{{ public_path('img/globe.png') }}">
+                                    <img style="width: 20px; height: 20px;" src="https://studioclipagem.com/img/globe.png">
                                 </a>
                             </p>  
                         </div>
