@@ -295,7 +295,7 @@
 @role('cliente')
 <div class="row">
     <div class="col-md-12">
-        <div class="card">
+        <div class="card grafico-midias">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h6 class="card-title mb-0"><i class="fa fa-bar-chart"></i> Resumo de Notícias por Mídia</h6>
                 <select id="filtro-periodo" class="form-control form-control-sm w-auto">
@@ -328,6 +328,9 @@
                     url: '{{ url("dashboard/grafico-midias") }}',
                     type: 'GET',
                     data: { periodo: periodo, tipo: 'linha' },
+                    beforeSend: function() {
+                        $('.grafico-midias').loader('show');
+                    },
                     success: function(res) {
 
                         if(window.graficoMidias instanceof Chart) {
@@ -385,6 +388,9 @@
                                 }
                             }
                         });
+                    },
+                    complete: function(){
+                        $('.grafico-midias').loader('hide');
                     }
                 });
             }
