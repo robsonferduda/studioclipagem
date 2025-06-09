@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
 use Laracasts\Flash\Flash;
+use Illuminate\Support\Facades\Storage;
 
 class ClienteController extends Controller
 {
