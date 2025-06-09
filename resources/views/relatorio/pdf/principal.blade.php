@@ -44,7 +44,11 @@
 
         .clipagem-item {
             page-break-before: always;
-            break-before: page;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        .imagem, .header {
             page-break-inside: avoid;
             break-inside: avoid;
         }
@@ -81,25 +85,23 @@
         <!-- Nome da Fonte - Seção - Página - Data - Cidade/UF -->
         @foreach($dados_web as $key => $noticia)
             <div class="clipagem-item">
-                        <div class="header">
-                            <h5 style="text-align: justify; margin-bottom: 0px; padding-bottom: 5px; margin-top: 26px; font-size: 17px; border-bottom: 1px solid black;">Clipagem de Web</h5>   
-                            <p style="text-align: justify; font-size: 16px; margin:0px; padding: 0px; margin-top: 8px; margin-bottom: 8px;">
-                                {{ $noticia->fonte }}
-                                {{ ($noticia->secao) ? " - ".$noticia->secao  : '' }}
-                                {{ " - ".$noticia->data_formatada }}
-                                {{ ($noticia->nm_cidade) ? " - ".trim($noticia->nm_cidade."/".$noticia->sg_estado) : '' }}
-                                {{ ($noticia->nm_estado and !$noticia->nm_cidade) ? " - ".trim($noticia->sg_estado) : ''}}
-                                <a href="{{ $noticia->url_noticia }}" style="position: absolute; right: 0px;" 
-                                   target="_BLANK">
-                                    <img style="width: 20px; height: 20px;" src="https://studioclipagem.com/img/globe.png">
-                                </a>
-                            </p>  
-                       
-                            @if($noticia->midia)
-                                <img src="https://studioclipagem.com/img/noticia-web/{{ $noticia->midia }}">
-                            @endif
-                        </div>  
+                <div class="header">
+                    <h5 style="text-align: justify; margin-bottom: 0px; padding-bottom: 5px; margin-top: 26px; font-size: 17px; border-bottom: 1px solid #ccc;">
+                        ND Mais
+                    </h5>
+                    <p style="text-align: justify; font-size: 16px; margin:0px; padding: 0px; margin-top: 8px; margin-bottom: 8px;">
+                        08/06/2025
+                        <a href="https://ndmais.com.br/turismo/estamos-no-radar-do-brasil-praia-grande-lanca-projeto-que-aposta-no-turismo-sustentavel/" target="_blank">
+                            <img style="width: 20px; height: 20px;" src="https://studioclipagem.com/img/globe.png">
+                        </a>
+                    </p>
                 </div>
+
+                <div class="imagem">
+                    <img src="https://studioclipagem.com/img/noticia-web/36323975.jpg" alt="Notícia">
+                </div>
+            </div>
+
                  @if($key < count($dados_web) -1)
                 <div style="page-break-before: always;"></div>                        
             @endif 
