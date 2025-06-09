@@ -8,6 +8,7 @@ use Storage;
 use App\Utils;
 use App\Mail\BoletimMail;
 use Carbon\Carbon;
+use App\Models\Area;
 use App\Models\BoletimEnvio;
 use App\Models\Boletim;
 use App\Models\BoletimNoticias;
@@ -409,15 +410,25 @@ class BoletimController extends Controller
 
         $noticias_impresso = array();
         $noticias_web = array(); 
-        $noticias_radio = $boletim->noticiasRadio()->get(); 
-        $noticias_tv = $boletim->noticiasTv()->get();  
+        $noticias_radio = array(); 
+        $noticias_tv = array();  
 
         foreach ($boletim->noticiasImpresso()->get() as $key => $noticia_impresso) {
+
+            $area = (NoticiaCliente::where('noticia_id', $noticia_impresso->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 1)->first()->area) ?
+                    Area::where('id', NoticiaCliente::where('noticia_id', $noticia_impresso->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 1)->first()->area)->first()->descricao :
+                    '';
+
             $noticias_impresso[] = array('titulo' => $noticia_impresso->titulo,
-                                         'dt_clipagem' => $noticia_impresso->dt_clipagem,
+                                         'data_noticia' => $noticia_impresso->dt_clipagem,
                                          'fonte' => ($noticia_impresso->fonte) ? $noticia_impresso->fonte->nome : 'Fonte não informada',
                                          'secao' => ($noticia_impresso->secao) ? $noticia_impresso->secao->ds_sessao : null,
+                                         'area' => $area,
+                                         'tipo' => 'impresso',
+                                         'programa' => '',
+                                         'duracao' => '',
                                          'sinopse' => strip_tags(str_replace('Sinopse 1 - ', '', $noticia_impresso->sinopse)),
+                                         'url_noticia' => null,
                                          'path_midia' => 'img/noticia-impressa/'.$noticia_impresso->ds_caminho_img,
                                          'erro' => '');
         }
@@ -440,14 +451,56 @@ class BoletimController extends Controller
                 }
             }
 
+            $area = (NoticiaCliente::where('noticia_id', $noticia_web->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 2)->first()->area) ?
+                    Area::where('id', NoticiaCliente::where('noticia_id', $noticia_web->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 2)->first()->area)->first()->descricao :
+                    '';
+
             $noticias_web[] = array('titulo' => $noticia_web->titulo_noticia,
-                                         'data_noticia' => $noticia_web->data_noticia,
-                                         'fonte' => ($noticia_web->fonte) ? $noticia_web->fonte->nome : 'Fonte não informada',
-                                         'secao' => ($noticia_web->secao) ? $noticia_web->secao->ds_sessao : null,
-                                         'sinopse' => strip_tags(str_replace('Sinopse 1 - ', '', $noticia_web->sinopse)),
-                                         'url_noticia' => $noticia_web->url_noticia, 
-                                         'path_midia' => $path,
-                                         'erro' => $erro);
+                                    'data_noticia' => $noticia_web->data_noticia,
+                                    'fonte' => ($noticia_web->fonte) ? $noticia_web->fonte->nome : 'Fonte não informada',
+                                    'secao' => ($noticia_web->secao) ? $noticia_web->secao->ds_sessao : null,
+                                    'area' => $area,
+                                    'tipo' => 'web',
+                                    'programa' => '',
+                                    'duracao' => '',
+                                    'sinopse' => strip_tags(str_replace('Sinopse 1 - ', '', $noticia_web->sinopse)),
+                                    'url_noticia' => $noticia_web->url_noticia, 
+                                    'path_midia' => $path,
+                                    'erro' => $erro);
+        }
+
+        foreach ($boletim->noticiasRadio()->get() as $key => $noticia_radio) {
+            
+            $noticias_radio[] = array('titulo' => $noticia_radio->titulo,
+                                         'data_noticia' => $noticia_radio->dt_clipagem,
+                                         'fonte' => ($noticia_radio->emissora) ? $noticia_radio->emissora->nome_emissora : 'Fonte não informada',
+                                         'secao' => ($noticia_radio->secao) ? $noticia_radio->secao->ds_sessao : null,
+                                         'area' => '',
+                                         'tipo' => 'radio',
+                                         'programa' => ($noticia_radio->programa) ? $noticia_radio->programa->nome_programa : null,
+                                         'duracao' => ($noticia_radio->duracao) ? $noticia_radio->duracao : 'Não informado',
+                                         'sinopse' => strip_tags(str_replace('Sinopse 1 - ', '', $noticia_radio->sinopse)),
+                                         'url_noticia' => null,
+                                         'path_midia' => 'audio/noticia-radio/'.$noticia_radio->ds_caminho_video,
+                                         'erro' => '');
+
+        }
+
+        foreach ($boletim->noticiasTv()->get() as $key => $noticia_tv) {
+            
+            $noticias_tv[] = array('titulo' => $noticia_tv->titulo,
+                                         'data_noticia' => $noticia_tv->dt_noticia,
+                                         'fonte' => ($noticia_tv->emissora) ? $noticia_tv->emissora->nome_emissora : 'Fonte não informada',
+                                         'secao' => ($noticia_tv->secao) ? $noticia_tv->secao->ds_sessao : null,
+                                         'area' => '',
+                                         'tipo' => 'tv',
+                                         'programa' => ($noticia_tv->programa) ? $noticia_tv->programa->nome_programa : null,
+                                         'duracao' => ($noticia_tv->duracao) ? $noticia_tv->duracao : 'Não informado',
+                                         'sinopse' => strip_tags(str_replace('Sinopse 1 - ', '', $noticia_tv->sinopse)),
+                                         'url_noticia' => null,
+                                         'path_midia' => 'video/noticia-tv/'.$noticia_tv->ds_caminho_video,
+                                         'erro' => '');
+
         }
 
         $dados['impresso'] = $noticias_impresso;
@@ -483,9 +536,33 @@ class BoletimController extends Controller
         $noticias_impresso = $dados['impresso'];
         $noticias_web = $dados['web']; 
         $noticias_radio = $dados['radio']; 
-        $noticias_tv = $dados['tv'];      
+        $noticias_tv = $dados['tv']; 
 
-        return view('boletim/visualizar', compact('boletim','noticias_impresso','noticias_web','noticias_radio','noticias_tv'));
+        $noticias = array_merge($noticias_web, $noticias_impresso, $noticias_tv, $noticias_radio);
+
+        usort($noticias, function ($a, $b) {
+            // Ordena por area
+            $areaCompare = strcmp($a['area'] ?? '', $b['area'] ?? '');
+            if ($areaCompare !== 0) {
+                return $areaCompare;
+            }
+
+            // Depois por tipo
+            $tipoCompare = strcmp($a['tipo'] ?? '', $b['tipo'] ?? '');
+            if ($tipoCompare !== 0) {
+                return $tipoCompare;
+            }
+
+            // Por fim, data_noticia (mais recente primeiro)
+            return strtotime($b['data_noticia']) <=> strtotime($a['data_noticia']);
+        });
+
+        if($boletim->id_cliente == 307){
+            $dados = $noticias;
+            return view('boletim/visualizar-area', compact('boletim','dados'));
+        }else{
+            return view('boletim/visualizar', compact('boletim','noticias_impresso','noticias_web','noticias_radio','noticias_tv'));
+        }
     }
 
     public function outlook($id)
@@ -500,8 +577,33 @@ class BoletimController extends Controller
         $noticias_web = $dados['web']; 
         $noticias_radio = $dados['radio']; 
         $noticias_tv = $dados['tv'];
+
+        $noticias = array_merge($noticias_web, $noticias_impresso, $noticias_tv, $noticias_radio);
+
+        usort($noticias, function ($a, $b) {
+            // Ordena por area
+            $areaCompare = strcmp($a['area'] ?? '', $b['area'] ?? '');
+            if ($areaCompare !== 0) {
+                return $areaCompare;
+            }
+
+            // Depois por tipo
+            $tipoCompare = strcmp($a['tipo'] ?? '', $b['tipo'] ?? '');
+            if ($tipoCompare !== 0) {
+                return $tipoCompare;
+            }
+
+            // Por fim, data_noticia (mais recente primeiro)
+            return strtotime($b['data_noticia']) <=> strtotime($a['data_noticia']);
+        });
+
+        if($boletim->id_cliente == 307){
+            $dados = $noticias;
+            return view('boletim/outlook-area', compact('boletim','dados'));
+        }else{
+            return view('boletim/outlook', compact('boletim','noticias_impresso','noticias_web','noticias_radio','noticias_tv'));
+        }
             
-        return view('boletim/outlook', compact('boletim','noticias_impresso','noticias_web','noticias_radio','noticias_tv'));
     }
 
     public function resumo($id)
@@ -539,23 +641,53 @@ class BoletimController extends Controller
         $noticias_impresso = $dados['impresso'];
         $noticias_web = $dados['web']; 
         $noticias_radio = $dados['radio']; 
-        $noticias_tv = $dados['tv'];        
+        $noticias_tv = $dados['tv'];   
         
-        $data = array("noticias_impresso"=> $noticias_impresso,
+        $noticias = array_merge($noticias_web, $noticias_impresso, $noticias_tv, $noticias_radio);
+
+        usort($noticias, function ($a, $b) {
+            // Ordena por area
+            $areaCompare = strcmp($a['area'] ?? '', $b['area'] ?? '');
+            if ($areaCompare !== 0) {
+                return $areaCompare;
+            }
+
+            // Depois por tipo
+            $tipoCompare = strcmp($a['tipo'] ?? '', $b['tipo'] ?? '');
+            if ($tipoCompare !== 0) {
+                return $tipoCompare;
+            }
+
+            // Por fim, data_noticia (mais recente primeiro)
+            return strtotime($b['data_noticia']) <=> strtotime($a['data_noticia']);
+        });
+
+        if($boletim->id_cliente == 307){
+
+            $view = 'boletim.outlook-area';
+             $data = array("dados" => $noticias, 
+                      "boletim" => $boletim);
+
+        }else{
+
+            $view = 'boletim.outlook';
+             $data = array("noticias_impresso"=> $noticias_impresso,
                       "noticias_web" => $noticias_web,
                       "noticias_radio" => $noticias_radio,
                       "noticias_tv" => $noticias_tv, 
                       "boletim" => $boletim);
+        }             
 
         $emails = $request->emails;
 
+        /*
         $htmlContent = view('boletim.outlook', [
                 'boletim' => $boletim,
                 'noticias_impresso' => $noticias_impresso,
                 'noticias_web' => $noticias_web,
                 'noticias_radio' => $noticias_radio,
                 'noticias_tv' => $noticias_tv
-            ])->render();
+            ])->render();*/
 
         for ($i=0; $i < count($emails); $i++) { 
 
@@ -565,7 +697,7 @@ class BoletimController extends Controller
             $boletim_envio->cd_usuario = Auth::user()->id;
 
             try{
-                $mail_status = Mail::send('boletim.outlook', $data, function($message) use ($emails, $i) {
+                $mail_status = Mail::send($view, $data, function($message) use ($emails, $i) {
                 $message->to($emails[$i])
                 ->subject('Boletim de Clipagens');
                     $message->from('boletins@clipagem.online','Clipping de Notícias');
