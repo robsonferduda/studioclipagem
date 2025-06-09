@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use DB;
+use Auth;
 use App\Models\Area;
 use App\Models\Cliente;
 use App\Models\ClienteArea;
 use App\Models\EnderecoEletronico;
 use App\Models\Pessoa;
+use App\Models\NoticiaWeb;
 use App\Utils;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -165,6 +168,8 @@ class ClienteController extends Controller
     public function noticias(Request $request)
     {
         $dados = array();
+        $cliente_selecionado = Auth::user()->client_id;
+        $tipo_data = ($request->tipo_data) ? $request->tipo_data : 'created_at';
       
         $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00" : date("Y-m-d")." 00:00:00";
         $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d")." 23:59:59";
@@ -177,7 +182,16 @@ class ClienteController extends Controller
         $fl_impresso = $request->fl_impresso == true ? true : false;
         $fl_radio = $request->fl_radio == true ? true : false;
 
-        return view('cliente/noticias', compact('dados','dt_inicial','dt_final','fl_web','fl_tv','fl_radio','fl_impresso'));
+        $termo = ($request->termo) ? $request->termo : null;
+
+        $dados_impresso = ($fl_impresso) ? $this->dadosImpresso($dt_inicial, $dt_final,$cliente_selecionado) : array();
+        $dados_radio    = ($fl_radio) ? $this->dadosRadio($dt_inicial, $dt_final,$cliente_selecionado) : array();
+        $dados_web      = ($fl_web) ? $this->dadosWeb($dt_inicial, $dt_final,$cliente_selecionado) : array();
+        $dados_tv      = ($fl_tv) ? $this->dadosTv($dt_inicial, $dt_final,$cliente_selecionado) : array();
+
+        $dados = array_merge($dados_impresso, $dados_radio, $dados_web, $dados_tv);
+
+        return view('cliente/noticias', compact('dados','tipo_data','dt_inicial','dt_final','fl_web','fl_tv','fl_radio','fl_impresso','termo'));
     }
 
     public function update(Request $request, int $id): RedirectResponse
@@ -407,5 +421,166 @@ class ClienteController extends Controller
                 throw new \RuntimeException($e);
             }
         }
+    }
+
+    public function dadosImpresso($dt_inicial, $dt_final,$cliente_selecionado)
+    {
+        $sql = "SELECT t1.id, 
+                    sg_estado,
+                    nm_estado,
+                    nm_cidade,
+                    '' as secao,
+                    nu_pagina_atual as pagina,
+                    titulo, 
+                    t4.nome as cliente,
+                    tipo_id,
+                    'impresso' as tipo, 
+                    TO_CHAR(dt_clipagem, 'DD/MM/YYYY') AS data_formatada,
+                    t2.nome as fonte,
+                    t1.sinopse,
+                    t3.sentimento,
+                    'imagem' as tipo_midia,
+                    ds_caminho_img as midia,
+                    '' as url_noticia
+                FROM noticia_impresso t1
+                JOIN jornal_online t2 ON t2.id = t1.id_fonte
+                JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 1
+                JOIN clientes t4 ON t4.id = t3.cliente_id
+                LEFT JOIN cidade t5 ON t5.cd_cidade = t1.cd_cidade
+                LEFT JOIN estado t6 ON t6.cd_estado = t1.cd_estado
+                WHERE 1=1
+                AND t1.dt_clipagem BETWEEN '$dt_inicial' AND '$dt_final'";
+
+        if($cliente_selecionado){
+            $sql .= ' AND t3.cliente_id = '.$cliente_selecionado;
+        }
+
+        return $dados = DB::select($sql);
+    }
+
+    public function dadosRadio($dt_inicial, $dt_final,$cliente_selecionado)
+    {
+        $sql = "SELECT t1.id, 
+                    sg_estado,
+                    nm_estado,
+                    nm_cidade,
+                    '' as secao,
+                    '' as pagina,
+                    titulo, 
+                    t4.nome as cliente,
+                    tipo_id,
+                    'radio' as tipo, 
+                    TO_CHAR(dt_clipagem, 'DD/MM/YYYY') AS data_formatada,
+                    t2.nome_emissora as fonte,
+                    t1.sinopse,
+                    t3.sentimento,
+                    'audio' as tipo_midia,
+                    ds_caminho_audio as midia,
+                     '' as url_noticia
+                FROM noticia_radio t1
+                JOIN emissora_radio t2 ON t2.id = t1.emissora_id
+                JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 3
+                JOIN clientes t4 ON t4.id = t3.cliente_id
+                LEFT JOIN cidade t5 ON t5.cd_cidade = t1.cd_cidade
+                LEFT JOIN estado t6 ON t6.cd_estado = t1.cd_estado
+                WHERE 1=1
+                AND t1.dt_clipagem BETWEEN '$dt_inicial' AND '$dt_final'";
+
+        if($cliente_selecionado){
+            $sql .= ' AND t3.cliente_id = '.$cliente_selecionado;
+        }
+
+        return $dados = DB::select($sql);
+    }
+
+    public function dadosWeb($dt_inicial, $dt_final,$cliente_selecionado)
+    {
+        $sql = "SELECT t1.id, 
+                    sg_estado,
+                    nm_estado,
+                    nm_cidade,
+                    '' as secao,
+                    '' as pagina,
+                    titulo_noticia as titulo, 
+                    t5.nome as cliente,
+                    tipo_id,
+                    'web' as tipo, 
+                    TO_CHAR(data_noticia, 'DD/MM/YYYY') AS data_formatada,
+                    t2.nome as fonte,
+                    t4.conteudo as sinopse,
+                    t3.sentimento,
+                    'imagem' as tipo_midia,
+                    ds_caminho_img as midia,
+                    url_noticia
+                FROM noticias_web t1
+                JOIN fonte_web t2 ON t2.id = t1.id_fonte
+                JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 2
+                JOIN conteudo_noticia_web t4 ON t4.id_noticia_web = t1.id
+                JOIN clientes t5 ON t5.id = t3.cliente_id
+                LEFT JOIN cidade t6 ON t6.cd_cidade = t1.cd_cidade
+                LEFT JOIN estado t7 ON t7.cd_estado = t1.cd_estado
+                WHERE 1=1
+                AND t1.data_noticia BETWEEN '$dt_inicial' AND '$dt_final'";
+
+        if($cliente_selecionado){
+            $sql .= ' AND t3.cliente_id = '.$cliente_selecionado;
+        }
+
+        $dados = DB::select($sql);
+
+        foreach($dados as $dado){
+
+            $noticia_web = NoticiaWeb::where('id', $dado->id)->where('ds_caminho_img','=',null)->first();
+
+            if($noticia_web){
+
+                if (Storage::disk('s3')->exists($noticia_web->path_screenshot)) {
+                    $arquivo = Storage::disk('s3')->get($noticia_web->path_screenshot);
+                    $filename = $noticia_web->id.".jpg";
+                    Storage::disk('web-img')->put($filename, $arquivo);
+
+                    $noticia_web->ds_caminho_img = $filename;
+                    $noticia_web->save();
+                }
+
+            }
+        }            
+
+        return $dados;
+    }
+
+    public function dadosTv($dt_inicial, $dt_final,$cliente_selecionado)
+    {
+        $sql = "SELECT t1.id, 
+                    sg_estado,
+                    nm_estado,
+                    nm_cidade,
+                    '' as secao,
+                    '' as pagina,
+                    '' as titulo, 
+                    t4.nome as cliente,
+                    tipo_id,
+                    'tv' as tipo, 
+                    TO_CHAR(dt_noticia, 'DD/MM/YYYY') AS data_formatada,
+                    t2.nome_emissora as fonte,
+                    sinopse,
+                    t3.sentimento,
+                    'imagem' as tipo_midia,
+                    ds_caminho_video as midia,
+                    '' as url_noticia
+                FROM noticia_tv t1
+                JOIN emissora_web t2 ON t2.id = t1.emissora_id
+                JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 4
+                JOIN clientes t4 ON t4.id = t3.cliente_id
+                LEFT JOIN cidade t5 ON t5.cd_cidade = t1.cd_cidade
+                LEFT JOIN estado t6 ON t6.cd_estado = t1.cd_estado
+                WHERE 1=1
+                AND t1.dt_noticia BETWEEN '$dt_inicial' AND '$dt_final'";
+
+        if($cliente_selecionado){
+            $sql .= ' AND t3.cliente_id = '.$cliente_selecionado;
+        }
+
+        return $dados = DB::select($sql);
     }
 }

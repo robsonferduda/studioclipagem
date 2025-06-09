@@ -21,10 +21,13 @@
             <div class="col-md-12">
                 {!! Form::open(['id' => 'frm_user_create', 'url' => ['noticias']]) !!}
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-2">
                             <div class="form-group">
-                                <label>Termo de busca</label>
-                                <input type="text" class="form-control" name="termo" id="termo" placeholder="Termo" value="{{ old('nome') }}">
+                                <label>Tipo de Data</label>
+                                <select class="form-control" name="tipo_data" id="tipo_data">
+                                    <option value="created_at" {{ ($tipo_data == "created_at") ? 'selected' : '' }}>Data de Cadastro</option>
+                                    <option value="dt_noticia" {{ ($tipo_data == "dt_noticia") ? 'selected' : '' }}>Data do Clipping</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-2 col-sm-6">
@@ -37,6 +40,71 @@
                             <div class="form-group">
                                 <label>Data Final</label>
                                 <input type="text" class="form-control datepicker" name="dt_final" id="dt_final" placeholder="__/__/____" value="{{ ($dt_final) ? \Carbon\Carbon::parse($dt_final)->format('d/m/Y') : '' }}">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Sentimento</label>
+                                <select class="form-control select2" name="cd_sentimento" id="cd_sentimento">
+                                    <option value="">Selecione um status</option>
+                                    <option value="">Selecione um sentimento</option>
+                                    <option value="1">Positivo</option>
+                                    <option value="0">Neutro</option>
+                                    <option value="-1">Negativo</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Termo de busca</label>
+                                <input type="text" class="form-control" name="termo" id="termo" placeholder="Termo" value="{{ old('nome') }}">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <h6 class="mt-2">Tipos de Mídia</h6>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check mt-3">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" name="fl_impresso" id="fl_impresso" value="true">
+                                        Clipagem de Jornal
+                                        <span class="form-check-sign"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check mt-3">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" name="fl_radio" id="fl_radio" value="true">
+                                        Clipagem de Rádio
+                                        <span class="form-check-sign"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check mt-3">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" name="fl_tv" id="fl_tv" value="true">
+                                        Clipagem de TV
+                                        <span class="form-check-sign"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check mt-3">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" name="fl_web" id="fl_web" value="true">
+                                        Clipagem de Web
+                                        <span class="form-check-sign"></span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>           
@@ -109,13 +177,6 @@
                             <div class="row">
                                 <div class="col-lg-12 col-sm-12">
                                     <div style="text-align: right">
-                                        @if($noticia->tipo == 'web')
-                                            <a title="Extrair Imagem" class="btn btn-warning btn-sm" href="{{ url('noticia/web/importar-imagem',$noticia->id) }}" role="button"><i class="fa fa-picture-o"> </i></a>
-                                            <a title="Editar" class="btn btn-info btn-sm" href="{{ url('noticia/web/'.$noticia->id.'/editar') }}" target="_BLANK" role="button"><i class="fa fa-edit"> </i></a>
-                                        @endif
-                                        @if($noticia->tipo == 'impresso')
-                                            <a title="Editar" class="btn btn-info btn-sm" href="{{ url('noticia-impressa/'.$noticia->id.'/editar') }}" target="_BLANK" role="button"><i class="fa fa-edit"> </i></a>
-                                        @endif
                                         <a title="Gerar PDF" class="btn btn-danger btn-sm" href="{{ url("relatorios/".$noticia->tipo."/pdf/".$noticia->id) }}" role="button"><i class="fa fa-file-pdf-o"> </i></a>
                                     </div>
                                 </div>
