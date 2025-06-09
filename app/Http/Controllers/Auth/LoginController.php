@@ -54,6 +54,10 @@ class LoginController extends Controller
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
 
+            if(Auth::user()->hasRole('cliente')){
+                Session::put('cliente', Cliente::where('id', Auth::user()->client_id)->first());
+            }
+
             Session::put('data_atual', date('Y-m-d'));
         
             return redirect()->intended('home');

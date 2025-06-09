@@ -292,12 +292,110 @@
         </div>
     </div>
 @endpermission
+@role('cliente')
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="card-title mb-0"><i class="fa fa-bar-chart"></i> Resumo de Notícias por Mídia</h6>
+                <select id="filtro-periodo" class="form-control form-control-sm w-auto">
+                    <option value="7">Últimos 7 dias</option>
+                    <option value="14">Últimos 14 dias</option>
+                    <option value="30">Últimos 30 dias</option>
+                    <option value="mes_anterior">Mês anterior</option>
+                </select>
+            </div>
+            <div class="card-body">
+                <canvas id="graficoMidias"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+@endrole
 @endsection
 @section('script')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+    
     $(document).ready(function() {
 
         var host =  $('meta[name="base-url"]').attr('content');
+
+        @if(Auth::user()->hasRole('cliente'))
+
+            function carregarGraficoMidias(periodo = '7') {
+                $.ajax({
+                    url: '{{ url("dashboard/grafico-midias") }}',
+                    type: 'GET',
+                    data: { periodo: periodo, tipo: 'linha' },
+                    success: function(res) {
+
+                        if(window.graficoMidias instanceof Chart) {
+                            window.graficoMidias.destroy();
+                        }
+
+                        var ctx = document.getElementById('graficoMidias').getContext('2d');
+                        window.graficoMidias = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: res.labels, // dias do período
+                                datasets: [
+                                    {
+                                        label: 'Web',
+                                        data: res.data.web,
+                                        borderColor: '#36A2EB',
+                                        backgroundColor: 'rgba(54,162,235,0.1)',
+                                        fill: false,
+                                        tension: 0.2
+                                    },
+                                    {
+                                        label: 'Jornal',
+                                        data: res.data.jornal,
+                                        borderColor: '#FF6384',
+                                        backgroundColor: 'rgba(255,99,132,0.1)',
+                                        fill: false,
+                                        tension: 0.2
+                                    },
+                                    {
+                                        label: 'Rádio',
+                                        data: res.data.radio,
+                                        borderColor: '#FFCE56',
+                                        backgroundColor: 'rgba(255,206,86,0.1)',
+                                        fill: false,
+                                        tension: 0.2
+                                    },
+                                    {
+                                        label: 'TV',
+                                        data: res.data.tv,
+                                        borderColor: '#4BC0C0',
+                                        backgroundColor: 'rgba(75,192,192,0.1)',
+                                        fill: false,
+                                        tension: 0.2
+                                    }
+                                ]
+                            },
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: { display: true }
+                                },
+                                scales: {
+                                    y: { beginAtZero: true },
+                                    x: { title: { display: true, text: 'Dia' } }
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+
+            $('#filtro-periodo').on('change', function() {
+                carregarGraficoMidias($(this).val());
+            });
+
+            carregarGraficoMidias();
+
+        @endif
 
         $.ajax({
             url: host+'/noticias/estatisticas/areas',

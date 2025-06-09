@@ -416,6 +416,8 @@ Route::middleware(['web'])->group(function () {
 
 	Route::get('leitura','RelatorioController@word');
 
+	Route::get('dashboard/grafico-midias', 'HomeController@graficoMidias');
+
 	Route::get('files/{file_name}', function($file_name = null)
 	{
 	    $path = storage_path().'/'.'app'.'/public/'.$file_name;

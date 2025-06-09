@@ -13,6 +13,8 @@ use App\Models\Monitoramento;
 use App\Models\FonteImpressa;
 use App\Models\VideoEmissoraWeb;
 use App\Models\NoticiaRadio;
+use App\Models\NoticiaImpresso;
+use App\Models\NoticiaTv;
 use App\Models\NoticiaWeb;
 use App\Models\FonteWeb;
 use App\Models\ColetaWeb;
@@ -24,7 +26,7 @@ use Illuminate\Support\Facades\Session;
 
 class HomeController extends Controller
 {
-    private $client_id;
+    private $cliente_id;
     private $data_atual;
     private $periodo_padrao;
     private $noticias = array();
@@ -32,13 +34,6 @@ class HomeController extends Controller
     public function __construct()
     {
         $this->middleware('auth',['except' => ['site']]);
-
-        $cliente = null;
-
-        $clienteSession = ['id' => 1, 'nome' => 'Teste'];
-
-        Session::put('cliente', session('cliente') ? session('cliente') : $clienteSession);
-
         $this->data_atual = session('data_atual');
         
         Session::put('url','home');
@@ -58,8 +53,6 @@ class HomeController extends Controller
     {
         $dt_inicial = date("Y-m-d")." 00:00:00";
         $dt_final = date("Y-m-d")." 23:59:59";
-
-        event(new RelatorioEvent('hello world'));
 
         $totais = array();
         $coletas = array();
@@ -105,5 +98,70 @@ class HomeController extends Controller
     public function php()
     {
         phpinfo(); 
+    }
+
+    public function graficoMidias(Request $request)
+    {
+        $periodo = $request->get('periodo', 7);
+
+        if ($periodo == 'mes_anterior') {
+            $inicio = now()->subMonth()->startOfMonth();
+            $fim = now()->subMonth()->endOfMonth();
+        } else {
+            $inicio = now()->subDays((int)$periodo - 1)->startOfDay();
+            $fim = now()->endOfDay();
+        }
+
+        $user = auth()->user();
+        $cliente = Auth::user()->client_id;
+     
+        // Monta os dias do período
+        $labels = [];
+        $dataWeb = [];
+        $dataJornal = [];
+        $dataRadio = [];
+        $dataTv = [];
+
+        $dias = \Carbon\CarbonPeriod::create($inicio, $fim);
+
+        foreach ($dias as $dia) {
+
+            $labels[] = $dia->format('d/m');
+            $data = $dia->format('Y-m-d');
+
+            $dataWeb[] = NoticiaWeb::whereHas('clientes', function($q) use($cliente) {
+                            $q->where('noticia_cliente.cliente_id', $cliente)->where('noticia_cliente.tipo_id', 2);
+                        })
+                        ->whereBetween('created_at', [$data." 00:00:00", $data." 23:59:59"])
+                        ->count();
+
+            $dataJornal[] = NoticiaImpresso::whereHas('clientes', function($q) use($cliente) {
+                            $q->where('noticia_cliente.cliente_id', $cliente)->where('noticia_cliente.tipo_id', 1);
+                        })
+                        ->whereBetween('created_at', [$data." 00:00:00", $data." 23:59:59"])
+                        ->count();
+
+            $dataRadio[] = NoticiaRadio::whereHas('clientes', function($q) use($cliente) {
+                            $q->where('noticia_cliente.cliente_id', $cliente)->where('noticia_cliente.tipo_id', 3);
+                        })
+                        ->whereBetween('created_at', [$data." 00:00:00", $data." 23:59:59"])
+                        ->count();
+
+            $dataTv[] = NoticiaTv::whereHas('clientes', function($q) use($cliente) {
+                            $q->where('noticia_cliente.cliente_id', $cliente)->where('noticia_cliente.tipo_id', 4);
+                        })
+                        ->whereBetween('created_at', [$data." 00:00:00", $data." 23:59:59"])
+                        ->count();
+        }
+
+        return response()->json([
+            'labels' => $labels,
+            'data' => [
+                'web' => $dataWeb,
+                'jornal' => $dataJornal,
+                'radio' => $dataRadio,
+                'tv' => $dataTv,
+            ],
+        ]);
     }
 }
