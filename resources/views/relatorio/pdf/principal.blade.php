@@ -94,10 +94,9 @@
                                     <img style="width: 20px; height: 20px;" src="https://studioclipagem.com/img/globe.png">
                                 </a>
                             </p>  
-                        </div>
-                        <div class="imagem">
+                       
                             @if($noticia->midia)
-                                <img style="margin: 0 auto;" src="https://studioclipagem.com/img/noticia-web/{{ $noticia->midia }}">
+                                <img src="https://studioclipagem.com/img/noticia-web/{{ $noticia->midia }}">
                             @endif
                         </div>  
                 </div>
