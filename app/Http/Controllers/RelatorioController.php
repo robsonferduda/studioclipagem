@@ -108,6 +108,8 @@ class RelatorioController extends Controller
                         // Limpa o HTML para garantir que não tenha aspas quebrando a string
                         $htmlEscaped = addslashes($htmlContent);
 
+                        dd($htmlEscaped);
+
                         // Comando para executar o script Python
                         $command = sprintf(
                             'python3 %s "%s" %s 2>&1',
