@@ -129,30 +129,46 @@ class HomeController extends Controller
             $labels[] = $dia->format('d/m');
             $data = $dia->format('Y-m-d');
 
-            $dataWeb[] = NoticiaWeb::whereHas('clientes', function($q) use($cliente) {
-                            $q->where('noticia_cliente.cliente_id', $cliente)->where('noticia_cliente.tipo_id', 2);
-                        })
-                        ->whereBetween('created_at', [$data." 00:00:00", $data." 23:59:59"])
-                        ->where('fl_boletim', true)
-                        ->count();
+            // WEB
+            $dataWeb[] = DB::table('noticias_web as nw')
+                ->join('noticia_cliente as nc', function($join) use ($cliente) {
+                    $join->on('nc.noticia_id', '=', 'nw.id')
+                        ->where('nc.cliente_id', $cliente)
+                        ->where('nc.tipo_id', 2);
+                })
+                ->whereBetween('nw.created_at', [$data." 00:00:00", $data." 23:59:59"])
+                ->where('nw.fl_boletim', true)
+                ->count();
 
-            $dataJornal[] = NoticiaImpresso::whereHas('clientes', function($q) use($cliente) {
-                            $q->where('noticia_cliente.cliente_id', $cliente)->where('noticia_cliente.tipo_id', 1);
-                        })
-                        ->whereBetween('created_at', [$data." 00:00:00", $data." 23:59:59"])
-                        ->count();
+            // JORNAL
+            $dataJornal[] = DB::table('noticia_impresso as ni')
+                ->join('noticia_cliente as nc', function($join) use ($cliente) {
+                    $join->on('nc.noticia_id', '=', 'ni.id')
+                        ->where('nc.cliente_id', $cliente)
+                        ->where('nc.tipo_id', 1);
+                })
+                ->whereBetween('ni.created_at', [$data." 00:00:00", $data." 23:59:59"])
+                ->count();
 
-            $dataRadio[] = NoticiaRadio::whereHas('clientes', function($q) use($cliente) {
-                            $q->where('noticia_cliente.cliente_id', $cliente)->where('noticia_cliente.tipo_id', 3);
-                        })
-                        ->whereBetween('created_at', [$data." 00:00:00", $data." 23:59:59"])
-                        ->count();
+            // RADIO
+            $dataRadio[] = DB::table('noticia_radio as nr')
+                ->join('noticia_cliente as nc', function($join) use ($cliente) {
+                    $join->on('nc.noticia_id', '=', 'nr.id')
+                        ->where('nc.cliente_id', $cliente)
+                        ->where('nc.tipo_id', 3);
+                })
+                ->whereBetween('nr.created_at', [$data." 00:00:00", $data." 23:59:59"])
+                ->count();
 
-            $dataTv[] = NoticiaTv::whereHas('clientes', function($q) use($cliente) {
-                            $q->where('noticia_cliente.cliente_id', $cliente)->where('noticia_cliente.tipo_id', 4);
-                        })
-                        ->whereBetween('created_at', [$data." 00:00:00", $data." 23:59:59"])
-                        ->count();
+            // TV
+            $dataTv[] = DB::table('noticia_tv as nt')
+                ->join('noticia_cliente as nc', function($join) use ($cliente) {
+                    $join->on('nc.noticia_id', '=', 'nt.id')
+                        ->where('nc.cliente_id', $cliente)
+                        ->where('nc.tipo_id', 4);
+                })
+                ->whereBetween('nt.created_at', [$data." 00:00:00", $data." 23:59:59"])
+                ->count();
         }
 
         return response()->json([
