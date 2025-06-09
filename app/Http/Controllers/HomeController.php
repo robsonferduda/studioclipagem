@@ -132,6 +132,7 @@ class HomeController extends Controller
             $dataWeb[] = NoticiaWeb::whereHas('clientes', function($q) use($cliente) {
                             $q->where('noticia_cliente.cliente_id', $cliente)->where('noticia_cliente.tipo_id', 2);
                         })
+                        ->where('fl_boletim', true)
                         ->whereBetween('created_at', [$data." 00:00:00", $data." 23:59:59"])
                         ->count();
 
