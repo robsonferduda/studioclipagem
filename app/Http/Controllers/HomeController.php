@@ -124,13 +124,18 @@ class HomeController extends Controller
 
         $dias = \Carbon\CarbonPeriod::create($inicio, $fim);
 
+        $total_jornal = 0;
+        $total_web = 0;
+        $total_radio = 0;
+        $total_tv = 0;
+
         foreach ($dias as $dia) {
 
             $labels[] = $dia->format('d/m');
             $data = $dia->format('Y-m-d');
 
             // WEB
-            $dataWeb[] = DB::table('noticias_web as nw')
+            $dw = DB::table('noticias_web as nw')
                 ->join('noticia_cliente as nc', function($join) use ($cliente) {
                     $join->on('nc.noticia_id', '=', 'nw.id')
                         ->where('nc.cliente_id', $cliente)
@@ -140,8 +145,12 @@ class HomeController extends Controller
                 ->where('nw.fl_boletim', true)
                 ->count();
 
+            $dataWeb[] = $dw;
+
+            $total_web += $dw;
+
             // JORNAL
-            $dataJornal[] = DB::table('noticia_impresso as ni')
+            $dj = DB::table('noticia_impresso as ni')
                 ->join('noticia_cliente as nc', function($join) use ($cliente) {
                     $join->on('nc.noticia_id', '=', 'ni.id')
                         ->where('nc.cliente_id', $cliente)
@@ -150,8 +159,12 @@ class HomeController extends Controller
                 ->whereBetween('ni.created_at', [$data." 00:00:00", $data." 23:59:59"])
                 ->count();
 
+            $dataJornal[] = $dj;
+
+            $total_jornal += $dj;
+
             // RADIO
-            $dataRadio[] = DB::table('noticia_radio as nr')
+            $dr = DB::table('noticia_radio as nr')
                 ->join('noticia_cliente as nc', function($join) use ($cliente) {
                     $join->on('nc.noticia_id', '=', 'nr.id')
                         ->where('nc.cliente_id', $cliente)
@@ -160,8 +173,12 @@ class HomeController extends Controller
                 ->whereBetween('nr.created_at', [$data." 00:00:00", $data." 23:59:59"])
                 ->count();
 
+            $dataRadio[] = $dr;
+
+            $total_radio += $dr;
+
             // TV
-            $dataTv[] = DB::table('noticia_tv as nt')
+            $dt = DB::table('noticia_tv as nt')
                 ->join('noticia_cliente as nc', function($join) use ($cliente) {
                     $join->on('nc.noticia_id', '=', 'nt.id')
                         ->where('nc.cliente_id', $cliente)
@@ -169,10 +186,20 @@ class HomeController extends Controller
                 })
                 ->whereBetween('nt.created_at', [$data." 00:00:00", $data." 23:59:59"])
                 ->count();
+
+            $dataTv[] = $dt;
+
+            $total_tv += $dt;
         }
 
         return response()->json([
             'labels' => $labels,
+            'total' => [
+                'web' => $total_web,
+                'jornal' => $total_jornal,
+                'radio' => $total_radio,
+                'tv' => $total_tv,
+            ],
             'data' => [
                 'web' => $dataWeb,
                 'jornal' => $dataJornal,

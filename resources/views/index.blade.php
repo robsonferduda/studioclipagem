@@ -295,21 +295,114 @@
 @role('cliente')
 <div class="row">
     <div class="col-md-12">
-        <div class="card grafico-midias">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h6 class="card-title mb-0"><i class="fa fa-bar-chart"></i> Resumo de Notícias por Mídia</h6>
-                <select id="filtro-periodo" class="form-control form-control-sm w-auto">
-                    <option value="7">Últimos 7 dias</option>
-                    <option value="14">Últimos 14 dias</option>
-                    <option value="30">Últimos 30 dias</option>
-                    <option value="mes_anterior">Mês anterior</option>
-                </select>
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-md-9">
+                        <h6 class="card-title mb-0"><i class="fa fa-bar-chart"></i> Resumo de Notícias por Mídia</h6>
+                    </div>
+                    <div class="col-md-3">
+                        <select id="filtro-periodo" class="form-control form-control-sm w-auto pull-right mr-4">
+                            <option value="7">Últimos 7 dias</option>
+                            <option value="14">Últimos 14 dias</option>
+                            <option value="30">Últimos 30 dias</option>
+                            <option value="mes_anterior">Mês anterior</option>
+                        </select>
+                    </div>
+                </div>
             </div>
             <div class="card-body">
-                <canvas id="graficoMidias"></canvas>
+                <div class="row">
+                    <div class="col-lg-9 col-md-6 col-sm-6 grafico-midias">
+                        <canvas id="graficoMidias"></canvas>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="col-md-12">
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <div class="card card-stats">
+                                    <div class="card-body ">
+                                        <div class="row">
+                                            <div class="col-5 col-md-4">
+                                                <div class="icon-big text-center icon-success"><i class="fa fa-globe text-success"></i></div>
+                                            </div>
+                                            <div class="col-7 col-md-8">
+                                                <div class="numbers">
+                                                    <p class="card-category">WEB</p>
+                                                    <p class="card-title"></p>
+                                                    <p class="total-web">0</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <div class="card card-stats">
+                                    <div class="card-body ">
+                                        <div class="row">
+                                            <div class="col-5 col-md-4">
+                                                <div class="icon-big text-center icon-danger"><i class="fa fa-newspaper-o text-danger"></i></div>
+                                            </div>
+                                            <div class="col-7 col-md-8">
+                                                <div class="numbers">
+                                                    <p class="card-category">IMPRESSO</p>
+                                                    <p class="card-title"></p>
+                                                    <p class="total-impresso">0</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <div class="card card-stats">
+                                    <div class="card-body ">
+                                        <div class="row">
+                                            <div class="col-5 col-md-4">
+                                                <div class="icon-big text-center icon-danger"><i class="fa fa-volume-up text-info"></i></div>
+                                            </div>
+                                            <div class="col-7 col-md-8">
+                                                <div class="numbers">
+                                                    <p class="card-category">RÁDIO</p>
+                                                    <p class="card-title"></p>
+                                                    <p class="total-radio">0</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <div class="card card-stats">
+                                    <div class="card-body ">
+                                        <div class="row">
+                                            <div class="col-5 col-md-4">
+                                                <div class="icon-big text-center icon-danger"><i class="fa fa-tv text-warning"></i></div>
+                                            </div>
+                                            <div class="col-7 col-md-8">
+                                                <div class="numbers">
+                                                    <p class="card-category">TV</p>
+                                                    <p class="card-title"></p>
+                                                    <p class="total-tv">0</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+    
 </div>
 @endrole
 @endsection
@@ -336,6 +429,11 @@
                         if(window.graficoMidias instanceof Chart) {
                             window.graficoMidias.destroy();
                         }
+
+                        $(".total-tv").html(res.total.tv);      
+                        $(".total-radio").html(res.total.radio);
+                        $(".total-impresso").html(res.total.jornal);
+                        $(".total-web").html(res.total.web);                  
 
                         var ctx = document.getElementById('graficoMidias').getContext('2d');
                         window.graficoMidias = new Chart(ctx, {
