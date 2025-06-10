@@ -67,7 +67,7 @@
                             <div class="form-check mt-3">
                                 <div class="form-check">
                                     <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" name="fl_impresso" id="fl_impresso" value="true">
+                                        <input class="form-check-input" type="checkbox" name="fl_impresso" {{ ($fl_impresso) ? 'checked' : '' }} id="fl_impresso" value="true">
                                         Clipagem de Jornal
                                         <span class="form-check-sign"></span>
                                     </label>
@@ -78,7 +78,7 @@
                             <div class="form-check mt-3">
                                 <div class="form-check">
                                     <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" name="fl_radio" id="fl_radio" value="true">
+                                        <input class="form-check-input" type="checkbox" name="fl_radio" {{ ($fl_radio) ? 'checked' : '' }} id="fl_radio" value="true">
                                         Clipagem de Rádio
                                         <span class="form-check-sign"></span>
                                     </label>
@@ -89,7 +89,7 @@
                             <div class="form-check mt-3">
                                 <div class="form-check">
                                     <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" name="fl_tv" id="fl_tv" value="true">
+                                        <input class="form-check-input" type="checkbox" name="fl_tv" {{ ($fl_tv) ? 'checked' : '' }} id="fl_tv" value="true">
                                         Clipagem de TV
                                         <span class="form-check-sign"></span>
                                     </label>
@@ -100,14 +100,15 @@
                             <div class="form-check mt-3">
                                 <div class="form-check">
                                     <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" name="fl_web" id="fl_web" value="true">
+                                        <input class="form-check-input" type="checkbox" name="fl_web" id="fl_web" {{ ($fl_web) ? 'checked' : '' }} value="true">
                                         Clipagem de Web
                                         <span class="form-check-sign"></span>
                                     </label>
                                 </div>
                             </div>
                         </div>
-                    </div>           
+                    </div>  
+                    <hr/>         
                     <div class="card-footer text-center mb-3">
                         <button type="submit" class="btn btn-info" name="acao" value="pesquisar"><i class="fa fa-search"></i> Pesquisar</button>
                     </div>
@@ -118,25 +119,72 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-lg-12 col-sm-12">
+                                <div class="col-lg-3 col-md-3 col-sm-12">
+                                    @switch($noticia->tipo)
+                                        @case('radio')
+                                            @if($noticia->midia)
+                                                <audio width="100%" controls style="width: 100%;">
+                                                    <source src="{{ asset('audio/noticia-radio/'.$noticia->midia) }}" type="audio/mpeg">
+                                                    Seu navegador não suporta a execução de áudios, faça o download para poder ouvir.
+                                                </audio>
+                                            @else
+                                                <h6 class="mb-1 mt-1" style="color: #ef8157;">Notícia sem áudio vinculado</h6>
+                                            @endif
+                                        @break
+                                        @case('tv')
+                                            @if($noticia->midia)
+                                                <video width="100%" height="240" controls>
+                                                    <source src="{{ asset('video/noticia-tv/'.$noticia->midia) }}" type="video/mp4">
+                                                    <source src="movie.ogg" type="video/ogg">
+                                                    Seu navegador não suporta a exibição de vídeos.
+                                                </video>
+                                            @else
+                                                <h6 class="mb-1 mt-1" style="color: #ef8157;">Notícia sem vídeo vinculado</h6>
+                                            @endif
+                                        @break
+                                        @case('impresso')
+                                            @if($noticia->midia)
+                                                <a href="{{ url('noticia-impressa/imagem/download/'.$noticia->midia) }}" target="_BLANK">
+                                                    <img src="{{ asset('img/noticia-impressa/'.$noticia->midia) }}" alt="">
+                                                </a>
+                                            @else
+                                                <h6 class="mb-1 mt-1" style="color: #ef8157;">Notícia sem print vinculado</h6>
+                                            @endif
+                                        @break
+                                        @case('web')
+                                            @if($noticia->midia)
+                                                <a href="{{ url('noticia-web/imagem/download/'.$noticia->midia) }}" target="_BLANK">
+                                                    <img src="{{ asset('img/noticia-web/'.$noticia->midia) }}" alt="">
+                                                </a>
+                                            @else
+                                                <h6 class="mb-1 mt-1" style="color: #ef8157;">Notícia sem print vinculado</h6>
+                                            @endif
+                                        @break
+                                    @endswitch
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-12">
                                     @switch($noticia->tipo)
                                         @case('web')
                                             @php
+                                                $tipo = 2;
                                                 $tipo_formatado = '<i class="fa fa-globe"></i> Web';
                                             @endphp
                                         @break
                                         @case('tv')
                                             @php
+                                                $tipo = 4;
                                                 $tipo_formatado = '<i class="fa fa-television"></i> TV';
                                             @endphp
                                         @break
                                         @case('radio')
                                             @php
+                                                $tipo = 3;
                                                 $tipo_formatado = '<i class="fa fa-volume-up"></i> Rádio';
                                             @endphp
                                         @break
                                         @case('impresso')
                                             @php
+                                                $tipo = 1;
                                                 $tipo_formatado = '<i class="fa fa-newspaper-o"></i> Impressos';
                                             @endphp
                                         @break
@@ -154,17 +202,17 @@
                                         @switch($noticia->sentimento)
                                             @case(-1)
                                                 <i class="fa fa-frown-o text-danger"></i>
-                                                <a href="{{ url('noticia/'.$noticia->id.'/tipo/'.$noticia->tipo.'/cliente/'.$noticia->tipo.'/sentimento/0/atualizar') }}"><i class="fa fa-ban op-2"></i></a>
-                                                <a href="{{ url('noticia/'.$noticia->id.'/tipo/'.$noticia->tipo.'/cliente/'.$noticia->tipo.'/sentimento/1/atualizar') }}"><i class="fa fa-smile-o op-2"></i></a>
+                                                <a href="{{ url('noticia/'.$noticia->id.'/tipo/'.$tipo.'/cliente/'.$noticia->id_cliente.'/sentimento/0/atualizar') }}"><i class="fa fa-ban op-2"></i></a>
+                                                <a href="{{ url('noticia/'.$noticia->id.'/tipo/'.$tipo.'/cliente/'.$noticia->id_cliente.'/sentimento/1/atualizar') }}"><i class="fa fa-smile-o op-2"></i></a>
                                             @break
                                             @case(0)
-                                                <a href="{{ url('noticia/'.$noticia->id.'/tipo/'.$noticia->tipo.'/cliente/'.$noticia->tipo.'/sentimento/-1/atualizar') }}"><i class="fa fa-frown-o op-2"></i></a> 
+                                                <a href="{{ url('noticia/'.$noticia->id.'/tipo/'.$tipo.'/cliente/'.$noticia->id_cliente.'/sentimento/-1/atualizar') }}"><i class="fa fa-frown-o op-2"></i></a> 
                                                 <i class="fa fa-ban text-primary"></i>
-                                                <a href="{{ url('noticia/'.$noticia->id.'/tipo/'.$noticia->tipo.'/cliente/'.$noticia->tipo.'/sentimento/1/atualizar') }}"><i class="fa fa-smile-o op-2"></i></a>                                            
+                                                <a href="{{ url('noticia/'.$noticia->id.'/tipo/'.$tipo.'/cliente/'.$noticia->id_cliente.'/sentimento/1/atualizar') }}"><i class="fa fa-smile-o op-2"></i></a>                                            
                                             @break
                                             @case(1)
-                                                <a href="{{ url('noticia/'.$noticia->id.'/tipo/'.$noticia->tipo.'/cliente/'.$noticia->tipo.'/sentimento/-1/atualizar') }}"><i class="fa fa-frown-o op-2"></i></a>
-                                                <a href="{{ url('noticia/'.$noticia->id.'/tipo/'.$noticia->tipo.'/cliente/'.$noticia->tipo.'/sentimento/0/atualizar') }}"><i class="fa fa-ban op-2"></i></a>
+                                                <a href="{{ url('noticia/'.$noticia->id.'/tipo/'.$tipo.'/cliente/'.$noticia->id_cliente.'/sentimento/-1/atualizar') }}"><i class="fa fa-frown-o op-2"></i></a>
+                                                <a href="{{ url('noticia/'.$noticia->id.'/tipo/'.$tipo.'/cliente/'.$noticia->id_cliente.'/sentimento/0/atualizar') }}"><i class="fa fa-ban op-2"></i></a>
                                                 <i class="fa fa-smile-o text-success"></i>
                                             @break                                            
                                         @endswitch
@@ -176,9 +224,11 @@
                             </div>
                             <div class="row">
                                 <div class="col-lg-12 col-sm-12">
-                                    <div style="text-align: right">
-                                        <a title="Gerar PDF" class="btn btn-danger btn-sm" href="{{ url("relatorios/".$noticia->tipo."/pdf/".$noticia->id) }}" role="button"><i class="fa fa-file-pdf-o"> </i></a>
-                                    </div>
+                                    @if($noticia->tipo == 'web' or $noticia->tipo == 'impresso')
+                                        <div style="text-align: right">
+                                            <a title="Gerar PDF" class="btn btn-danger btn-sm" href="{{ url("relatorios/".$noticia->tipo."/pdf/".$noticia->id) }}" role="button"><i class="fa fa-file-pdf-o"> </i></a>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
