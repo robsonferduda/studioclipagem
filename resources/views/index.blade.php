@@ -329,8 +329,10 @@
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="col-lg-9 col-md-6 col-sm-6 grafico-midias">
-                        <canvas id="graficoMidias"></canvas>
+                    <div class="col-lg-9 col-md-6 col-sm-6">
+                        <div class="grafico-midias">
+                            <canvas id="graficoMidias"></canvas>
+                        </div>
                     </div>
                     <div class="col-md-3">
                         <div class="row">
