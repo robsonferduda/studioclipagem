@@ -451,6 +451,8 @@ class ClienteController extends Controller
                 LEFT JOIN cidade t5 ON t5.cd_cidade = t1.cd_cidade
                 LEFT JOIN estado t6 ON t6.cd_estado = t1.cd_estado
                 WHERE 1=1
+                AND t1.deleted_at IS NULL
+                AND t3.deleted_at IS NULL
                 AND t1.dt_clipagem BETWEEN '$dt_inicial' AND '$dt_final'";
 
         if($cliente_selecionado){
@@ -487,6 +489,8 @@ class ClienteController extends Controller
                 LEFT JOIN cidade t5 ON t5.cd_cidade = t1.cd_cidade
                 LEFT JOIN estado t6 ON t6.cd_estado = t1.cd_estado
                 WHERE 1=1
+                AND t1.deleted_at IS NULL
+                AND t3.deleted_at IS NULL
                 AND t1.dt_clipagem BETWEEN '$dt_inicial' AND '$dt_final'";
 
         if($cliente_selecionado){
@@ -524,6 +528,8 @@ class ClienteController extends Controller
                 LEFT JOIN cidade t6 ON t6.cd_cidade = t1.cd_cidade
                 LEFT JOIN estado t7 ON t7.cd_estado = t1.cd_estado
                 WHERE 1=1
+                AND t1.deleted_at IS NULL
+                AND t3.deleted_at IS NULL
                 AND t1.data_noticia BETWEEN '$dt_inicial' AND '$dt_final'";
 
         if($cliente_selecionado){
@@ -580,6 +586,8 @@ class ClienteController extends Controller
                 LEFT JOIN cidade t5 ON t5.cd_cidade = t1.cd_cidade
                 LEFT JOIN estado t6 ON t6.cd_estado = t1.cd_estado
                 WHERE 1=1
+                AND t1.deleted_at IS NULL
+                AND t3.deleted_at IS NULL
                 AND t1.dt_noticia BETWEEN '$dt_inicial' AND '$dt_final'";
 
         if($cliente_selecionado){
