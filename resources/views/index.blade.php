@@ -339,7 +339,7 @@
                             <div class="col-lg-12 col-md-12 col-sm-12">
                                 <div class="card card-stats">
                                     <div class="card-body ">
-                                        <div class="row">
+                                        <div class="row totais">
                                             <div class="col-5 col-md-4">
                                                 <div class="icon-big text-center icon-success"><i class="fa fa-globe text-success"></i></div>
                                             </div>
@@ -358,7 +358,7 @@
                             <div class="col-lg-12 col-md-12 col-sm-12">
                                 <div class="card card-stats">
                                     <div class="card-body ">
-                                        <div class="row">
+                                        <div class="row" totais>
                                             <div class="col-5 col-md-4">
                                                 <div class="icon-big text-center icon-danger"><i class="fa fa-newspaper-o text-danger"></i></div>
                                             </div>
@@ -377,7 +377,7 @@
                             <div class="col-lg-12 col-md-12 col-sm-12">
                                 <div class="card card-stats">
                                     <div class="card-body ">
-                                        <div class="row">
+                                        <div class="row totais">
                                             <div class="col-5 col-md-4">
                                                 <div class="icon-big text-center icon-danger"><i class="fa fa-volume-up text-info"></i></div>
                                             </div>
@@ -396,7 +396,7 @@
                             <div class="col-lg-12 col-md-12 col-sm-12">
                                 <div class="card card-stats">
                                     <div class="card-body ">
-                                        <div class="row">
+                                        <div class="row totais">
                                             <div class="col-5 col-md-4">
                                                 <div class="icon-big text-center icon-danger"><i class="fa fa-tv text-warning"></i></div>
                                             </div>
@@ -457,6 +457,7 @@
                     data: { periodo: periodo, tipo: 'linha' },
                     beforeSend: function() {
                         $('.grafico-midias').loader('show');
+                        $('.totais').loader('show');
                     },
                     success: function(res) {
 
@@ -523,6 +524,7 @@
                     },
                     complete: function(){
                         $('.grafico-midias').loader('hide');
+                        $('.totais').loader('hide');
                     }
                 });
             }
