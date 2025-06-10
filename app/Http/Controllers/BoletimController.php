@@ -675,11 +675,11 @@ class BoletimController extends Controller
             $view = 'boletim.outlook-area';
 
              $data = array("dados" => $noticias, 
-                      "boletim" => $boletim);
+                           "boletim" => $boletim);
 
               $htmlContent = view('boletim.outlook-area', [
                 'boletim' => $boletim,
-                'dados' => $dados
+                'dados' => $noticias
             ])->render();
 
         }else{
