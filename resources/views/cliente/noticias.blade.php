@@ -145,7 +145,8 @@
                                         @case('impresso')
                                             @if($noticia->midia)
                                                 <a href="{{ url('noticia-impressa/imagem/download/'.$noticia->midia) }}" target="_BLANK">
-                                                    <img src="{{ asset('img/noticia-impressa/'.$noticia->midia) }}" alt="">
+                                                    <img src="{{ asset('img/noticia-impressa/'.$noticia->midia) }}" alt="" class="img-fluid img-thumbnail" 
+                                                style="width: 100%; height: auto; border: none;">
                                                 </a>
                                             @else
                                                 <h6 class="mb-1 mt-1" style="color: #ef8157;">Notícia sem print vinculado</h6>
@@ -154,7 +155,8 @@
                                         @case('web')
                                             @if($noticia->midia)
                                                 <a href="{{ url('noticia-web/imagem/download/'.$noticia->midia) }}" target="_BLANK">
-                                                    <img src="{{ asset('img/noticia-web/'.$noticia->midia) }}" alt="">
+                                                    <img src="{{ asset('img/noticia-web/'.$noticia->midia) }}" alt="" class="img-fluid img-thumbnail" 
+                                                style="width: 100%; height: auto; border: none;">
                                                 </a>
                                             @else
                                                 <h6 class="mb-1 mt-1" style="color: #ef8157;">Notícia sem print vinculado</h6>
