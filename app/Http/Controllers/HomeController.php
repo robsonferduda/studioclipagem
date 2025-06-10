@@ -143,6 +143,8 @@ class HomeController extends Controller
                 })
                 ->whereBetween('nw.created_at', [$data." 00:00:00", $data." 23:59:59"])
                 ->where('nw.fl_boletim', true)
+                ->whereNull('nw.deleted_at')
+                ->whereNull('nc.deleted_at')
                 ->count();
 
             $dataWeb[] = $dw;
@@ -157,6 +159,8 @@ class HomeController extends Controller
                         ->where('nc.tipo_id', 1);
                 })
                 ->whereBetween('ni.created_at', [$data." 00:00:00", $data." 23:59:59"])
+                ->whereNull('ni.deleted_at')
+                ->whereNull('nc.deleted_at')
                 ->count();
 
             $dataJornal[] = $dj;
@@ -171,6 +175,8 @@ class HomeController extends Controller
                         ->where('nc.tipo_id', 3);
                 })
                 ->whereBetween('nr.created_at', [$data." 00:00:00", $data." 23:59:59"])
+                ->whereNull('nr.deleted_at')
+                ->whereNull('nc.deleted_at')
                 ->count();
 
             $dataRadio[] = $dr;
@@ -185,6 +191,8 @@ class HomeController extends Controller
                         ->where('nc.tipo_id', 4);
                 })
                 ->whereBetween('nt.created_at', [$data." 00:00:00", $data." 23:59:59"])
+                ->whereNull('nt.deleted_at')
+                ->whereNull('nc.deleted_at')
                 ->count();
 
             $dataTv[] = $dt;
