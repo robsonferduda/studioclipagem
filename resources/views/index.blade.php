@@ -298,16 +298,32 @@
         <div class="card">
             <div class="card-header">
                 <div class="row">
-                    <div class="col-md-9">
+                    <div class="col-md-6">
                         <h6 class="card-title mb-0"><i class="fa fa-bar-chart"></i> Resumo de Notícias por Mídia</h6>
                     </div>
-                    <div class="col-md-3">
-                        <select id="filtro-periodo" class="form-control form-control-sm w-auto pull-right mr-4">
-                            <option value="7">Últimos 7 dias</option>
-                            <option value="14">Últimos 14 dias</option>
-                            <option value="30">Últimos 30 dias</option>
-                            <option value="mes_anterior">Mês anterior</option>
-                        </select>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-3 pull-right">
+                                <div class="form-group">
+                                    <input type="text" class="form-control datepicker" readonly name="dt_inicio" id="dt_inicio">
+                                </div>
+                            </div>
+                            <div class="col-md-3 pull-right">
+                                <div class="form-group">
+                                    <input type="text" class="form-control datepicker" readonly name="dt_final" id="dt_final">
+                                </div>
+                            </div>
+                            <div class="col-md-6 pull-right">
+                                <div class="form-group">
+                                    <select id="filtro-periodo" class="form-control w-100">
+                                        <option value="7">Últimos 7 dias</option>
+                                        <option value="14">Últimos 14 dias</option>
+                                        <option value="30">Últimos 30 dias</option>
+                                        <option value="mes_anterior">Mês anterior</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -317,7 +333,7 @@
                         <canvas id="graficoMidias"></canvas>
                     </div>
                     <div class="col-md-3">
-                        <div class="col-md-12">
+                        <div class="row">
                             <div class="col-lg-12 col-md-12 col-sm-12">
                                 <div class="card card-stats">
                                     <div class="card-body ">
@@ -336,8 +352,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-12">
+                        
                             <div class="col-lg-12 col-md-12 col-sm-12">
                                 <div class="card card-stats">
                                     <div class="card-body ">
@@ -356,8 +371,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-12">
+                       
                             <div class="col-lg-12 col-md-12 col-sm-12">
                                 <div class="card card-stats">
                                     <div class="card-body ">
@@ -376,8 +390,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-12">
+                        
                             <div class="col-lg-12 col-md-12 col-sm-12">
                                 <div class="card card-stats">
                                     <div class="card-body ">
@@ -414,9 +427,28 @@
 
         var host =  $('meta[name="base-url"]').attr('content');
 
+        // Função auxiliar para formatar data como YYYY-MM-DD
+        function formatDate(date) {
+            let ano = date.getFullYear();
+            let mes = String(date.getMonth() + 1).padStart(2, '0'); // Mês começa em 0
+            let dia = String(date.getDate()).padStart(2, '0');
+            return dia+"/"+mes+"/"+ano;
+        }
+
         @if(Auth::user()->hasRole('cliente'))
 
             function carregarGraficoMidias(periodo = '7') {
+
+                // Data atual
+                let hoje = new Date();
+
+                // Data início: hoje - periodo dias
+                let dt_inicio = new Date();
+                dt_inicio.setDate(hoje.getDate() - periodo);
+
+                $("#dt_inicio").val(formatDate(dt_inicio));
+                $("#dt_final").val(formatDate(hoje));
+
                 $.ajax({
                     url: '{{ url("dashboard/grafico-midias") }}',
                     type: 'GET',
@@ -444,32 +476,32 @@
                                     {
                                         label: 'Web',
                                         data: res.data.web,
-                                        borderColor: '#36A2EB',
-                                        backgroundColor: 'rgba(54,162,235,0.1)',
+                                        borderColor: '#6bd098',
+                                        backgroundColor: '#6bd098',
                                         fill: false,
                                         tension: 0.2
                                     },
                                     {
                                         label: 'Jornal',
                                         data: res.data.jornal,
-                                        borderColor: '#FF6384',
-                                        backgroundColor: 'rgba(255,99,132,0.1)',
+                                        borderColor: '#ef8157',
+                                        backgroundColor: '#ef8157',
                                         fill: false,
                                         tension: 0.2
                                     },
                                     {
                                         label: 'Rádio',
                                         data: res.data.radio,
-                                        borderColor: '#FFCE56',
-                                        backgroundColor: 'rgba(255,206,86,0.1)',
+                                        borderColor: '#51bcda',
+                                        backgroundColor: '#51bcda',
                                         fill: false,
                                         tension: 0.2
                                     },
                                     {
                                         label: 'TV',
                                         data: res.data.tv,
-                                        borderColor: '#4BC0C0',
-                                        backgroundColor: 'rgba(75,192,192,0.1)',
+                                        borderColor: '#fbc658',
+                                        backgroundColor: '#fbc658',
                                         fill: false,
                                         tension: 0.2
                                     }
