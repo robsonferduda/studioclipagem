@@ -103,7 +103,7 @@
 
                 <h6>📍 Studio Clipagem</h6>
                 <p>Rua Bento Gonçalves, 183 - Sala 602, Centro - Florianópolis/SC</p>
-                <p>📞 (48) 3333-4444 | ✉️ contato@studioclipagem.com.br</p>
+                <p>📞 (48) 3223-0590 | ✉️ contato@studioclipagem.com.br</p>
             </td>
         </tr>
     </table>
