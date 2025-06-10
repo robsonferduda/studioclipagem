@@ -446,7 +446,7 @@
 
                 // Data início: hoje - periodo dias
                 let dt_inicio = new Date();
-                dt_inicio.setDate(hoje.getDate() - periodo);
+                dt_inicio.setDate(hoje.getDate() - (periodo -1));
 
                 $("#dt_inicio").val(formatDate(dt_inicio));
                 $("#dt_final").val(formatDate(hoje));
