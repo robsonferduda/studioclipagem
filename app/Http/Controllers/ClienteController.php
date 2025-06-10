@@ -168,6 +168,8 @@ class ClienteController extends Controller
 
     public function noticias(Request $request)
     {
+        Session::put('url','cliente-noticias');
+
         $dados = array();
         $cliente_selecionado = Auth::user()->client_id;
         $tipo_data = ($request->tipo_data) ? $request->tipo_data : 'created_at';
