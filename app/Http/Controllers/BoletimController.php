@@ -676,6 +676,14 @@ class BoletimController extends Controller
              $data = array("dados" => $noticias, 
                       "boletim" => $boletim);
 
+              $htmlContent = view('boletim.outlook-area', [
+                'boletim' => $boletim,
+                'noticias_impresso' => $noticias_impresso,
+                'noticias_web' => $noticias_web,
+                'noticias_radio' => $noticias_radio,
+                'noticias_tv' => $noticias_tv
+            ])->render();
+
         }else{
 
             $view = 'boletim.outlook';
@@ -684,18 +692,18 @@ class BoletimController extends Controller
                       "noticias_radio" => $noticias_radio,
                       "noticias_tv" => $noticias_tv, 
                       "boletim" => $boletim);
-        }             
 
-        $emails = $request->emails;
-
-        
-        $htmlContent = view('boletim.outlook', [
+              $htmlContent = view('boletim.outlook', [
                 'boletim' => $boletim,
                 'noticias_impresso' => $noticias_impresso,
                 'noticias_web' => $noticias_web,
                 'noticias_radio' => $noticias_radio,
                 'noticias_tv' => $noticias_tv
             ])->render();
+        }             
+
+        $emails = $request->emails;        
+       
 
         for ($i=0; $i < count($emails); $i++) { 
 
