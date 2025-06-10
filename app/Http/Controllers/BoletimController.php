@@ -715,7 +715,7 @@ class BoletimController extends Controller
                 $msg = "Erro ao enviar para o endereço especificado";
                 $tipo = "error";
 
-                $msg = "Erro ao enviar para o endereço especificado".$e->getMessage();
+                $msg = "Erro ao enviar para o endereço especificado. Detalhes do erro: ".$e->getMessage();
                 $tipo = "error";
                 $boletim->id_situacao = 4;
                 $boletim_envio->id_situacao = 1; // Pendente
