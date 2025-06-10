@@ -676,6 +676,13 @@ class NoticiaWebController extends Controller
         return response()->json($vinculos);
     }
 
+    //Busca e faz o download da imagem vinculada a notícia
+    public function getImagem($id)
+    {
+        $noticia = NoticiaWeb::find($id);
+        return response()->download(public_path('img/noticia-web/'.$noticia->ds_caminho_img));
+    }
+
     public function excluir($id)
     {
         $noticia = NoticiaWeb::find($id);

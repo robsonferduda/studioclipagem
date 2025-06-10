@@ -119,7 +119,7 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-lg-3 col-md-3 col-sm-12">
+                                <div class="col-lg-3 col-md-3 col-sm-12" style="max-height: 300px; overflow: hidden;">
                                     @switch($noticia->tipo)
                                         @case('radio')
                                             @if($noticia->midia)
@@ -144,7 +144,7 @@
                                         @break
                                         @case('impresso')
                                             @if($noticia->midia)
-                                                <a href="{{ url('noticia-impressa/imagem/download/'.$noticia->midia) }}" target="_BLANK">
+                                                <a href="{{ url('noticia-impressa/imagem/download/'.$noticia->id) }}" target="_BLANK">
                                                     <img src="{{ asset('img/noticia-impressa/'.$noticia->midia) }}" alt="" class="img-fluid img-thumbnail" 
                                                 style="width: 100%; height: auto; border: none;">
                                                 </a>
@@ -154,7 +154,7 @@
                                         @break
                                         @case('web')
                                             @if($noticia->midia)
-                                                <a href="{{ url('noticia-web/imagem/download/'.$noticia->midia) }}" target="_BLANK">
+                                                <a href="{{ url('noticia-web/imagem/download/'.$noticia->id) }}" target="_BLANK">
                                                     <img src="{{ asset('img/noticia-web/'.$noticia->midia) }}" alt="" class="img-fluid img-thumbnail" 
                                                 style="width: 100%; height: auto; border: none;">
                                                 </a>

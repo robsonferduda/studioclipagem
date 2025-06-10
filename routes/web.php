@@ -218,6 +218,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('noticia/web/clientes/{noticia}','NoticiaWebController@clientes');
 	Route::get('noticia/web/estatisticas/{id}','NoticiaWebController@getEstatisticas');
 	Route::get('noticia/web/{id}/reprint','NoticiaWebController@reprint');
+	Route::get('noticia-web/imagem/download/{id}','NoticiaWebController@getImagem');
 	Route::get('fonte-web/{id}/valores/{local}','NoticiaWebController@getValores');
 	Route::get('web/conteudo/{id_noticia}/monitoramento/{id_monitoramento}','NoticiaWebController@destacaConteudo');
 	Route::post('noticia-web/upload','NoticiaWebController@upload');
