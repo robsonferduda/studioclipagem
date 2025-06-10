@@ -673,21 +673,19 @@ class BoletimController extends Controller
         if($boletim->id_cliente == 307){
 
             $view = 'boletim.outlook-area';
+
              $data = array("dados" => $noticias, 
                       "boletim" => $boletim);
 
               $htmlContent = view('boletim.outlook-area', [
                 'boletim' => $boletim,
-                'noticias_impresso' => $noticias_impresso,
-                'noticias_web' => $noticias_web,
-                'noticias_radio' => $noticias_radio,
-                'noticias_tv' => $noticias_tv
+                'dados' => $dados
             ])->render();
 
         }else{
 
             $view = 'boletim.outlook';
-             $data = array("noticias_impresso"=> $noticias_impresso,
+            $data = array("noticias_impresso"=> $noticias_impresso,
                       "noticias_web" => $noticias_web,
                       "noticias_radio" => $noticias_radio,
                       "noticias_tv" => $noticias_tv, 
