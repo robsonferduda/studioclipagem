@@ -358,7 +358,7 @@
                             <div class="col-lg-12 col-md-12 col-sm-12">
                                 <div class="card card-stats">
                                     <div class="card-body ">
-                                        <div class="row" totais>
+                                        <div class="row totais">
                                             <div class="col-5 col-md-4">
                                                 <div class="icon-big text-center icon-danger"><i class="fa fa-newspaper-o text-danger"></i></div>
                                             </div>
