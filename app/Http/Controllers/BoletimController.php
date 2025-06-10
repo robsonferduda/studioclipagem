@@ -688,14 +688,14 @@ class BoletimController extends Controller
 
         $emails = $request->emails;
 
-        /*
+        
         $htmlContent = view('boletim.outlook', [
                 'boletim' => $boletim,
                 'noticias_impresso' => $noticias_impresso,
                 'noticias_web' => $noticias_web,
                 'noticias_radio' => $noticias_radio,
                 'noticias_tv' => $noticias_tv
-            ])->render();*/
+            ])->render();
 
         for ($i=0; $i < count($emails); $i++) { 
 
@@ -704,6 +704,7 @@ class BoletimController extends Controller
             $boletim_envio->ds_email = $emails[$i];
             $boletim_envio->cd_usuario = Auth::user()->id;
 
+            /*
             try{
                 $mail_status = Mail::send($view, $data, function($message) use ($emails, $i) {
                 $message->to($emails[$i])
@@ -728,9 +729,8 @@ class BoletimController extends Controller
                 $boletim->id_situacao = 4;
                 $boletim_envio->id_situacao = 1; // Pendente
                 $boletim_envio->ds_mensagem = $msg;
-            }
+            }*/
 
-            /*
             $url = 'https://147.93.71.189:38257/mail_sys/send_mail_http.json';
     
             $data = [
@@ -758,7 +758,7 @@ class BoletimController extends Controller
                 $boletim_envio->id_situacao = 1; // Pendente
                 $boletim_envio->ds_mensagem = $msg; 
                 $boletim->id_situacao = 4;
-            } */          
+            }           
                         
             $boletim_envio->save();
 
