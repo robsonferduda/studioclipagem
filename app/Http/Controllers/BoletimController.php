@@ -470,12 +470,16 @@ class BoletimController extends Controller
         }
 
         foreach ($boletim->noticiasRadio()->get() as $key => $noticia_radio) {
+
+            $area = (NoticiaCliente::where('noticia_id', $noticia_web->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 3)->first()->area) ?
+                    Area::where('id', NoticiaCliente::where('noticia_id', $noticia_web->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 3)->first()->area)->first()->descricao :
+                    '';
             
             $noticias_radio[] = array('titulo' => $noticia_radio->titulo,
                                          'data_noticia' => $noticia_radio->dt_clipagem,
                                          'fonte' => ($noticia_radio->emissora) ? $noticia_radio->emissora->nome_emissora : 'Fonte não informada',
                                          'secao' => ($noticia_radio->secao) ? $noticia_radio->secao->ds_sessao : null,
-                                         'area' => '',
+                                         'area' => $area,
                                          'tipo' => 'radio',
                                          'programa' => ($noticia_radio->programa) ? $noticia_radio->programa->nome_programa : null,
                                          'duracao' => ($noticia_radio->duracao) ? $noticia_radio->duracao : 'Não informado',
@@ -487,12 +491,16 @@ class BoletimController extends Controller
         }
 
         foreach ($boletim->noticiasTv()->get() as $key => $noticia_tv) {
+
+            $area = (NoticiaCliente::where('noticia_id', $noticia_web->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 4)->first()->area) ?
+                    Area::where('id', NoticiaCliente::where('noticia_id', $noticia_web->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 4)->first()->area)->first()->descricao :
+                    '';
             
             $noticias_tv[] = array('titulo' => $noticia_tv->titulo,
                                          'data_noticia' => $noticia_tv->dt_noticia,
                                          'fonte' => ($noticia_tv->emissora) ? $noticia_tv->emissora->nome_emissora : 'Fonte não informada',
                                          'secao' => ($noticia_tv->secao) ? $noticia_tv->secao->ds_sessao : null,
-                                         'area' => '',
+                                         'area' => $area,
                                          'tipo' => 'tv',
                                          'programa' => ($noticia_tv->programa) ? $noticia_tv->programa->nome_programa : null,
                                          'duracao' => ($noticia_tv->duracao) ? $noticia_tv->duracao : 'Não informado',
