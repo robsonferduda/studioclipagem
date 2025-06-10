@@ -471,8 +471,8 @@ class BoletimController extends Controller
 
         foreach ($boletim->noticiasRadio()->get() as $key => $noticia_radio) {
 
-            $area = (NoticiaCliente::where('noticia_id', $noticia_web->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 3)->first()->area) ?
-                    Area::where('id', NoticiaCliente::where('noticia_id', $noticia_web->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 3)->first()->area)->first()->descricao :
+            $area = (NoticiaCliente::where('noticia_id', $noticia_radio->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 3)->first()->area) ?
+                    Area::where('id', NoticiaCliente::where('noticia_id', $noticia_radio->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 3)->first()->area)->first()->descricao :
                     '';
             
             $noticias_radio[] = array('titulo' => $noticia_radio->titulo,
@@ -492,8 +492,8 @@ class BoletimController extends Controller
 
         foreach ($boletim->noticiasTv()->get() as $key => $noticia_tv) {
 
-            $area = (NoticiaCliente::where('noticia_id', $noticia_web->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 4)->first()->area) ?
-                    Area::where('id', NoticiaCliente::where('noticia_id', $noticia_web->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 4)->first()->area)->first()->descricao :
+            $area = (NoticiaCliente::where('noticia_id', $noticia_tv->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 4)->first()->area) ?
+                    Area::where('id', NoticiaCliente::where('noticia_id', $noticia_tv->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 4)->first()->area)->first()->descricao :
                     '';
             
             $noticias_tv[] = array('titulo' => $noticia_tv->titulo,
