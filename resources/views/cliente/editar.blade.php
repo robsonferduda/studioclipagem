@@ -384,7 +384,7 @@
                 </div>
                 <div class="center">
                     <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
-                    <button type="button" class="btn btn-success btn-salvar-usuario"><i class="fa fa-save"></i> Salvar</button>
+                    <button type="button" class="btn btn-success btn-salvar-usuario-modal"><i class="fa fa-save"></i> Salvar</button>
                 </div>
       </div>
     </div>
@@ -400,7 +400,7 @@
             
             let host =  $('meta[name="base-url"]').attr('content');
 
-            $(".btn-salvar-usuario").click(function(){
+            $(".btn-salvar-usuario-modal").click(function(){
 
                 var cliente = $("#cliente_id").val();
                 var usuario = $("#usuario").val();
@@ -429,7 +429,7 @@
                                 "usuario": usuario,
                                 "nome": nome,
                                 "senha": senha,
-                                "fl_senha": alterar_senha,
+                                "fl_senha": fl_senha,
                                 "ativo": ativo,
                                 "id": id,
                                 "cliente": cliente
@@ -441,9 +441,7 @@
                             
                         }
                     });
-
                 }
-
             });
 
             $(".btn-add-usuario").click(function(){

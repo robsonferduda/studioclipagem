@@ -133,6 +133,7 @@ class UserController extends Controller
     public function usuarioCliente(Request $request)
     {
         $id = $request->id;
+        $fl_senha = $request->ativo == "true" ? true : false;
 
         $user = array('name' => $request->nome,
                       'email' => $request->usuario,
@@ -146,8 +147,8 @@ class UserController extends Controller
             $user->email = $request->usuario;
             $user->is_active = $request->ativo == "true" ? true : false;
 
-            if($request->alterar_senha){
-                $user->password => \Hash::make($request->senha),
+            if($fl_senha){
+                $user->password = \Hash::make($request->senha);
             }
 
             $user->save();
