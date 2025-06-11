@@ -84,30 +84,23 @@
     @if(count($dados_web) > 0)
         <!-- Nome da Fonte - Seção - Página - Data - Cidade/UF -->
         @foreach($dados_web as $key => $noticia)
-            <div class="clipagem-item">
-                <div class="header">
-                    <h5 style="text-align: justify; margin-bottom: 0px; padding-bottom: 5px; margin-top: 26px; font-size: 17px; border-bottom: 1px solid #ccc;">
-                        ND Mais
-                    </h5>
+            <div class="header">
+                <h5 style="text-align: justify; margin-bottom: 0px; padding-bottom: 5px; margin-top: 26px; font-size: 17px; border-bottom: 1px solid black; color: red;">Clipagem de Web</h5>    
                     <p style="text-align: justify; font-size: 16px; margin:0px; padding: 0px; margin-top: 8px; margin-bottom: 8px;">
-                        08/06/2025
-                        <a href="https://ndmais.com.br/turismo/estamos-no-radar-do-brasil-praia-grande-lanca-projeto-que-aposta-no-turismo-sustentavel/" target="_blank">
-                            <img style="width: 20px; height: 20px;" src="https://studioclipagem.com/img/globe.png">
-                        </a>
-                    </p>
-                </div>
-
-                <div class="imagem">
-                    <img src="https://studioclipagem.com/img/noticia-web/36323975.jpg" alt="Notícia">
-                </div>
+                        {{ $noticia->fonte }}
+                        {{ " - ".$noticia->data_formatada }}
+                        {{ ($noticia->nm_cidade) ? " - ".trim($noticia->nm_cidade."/".$noticia->sg_estado) : '' }}
+                        {{ ($noticia->nm_estado and !$noticia->nm_cidade) ? " - ".trim($noticia->sg_estado) : ''}}
+                        <img style="width: 20px; height: 20px;" src="https://studioclipagem.com/img/globe.png">
+                    </p> 
             </div>
-
-                 @if($key < count($dados_web) -1)
+            <div style="text-align: center;">
+                <img style="margin: 0 auto;" src="https://studioclipagem.com/img/noticia-impressa/{{ $noticia->midia }}">
+            </div>
+            @if($key < count($dados_web) -1)
                 <div style="page-break-before: always;"></div>                        
-            @endif 
-              
+            @endif               
         @endforeach
     @endif
 </body>
 </html>
-    
