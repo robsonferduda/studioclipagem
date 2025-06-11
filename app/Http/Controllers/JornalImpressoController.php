@@ -115,6 +115,7 @@ class JornalImpressoController extends Controller
                             'expressao',
                             'nm_estado',
                             'nm_cidade',
+                            'fl_upload',
                             'clientes.nome AS nome_cliente',
                             'pagina_edicao_jornal_online.id AS id_pagina')
                     ->join('clientes', 'clientes.id', '=', 'noticia_cliente.cliente_id')
@@ -349,7 +350,7 @@ class JornalImpressoController extends Controller
                 $filename = $id.".jpg";
 
                 $nova_noticia = array("id_fonte" => $conteudo->edicao->id_jornal_online,
-                                      "dt_clipagem" => $conteudo->edicao->dt_coleta,
+                                      "dt_clipagem" => ($conteudo->edicao->dt_pub) ? $conteudo->edicao->dt_pub : $conteudo->edicao->dt_coleta,
                                       "texto" => $conteudo->texto_extraido,
                                       "cd_usuario" => Auth::user()->id,
                                       "nu_paginas_total" => $conteudo->edicao->paginas->count(),
