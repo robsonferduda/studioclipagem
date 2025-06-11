@@ -485,7 +485,7 @@ class BoletimController extends Controller
                                          'duracao' => ($noticia_radio->duracao) ? $noticia_radio->duracao : 'Não informado',
                                          'sinopse' => strip_tags(str_replace('Sinopse 1 - ', '', $noticia_radio->sinopse)),
                                          'url_noticia' => null,
-                                         'path_midia' => 'audio/noticia-radio/'.$noticia_radio->ds_caminho_video,
+                                         'path_midia' => 'audio/noticia-radio/'.$noticia_radio->ds_caminho_audio,
                                          'erro' => '');
 
         }

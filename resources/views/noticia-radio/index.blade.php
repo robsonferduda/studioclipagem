@@ -90,7 +90,7 @@
                                     <div class="col-lg-12 col-md-12 col-sm-12 mb-1">                                    
                                         @if($noticia->ds_caminho_audio)
                                             <audio width="100%" controls style="width: 100%;">
-                                                <source src="{{ asset('audio/noticia-radio/'.$noticia->z) }}" type="audio/mpeg">
+                                                <source src="{{ asset('audio/noticia-radio/'.$noticia->ds_caminho_audio) }}" type="audio/mpeg">
                                                 Seu navegador não suporta a execução de áudios, faça o download para poder ouvir.
                                             </audio>
                                         @else
