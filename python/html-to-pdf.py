@@ -1,4 +1,5 @@
 from playwright.sync_api import sync_playwright
+import sys
 
 def html_to_pdf_playwright(html, filename):
     with sync_playwright() as p:
@@ -33,7 +34,7 @@ def html_to_pdf_playwright(html, filename):
         # Aguarda todas as imagens carregarem
         page.wait_for_load_state('networkidle')
 
-        PDF_OUTPUT_DIR = "/var/www/studioclipagem/storage/app/public/relatorios-pdf"+filename
+        PDF_OUTPUT_DIR = "/var/www/studioclipagem/storage/app/public/relatorios-pdf/"+filename
         
         # Gera PDF com configurações específicas
         page.pdf(
