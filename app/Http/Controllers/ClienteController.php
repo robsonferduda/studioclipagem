@@ -66,6 +66,7 @@ class ClienteController extends Controller
     {
         $fl_ativo = $request->fl_ativo == true ? true : false;
         $fl_print = $request->fl_print == true ? true : false;
+        $fl_sentimento_cli = $request->fl_sentimento_cli == true ? true : false;
 
         $fl_tv = $request->fl_tv == true ? true : false;
         $fl_impresso = $request->fl_impresso == true ? true : false;
@@ -79,7 +80,8 @@ class ClienteController extends Controller
         
         try {
 
-            $request->merge(['fl_ativo' => $fl_ativo]);
+            $request->merge(['fl_sentimento_cli' => $fl_sentimento_cli]);
+            $request->merge(['fl_print' => $fl_print]);
             $request->merge(['fl_print' => $fl_print]);
 
             $request->merge(['fl_tv' => $fl_tv]);
@@ -93,7 +95,7 @@ class ClienteController extends Controller
             $request->merge(['fl_area_restrita' => $fl_area_restrita]);
 
             $cliente = Cliente::create([
-                'fl_ativo' => $request->fl_ativo,
+                'fl_ativo' => $fl_ativo,
                 'fl_print' => $request->fl_print,
                 'fl_tv' => $request->fl_tv,
                 'fl_impresso' => $request->fl_impresso,
@@ -103,6 +105,7 @@ class ClienteController extends Controller
                 'fl_relatorio_completo' => $request->fl_relatorio_completo,
                 'fl_link_relatorio' => $request->fl_link_relatorio,
                 'fl_area_restrita' => $request->fl_area_restrita,
+                'fl_sentimento_cli' => $fl_sentimento_cli,
                 'nome' => $request->nome
             ]);
 
@@ -136,6 +139,9 @@ class ClienteController extends Controller
                              'msg' => "Dados inseridos com sucesso");
 
         } catch (\Illuminate\Database\QueryException $e) {
+
+             dd($e);
+
 
             $retorno = array('flag' => false,
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
@@ -172,6 +178,7 @@ class ClienteController extends Controller
 
         $dados = array();
         $cliente_selecionado = Auth::user()->client_id;
+        $cliente = Cliente::find($cliente_selecionado);
         $tipo_data = ($request->tipo_data) ? $request->tipo_data : 'created_at';
       
         $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00" : date("Y-m-d")." 00:00:00";
@@ -194,13 +201,14 @@ class ClienteController extends Controller
 
         $dados = array_merge($dados_impresso, $dados_radio, $dados_web, $dados_tv);
 
-        return view('cliente/noticias', compact('dados','tipo_data','dt_inicial','dt_final','fl_web','fl_tv','fl_radio','fl_impresso','termo'));
+        return view('cliente/noticias', compact('cliente','dados','tipo_data','dt_inicial','dt_final','fl_web','fl_tv','fl_radio','fl_impresso','termo'));
     }
 
     public function update(Request $request, int $id): RedirectResponse
     {
         $fl_ativo = $request->fl_ativo == true ? true : false;
         $fl_print = $request->fl_print == true ? true : false;
+        $fl_sentimento_cli = $request->fl_sentimento_cli == true ? true : false;
 
         $fl_tv = $request->fl_tv == true ? true : false;
         $fl_impresso = $request->fl_impresso == true ? true : false;
@@ -218,6 +226,7 @@ class ClienteController extends Controller
 
             $request->merge(['fl_ativo' => $fl_ativo]);
             $request->merge(['fl_print' => $fl_print]);
+            $request->merge(['fl_sentimento_cli' => $fl_sentimento_cli]);
 
             $request->merge(['fl_tv' => $fl_tv]);
             $request->merge(['fl_impresso' => $fl_impresso]);

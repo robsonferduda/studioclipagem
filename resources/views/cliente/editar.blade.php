@@ -57,7 +57,15 @@
                                             <span class="form-check-sign"></span>
                                         </label>
                                     </div>
-                                </div>                          
+                                </div>  
+
+                                <div class="form-check float-left mr-3">
+                                    <label class="form-check-label mt-2">
+                                        <input class="form-check-input" {{ ($cliente->fl_sentimento_cli) ? 'checked' : '' }} type="checkbox" name="fl_sentimento_cli" value="true">
+                                            MOSTRAR SENTIMENTO
+                                        <span class="form-check-sign"></span>
+                                    </label>
+                                </div>                        
                                 
                             </div>
                         </div>
@@ -140,9 +148,9 @@
                     <div class="col-md-12">
                         <p class="mb-0">
                             <i class="fa fa-lock fa-1x"></i> Usuários
-                            <button type="button" class="btn btn-sm btn-primary btn-icon btn-email" style="border-radius: 50%; height: 1.5rem;
+                            <button type="button" class="btn btn-sm btn-primary btn-icon btn-add-usuario" style="border-radius: 50%; height: 1.5rem;
                             min-width: 1.5rem;
-                            width: 1.5rem;" data-toggle="modal" data-target="#addUsuario"><i class="fa fa-plus fa-2x"></i></button>
+                            width: 1.5rem;"><i class="fa fa-plus fa-2x"></i></button>
                         </p>
                         <div class="row">
                             <div class="col-md-12">
@@ -162,10 +170,10 @@
                                         <span 
                                             data-id="{{ $usuario->id }}" 
                                             class="btn-usuario">{{ $usuario->email }}
-                                            <a title="Remover" href="{{ url('usuarios/excluir', $usuario->id) }}" class="btn-excluir">
+                                            <a title="Remover" href="{{ url('usuarios/excluir', $usuario->id) }}" data-id="{{ $usuario->id }}" class="btn-excluir">
                                                 <i class="fa fa-trash fa-2x text-danger ml-1 mr-2"></i>
                                             </a>
-                                            <a title="Editar" href="{{ url('usuarios/excluir', $usuario->id) }}" class="btn-editar">
+                                            <a title="Editar" data-id="{{ $usuario->id }}" data-usuario="{{ $usuario->email }}" class="btn-editar btn-editar-usuario">
                                                 <i class="fa fa-edit fa-2x text-info ml-1 mr-3"></i>
                                             </a>
                                         </span>
@@ -286,30 +294,29 @@
 
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-          <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-envelope"></i> Adicionar Endereço Eletrônico</h6>
-        </div>
-        <div class="modal-body">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label>Digite o endereço</label>
-                        <input type="mail" class="form-control" name="email" id="email">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-envelope"></i> Adicionar Endereço Eletrônico</h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Digite o endereço</label>
+                            <input type="mail" class="form-control" name="email" id="email">
+                        </div>
                     </div>
                 </div>
-               
+                <div class="center">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
+                    <button type="button" class="btn btn-success btn-salvar-email"><i class="fa fa-save"></i> Salvar</button>
+                </div>
+            </div>
         </div>
-        <div class="center">
-          <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
-          <button type="button" class="btn btn-success btn-salvar-email"><i class="fa fa-save"></i> Salvar</button>
-        </div>
-      </div>
     </div>
-  </div>
 </div>
 
 <div class="modal fade" id="addUsuario" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -326,23 +333,41 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label>Nome</label>
-                            <input type="text" class="form-control" name="nome_usuario" id="nome_usuario" required>
+                            <input type="hidden" class="form-control" name="id_usuario" id="id_usuario" value="">
+                            <input type="hidden" class="form-control" name="nome_usuario" id="nome_usuario" value="{{ $cliente->nome }}">
                         </div>
                     </div>
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label>Email</label>
+                            <label>Usuário <span class="text-info">Email ou usuário</span></label>
                             <input type="text" class="form-control" name="usuario" id="usuario" required>
+                        </div>
+                    </div>
+                    <div class="col-md-12 box-senha">
+                        <div class="form-group">
+                            <div class="form-check mt-1">
+                                <label class="form-check-label mt-2">
+                                    <input class="form-check-input" type="checkbox" name="alterar_senha" id="alterar_senha" value="true">
+                                    ALTERAR SENHA
+                                    <span class="form-check-sign"></span>
+                                </label>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-12">
                         <div class="form-group">
                             <label>Senha</label>
-                            <input type="password" class="form-control" name="password" id="password" required>
-                            <div class="view-eye">
-                                <i class="fa fa-eye view-password" data-target="password"></i>  
-                            </div> 
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="nc-icon nc-key-25"></i>
+                                    </span>
+                                </div>
+                                <input id="password" type="password" class="form-control" name="password" id="password" required autocomplete="current-password">
+                                <div class="view-eye">
+                                    <i class="fa fa-eye view-password" data-target="password"></i>  
+                                </div> 
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-12">
@@ -382,6 +407,8 @@
                 var nome = $("#nome_usuario").val();
                 var senha = $("#password").val();
                 var ativo = $("#ativo").is(":checked");
+                var fl_senha = $("#alterar_senha").is(":checked");
+                var id = $("#id_usuario").val();
 
                 if(!usuario){
 
@@ -402,7 +429,9 @@
                                 "usuario": usuario,
                                 "nome": nome,
                                 "senha": senha,
+                                "fl_senha": alterar_senha,
                                 "ativo": ativo,
+                                "id": id,
                                 "cliente": cliente
                         },
                         success: function(response) {
@@ -414,6 +443,30 @@
                     });
 
                 }
+
+            });
+
+            $(".btn-add-usuario").click(function(){
+                $("#id_usuario").val(0);
+                $(".box-senha").css('display','none');
+                $("#addUsuario").modal('show');
+            });
+
+            $(".btn-editar-usuario").click(function(){
+
+                var id = $(this).data("id");
+                var usuario = $(this).data("usuario");
+
+                $("#id_usuario").val(id);
+                $("#usuario").val(usuario);
+
+                if(ativo){
+                    $("#ativo").prop('checked', true);
+                }
+
+                $(".box-senha").css('display','block');
+
+                $("#addUsuario").modal('show');
 
             });
 
@@ -455,52 +508,6 @@
 
                 }
 
-            });
-
-            let options = {
-                onKeyPress: function (cpf, ev, el, op) {
-                    let masks = ['000.000.000-000', '00.000.000/0000-00'];
-                    $('#cpf_cnpj').mask((cpf.length > 14) ? masks[1] : masks[0], op);
-                }
-            }
-
-            $('#cpf_cnpj').val().length > 13 ?
-                $('#cpf_cnpj').mask('00.000.000/0000-00', options) :
-                $('#cpf_cnpj').mask('000.000.000-00#', options)
-            ;
-        });
-
-        $(document).on('change', '#cpf_cnpj', function() {
-
-            
-            if($.inArray($(this).val().length, [14,18]) === -1) {
-                return;
-            }
-
-            $.ajax({
-                url: '/api/cliente/validaCpf',
-                type: 'POST',
-                data: {
-                    "cpf_cnpj": $(this).val(),
-                    "cliente_id": window.location.pathname.replace(/\D/g, '')
-                },
-                beforeSend: function() {
-                    $('.content').loader('show');
-                },
-                success: function(data) {
-                    if(data.success) {
-                        return;
-                    }
-                    $('#cpf_cnpj').val('');
-                    Swal.fire({
-                        text: data.msg,
-                        type: "warning",
-                        icon: "warning",
-                    });
-                },
-                complete: function(){
-                    $('.content').loader('hide');
-                }
             });
         });
     </script>

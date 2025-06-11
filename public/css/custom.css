@@ -5,6 +5,7 @@
 .upper {text-transform: uppercase !important; }
 .font-25 {font-size: 25px;}
 .font-12 {font-size: 12px !important;}
+.box-senha{ display: none; }
 .nounderline, .violet{
     color: #7c4dff !important;
 }

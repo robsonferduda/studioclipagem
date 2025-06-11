@@ -100,7 +100,6 @@
                 <h6>📧 INFORMAÇÕES SOBRE PRIVACIDADE</h6>
                 <p>Este email foi enviado por Studio Clipagem em conformidade com nossa Política de Privacidade.</p> 
                 <p>Para saber como coletamos, usamos e protegemos seus dados: <a href="https://studioclipagem.com/politica-de-privacidade">https://studioclipagem.com/politica-de-privacidade</a></p>
-
                 <h6>📍 Studio Clipagem</h6>
                 <p>Rua Bento Gonçalves, 183 - Sala 602, Centro - Florianópolis/SC</p>
                 <p>📞 (48) 3223-0590 | ✉️ contato@studioclipagem.com.br</p>

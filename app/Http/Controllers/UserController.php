@@ -132,17 +132,33 @@ class UserController extends Controller
 
     public function usuarioCliente(Request $request)
     {
+        $id = $request->id;
+
         $user = array('name' => $request->nome,
                       'email' => $request->usuario,
                       'password' => \Hash::make($request->senha),
                       'client_id' => $request->cliente,
                       'is_active' => $request->ativo == "true" ? true : false);
 
-        $user = User::create($user);
+        if($id){
 
-        if($user){
-            $user_role = array('role_id' => 2, 'user_id' => $user->id);
-            RoleUser::create($user_role);
+            $user = User::find($id);
+            $user->email = $request->usuario;
+            $user->is_active = $request->ativo == "true" ? true : false;
+
+            if($request->alterar_senha){
+                $user->password => \Hash::make($request->senha),
+            }
+
+            $user->save();
+
+        }else{
+            $user = User::create($user);
+
+            if($user){
+                $user_role = array('role_id' => 2, 'user_id' => $user->id);
+                RoleUser::create($user_role);
+            }
         }
     }
 

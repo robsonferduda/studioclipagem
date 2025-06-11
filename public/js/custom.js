@@ -27,6 +27,15 @@ $(document).ready(function() {
 
     });
 
+     $('body').on("click", ".fa-eye-slash", function(e) {
+
+        var target = "#"+$(this).data('target');
+
+        $(target).attr('type','password');
+        $(this).removeClass('fa-eye-slash');
+        $(this).addClass('fa-eye');
+      });
+
     $(document).on('change', '#dt_inicial', function() {
         alert("sfsdfsdf");
     });

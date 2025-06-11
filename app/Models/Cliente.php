@@ -27,6 +27,7 @@ class Cliente extends Model
                         'fl_web',
                         'fl_impresso',
                         'fl_tv',
+                        'fl_sentimento_cli',
                         'fl_relatorio_completo',
                         'fl_relatorio_consolidado'];
 
