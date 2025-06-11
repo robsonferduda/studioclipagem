@@ -27,7 +27,7 @@ def html_to_pdf_playwright(html, filename):
         """
         
         # Adiciona CSS ao HTML
-        html_with_css = html_content.replace('</head>', f'{css_inject}</head>')
+        html_with_css = html.replace('</head>', f'{css_inject}</head>')
         
         page.set_content(html_with_css)
         
