@@ -628,7 +628,7 @@ class BoletimController extends Controller
 
         $lista = explode(",",$emails);
 
-        //$lista_email[] = array('email' => 'robsonferduda@gmail.com', 'fl_envio' => BoletimEnvio::where('id_boletim', $id)->where('ds_email', 'robsonferduda@gmail.com')->first());
+        $lista_email[] = array('email' => 'robsonferduda@gmail.com', 'fl_envio' => BoletimEnvio::where('id_boletim', $id)->where('ds_email', 'robsonferduda@gmail.com')->first());
 
         for ($i=0; $i < count($lista); $i++) { 
             $lista_email[] = array('email' => trim($lista[$i]), 
