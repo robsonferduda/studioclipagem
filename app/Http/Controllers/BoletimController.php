@@ -528,9 +528,33 @@ class BoletimController extends Controller
         $noticias_impresso = $dados['impresso'];
         $noticias_web = $dados['web']; 
         $noticias_radio = $dados['radio']; 
-        $noticias_tv = $dados['tv'];       
+        $noticias_tv = $dados['tv']; 
 
-        return view('boletim/detalhes', compact('boletim','noticias_impresso','noticias_web','noticias_radio','noticias_tv'));
+        $noticias = array_merge($noticias_web, $noticias_impresso, $noticias_tv, $noticias_radio);
+
+        usort($noticias, function ($a, $b) {
+            // Ordena por area
+            $areaCompare = strcmp($a['area'] ?? '', $b['area'] ?? '');
+            if ($areaCompare !== 0) {
+                return $areaCompare;
+            }
+
+            // Depois por tipo
+            $tipoCompare = strcmp($a['tipo'] ?? '', $b['tipo'] ?? '');
+            if ($tipoCompare !== 0) {
+                return $tipoCompare;
+            }
+
+            // Por fim, data_noticia (mais recente primeiro)
+            return strtotime($b['data_noticia']) <=> strtotime($a['data_noticia']);
+        });
+
+        if($boletim->id_cliente == 307){
+            $dados = $noticias;
+            return view('boletim/detalhes-area', compact('boletim','dados'));
+        }else{
+            return view('boletim/detalhes', compact('boletim','noticias_impresso','noticias_web','noticias_radio','noticias_tv'));
+        }      
     }
 
     public function visualizar($id)
