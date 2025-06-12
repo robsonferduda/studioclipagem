@@ -44,21 +44,21 @@ class Boletim extends Model
 
     public function noticiasImpresso()
     {
-        return $this->belongsToMany(NoticiaImpresso::class,'boletim_noticia','id_boletim','id_noticia')->withPivot('id_tipo')->where('id_tipo', 1)->withTimestamps();
+        return $this->belongsToMany(NoticiaImpresso::class,'boletim_noticia','id_boletim','id_noticia')->withPivot('id_tipo')->where('id_tipo', 1)->whereNull('deleted_at')->withTimestamps();
     }
 
     public function noticiasRadio()
     {
-        return $this->belongsToMany(NoticiaRadio::class,'boletim_noticia','id_boletim','id_noticia')->withPivot('id_tipo')->where('id_tipo', 3)->withTimestamps();
+        return $this->belongsToMany(NoticiaRadio::class,'boletim_noticia','id_boletim','id_noticia')->withPivot('id_tipo')->where('id_tipo', 3)->whereNull('deleted_at')->withTimestamps();
     }
 
     public function noticiasTv()
     {
-        return $this->belongsToMany(NoticiaTv::class,'boletim_noticia','id_boletim','id_noticia')->withPivot('id_tipo')->where('id_tipo', 4)->withTimestamps();
+        return $this->belongsToMany(NoticiaTv::class,'boletim_noticia','id_boletim','id_noticia')->withPivot('id_tipo')->where('id_tipo', 4)->whereNull('deleted_at')->withTimestamps();
     }
 
     public function noticiasWeb()
     {
-        return $this->belongsToMany(NoticiaWeb::class,'boletim_noticia','id_boletim','id_noticia')->withPivot('id_tipo')->where('id_tipo', 2)->withTimestamps();
+        return $this->belongsToMany(NoticiaWeb::class,'boletim_noticia','id_boletim','id_noticia')->withPivot('id_tipo')->where('id_tipo', 2)->whereNull('deleted_at')->withTimestamps();
     }
 }
