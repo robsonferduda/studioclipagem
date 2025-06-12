@@ -94,6 +94,10 @@
                         @if($noticia['tipo'] == 'tv')
                             
                             <div style="border-bottom: 1px solid #e3e3e3; margin-bottom: 10px; padding-bottom: 10px; line-height: 17px;">
+                                <p style="margin-bottom: 0px; margin-top: 0px;">
+                                    <strong>Id:</strong> {!! $noticia['id'] !!}
+                                    <a title="Editar" href="{{ url('noticia/tv/'.$noticia['id'].'/editar') }}" class="text-info" target="_blank"><i class="fa fa-edit"></i>Editar</a>
+                                </p>
                                 <p style="margin-bottom: 0px; margin-top: 0px;"><strong>Data:</strong> {{ date('d/m/Y', strtotime($noticia['data_noticia'])) }}</p>
                                 <p style="margin-bottom: 0px; margin-top: 0px;"><strong>Emissora:</strong> {{ $noticia['fonte'] }}</p>
                                 <p style="margin-bottom: 0px; margin-top: 0px;"><strong>Programa:</strong> {{ $noticia['programa'] }}</p>
@@ -105,6 +109,10 @@
                         @elseif($noticia['tipo'] == 'radio')
 
                             <div style="border-bottom: 1px solid #e3e3e3; margin-bottom: 10px; padding-bottom: 10px; line-height: 17px;">
+                                <p style="margin-bottom: 0px; margin-top: 0px;">
+                                    <strong>Id:</strong> {!! $noticia['id'] !!}
+                                    <a title="Editar" href="{{ url('noticia-radio/'.$noticia['id'].'/editar') }}" class="text-info" target="_blank"><i class="fa fa-edit"></i>Editar</a>
+                                </p>
                                 <p style="margin-bottom: 0px; margin-top: 0px;"><strong>Data:</strong> {{ date('d/m/Y', strtotime($noticia['data_noticia'])) }}</p>
                                 <p style="margin-bottom: 0px; margin-top: 0px;"><strong>Emissora:</strong> {{ $noticia['fonte'] }}</p>
                                 <p style="margin-bottom: 0px; margin-top: 0px;"><strong>Programa:</strong> {{ $noticia['programa'] }}</p>
@@ -116,6 +124,10 @@
                         @elseif($noticia['tipo'] == 'web')
 
                             <div style="border-bottom: 1px solid #e3e3e3; margin-bottom: 10px; padding-bottom: 10px; line-height: 17px;">
+                                <p style="margin-bottom: 0px; margin-top: 0px;">
+                                    <strong>Id:</strong> {!! $noticia['id'] !!}
+                                    <a title="Editar" href="{{ url('noticia/web/'.$noticia['id'].'/editar') }}" class="text-info" target="_blank"><i class="fa fa-edit"></i>Editar</a>
+                                </p>
                                 <p style="margin-bottom: 0px; margin-top: 0px;"><strong>Título:</strong> {!! ($noticia['titulo']) ? : '<span class="text-danger">Notícia sem título</span>' !!}</p>
                                 <p style="margin-bottom: 0px; margin-top: 0px;"><strong>Data:</strong> {{ date('d/m/Y', strtotime($noticia['data_noticia'])) }}</p>
                                 <p style="margin-bottom: 0px; margin-top: 0px;"><strong>Veículo:</strong> {{ $noticia['fonte'] }}</p>
@@ -130,6 +142,10 @@
                         @else
 
                             <div style="border-bottom: 1px solid #e3e3e3; margin-bottom: 10px; padding-bottom: 10px; line-height: 17px;">
+                                <p style="margin-bottom: 0px; margin-top: 0px;">
+                                    <strong>Id:</strong> {!! $noticia['id'] !!}
+                                    <a title="Editar" href="{{ url('noticia-impressa/'.$noticia['id'].'/editar') }}" class="text-info" target="_blank"><i class="fa fa-edit"></i>Editar</a>
+                                </p>
                                 <p style="margin-bottom: 0px; margin-top: 0px;"><strong>Título:</strong> {!! ($noticia['titulo']) ? : '<span class="text-danger">Notícia sem título</span>' !!}</p>
                                 <p style="margin-bottom: 0px; margin-top: 0px;"><strong>Data:</strong> {{ date('d/m/Y', strtotime($noticia['data_noticia'])) }}</p>
                                 <p style="margin-bottom: 0px; margin-top: 0px;"><strong>Veículo:</strong> {{ $noticia['fonte'] }}</p>

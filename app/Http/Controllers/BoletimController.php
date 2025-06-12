@@ -419,7 +419,8 @@ class BoletimController extends Controller
                     Area::where('id', NoticiaCliente::where('noticia_id', $noticia_impresso->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 1)->first()->area)->first()->descricao :
                     '';
 
-            $noticias_impresso[] = array('titulo' => $noticia_impresso->titulo,
+            $noticias_impresso[] = array('id' => $noticia_impresso->id,
+                                         'titulo' => $noticia_impresso->titulo,
                                          'data_noticia' => $noticia_impresso->dt_clipagem,
                                          'fonte' => ($noticia_impresso->fonte) ? $noticia_impresso->fonte->nome : 'Fonte não informada',
                                          'secao' => ($noticia_impresso->secao) ? $noticia_impresso->secao->ds_sessao : null,
@@ -455,7 +456,8 @@ class BoletimController extends Controller
                     Area::where('id', NoticiaCliente::where('noticia_id', $noticia_web->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 2)->first()->area)->first()->descricao :
                     '';
 
-            $noticias_web[] = array('titulo' => $noticia_web->titulo_noticia,
+            $noticias_web[] = array('id' => $noticia_web->id,
+                                    'titulo' => $noticia_web->titulo_noticia,
                                     'data_noticia' => $noticia_web->data_noticia,
                                     'fonte' => ($noticia_web->fonte) ? $noticia_web->fonte->nome : 'Fonte não informada',
                                     'secao' => ($noticia_web->secao) ? $noticia_web->secao->ds_sessao : null,
@@ -475,7 +477,8 @@ class BoletimController extends Controller
                     Area::where('id', NoticiaCliente::where('noticia_id', $noticia_radio->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 3)->first()->area)->first()->descricao :
                     '';
             
-            $noticias_radio[] = array('titulo' => $noticia_radio->titulo,
+            $noticias_radio[] = array('id' => $noticia_radio->id,
+                                        'titulo' => $noticia_radio->titulo,
                                          'data_noticia' => $noticia_radio->dt_clipagem,
                                          'fonte' => ($noticia_radio->emissora) ? $noticia_radio->emissora->nome_emissora : 'Fonte não informada',
                                          'secao' => ($noticia_radio->secao) ? $noticia_radio->secao->ds_sessao : null,
@@ -496,7 +499,8 @@ class BoletimController extends Controller
                     Area::where('id', NoticiaCliente::where('noticia_id', $noticia_tv->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 4)->first()->area)->first()->descricao :
                     '';
             
-            $noticias_tv[] = array('titulo' => $noticia_tv->titulo,
+            $noticias_tv[] = array('id' => $noticia_tv->id,
+                                    'titulo' => $noticia_tv->titulo,
                                          'data_noticia' => $noticia_tv->dt_noticia,
                                          'fonte' => ($noticia_tv->emissora) ? $noticia_tv->emissora->nome_emissora : 'Fonte não informada',
                                          'secao' => ($noticia_tv->secao) ? $noticia_tv->secao->ds_sessao : null,

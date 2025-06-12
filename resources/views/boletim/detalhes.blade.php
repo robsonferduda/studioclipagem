@@ -25,6 +25,10 @@
                 @endif
                 @foreach($noticias_impresso as $key => $noticia)
                     <div style="border-bottom: 1px solid #e3e3e3; margin-bottom: 10px; padding-bottom: 10px;">
+                        <p style="margin-bottom: 0px;">
+                            <strong>Id:</strong> {!! $noticia['id'] !!}
+                            <a title="Editar" href="{{ url('noticia-impressa/'.$noticia['id'].'/editar') }}" class="text-info" target="_blank"><i class="fa fa-edit"></i>Editar</a>
+                        </p>
                         <p style="margin-bottom: 0px;"><strong>Título:</strong> {!! ($noticia['titulo']) ? : '<span class="text-danger">Notícia sem título</span>' !!}</p>
                         <p style="margin-bottom: 0px;"><strong>Data:</strong> {{ date('d/m/Y', strtotime($noticia['data_noticia'])) }}</p>
                         <p style="margin-bottom: 0px;"><strong>Veículo:</strong> {{ $noticia['fonte'] }}</p>
@@ -41,6 +45,10 @@
                 @endif
                 @foreach($noticias_web as $key => $noticia)
                     <div style="border-bottom: 1px solid #e3e3e3; margin-bottom: 10px; padding-bottom: 10px;">
+                        <p style="margin-bottom: 0px;">
+                            <strong>Id:</strong> {!! $noticia['id'] !!}
+                            <a title="Editar" href="{{ url('noticia/web/'.$noticia['id'].'/editar') }}" class="text-info" target="_blank"><i class="fa fa-edit"></i>Editar</a>
+                        </p>
                         <p style="margin-bottom: 0px;"><strong>Título:</strong> {!! ($noticia['titulo']) ? : '<span class="text-danger">Notícia sem título</span>' !!}</p>
                         <p style="margin-bottom: 0px;"><strong>Data:</strong> {{ date('d/m/Y', strtotime($noticia['data_noticia'])) }}</p>
                         <p style="margin-bottom: 0px;"><strong>Veículo:</strong> {{ $noticia['fonte'] }}</p>
@@ -65,6 +73,10 @@
                 @endif
                 @foreach($noticias_tv as $key => $noticia)
                     <div style="border-bottom: 1px solid #e3e3e3; margin-bottom: 10px; padding-bottom: 10px;">
+                        <p style="margin-bottom: 0px;">
+                            <strong>Id:</strong> {!! $noticia['id'] !!}
+                            <a title="Editar" href="{{ url('noticia/tv/'.$noticia['id'].'/editar') }}" class="text-info" target="_blank"><i class="fa fa-edit"></i>Editar</a>
+                        </p>
                         <p style="margin-bottom: 0px;"><strong>Data:</strong> {{ date('d/m/Y', strtotime($noticia['data_noticia'])) }}</p>
                         <p style="margin-bottom: 0px;"><strong>Emissora:</strong> {{ $noticia['fonte'] }}</p>
                         <p style="margin-bottom: 0px;"><strong>Programa:</strong> {{ $noticia['programa'] }}</p>
@@ -79,6 +91,10 @@
                 @endif
                 @foreach($noticias_radio as $key => $noticia)
                     <div style="border-bottom: 1px solid #e3e3e3; margin-bottom: 10px; padding-bottom: 10px;">
+                        <p style="margin-bottom: 0px;">
+                            <strong>Id:</strong> {!! $noticia['id'] !!}
+                            <a title="Editar" href="{{ url('noticia-radio/'.$noticia['id'].'/editar') }}" class="text-info" target="_blank"><i class="fa fa-edit"></i>Editar</a>
+                        </p>
                         <p style="margin-bottom: 0px;"><strong>Data:</strong> {{ date('d/m/Y', strtotime($noticia['data_noticia'])) }}</p>
                         <p style="margin-bottom: 0px;"><strong>Emissora:</strong> {{ $noticia['fonte'] }}</p>
                         <p style="margin-bottom: 0px;"><strong>Programa:</strong> {{ $noticia['programa'] }}</p>
