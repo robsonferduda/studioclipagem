@@ -42,7 +42,7 @@
                                 <input type="text" class="form-control datepicker" name="dt_final" id="dt_final" placeholder="__/__/____" value="{{ ($dt_final) ? \Carbon\Carbon::parse($dt_final)->format('d/m/Y') : '' }}">
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label>Sentimento</label>
                                 <select class="form-control" name="cd_sentimento" id="cd_sentimento">
@@ -197,7 +197,7 @@
                                     @endswitch
                                     <p style="text-transform: uppercase; font-weight: 600;">{!! $tipo_formatado !!}</p>                            
                                     <h6 style="font-weight: 600;">{{ $noticia->titulo }}</h6>
-                                    <h6 style="font-weight: 600;" class="text-muted">{{ $noticia->data_formatada }} - {{ $noticia->fonte }}</h6>
+                                    <h6 style="font-weight: 600;" class="text-muted">{{ $noticia->data_formatada }} - {{ $noticia->fonte }} {{ ($noticia->programa) ? " - ".$noticia->programa : '' }}</h6>
                                     <p class="mb-2">
                                         <span>{{ $noticia->cliente }}</span>
                                         @if($cliente->fl_sentimento_cli)

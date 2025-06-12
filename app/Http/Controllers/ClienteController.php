@@ -457,6 +457,7 @@ class ClienteController extends Controller
                     nm_cidade,
                     '' as secao,
                     nu_pagina_atual as pagina,
+                    '' as programa,
                     titulo, 
                     t4.nome as cliente,
                     t3.cliente_id as id_cliente,
@@ -499,6 +500,7 @@ class ClienteController extends Controller
                     nm_cidade,
                     '' as secao,
                     '' as pagina,
+                    t7.nome_programa as programa,
                     titulo, 
                     t4.nome as cliente,
                     t3.cliente_id as id_cliente,
@@ -517,6 +519,7 @@ class ClienteController extends Controller
                 JOIN clientes t4 ON t4.id = t3.cliente_id
                 LEFT JOIN cidade t5 ON t5.cd_cidade = t1.cd_cidade
                 LEFT JOIN estado t6 ON t6.cd_estado = t1.cd_estado
+                LEFT JOIN programa_emissora_radio t7 ON t7.id = t1.programa_id
                 WHERE 1=1
                 AND t1.deleted_at IS NULL
                 AND t3.deleted_at IS NULL
@@ -541,6 +544,7 @@ class ClienteController extends Controller
                     nm_cidade,
                     '' as secao,
                     '' as pagina,
+                    '' as programa,
                     titulo_noticia as titulo, 
                     t5.nome as cliente,
                     t3.cliente_id as id_cliente,
@@ -604,6 +608,7 @@ class ClienteController extends Controller
                     nm_cidade,
                     '' as secao,
                     '' as pagina,
+                    t7.nome_programa as programa,
                     '' as titulo, 
                     t4.nome as cliente,
                     t3.cliente_id as id_cliente,
@@ -622,6 +627,7 @@ class ClienteController extends Controller
                 JOIN clientes t4 ON t4.id = t3.cliente_id
                 LEFT JOIN cidade t5 ON t5.cd_cidade = t1.cd_cidade
                 LEFT JOIN estado t6 ON t6.cd_estado = t1.cd_estado
+                LEFT JOIN programa_emissora_web t7 ON t7.id = t1.programa_id
                 WHERE 1=1
                 AND t1.deleted_at IS NULL
                 AND t3.deleted_at IS NULL
