@@ -45,19 +45,18 @@
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label>Sentimento</label>
-                                <select class="form-control select2" name="cd_sentimento" id="cd_sentimento">
-                                    <option value="">Selecione um status</option>
+                                <select class="form-control" name="cd_sentimento" id="cd_sentimento">
                                     <option value="">Selecione um sentimento</option>
-                                    <option value="1">Positivo</option>
-                                    <option value="0">Neutro</option>
-                                    <option value="-1">Negativo</option>
+                                    <option value="1" {{ ($sentimento == '1') ? 'selected' : '' }}>Positivo</option>
+                                    <option value="0" {{ ($sentimento == '0') ? 'selected' : '' }}>Neutro</option>
+                                    <option value="-1" {{ ($sentimento == '-1') ? 'selected' : '' }}>Negativo</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Termo de busca</label>
-                                <input type="text" class="form-control" name="termo" id="termo" placeholder="Termo" value="{{ old('nome') }}">
+                                <input type="text" class="form-control" name="termo" id="termo" placeholder="Termo" value="{{ ($termo) ? $termo : old('termo') }}">
                             </div>
                         </div>
                         <div class="col-md-12">

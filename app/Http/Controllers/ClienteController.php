@@ -187,21 +187,35 @@ class ClienteController extends Controller
         $dt_inicial_formatada = ($request->dt_inicial) ? $request->dt_inicial : date("d/m/Y");
         $dt_final_formatada = ($request->dt_final) ? $request->dt_final : date("d/m/Y");
 
-        $fl_web = $request->fl_web == true ? true : false;
-        $fl_tv = $request->fl_tv == true ? true : false;
-        $fl_impresso = $request->fl_impresso == true ? true : false;
-        $fl_radio = $request->fl_radio == true ? true : false;
+        $fl_web = $request->fl_web == "true" ? true : false;
+        $fl_tv = $request->fl_tv == "true" ? true : false;
+        $fl_impresso = $request->fl_impresso == "true" ? true : false;
+        $fl_radio = $request->fl_radio == "true" ? true : false;
 
         $termo = ($request->termo) ? $request->termo : null;
+        $sentimento = ($request->sentimento) ? $request->sentimento : null;
 
-        $dados_impresso = ($fl_impresso) ? $this->dadosImpresso($dt_inicial, $dt_final,$cliente_selecionado) : array();
-        $dados_radio    = ($fl_radio) ? $this->dadosRadio($dt_inicial, $dt_final,$cliente_selecionado) : array();
-        $dados_web      = ($fl_web) ? $this->dadosWeb($dt_inicial, $dt_final,$cliente_selecionado) : array();
-        $dados_tv      = ($fl_tv) ? $this->dadosTv($dt_inicial, $dt_final,$cliente_selecionado) : array();
+        if(!$fl_impresso and !$fl_radio and !$fl_web and !$fl_tv){
 
-        $dados = array_merge($dados_impresso, $dados_radio, $dados_web, $dados_tv);
+            $dados_impresso = $this->dadosImpresso($dt_inicial, $dt_final,$cliente_selecionado, $termo);
+            $dados_radio    = $this->dadosRadio($dt_inicial, $dt_final,$cliente_selecionado, $termo);
+            $dados_web      = $this->dadosWeb($dt_inicial, $dt_final,$cliente_selecionado, $termo);
+            $dados_tv       = $this->dadosTv($dt_inicial, $dt_final,$cliente_selecionado, $termo);
 
-        return view('cliente/noticias', compact('cliente','dados','tipo_data','dt_inicial','dt_final','fl_web','fl_tv','fl_radio','fl_impresso','termo'));
+            $dados = array_merge($dados_impresso, $dados_radio, $dados_web, $dados_tv);
+
+        }else{
+
+            $dados_impresso = ($fl_impresso) ? $this->dadosImpresso($dt_inicial, $dt_final,$cliente_selecionado, $termo) : array();
+            $dados_radio    = ($fl_radio) ? $this->dadosRadio($dt_inicial, $dt_final,$cliente_selecionado, $termo) : array();
+            $dados_web      = ($fl_web) ? $this->dadosWeb($dt_inicial, $dt_final,$cliente_selecionado, $termo) : array();
+            $dados_tv       = ($fl_tv) ? $this->dadosTv($dt_inicial, $dt_final,$cliente_selecionado, $termo) : array();
+
+            $dados = array_merge($dados_impresso, $dados_radio, $dados_web, $dados_tv);
+
+        }
+
+        return view('cliente/noticias', compact('cliente','dados','tipo_data','dt_inicial','dt_final','fl_web','fl_tv','fl_radio','fl_impresso','termo','sentimento'));
     }
 
     public function update(Request $request, int $id): RedirectResponse
@@ -435,7 +449,7 @@ class ClienteController extends Controller
         }
     }
 
-    public function dadosImpresso($dt_inicial, $dt_final,$cliente_selecionado)
+    public function dadosImpresso($dt_inicial, $dt_final,$cliente_selecionado, $termo)
     {
         $sql = "SELECT t1.id, 
                     sg_estado,
@@ -470,10 +484,14 @@ class ClienteController extends Controller
             $sql .= ' AND t3.cliente_id = '.$cliente_selecionado;
         }
 
+        if($termo){
+            $sql .= " AND t1.sinopse ilike '%$termo%'";
+        }
+
         return $dados = DB::select($sql);
     }
 
-    public function dadosRadio($dt_inicial, $dt_final,$cliente_selecionado)
+    public function dadosRadio($dt_inicial, $dt_final,$cliente_selecionado, $termo)
     {
         $sql = "SELECT t1.id, 
                     sg_estado,
@@ -508,10 +526,14 @@ class ClienteController extends Controller
             $sql .= ' AND t3.cliente_id = '.$cliente_selecionado;
         }
 
+        if($termo){
+            $sql .= " AND t1.sinopse ilike '%$termo%'";
+        }
+
         return $dados = DB::select($sql);
     }
 
-    public function dadosWeb($dt_inicial, $dt_final,$cliente_selecionado)
+    public function dadosWeb($dt_inicial, $dt_final,$cliente_selecionado, $termo)
     {
         $sql = "SELECT t1.id, 
                     sg_estado,
@@ -547,6 +569,10 @@ class ClienteController extends Controller
             $sql .= ' AND t3.cliente_id = '.$cliente_selecionado;
         }
 
+        if($termo){
+            $sql .= " AND t4.conteudo ilike '%$termo%'";
+        }
+
         $dados = DB::select($sql);
 
         foreach($dados as $dado){
@@ -570,7 +596,7 @@ class ClienteController extends Controller
         return $dados;
     }
 
-    public function dadosTv($dt_inicial, $dt_final,$cliente_selecionado)
+    public function dadosTv($dt_inicial, $dt_final,$cliente_selecionado, $termo)
     {
         $sql = "SELECT t1.id, 
                     sg_estado,
@@ -603,6 +629,10 @@ class ClienteController extends Controller
 
         if($cliente_selecionado){
             $sql .= ' AND t3.cliente_id = '.$cliente_selecionado;
+        }
+
+        if($termo){
+            $sql .= " AND t1.sinopse ilike '%$termo%'";
         }
 
         return $dados = DB::select($sql);
