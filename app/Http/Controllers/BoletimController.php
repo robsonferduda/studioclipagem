@@ -451,9 +451,7 @@ class BoletimController extends Controller
                 }
             }
 
-            dd(NoticiaCliente::where('noticia_id', $noticia_web->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 2)->first()->area);
-
-            $area = (NoticiaCliente::where('noticia_id', $noticia_web->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 2)->first()->area) ?
+            $area = (NoticiaCliente::where('noticia_id', $noticia_web->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 2)->first() and NoticiaCliente::where('noticia_id', $noticia_web->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 2)->first()->area) ?
                     Area::where('id', NoticiaCliente::where('noticia_id', $noticia_web->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 2)->first()->area)->first()->descricao :
                     '';
 
