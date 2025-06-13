@@ -8,6 +8,7 @@ use File;
 use Storage;
 use App\Utils;
 use Carbon\Carbon;
+use App\User;
 use App\Models\Cliente;
 use App\Models\SecaoImpresso;
 use App\Models\NoticiaCliente;
@@ -45,6 +46,11 @@ class NoticiaImpressaController extends Controller
 
         $fontes = FonteImpressa::orderBy('nome')->get();
         $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
+        $usuarios = User::whereHas('roles', function($q){
+                            return $q->whereNotIn('name', ['cliente']);
+                        })
+                        ->orderBy('name')
+                        ->get();
 
         $tipo_data = ($request->tipo_data) ? $request->tipo_data : 'dt_clipagem';
         $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
@@ -52,6 +58,7 @@ class NoticiaImpressaController extends Controller
         $cliente_selecionado = ($request->cliente) ? $request->cliente : null;
         $fonte = ($request->fontes) ? $request->fontes : null;
         $termo = ($request->termo) ? $request->termo : null;
+        $usuario = ($request->usuario) ? $request->usuario : null;
 
         $dados = NoticiaImpresso::with('fonte')
                     ->when($cliente_selecionado, function ($query) use ($cliente_selecionado) { 
@@ -62,11 +69,19 @@ class NoticiaImpressaController extends Controller
                     ->when($termo, function ($q) use ($termo) {
                         return $q->where('sinopse', 'ILIKE', '%'.trim($termo).'%');
                     })
+                    ->when($usuario, function ($q) use ($usuario) {
+
+                        if($usuario == "S"){
+                            return $q->whereNull('cd_usuario');
+                        }else{
+                            return $q->where('cd_usuario', $usuario);
+                        }
+                    })
                     ->whereBetween($tipo_data, [$dt_inicial." 00:00:00", $dt_final." 23:59:59"])
                     ->orderBy('created_at', 'DESC')
                     ->paginate(50);
 
-        return view('noticia-impressa/index', compact('dados','fontes','clientes','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo'));
+        return view('noticia-impressa/index', compact('dados','fontes','clientes','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo','usuarios','usuario'));
     }
 
     public function clientes($noticia)

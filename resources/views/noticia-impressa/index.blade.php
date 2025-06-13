@@ -60,10 +60,22 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-12 col-sm-12">
+                                <div class="col-md-6 col-sm-6">
                                     <div class="form-group">
                                         <label>Buscar por <span class="text-primary">Digite o termo ou expressão de busca</span></label>
                                         <input type="text" class="form-control" name="termo" id="termo" minlength="3" placeholder="Termo" value="{{ $termo }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Responsável pelo cadastro</label>
+                                        <select class="form-control select2" name="usuario" id="usuario">
+                                            <option value="">Selecione um usuário</option>
+                                            <option value="S">Sistema</option>
+                                            @foreach ($usuarios as $user)
+                                                <option value="{{ $user->id }}" {{ ($usuario == $user->id) ? 'selected' : '' }}>{{ $user->name }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-md-12 checkbox-radios mb-0">
