@@ -47,7 +47,7 @@ class NoticiaImpressaController extends Controller
         $fontes = FonteImpressa::orderBy('nome')->get();
         $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
         $usuarios = User::whereHas('role', function($q){
-                            return $q->whereNotIn('role_id', ['2']);
+                            return $q->whereIn('role_id', ['8']);
                         })
                         ->orderBy('name')
                         ->get();
