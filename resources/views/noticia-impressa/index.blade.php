@@ -50,7 +50,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Cliente</label>
-                                        <select class="form-control select2" name="cliente" id="cliente">
+                                        <select class="form-control" name="cliente" id="cliente">
                                             <option value="">Selecione um cliente</option>
                                             @foreach ($clientes as $cliente)
                                                 <option value="{{ $cliente->id }}" {{ ($cliente_selecionado == $cliente->id) ? 'selected' : '' }}>{{ $cliente->nome }}</option>
@@ -69,7 +69,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Responsável pelo cadastro</label>
-                                        <select class="form-control select2" name="usuario" id="usuario">
+                                        <select class="form-control" name="usuario" id="usuario">
                                             <option value="">Selecione um usuário</option>
                                             <option value="S">Sistema</option>
                                             @foreach ($usuarios as $user)
