@@ -13,7 +13,7 @@
                 </div>
                 <div class="col-md-3">
                     <a href="{{ url('noticia/web') }}" class="btn btn-info pull-right" style="margin-right: 12px;"><i class="fa fa-globe"></i> Notícias</a>
-                    <a href="{{ url('noticia/web/prints/recuperar') }}" class="btn btn-warning pull-right btn-recuperar" style="margin-right: 12px;"><i class="fa fa-refresh"></i> Recuperar Prints</a>
+                    <button class="btn btn-warning pull-right btn-recuperar" style="margin-right: 12px;"><i class="fa fa-refresh"></i> Recuperar Prints</button>
                 </div>
             </div>
         </div>
@@ -40,13 +40,13 @@
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
                                         <label>Data Inicial</label>
-                                        <input type="text" class="form-control datepicker" name="dt_inicial" required="true" value="{{ \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y') }}" placeholder="__/__/____">
+                                        <input type="text" class="form-control datepicker" name="dt_inicial" id="dt_inicial" required="true" value="{{ \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y') }}" placeholder="__/__/____">
                                     </div>
                                 </div>
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
                                         <label>Data Final</label>
-                                        <input type="text" class="form-control datepicker" name="dt_final" required="true" value="{{ \Carbon\Carbon::parse($dt_final)->format('d/m/Y') }}" placeholder="__/__/____">
+                                        <input type="text" class="form-control datepicker" name="dt_final" id="dt_final" required="true" value="{{ \Carbon\Carbon::parse($dt_final)->format('d/m/Y') }}" placeholder="__/__/____">
                                     </div>
                                 </div>
                                 <div class="col-md-2">
@@ -56,7 +56,7 @@
                         </div>
                     {!! Form::close() !!}
                 </div>
-                <div class="col-lg-12 col-md-3 mb-12">
+                <div class="col-lg-12 col-md-3 mb-12 box-erro-print">
                     <h6>NOTÍCIAS COM ERRO DE PRINT</h6>
                     <p class="text-info">São listadas somente notícias que foram vinculadas a algum cliente via monitoramento</p>
                     
@@ -83,7 +83,7 @@
                     </table>
         
                     @forelse($erros as $key => $noticia)
-                        <div class="row box-erro-print">
+                        <div class="row ">
                             <div class="col-lg-12">
                                 <div class="card">
                                     <div class="card-body">
@@ -131,9 +131,34 @@
     $(document).ready(function() {
 
         var host =  $('meta[name="base-url"]').attr('content');
+        var token = $('meta[name="csrf-token"]').attr('content');
 
         $(".btn-recuperar").click(function(){
-            $('.box-erro-print').loader('show');
+
+            var dt_inicial = $("#dt_inicial").val();
+            var dt_final = $("#dt_final").val();
+
+            $.ajax({
+                    url: host+'/noticia/web/prints/recuperar',
+                       type: 'POST',
+                       data: {
+                            "_token": $('meta[name="csrf-token"]').attr('content'),
+                            "dt_inicial": dt_inicial,
+                            "dt_final": dt_final
+                    },
+                    beforeSend: function () {
+                        $('.box-erro-print').loader('show');
+                    },
+                    success: function(response) {
+                        window.location.reload();                                
+                    },
+                    error: function(response){
+                        console.log(response);
+                    },
+                    complete: function(){
+                        $('.box-erro-print').loader('hide');
+                    }
+            });
         });
 
     });

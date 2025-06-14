@@ -571,11 +571,15 @@ class NoticiaWebController extends Controller
         return view('noticia-web/prints',compact('resumo','erros','dt_inicial','dt_final','clientes','cliente_selecionado'));
     }
 
-    public function printsRecuperar()
+    public function printsRecuperar(Request $request)
     {
         $total = 0;
+        $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00";
+        $dt_final = $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59";
 
-        $erros = NoticiaWeb::where('path_screenshot','ilike','ERROR')->get();
+        $erros = NoticiaWeb::where('path_screenshot','ilike','ERROR')
+                            ->whereBetween('created_at', [$dt_inicial, $dt_final])
+                            ->get();
 
         foreach($erros as $erro){
             $erro->path_screenshot = null;
