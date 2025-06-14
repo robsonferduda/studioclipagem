@@ -95,35 +95,6 @@
                         <span> Por padrão toda nova fonte é cadastrada com a situação <strong>Aguardando</strong>.</span>
                     </div>
                 </div>
-                <div class="row mt-3">
-                    <div class="col-md-12">
-                        <h6>Dados de Mapeamento</h6>
-                    </div> 
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label>Título <span class="text-danger">Obrigatório</span></label>
-                            <input type="text" class="form-control" name="titulo" id="titulo" required placeholder="Título" value="{{ old("titulo") }}">
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label>Data Notícia <span class="text-danger">Obrigatório</span></label>
-                            <input type="text" class="form-control datepicker" name="data_noticia" required value="{{ date("d/m/Y") }}" placeholder="__/__/____">
-                        </div>
-                    </div>
-                    <div class="col-md-9">
-                        <div class="form-group">
-                            <label>Link da Notícia <span class="text-danger">Obrigatório</span></label>
-                            <input type="text" class="form-control" name="url_noticia" id="url_noticia" required placeholder="Link da Notícia" value="{{ old("url_noticia") }}">
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <label for="sinopse">Texto <span class="text-danger">Obrigatório</span></label>
-                        <div class="form-group">
-                            <textarea class="form-control" name="conteudo" id="conteudo" rows="10">{{ old("conteudo") }}</textarea>
-                        </div>
-                    </div>
-                </div> 
             </div>
             <div class="card-footer text-center mb-3">
                 <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Salvar</button>

@@ -58,32 +58,7 @@
                                             </select>
                                         </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12 col-sm-12">
-                                    <div class="form-group">
-                                        <label>Título</label>
-                                        <input type="text" class="form-control" name="termo" id="termo" minlength="3" placeholder="Termo" value="">
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <label for="arquivo">Print da Notícia</label>
-                                    <div style="min-height: 302px;" class="dropzone" id="dropzone"><div class="dz-message" data-dz-message><span>CLIQUE AQUI<br/> ou <br/>ARRASTE</span></div></div>
-                                    <input type="hidden" name="arquivo" id="arquivo">
-                                </div>
-                                <div class="col-md-9">
-                                    <label for="sinopse">Texto</label>
-                                    <div class="form-group">
-                                        <textarea class="form-control" name="sinopse" id="sinopse" rows="10"></textarea>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label>Link da Notícia</label>
-                                        <input type="text" class="form-control" name="link" id="link" placeholder="Link" value="">
-                                    </div>
-                                </div>                                
-                            </div>     
+                            </div>    
                             <div class="text-center mb-2 mt-3">
                                 <button type="submit" class="btn btn-success" name="btn_enviar" value="salvar"><i class="fa fa-save"></i> Salvar</button>
                                 <button type="submit" class="btn btn-warning" name="btn_enviar" value="salvar_e_copiar"><i class="fa fa-copy"></i> Salvar e Copiar</button>
