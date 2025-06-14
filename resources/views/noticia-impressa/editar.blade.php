@@ -135,13 +135,7 @@
                                         <input type="text" class="form-control" name="nu_pagina_atual" id="nu_pagina_atual" placeholder="Número" value="{{ ($noticia->nu_pagina_atual) ? $noticia->nu_pagina_atual : '' }}">
                                     </div>                                    
                                 </div>
-                                <div class="col-md-2 col-sm-6">
-                                    <div class="form-group">
-                                        <label>Colunas</label>
-                                        <input type="text" class="form-control monetario" name="nu_colunas" id="nu_colunas" placeholder="Colunas" value="{{ ($noticia->nu_colunas) ? $noticia->nu_colunas : 0 }}">
-                                    </div>                                    
-                                </div>
-                                 <div class="col-md-2">
+                                <div class="col-md-2">
                                     <input type="hidden" name="nu_valor_fonte" id="nu_valor_fonte">
                                     <div class="form-group">
                                         <label>Localização <span class="valor_cm text-info"></span></label>
@@ -157,14 +151,20 @@
                                 </div>
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
-                                        <label>Altura <span class="text-info">em cm</span></label>
-                                        <input type="text" class="form-control monetario" name="nu_altura" id="nu_altura" placeholder="Altura" value="{{ ($noticia->nu_altura) ? $noticia->nu_altura : 0 }}">
+                                        <label>Colunas</label>
+                                        <input type="text" class="form-control monetario" name="nu_colunas" id="nu_colunas" placeholder="Colunas" value="{{ ($noticia->nu_colunas) ? $noticia->nu_colunas : 0 }}">
                                     </div>                                    
                                 </div>
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
                                         <label>Largura <span class="text-info">em cm</span></label>
                                         <input type="text" class="form-control monetario" name="nu_largura" id="nu_largura" placeholder="Largura" value="{{ ($noticia->nu_largura) ? $noticia->nu_largura : 0 }}">
+                                    </div>                                    
+                                </div>
+                                <div class="col-md-2 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Altura <span class="text-info">em cm</span></label>
+                                        <input type="text" class="form-control monetario" name="nu_altura" id="nu_altura" placeholder="Altura" value="{{ ($noticia->nu_altura) ? $noticia->nu_altura : 0 }}">
                                     </div>                                    
                                 </div>
                                 <div class="col-md-2 col-sm-6">
