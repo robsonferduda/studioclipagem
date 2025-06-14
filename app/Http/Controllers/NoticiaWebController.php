@@ -547,7 +547,8 @@ class NoticiaWebController extends Controller
                 JOIN noticia_cliente t2 ON t2.noticia_id = t1.id AND tipo_id = 2 
                 JOIN fonte_web t3 On t3.id = t1.id_fonte 
                 WHERE t1.path_screenshot like 'ERROR'
-                AND t1.created_at BETWEEN '$dt_inicial' AND '$dt_final'";
+                AND t1.created_at BETWEEN '$dt_inicial' AND '$dt_final'
+                AND t1.deleted_at IS NULL";
 
         if($cliente_selecionado){
             $sql .= " AND t2.cliente_id = $cliente_selecionado";
