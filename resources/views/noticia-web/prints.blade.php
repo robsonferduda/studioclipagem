@@ -13,6 +13,7 @@
                 </div>
                 <div class="col-md-3">
                     <a href="{{ url('noticia/web') }}" class="btn btn-info pull-right" style="margin-right: 12px;"><i class="fa fa-globe"></i> Notícias</a>
+                    <a href="{{ url('noticia/web/prints/recuperar') }}" class="btn btn-warning pull-right btn-recuperar" style="margin-right: 12px;"><i class="fa fa-refresh"></i> Recuperar Prints</a>
                 </div>
             </div>
         </div>
@@ -82,7 +83,7 @@
                     </table>
         
                     @forelse($erros as $key => $noticia)
-                        <div class="row">
+                        <div class="row box-erro-print">
                             <div class="col-lg-12">
                                 <div class="card">
                                     <div class="card-body">
@@ -130,6 +131,10 @@
     $(document).ready(function() {
 
         var host =  $('meta[name="base-url"]').attr('content');
+
+        $(".btn-recuperar").click(function(){
+            $('.box-erro-print').loader('show');
+        });
 
     });
 </script>

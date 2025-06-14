@@ -32,6 +32,7 @@ class NoticiaTv extends Model
         'valor_retorno',
         'duracao',
         'decupagem_id',
+        'ordem',
         'cd_usuario',
         'ds_caminho_video'
     ];

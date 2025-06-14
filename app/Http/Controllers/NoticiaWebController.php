@@ -571,6 +571,22 @@ class NoticiaWebController extends Controller
         return view('noticia-web/prints',compact('resumo','erros','dt_inicial','dt_final','clientes','cliente_selecionado'));
     }
 
+    public function printsRecuperar()
+    {
+        $total = 0;
+
+        $erros = NoticiaWeb::where('path_screenshot','ilike','ERROR')->get();
+
+        foreach($erros as $erro){
+            $erro->path_screenshot = null;
+            $erro->save();
+
+            $total += $total;
+        }
+
+        return redirect('noticia/web/prints');
+    }
+
     public function reprint($id)
     {
         $noticia = NoticiaWeb::find($id);

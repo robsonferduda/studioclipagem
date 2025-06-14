@@ -21,6 +21,7 @@ class NoticiaWeb extends Model
                             'nu_valor',
                             'fl_boletim',
                             'cd_usuario',
+                            'ordem',
                             'sinopse',
                             'ds_caminho_img'];
 

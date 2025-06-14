@@ -31,6 +31,7 @@ class NoticiaImpresso extends Model
                             'nu_largura',
                             'local_impressao',
                             'cd_usuario',
+                            'ordem',
                             'valor_retorno'];
 
     public function usuario()
