@@ -35,6 +35,8 @@ class RelatorioController extends Controller
         $dados = array();
         $clientes = array();
 
+        $tipo_data = ($request->tipo_data) ? $request->tipo_data : 'data_cadastro';
+
         $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00" : date("Y-m-d")." 00:00:00";
         $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d")." 23:59:59";
 
@@ -161,7 +163,7 @@ class RelatorioController extends Controller
 
         }
 
-        return view('relatorio/index', compact('dados','clientes','cliente_selecionado','dt_inicial','dt_final','fl_web','fl_tv','fl_radio','fl_impresso'));
+        return view('relatorio/index', compact('dados','clientes','cliente_selecionado','dt_inicial','dt_final','fl_web','fl_tv','fl_radio','fl_impresso','tipo_data'));
     }
 
     public function clipping(Request $request)

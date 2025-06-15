@@ -21,10 +21,13 @@
             <div class="col-md-12">
                 {!! Form::open(['id' => 'frm_user_create', 'url' => ['relatorios']]) !!}
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-2">
                             <div class="form-group">
-                                <label>Termo de busca</label>
-                                <input type="text" class="form-control" name="termo" id="termo" placeholder="Termo" value="{{ old('nome') }}">
+                                <label>Tipo de Data</label>
+                                <select class="form-control select2" name="tipo_data" id="tipo_data">
+                                    <option value="data_cadastro" {{ ($tipo_data == "data_cadastro") ? 'selected' : '' }}>Data de Cadastro</option>
+                                    <option value="data_noticia" {{ ($tipo_data == "data_noticia") ? 'selected' : '' }}>Data do Clipping</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-2 col-sm-6">
@@ -68,6 +71,12 @@
                                     <option value="0">Neutro</option>
                                     <option value="-1">Negativo</option>
                                 </select>
+                            </div>
+                        </div>
+                        <div class="col-md-10">
+                            <div class="form-group">
+                                <label>Termo de busca</label>
+                                <input type="text" class="form-control" name="termo" id="termo" placeholder="Termo" value="{{ old('nome') }}">
                             </div>
                         </div>
                     </div>  
