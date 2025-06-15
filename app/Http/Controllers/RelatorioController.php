@@ -156,7 +156,7 @@ class RelatorioController extends Controller
             
                 case 'pesquisar': 
                     
-                    return view('relatorio/index', compact('dados','clientes','cliente_selecionado','dt_inicial','dt_final','fl_web','fl_tv','fl_radio','fl_impresso'));
+                    return view('relatorio/index', compact('dados','clientes','cliente_selecionado','dt_inicial','dt_final','fl_web','fl_tv','fl_radio','fl_impresso','tipo_data'));
 
                 break;
             }
