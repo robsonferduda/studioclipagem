@@ -116,6 +116,7 @@ class JornalImpressoController extends Controller
                             'nm_estado',
                             'nm_cidade',
                             'fl_upload',
+                            'id_noticia_gerada',
                             'clientes.nome AS nome_cliente',
                             'pagina_edicao_jornal_online.id AS id_pagina')
                     ->join('clientes', 'clientes.id', '=', 'noticia_cliente.cliente_id')
@@ -376,6 +377,7 @@ class JornalImpressoController extends Controller
                     $dados = array('area' => null,
                                    'monitoramento_id' => $monitoramento,
                                    'id_noticia_origem' => $conteudo->id,
+                                   'id_noticia_gerada' => $noticia->id,
                                    'sentimento' => 0);
 
                     $noticia_cliente = NoticiaCliente::updateOrCreate($match, $dados);

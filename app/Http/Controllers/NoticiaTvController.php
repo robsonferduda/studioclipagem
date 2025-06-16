@@ -139,6 +139,7 @@ class NoticiaTvController extends Controller
                             'horario_end_gravacao',
                             'videos_programa_emissora_web.misc_data',
                             'expressao',
+                            'id_noticia_gerada',
                             'nm_estado',
                             'nm_cidade',
                             'clientes.nome AS nome_cliente')
@@ -231,6 +232,7 @@ class NoticiaTvController extends Controller
                     $dados = array('area' => null,
                                    'monitoramento_id' => $monitoramento,
                                    'id_noticia_origem' => $conteudo->id,
+                                   'id_noticia_gerada' => $noticia->id,
                                    'sentimento' => 0);
 
                     $noticia_cliente = NoticiaCliente::updateOrCreate($match, $dados);

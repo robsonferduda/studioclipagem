@@ -138,6 +138,7 @@ class NoticiaRadioController extends Controller
                             'data_hora_fim',
                             'transcricao',
                             'expressao',
+                            'id_noticia_gerada',
                             'path_s3')
                     ->join('clientes', 'clientes.id', '=', 'noticia_cliente.cliente_id')
                     ->join('gravacao_emissora_radio', function ($join) {
@@ -231,6 +232,7 @@ class NoticiaRadioController extends Controller
                     $dados = array('area' => null,
                                    'monitoramento_id' => $monitoramento,
                                    'id_noticia_origem' => $conteudo->id,
+                                   'id_noticia_gerada' => $noticia->id,
                                    'sentimento' => 0);
 
                     $noticia_cliente = NoticiaCliente::updateOrCreate($match, $dados);

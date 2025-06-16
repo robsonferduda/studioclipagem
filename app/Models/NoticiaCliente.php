@@ -12,7 +12,16 @@ class NoticiaCliente extends Model
     protected $connection = 'pgsql';
     protected $table = 'noticia_cliente';
 
-    protected $fillable = ['cliente_id','tipo_id','noticia_id','monitoramento_id','sentimento','area','fl_boletim','fl_enviada','id_noticia_origem'];
+    protected $fillable = ['cliente_id',
+                            'tipo_id',
+                            'noticia_id',
+                            'monitoramento_id',
+                            'sentimento',
+                            'area',
+                            'fl_boletim',
+                            'fl_enviada',
+                            'id_noticia_gerada',
+                            'id_noticia_origem'];
 
     public function cliente()
     {
