@@ -116,6 +116,7 @@ class JornalImpressoController extends Controller
                             'nm_estado',
                             'nm_cidade',
                             'fl_upload',
+                            'id_noticia_origem',
                             'id_noticia_gerada',
                             'clientes.nome AS nome_cliente',
                             'pagina_edicao_jornal_online.id AS id_pagina')
