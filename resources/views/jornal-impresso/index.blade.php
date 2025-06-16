@@ -142,7 +142,7 @@
                                         <a href="{{ url('jornal-impresso/noticia/extrair/'.$pagina->monitoramento_id.'/impresso',$pagina->id_pagina) }}" class="btn btn-success btn-extrair-noticia"><i class="fa fa-database"></i> Extrair Notícia</a>  
                                         {{ $pagina->id_noticia_origem }}
                                         <br/>
-                                        {{ $pagina->id_noticia_gerada }}
+                                        {{ $pagina->id_pagina }}
                                     </div>
                                         @if($pagina->id_noticia_gerada)
                                             <a href="{{ url('noticia-impressa/'.$pagina->id_noticia_gerada.'/editar') }}" class="btn btn-warning"><i class="fa fa-edit"></i>Notícia Extraída</a> 
