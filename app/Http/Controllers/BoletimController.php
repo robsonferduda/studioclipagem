@@ -742,7 +742,7 @@ class BoletimController extends Controller
                 $mail_status = Mail::send($view, $data, function($message) use ($emails, $i) {
                 $message->to($emails[$i])
                 ->subject('Boletim de Clipagens');
-                    $message->from('boletins@clipagem.online','Clipping de Notícias');
+                    $message->from('noreply@clipagem.online','Clipping de Notícias');
                 });
                 $msg = "Email enviado com sucesso";
                 $tipo = "success";
