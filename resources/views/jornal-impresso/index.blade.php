@@ -150,7 +150,7 @@
                                         @else
                                             <span>Arquivo extraído automaticamente pelo <strong class="text-success">sistema</strong>. Atenção! A data da notícia poce coincidir com a data da coleta e star incorreta!</span>
                                         @endif
-                                        {{ $pagina }}
+                                        {{ dd($pagina)) }}
                                     </div>
                                 </div>     
                             </div>
