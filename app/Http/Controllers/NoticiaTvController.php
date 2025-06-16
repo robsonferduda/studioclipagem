@@ -230,6 +230,7 @@ class NoticiaTvController extends Controller
                         
                     $dados = array('area' => null,
                                    'monitoramento_id' => $monitoramento,
+                                   'id_noticia_origem' => $conteudo->id,
                                    'sentimento' => 0);
 
                     $noticia_cliente = NoticiaCliente::updateOrCreate($match, $dados);
