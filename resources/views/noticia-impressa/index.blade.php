@@ -314,16 +314,23 @@
                         sentimento: sentimento
                     },
                     success: function() {
+
                         const container = $('.clientes-noticia[data-id="' + noticiaId + '"]');
 
                         $.ajax({
                             url: host+'/noticia/' + noticiaId + '/tipo/1/clientes',
                             type: 'GET',
+                                    beforeSend: function(){
+                                $(".clientes-noticia-"+noticiaId).loader('show');
+                            },
                             success: function(html) {
                                 container.html(html);
                             },
                             error: function() {
                                 container.html('<p class="text-danger">Erro ao carregar clientes.</p>');
+                            },
+                            complete: function() {
+                                $(".clientes-noticia-"+noticiaId).loader('hide');
                             }
                         });
                     },
