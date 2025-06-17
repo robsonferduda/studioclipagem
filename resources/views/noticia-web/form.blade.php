@@ -175,11 +175,11 @@
                                 </div> 
                                 @if($noticia and $noticia->ds_caminho_img)    
                                     <div class="col-md-3">
-                                        @if($dado->ds_caminho_img)
-                                                <img src="{{ asset('img/noticia-web/'.$dado->ds_caminho_img) }}" alt="Página {{ $dado->ds_caminho_img }}">
-                                        @elseif($dado->path_screenshot)                                         
-                                            <img src="{{ Storage::disk('s3')->temporaryUrl($dado->path_screenshot, '+30 minutes') }}" 
-                                                alt="Print notícia {{ $dado->noticia_id }}" 
+                                        @if($noticia->ds_caminho_img)
+                                                <img src="{{ asset('img/noticia-web/'.$noticia->ds_caminho_img) }}" alt="Página {{ $noticia->ds_caminho_img }}">
+                                        @elseif($noticia->path_screenshot)                                         
+                                            <img src="{{ Storage::disk('s3')->temporaryUrl($noticia->path_screenshot, '+30 minutes') }}" 
+                                                alt="Print notícia {{ $noticia->id }}" 
                                                 class="img-fluid img-thumbnail" 
                                                 style="width: 100%; height: auto; border: none;">
                                         @else
