@@ -218,6 +218,7 @@
             <div class="row">
                 <div class="col-md-12 modal-conteudo"></div>
                 <div class="col-md-12 modal-sinopse"></div>
+                <div class="col-md-12 modal-imagem"></div>
             </div>
             <div class="center">
                 <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
@@ -264,10 +265,11 @@
                 var id = $(this).data("id");
                 var chave = ".conteudo-"+id;
                 var sinopse = ".sinopse-"+id;
+                var imagem = ".box-imagem-"+id;
 
                 $(".modal-conteudo").html($(chave).html());
-              
                 $(".modal-sinopse").html($(sinopse).text().replace(/\n/g, "<br />"));
+                $(".modal-imagem").html($(imagem).html());
 
                 $("#showNoticia").modal("show");
 
