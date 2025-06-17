@@ -187,7 +187,12 @@
             listaNoticias();
 
             $(".todas").change(function(){
-                $(".item-noticia").not(this).prop('checked', this.checked);
+
+                const checked = this.checked;
+
+                $(".item-noticia").not(this).each(function () {
+                    $(this).prop('checked', checked).trigger('change');
+                });
             });
 
             function listaNoticias(){
