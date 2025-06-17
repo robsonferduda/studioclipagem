@@ -62,11 +62,19 @@ $(document).ready(function() {
                     return;
                 }
                         
-                $('.area').append('<option value="">Selecione uma área</option>').val('');
+                $('.area').append('<option value="0">Selecione uma área</option>').val('');
                 data.forEach(element => {
                     let option = new Option(element.descricao, element.id);
                     $('.area').append(option);
-                });             
+                });   
+
+                var area_selecionada = $("#area_selecionada").val();
+
+                if(area_selecionada){
+                    $(".area").val(area_selecionada);
+                }else{
+                    $(".area").val(0);
+                }         
             },
             complete: function(){
                         

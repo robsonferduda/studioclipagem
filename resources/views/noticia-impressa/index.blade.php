@@ -72,8 +72,9 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Área do Cliente</label>
-                                        <select class="form-control area select2" name="cd_area" id="cd_area" disabled>
-                                            <option value="">Selecione uma área</option>
+                                        <input type="hidden" name="area_selecionada" id="area_selecionada" value="{{ ($area_selecionada) ? $area_selecionada : 0 }}">
+                                        <select class="form-control area" name="cd_area" id="cd_area" disabled>
+                                            <option value="0">Selecione uma área</option>
                                         </select>
                                     </div>
                                 </div>
@@ -101,7 +102,7 @@
                                         <label>Responsável pelo cadastro</label>
                                         <select class="form-control" name="usuario" id="usuario">
                                             <option value="">Selecione um usuário</option>
-                                            <option value="S">Sistema</option>
+                                            <option value="S" {{ ($usuario == 'S') ? 'selected' : '' }}>Sistema</option>
                                             @foreach ($usuarios as $user)
                                                 <option value="{{ $user->id }}" {{ ($usuario == $user->id) ? 'selected' : '' }}>{{ $user->name }}</option>
                                             @endforeach
@@ -109,6 +110,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-12 checkbox-radios mb-0">
+                                    <a href="{{ url('noticias/impresso/limpar') }}" class="btn btn-warning btn-limpar mb-3"><i class="fa fa-refresh"></i> Limpar</a>
                                     <button type="submit" id="btn-find" class="btn btn-primary mb-3"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
@@ -131,7 +133,7 @@
                                 <div class="row">
                                     <div class="col-lg-2 col-md-2 col-sm-12 mb-1">
                                         <a href="{{ url('noticia-impressa/imagem/download/'.$noticia->id) }}" target="_BLANK">
-                                            <img src="{{ asset('img/noticia-impressa/'.$noticia->ds_caminho_img) }}" alt="Página {{ $noticia->n_pagina }}">
+                                            <img class="load-imagem" data-id="{{ $noticia->id }}" src="">
                                         </a>
                                     </div>
                                     <div class="col-lg-10 col-sm-10 mb-1"> 
@@ -232,10 +234,22 @@
 
             var host =  $('meta[name="base-url"]').attr('content');
 
-            var demo2 = $('.demo1').bootstrapDualListbox({
-                nonSelectedListLabel: 'Disponíveis',
-                selectedListLabel: 'Selecionadas',
-               
+            $('.load-imagem').each(function() {
+                const imgElement = $(this);
+                const noticiaId = imgElement.data('id');
+
+                $.ajax({
+                    url: host+'/noticia/impressa/imagem-path/' + noticiaId, // ajuste se o endpoint for diferente
+                    type: 'GET',
+                    success: function(response) {
+                        if (response.path) {
+                            imgElement.attr('src', response.path);
+                        }
+                    },
+                    error: function() {
+                        console.error('Erro ao carregar imagem da notícia ID ' + noticiaId);
+                    }
+                });
             });
 
             $(".btn-visualizar-noticia").click(function(){
@@ -251,161 +265,10 @@
                 $("#showNoticia").modal("show");
 
             });
-
-            $(".panel-heading").click(function() {
-                $(this).parent().addClass('active').find('.panel-body').slideToggle('fast');
-                $(".panel-heading").not(this).parent().removeClass('active').find('.panel-body').slideUp('fast');
-            });
-
-            $(".btn-show").click(function(){
-
-                var texto = $(this).text();
-
-                if(texto == 'Mostrar Mais'){
-
-                    $(this).closest('.panel').find('.conteudo-noticia').addClass('d-none');
-                    $(this).html("Mostrar Menos");
-
-                }
-                
-                if(texto == 'Mostrar Menos'){
-                    $(this).closest('.panel').find('.conteudo-noticia').removeClass('d-none');
-                    $(this).html("Mostrar Mais");
-                }
-
-            });
-
-
-            $("#cliente").change(function(){
-
-                var cliente_selecionado = $(this).val();
-
-                if(cliente_selecionado){
-
-                    $.ajax({
-                        url: host+'/monitoramento/cliente/'+cliente_selecionado+'/fl_impresso',
-                        type: 'GET',
-                        beforeSend: function() {
-                            $('#monitoramento').find('option').remove().end();
-                            $('#monitoramento').append('<option value="">Carregando...</option>').val('');                            
-                        },
-                        success: function(data) {
-                            $('#monitoramento').attr('disabled', false);
-                            $('#monitoramento').find('option').remove().end();
-
-                            $('#monitoramento').append('<option value="" selected>Selecione um monitoramento</option>').val(''); 
-                            data.forEach(element => {
-
-                                var nome = (element.nome) ? element.nome : 'Monitoramento sem nome';
-
-                                let option = new Option(nome, element.id);
-                                $('#monitoramento').append(option);
-                            });    
-                            
-                            var monitoramento_selecionado = $("#monitoramento_id").val();
-                            if(monitoramento_selecionado > 0){
-                                if($("#monitoramento option[value="+monitoramento_selecionado+"]").length > 0)
-                                    $("#monitoramento").val(monitoramento_selecionado);
-                            }
-                        },
-                        error: function(){
-                            $('#monitoramento').find('option').remove().end();
-                            $('#monitoramento').append('<option value="">Erro ao carregar dados...</option>').val('');
-                        },
-                        complete: function(){
-                                
-                        }
-                    }); 
-
-                }
-             
-            });
-
-            $("#monitoramento").change(function(){
-
-                var monitoramento_selecionado = $(this).val();
-
-                if(monitoramento_selecionado){
-
-                    $.ajax({
-                        url: host+'/monitoramento/'+monitoramento_selecionado+'/fontes',
-                        type: 'GET',
-                        beforeSend: function() {
-                                                       
-                        },
-                        success: function(data) {
-                            if(data.filtro_impresso){
-
-                                const lista_fontes = JSON.parse("[" + data.filtro_impresso + "]");
-
-                                console.log(lista_fontes);
-
-                                
-                                for (var i = 0; i < $('#fontes option').length; i++) {
-                                    if ($('#fontes option')[i].value == 1) {
-                                        
-                                    }
-                                }
-                            }
-                            
-                        },
-                        error: function(){
-                           
-                        },
-                        complete: function(){
-                                
-                        }
-                    }); 
-
-                }
-
-            });
-
-            $(".tags").each(function() {
-               
-                var monitoramento = $(this).data("monitoramento");
-                var noticia = $(this).data("noticia");
-                var chave = ".destaque-"+$(this).data("chave");
-                var chave_conteudo = ".conteudo-"+$(this).data("chave");
-
-                $.ajax({
-                    url: host+'/jornal-impresso/conteudo/'+noticia+'/monitoramento/'+monitoramento,
-                    type: 'GET',
-                    beforeSend: function() {
-                            
-                    },
-                    success: function(data) {
-                        
-                        $(chave_conteudo).html(data.texto.replace(/\n/g, "<br />"));
-
-                        var marks = [];                 
-                        
-                        const divContent = document.querySelector(chave_conteudo);
-
-                        if (divContent) {
-            
-                            const childElements = divContent.querySelectorAll('mark');
-                            const output = document.querySelector(chave);
-
-                            childElements.forEach(element => {
-
-                                if(!marks.includes(element.innerHTML.trim())){
-                                    marks.push(element.innerHTML.trim());
-
-                                    $(chave).append('<span class="destaque-busca">'+element.innerHTML.trim()+'</span>');
-                                }
-                            });
-                        } 
-                    },
-                    complete: function(){
-                            
-                    }
-                });
-            });
         });
 
         $(document).ready(function(){
-            $('#cliente').trigger('change');
+            $('.cliente').trigger('change');
         });
     </script>
 @endsection

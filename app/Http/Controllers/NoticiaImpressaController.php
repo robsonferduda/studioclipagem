@@ -65,13 +65,12 @@ class NoticiaImpressaController extends Controller
         $dados = NoticiaImpresso::with('fonte')
                     ->when($cliente_selecionado, function ($query) use ($cliente_selecionado, $area_selecionada) { 
                         return $query->whereHas('clientes', function($q) use ($cliente_selecionado, $area_selecionada) {
-                            $q->where('noticia_cliente.cliente_id', $cliente_selecionado)->where('noticia_cliente.tipo_id', 1);
-
-                            /*
-                            $q->when($area_selecionada, function ($q) use ($area_selecionada) {
-                                return $q->where('noticia_cliente.area', $area_selecionada);
-                            });*/
-                        });
+                            $q->where('noticia_cliente.cliente_id', $cliente_selecionado)
+                                ->where('noticia_cliente.tipo_id', 1)
+                                ->when($area_selecionada, function ($q) use ($area_selecionada) {
+                                    return $q->where('noticia_cliente.area', $area_selecionada);
+                                });
+                            });
                     })
                     ->when($termo, function ($q) use ($termo) {
                         return $q->where('sinopse', 'ILIKE', '%'.trim($termo).'%');
@@ -89,9 +88,14 @@ class NoticiaImpressaController extends Controller
                     })
                     ->whereBetween($tipo_data, [$dt_inicial." 00:00:00", $dt_final." 23:59:59"])
                     ->orderBy('created_at', 'DESC')
-                    ->paginate(20);
+                    ->paginate(30);
 
         return view('noticia-impressa/index', compact('dados','fontes','clientes','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte_selecionada','termo','usuarios','usuario','sentimento','area_selecionada'));
+    }
+
+    public function limpar()
+    {
+        return redirect('noticias/impresso');
     }
 
     public function clientes($noticia)
@@ -336,6 +340,20 @@ class NoticiaImpressaController extends Controller
     {
         $noticia = NoticiaImpresso::find($id);
         return response()->download(public_path('img/noticia-impressa/'.$noticia->ds_caminho_img));
+    }
+
+    //Busca a imagem vinculada a notícia para visualizacao
+    public function getImagemView($id)
+    {
+         $noticia = NoticiaImpresso::find($id);
+
+        if (!$noticia || !$noticia->ds_caminho_img) {
+            return response()->json(['path' => null], 404);
+        }
+
+        $url = asset('img/noticia-impressa/' . $noticia->ds_caminho_img);
+
+        return response()->json(['path' => $url]);
     }
 
     public function getSecoes($id_fonte)
