@@ -267,6 +267,9 @@
                                 $.ajax({
                                     url: host+'/noticia/' + noticiaId + '/tipo/1/clientes',
                                     type: 'GET',
+                                    beforeSend: function(){
+                                        $(".clientes-noticia-"+noticiaId).loader('show');
+                                    },
                                     success: function(html) {
                                         const tempDiv = $('<div>').html(html);
                                         const clienteVazio = tempDiv.find('p.text-danger:contains("Nenhum cliente")').length > 0;
@@ -275,6 +278,9 @@
                                     },
                                     error: function() {
                                         console.warn('Erro ao verificar clientes restantes.');
+                                    },
+                                    complete: function() {
+                                        $(".clientes-noticia-"+noticiaId).loader('hide');
                                     }
                                 });
                                 
@@ -320,7 +326,7 @@
                         $.ajax({
                             url: host+'/noticia/' + noticiaId + '/tipo/1/clientes',
                             type: 'GET',
-                                    beforeSend: function(){
+                            beforeSend: function(){
                                 $(".clientes-noticia-"+noticiaId).loader('show');
                             },
                             success: function(html) {
