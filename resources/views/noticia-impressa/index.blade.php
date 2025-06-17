@@ -130,7 +130,7 @@
                     @foreach ($dados as $key => $noticia)
                         <div class="card">
                             <div class="card-body">
-                                <div class="row">
+                                <div class="row conteudo-total-{{ $noticia->id }}" data-id="{{ $noticia->id }}">
                                     <div class="col-lg-2 col-md-2 col-sm-12 mb-1 box-imagem-{{ $noticia->id }}" style="min-height: 200px;">
                                         <a href="{{ url('noticia-impressa/imagem/download/'.$noticia->id) }}" target="_BLANK">
                                             <img class="load-imagem" data-id="{{ $noticia->id }}" src="">
@@ -154,7 +154,7 @@
                                                     <p class="mb-1">
                                                         <strong>Retorno de Mídia: </strong>{{ ($noticia->valor_retorno) ? "R$ ".$noticia->valor_retorno : 'Não calculado' }}
                                                     </p> 
-                                                    <div>
+                                                    <div class="clientes-noticia clientes-noticia-{{ $noticia->id }}" data-id="{{ $noticia->id }}">
                                                         
                                                     </div>
                                                     <div>
@@ -235,6 +235,109 @@
 
             var host =  $('meta[name="base-url"]').attr('content');
 
+            $(document).on('click', '.btn-excluir-noticia', function(e) {
+
+                e.preventDefault();
+                const btn = $(this);
+                const pivotId = btn.data('pivot-id');
+                const noticiaId = btn.data('noticia-id');
+                const container = btn.closest('.clientes-noticia');
+
+                Swal.fire({
+                    title: 'Remover o cliente da notícia?',
+                    text: "Esta ação irá remover o cliente da notícia.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Sim, remover',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: host+'/noticia/'+pivotId+'/vinculo/excluir',
+                            type: 'GET',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            success: function() {
+
+                                const box = $('.conteudo-total-'+ noticiaId);
+
+                                $.ajax({
+                                    url: host+'/noticia/' + noticiaId + '/tipo/1/clientes',
+                                    type: 'GET',
+                                    success: function(html) {
+                                        const tempDiv = $('<div>').html(html);
+                                        const clienteVazio = tempDiv.find('p.text-danger:contains("Nenhum cliente")').length > 0;
+
+                                        box.find('.clientes-noticia-'+ noticiaId).html(html);
+                                    },
+                                    error: function() {
+                                        console.warn('Erro ao verificar clientes restantes.');
+                                    }
+                                });
+                                
+                            },
+                            error: function() {
+                                Swal.fire(
+                                    'Erro!',
+                                    'Não foi possível remover o cliente.',
+                                    'error'
+                                );
+                            }
+                        });
+                    }
+                });
+            });
+
+            $(document).on('click', '.btn-sentimento', function(e) {
+                e.preventDefault();
+
+                const btn = $(this);
+                const noticiaId = btn.data('noticia-id');
+                const tipoId = btn.data('tipo-id');
+                const clienteId = btn.data('cliente-id');
+                const sentimento = btn.data('sentimento');
+
+                $.ajax({
+                    url: host+'/noticia/sentimento/atualizar',
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    data: {
+                        noticia_id: noticiaId,
+                        tipo_id: tipoId,
+                        cliente_id: clienteId,
+                        sentimento: sentimento
+                    },
+                    success: function() {
+                        const container = $('.clientes-noticia[data-id="' + noticiaId + '"]');
+
+                        $.ajax({
+                            url: host+'/noticia/' + noticiaId + '/tipo/1/clientes',
+                            type: 'GET',
+                            success: function(html) {
+                                container.html(html);
+                            },
+                            error: function() {
+                                container.html('<p class="text-danger">Erro ao carregar clientes.</p>');
+                            }
+                        });
+                    },
+                    error: function() {
+                        Swal.fire(
+                            'Erro!',
+                            'Não foi possível atualizar o sentimento.',
+                            'error'
+                        );
+                    }
+                });
+            });
+
+
+
             $('.load-imagem').each(function() {
 
                 const imgElement = $(this);
@@ -256,6 +359,23 @@
                     },
                     complete: function() {
                         $(".box-imagem-"+noticiaId).loader('hide');
+                    }
+                });
+            });
+
+            $('.clientes-noticia').each(function() {
+
+                const container = $(this);
+                const noticiaId = container.data('id');
+
+                $.ajax({
+                    url: host+'/noticia/' + noticiaId + '/tipo/1/clientes',
+                    type: 'GET',
+                    success: function(html) {
+                        container.html(html);
+                    },
+                    error: function() {
+                        container.html('<p class="text-danger">Erro ao carregar clientes.</p>');
                     }
                 });
             });

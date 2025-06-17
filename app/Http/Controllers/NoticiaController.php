@@ -7,6 +7,7 @@ use Auth;
 use App\Utils;
 use Carbon\Carbon;
 use App\Models\NoticiaCliente;
+use App\Models\NoticiaImpresso;
 use App\Models\JornalWeb;
 use App\Models\JornalImpresso;
 use Laracasts\Flash\Flash;
@@ -33,12 +34,45 @@ class NoticiaController extends Controller
         return redirect()->back();
     }
 
+    public function atualizarSentimentoAssincrono(Request $request)
+    {
+        $request->validate([
+            'noticia_id' => 'required|integer',
+            'tipo_id' => 'required|integer',
+            'cliente_id' => 'required|integer',
+            'sentimento' => 'required|integer|in:-1,0,1',
+        ]);
+
+        DB::table('noticia_cliente')
+            ->where('noticia_id', $request->noticia_id)
+            ->where('tipo_id', $request->tipo_id)
+            ->where('cliente_id', $request->cliente_id)
+            ->update(['sentimento' => $request->sentimento]);
+
+        return response()->json(['success' => true]);
+    }
+
     public function removerVinculo($id)
     {
         $noticia = NoticiaCliente::withTrashed()->find($id);
         $noticia->forceDelete();
 
-        return redirect()->back();
+        return response()->json(['success' => true]);
+    }
+
+    public function clientesParciais($id, $tipo)
+    {
+        switch ($tipo) {
+            case '1':
+                $noticia = NoticiaImpresso::with('clientes')->findOrFail($id);
+                break;
+            
+            default:
+                // code...
+                break;
+        }
+
+        return view('noticia.clientes', compact('noticia'));
     }
 
     public function todas(Request $request)

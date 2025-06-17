@@ -121,7 +121,7 @@
                                                     <p class="mb-1">
                                                         <strong>Retorno de Mídia: </strong>{{ ($noticia->valor_retorno) ? "R$ ".$noticia->valor_retorno : 'Não calculado' }}
                                                     </p> 
-                                                    <div>
+                                                    <div class="clientes-noticia" data-id="{{ $noticia->id }}">
                                                         @forelse($noticia->clientes as $cliente)
                                                             <p class="mb-2">
                                                                 <span>{{ $cliente->nome }}</span>

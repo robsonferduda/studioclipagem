@@ -306,3 +306,6 @@ div .box-horario:not(:last-child) {
 .add-secao:hover{
     cursor: pointer;
 }
+.btn-excluir-noticia:hover{
+    cursor: pointer;
+}
