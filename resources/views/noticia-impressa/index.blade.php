@@ -153,35 +153,7 @@
                                                         <strong>Retorno de Mídia: </strong>{{ ($noticia->valor_retorno) ? "R$ ".$noticia->valor_retorno : 'Não calculado' }}
                                                     </p> 
                                                     <div>
-                                                        @forelse($noticia->clientes as $cliente)
-                                                            <p class="mb-2">
-                                                                <span>{{ $cliente->nome }} 
-                                                                    @foreach($cliente->area as $area)
-                                                                        {{ "- ".$area->descricao }}
-                                                                    @endforeach
-                                                                </span>
-                                                                @switch($cliente->pivot->sentimento)
-                                                                    @case(-1)
-                                                                            <i class="fa fa-frown-o text-danger"></i>
-                                                                            <a href="{{ url('noticia/'.$cliente->pivot->noticia_id.'/tipo/'.$cliente->pivot->tipo_id.'/cliente/'.$cliente->pivot->cliente_id.'/sentimento/0/atualizar') }}"><i class="fa fa-ban op-2"></i></a>
-                                                                            <a href="{{ url('noticia/'.$cliente->pivot->noticia_id.'/tipo/'.$cliente->pivot->tipo_id.'/cliente/'.$cliente->pivot->cliente_id.'/sentimento/1/atualizar') }}"><i class="fa fa-smile-o op-2"></i></a>
-                                                                        @break
-                                                                    @case(0)
-                                                                            <a href="{{ url('noticia/'.$cliente->pivot->noticia_id.'/tipo/'.$cliente->pivot->tipo_id.'/cliente/'.$cliente->pivot->cliente_id.'/sentimento/-1/atualizar') }}"><i class="fa fa-frown-o op-2"></i></a> 
-                                                                            <i class="fa fa-ban text-primary"></i>
-                                                                            <a href="{{ url('noticia/'.$cliente->pivot->noticia_id.'/tipo/'.$cliente->pivot->tipo_id.'/cliente/'.$cliente->pivot->cliente_id.'/sentimento/1/atualizar') }}"><i class="fa fa-smile-o op-2"></i></a>                                                
-                                                                        @break
-                                                                    @case(1)
-                                                                            <a href="{{ url('noticia/'.$cliente->pivot->noticia_id.'/tipo/'.$cliente->pivot->tipo_id.'/cliente/'.$cliente->pivot->cliente_id.'/sentimento/-1/atualizar') }}"><i class="fa fa-frown-o op-2"></i></a>
-                                                                            <a href="{{ url('noticia/'.$cliente->pivot->noticia_id.'/tipo/'.$cliente->pivot->tipo_id.'/cliente/'.$cliente->pivot->cliente_id.'/sentimento/0/atualizar') }}"><i class="fa fa-ban op-2"></i></a>
-                                                                            <i class="fa fa-smile-o text-success"></i>
-                                                                        @break                                            
-                                                                @endswitch
-                                                                <a class="text-danger btn-excluir" href="{{ url('noticia/'.$cliente->pivot->id.'/vinculo/excluir') }}">Remover Cliente</a>
-                                                            </p>
-                                                        @empty
-                                                            <p class="text-danger mb-1">Nenhum cliente associada à notícia</p>
-                                                        @endforelse
+                                                        
                                                     </div>
                                                     <div>
                                                         @forelse($noticia->tags as $tag)
