@@ -131,7 +131,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-lg-2 col-md-2 col-sm-12 mb-1">
+                                    <div class="col-lg-2 col-md-2 col-sm-12 mb-1 box-imagem-{{ $noticia->id }}" style="min-height: 200px;">
                                         <a href="{{ url('noticia-impressa/imagem/download/'.$noticia->id) }}" target="_BLANK">
                                             <img class="load-imagem" data-id="{{ $noticia->id }}" src="">
                                         </a>
@@ -235,12 +235,16 @@
             var host =  $('meta[name="base-url"]').attr('content');
 
             $('.load-imagem').each(function() {
+
                 const imgElement = $(this);
                 const noticiaId = imgElement.data('id');
 
                 $.ajax({
                     url: host+'/noticia/impressa/imagem-path/' + noticiaId, // ajuste se o endpoint for diferente
                     type: 'GET',
+                    beforeSend: function(){
+                        $(".box-imagem-"+noticiaId).loader('show');
+                    },
                     success: function(response) {
                         if (response.path) {
                             imgElement.attr('src', response.path);
@@ -248,6 +252,9 @@
                     },
                     error: function() {
                         console.error('Erro ao carregar imagem da notícia ID ' + noticiaId);
+                    },
+                    complete: function() {
+                        $(".box-imagem-"+noticiaId).loader('hide');
                     }
                 });
             });
