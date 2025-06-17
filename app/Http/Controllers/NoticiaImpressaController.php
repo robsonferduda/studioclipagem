@@ -89,7 +89,7 @@ class NoticiaImpressaController extends Controller
                     })
                     ->whereBetween($tipo_data, [$dt_inicial." 00:00:00", $dt_final." 23:59:59"])
                     ->orderBy('created_at', 'DESC')
-                    ->paginate(10);
+                    ->paginate(20);
 
         return view('noticia-impressa/index', compact('dados','fontes','clientes','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte_selecionada','termo','usuarios','usuario','sentimento','area_selecionada'));
     }
