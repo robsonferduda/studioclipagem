@@ -56,18 +56,27 @@ class NoticiaImpressaController extends Controller
         $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
         $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
         $cliente_selecionado = ($request->cliente) ? $request->cliente : null;
-        $fonte = ($request->fontes) ? $request->fontes : null;
+        $sentimento = ($request->sentimento) ? $request->sentimento : null;
+        $fonte_selecionada = ($request->id_fonte) ? $request->id_fonte : null;
+        $area_selecionada = ($request->cd_area) ? $request->cd_area : null;
         $termo = ($request->termo) ? $request->termo : null;
         $usuario = ($request->usuario) ? $request->usuario : null;
 
         $dados = NoticiaImpresso::with('fonte')
-                    ->when($cliente_selecionado, function ($query) use ($cliente_selecionado) { 
-                        return $query->whereHas('clientes', function($q) use ($cliente_selecionado) {
+                    ->when($cliente_selecionado, function ($query) use ($cliente_selecionado, $area_selecionada) { 
+                        return $query->whereHas('clientes', function($q) use ($cliente_selecionado, $area_selecionada) {
                             $q->where('noticia_cliente.cliente_id', $cliente_selecionado)->where('noticia_cliente.tipo_id', 1);
+
+                            $q->when($area_selecionada, function ($q) use ($area_selecionada) {
+                                return $q->where('noticia_cliente.area', $area_selecionada);
+                            });
                         });
                     })
                     ->when($termo, function ($q) use ($termo) {
                         return $q->where('sinopse', 'ILIKE', '%'.trim($termo).'%');
+                    })
+                    ->when($fonte_selecionada, function ($q) use ($fonte_selecionada) {
+                        return $q->where('id_fonte', $fonte_selecionada);
                     })
                     ->when($usuario, function ($q) use ($usuario) {
 
@@ -81,7 +90,7 @@ class NoticiaImpressaController extends Controller
                     ->orderBy('created_at', 'DESC')
                     ->paginate(50);
 
-        return view('noticia-impressa/index', compact('dados','fontes','clientes','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo','usuarios','usuario'));
+        return view('noticia-impressa/index', compact('dados','fontes','clientes','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte_selecionada','termo','usuarios','usuario','sentimento','area_selecionada'));
     }
 
     public function clientes($noticia)

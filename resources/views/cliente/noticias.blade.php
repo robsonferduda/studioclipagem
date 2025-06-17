@@ -45,7 +45,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Sentimento</label>
-                                <select class="form-control" name="cd_sentimento" id="cd_sentimento">
+                                <select class="form-control" name="sentimento" id="sentimento">
                                     <option value="">Selecione um sentimento</option>
                                     <option value="1" {{ ($sentimento == '1') ? 'selected' : '' }}>Positivo</option>
                                     <option value="0" {{ ($sentimento == '0') ? 'selected' : '' }}>Neutro</option>

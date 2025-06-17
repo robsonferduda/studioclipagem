@@ -175,7 +175,19 @@
                                 </div> 
                                 @if($noticia and $noticia->ds_caminho_img)    
                                     <div class="col-md-3">
-                                        <img src="{{ asset('img/noticia-web/'.$noticia->ds_caminho_img) }}" alt="Página {{ $noticia->ds_caminho_img }}">
+                                        @if($dado->ds_caminho_img)
+                                                <img src="{{ asset('img/noticia-web/'.$dado->ds_caminho_img) }}" alt="Página {{ $dado->ds_caminho_img }}">
+                                        @elseif($dado->path_screenshot)                                         
+                                            <img src="{{ Storage::disk('s3')->temporaryUrl($dado->path_screenshot, '+30 minutes') }}" 
+                                                alt="Print notícia {{ $dado->noticia_id }}" 
+                                                class="img-fluid img-thumbnail" 
+                                                style="width: 100%; height: auto; border: none;">
+                                        @else
+                                            <img src="{{ asset('img/no-print.png') }}" 
+                                                alt="Sem Print" 
+                                                class="img-fluid img-thumbnail" 
+                                                style="width: 100%; height: auto; border: none;">
+                                        @endif
                                     </div>
                                     <div class="col-md-9">
                                         <label for="arquivo">Print da Notícia</label>

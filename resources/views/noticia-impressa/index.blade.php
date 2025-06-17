@@ -49,12 +49,42 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
+                                        <label>Fonte</label>
+                                        <select class="form-control select2" name="id_fonte" id="id_fonte">
+                                            <option value="">Selecione uma fonte</option>
+                                            @foreach ($fontes as $fonte)
+                                                <option value="{{ $fonte->id }}" {{ (old("id_fonte") or $fonte->id == $fonte_selecionada)  ? "selected" : "" }}>{{ $fonte->nome }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
                                         <label>Cliente</label>
-                                        <select class="form-control" name="cliente" id="cliente">
+                                        <select class="form-control cliente" name="cliente" id="cd_cliente">
                                             <option value="">Selecione um cliente</option>
                                             @foreach ($clientes as $cliente)
                                                 <option value="{{ $cliente->id }}" {{ ($cliente_selecionado == $cliente->id) ? 'selected' : '' }}>{{ $cliente->nome }}</option>
                                             @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Área do Cliente</label>
+                                        <select class="form-control area select2" name="cd_area" id="cd_area" disabled>
+                                            <option value="">Selecione uma área</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Sentimento</label>
+                                        <select class="form-control" name="sentimento" id="sentimento">
+                                            <option value="">Selecione um sentimento</option>
+                                            <option value="1" {{ ($sentimento == '1') ? 'selected' : '' }}>Positivo</option>
+                                            <option value="0" {{ ($sentimento == '0') ? 'selected' : '' }}>Neutro</option>
+                                            <option value="-1" {{ ($sentimento == '-1') ? 'selected' : '' }}>Negativo</option>
                                         </select>
                                     </div>
                                 </div>
@@ -125,7 +155,11 @@
                                                     <div>
                                                         @forelse($noticia->clientes as $cliente)
                                                             <p class="mb-2">
-                                                                <span>{{ $cliente->nome }}</span>
+                                                                <span>{{ $cliente->nome }} 
+                                                                    @foreach($cliente->area as $area)
+                                                                        {{ "- ".$area->descricao }}
+                                                                    @endforeach
+                                                                </span>
                                                                 @switch($cliente->pivot->sentimento)
                                                                     @case(-1)
                                                                             <i class="fa fa-frown-o text-danger"></i>
@@ -220,6 +254,7 @@
 </div>
 @endsection
 @section('script')
+<script src="{{ asset('js/campos-cliente.js') }}"></script>
     <script>
         $(document).ready(function(){
 

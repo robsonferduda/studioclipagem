@@ -31,6 +31,11 @@ class Cliente extends Model
                         'fl_relatorio_completo',
                         'fl_relatorio_consolidado'];
 
+    public function area()
+    {
+        return $this->belongsToMany(Area::class,'noticia_cliente','cliente_id','area')->where('tipo_id', 1);
+    }
+
     public function areas()
     {
         return $this->hasMany(ClienteArea::class, 'cliente_id', 'id');
