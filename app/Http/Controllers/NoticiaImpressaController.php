@@ -260,8 +260,6 @@ class NoticiaImpressaController extends Controller
 
             $request->merge(['ds_caminho_img' => ($request->ds_caminho_img) ? $request->ds_caminho_img : $noticia->ds_caminho_img]);
 
-            $request->merge(['cd_usuario' => Auth::user()->id]);
-
             $noticia->update($request->all());
 
             $tags = collect($request->tags)->mapWithKeys(function($tag){
