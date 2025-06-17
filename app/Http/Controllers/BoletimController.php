@@ -96,7 +96,8 @@ class BoletimController extends Controller
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id
                 LEFT JOIN boletim_noticia t4 ON t4.id_noticia = t3.noticia_id AND t4.id_tipo = 2 AND t4.id_boletim = $request->id_boletim
                 WHERE 1=1
-                AND t1.deleted_at IS NULL ";
+                AND t1.deleted_at IS NULL 
+                AND t3.deleted_at IS NULL ";
 
         if ($request->has('dt_inicial') && $request->has('dt_final')) {
             $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d');
@@ -134,7 +135,8 @@ class BoletimController extends Controller
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id
                 LEFT JOIN boletim_noticia t4 ON t4.id_noticia = t3.noticia_id AND id_tipo = 1 AND t4.id_boletim = $request->id_boletim
                 WHERE 1=1
-                AND t1.deleted_at IS NULL ";
+                AND t1.deleted_at IS NULL 
+                AND t3.deleted_at IS NULL ";
 
         if ($request->has('dt_inicial') && $request->has('dt_final')) {
             $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d');
@@ -174,7 +176,8 @@ class BoletimController extends Controller
                 LEFT JOIN boletim_noticia t4 ON t4.id_noticia = t3.noticia_id AND id_tipo = 3 AND t4.id_boletim = $request->id_boletim
                 LEFT JOIN programa_emissora_radio t5 ON t5.id = t1.programa_id
                 WHERE 1=1
-                AND t1.deleted_at IS NULL ";
+                AND t1.deleted_at IS NULL 
+                AND t3.deleted_at IS NULL ";
 
         if ($request->has('dt_inicial') && $request->has('dt_final')) {
             $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d');
@@ -214,7 +217,8 @@ class BoletimController extends Controller
                 LEFT JOIN boletim_noticia t4 ON t4.id_noticia = t3.noticia_id AND id_tipo = 4 AND t4.id_boletim = $request->id_boletim
                 LEFT JOIN programa_emissora_web t5 ON t5.id = t1.programa_id
                 WHERE 1=1
-                AND t1.deleted_at IS NULL ";
+                AND t1.deleted_at IS NULL 
+                AND t3.deleted_at IS NULL ";
 
         if ($request->has('dt_inicial') && $request->has('dt_final')) {
             $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d');
