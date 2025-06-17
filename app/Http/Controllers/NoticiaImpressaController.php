@@ -67,9 +67,10 @@ class NoticiaImpressaController extends Controller
                         return $query->whereHas('clientes', function($q) use ($cliente_selecionado, $area_selecionada) {
                             $q->where('noticia_cliente.cliente_id', $cliente_selecionado)->where('noticia_cliente.tipo_id', 1);
 
+                            /*
                             $q->when($area_selecionada, function ($q) use ($area_selecionada) {
                                 return $q->where('noticia_cliente.area', $area_selecionada);
-                            });
+                            });*/
                         });
                     })
                     ->when($termo, function ($q) use ($termo) {
@@ -88,7 +89,7 @@ class NoticiaImpressaController extends Controller
                     })
                     ->whereBetween($tipo_data, [$dt_inicial." 00:00:00", $dt_final." 23:59:59"])
                     ->orderBy('created_at', 'DESC')
-                    ->paginate(10);
+                    ->paginate(20);
 
         return view('noticia-impressa/index', compact('dados','fontes','clientes','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte_selecionada','termo','usuarios','usuario','sentimento','area_selecionada'));
     }
