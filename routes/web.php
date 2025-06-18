@@ -163,6 +163,7 @@ Route::middleware(['web'])->group(function () {
 	Route::post('jornal-impresso/upload','JornalImpressoController@uploadFiles');
 
 	Route::get('noticias/estatisticas/areas','NoticiaController@estatisticasArea');
+	Route::get('noticia/{id}/vinculo/remover','NoticiaController@removerVinculoAssincrono');
 	Route::get('noticia/{id}/vinculo/excluir','NoticiaController@removerVinculo');
 	Route::get('noticia/{id}/tipo/{tipo}/cliente/{cliente}/sentimento/{sentimento}/atualizar','NoticiaController@atualizarSentimento');
 	Route::get('noticia/{id}/tipo/{tipo}/clientes', 'NoticiaController@clientesParciais');

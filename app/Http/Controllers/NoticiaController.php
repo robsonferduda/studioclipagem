@@ -57,6 +57,14 @@ class NoticiaController extends Controller
         $noticia = NoticiaCliente::withTrashed()->find($id);
         $noticia->forceDelete();
 
+        return redirect()->back();
+    }
+
+    public function removerVinculoAssincrono($id)
+    {
+        $noticia = NoticiaCliente::withTrashed()->find($id);
+        $noticia->forceDelete();
+
         return response()->json(['success' => true]);
     }
 

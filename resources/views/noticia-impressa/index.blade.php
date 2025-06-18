@@ -255,7 +255,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
-                            url: host+'/noticia/'+pivotId+'/vinculo/excluir',
+                            url: host+'/noticia/'+pivotId+'/vinculo/remover',
                             type: 'GET',
                             headers: {
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
