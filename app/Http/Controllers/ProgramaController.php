@@ -46,6 +46,16 @@ class ProgramaController extends Controller
         return view('programa/index', compact('programas','emissoras','emissora_search','programa'));
     }
 
+    public function dadosPrograma($id)
+    {
+        $programa = \App\Models\Programa::find($id);
+        
+        return response()->json([
+            'horario' => $programa && $programa->hora_inicio ? \Carbon\Carbon::parse($programa->hora_inicio)->format('H:i') : null,
+            'valor' => $programa ? $programa->valor_segundo : null
+        ]);
+    }
+
     public function novo()
     {
         $emissoras = Emissora::orderBy('nome_emissora')->get();

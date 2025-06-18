@@ -83,6 +83,14 @@ class EmissoraController extends Controller
         return view('emissora/index', compact('emissoras','codigo','descricao','estados'));
     }
 
+    public function valorSegundo($id)
+{
+        $emissora = \App\Models\Emissora::find($id);
+        return response()->json([
+            'valor_segundo' => $emissora ? $emissora->nu_valor : null
+        ]);
+    }
+
     public function coletas(Request $request)
     {
         Session::put('url', 'radio');

@@ -96,7 +96,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <input type="hidden" name="cd_emissora" id="cd_emissora" value="{{ ($noticia and $noticia->emissora_id) ? $noticia->emissora_id : 0  }}">
-                                        <label>Emissora <span class="text-danger">Obrigatório</span></label>
+                                        <label>Emissora <span class="text-danger">Obrigatório </span><span class="text-info" id="valor_segundo"></span></label>
                                         <select class="form-control select2" name="emissora_id" id="emissora_id" required="true">
                                             <option value="">Selecione uma emissora</option>
                                             @foreach ($emissoras as $emissora)
@@ -109,7 +109,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <label>Programa</label>
+                                        <label>Programa <span class="text-info" id="programa_valor_segundo"></span></label>
                                         <input type="hidden" name="cd_programa" id="cd_programa" value="{{ ($noticia and $noticia->programa_id) ? $noticia->programa_id : 0  }}">
                                         <select class="form-control selector-select2" name="programa_id" id="programa" disabled>
                                             <option value="">Selecione um programa</option>
@@ -264,10 +264,44 @@
         $(document).on('change', '#emissora_id', function() {
                 
             var emissora = $(this).val();
+
+            // Busca valor do segundo da emissora
+            if(emissora) {
+                $.ajax({
+                    url: host + '/emissora/radio/' + emissora + '/segundo',
+                    type: 'GET',
+                    success: function(data) {
+                        // Exemplo: preenche um campo com id="valor_segundo"
+                        $('#valor_segundo').text('R$ '+data.valor_segundo);
+                    }
+                });
+            } else {
+                $('#valor_segundo').text('');
+            }
             
             buscarProgramas(emissora);
             return $('#programa').prop('disabled', false);
         });
+
+        $(document).on('change', '#programa', function() {
+
+            var programa_id = $(this).val();
+            if(programa_id) {
+                $.ajax({
+                    url: host + '/radio/programa/' + programa_id + '/dados',
+                    type: 'GET',
+                    success: function(data) {
+                        // Preencha os campos desejados
+                        $('#horario').val(data.horario);
+                        $('#programa_valor_segundo').text('R$ ' + data.valor);
+                    }
+                });
+            } else {
+                $('#horario').val('');
+                $('#programa_valor_segundo').text('');
+            }
+        });
+
 
             $(document).on("change", "#horario", function() {
             
