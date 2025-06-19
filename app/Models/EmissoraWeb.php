@@ -22,6 +22,16 @@ class EmissoraWeb extends Model
                            'valor',
                            'gravar'];
 
+    public function estado()
+    {
+        return $this->hasOne(Estado::class, 'cd_estado', 'cd_estado');
+    }
+
+    public function cidade()
+    {
+        return $this->hasOne(Cidade::class, 'cd_cidade', 'cd_cidade');
+    }
+
     public function programas()
     {
         return $this->hasMany(ProgramaEmissoraWeb::class, 'id_emissora', 'id');

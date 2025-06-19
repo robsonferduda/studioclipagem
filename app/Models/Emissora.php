@@ -29,6 +29,11 @@ class Emissora extends Model
         return $this->hasOne(Cidade::class, 'cd_cidade', 'cd_cidade');
     }
 
+    public function programas()
+    {
+        return $this->hasMany(Programa::class, 'id_emissora', 'id');
+    }
+
     public function horarios()
     {
         return $this->hasMany(EmissoraHorario::class, 'id_emissora', 'id');
