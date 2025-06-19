@@ -12,6 +12,7 @@ use App\Models\ConteudoNoticiaWeb;
 use App\Models\ProgramaEmissoraWeb;
 use App\Models\EmissoraWeb;
 use App\Models\EmissoraWebHorario;
+use App\Models\Pais;
 use App\Models\Estado;
 use App\Models\Cidade;
 use App\Models\FonteWeb;
@@ -93,16 +94,20 @@ class EmissoraTvController extends Controller
 
     public function novo()
     {
-        $emissora = null;
+        $estados = Estado::orderBy('nm_estado')->get();
+        $emissora = new EmissoraWeb();
+        $paises = Pais::orderBy('nu_ordem','DESC')->orderBY('ds_pais')->get();
 
-        return view('emissora-tv/form', compact('emissora'));
+        return view('emissora-tv/form', compact('emissora','paises','estados'));
     }
 
     public function editar($id)
     {
         $emissora = EmissoraWeb::find($id);
+        $paises = Pais::orderBy('nu_ordem','DESC')->orderBY('ds_pais')->get();
+        $estados = Estado::orderBy('nm_estado')->get();
 
-        return view('emissora-tv/form', compact('emissora'));
+        return view('emissora-tv/form', compact('emissora','paises','estados'));
     }
 
     public function programas($id)
