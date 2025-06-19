@@ -13,7 +13,14 @@ class EmissoraWeb extends Model
     protected $connection = 'pgsql';
     protected $table = 'emissora_web';
 
-    protected $fillable = ['nome_emissora','url_stream'];
+    protected $fillable = ['cd_pais',
+                           'cd_estado',
+                           'cd_cidade',
+                           'nome_emissora',
+                           'url_stream',
+                           'id_situacao',
+                           'valor',
+                           'gravar'];
 
     public function programas()
     {
