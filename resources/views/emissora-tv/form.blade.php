@@ -88,7 +88,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>Valor</label>
-                                <input type="text" class="form-control" name="valor" id="valor" placeholder="Valor" value="{{ ($emissora) ? $emissora->valor : old('valor') }}">
+                                <input type="text" class="form-control valor" name="valor" id="valor" placeholder="Valor" value="{{ ($emissora) ? $emissora->valor : old('valor') }}">
                             </div>
                         </div>
                         <div class="col-md-6">
