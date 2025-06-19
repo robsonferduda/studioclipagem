@@ -9,7 +9,9 @@ class ProgramaEmissoraWeb extends Model
     protected $connection = 'pgsql';
     protected $table = 'programa_emissora_web';
 
-    protected $fillable = ['cd_pais','cd_estado','cd_cidade','nome_programa','url','id_emissora','tipo_programa','ip_local','gravar'];   
+    protected $fillable = ['cd_pais','cd_estado','cd_cidade','nome_programa','url','id_emissora','tipo_programa','ip_local',
+                            'gravar',
+                            'valor_segundo'];   
 
     public function estado()
     {

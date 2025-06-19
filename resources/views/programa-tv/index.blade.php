@@ -143,7 +143,7 @@
                                                 <span class="text-danger">Não informado</span>
                                             @endif                                       
                                         </td>
-                                        <td class="right">{{ number_format($programa->nu_valor, 2, ".","") }}</td>
+                                        <td class="right">{{ number_format($programa->valor_segundo, 2, ".","") }}</td>
                                         <td class="text-center">
                                             @if($programa->id_situacao == 1)
                                                 <span class="badge badge-pill badge-success">Normal</span>

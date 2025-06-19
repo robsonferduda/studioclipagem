@@ -86,10 +86,16 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label>Nome <span class="text-danger">Obrigatório</span></label>
                                 <input type="text" class="form-control" name="nome_programa" id="nome_programa" placeholder="Nome" value="{{ ($programa) ? $programa->nome_programa : old('nome_programa') }}" required="required">
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-sm-6">
+                            <div class="form-group">
+                                <label>Valor do Segundo</label>
+                                <input type="text" class="form-control monetario" name="valor_segundo" id="valor_segundo" placeholder="0.00" value="{{ ($programa) ? $programa->valor_segundo : old('valor_segundo') }}">
                             </div>
                         </div>
                         <div class="col-md-12">
