@@ -163,6 +163,7 @@ Route::middleware(['web'])->group(function () {
 	Route::post('jornal-impresso/upload','JornalImpressoController@uploadFiles');
 
 	Route::get('noticias/estatisticas/areas','NoticiaController@estatisticasArea');
+	Route::get('noticia/{id}/vinculo/remover','NoticiaController@removerVinculoAssincrono');
 	Route::get('noticia/{id}/vinculo/excluir','NoticiaController@removerVinculo');
 	Route::get('noticia/{id}/tipo/{tipo}/cliente/{cliente}/sentimento/{sentimento}/atualizar','NoticiaController@atualizarSentimento');
 	Route::get('noticia/{id}/tipo/{tipo}/clientes', 'NoticiaController@clientesParciais');
@@ -294,6 +295,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('noticia/radio/{monitoramento}/extrair/{id}','NoticiaRadioController@extrair');
 	Route::get('emissoras/{tipo}/novo','EmissoraController@novo');
 	Route::get('emissoras/radio/limpar','EmissoraController@limpar');
+	Route::get('emissora/radio/{id}/segundo', 'EmissoraController@valorSegundo');
 	Route::get('radio/emissora/{id}/horarios','EmissoraController@horarios');
 	Route::post('radio/emissora/horario/atualizar','EmissoraController@atualizarHorarios');
 	Route::post('radio/emissora/horario/adicionar','EmissoraController@adicionarHorarios');
@@ -307,8 +309,7 @@ Route::middleware(['web'])->group(function () {
 	Route::match(array('GET', 'POST'),'radio/emissoras/programas','ProgramaController@index');
 	Route::get('radio/emissoras/programas/novo','ProgramaController@novo');
 	Route::get('radio/emissoras/programas/editar/{id}','ProgramaController@editar');
-
-
+	Route::get('radio/programa/{id}/dados', 'ProgramaController@dadosPrograma');
 
 	Route::get('tags','TagController@index');
 	Route::get('tags/cadastrar','TagController@cadastrar');
