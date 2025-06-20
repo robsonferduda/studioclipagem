@@ -151,7 +151,7 @@ class JornalImpressoController extends Controller
                     })
                     ->orderBy('pagina_edicao_jornal_online.id_edicao_jornal_online')
                     ->orderBy('n_pagina')
-                    ->paginate(10);
+                    ->paginate(20);
 
         return view('jornal-impresso/index',compact('clientes','fontes','dados','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo','monitoramento'));
     }
