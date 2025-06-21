@@ -4,15 +4,17 @@
     <div class="card">
         <div class="card-header">
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-6">
                     <h4 class="card-title ml-3">
                         <i class="fa fa-newspaper-o"></i> Impressos 
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Cadastrar Notícia
                     </h4>
                 </div>
-                <div class="col-md-4">
-                    <a href="{{ url('impresso') }}" class="btn btn-warning pull-right mr-3"><i class="nc-icon nc-chart-pie-36"></i> Dashboard</a>
-                    <a href="{{ url('noticias/impresso') }}" class="btn btn-info pull-right mr-3"><i class="fa fa-newspaper-o"></i> Listar Notícias</a>
+                <div class="col-md-6">
+                    <a href="{{ url('impresso') }}" class="btn btn-warning pull-right"><i class="nc-icon nc-chart-pie-36"></i> Dashboard</a>
+                    <a href="{{ url('noticias/impresso') }}" class="btn btn-info pull-right"><i class="fa fa-newspaper-o"></i> Listar Notícias</a>
+                    <button type="button" class="btn btn-success pull-right btn_enviar_fake" name="btn_enviar_fake" value="salvar"><i class="fa fa-save"></i> Salvar</button>
+                    <button type="button" class="btn btn-warning pull-right btn_enviar_copiar_fake" name="btn_enviar_copiar_fake" value="salvar_e_copiar"><i class="fa fa-copy"></i> Salvar e Copiar</button>
                 </div>
             </div>
         </div>
@@ -200,8 +202,8 @@
                                 </div>                                                         
                             </div>     
                             <div class="text-center mb-2 mt-3">
-                                <button type="submit" class="btn btn-success" name="btn_enviar" value="salvar"><i class="fa fa-save"></i> Salvar</button>
-                                <button type="submit" class="btn btn-warning" name="btn_enviar" value="salvar_e_copiar"><i class="fa fa-copy"></i> Salvar e Copiar</button>
+                                <button type="submit" class="btn btn-success" name="btn_enviar" id="btn_enviar" value="salvar"><i class="fa fa-save"></i> Salvar</button>
+                                <button type="submit" class="btn btn-warning" name="btn_enviar" id="btn_enviar_e_salvar" value="salvar_e_copiar"><i class="fa fa-copy"></i> Salvar e Copiar</button>
                                 <a href="{{ url('impresso') }}" class="btn btn-danger"><i class="fa fa-times"></i> Cancelar</a>
                             </div>
                         </div>
@@ -303,6 +305,14 @@
     $( document ).ready(function() {
 
         var host = $('meta[name="base-url"]').attr('content');
+
+        $(".btn_enviar_copiar_fake").click(function() {
+            $("#btn_enviar_e_salvar").trigger("click");
+        });
+
+        $(".btn_enviar_fake").click(function() {
+            $("#btn_enviar").trigger("click");
+        });
 
         //Inicializar o Dropzone
         var myDropzone = new Dropzone("#dropzone", {
