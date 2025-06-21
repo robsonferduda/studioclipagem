@@ -373,9 +373,18 @@ class NoticiaWebController extends Controller
                 $nova_noticia = $noticia->replicate();
                 $nova_noticia->save();
 
-                $noticia->clientes()->each(function($cliente) {
-                    $cliente->pivot->replicate()->save();
-                });
+                foreach($noticia->clientes as $cliente) {
+                    
+                    $match = array('tipo_id' => 2,
+                                    'noticia_id' => $nova_noticia->id,
+                                    'cliente_id' => (int) $cliente->id);
+                            
+                    $dados = array('area' => (int) $cliente->pivot_area,
+                                   'sentimento' => (int) $cliente->pivot_area);
+
+                    $noticia_cliente = NoticiaCliente::updateOrCreate($match, $dados);
+
+                }
 
                 $request->merge(['id_noticia_web' => $nova_noticia->id]);
                 ConteudoNoticiaWeb::create($request->all());
