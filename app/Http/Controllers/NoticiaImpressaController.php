@@ -235,12 +235,40 @@ class NoticiaImpressaController extends Controller
                              'msg' => '<i class="fa fa-times"></i> Ocorreu um erro ao inserir o registro');
         }
 
-        if ($retorno['flag']) {
-            Flash::success($retorno['msg']);
-            return redirect('noticias/impresso')->withInput();
-        } else {
-            Flash::error($retorno['msg']);
-            return redirect('noticia/impresso/novo')->withInput();
+        switch ($request->btn_enviar) {
+
+            case 'salvar':
+
+                if ($retorno['flag']) {
+                    Flash::success($retorno['msg']);
+                    return redirect('noticias/impresso')->withInput();
+                } else {
+                    Flash::error($retorno['msg']);
+                    return redirect('noticia/impresso/novo')->withInput();
+                }
+                break;
+
+            case 'salvar_e_copiar':
+
+                $nova_noticia = $noticia->replicate();
+                $nova_noticia->save();
+
+                foreach($noticia->clientes as $cliente) {
+                    
+                    $match = array('tipo_id' => 1,
+                                    'noticia_id' => $nova_noticia->id,
+                                    'cliente_id' => (int) $cliente->id);
+                            
+                    $dados = array('area' => (int) $cliente->pivot_area,
+                                   'sentimento' => (int) $cliente->pivot_area);
+
+                    $noticia_cliente = NoticiaCliente::updateOrCreate($match, $dados);
+
+                }
+
+                return redirect('noticia-impressa/'.$nova_noticia->id.'/editar');
+
+            break;
         }
     }
 
@@ -298,12 +326,40 @@ class NoticiaImpressaController extends Controller
                              'msg' => "Ocorreu um erro ao atualizar o registro");
         }
 
-        if ($retorno['flag']) {
-            Flash::success($retorno['msg']);
-            return redirect('noticias/impresso')->withInput();
-        } else {
-            Flash::error($retorno['msg']);
-            return redirect('noticia-impressa/'.$id.'/editar')->withInput();
+        switch ($request->btn_enviar) {
+
+            case 'salvar':
+
+                if ($retorno['flag']) {
+                    Flash::success($retorno['msg']);
+                    return redirect('noticias/impresso')->withInput();
+                } else {
+                    Flash::error($retorno['msg']);
+                    return redirect('noticia-impressa/'.$id.'/editar')->withInput();
+                }
+                break;
+
+            case 'salvar_e_copiar':
+
+                $nova_noticia = $noticia->replicate();
+                $nova_noticia->save();
+
+                foreach($noticia->clientes as $cliente) {
+                    
+                    $match = array('tipo_id' => 1,
+                                    'noticia_id' => $nova_noticia->id,
+                                    'cliente_id' => (int) $cliente->id);
+                            
+                    $dados = array('area' => (int) $cliente->pivot_area,
+                                   'sentimento' => (int) $cliente->pivot_area);
+
+                    $noticia_cliente = NoticiaCliente::updateOrCreate($match, $dados);
+
+                }
+
+                return redirect('noticia-impressa/'.$nova_noticia->id.'/editar');
+
+            break;
         }
     }
 
