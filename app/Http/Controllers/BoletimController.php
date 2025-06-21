@@ -78,6 +78,34 @@ class BoletimController extends Controller
         $flag_web = $request->flag_web == "true" ? true : false;
         $flag_radio = $request->flag_radio == "true" ? true : false;
         $flag_enviadas = $request->flag_enviadas == "true" ? true : false;
+        $tipo_data = $request->tipo_data;
+
+        switch ($tipo_data) {
+
+            case 'dt_cadastro':
+
+                $data_web = 'data_insert';
+                $data_radio = 'dt_cadastro';
+                $data_tv = 'dt_cadastro';
+                $data_impresso = 'created_at';
+                break;
+
+            case 'dt_clipagem':
+                
+                $data_web = 'data_noticia';
+                $data_radio = 'dt_clipagem';
+                $data_tv = 'dt_noticia';
+                $data_impresso = 'dt_clipagem';
+                break;
+
+            default:
+                
+                $data_web = 'created_at';
+                $data_radio = 'created_at';
+                $data_tv = 'created_at';
+                $data_impresso = 'created_at';
+                break;
+        }
 
         //Notícias de Web
         $sql_web = "SELECT t1.id, 
@@ -102,7 +130,7 @@ class BoletimController extends Controller
         if ($request->has('dt_inicial') && $request->has('dt_final')) {
             $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d');
             $dt_final = $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d');
-            $sql_web .= " AND data_insert BETWEEN '$dt_inicial 00:00:00' AND '$dt_final 23:59:59'";
+            $sql_web .= " AND $data_web BETWEEN '$dt_inicial 00:00:00' AND '$dt_final 23:59:59'";
         }
 
         if( $flag_enviadas) {
@@ -141,7 +169,7 @@ class BoletimController extends Controller
         if ($request->has('dt_inicial') && $request->has('dt_final')) {
             $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d');
             $dt_final = $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d');
-            $sql_impresso .= " AND t1.created_at BETWEEN '$dt_inicial 00:00:00' AND '$dt_final 23:59:59'";
+            $sql_impresso .= " AND t1.$data_impresso BETWEEN '$dt_inicial 00:00:00' AND '$dt_final 23:59:59'";
         }
 
         if( $flag_enviadas) {
@@ -182,7 +210,7 @@ class BoletimController extends Controller
         if ($request->has('dt_inicial') && $request->has('dt_final')) {
             $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d');
             $dt_final = $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d');
-            $sql_radio .= " AND t1.created_at BETWEEN '$dt_inicial 00:00:00' AND '$dt_final 23:59:59'";
+            $sql_radio .= " AND t1.$data_radio BETWEEN '$dt_inicial 00:00:00' AND '$dt_final 23:59:59'";
         }
 
         if( $flag_enviadas) {
@@ -223,7 +251,7 @@ class BoletimController extends Controller
         if ($request->has('dt_inicial') && $request->has('dt_final')) {
             $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d');
             $dt_final = $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d');
-            $sql_tv .= " AND dt_cadastro BETWEEN '$dt_inicial 00:00:00' AND '$dt_final 23:59:59'";
+            $sql_tv .= " AND $data_tv BETWEEN '$dt_inicial 00:00:00' AND '$dt_final 23:59:59'";
         }
 
         if( $flag_enviadas) {

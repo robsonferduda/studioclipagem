@@ -65,7 +65,15 @@
                     <div class="col-md-12">
                         <h6 class="mt-3"><i class="fa fa-check" style="font-size: 20px; vertical-align: sub;"></i> Selecionar Notícias <small>Notícias presentes no boletim aparecem destacadas</small></h6>
                     </div>
-                    
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Tipo de Data</label>
+                            <select class="form-control" name="tipo_data" id="tipo_data">
+                                <option value="dt_cadastro" selected>Data de Cadastro</option>
+                                <option value="dt_clipagem">Data do Clipping</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="col-md-2">
                         <div class="form-group">
                             <label>Data Inicial</label>
@@ -78,7 +86,7 @@
                             <input type="text" class="form-control datepicker" name="dt_final" id="dt_final" required="true" value="{{ \Carbon\Carbon::parse($dt_final)->format('d/m/Y') }}" placeholder="__/__/____">
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label class="font-black"><i class="fa fa-filter"></i> Filtrar por cliente</label>
                             <select class="form-control select2" name="cliente_busca" id="cliente_busca">
@@ -207,6 +215,7 @@
                 dt_inicial = $("#dt_inicial").val();
                 dt_final = $("#dt_final").val();
                 termo = $("#termo").val();
+                tipo_data = $("#tipo_data").val();
 
                 //Limpas os dados
                 dados = [];
@@ -225,7 +234,8 @@
                         "cliente": cliente,
                         "dt_inicial": dt_inicial,
                         "id_boletim": boletim,
-                        "dt_final": dt_final                   
+                        "dt_final": dt_final,
+                        "tipo_data": tipo_data           
                     },
                     beforeSend: function() {
                         $('.table-noticias').loader('show');
@@ -286,6 +296,10 @@
             });
 
             $("#midia-radio").change(function(){
+                listaNoticias();
+            });
+
+            $("#tipo_data").change(function(){
                 listaNoticias();
             });
 

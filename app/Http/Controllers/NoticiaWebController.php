@@ -74,7 +74,7 @@ class NoticiaWebController extends Controller
         $fontes = FonteWeb::orderBy('nome')->get();
         $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
 
-        $tipo_data = ($request->tipo_data) ? $request->tipo_data : 'data_noticia';
+        $tipo_data = ($request->tipo_data) ? $request->tipo_data : 'data_insert';
         $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
         $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
         $fonte = ($request->fontes) ? $request->fontes : null;
