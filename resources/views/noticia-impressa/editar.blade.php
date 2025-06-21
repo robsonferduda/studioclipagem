@@ -146,7 +146,7 @@
                                             <option value="valor_cm_capa_semana" {{ ($noticia->local_impressao == 'valor_cm_capa_semana') ? 'selected' : '' }}>Capa</option>
                                             <option value="valor_cm_capa_fim_semana" {{ ($noticia->local_impressao == 'valor_cm_capa_fim_semana') ? 'selected' : '' }}>Capa FDS</option>
                                             <option value="valor_cm_contracapa" {{ ($noticia->local_impressao == 'valor_cm_contracapa') ? 'selected' : '' }}>Contracapa</option>
-                                            <option value="valor_cm_demais_semana" {{ ($noticia->local_impressao == 'valor_cm_demais_semana') ? 'selected' : '' }}>Demais Páginas</option>
+                                            <option value="valor_cm_demais_semana" {{ ($noticia->local_impressao == 'valor_cm_demais_semana') ? 'selected' : 'selected' }}>Demais Páginas</option>
                                             <option value="valor_cm_demais_fim_semana" {{ ($noticia->local_impressao == 'valor_cm_demais_fim_semana') ? 'selected' : '' }}>Demais Páginas FDS</option>
                                         </select>
                                     </div>
@@ -356,6 +356,8 @@
 
         if(valor_id_sessao_impresso > 0)
             $('#id_sessao_impresso').val(valor_id_sessao_impresso);
+
+        $("#local_impressao").trigger('change');
     });
 </script>
 @endsection

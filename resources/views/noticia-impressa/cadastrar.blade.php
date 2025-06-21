@@ -145,7 +145,7 @@
                                             <option value="valor_cm_capa_semana" {{ ($fonte->local_impressao == 'valor_cm_capa_semana') ? 'selected' : '' }}>Capa</option>
                                             <option value="valor_cm_capa_fim_semana" {{ ($fonte->local_impressao == 'valor_cm_capa_fim_semana') ? 'selected' : '' }}>Capa FDS</option>
                                             <option value="valor_cm_contracapa" {{ ($fonte->local_impressao == 'valor_cm_contracapa') ? 'selected' : '' }}>Contracapa</option>
-                                            <option value="valor_cm_demais_semana" {{ ($fonte->local_impressao == 'valor_cm_demais_semana') ? 'selected' : '' }}>Demais Páginas</option>
+                                            <option value="valor_cm_demais_semana" {{ ($fonte->local_impressao == 'valor_cm_demais_semana') ? 'selected' : 'selected' }}>Demais Páginas</option>
                                             <option value="valor_cm_demais_fim_semana" {{ ($fonte->local_impressao == 'valor_cm_demais_fim_semana') ? 'selected' : '' }}>Demais Páginas FDS</option>
                                         </select>
                                     </div>
@@ -314,6 +314,10 @@
             $("#btn_enviar").trigger("click");
         });
 
+        $("#id_fonte").change(function () {
+            $("#local_impressao").trigger('change');
+        })
+
         //Inicializar o Dropzone
         var myDropzone = new Dropzone("#dropzone", {
             url: host + "/noticia-impressa/upload", // URL para onde os arquivos serão enviados
@@ -387,6 +391,10 @@
                 }
             });
         });
+    });
+
+    $( document ).ready(function() {
+        $("#local_impressao").trigger('change');
     });
 </script>
 @endsection

@@ -52,7 +52,7 @@ class NoticiaImpressaController extends Controller
                         ->orderBy('name')
                         ->get();
 
-        $tipo_data = ($request->tipo_data) ? $request->tipo_data : 'dt_clipagem';
+        $tipo_data = ($request->tipo_data) ? $request->tipo_data : 'dt_cadastro';
         $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
         $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
         $cliente_selecionado = ($request->cliente) ? $request->cliente : null;
