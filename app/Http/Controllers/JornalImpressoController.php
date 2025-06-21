@@ -48,7 +48,7 @@ class JornalImpressoController extends Controller
 
     public function index(Request $request)
     {
-        Session::put('sub-menu','impresso');
+        Session::put('sub-menu','impresso-monitoramento');
 
         $fontes = FonteImpressa::orderBy('nome')->get();
         $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();

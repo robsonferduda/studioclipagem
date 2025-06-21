@@ -139,7 +139,7 @@
                           </li> 
                           @endpermission                         
                           @permission('impresso-monitoramento')                           
-                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'impresso/noticias') ? 'active' : '' }}">
+                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'impresso-monitoramento') ? 'active' : '' }}">
                             <a href="{{ url('impresso/noticias') }}" title="Listagem de notícias vinculadas aos clientes via monitoramento automático">
                               <span class="sidebar-normal">Monitoramento</span>
                               </a>
