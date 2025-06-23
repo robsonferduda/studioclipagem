@@ -425,7 +425,8 @@ class MonitoramentoController extends Controller
                             conteudo_noticia_web cnw ON cnw.id_noticia_web = n.id
                         JOIN 
                             fonte_web fw ON fw.id = n.id_fonte 
-                        WHERE 1=1 ";
+                        WHERE 1=1 
+                        AND n.created_at >= now() - interval '3 hours' ";
 
                 if($monitoramento->filtro_web){
                     $sql .= "AND fw.id IN($monitoramento->filtro_web) ";
@@ -755,7 +756,8 @@ class MonitoramentoController extends Controller
                             conteudo_noticia_web cnw ON cnw.id_noticia_web = n.id
                         JOIN 
                             fonte_web fw ON fw.id = n.id_fonte 
-                        WHERE 1=1 ";
+                        WHERE 1=1 
+                        AND n.created_at >= now() - interval '3 hours' ";
                         
 
                 if($monitoramento->filtro_web){

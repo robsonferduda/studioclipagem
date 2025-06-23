@@ -274,7 +274,7 @@
                                                         '<input class="form-check-input item-noticia" type="checkbox" '+checked+' name="lista_noticia[]" '+check+' value="'+noticia.id+'" data-tipo="'+noticia.tipo+'"><span class="form-check-sign"></span></label></div></td>'+
                                                         '<td>'+
                                                         titulo+'<strong class="text-muted">'+noticia.data_noticia+' - '+noticia.fonte+' '+programa+'</strong> - Cadastrada em '+noticia.data_coleta+''+
-                                                        '<br/>'+sinopse+'<br/>'+icone+' '+boletim+'</td>'+
+                                                        '<br/>'+sinopse+'<br/>'+icone+' - ID '+noticia.id+' '+boletim+'</td>'+
                                                        '</tr>');                   
                 });
             }
