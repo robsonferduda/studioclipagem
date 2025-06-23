@@ -146,9 +146,9 @@
                                     </div>
                                     <div class="col-lg-12 col-md-12 col-sm-12 mb-1"> 
                                         @if($pagina->fl_upload)
-                                            <span>Arquivo enviado via <strong class="text-primary">upload</strong>. A data da notícia é igual a data do arquivo.</span>
+                                            <span>Arquivo enviado via <strong class="text-primary">upload</strong> em {{ \Carbon\Carbon::parse($pagina->created_at)->format('d/m/Y H:i:s') }}. A data da notícia é igual a data do arquivo.</span>
                                         @else
-                                            <span>Arquivo extraído automaticamente pelo <strong class="text-success">sistema</strong>. Atenção! A data da notícia poce coincidir com a data da coleta e star incorreta!</span>
+                                            <span>Arquivo extraído automaticamente pelo <strong class="text-success">sistema</strong> em {{ \Carbon\Carbon::parse($pagina->created_at)->format('d/m/Y H:i:s') }}. Atenção! A data da notícia poce coincidir com a data da coleta e estar incorreta!</span>
                                         @endif
                                     </div>
                                 </div>     
