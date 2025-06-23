@@ -914,7 +914,11 @@ class MonitoramentoController extends Controller
 
         foreach ($dados as $key => $noticia) {
 
-            $noticia_cliente = NoticiaCliente::where('noticia_id', $noticia->id)->where('tipo_id', $tipo)->where('cliente_id', $monitoramento->id_cliente)->where('monitoramento_id', $monitoramento->id)->first();
+            $noticia_cliente = NoticiaCliente::where('noticia_id', $noticia->id)
+                                            ->where('tipo_id', $tipo)
+                                            ->where('cliente_id', $monitoramento->id_cliente)
+                                            ->where('monitoramento_id', $monitoramento->id)
+                                            ->first();
             
             if(!$noticia_cliente){
 
