@@ -165,6 +165,7 @@
                                             <label class="form-check-label"><input class="form-check-input todas" type="checkbox" name="is_active" value="true">
                                                 SELECIONAR TODAS<span class="form-check-sign"></span>
                                             </label>
+                                            Notícias encontradas: <span class="" id="total_noticias">0</span>
                                         </div>
                                     </td>
                                 </tr>
@@ -252,6 +253,9 @@
 
             function desenhaTabela(){
 
+                var total_noticias = dados.length;
+                $("#total_noticias").text(total_noticias);
+                
                 $(".table-noticias tbody").empty();
 
                 dados.forEach(function (noticia, indice) {    
