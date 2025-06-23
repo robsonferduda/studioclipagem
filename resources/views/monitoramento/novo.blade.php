@@ -228,7 +228,7 @@
                 <div class="col-md-12">
                     <div class="form-group">
                         <label>Cliente <span class="text-danger">Obrigatório</span></label>
-                        <select class="form-control select2" name="cliente" id="cliente">
+                        <select class="form-control" name="cliente" id="cliente">
                             <option value="">Selecione um cliente</option>
                             @foreach ($clientes as $cliente)
                                 <option value="{{ $cliente->id }}">{{ $cliente->nome }}</option>
