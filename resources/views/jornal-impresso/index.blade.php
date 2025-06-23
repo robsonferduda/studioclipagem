@@ -114,7 +114,7 @@
                                         <a href="{{ url('jornal-impresso/web/pagina/download/'.$pagina->id_pagina) }}" target="_BLANK"><img src="{{ Storage::disk('s3')->temporaryUrl($pagina->path_pagina_s3, '+2 minutes') }}" alt="Página {{ $pagina->n_pagina }}"></a>
                                     </div>
                                     <div class="col-lg-10 col-sm-10 mb-1"> 
-                                        <h6><a href="{{ url('fonte-impresso/'.$pagina->id_fonte.'/editar') }}" target="_BLANK">{{ ($pagina->nome_fonte) ? $pagina->nome_fonte : '' }}</a></h6>  
+                                        <h6><a href="{{ url('fonte-impresso/'.$pagina->id_fonte.'/editar') }}" target="_BLANK">{{ ($pagina->nome_fonte) ? $pagina->nome_fonte : '' }}</a><span class="pull-right">{{ $pagina->id }}</span></h6>  
                                         <h6 style="color: #FF5722;">{{ ($pagina->nm_estado) ? $pagina->nm_estado : '' }}{{ ($pagina->nm_cidade) ? "/".$pagina->nm_cidade : '' }}</h6>  
                                         <h6 class="text-muted mb-1">{{ \Carbon\Carbon::parse($pagina->dt_pub)->format('d/m/Y') }} - {{ ($pagina->nome_fonte) ? $pagina->nome_fonte : '' }}</h6> 
                                         <p class="mb-0">{{ ($pagina->nome_cliente) ? $pagina->nome_cliente : '' }}</p>
