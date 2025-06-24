@@ -58,7 +58,7 @@ $(document).ready(function() {
                     },
                     success: function() {
 
-                        const box = $('.conteudo-total-'+ noticiaId);
+                        const container = $('.clientes-noticia[data-id="' + noticiaId + '"]');
 
                         $.ajax({
                             
@@ -68,11 +68,7 @@ $(document).ready(function() {
                                 $(".clientes-noticia-"+noticiaId).loader('show');
                             },
                             success: function(html) {
-                                
-                                const tempDiv = $('<div>').html(html);
-                                const clienteVazio = tempDiv.find('p.text-danger:contains("Nenhum cliente")').length > 0;
-
-                                box.find('.clientes-noticia-'+ noticiaId).html(html);
+                                container.html(html);
                             },
                             error: function() {
                                 console.warn('Erro ao verificar clientes restantes.');
