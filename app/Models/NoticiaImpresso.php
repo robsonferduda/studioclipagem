@@ -34,6 +34,11 @@ class NoticiaImpresso extends Model
                             'ordem',
                             'valor_retorno'];
 
+    public function origem()
+    {
+        return $this->hasOne(NoticiaCliente::class, 'noticia_id', 'id')->where('tipo_id', 1);
+    }
+
     public function clientes()
     {
         return $this->belongsToMany(Cliente::class,'noticia_cliente','noticia_id','cliente_id')->withPivot('id','tipo_id','sentimento','area')->where('tipo_id', 1)->withTimestamps();

@@ -151,7 +151,9 @@ class NoticiaImpressaController extends Controller
         $fontes = FonteImpressa::orderBy("nome")->get();
         $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
 
-        return view('noticia-impressa/editar', compact('noticia','clientes','fontes','estados','cidades','tags'));
+        $pagina = ($noticia->origem and $noticia->origem->id_noticia_origem) ? PaginaJornalImpresso::where('id', $noticia->origem->id_noticia_origem)->first() : null;
+
+        return view('noticia-impressa/editar', compact('noticia','clientes','fontes','estados','cidades','tags','pagina'));
     }
 
     public function copiar($cliente, $id_noticia)
