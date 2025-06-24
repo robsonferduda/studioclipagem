@@ -154,7 +154,7 @@
                                                     <p class="mb-1">
                                                         <strong>Retorno de Mídia: </strong>{{ ($noticia->valor_retorno) ? "R$ ".$noticia->valor_retorno : 'Não calculado' }}
                                                     </p> 
-                                                    <div class="clientes-noticia clientes-noticia-{{ $noticia->id }}" data-id="{{ $noticia->id }}" data-tipo="3">
+                                                    <div class="clientes-noticia clientes-noticia-{{ $noticia->id }}" data-id="{{ $noticia->id }}" data-tipo="1">
                                                         
                                                     </div>
                                                     <div>
