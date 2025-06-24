@@ -37,35 +37,39 @@
                                     <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome" required value="{{ $cliente->nome }}">
                                 </div>
                             </div>
-                            <div class="col-md-4">
-
-                                <div class="form-group">
-                                    <div class="form-check">
-                                        <label class="form-check-label mt-2">
-                                            <input class="form-check-input" {{ ($cliente->fl_ativo) ? 'checked' : '' }} type="checkbox" name="fl_ativo" value="true">
-                                            ATIVO
-                                            <span class="form-check-sign"></span>
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <div class="form-check">
-                                        <label class="form-check-label mt-2">
-                                            <input class="form-check-input" {{ ($cliente->fl_print) ? 'checked' : '' }} type="checkbox" name="fl_print" value="true">
-                                            NOTÍCIAS COM PRINT
-                                            <span class="form-check-sign"></span>
-                                        </label>
-                                    </div>
-                                </div>  
+                            <div class="col-md-12">
 
                                 <div class="form-check float-left mr-3">
                                     <label class="form-check-label mt-2">
-                                        <input class="form-check-input" {{ ($cliente->fl_sentimento_cli) ? 'checked' : '' }} type="checkbox" name="fl_sentimento_cli" value="true">
+                                        <input class="form-check-input" {{ ($cliente->fl_ativo) ? 'checked' : '' }} type="checkbox" name="fl_ativo" value="true">
+                                            ATIVO
+                                        <span class="form-check-sign"></span>
+                                    </label>
+                                </div>
+
+                                <div class="form-check float-left mr-3">
+                                    <label class="form-check-label mt-2">
+                                        <input class="form-check-input" {{ ($cliente->fl_print) ? 'checked' : '' }} type="checkbox" name="fl_print" value="true">
+                                            NOTÍCIAS COM PRINT
+                                        <span class="form-check-sign"></span>
+                                    </label>
+                                </div>
+
+                                <div class="form-check float-left mr-3">
+                                    <label class="form-check-label mt-2">
+                                        <input class="form-check-input" {{ ($cliente->fl_sentimento) ? 'checked' : '' }} type="checkbox" name="fl_sentimento" value="true">
                                             MOSTRAR SENTIMENTO
                                         <span class="form-check-sign"></span>
                                     </label>
-                                </div>                        
+                                </div>   
+
+                                <div class="form-check float-left mr-3">
+                                    <label class="form-check-label mt-2">
+                                        <input class="form-check-input" {{ ($cliente->fl_retorno_midia) ? 'checked' : '' }} type="checkbox" name="fl_retorno_midia" value="true">
+                                            RETORNO DE MÍDIA
+                                        <span class="form-check-sign"></span>
+                                    </label>
+                                </div>                       
                                 
                             </div>
                         </div>
@@ -73,7 +77,7 @@
                     <div class="col-md-12">
                         <div class="row">
                             <div class="col-md-12 col-sm-12">
-                                <p class="mb-1"><i class="nc-icon nc-sound-wave"></i> Clipagem de Mídia</p>
+                                <p class="mb-0 mt-3"><i class="nc-icon nc-sound-wave"></i> Clipagem de Mídia</p>
                                 <div class="form-check float-left mr-3">
                                     <label class="form-check-label mt-2">
                                         <input class="form-check-input" {{ ($cliente->fl_impresso) ? 'checked' : '' }} type="checkbox" name="fl_impresso" value="true">
@@ -108,7 +112,7 @@
                     <div class="col-md-12">
                         <div class="row">
                             <div class="col-md-12 col-sm-12">
-                                <p class="mb-1"> <i class="fa fa-file-pdf-o"></i> Relatórios</p>
+                                <p class="mb-0 mt-3"> <i class="fa fa-file-pdf-o"></i> Relatórios</p>
                                 <div class="form-check float-left mr-3">
                                     <label class="form-check-label mt-2">
                                         <input class="form-check-input" {{ ($cliente->fl_relatorio_completo) ? 'checked' : '' }} type="checkbox" name="fl_relatorio_completo" value="true">
@@ -137,7 +141,7 @@
                     <div class="col-md-12">
                         <div class="row">
                             <div class="col-md-12 col-sm-12">
-                                <p class="mb-2"><i class="fa fa-envelope"></i> Endereços Eletrônicos</p>
+                                <p class="mb-0 mt-3"><i class="fa fa-envelope"></i> Endereços Eletrônicos</p>
                                 <div class="form-group">
                                     <textarea class="form-control" name="emails" id="emails" rows="3">{{ $cliente->emails }}</textarea>
                                 </div>
@@ -152,7 +156,7 @@
                             min-width: 1.5rem;
                             width: 1.5rem;"><i class="fa fa-plus fa-2x"></i></button>
                         </p>
-                        <div class="row">
+                        <div class="row mt-o">
                             <div class="col-md-12">
                                 <div class="form-check float-left mr-3">
                                     <label class="form-check-label mt-2">
