@@ -226,9 +226,10 @@
                                                 <div class="col-md-3">
 
                                                     @if($pagina)
-                                                        <h6 class="mt-3">Imagem Original</h6>
+                                                        <h6 class="mt-3">Imagem Original <span class="text-info">Clique para baixar</span></h6>
                                                         <a href="{{ url('jornal-impresso/web/pagina/download/'.$pagina->id) }}" target="_BLANK"><img src="{{ Storage::disk('s3')->temporaryUrl($pagina->path_pagina_s3, '+2 minutes') }}"></a>
                                                     @endif
+
                                                     <!-- <h3>Preview:</h3> -->
                                                     <div class="docs-preview clearfix">
                                                     <div class="img-preview preview-lg"></div>
