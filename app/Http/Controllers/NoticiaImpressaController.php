@@ -16,6 +16,7 @@ use App\Models\FonteImpressa;
 use App\Models\FilaImpresso;
 use App\Models\JornalImpresso;
 use App\Models\NoticiaImpresso;
+use App\Models\PaginaJornalImpresso;
 use App\Models\Fonte;
 use App\Models\Tag;
 use App\Models\Cidade;
