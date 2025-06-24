@@ -241,7 +241,7 @@
                                                     </div>
                                             
                                                     <!-- <h3>Data:</h3> -->
-                                                    <div class="docs-data">                                                                                                       
+                                                    <div class="docs-data mt-2">                                                                                                       
                                                         <div class="input-group mb-3">
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text input-impresso" id="basic-addon1">Largura</span>
