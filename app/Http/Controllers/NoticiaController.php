@@ -8,6 +8,9 @@ use App\Utils;
 use Carbon\Carbon;
 use App\Models\NoticiaCliente;
 use App\Models\NoticiaImpresso;
+use App\Models\NoticiaRadio;
+use App\Models\NoticiaTv;
+use App\Models\NoticiaWeb;
 use App\Models\JornalWeb;
 use App\Models\JornalImpresso;
 use Laracasts\Flash\Flash;
@@ -73,6 +76,18 @@ class NoticiaController extends Controller
         switch ($tipo) {
             case '1':
                 $noticia = NoticiaImpresso::with('clientes')->findOrFail($id);
+                break;
+
+            case '2':
+                $noticia = NoticiaWeb::with('clientes')->findOrFail($id);
+                break;
+
+            case '3':
+                $noticia = NoticiaRadio::with('clientes')->findOrFail($id);
+                break;
+
+            case '4':
+                $noticia = NoticiaTv::with('clientes')->findOrFail($id);
                 break;
             
             default:

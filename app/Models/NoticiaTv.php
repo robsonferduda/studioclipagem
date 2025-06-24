@@ -37,14 +37,14 @@ class NoticiaTv extends Model
         'ds_caminho_video'
     ];
 
-    public function usuario()
-    {
-        return $this->hasOne(User::class, 'id', 'cd_usuario');
-    }
-
     public function cliente()
     {
         return $this->hasOne(NoticiaCliente::class, 'id', 'cliente_id');
+    }
+
+    public function clientes()
+    {
+        return $this->belongsToMany(Cliente::class,'noticia_cliente','noticia_id','cliente_id')->withPivot('id','tipo_id','sentimento','area')->where('tipo_id', 4)->withTimestamps();
     }
 
     public function area()
@@ -72,11 +72,6 @@ class NoticiaTv extends Model
         return $this->hasOne(ProgramaEmissoraWeb::class, 'id', 'programa_id');
     }
 
-    public function clientes()
-    {
-        return $this->belongsToMany(Cliente::class,'noticia_cliente','noticia_id','cliente_id')->withPivot('id','tipo_id','sentimento','area')->where('tipo_id', 4)->withTimestamps();
-    }
-
     public function tags()
     {
         return $this->belongsToMany(Tag::class,'noticia_tag','noticia_id','tag_id')->withPivot('tipo_id')->where('tipo_id', 4)->withTimestamps();
@@ -88,5 +83,9 @@ class NoticiaTv extends Model
 
         return DB::select($sql);
     }
- 
+
+    public function usuario()
+    {
+        return $this->hasOne(User::class, 'id', 'cd_usuario');
+    } 
 }

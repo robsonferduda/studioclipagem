@@ -154,7 +154,7 @@
                                                     <p class="mb-1">
                                                         <strong>Retorno de Mídia: </strong>{{ ($noticia->valor_retorno) ? "R$ ".$noticia->valor_retorno : 'Não calculado' }}
                                                     </p> 
-                                                    <div class="clientes-noticia clientes-noticia-{{ $noticia->id }}" data-id="{{ $noticia->id }}">
+                                                    <div class="clientes-noticia clientes-noticia-{{ $noticia->id }}" data-id="{{ $noticia->id }}" data-tipo="3">
                                                         
                                                     </div>
                                                     <div>
@@ -230,127 +230,11 @@
 @endsection
 @section('script')
 <script src="{{ asset('js/campos-cliente.js') }}"></script>
+<script src="{{ asset('js/noticia_clientes.js') }}"></script>
     <script>
         $(document).ready(function(){
 
             var host =  $('meta[name="base-url"]').attr('content');
-
-            $(document).on('click', '.btn-excluir-noticia', function(e) {
-
-                e.preventDefault();
-                const btn = $(this);
-                const pivotId = btn.data('pivot-id');
-                const noticiaId = btn.data('noticia-id');
-                const container = btn.closest('.clientes-noticia');
-
-                Swal.fire({
-                    title: 'Remover o cliente da notícia?',
-                    text: "Esta ação irá remover o cliente da notícia.",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Sim, remover',
-                    cancelButtonText: 'Cancelar'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: host+'/noticia/'+pivotId+'/vinculo/remover',
-                            type: 'GET',
-                            headers: {
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            },
-                            success: function() {
-
-                                const box = $('.conteudo-total-'+ noticiaId);
-
-                                $.ajax({
-                                    url: host+'/noticia/' + noticiaId + '/tipo/1/clientes',
-                                    type: 'GET',
-                                    beforeSend: function(){
-                                        $(".clientes-noticia-"+noticiaId).loader('show');
-                                    },
-                                    success: function(html) {
-                                        const tempDiv = $('<div>').html(html);
-                                        const clienteVazio = tempDiv.find('p.text-danger:contains("Nenhum cliente")').length > 0;
-
-                                        box.find('.clientes-noticia-'+ noticiaId).html(html);
-                                    },
-                                    error: function() {
-                                        console.warn('Erro ao verificar clientes restantes.');
-                                    },
-                                    complete: function() {
-                                        $(".clientes-noticia-"+noticiaId).loader('hide');
-                                    }
-                                });
-                                
-                            },
-                            error: function() {
-                                Swal.fire(
-                                    'Erro!',
-                                    'Não foi possível remover o cliente.',
-                                    'error'
-                                );
-                            }
-                        });
-                    }
-                });
-            });
-
-            $(document).on('click', '.btn-sentimento', function(e) {
-                
-                e.preventDefault();
-
-                const btn = $(this);
-                const noticiaId = btn.data('noticia-id');
-                const tipoId = btn.data('tipo-id');
-                const clienteId = btn.data('cliente-id');
-                const sentimento = btn.data('sentimento');
-
-                $.ajax({
-                    url: host+'/noticia/sentimento/atualizar',
-                    type: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    data: {
-                        noticia_id: noticiaId,
-                        tipo_id: tipoId,
-                        cliente_id: clienteId,
-                        sentimento: sentimento
-                    },
-                    success: function() {
-
-                        const container = $('.clientes-noticia[data-id="' + noticiaId + '"]');
-
-                        $.ajax({
-                            url: host+'/noticia/' + noticiaId + '/tipo/1/clientes',
-                            type: 'GET',
-                            beforeSend: function(){
-                                $(".clientes-noticia-"+noticiaId).loader('show');
-                            },
-                            success: function(html) {
-                                container.html(html);
-                            },
-                            error: function() {
-                                container.html('<p class="text-danger">Erro ao carregar clientes.</p>');
-                            },
-                            complete: function() {
-                                $(".clientes-noticia-"+noticiaId).loader('hide');
-                            }
-                        });
-                    },
-                    error: function() {
-                        Swal.fire(
-                            'Erro!',
-                            'Não foi possível atualizar o sentimento.',
-                            'error'
-                        );
-                    }
-                });
-            });
-
-
 
             $('.load-imagem').each(function() {
 
@@ -373,29 +257,6 @@
                     },
                     complete: function() {
                         $(".box-imagem-"+noticiaId).loader('hide');
-                    }
-                });
-            });
-
-            $('.clientes-noticia').each(function() {
-
-                const container = $(this);
-                const noticiaId = container.data('id');
-
-                $.ajax({
-                    url: host+'/noticia/' + noticiaId + '/tipo/1/clientes',
-                    type: 'GET',
-                    beforeSend: function(){
-                        $(".clientes-noticia-"+noticiaId).loader('show');
-                    },
-                    success: function(html) {
-                        container.html(html);
-                    },
-                    error: function() {
-                        container.html('<p class="text-danger">Erro ao carregar clientes.</p>');
-                    },
-                    complete: function() {
-                        $(".clientes-noticia-"+noticiaId).loader('hide');
                     }
                 });
             });

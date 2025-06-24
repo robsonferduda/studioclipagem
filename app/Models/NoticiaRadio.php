@@ -34,11 +34,6 @@ class NoticiaRadio extends Model
         'ds_caminho_audio'
     ];
 
-    public function usuario()
-    {
-        return $this->hasOne(User::class, 'id', 'cd_usuario');
-    }
-
     public function cliente()
     {
         return $this->hasOne(Cliente::class, 'id', 'cliente_id');
@@ -91,4 +86,9 @@ class NoticiaRadio extends Model
             $noticia->tags()->delete();
         });
     } 
+
+    public function usuario()
+    {
+        return $this->hasOne(User::class, 'id', 'cd_usuario');
+    }
 }
