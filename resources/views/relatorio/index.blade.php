@@ -80,7 +80,7 @@
                             </div>
                         </div>
                         <div class="col-md-12">
-                            <label class="form-label fw-semibold">
+                            <label class="form-label fw-semibold mb-2">
                                 Sentimento
                             </label>
                             <div class="d-flex flex-wrap gap-2">
@@ -109,50 +109,49 @@
                         </div>
                     </div>  
                     <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-check mt-3">
+                        <div class="col-md-12 mt-2">
+                            <label class="form-label fw-semibold mb-2">
+                                Clipagem por tipo de mídia
+                            </label>
+                            <div class="d-flex flex-wrap gap-2">
                                 <div class="form-check">
-                                    <label class="form-check-label check-midia">
-                                        <input class="form-check-input" type="checkbox" name="fl_impresso" {{ ($fl_impresso == true) ? 'checked' : '' }} value="true">
-                                        <span class="form-check-sign"></span>
-                                        <span class="text-secondary"><i class="fa fa-newspaper-o"></i> Impressos</span>
-                                    </label>
+                                    <div class="form-check">
+                                        <label class="form-check-label check-midia">
+                                            <input class="form-check-input" type="checkbox" name="fl_impresso" {{ ($fl_impresso == true) ? 'checked' : '' }} value="true">
+                                            <span class="form-check-sign"></span>
+                                            <span class="text-secondary"><i class="fa fa-newspaper-o"></i> Impressos</span>
+                                        </label>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                 
-                        <div class="col-md-3">
-                            <div class="form-check mt-3">
-                                <div class="form-check">
-                                    <label class="form-check-label check-midia">
-                                        <input class="form-check-input" type="checkbox" name="fl_web" {{ ($fl_web == true) ? 'checked' : '' }} value="true">
-                                        <span class="form-check-sign"></span>
-                                        <span class="text-secondary"><i class="fa fa-globe"></i> Web</span>
-                                    </label>
+                        
+                                <div class="form-check ml-3">
+                                    <div class="form-check">
+                                        <label class="form-check-label check-midia">
+                                            <input class="form-check-input" type="checkbox" name="fl_web" {{ ($fl_web == true) ? 'checked' : '' }} value="true">
+                                            <span class="form-check-sign"></span>
+                                            <span class="text-secondary"><i class="fa fa-globe"></i> Web</span>
+                                        </label>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                 
-                        <div class="col-md-3">
-                            <div class="form-check mt-3">
-                                <div class="form-check">
-                                    <label class="form-check-label check-midia">
-                                        <input class="form-check-input" type="checkbox" name="fl_radio" {{ ($fl_radio == true) ? 'checked' : '' }} value="true">
-                                        <span class="form-check-sign"></span>
-                                        <span class="text-secondary"><i class="fa fa-volume-up"></i> Rádio</span>
-                                    </label>
+                        
+                                <div class="form-check ml-3">
+                                    <div class="form-check">
+                                        <label class="form-check-label check-midia">
+                                            <input class="form-check-input" type="checkbox" name="fl_radio" {{ ($fl_radio == true) ? 'checked' : '' }} value="true">
+                                            <span class="form-check-sign"></span>
+                                            <span class="text-secondary"><i class="fa fa-volume-up"></i> Rádio</span>
+                                        </label>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                   
-                        <div class="col-md-3">
-                            <div class="form-check mt-3">
-                                <div class="form-check">
-                                    <label class="form-check-label check-midia">
-                                        <input class="form-check-input" type="checkbox" name="fl_tv" {{ ($fl_tv == true) ? 'checked' : '' }} value="true">
-                                        <span class="form-check-sign"></span>
-                                        <span class="text-secondary"><i class="fa fa-television"></i> TV</span>
-                                    </label>
+                        
+                                <div class="form-check ml-3">
+                                    <div class="form-check">
+                                        <label class="form-check-label check-midia">
+                                            <input class="form-check-input" type="checkbox" name="fl_tv" {{ ($fl_tv == true) ? 'checked' : '' }} value="true">
+                                            <span class="form-check-sign"></span>
+                                            <span class="text-secondary"><i class="fa fa-television"></i> TV</span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>        
