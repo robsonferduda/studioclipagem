@@ -21,6 +21,18 @@
             <div class="col-md-12">
                 {!! Form::open(['id' => 'frm_user_create', 'url' => ['relatorios']]) !!}
                     <div class="row">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <div class="btn-group" role="group" id="presetsData">
+                                    <button type="button" class="btn btn-outline-primary btn-sm" data-preset="hoje">Hoje</button>
+                                    <button type="button" class="btn btn-outline-primary btn-sm" data-preset="ontem">Ontem</button>
+                                    <button type="button" class="btn btn-outline-primary btn-sm" data-preset="7dias">Últimos 7 dias</button>
+                                    <button type="button" class="btn btn-outline-primary btn-sm" data-preset="30dias">Últimos 30 dias</button>
+                                    <button type="button" class="btn btn-outline-primary btn-sm" data-preset="mes">Este mês</button>
+                                    <button type="button" class="btn btn-outline-primary btn-sm" data-preset="mesanterior">Mês anterior</button>
+                                </div>
+                            </div>
+                        </div>
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label>Tipo de Data</label>
@@ -55,28 +67,44 @@
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
-                                <label>Área</label>
+                                <label>Áreas</label>
                                 <select class="form-control area" name="id_area" id="id_area">
                                     <option value="">Selecione uma área</option>
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label>Status</label>
-                                <select class="form-control select2" name="cd_sentimento" id="cd_sentimento">
-                                    <option value="">Selecione um status</option>
-                                    <option value="">Selecione um sentimento</option>
-                                    <option value="1">Positivo</option>
-                                    <option value="0">Neutro</option>
-                                    <option value="-1">Negativo</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-10">
+                        <div class="col-md-12">
                             <div class="form-group">
                                 <label>Termo de busca</label>
                                 <input type="text" class="form-control" name="termo" id="termo" placeholder="Termo" value="{{ old('nome') }}">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label fw-semibold">
+                                Sentimento
+                            </label>
+                            <div class="d-flex flex-wrap gap-2">
+                                <div class="form-check">
+                                    <label class="form-check-label check-midia">
+                                        <input class="form-check-input" type="checkbox" name="sentimento[]" value="1" id="sentimento_positivo" checked>
+                                        <span class="form-check-sign"></span>
+                                        <span class="text-success"><i class="fa fa-smile-o text-success"></i> Positivo</span>
+                                    </label>
+                                </div>
+                                <div class="form-check ml-3">
+                                    <label class="form-check-label check-midia">
+                                        <input class="form-check-input" type="checkbox" name="sentimento[]" value="-1" id="sentimento_negativo" checked>
+                                        <span class="form-check-sign"></span>
+                                        <span class="text-danger"><i class="fa fa-frown-o text-danger"></i> Negativo</span>
+                                    </label>
+                                </div>
+                                <div class="form-check ml-3">
+                                    <label class="form-check-label check-midia">
+                                        <input class="form-check-input" type="checkbox" name="sentimento[]" value="0" id="sentimento_neutro" checked>
+                                        <span class="form-check-sign"></span>
+                                        <span class="text-secondary"><i class="fa fa-ban text-default"></i> Neutro</span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>  
@@ -84,112 +112,50 @@
                         <div class="col-md-3">
                             <div class="form-check mt-3">
                                 <div class="form-check">
-                                    <label class="form-check-label">
+                                    <label class="form-check-label check-midia">
                                         <input class="form-check-input" type="checkbox" name="fl_impresso" {{ ($fl_impresso == true) ? 'checked' : '' }} value="true">
-                                        Clipagem de Jornal
                                         <span class="form-check-sign"></span>
+                                        <span class="text-secondary"><i class="fa fa-newspaper-o"></i> Impressos</span>
                                     </label>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <hr/>
-                    <div class="row">
+                 
                         <div class="col-md-3">
                             <div class="form-check mt-3">
                                 <div class="form-check">
-                                    <label class="form-check-label">
+                                    <label class="form-check-label check-midia">
                                         <input class="form-check-input" type="checkbox" name="fl_web" {{ ($fl_web == true) ? 'checked' : '' }} value="true">
-                                        Clipagem de Web
                                         <span class="form-check-sign"></span>
+                                        <span class="text-secondary"><i class="fa fa-globe"></i> Web</span>
                                     </label>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <hr/>
-                    <div class="row">
-                        <div class="col-md-2">
+                 
+                        <div class="col-md-3">
                             <div class="form-check mt-3">
                                 <div class="form-check">
-                                    <label class="form-check-label">
+                                    <label class="form-check-label check-midia">
                                         <input class="form-check-input" type="checkbox" name="fl_radio" {{ ($fl_radio == true) ? 'checked' : '' }} value="true">
-                                        Clipagem de Rádio
                                         <span class="form-check-sign"></span>
+                                        <span class="text-secondary"><i class="fa fa-volume-up"></i> Rádio</span>
                                     </label>
                                 </div>
                             </div>
                         </div>
+                   
                         <div class="col-md-3">
-                            <div class="form-group">
-                                <label>Emissora</label>
-                                <select class="form-control select2" name="emissora_id" id="emissora_id">
-                                    <option value="">Selecione uma emissora</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label>Programa</label>
-                                <select class="form-control select2" name="emissora_id" id="emissora_id">
-                                    <option value="">Selecione um programa</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-2 col-sm-6">
-                            <div class="form-group">
-                                <label>Horário Inicial</label>
-                                <input type="text" class="form-control horario" name="hora_inicio" id="hora_inicio" placeholder="00:00" value="">
-                            </div>
-                        </div>
-                        <div class="col-md-2 col-sm-6">
-                            <div class="form-group">
-                                <label>Horário Final</label>
-                                <input type="text" class="form-control horario" name="hora_fim" id="hora_fim" placeholder="00:00" value="">
-                            </div>
-                        </div>
-                    </div>
-                    <hr/>
-                    <div class="row">
-                        <div class="col-md-2">
                             <div class="form-check mt-3">
                                 <div class="form-check">
-                                    <label class="form-check-label">
+                                    <label class="form-check-label check-midia">
                                         <input class="form-check-input" type="checkbox" name="fl_tv" {{ ($fl_tv == true) ? 'checked' : '' }} value="true">
-                                        Clipagem de TV
                                         <span class="form-check-sign"></span>
+                                        <span class="text-secondary"><i class="fa fa-television"></i> TV</span>
                                     </label>
                                 </div>
                             </div>
-                        </div>  
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label>Emissora</label>
-                                <select class="form-control select2" name="emissora_id" id="emissora_id">
-                                    <option value="">Selecione uma emissora</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label>Programa</label>
-                                <select class="form-control select2" name="emissora_id" id="emissora_id">
-                                    <option value="">Selecione um programa</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-2 col-sm-6">
-                            <div class="form-group">
-                                <label>Horário Inicial</label>
-                                <input type="text" class="form-control horario" name="hora_inicio" id="hora_inicio" placeholder="00:00" value="">
-                            </div>
-                        </div>
-                        <div class="col-md-2 col-sm-6">
-                            <div class="form-group">
-                                <label>Horário Final</label>
-                                <input type="text" class="form-control horario" name="hora_fim" id="hora_fim" placeholder="00:00" value="">
-                            </div>
-                        </div>                 
+                        </div>        
                     </div>             
                     <div class="card-footer text-center mb-3">
                         <button type="submit" class="btn btn-danger" name="acao" value="gerar-pdf"><i class="fa fa-file-pdf-o"></i> Gerar PDF</button>
@@ -287,6 +253,43 @@
     $( document ).ready(function() {
 
         var host =  $('meta[name="base-url"]').attr('content');
+
+        $('#presetsData button').on('click', function() {
+            let preset = $(this).data('preset');
+            let hoje = moment();
+            let dt_inicial = '';
+            let dt_final = '';
+
+            switch(preset) {
+                case 'hoje':
+                    dt_inicial = hoje.format('DD/MM/YYYY');
+                    dt_final = hoje.format('DD/MM/YYYY');
+                    break;
+                case 'ontem':
+                    dt_inicial = hoje.clone().subtract(1, 'days').format('DD/MM/YYYY');
+                    dt_final = hoje.clone().subtract(1, 'days').format('DD/MM/YYYY');
+                    break;
+                case '7dias':
+                    dt_inicial = hoje.clone().subtract(6, 'days').format('DD/MM/YYYY');
+                    dt_final = hoje.format('DD/MM/YYYY');
+                    break;
+                case '30dias':
+                    dt_inicial = hoje.clone().subtract(29, 'days').format('DD/MM/YYYY');
+                    dt_final = hoje.format('DD/MM/YYYY');
+                    break;
+                case 'mes':
+                    dt_inicial = hoje.clone().startOf('month').format('DD/MM/YYYY');
+                    dt_final = hoje.format('DD/MM/YYYY');
+                    break;
+                case 'mesanterior':
+                    dt_inicial = hoje.clone().subtract(1, 'months').startOf('month').format('DD/MM/YYYY');
+                    dt_final = hoje.clone().subtract(1, 'months').endOf('month').format('DD/MM/YYYY');
+                    break;
+            }
+
+            $('#dt_inicial').val(dt_inicial);
+            $('#dt_final').val(dt_final);
+        });
 
         //Inicializa o combo de clientes
         $.ajax({
