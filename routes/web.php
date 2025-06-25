@@ -47,7 +47,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('import','FonteWebController@importacaoNova');
 
 	Route::get('clientes/usuarios','UserController@insereClientes');
-
+	
 	Route::post('areas/inserir','AreaController@inserir');
 	Route::post('areas/{id}/atualizar','AreaController@atualizar');
 
@@ -377,6 +377,9 @@ Route::middleware(['web'])->group(function () {
 	Route::get('client/emails/{cliente}','ClientController@emails');
 	Route::post('cliente/selecionar','ClientController@selecionar');
 	Route::get('cliente/paginas-associadas/{client}','ClientController@connectedtPages');
+
+	Route::get('cliente/area/{id}/remover','ClienteController@removerArea');
+	Route::get('cliente/area/{id}/situacao','ClienteController@alteraSituacao');
 
 	Route::post('cliente/area/adicionar','ClienteController@adicionarArea');
 

@@ -114,42 +114,18 @@
                                                 <h6 style="color: #FF5722;">{{ ($dado->estado) ? $dado->estado->nm_estado : '' }}{{ ($dado->cidade) ? "/".$dado->cidae->nm_cidade : '' }}</h6> 
                                                 <p class="text-muted mb-1"> {!! ($dado->data_noticia) ? date('d/m/Y', strtotime($dado->data_noticia)) : date('d/m/Y', strtotime($dado->data_noticia)) !!} - {{ ($dado->fonte) ? $dado->fonte->nome : '' }}</p> 
                                                 <p class="mb-1">
-                                                        <strong>Retorno de Mídia: </strong>{{ ($dado->nu_valor) ? "R$ ".$dado->nu_valor : 'Não calculado' }}
-                                                    </p> 
-                                                    <div>
-                                                        @forelse($dado->clientes as $cliente)
-                                                            <p class="mb-2">
-                                                                <span>{{ $cliente->nome }}</span>
-                                                                @switch($cliente->pivot->sentimento)
-                                                                    @case(-1)
-                                                                            <i class="fa fa-frown-o text-danger"></i>
-                                                                            <a href="{{ url('noticia/'.$cliente->pivot->noticia_id.'/tipo/'.$cliente->pivot->tipo_id.'/cliente/'.$cliente->pivot->cliente_id.'/sentimento/0/atualizar') }}"><i class="fa fa-ban op-2"></i></a>
-                                                                            <a href="{{ url('noticia/'.$cliente->pivot->noticia_id.'/tipo/'.$cliente->pivot->tipo_id.'/cliente/'.$cliente->pivot->cliente_id.'/sentimento/1/atualizar') }}"><i class="fa fa-smile-o op-2"></i></a>
-                                                                        @break
-                                                                    @case(0)
-                                                                            <a href="{{ url('noticia/'.$cliente->pivot->noticia_id.'/tipo/'.$cliente->pivot->tipo_id.'/cliente/'.$cliente->pivot->cliente_id.'/sentimento/-1/atualizar') }}"><i class="fa fa-frown-o op-2"></i></a> 
-                                                                            <i class="fa fa-ban text-primary"></i>
-                                                                            <a href="{{ url('noticia/'.$cliente->pivot->noticia_id.'/tipo/'.$cliente->pivot->tipo_id.'/cliente/'.$cliente->pivot->cliente_id.'/sentimento/1/atualizar') }}"><i class="fa fa-smile-o op-2"></i></a>                                                
-                                                                        @break
-                                                                    @case(1)
-                                                                            <a href="{{ url('noticia/'.$cliente->pivot->noticia_id.'/tipo/'.$cliente->pivot->tipo_id.'/cliente/'.$cliente->pivot->cliente_id.'/sentimento/-1/atualizar') }}"><i class="fa fa-frown-o op-2"></i></a>
-                                                                            <a href="{{ url('noticia/'.$cliente->pivot->noticia_id.'/tipo/'.$cliente->pivot->tipo_id.'/cliente/'.$cliente->pivot->cliente_id.'/sentimento/0/atualizar') }}"><i class="fa fa-ban op-2"></i></a>
-                                                                            <i class="fa fa-smile-o text-success"></i>
-                                                                        @break                                            
-                                                                @endswitch
-                                                                <a class="text-danger btn-excluir" href="{{ url('noticia/'.$cliente->pivot->id.'/vinculo/excluir') }}">Remover Cliente</a>
-                                                            </p>
-                                                        @empty
-                                                            <p class="text-danger mb-1">Nenhum cliente associada à notícia</p>
-                                                        @endforelse
-                                                    </div>
-                                                    <div>
-                                                        @forelse($dado->tags as $tag)
-                                                            <span>#{{ $tag->nome }}</span>
-                                                        @empty
-                                                            <p class="text-danger mb-1">#Nenhuma tag associada à notícia</p>
-                                                        @endforelse
-                                                    </div>
+                                                    <strong>Retorno de Mídia: </strong>{{ ($dado->nu_valor) ? "R$ ".$dado->nu_valor : 'Não calculado' }}
+                                                </p> 
+                                                <div class="clientes-noticia clientes-noticia-{{ $dado->id }}" data-id="{{ $dado->id }}" data-tipo="2">
+                                                        
+                                                </div>
+                                                <div>
+                                                    @forelse($dado->tags as $tag)
+                                                        <span>#{{ $tag->nome }}</span>
+                                                    @empty
+                                                        <p class="text-danger mb-1">#Nenhuma tag associada à notícia</p>
+                                                    @endforelse
+                                                </div>
                                             </div>
                                             <div class="sinopse-{{ $dado->id }}">
                                                 {!! ($dado->conteudo) ? Str::limit($dado->conteudo->conteudo, 700, " ...") : 'Notícia sem conteúdo' !!}
@@ -227,6 +203,7 @@
 </div>
 @endsection
 @section('script')
+<script src="{{ asset('js/noticia_clientes.js') }}"></script>
     <script>
         $(document).ready(function() {
 

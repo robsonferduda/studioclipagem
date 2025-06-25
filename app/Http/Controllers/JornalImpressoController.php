@@ -347,7 +347,9 @@ class JornalImpressoController extends Controller
     public function extrair($monitoramento, $tipo, $id)
     {
         switch ($tipo) {
+
             case 'impresso':
+
                 $conteudo = PaginaJornalImpresso::find($id);
 
                 $arquivo = Storage::disk('s3')->get($conteudo->path_pagina_s3);
@@ -392,8 +394,9 @@ class JornalImpressoController extends Controller
                 $fontes = FonteImpressa::orderBy("nome")->get();
                 $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
                 $tags = Tag::orderBy('nome')->get();
+                $pagina = $conteudo;
 
-                return view('jornal-impresso/editar', compact('noticia','clientes','fontes','estados','cidades','tags'));
+                return view('jornal-impresso/editar', compact('noticia','clientes','fontes','estados','cidades','tags','pagina'));
 
                 break;
             

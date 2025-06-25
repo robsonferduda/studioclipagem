@@ -62,11 +62,19 @@
 
                                 <div class="form-check float-left mr-3">
                                     <label class="form-check-label mt-2">
-                                        <input class="form-check-input" type="checkbox" name="fl_sentimento_cli" value="true">
+                                        <input class="form-check-input" type="checkbox" name="fl_sentimento" value="true">
                                             MOSTRAR SENTIMENTO
                                         <span class="form-check-sign"></span>
                                     </label>
-                                </div>                         
+                                </div> 
+
+                                <div class="form-check float-left mr-3">
+                                    <label class="form-check-label mt-2">
+                                        <input class="form-check-input" type="checkbox" name="fl_retorno_midia" value="true">
+                                            RETORNO DE MÍDIA
+                                        <span class="form-check-sign"></span>
+                                    </label>
+                                </div>                        
                                
                             </div>
                         </div>

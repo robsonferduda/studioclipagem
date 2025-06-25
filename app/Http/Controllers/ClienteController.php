@@ -66,7 +66,8 @@ class ClienteController extends Controller
     {
         $fl_ativo = $request->fl_ativo == true ? true : false;
         $fl_print = $request->fl_print == true ? true : false;
-        $fl_sentimento_cli = $request->fl_sentimento_cli == true ? true : false;
+        $fl_sentimento = $request->fl_sentimento == true ? true : false;
+        $fl_retorno_midia = $request->fl_retorno_midia == true ? true : false;
 
         $fl_tv = $request->fl_tv == true ? true : false;
         $fl_impresso = $request->fl_impresso == true ? true : false;
@@ -80,9 +81,10 @@ class ClienteController extends Controller
         
         try {
 
-            $request->merge(['fl_sentimento_cli' => $fl_sentimento_cli]);
             $request->merge(['fl_print' => $fl_print]);
             $request->merge(['fl_print' => $fl_print]);
+            $request->merge(['fl_sentimento' => $fl_sentimento]);
+            $request->merge(['fl_retorno_midia' => $fl_retorno_midia]);
 
             $request->merge(['fl_tv' => $fl_tv]);
             $request->merge(['fl_impresso' => $fl_impresso]);
@@ -105,7 +107,7 @@ class ClienteController extends Controller
                 'fl_relatorio_completo' => $request->fl_relatorio_completo,
                 'fl_link_relatorio' => $request->fl_link_relatorio,
                 'fl_area_restrita' => $request->fl_area_restrita,
-                'fl_sentimento_cli' => $fl_sentimento_cli,
+                'fl_sentimento' => $fl_sentimento,
                 'nome' => $request->nome
             ]);
 
@@ -222,7 +224,8 @@ class ClienteController extends Controller
     {
         $fl_ativo = $request->fl_ativo == true ? true : false;
         $fl_print = $request->fl_print == true ? true : false;
-        $fl_sentimento_cli = $request->fl_sentimento_cli == true ? true : false;
+        $fl_sentimento = $request->fl_sentimento == true ? true : false;
+        $fl_retorno_midia = $request->fl_retorno_midia == true ? true : false;
 
         $fl_tv = $request->fl_tv == true ? true : false;
         $fl_impresso = $request->fl_impresso == true ? true : false;
@@ -240,8 +243,9 @@ class ClienteController extends Controller
 
             $request->merge(['fl_ativo' => $fl_ativo]);
             $request->merge(['fl_print' => $fl_print]);
-            $request->merge(['fl_sentimento_cli' => $fl_sentimento_cli]);
-
+            $request->merge(['fl_sentimento' => $fl_sentimento]);
+            $request->merge(['fl_retorno_midia' => $fl_retorno_midia]);
+            
             $request->merge(['fl_tv' => $fl_tv]);
             $request->merge(['fl_impresso' => $fl_impresso]);
             $request->merge(['fl_web' => $fl_web]);
@@ -385,8 +389,19 @@ class ClienteController extends Controller
         }
     }
 
+    public function removerArea($id)
+    {
+        $cliente_area = ClienteArea::where('id', $id)->first();
+
+        $cliente_area->delete();
+
+        return redirect()->back();
+    }
+
     public function adicionarArea(Request $request)
     {
+        dd($request->all());
+
         $area = Area::where('descricao', 'ILIKE', '%'.trim($request->ds_area).'%')->first();
 
         if(!$area){
@@ -399,9 +414,21 @@ class ClienteController extends Controller
             $created = ClienteArea::create([
                 'cliente_id' => $request->id_cliente,
                 'area_id' => $area->id,
-                'ativo' => true
+                'ativo' => $request->situacao
             ]);
         }
+    }
+
+    public function alteraSituacao($id){
+
+        $cliente_area = ClienteArea::where('id', $id)->first();
+
+        $cliente_area->ativo = !$cliente_area->ativo;
+        $cliente_area->save();
+
+        Flash::success('<i class="fa fa-check"></i> Preferência do programa atualizada com sucesso');
+
+        return redirect()->back()->withInput();
     }
 
     private function gerenciaClienteArea(Request $request, Cliente $cliente): void

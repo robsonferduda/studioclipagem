@@ -224,6 +224,14 @@
                                                 </div>
 
                                                 <div class="col-md-3">
+
+                                                    @if($pagina)
+                                                        <h6 class="mt-3">Imagem Original 
+                                                            <a href="{{ url('jornal-impresso/web/pagina/download/'.$pagina->id) }}" target="_BLANK"><span class="text-info">Clique para baixar</span></a>
+                                                        </h6>
+                                                        <a href="{{ url('jornal-impresso/web/pagina/download/'.$pagina->id) }}" target="_BLANK"><img src="{{ Storage::disk('s3')->temporaryUrl($pagina->path_pagina_s3, '+2 minutes') }}"></a>
+                                                    @endif
+
                                                     <!-- <h3>Preview:</h3> -->
                                                     <div class="docs-preview clearfix">
                                                     <div class="img-preview preview-lg"></div>
@@ -233,7 +241,7 @@
                                                     </div>
                                             
                                                     <!-- <h3>Data:</h3> -->
-                                                    <div class="docs-data">                                                                                                       
+                                                    <div class="docs-data mt-2">                                                                                                       
                                                         <div class="input-group mb-3">
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text input-impresso" id="basic-addon1">Largura</span>
