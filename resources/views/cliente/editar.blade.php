@@ -223,13 +223,13 @@
                     </div>
                 <div class="col-md-12 mt-4">
                     <p class="mb-1"><i class="fa fa-tags"></i> Áreas do Cliente</p>
-                    <p class="text-danger mt-0">Para excluir áreas, consulte o administrador do sistema. Para editar, digite os novos valores para a área escolhida e clique em <strong>Salvar</strong>.</p>
                     {!! Form::open(['id' => 'frm_cliente_edit', 'url' => ['cliente', $cliente->id], 'method' => 'patch', 'files' => true]) !!}
                         <div class="row">
+                            <input type="hidden" name="id_cliente_area" id="id_cliente_area">
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Áreas</label>
-                                        <select class="form-control select2" name="area" id="area">
+                                        <select class="form-control" name="area" id="area">
                                             <option value="">Selecione</option>
                                         @foreach($areas as $area)
                                             <option value="{{ $area->id }}" >{{ $area->descricao }}</option>
@@ -261,23 +261,30 @@
                         </div>
                     {!! Form::close() !!}
                     <div class="row">
-                        @foreach ($cliente->areas as $area_cliente)
+                        @foreach ($cliente->areas->sortBy('created_at') as $area_cliente)
                             <div class="col-lg-12 col-sm-12">
                                 <div class="card">
                                     <div class="card-content ">
-                                        <div class="row px-3">
-                                        
+                                        <div class="row px-3">                                        
                                             <div class="col-lg-9 col-md-9 col-sm-12">
                                                 <p><strong>{{ $area_cliente->area->descricao }}</strong></p>
                                                 <p>{{ $area_cliente->expressao }}</p>
                                             </div>
                                             <div class="col-lg-3 col-md-3 col-sm-12">
-                                                <div class="pull-right ">
-                                                    @if($area_cliente->ativo)                                                        
-                                                        <span class="badge badge-success">Ativo</span>
-                                                    @else
-                                                        <span class="badge badge-danger">Inativo</span>
-                                                    @endif
+                                                <div class="row">
+                                                    <div class="col-lg-12 col-sm-12">
+                                                        <a class="pull-right" href="{{ url('cliente/area/'.$area_cliente->id.'/situacao') }}">{!! ($area_cliente->ativo) ? '<span class="badge badge-pill badge-success">ATIVO</span>' : '<span class="badge badge-pill badge-danger">INATIVO</span>' !!}</a>   
+                                                    </div>
+                                                    <div class="col-lg-12 col-sm-12">                                            
+                                                        <a title="Excluir" href="{{ url('cliente/area/'.$area_cliente->id.'/remover') }}" class="btn btn-danger btn-link btn-icon btn-excluir pull-right"><i class="fa fa-trash fa-2x"></i></a>
+                                                        <a title="Editar" data-id="{{ $area_cliente->id }}" 
+                                                                          data-area="{{ $area_cliente->area_id }}" 
+                                                                          data-situacao="{{ $area_cliente->ativo }}" 
+                                                                          data-expressao="{{ $area_cliente->expressao }}" 
+                                                        class="btn btn-info btn-link btn-icon pull-right btn-editar-area">
+                                                            <i class="fa fa-edit fa-2x text-info"></i>
+                                                        </a>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -474,6 +481,7 @@
 
             $(".btn-add-area").click(function(){
 
+                var id = $("#id_cliente_area").val();
                 var area = $("#area").val();
                 var situacao = $("#situacao").val();
                 var expressao = $("#expressao").val();
@@ -496,6 +504,7 @@
                         data: {
                                 "_token": $('meta[name="csrf-token"]').attr('content'),
                                 "area": area,
+                                "id": id,
                                 "situacao": situacao,
                                 "expressao": expressao,
                                 "cliente": cliente
@@ -511,6 +520,21 @@
                 }
 
             });
+
+            $(".btn-editar-area").click(function(){
+
+                var id = $(this).data("id");
+                var area = $(this).data("area");
+                var situacao = ($(this).data("situacao")) ? "true" : "false";
+                var expressao = $(this).data("expressao");
+
+                $("#area").val(area);
+                $("#situacao").val(situacao);
+                $("#expressao").val(expressao);
+                $("#id_cliente_area").val(id);
+
+            });
+
         });
     </script>
 @endsection

@@ -112,12 +112,25 @@ class AreaController extends Controller
 
     public function cadastrarAreaCliente(Request $request)
     {
-        $chave = array('cliente_id' => $request->cliente, 'area_id' => $request->area);
+        $id = $request->id;
 
-        $dados = array('expressao' => $request->expressao,
-                        'ativo' => $request->situacao);
+        if($id){
 
-        ClienteArea::updateOrCreate($chave, $dados);
+            $cliente_area = ClienteArea::where('id', $id)->first();
+            $cliente_area->area_id = $request->area;
+            $cliente_area->ativo = $request->situacao;
+            $cliente_area->expressao = $request->expressao;
+            $cliente_area->save();
+
+        }else{
+
+            $created = ClienteArea::create([
+                'cliente_id' => $request->cliente,
+                'area_id' => $request->area,
+                'expressao' => $request->expressao,
+                'ativo' => $request->situacao
+            ]);
+        }
     }
 
     public function executarWeb()

@@ -389,8 +389,19 @@ class ClienteController extends Controller
         }
     }
 
+    public function removerArea($id)
+    {
+        $cliente_area = ClienteArea::where('id', $id)->first();
+
+        $cliente_area->delete();
+
+        return redirect()->back();
+    }
+
     public function adicionarArea(Request $request)
     {
+        dd($request->all());
+
         $area = Area::where('descricao', 'ILIKE', '%'.trim($request->ds_area).'%')->first();
 
         if(!$area){
@@ -403,9 +414,21 @@ class ClienteController extends Controller
             $created = ClienteArea::create([
                 'cliente_id' => $request->id_cliente,
                 'area_id' => $area->id,
-                'ativo' => true
+                'ativo' => $request->situacao
             ]);
         }
+    }
+
+    public function alteraSituacao($id){
+
+        $cliente_area = ClienteArea::where('id', $id)->first();
+
+        $cliente_area->ativo = !$cliente_area->ativo;
+        $cliente_area->save();
+
+        Flash::success('<i class="fa fa-check"></i> Preferência do programa atualizada com sucesso');
+
+        return redirect()->back()->withInput();
     }
 
     private function gerenciaClienteArea(Request $request, Cliente $cliente): void
