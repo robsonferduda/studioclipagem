@@ -54,7 +54,7 @@
                                 <input type="text" class="form-control datepicker" name="dt_final" id="dt_final" placeholder="__/__/____" value="{{ ($dt_final) ? \Carbon\Carbon::parse($dt_final)->format('d/m/Y') : '' }}">
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label>Cliente</label>
                                 <select class="form-control cliente" name="id_cliente" id="id_cliente">
@@ -65,12 +65,12 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-12">
                             <div class="form-group">
-                                <label>Áreas</label>
-                                <select class="form-control area" name="id_area" id="id_area">
-                                    <option value="">Selecione uma área</option>
-                                </select>
+                                <label>Áreas do Cliente</label>
+                                <div id="areas-checkbox-group" class="d-flex flex-wrap gap-2">
+            
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-12">
@@ -117,7 +117,7 @@
                                 <div class="form-check">
                                     <div class="form-check">
                                         <label class="form-check-label check-midia">
-                                            <input class="form-check-input" type="checkbox" name="fl_impresso" {{ ($fl_impresso == true) ? 'checked' : '' }} value="true">
+                                            <input class="form-check-input" type="checkbox" name="fl_impresso" {{ ($fl_impresso == true) ? 'checked' : '' }} checked value="true">
                                             <span class="form-check-sign"></span>
                                             <span class="text-secondary"><i class="fa fa-newspaper-o"></i> Impressos</span>
                                         </label>
@@ -127,7 +127,7 @@
                                 <div class="form-check ml-3">
                                     <div class="form-check">
                                         <label class="form-check-label check-midia">
-                                            <input class="form-check-input" type="checkbox" name="fl_web" {{ ($fl_web == true) ? 'checked' : '' }} value="true">
+                                            <input class="form-check-input" type="checkbox" name="fl_web" {{ ($fl_web == true) ? 'checked' : '' }} checked value="true">
                                             <span class="form-check-sign"></span>
                                             <span class="text-secondary"><i class="fa fa-globe"></i> Web</span>
                                         </label>
@@ -137,7 +137,7 @@
                                 <div class="form-check ml-3">
                                     <div class="form-check">
                                         <label class="form-check-label check-midia">
-                                            <input class="form-check-input" type="checkbox" name="fl_radio" {{ ($fl_radio == true) ? 'checked' : '' }} value="true">
+                                            <input class="form-check-input" type="checkbox" name="fl_radio" {{ ($fl_radio == true) ? 'checked' : '' }} checked value="true">
                                             <span class="form-check-sign"></span>
                                             <span class="text-secondary"><i class="fa fa-volume-up"></i> Rádio</span>
                                         </label>
@@ -147,7 +147,7 @@
                                 <div class="form-check ml-3">
                                     <div class="form-check">
                                         <label class="form-check-label check-midia">
-                                            <input class="form-check-input" type="checkbox" name="fl_tv" {{ ($fl_tv == true) ? 'checked' : '' }} value="true">
+                                            <input class="form-check-input" type="checkbox" name="fl_tv" {{ ($fl_tv == true) ? 'checked' : '' }} checked value="true">
                                             <span class="form-check-sign"></span>
                                             <span class="text-secondary"><i class="fa fa-television"></i> TV</span>
                                         </label>
@@ -157,91 +157,36 @@
                         </div>        
                     </div>             
                     <div class="card-footer text-center mb-3">
-                        <button type="submit" class="btn btn-danger" name="acao" value="gerar-pdf"><i class="fa fa-file-pdf-o"></i> Gerar PDF</button>
-                        <button type="submit" class="btn btn-info" name="acao" value="pesquisar"><i class="fa fa-search"></i> Pesquisar</button>
+                        <button type="button" class="btn btn-info" id="btn-pesquisar" name="acao" value="pesquisar"><i class="fa fa-search"></i> Pesquisar</button>
                     </div>
                 {!! Form::close() !!} 
             </div>
-            <div class="col-md-12">
-                @forelse ($dados as $noticia)
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-12 col-sm-12">
-                                    @switch($noticia->tipo)
-                                        @case('web')
-                                            @php
-                                                $tipo_formatado = '<i class="fa fa-globe"></i> Web';
-                                            @endphp
-                                        @break
-                                        @case('tv')
-                                            @php
-                                                $tipo_formatado = '<i class="fa fa-television"></i> TV';
-                                            @endphp
-                                        @break
-                                        @case('radio')
-                                            @php
-                                                $tipo_formatado = '<i class="fa fa-volume-up"></i> Rádio';
-                                            @endphp
-                                        @break
-                                        @case('impresso')
-                                            @php
-                                                $tipo_formatado = '<i class="fa fa-newspaper-o"></i> Impressos';
-                                            @endphp
-                                        @break
-                                        @default
-                                            @php
-                                                $tipo_formatado = 'Clipagens';
-                                            @endphp
-                                        @break                                    
-                                    @endswitch
-                                    <p style="text-transform: uppercase; font-weight: 600;">{!! $tipo_formatado !!}</p>                            
-                                    <h6 style="font-weight: 600;">{{ $noticia->titulo }}</h6>
-                                    <h6 style="font-weight: 600;" class="text-muted">{{ $noticia->data_formatada }} - {{ $noticia->fonte }}</h6>
-                                    <p class="mb-2">
-                                        <span>{{ $noticia->cliente }}</span>
-                                        @switch($noticia->sentimento)
-                                            @case(-1)
-                                                <i class="fa fa-frown-o text-danger"></i>
-                                                <a href="{{ url('noticia/'.$noticia->id.'/tipo/'.$noticia->tipo.'/cliente/'.$noticia->tipo.'/sentimento/0/atualizar') }}"><i class="fa fa-ban op-2"></i></a>
-                                                <a href="{{ url('noticia/'.$noticia->id.'/tipo/'.$noticia->tipo.'/cliente/'.$noticia->tipo.'/sentimento/1/atualizar') }}"><i class="fa fa-smile-o op-2"></i></a>
-                                            @break
-                                            @case(0)
-                                                <a href="{{ url('noticia/'.$noticia->id.'/tipo/'.$noticia->tipo.'/cliente/'.$noticia->tipo.'/sentimento/-1/atualizar') }}"><i class="fa fa-frown-o op-2"></i></a> 
-                                                <i class="fa fa-ban text-primary"></i>
-                                                <a href="{{ url('noticia/'.$noticia->id.'/tipo/'.$noticia->tipo.'/cliente/'.$noticia->tipo.'/sentimento/1/atualizar') }}"><i class="fa fa-smile-o op-2"></i></a>                                            
-                                            @break
-                                            @case(1)
-                                                <a href="{{ url('noticia/'.$noticia->id.'/tipo/'.$noticia->tipo.'/cliente/'.$noticia->tipo.'/sentimento/-1/atualizar') }}"><i class="fa fa-frown-o op-2"></i></a>
-                                                <a href="{{ url('noticia/'.$noticia->id.'/tipo/'.$noticia->tipo.'/cliente/'.$noticia->tipo.'/sentimento/0/atualizar') }}"><i class="fa fa-ban op-2"></i></a>
-                                                <i class="fa fa-smile-o text-success"></i>
-                                            @break                                            
-                                        @endswitch
-                                    </p>
-                                    <p>
-                                        {!! $noticia->sinopse !!}
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-12 col-sm-12">
-                                    <div style="text-align: right">
-                                        @if($noticia->tipo == 'web')
-                                            <a title="Extrair Imagem" class="btn btn-warning btn-sm" href="{{ url('noticia/web/importar-imagem',$noticia->id) }}" role="button"><i class="fa fa-picture-o"> </i></a>
-                                            <a title="Editar" class="btn btn-info btn-sm" href="{{ url('noticia/web/'.$noticia->id.'/editar') }}" target="_BLANK" role="button"><i class="fa fa-edit"> </i></a>
-                                        @endif
-                                        @if($noticia->tipo == 'impresso')
-                                            <a title="Editar" class="btn btn-info btn-sm" href="{{ url('noticia-impressa/'.$noticia->id.'/editar') }}" target="_BLANK" role="button"><i class="fa fa-edit"> </i></a>
-                                        @endif
-                                        <a title="Gerar PDF" class="btn btn-danger btn-sm" href="{{ url("relatorios/".$noticia->tipo."/pdf/".$noticia->id) }}" role="button"><i class="fa fa-file-pdf-o"> </i></a>
-                                    </div>
-                                </div>
-                            </div>
+            <div class="border-top p-3 bg-light">
+                <div class="d-flex justify-content-between align-items-center flex-wrap">
+                    <div class="d-flex gap-4 flex-wrap align-items-center">
+                        <div>
+                            <strong>Total encontradas:</strong>
+                            <span id="totalNoticias" class="badge bg-secondary">0</span>
+                        </div>
+                        <div class="ml-2">
+                            <strong>Selecionadas para relatório:</strong>
+                            <span id="totalSelecionadas" class="badge bg-info">0</span>
                         </div>
                     </div>
-                @empty
-                    
-                @endforelse
+                    <div class="d-flex gap-2 flex-wrap align-items-center mt-2 mt-md-0">
+                        <button type="button" class="btn btn-primary" id="btnSelecionarTodasGeral">
+                            <i class="fa fa-list-ul" aria-hidden="true"></i>
+                            Selecionar Todas
+                        </button>
+                        <button type="button" class="btn btn-danger" id="btnGerarRelatorio">
+                            <i class="fa fa-file-pdf-o"></i>
+                            Gerar Relatório PDF (<span id="qtdSelecionadasBtn">0</span>)
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div id="resultado-relatorio">
+                {{-- Os resultados serão inseridos aqui via AJAX --}}
             </div>
         </div>
     </div>
@@ -252,6 +197,31 @@
     $( document ).ready(function() {
 
         var host =  $('meta[name="base-url"]').attr('content');
+
+        $(document).on('click', '#btn-pesquisar', function(e) {
+            e.preventDefault();
+
+            var form = $('#frm_user_create');
+            var url = form.attr('action');
+            var dados = form.serialize();
+
+            $('#resultado-relatorio').html('<div class="text-center my-4"><i class="fa fa-spinner fa-spin fa-2x"></i> Carregando...</div>');
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: dados,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    $('#resultado-relatorio').html(response.html);
+                },
+                error: function(xhr) {
+                    $('#resultado-relatorio').html('<div class="alert alert-danger">Erro ao buscar resultados.</div>');
+                }
+            });
+        });
 
         $('#presetsData button').on('click', function() {
             let preset = $(this).data('preset');
@@ -322,46 +292,53 @@
             buscarAreas(cliente);
         });
 
-        function buscarAreas(cliente){
+       function buscarAreas(cliente){
+        // Limpa o grupo antes de adicionar
+        $('#areas-checkbox-group').empty();
 
-            if(cliente == '') {
-                $('.area').attr('disabled', true);
-                $('.area').append('<option value="">Cliente não possui áreas</option>').val('');
-                return;
-            }
+        if(cliente == '') {
+            $('#areas-checkbox-group').html('<span class="text-muted">Cliente não possui áreas</span>');
+            return;
+        }
 
-            $.ajax({
-                url: host+'/api/cliente/getAreasCliente',
-                type: 'GET',
-                data: {
-                    "_token": $('meta[name="csrf-token"]').attr('content'),
-                    "cliente": cliente,
-                },
-                beforeSend: function() {
-                    $('.area').append('<option value="">Carregando...</option>').val('');
-                },
-                success: function(data) {
+        $.ajax({
+            url: host+'/api/cliente/getAreasCliente',
+            type: 'GET',
+            data: {
+                "_token": $('meta[name="csrf-token"]').attr('content'),
+                "cliente": cliente,
+            },
+            beforeSend: function() {
+                $('#areas-checkbox-group').html('<span>Carregando...</span>');
+            },
+            success: function(data) {
+                $('#areas-checkbox-group').empty();
 
-                    $('.area').find('option').remove();
-                    $('.area').attr('disabled', false);
-
-                    if(data.length == 0) {                            
-                        $('.area').append('<option value="">Cliente não possui áreas vinculadas</option>').val('');
-                        return;
-                    }
-                            
-                    $('.area').append('<option value="">Selecione uma área</option>').val('');
-                    data.forEach(element => {
-                        let option = new Option(element.descricao, element.id);
-                        $('.area').append(option);
-                    });             
-                },
-                complete: function(){
-                            
+                if(data.length == 0) {                            
+                    $('#areas-checkbox-group').html('<span class="text-muted">Cliente não possui áreas vinculadas</span>');
+                    return;
                 }
-            });
-        }   
+                
+               data.forEach(element => {
+                let checkbox = `
+                    <div class="form-check mr-3">
+                        <label class="form-check-label">
+                            <input class="form-check-input area-checkbox" type="checkbox" name="areas[]" value="${element.id}" id="area_${element.id}">
+                            <span class="form-check-sign"></span>
+                            ${element.descricao}
+                        </label>
+                    </div>
+                `;
+                $('#areas-checkbox-group').append(checkbox);
+            });            
+            }
+        });
+    }  
 
+    });
+    
+    $(document).ready(function(){
+        $("#id_cliente").trigger('change');
     });
 </script>
 @endsection

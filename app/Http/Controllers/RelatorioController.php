@@ -51,6 +51,19 @@ class RelatorioController extends Controller
         $fl_impresso = $request->fl_impresso == true ? true : false;
         $fl_radio = $request->fl_radio == true ? true : false;
 
+        if ($request->ajax()) {
+
+            $dados_impresso = ($fl_impresso) ? $this->dadosImpresso($dt_inicial, $dt_final,$cliente_selecionado) : array();
+            $dados_radio    = ($fl_radio) ? $this->dadosRadio($dt_inicial, $dt_final,$cliente_selecionado) : array();
+            $dados_web      = ($fl_web) ? $this->dadosWeb($dt_inicial, $dt_final,$cliente_selecionado) : array();
+            $dados_tv      = ($fl_tv) ? $this->dadosTv($dt_inicial, $dt_final,$cliente_selecionado) : array();
+
+            $dados = array_merge($dados_impresso, $dados_radio, $dados_web, $dados_tv);
+
+            $html = view('relatorio.listagem', compact('dados'))->render();
+            return response()->json(['html' => $html]);
+        }
+
         if($request->isMethod('POST')){
 
             $dados_impresso = ($fl_impresso) ? $this->dadosImpresso($dt_inicial, $dt_final,$cliente_selecionado) : array();
@@ -218,7 +231,8 @@ class RelatorioController extends Controller
                     t3.sentimento,
                     'imagem' as tipo_midia,
                     ds_caminho_img as midia,
-                    '' as url_noticia
+                    '' as url_noticia,
+                    valor_retorno as valor_retorno
                 FROM noticia_impresso t1
                 JOIN jornal_online t2 ON t2.id = t1.id_fonte
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 1
@@ -253,7 +267,8 @@ class RelatorioController extends Controller
                     t3.sentimento,
                     'audio' as tipo_midia,
                     ds_caminho_audio as midia,
-                     '' as url_noticia
+                     '' as url_noticia,
+                    valor_retorno as valor_retorno
                 FROM noticia_radio t1
                 JOIN emissora_radio t2 ON t2.id = t1.emissora_id
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 3
@@ -288,7 +303,8 @@ class RelatorioController extends Controller
                     t3.sentimento,
                     'imagem' as tipo_midia,
                     ds_caminho_img as midia,
-                    url_noticia
+                    url_noticia,
+                    nu_valor as valor_retorno
                 FROM noticias_web t1
                 JOIN fonte_web t2 ON t2.id = t1.id_fonte
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 2
@@ -344,7 +360,8 @@ class RelatorioController extends Controller
                     t3.sentimento,
                     'imagem' as tipo_midia,
                     ds_caminho_video as midia,
-                    '' as url_noticia
+                    '' as url_noticia,
+                    valor_retorno as valor_retorno
                 FROM noticia_tv t1
                 JOIN emissora_web t2 ON t2.id = t1.emissora_id
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 4
@@ -387,56 +404,6 @@ class RelatorioController extends Controller
             }
         }
     }
-
-    function dividirImagem($caminhoImagem, $alturaMaxima)
-    {
-
-        $larguraMaxima = 2480;
-
-        // Carregar a imagem
-        $imagemOriginal = imagecreatefromjpeg($caminhoImagem);
-        $larguraOriginal = imagesx($imagemOriginal);
-        $alturaOriginal = imagesy($imagemOriginal);
-
-        // Calcular a nova altura mantendo a proporção
-        $novaLargura = $larguraMaxima;
-        $novaAltura = intval(($alturaOriginal / $larguraOriginal) * $novaLargura);
-
-        // Criar a nova imagem redimensionada
-        $imagemRedimensionada = imagecreatetruecolor($novaLargura, $novaAltura);
-        imagecopyresampled($imagemRedimensionada, $imagemOriginal, 0, 0, 0, 0, $novaLargura, $novaAltura, $larguraOriginal, $alturaOriginal);
-
-        // Salvar a imagem redimensionada
-        $caminhoRedimensionado = storage_path("app/public/redimensionada.jpg");
-        imagejpeg($imagemRedimensionada, $caminhoRedimensionado, 90); // Qualidade 90%
-
-        // Liberar memória
-        imagedestroy($imagemOriginal);
-        imagedestroy($imagemRedimensionada);
-
-        $imagemOriginal = imagecreatefromjpeg($caminhoRedimensionado);
-
-        $imagemOriginal = imagecreatefromjpeg($caminhoImagem);
-        $largura = imagesx($imagemOriginal);
-        $alturaTotal = imagesy($imagemOriginal);
-
-        $partes = [];
-        for ($i = 0; $i < $alturaTotal; $i += $alturaMaxima) {
-            $novaAltura = min($alturaMaxima, $alturaTotal - $i);
-            $parte = imagecreatetruecolor($largura, $novaAltura);
-            imagecopy($parte, $imagemOriginal, 0, 0, 0, $i, $largura, $novaAltura);
-
-            // Salvar a parte temporariamente
-            $nomeParte = "parte_" . $i . ".jpg";
-            $caminhoParte = "partes/".$nomeParte;
-            imagejpeg($parte, $caminhoParte);
-            $partes[] = $caminhoParte;
-        }
-
-        imagedestroy($imagemOriginal);
-        return $partes;
-    }
-
 
     public function sqlDiario()
     {
