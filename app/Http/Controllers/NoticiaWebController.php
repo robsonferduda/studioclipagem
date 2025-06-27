@@ -36,6 +36,7 @@ class NoticiaWebController extends Controller
     {
         Session::put('sub-menu','noticias-web');
 
+        $estados = Estado::orderBy('nm_estado')->get();
         $fontes = FonteWeb::orderBy('nome')->get();
         $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
 
@@ -43,7 +44,7 @@ class NoticiaWebController extends Controller
         $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
         $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
         $cliente_selecionado = ($request->cliente) ? $request->cliente : null;
-        $fonte = ($request->fontes) ? $request->fontes : null;
+        $fonte = ($request->fonte) ? $request->fonte : null;
         $termo = ($request->termo) ? $request->termo : null;
 
         $dados = NoticiaWeb::with('fonte')
@@ -64,7 +65,7 @@ class NoticiaWebController extends Controller
                     ->orderBy('created_at', 'DESC')
                     ->paginate(50);
 
-        return view('noticia-web/index', compact('dados','fontes','clientes','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo'));
+        return view('noticia-web/index', compact('dados','fontes','clientes','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo','estados'));
     }
 
     public function coletas(Request $request)
