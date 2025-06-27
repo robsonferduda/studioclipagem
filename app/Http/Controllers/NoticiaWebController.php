@@ -41,7 +41,7 @@ class NoticiaWebController extends Controller
         $fontes = FonteWeb::orderBy('nome')->get();
         $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
         $usuarios = User::whereHas('role', function($q){
-                            return $q->whereIn('role_id', ['5']);
+                            return $q->whereIn('role_id', ['5','8']);
                         })
                         ->orderBy('name')
                         ->get();
