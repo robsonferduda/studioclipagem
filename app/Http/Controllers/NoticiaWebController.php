@@ -66,7 +66,8 @@ class NoticiaWebController extends Controller
                     })
                     ->when($termo, function ($query) use ($termo) {
                         return $query->whereHas('conteudo', function($q) use ($termo) {
-                            $q->where('conteudo', 'ILIKE', '%'.trim($termo).'%');
+                            $q->where('conteudo', 'ILIKE', '%'.trim($termo).'%')
+                              ->orWhere('titulo_noticia', 'ILIKE', '%'.trim($termo).'%');
                         });
                     })
                     ->when($fonte_selecionada, function ($q) use ($fonte_selecionada) {
