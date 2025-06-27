@@ -44,7 +44,7 @@ class NoticiaWebController extends Controller
         $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
         $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
         $cliente_selecionado = ($request->cliente) ? $request->cliente : null;
-        $fonte = ($request->fonte) ? $request->fonte : null;
+        $fonte_selecionada = ($request->fonte) ? $request->fonte : null;
         $termo = ($request->termo) ? $request->termo : null;
 
         $dados = NoticiaWeb::with('fonte')
@@ -60,12 +60,15 @@ class NoticiaWebController extends Controller
                             $q->where('conteudo', 'ILIKE', '%'.trim($termo).'%');
                         });
                     })
+                    ->when($fonte_selecionada, function ($q) use ($fonte_selecionada) {
+                        return $q->where('id_fonte', $fonte_selecionada);
+                    })
                     ->whereBetween($tipo_data, [$dt_inicial." 00:00:00", $dt_final." 23:59:59"])
                     ->where('fl_boletim', true)
                     ->orderBy('created_at', 'DESC')
                     ->paginate(50);
 
-        return view('noticia-web/index', compact('dados','fontes','clientes','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo','estados'));
+        return view('noticia-web/index', compact('dados','fontes','clientes','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte_selecionada','termo','estados'));
     }
 
     public function coletas(Request $request)
