@@ -51,7 +51,7 @@
                                         <label>Fonte <span class="text-danger"></label>
                                         <input type="hidden" name="fonte" id="id_fonte" value="">
                                         <div class="input-group">
-                                            <input type="text" class="form-control" style="height: 40px;" id="nome_fonte" placeholder="Selecione uma fonte" value="" readonly required>
+                                            <input type="text" class="form-control" style="height: 40px;" id="nome_fonte" placeholder="Selecione uma fonte" value="" readonly>
                                             <div class="input-group-append">
                                                 <button type="button" style="margin: 0px;" class="btn btn-primary" data-toggle="modal" data-target="#modalFonte">Buscar Fonte</button>
                                             </div>
@@ -78,6 +78,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-12 checkbox-radios mb-0">
+                                    <a href="{{ url('noticia/web') }}" class="btn btn-warning btn-limpar mb-3"><i class="fa fa-refresh"></i> Limpar</a>
                                     <button type="submit" id="btn-find" class="btn btn-primary mb-3"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
