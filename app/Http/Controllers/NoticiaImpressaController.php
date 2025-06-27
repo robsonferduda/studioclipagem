@@ -74,8 +74,12 @@ class NoticiaImpressaController extends Controller
                             });
                     })
                     ->when($termo, function ($q) use ($termo) {
-                        return $q->where('sinopse', 'ILIKE', ' '.trim($termo).' ')
-                                 ->orWhere('titulo', 'ilike', ' '.trim($termo).' ');
+
+                        // Regex: palavra exata, início, meio ou fim
+                        $regex = '(^|\s)'.preg_quote($termo, '/').'(\s|$)';
+
+                        return $q->where('sinopse', '~*', $regex)
+                                ->orWhere('titulo', '~*', $regex);
                     })
                     ->when($fonte_selecionada, function ($q) use ($fonte_selecionada) {
                         return $q->where('id_fonte', $fonte_selecionada);
