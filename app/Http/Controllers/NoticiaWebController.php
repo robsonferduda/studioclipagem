@@ -7,6 +7,7 @@ use Auth;
 use Storage;
 use App\Utils;
 use Carbon\Carbon;
+use App\User;
 use App\Models\Tag;
 use App\Models\Cliente;
 use Laracasts\Flash\Flash;
@@ -39,13 +40,21 @@ class NoticiaWebController extends Controller
         $estados = Estado::orderBy('nm_estado')->get();
         $fontes = FonteWeb::orderBy('nome')->get();
         $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
+        $usuarios = User::whereHas('role', function($q){
+                            return $q->whereIn('role_id', ['5']);
+                        })
+                        ->orderBy('name')
+                        ->get();
 
         $tipo_data = ($request->tipo_data) ? $request->tipo_data : 'data_insert';
         $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
         $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
         $cliente_selecionado = ($request->cliente) ? $request->cliente : null;
+        $sentimento = ($request->sentimento) ? $request->sentimento : null;
         $fonte_selecionada = ($request->fonte) ? $request->fonte : null;
+        $area_selecionada = ($request->cd_area) ? $request->cd_area : null;
         $termo = ($request->termo) ? $request->termo : null;
+        $usuario = ($request->usuario) ? $request->usuario : null;
 
         $dados = NoticiaWeb::with('fonte')
                     ->when($cliente_selecionado, function ($query) use ($cliente_selecionado) { 
@@ -63,12 +72,20 @@ class NoticiaWebController extends Controller
                     ->when($fonte_selecionada, function ($q) use ($fonte_selecionada) {
                         return $q->where('id_fonte', $fonte_selecionada);
                     })
+                    ->when($usuario, function ($q) use ($usuario) {
+
+                        if($usuario == "S"){
+                            return $q->whereNull('cd_usuario');
+                        }else{
+                            return $q->where('cd_usuario', $usuario);
+                        }
+                    })
                     ->whereBetween($tipo_data, [$dt_inicial." 00:00:00", $dt_final." 23:59:59"])
                     ->where('fl_boletim', true)
                     ->orderBy('created_at', 'DESC')
                     ->paginate(50);
 
-        return view('noticia-web/index', compact('dados','fontes','clientes','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte_selecionada','termo','estados'));
+        return view('noticia-web/index', compact('dados','fontes','clientes','tipo_data','dt_inicial','dt_final','cliente_selecionado','sentimento','fonte_selecionada','termo','usuarios','usuario','estados','area_selecionada'));
     }
 
     public function coletas(Request $request)

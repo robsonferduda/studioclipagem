@@ -69,12 +69,44 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Área do Cliente</label>
+                                        <input type="hidden" name="area_selecionada" id="area_selecionada" value="{{ ($area_selecionada) ? $area_selecionada : 0 }}">
+                                        <select class="form-control area" name="cd_area" id="cd_area" disabled>
+                                            <option value="0">Selecione uma área</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Sentimento</label>
+                                        <select class="form-control" name="sentimento" id="sentimento">
+                                            <option value="">Selecione um sentimento</option>
+                                            <option value="1" {{ ($sentimento == '1') ? 'selected' : '' }}>Positivo</option>
+                                            <option value="0" {{ ($sentimento == '0') ? 'selected' : '' }}>Neutro</option>
+                                            <option value="-1" {{ ($sentimento == '-1') ? 'selected' : '' }}>Negativo</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-12 col-sm-12">
+                                <div class="col-md-6 col-sm-6">
                                     <div class="form-group">
                                         <label>Buscar por <span class="text-primary">Digite o termo ou expressão de busca</span></label>
                                         <input type="text" class="form-control" name="termo" id="termo" minlength="3" placeholder="Termo" value="{{ $termo }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Responsável pelo cadastro</label>
+                                        <select class="form-control" name="usuario" id="usuario">
+                                            <option value="">Selecione um usuário</option>
+                                            <option value="S" {{ ($usuario == 'S') ? 'selected' : '' }}>Sistema</option>
+                                            @foreach ($usuarios as $user)
+                                                <option value="{{ $user->id }}" {{ ($usuario == $user->id) ? 'selected' : '' }}>{{ $user->name }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-md-12 checkbox-radios mb-0">
