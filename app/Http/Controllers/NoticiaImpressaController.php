@@ -74,8 +74,8 @@ class NoticiaImpressaController extends Controller
                             });
                     })
                     ->when($termo, function ($q) use ($termo) {
-                        return $q->where('sinopse', 'ilike', "trim($termo)")
-                                  ->orWhere('titulo', 'ilike', "trim($termo)");
+                        return $q->where('sinopse', 'ilike', "% trim($termo) %")
+                                  ->orWhere('titulo', 'ilike', "% trim($termo) %");
                     })
                     ->when($fonte_selecionada, function ($q) use ($fonte_selecionada) {
                         return $q->where('id_fonte', $fonte_selecionada);
