@@ -146,7 +146,7 @@
                                                     <h6 class="text-muted mb-1">{{ \Carbon\Carbon::parse($noticia->dt_pub)->format('d/m/Y') }} - {{ ($noticia->fonte) ? $noticia->fonte->nome : '' }}  {{ ($noticia->id_sessao_impresso) ? "- ".$noticia->secao->ds_sessao : '' }}</h6> 
                                                     <p class="mb-1">
                                                         @if($noticia->nu_pagina_atual)
-                                                            Página <strong>{{ $noticia->nu_pagina_atual }}</strong>/<strong>{{ $noticia->nu_paginas_total }}</strong>
+                                                            Página <strong>{{ $noticia->nu_pagina_atual }}</strong></strong>
                                                         @else
                                                             <span class="text-danger">Página não informada</span>
                                                         @endif
