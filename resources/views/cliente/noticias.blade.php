@@ -198,6 +198,9 @@
                                     <p style="text-transform: uppercase; font-weight: 600;">{!! $tipo_formatado !!}</p>                            
                                     <h6 style="font-weight: 600;">{{ $noticia->titulo }}</h6>
                                     <h6 style="font-weight: 600;" class="text-muted">{{ $noticia->data_formatada }} - {{ $noticia->fonte }} {{ ($noticia->programa) ? " - ".$noticia->programa : '' }}</h6>
+                                    <p class="mb-1">
+                                        <strong>Retorno de Mídia: </strong>{{ ($noticia->valor_retorno) ? "R$ ".$noticia->valor_retorno : '--' }}
+                                    </p>
                                     <p class="mb-2">
                                         <span>{{ $noticia->cliente }}</span>
                                         @if($cliente->fl_sentimento_cli)
