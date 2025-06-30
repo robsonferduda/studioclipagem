@@ -436,4 +436,38 @@ class NoticiaImpressaController extends Controller
 
         return redirect('noticias/impresso')->withInput();
     }
+
+    public function calcularValorRetornoImpresso()
+    {
+        $noticias = NoticiaImpresso::whereNotNull('nu_colunas')
+            ->whereNotNull('nu_altura')
+            ->whereNotNull('local_impressao')
+            ->whereNotNull('id_fonte')
+            ->get();
+
+        foreach ($noticias as $noticia) {
+            $colunaAlvo = $noticia->local_impressao;
+
+            // Busca a fonte (jornal)
+            $jornal = FonteImpressa::find($noticia->id_fonte);
+
+            if (!$jornal || !isset($jornal->$colunaAlvo)) {
+                continue; // pula se não encontrar valor correspondente
+            }
+
+            $valorCm = $jornal->$colunaAlvo;
+
+            if (!is_numeric($valorCm)) {
+                continue; // ignora valores inválidos
+            }
+
+            $valorRetorno = $noticia->nu_colunas * $noticia->nu_altura * $valorCm;
+
+            // Atualiza apenas se o valor for positivo
+            $noticia->valor_retorno = $valorRetorno;
+            $noticia->save();
+        }
+
+        return response()->json(['status' => 'ok', 'atualizadas' => $noticias->count()]);
+    }
 }
