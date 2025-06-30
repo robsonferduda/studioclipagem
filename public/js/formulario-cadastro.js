@@ -32,7 +32,7 @@ $(document).ready(function() {
                 
         var retorno = 0;
         var valor = ($("#nu_valor_fonte").val()) ? $("#nu_valor_fonte").val() : 1;
-        var largura = ($("#nu_largura").val()) ? $("#nu_largura").val() : 1;
+        var largura = ($("#nu_altura").val()) ? $("#nu_altura").val() : 1;
         var colunas = ($("#nu_colunas").val()) ? $("#nu_colunas").val() : 1;
 
         retorno = valor * largura * colunas;
