@@ -774,7 +774,7 @@ class NoticiaWebController extends Controller
             ->chunk(500, function ($noticiaClientes) use (&$totalAtualizadas) {
                 foreach ($noticiaClientes as $nc) {
 
-                    $noticia = NoticiaWeb::find($nc->noticia_id)->whereNull('nu_valor')->first();
+                    $noticia = NoticiaWeb::where('id', $nc->noticia_id)->whereNull('nu_valor')->first();
 
                     if (!$noticia || $noticia->nu_valor !== null) {
                         continue;
