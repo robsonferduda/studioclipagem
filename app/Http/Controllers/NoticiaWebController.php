@@ -770,9 +770,11 @@ class NoticiaWebController extends Controller
 
         NoticiaCliente::where('tipo_id', 2)
             ->whereNotNull('noticia_id')
+            ->where('created_at', '>=', Carbon::now()->subDays(60))
             ->chunk(500, function ($noticiaClientes) use (&$totalAtualizadas) {
                 foreach ($noticiaClientes as $nc) {
-                    $noticia = NoticiaWeb::find($nc->noticia_id);
+
+                    $noticia = NoticiaWeb::find($nc->noticia_id)->whereNull('nu_valor')->first();
 
                     if (!$noticia || $noticia->nu_valor !== null) {
                         continue;
