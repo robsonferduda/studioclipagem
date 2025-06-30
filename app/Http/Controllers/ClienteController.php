@@ -586,7 +586,7 @@ class ClienteController extends Controller
                     'imagem' as tipo_midia,
                     ds_caminho_img as midia,
                     url_noticia,
-                    nu_valor as valor_retorno
+                    t1.nu_valor as valor_retorno
                 FROM noticias_web t1
                 JOIN fonte_web t2 ON t2.id = t1.id_fonte
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 2
