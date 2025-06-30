@@ -323,9 +323,9 @@
             });  
         });
 
-        var id_fonte_selecionada = $("#id_fonte_selecionada").val();
+        var id_fonte = $("#id_fonte").val();
 
-        if(id_fonte_selecionada){
+        if(id_fonte){
             $("#id_fonte").trigger("change");
         }
 
