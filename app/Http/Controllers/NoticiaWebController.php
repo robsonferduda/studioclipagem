@@ -763,4 +763,36 @@ class NoticiaWebController extends Controller
 
         return redirect()->back();
     }
+
+    public function calcularValorRetornoWeb()
+    {
+        $totalAtualizadas = 0;
+
+        NoticiaCliente::where('tipo_id', 2)
+            ->whereNotNull('noticia_id')
+            ->chunk(500, function ($noticiaClientes) use (&$totalAtualizadas) {
+                foreach ($noticiaClientes as $nc) {
+                    $noticia = NoticiaWeb::find($nc->noticia_id);
+
+                    if (!$noticia || $noticia->nu_valor !== null) {
+                        continue;
+                    }
+
+                    $fonte = FonteWeb::find($noticia->id_fonte);
+
+                    if (!$fonte || !is_numeric($fonte->nu_valor)) {
+                        continue;
+                    }
+
+                    $noticia->nu_valor = $fonte->nu_valor;
+                    $noticia->save();
+                    $totalAtualizadas++;
+                }
+            });
+
+        return response()->json([
+            'status' => 'ok',
+            'total_atualizadas' => $totalAtualizadas
+        ]);
+    }
 }

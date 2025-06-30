@@ -235,6 +235,7 @@ Route::middleware(['web'])->group(function () {
 	Route::match(array('GET', 'POST'),'noticia/web/prints','NoticiaWebController@prints');
 	Route::match(array('GET', 'POST'),'buscar-web','NoticiaWebController@index');
 	Route::resource('noticia-web','NoticiaWebController');
+	Route::get('noticia/web/atualiza-retorno','NoticiaWebController@calcularValorRetornoWeb');
 
 	Route::get('noticia/impresso/clientes/{noticia}','NoticiaImpressaController@clientes');
 	
