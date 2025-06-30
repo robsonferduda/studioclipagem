@@ -963,9 +963,9 @@ class PDFGenerator:
             
             if cidade not in cidade_summary:
                 cidade_summary[cidade] = {
-                    'Positivo': {'quantidade': 0, 'valor': 0, 'tempo_segundos': 0},
-                    'Negativo': {'quantidade': 0, 'valor': 0, 'tempo_segundos': 0},
-                    'Neutro': {'quantidade': 0, 'valor': 0, 'tempo_segundos': 0}
+                    '1': {'quantidade': 0, 'valor': 0, 'tempo_segundos': 0},
+                    '-1': {'quantidade': 0, 'valor': 0, 'tempo_segundos': 0},
+                    '0': {'quantidade': 0, 'valor': 0, 'tempo_segundos': 0}
                 }
             
             cidade_summary[cidade][sentimento]['quantidade'] += quantidade
@@ -1927,7 +1927,7 @@ class PDFGenerator:
             
             # 2. Status detalhado por mídia
             # TV
-            if 'tvx' in tipos_midia_filtrados:
+            if 'tv' in tipos_midia_filtrados:
                 status_tv_data = database_manager.get_status_tv_detalhado(usuario_id, data_inicio, data_fim, filtros)
                 if not status_tv_data.empty:
                     tv_status_tables = self._create_status_detalhado_table(status_tv_data, "TV")

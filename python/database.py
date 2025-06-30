@@ -10,6 +10,7 @@ from datetime import datetime
 from config import DB_CONFIG
 
 class DatabaseManager:
+
     def __init__(self):
         self.connection = None
     
@@ -672,6 +673,218 @@ class DatabaseManager:
                 'Web': []
             }
 
+
+    def get_retornos_web(self, usuario_id, data_inicio, data_fim, filtros=None):
+        """
+        Busca dados de retorno de Web para a tabela de retorno no PDF (estrutura nova)
+
+        Returns:
+            pd.DataFrame: DataFrame com colunas: data_clipagem, site, secao, valor
+        """
+        if not self.connection:
+            self.connect()
+
+        cursor = self.connection.cursor()
+
+        try:
+            if not filtros:
+                filtros = {}
+
+            tipos_midia = filtros.get('tipos_midia', ['web', 'tv', 'radio', 'impresso'])
+            status_filtros = filtros.get('status', ['-1', '0', '1'])
+            areas_filtros = filtros.get('areas', [])
+
+            if 'web' not in tipos_midia:
+                return pd.DataFrame(columns=['data_clipagem', 'site', 'secao', 'valor'])
+
+            def _build_status_condition(table_prefix=""):
+                if set(status_filtros) == {'-1', '0', '1'}:
+                    return ""
+                status_list = ','.join(str(s) for s in status_filtros)
+                return f" AND {table_prefix}status IN ({status_list})"
+
+            def _build_area_condition(table_prefix=""):
+                if areas_filtros:
+                    area_ids = ','.join(map(str, areas_filtros))
+                    return f" AND {table_prefix}id_area IN ({area_ids})"
+                return ""
+
+            query = f"""
+                SELECT 
+                    w.data_noticia,
+                    COALESCE(ws.nome, 'Site Não Identificado') AS site,
+                    COALESCE(js.ds_sessao, 'Geral') AS secao,
+                    COALESCE(w.nu_valor, 0) AS valor
+                FROM noticias_web w
+                LEFT JOIN fonte_web ws ON w.id_fonte = ws.id
+                INNER JOIN noticia_cliente nc ON nc.noticia_id = w.id AND nc.tipo_id = '2'
+                LEFT JOIN sessao_web js ON w.id_sessao_web = js.id_sessao_web
+                WHERE nc.cliente_id = %s
+                AND w.data_noticia BETWEEN %s AND %s
+                AND w.nu_valor IS NOT NULL
+                AND w.nu_valor > 0
+                {_build_status_condition('nc.')}
+                {_build_area_condition('nc.')}
+                ORDER BY w.data_noticia ASC, ws.nome ASC
+            """
+
+            cursor.execute(query, (usuario_id, data_inicio, data_fim))
+            data = cursor.fetchall()
+
+            df = pd.DataFrame(data, columns=['data_clipagem', 'site', 'secao', 'valor'])
+
+            if not df.empty:
+                df['valor'] = df['valor'].astype(float)
+
+            print(f"🌐 Retornos de Web encontrados: {len(df)}")
+            return df
+
+        except Exception as e:
+            print(f"❌ Erro ao buscar retornos de Web: {e}")
+            return pd.DataFrame(columns=['data_clipagem', 'site', 'secao', 'valor'])
+
+    def get_retornos_impresso(self, usuario_id, data_inicio, data_fim, filtros=None):
+        """
+        Busca dados de retorno de Mídia Impressa para a tabela de retorno no PDF (estrutura nova)
+
+        Returns:
+            pd.DataFrame: DataFrame com colunas: data_clipagem, jornal, secao, valor
+        """
+        if not self.connection:
+            self.connect()
+
+        cursor = self.connection.cursor()
+
+        try:
+            if not filtros:
+                filtros = {}
+
+            tipos_midia = filtros.get('tipos_midia', ['web', 'tv', 'radio', 'impresso'])
+            status_filtros = filtros.get('status', ['-1', '0', '1'])
+            areas_filtros = filtros.get('areas', [])
+
+            if 'impresso' not in tipos_midia:
+                return pd.DataFrame(columns=['data_clipagem', 'jornal', 'secao', 'valor'])
+
+            def _build_status_condition(table_prefix=""):
+                if set(status_filtros) == {'-1', '0', '1'}:
+                    return ""
+                status_list = ','.join(str(s) for s in status_filtros)
+                return f" AND {table_prefix}sentimento IN ({status_list})"
+
+            def _build_area_condition(table_prefix=""):
+                if areas_filtros:
+                    area_ids = ','.join(map(str, areas_filtros))
+                    return f" AND {table_prefix}area IN ({area_ids})"
+                return ""
+
+            query = f"""
+                SELECT 
+                    ni.dt_clipagem AS data_clipagem,
+                    COALESCE(ji.nome, 'Jornal Não Identificado') AS jornal,
+                    COALESCE(js.ds_sessao, 'Geral') AS secao,
+                    COALESCE(ni.valor_retorno, 0) AS valor
+                FROM noticia_cliente nc
+                INNER JOIN noticia_impresso ni ON ni.id = nc.noticia_id
+                LEFT JOIN jornal_online ji ON ni.id_fonte = ji.id
+                LEFT JOIN sessao_impresso js ON ni.id_sessao_impresso = js.id_sessao_impresso
+                WHERE nc.tipo_id = 1
+                AND nc.cliente_id = %s
+                AND ni.dt_clipagem BETWEEN %s AND %s
+                AND nc.deleted_at IS NULL
+                AND ni.valor_retorno IS NOT NULL
+                AND ni.valor_retorno > 0
+                {_build_status_condition('nc.')}
+                {_build_area_condition('nc.')}
+                ORDER BY ni.dt_clipagem ASC, ji.nome ASC
+            """
+
+            cursor.execute(query, (usuario_id, data_inicio, data_fim))
+            data = cursor.fetchall()
+
+            df = pd.DataFrame(data, columns=['data_clipagem', 'jornal', 'secao', 'valor'])
+
+            if not df.empty:
+                df['valor'] = df['valor'].astype(float)
+
+            print(f"📰 Retornos de Mídia Impressa encontrados: {len(df)}")
+            return df
+
+        except Exception as e:
+            print(f"❌ Erro ao buscar retornos de Mídia Impressa: {e}")
+            return pd.DataFrame(columns=['data_clipagem', 'jornal', 'secao', 'valor'])
+
+
+
+    def get_retornos_radio(self, usuario_id, data_inicio, data_fim, filtros=None):
+        """
+        Busca dados de retorno de Rádio para a tabela de retorno no PDF (estrutura nova)
+
+        Returns:
+            pd.DataFrame: DataFrame com colunas: data_clipagem, emissora, programa, valor
+        """
+        if not self.connection:
+            self.connect()
+
+        cursor = self.connection.cursor()
+
+        try:
+            if not filtros:
+                filtros = {}
+
+            tipos_midia = filtros.get('tipos_midia', ['web', 'tv', 'radio', 'impresso'])
+            status_filtros = filtros.get('status', ['-1', '0', '1'])
+            areas_filtros = filtros.get('areas', [])
+
+            if 'radio' not in tipos_midia:
+                return pd.DataFrame(columns=['data_clipagem', 'emissora', 'programa', 'valor'])
+
+            def _build_status_condition(table_prefix=""):
+                if set(status_filtros) == {'-1', '0', '1'}:
+                    return ""
+                status_list = ','.join(str(s) for s in status_filtros)
+                return f" AND {table_prefix}sentimento IN ({status_list})"
+
+            def _build_area_condition(table_prefix=""):
+                if areas_filtros:
+                    area_ids = ','.join(map(str, areas_filtros))
+                    return f" AND {table_prefix}id_area IN ({area_ids})"
+                return ""
+
+            query = f"""
+                SELECT 
+                    r.dt_clipagem,
+                    COALESCE(e.nome_emissora, 'Emissora Não Identificada') AS emissora,
+                    COALESCE(p.nome_programa, 'Programa Não Identificado') AS programa,
+                    COALESCE(EXTRACT(EPOCH FROM r.duracao) * p.valor_segundo, 0) AS valor
+                FROM noticia_cliente nc
+                INNER JOIN noticia_radio r ON r.id = nc.noticia_id
+                LEFT JOIN emissora_radio e ON r.emissora_id = e.id
+                LEFT JOIN programa_emissora_radio p ON r.programa_id = p.id
+                WHERE nc.tipo_id = '3'
+                AND nc.cliente_id = %s
+                AND r.dt_clipagem BETWEEN %s AND %s
+                AND r.duracao IS NOT NULL
+                {_build_status_condition('nc.')}
+                {_build_area_condition('nc.')}
+                ORDER BY r.dt_clipagem ASC, e.nome_emissora ASC, p.nome_programa ASC
+            """
+
+            cursor.execute(query, (usuario_id, data_inicio, data_fim))
+            data = cursor.fetchall()
+
+            df = pd.DataFrame(data, columns=['data_clipagem', 'emissora', 'programa', 'valor'])
+            if not df.empty:
+                df['valor'] = df['valor'].astype(float)
+
+            print(f"📻 Retornos de Rádio encontrados: {len(df)}")
+            return df
+
+        except Exception as e:
+            print(f"❌ Erro ao buscar retornos de Rádio: {e}")
+            return pd.DataFrame(columns=['data_clipagem', 'emissora', 'programa', 'valor'])
+
+
     def get_retornos_tv(self, usuario_id, data_inicio, data_fim, filtros=None):
         """
         Busca dados de retorno de TV para a tabela de retorno no PDF (nova estrutura)
@@ -745,6 +958,135 @@ class DatabaseManager:
             print(f"❌ Erro ao buscar retornos de TV: {e}")
             return pd.DataFrame(columns=['data_clipagem', 'emissora', 'programa', 'valor'])
 
+    def get_sentimentos_web(self, usuario_id, data_inicio, data_fim, filtros=None):
+        """Busca dados de sentimento de Web agrupados por cidade"""
+        if not self.connection:
+            self.connect()
+
+        cursor = self.connection.cursor()
+
+        try:
+            query = """
+                SELECT 
+                    COALESCE(c.nm_cidade, CONCAT('Cidade ID: ', nw.cd_cidade)) AS cidade,
+                    nc.sentimento,
+                    COUNT(*) AS quantidade,
+                    SUM(COALESCE(nw.nu_valor, 0)) AS valor
+                FROM noticia_cliente nc
+                INNER JOIN noticias_web nw ON nw.id = nc.noticia_id
+                LEFT JOIN cidade c ON nw.cd_cidade = c.cd_cidade
+                WHERE nc.tipo_id = 2
+                AND nc.cliente_id = %s
+                AND nw.data_noticia BETWEEN %s AND %s
+                AND nc.deleted_at IS NULL
+                AND nc.sentimento IS NOT NULL
+                GROUP BY nw.cd_cidade, c.nm_cidade, nc.sentimento
+                ORDER BY cidade ASC, nc.sentimento ASC
+            """
+
+            cursor.execute(query, (usuario_id, data_inicio, data_fim))
+            data = cursor.fetchall()
+
+            df = pd.DataFrame(data, columns=['cidade', 'sentimento', 'quantidade', 'valor'])
+
+            if not df.empty:
+                df['quantidade'] = df['quantidade'].astype(int)
+                df['valor'] = pd.to_numeric(df['valor'], errors='coerce').fillna(0).astype(float)
+
+            print(f"🌐 Dados de sentimento Web encontrados: {len(df)}")
+            return df
+
+        except Exception as e:
+            print(f"❌ Erro ao buscar sentimentos Web: {e}")
+            return pd.DataFrame(columns=['cidade', 'sentimento', 'quantidade', 'valor'])
+
+
+    def get_sentimentos_radio(self, usuario_id, data_inicio, data_fim, filtros=None):
+        """Busca dados de sentimento de Rádio agrupados por cidade (nova estrutura)"""
+        if not self.connection:
+            self.connect()
+        
+        cursor = self.connection.cursor()
+
+        try:
+            query = """
+                SELECT 
+                    COALESCE(c.nm_cidade, CONCAT('Cidade ID: ', r.cd_cidade)) as cidade,
+                    nc.sentimento as sentimento,
+                    COUNT(*) as quantidade,
+                    SUM(EXTRACT(EPOCH FROM r.duracao)) as tempo_segundos,
+                    SUM(EXTRACT(EPOCH FROM r.duracao) * p.nu_valor) as valor
+                FROM noticia_radio r
+                INNER JOIN noticia_cliente nc ON nc.noticia_id = r.id AND nc.tipo_id = '3'
+                LEFT JOIN emissora_radio p ON r.emissora_id = p.id
+                LEFT JOIN cidade c ON r.cd_cidade = c.cd_cidade
+                WHERE nc.cliente_id = %s
+                AND r.dt_clipagem BETWEEN %s AND %s
+                AND nc.sentimento IS NOT NULL
+                GROUP BY r.cd_cidade, c.nm_cidade, nc.sentimento
+                ORDER BY cidade ASC, sentimento ASC
+            """
+
+            cursor.execute(query, (usuario_id, data_inicio, data_fim))
+            data = cursor.fetchall()
+
+            df = pd.DataFrame(data, columns=['cidade', 'sentimento', 'quantidade', 'tempo_segundos', 'valor'])
+
+            if not df.empty:
+                df['quantidade'] = df['quantidade'].astype(int)
+                df['tempo_segundos'] = pd.to_numeric(df['tempo_segundos'], errors='coerce').fillna(0).astype(int)
+                df['valor'] = pd.to_numeric(df['valor'], errors='coerce').fillna(0).astype(float)
+                df['tempo'] = df['tempo_segundos'].apply(self._seconds_to_time_format)
+
+            print(f"📻 Dados de sentimento Rádio encontrados: {len(df)}")
+            return df
+
+        except Exception as e:
+            print(f"❌ Erro ao buscar sentimentos Rádio: {e}")
+            return pd.DataFrame(columns=['cidade', 'sentimento', 'quantidade', 'tempo_segundos', 'valor', 'tempo'])
+
+    def get_sentimentos_impresso(self, usuario_id, data_inicio, data_fim, filtros=None):
+        """Busca dados de sentimento de Impresso agrupados por cidade"""
+        if not self.connection:
+            self.connect()
+
+        cursor = self.connection.cursor()
+
+        try:
+            query = """
+                SELECT 
+                    COALESCE(c.nm_cidade, CONCAT('Cidade ID: ', ni.cd_cidade)) AS cidade,
+                    nc.sentimento,
+                    COUNT(*) AS quantidade,
+                    SUM(COALESCE(ni.valor_retorno, 0)) AS valor
+                FROM noticia_cliente nc
+                INNER JOIN noticia_impresso ni ON ni.id = nc.noticia_id
+                LEFT JOIN cidade c ON ni.cd_cidade = c.cd_cidade
+                WHERE nc.tipo_id = 1
+                AND nc.cliente_id = %s
+                AND ni.dt_clipagem BETWEEN %s AND %s
+                AND nc.deleted_at IS NULL
+                AND nc.sentimento IS NOT NULL
+                GROUP BY ni.cd_cidade, c.nm_cidade, nc.sentimento
+                ORDER BY cidade ASC, nc.sentimento ASC
+            """
+
+            cursor.execute(query, (usuario_id, data_inicio, data_fim))
+            data = cursor.fetchall()
+
+            df = pd.DataFrame(data, columns=['cidade', 'sentimento', 'quantidade', 'valor'])
+
+            if not df.empty:
+                df['quantidade'] = df['quantidade'].astype(int)
+                df['valor'] = pd.to_numeric(df['valor'], errors='coerce').fillna(0).astype(float)
+
+            print(f"📰 Dados de sentimento Impresso encontrados: {len(df)}")
+            return df
+
+        except Exception as e:
+            print(f"❌ Erro ao buscar sentimentos Impresso: {e}")
+            return pd.DataFrame(columns=['cidade', 'sentimento', 'quantidade', 'valor'])
+
     def get_sentimentos_tv(self, usuario_id, data_inicio, data_fim, filtros=None):
         """Busca dados de sentimento de TV agrupados por cidade (nova estrutura)"""
         if not self.connection:
@@ -802,6 +1144,136 @@ class DatabaseManager:
         except Exception as e:
             print(f"❌ Erro ao buscar sentimentos TV: {e}")
             return pd.DataFrame(columns=['cidade', 'sentimento', 'quantidade', 'tempo_segundos', 'valor', 'tempo'])
+
+    def get_status_web_detalhado(self, usuario_id, data_inicio, data_fim, filtros=None):
+        """Busca status detalhado de Web com numeração, data e status (estrutura nova)"""
+        if not self.connection:
+            self.connect()
+
+        cursor = self.connection.cursor()
+
+        try:
+            query = """
+                SELECT nw.data_noticia AS data, nc.sentimento AS status
+                FROM noticia_cliente nc
+                INNER JOIN noticias_web nw ON nw.id = nc.noticia_id
+                WHERE nc.tipo_id = 2
+                AND nc.cliente_id = %s
+                AND nw.data_noticia BETWEEN %s AND %s
+                AND nc.deleted_at IS NULL
+                AND nc.sentimento IS NOT NULL
+                ORDER BY nw.data_noticia ASC
+            """
+
+            cursor.execute(query, (usuario_id, data_inicio, data_fim))
+            data = cursor.fetchall()
+
+            df = pd.DataFrame(data, columns=['data', 'status'])
+
+            print(f"🌐 Status detalhado Web encontrados: {len(df)}")
+            return df
+
+        except Exception as e:
+            print(f"❌ Erro ao buscar status detalhado Web: {e}")
+            return pd.DataFrame(columns=['data', 'status'])
+
+    def get_status_radio_detalhado(self, usuario_id, data_inicio, data_fim, filtros=None):
+        
+        """Busca status detalhado de Rádio com data e status, com base na nova estrutura"""
+        if not self.connection:
+            self.connect()
+
+        cursor = self.connection.cursor()
+
+        try:
+            query = """
+                SELECT 
+                    r.dt_clipagem AS data,
+                    nc.sentimento
+                FROM noticia_radio r
+                INNER JOIN noticia_cliente nc ON nc.noticia_id = r.id AND nc.tipo_id = '3'
+                WHERE nc.cliente_id = %s
+                AND r.dt_clipagem BETWEEN %s AND %s
+                AND nc.sentimento IS NOT NULL
+                ORDER BY r.dt_clipagem ASC
+            """
+
+            cursor.execute(query, (usuario_id, data_inicio, data_fim))
+            data = cursor.fetchall()
+
+            df = pd.DataFrame(data, columns=['data', 'status'])
+
+            print(f"📻 Status detalhado Rádio encontrados: {len(df)}")
+            return df
+
+        except Exception as e:
+            print(f"❌ Erro ao buscar status detalhado Rádio: {e}")
+            return pd.DataFrame(columns=['data', 'status'])
+
+    def get_status_impresso_detalhado(self, usuario_id, data_inicio, data_fim, filtros=None):
+        """Busca status detalhado de Mídia Impressa com data e status, com base na nova estrutura"""
+        if not self.connection:
+            self.connect()
+
+        cursor = self.connection.cursor()
+
+        try:
+            query = """
+                SELECT 
+                    ni.dt_clipagem AS data,
+                    nc.sentimento
+                FROM noticia_impresso ni
+                INNER JOIN noticia_cliente nc ON nc.noticia_id = ni.id AND nc.tipo_id = '1'
+                WHERE nc.cliente_id = %s
+                AND ni.dt_clipagem BETWEEN %s AND %s
+                AND nc.sentimento IS NOT NULL
+                ORDER BY ni.dt_clipagem ASC
+            """
+
+            cursor.execute(query, (usuario_id, data_inicio, data_fim))
+            data = cursor.fetchall()
+
+            df = pd.DataFrame(data, columns=['data', 'status'])
+
+            print(f"📰 Status detalhado Impresso encontrados: {len(df)}")
+            return df
+
+        except Exception as e:
+            print(f"❌ Erro ao buscar status detalhado Impresso: {e}")
+            return pd.DataFrame(columns=['data', 'status'])
+
+    def get_status_tv_detalhado(self, usuario_id, data_inicio, data_fim, filtros=None):
+        """Busca status detalhado de TV com numeração, data e status (estrutura nova)"""
+        if not self.connection:
+            self.connect()
+        
+        cursor = self.connection.cursor()
+        
+        try:
+            query = """
+                SELECT nt.dt_noticia AS data, nc.sentimento AS status
+                FROM noticia_cliente nc
+                INNER JOIN noticia_tv nt ON nt.id = nc.noticia_id
+                WHERE nc.tipo_id = 4
+                AND nc.cliente_id = %s
+                AND nt.dt_noticia BETWEEN %s AND %s
+                AND nc.deleted_at IS NULL
+                AND nc.sentimento IS NOT NULL
+                ORDER BY nt.dt_noticia ASC
+            """
+            
+            cursor.execute(query, (usuario_id, data_inicio, data_fim))
+            data = cursor.fetchall()
+            
+            df = pd.DataFrame(data, columns=['data', 'status'])
+            
+            print(f"📺 Status detalhado TV encontrados: {len(df)}")
+            return df
+            
+        except Exception as e:
+            print(f"❌ Erro ao buscar status detalhado TV: {e}")
+            return pd.DataFrame(columns=['data', 'status'])
+
 
     def get_status_resumo_por_midia(self, usuario_id, data_inicio, data_fim, filtros=None):
         """
@@ -896,10 +1368,11 @@ def test_database():
         print("❌ Não foi possível conectar ao banco")
         return
     
-    # Teste com cliente 418 no período de março de 2025
-    usuario_id = 418 
-    data_inicio = '2025-03-01'
-    data_fim = '2025-03-31'
+    # Teste com cliente 102 no período de janeiro a julho de 2025
+    usuario_id = 102 
+    data_inicio = '2025-01-01'
+    data_fim = '2025-07-31'
+    output_path = "./relatorios/relatorio_105_20250101_20250731.pdf"
     
     print(f"🔍 Testando consultas para usuário {usuario_id}")
     print(f"📅 Período: {data_inicio} até {data_fim}")
