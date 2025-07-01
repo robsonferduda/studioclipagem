@@ -159,7 +159,7 @@
                                                 <h6 style="color: #FF5722;">{{ ($dado->estado) ? $dado->estado->nm_estado : '' }}{{ ($dado->cidade) ? "/".$dado->cidae->nm_cidade : '' }}</h6> 
                                                 <p class="text-muted mb-1"> {!! ($dado->data_noticia) ? date('d/m/Y', strtotime($dado->data_noticia)) : date('d/m/Y', strtotime($dado->data_noticia)) !!} - {{ ($dado->fonte) ? $dado->fonte->nome : '' }}</p> 
                                                 <p class="mb-1">
-                                                    <strong>Retorno de Mídia: </strong>{{ ($dado->nu_valor) ? "R$ ".$dado->nu_valor : 'Não calculado' }}
+                                                    <strong>Retorno de Mídia: </strong>{{ ($dado->nu_valor) ? "R$ ".number_format($noticia->nu_valor, 2, ',', '.') : 'Não calculado' }}
                                                 </p> 
                                                 <div class="clientes-noticia clientes-noticia-{{ $dado->id }}" data-id="{{ $dado->id }}" data-tipo="2">
                                                         
