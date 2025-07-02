@@ -429,7 +429,9 @@ class NoticiaWebController extends Controller
         $data_noticia = ($request->data_noticia) ? $this->carbon->createFromFormat('d/m/Y', $request->data_noticia)->format('Y-m-d') : date("Y-m-d");
         $request->merge(['data_noticia' => $data_noticia]);
 
-        $ds_caminho_img = ($request->ds_caminho_img) ? ($request->ds_caminho_img) : $noticia->ds_caminho_img;
+        $ds_caminho_img_noticia = ($noticia and $noticia->ds_caminho_img ) ? $noticia->ds_caminho_img : '';
+
+        $ds_caminho_img = ($request->ds_caminho_img) ? ($request->ds_caminho_img) : $ds_caminho_img_noticia;
         $request->merge(['ds_caminho_img' => $ds_caminho_img]);
 
         $request->merge(['cd_usuario' => Auth::user()->id]);

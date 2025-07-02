@@ -129,7 +129,7 @@
                             <div class="col-md-12 col-sm-12">
                                 <div class="form-group">
                                     <label>Retorno</label>
-                                    <input type="text" class="form-control retorno_midia" name="valor_retorno" id="valor_retorno" placeholder="Retorno" value="{{ old('valor_retorno') }}">
+                                    <input type="text" class="form-control retorno_midia" name="valor_retorno" id="valor_retorno" placeholder="Retorno" value="{{ ($dados and $dados->valor_retorno) ? $dados->valor_retorno : old('valor_retorno') }}">
                                 </div>                                    
                             </div>
                         </div>

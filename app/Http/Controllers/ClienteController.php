@@ -496,7 +496,8 @@ class ClienteController extends Controller
                     t3.sentimento,
                     'imagem' as tipo_midia,
                     ds_caminho_img as midia,
-                    '' as url_noticia
+                    '' as url_noticia,
+                    valor_retorno as valor_retorno
                 FROM noticia_impresso t1
                 JOIN jornal_online t2 ON t2.id = t1.id_fonte
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 1
@@ -539,7 +540,8 @@ class ClienteController extends Controller
                     t3.sentimento,
                     'audio' as tipo_midia,
                     ds_caminho_audio as midia,
-                     '' as url_noticia
+                     '' as url_noticia,
+                    valor_retorno as valor_retorno
                 FROM noticia_radio t1
                 JOIN emissora_radio t2 ON t2.id = t1.emissora_id
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 3
@@ -583,7 +585,8 @@ class ClienteController extends Controller
                     t3.sentimento,
                     'imagem' as tipo_midia,
                     ds_caminho_img as midia,
-                    url_noticia
+                    url_noticia,
+                    t1.nu_valor as valor_retorno
                 FROM noticias_web t1
                 JOIN fonte_web t2 ON t2.id = t1.id_fonte
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 2
@@ -647,7 +650,8 @@ class ClienteController extends Controller
                     t3.sentimento,
                     'imagem' as tipo_midia,
                     ds_caminho_video as midia,
-                    '' as url_noticia
+                    '' as url_noticia,
+                    valor_retorno as valor_retorno
                 FROM noticia_tv t1
                 JOIN emissora_web t2 ON t2.id = t1.emissora_id
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 4

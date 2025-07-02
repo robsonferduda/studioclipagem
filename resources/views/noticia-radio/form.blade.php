@@ -96,7 +96,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <input type="hidden" name="cd_emissora" id="cd_emissora" value="{{ ($noticia and $noticia->emissora_id) ? $noticia->emissora_id : 0  }}">
-                                        <label>Emissora <span class="text-danger">Obrigatório </span><span class="text-info" id="valor_segundo"></span></label>
+                                        <label>Emissora <span class="text-danger">Obrigatório </span><span class="text-info" id="valor_segundo" data-valor=""></span></label>
                                         <select class="form-control select2" name="emissora_id" id="emissora_id" required="true">
                                             <option value="">Selecione uma emissora</option>
                                             @foreach ($emissoras as $emissora)
@@ -127,7 +127,7 @@
                                  <div class="col-md-12 col-sm-12">
                                     <div class="form-group">
                                         <label>Retorno</label>
-                                        <input type="text" class="form-control retorno_midia" name="valor_retorno" id="valor_retorno" placeholder="Retorno" value="{{ old('valor_retorno') }}">
+                                        <input type="text" class="form-control retorno_midia" name="valor_retorno" id="valor_retorno" placeholder="Retorno" value="{{ ($noticia and $noticia->valor_retorno) ? $noticia->valor_retorno : old('valor_retorno') }}">
                                     </div>                                    
                                 </div>
                             </div>
@@ -272,7 +272,13 @@
                     type: 'GET',
                     success: function(data) {
                         // Exemplo: preenche um campo com id="valor_segundo"
-                        $('#valor_segundo').text('R$ '+data.valor_segundo);
+                        if(data.valor_segundo){
+                            $('#valor_segundo').text('R$ '+data.valor_segundo);
+                            $('#valor_segundo').attr('data-valor', data.valor_segundo);
+                            calculaTempo(data.valor_segundo);
+                        }
+                        else
+                            $('#valor_segundo').html('<span class="text-warning">Valor Pendente</span>');
                     }
                 });
             } else {
@@ -293,7 +299,10 @@
                     success: function(data) {
                         // Preencha os campos desejados
                         $('#horario').val(data.horario);
-                        $('#programa_valor_segundo').text('R$ ' + data.valor);
+                        if(data.valor)
+                            $('#programa_valor_segundo').text('R$ ' + data.valor);
+                        else
+                            $('#programa_valor_segundo').html('<span class="text-warning">Valor Pendente</span>');
                     }
                 });
             } else {
@@ -301,6 +310,37 @@
                 $('#programa_valor_segundo').text('');
             }
         });
+
+        $(document).on('change', '#duracao', function() {
+
+            var valor = $('#valor_segundo').data("valor");
+            calculaTempo(valor);
+
+        });
+
+        function calculaTempo(valor){
+
+            let tempo = $('#duracao').val();
+            let valorPorSegundo = parseFloat(valor);
+
+            if(tempo){
+                if (!tempo.match(/^\d{2}:\d{2}:\d{2}$/)) {
+                  alert("Formato de tempo inválido. Use HH:MM:SS.");
+                  return;
+                }
+
+                let partes = tempo.split(':');
+                let horas = parseInt(partes[0], 10);
+                let minutos = parseInt(partes[1], 10);
+                let segundos = parseInt(partes[2], 10);
+
+                let totalSegundos = (horas * 3600) + (minutos * 60) + segundos;
+
+                let valorTotal = totalSegundos * valorPorSegundo;
+
+                $('#valor_retorno').val(valorTotal.toFixed(2));
+            }
+        }
 
 
             $(document).on("change", "#horario", function() {
