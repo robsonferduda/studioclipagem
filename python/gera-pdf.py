@@ -8,7 +8,7 @@ def exemplo_gerar_pdf():
     # 1. Dados básicos
     usuario_id = 102
     data_inicio = "2025-05-01"
-    data_fim = "2025-05-15"
+    data_fim = "2025-05-31"
     output_path = "./relatorios/relatorio_102_20250101_20250731.pdf"
     
     # 2. Conecta ao banco e busca dados
@@ -65,7 +65,7 @@ def exemplo_gerar_pdf():
     
     # 6. Filtros opcionais
     filtros = {
-        'tipos_midia': ['impresso'],
+        'tipos_midia': ['web'],
         'status': ['1', '0', '-1'],
         'retorno': ['com_retorno']
     }
