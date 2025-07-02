@@ -340,7 +340,7 @@ class DatabaseManager:
                             COALESCE(ni.nu_altura, 1) AS altura
                         FROM noticia_impresso ni
                         JOIN noticia_cliente nc ON nc.noticia_id = ni.id AND nc.tipo_id = %s AND nc.deleted_at IS NULL
-                        LEFT JOIN fonte_impressa f ON f.id = ni.id_fonte
+                        LEFT JOIN jornal_online f ON f.id = ni.id_fonte
                         LEFT JOIN sessao_impresso s ON s.id_sessao_impresso = ni.id_sessao_impresso
                         LEFT JOIN estado e ON e.cd_estado = ni.cd_estado
                         WHERE ni.id IN ({ids_placeholder})
@@ -373,7 +373,7 @@ class DatabaseManager:
                             COALESCE(ni.nu_altura, 1) AS altura
                         FROM noticia_impresso ni
                         JOIN noticia_cliente nc ON nc.noticia_id = ni.id AND nc.tipo_id = %s AND nc.deleted_at IS NULL
-                        LEFT JOIN fonte_impressa f ON f.id = ni.id_fonte
+                        LEFT JOIN jornal_online f ON f.id = ni.id_fonte
                         LEFT JOIN sessao_impresso s ON s.id_sessao_impresso = ni.id_sessao_impresso
                         LEFT JOIN estado e ON e.cd_estado = ni.cd_estado
                         WHERE nc.cliente_id = %s
