@@ -65,7 +65,7 @@ def exemplo_gerar_pdf():
     
     # 6. Filtros opcionais
     filtros = {
-        'tipos_midia': ['radio'],
+        'tipos_midia': ['impresso'],
         'status': ['1', '0', '-1'],
         'retorno': ['com_retorno']
     }
