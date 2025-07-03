@@ -495,7 +495,8 @@ class BoletimController extends Controller
                     '';
 
             $ordem = (NoticiaCliente::where('noticia_id', $noticia_web->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 2)->first() and NoticiaCliente::where('noticia_id', $noticia_web->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 2)->first()->area) ?
-                    NoticiaCliente::where('noticia_id', $noticia_web->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 2)->first()->ordem : '';
+                    AreaCliente::where('cliente_id',$boletim->id_cliente)->where('area_id', NoticiaCliente::where('noticia_id', $noticia_web->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 2)->first()->area)->first()->ordem :
+                    '';
 
             $noticias_web[] = array('id' => $noticia_web->id,
                                     'titulo' => $noticia_web->titulo_noticia,
@@ -520,7 +521,7 @@ class BoletimController extends Controller
                     '';
 
             $ordem = (NoticiaCliente::where('noticia_id', $noticia_radio->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 3)->first()->area) ?
-                    NoticiaCliente::where('noticia_id', $noticia_radio->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 3)->first()->ordem :
+                    AreaCliente::where('cliente_id',$boletim->id_cliente)->where('area_id', NoticiaCliente::where('noticia_id', $noticia_radio->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 3)->first()->area)->first()->ordem :
                     '';
             
             $noticias_radio[] = array('id' => $noticia_radio->id,
@@ -547,7 +548,7 @@ class BoletimController extends Controller
                     '';
 
             $ordem = (NoticiaCliente::where('noticia_id', $noticia_tv->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 4)->first()->area) ?
-                    NoticiaCliente::where('noticia_id', $noticia_tv->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 4)->first()->ordem :
+                    AreaCliente::where('cliente_id',$boletim->id_cliente)->where('area_id', NoticiaCliente::where('noticia_id', $noticia_tv->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 4)->first()->area)->first()->ordem :
                     '';
             
             $noticias_tv[] = array('id' => $noticia_tv->id,
