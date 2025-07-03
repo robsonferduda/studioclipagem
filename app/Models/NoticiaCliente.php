@@ -18,6 +18,7 @@ class NoticiaCliente extends Model
                             'monitoramento_id',
                             'sentimento',
                             'area',
+                            'ordem',
                             'fl_boletim',
                             'fl_enviada',
                             'id_noticia_gerada',
