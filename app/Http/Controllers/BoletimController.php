@@ -9,6 +9,7 @@ use App\Utils;
 use App\Mail\BoletimMail;
 use Carbon\Carbon;
 use App\Models\Area;
+use App\Models\AreaCliente;
 use App\Models\BoletimEnvio;
 use App\Models\Boletim;
 use App\Models\BoletimNoticias;
