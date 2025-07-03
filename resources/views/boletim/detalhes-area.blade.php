@@ -157,7 +157,7 @@
                             </div>
                             
                         @endif
-                        <p class="text-danger"><strong>Ordem</strong>: {{ $noticia['ordem'] }}</p>
+                        
                         @php
                             $area = $noticia['area'];
                             $tipo = $noticia['tipo'];
