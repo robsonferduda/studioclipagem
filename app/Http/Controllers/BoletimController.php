@@ -591,7 +591,7 @@ class BoletimController extends Controller
 
         usort($noticias, function ($a, $b) {
             // Ordena por area
-            $areaCompare = strcmp($a['area'] ?? '', $b['area'] ?? '');
+            $areaCompare = strcmp($a['ordem'] ?? '', $b['ordem'] ?? '');
             if ($areaCompare !== 0) {
                 return $areaCompare;
             }
