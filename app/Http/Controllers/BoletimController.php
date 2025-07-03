@@ -452,7 +452,7 @@ class BoletimController extends Controller
                     '';
 
             $ordem = (NoticiaCliente::where('noticia_id', $noticia_impresso->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 1)->first()->area) ?
-                    NoticiaCliente::where('noticia_id', $noticia_impresso->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 1)->first()->ordem :
+                    AreaCliente::where('cliente_id',$boletim->id_cliente)->where('area_id', NoticiaCliente::where('noticia_id', $noticia_impresso->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 1)->first()->area)->first()->ordem :
                     '';
 
             $noticias_impresso[] = array('id' => $noticia_impresso->id,
