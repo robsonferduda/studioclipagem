@@ -705,6 +705,7 @@ class NoticiaTvController extends Controller
         $sql = "SELECT t2.id, t2.nome_emissora, t2.valor, count(*) as total 
                 FROM noticia_tv t1
                 JOIN emissora_web t2 ON t2.id = t1.emissora_id 
+                JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 4 AND t3.deleted_at IS NULL
                 WHERE valor_retorno IS NULL
                 AND dt_noticia > '2025-05-01'
                 AND t1.deleted_at IS NULL
@@ -716,6 +717,7 @@ class NoticiaTvController extends Controller
         $sql = "SELECT t2.id, t2.nome_programa, t2.valor_segundo, count(*) as total 
                 FROM noticia_tv t1
                 JOIN programa_emissora_web t2 ON t2.id = t1.programa_id 
+                JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 4 AND t3.deleted_at IS NULL
                 WHERE valor_retorno IS NULL
                 AND dt_noticia > '2025-05-01'
                 AND t1.deleted_at IS NULL
