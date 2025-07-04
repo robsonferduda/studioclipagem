@@ -21,7 +21,7 @@
                 @include('layouts.mensagens')
             </div>
             <div class="row ml-1 mr-1">
-                <div class="col-lg-3 col-md-3 col-sm-12">
+                <div class="col-lg-4 col-md-4 col-sm-12">
                         <div class="card card-stats">
                             <div class="card-body ">
                                 <div class="row">
@@ -47,9 +47,8 @@
                                 </div>
                             </div>
                         </div>
-                </div>
-                <div class="col-lg-9 col-md-9 col-sm-6">
-                    <table id="" class="table table-striped table-bordered" cellspacing="0" width="100%">
+
+                        <table id="" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
                                 <th>Emissora</th>
@@ -66,7 +65,43 @@
                                 </tr>
                             @endforeach
                         </tbody>
-                    </table>                    
+                    </table>     
+                </div>
+                <div class="col-lg-8 col-md-8 col-sm-12">
+                    @foreach($noticias as $noticia)
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-lg-10">
+                                            <h6>
+                                                <a href="{{ url('fonte-impresso/'.$noticia->emissora_id.'/editar') }}" target="_BLANK">{{ ($noticia->emissora_id) ? $noticia->nome_emissora : '' }}</a>
+                                                - {{ ($noticia->dt_clipagem) ? \Carbon\Carbon::parse($noticia->dt_clipagem)->format('d/m/Y') : 'Não informada' }} 
+                                            </h6>
+                                            <p class="mb-1">
+                                                @if($noticia->duracao)
+                                                    Duração <strong>{{ $noticia->duracao }}</strong></strong>
+                                                @else
+                                                    <span class="text-danger">Duração não informada</span>
+                                                @endif
+                                            </p>  
+                                            {{ $noticia->sinopse }}
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <div class="pull-right">
+                                                <span class="badge badge-pill badge-danger">{{ ($noticia->valor_retorno ) ? $noticia->valor_retorno : 'R$ ---' }}</span>
+                                                <br/>
+
+                                                <a title="Editar" href="{{ url('noticia-radio/'.$noticia->id.'/editar') }}" target="_BLANK" class="btn btn-primary btn-fill btn-icon btn-sm pull-right" style="border-radius: 20px;">
+                                                    <i class="fa fa-edit fa-3x text-white"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach         
                 </div>
             </div>
         </div>

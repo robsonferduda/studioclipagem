@@ -615,7 +615,17 @@ class NoticiaRadioController extends Controller
 
         $inconsistencias = DB::select($sql);
 
-        return view('noticia-radio/retorno', compact('total_nulos','inconsistencias'));
+       $sql = "SELECT t1.id, t2.nome_emissora, t1.emissora_id, t2.nu_valor, valor_retorno, sinopse, duracao, dt_clipagem 
+                FROM noticia_radio t1
+                JOIN emissora_radio t2 ON t2.id = t1.emissora_id 
+                WHERE valor_retorno IS NULL
+                AND dt_clipagem > '2025-05-01'
+                AND t1.deleted_at IS NULL
+                ORDER BY nome_emissora";
+
+        $noticias = DB::select($sql);
+
+        return view('noticia-radio/retorno', compact('total_nulos','inconsistencias','noticias'));
     }
 
     public function calcularValorRetornoRadio()
