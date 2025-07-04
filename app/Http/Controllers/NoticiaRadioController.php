@@ -609,12 +609,47 @@ class NoticiaRadioController extends Controller
                 JOIN emissora_radio t2 ON t2.id = t1.emissora_id 
                 WHERE valor_retorno IS NULL
                 AND dt_clipagem > '2025-05-01'
+                AND t1.deleted_at IS NULL
                 GROUP BY t2.id, t2.nome_emissora, t2.nu_valor
                 ORDER BY nome_emissora";
 
         $inconsistencias = DB::select($sql);
 
         return view('noticia-radio/retorno', compact('total_nulos','inconsistencias'));
+    }
+
+    public function calcularValorRetornoRadio()
+    {
+        $totalAtualizadas = 0;
+
+        NoticiaRadio::whereNotNull('duracao')
+            ->whereNull('valor_retorno')
+            ->whereNotNull('emissora_id')
+            ->chunk(500, function ($noticias) use (&$totalAtualizadas) {
+                foreach ($noticias as $noticia) {
+                    
+                    $emissora = Emissora::find($noticia->emissora_id);
+
+                    if (!$emissora || !is_numeric($emissora->nu_valor)) {
+                        continue;
+                    }
+
+                    // Converte 'duracao' de TIME para segundos
+                    $duracao = $noticia->duracao;
+                    $duracaoEmSegundos = \Carbon\Carbon::parse($duracao)->hour * 3600
+                        + \Carbon\Carbon::parse($duracao)->minute * 60
+                        + \Carbon\Carbon::parse($duracao)->second;
+
+                    $valorRetorno = $duracaoEmSegundos * $emissora->nu_valor;
+
+                    $noticia->valor_retorno = $valorRetorno;
+                    $noticia->save();
+
+                    $totalAtualizadas++;
+                }
+            });
+        
+        return redirect('radio/noticias/retorno')->withInput();
     }
 
     public function excluir($id)

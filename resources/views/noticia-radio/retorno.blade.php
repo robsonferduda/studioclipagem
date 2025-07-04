@@ -53,7 +53,7 @@
                         <thead>
                             <tr>
                                 <th>Emissora</th>
-                                <th>Valor</th>
+                                <th class="text-left">Valor</th>
                                 <th class="center">Total</th>
                             </tr>
                         </thead>
@@ -61,7 +61,7 @@
                             @foreach($inconsistencias as $inconsistencia)
                                 <tr>
                                     <td><a title="Editar" href="{{ route('emissora.edit', $inconsistencia->id) }}" target="BLANK" class="text-info">{!! $inconsistencia->nome_emissora !!}</a></td>
-                                    <td>{!! $inconsistencia->nu_valor !!}</td>
+                                    <td class="text-left">{!! $inconsistencia->nu_valor !!}</td>
                                     <td class="center">{!! $inconsistencia->total !!}</td>
                                 </tr>
                             @endforeach

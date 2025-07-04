@@ -203,6 +203,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('radio/noticias/{id}/download','NoticiaRadioController@download');
 	Route::get('radio/noticias/estatisticas','NoticiaRadioController@getEstatisticas');
 	Route::get('radio/noticias/retorno','NoticiaRadioController@retorno');
+	Route::get('radio/noticias/atualizar-valores','NoticiaRadioController@calcularValorRetornoRadio');
 	Route::get('radio/adjacentes/{id}/monitoramento/{monitoramento}','NoticiaRadioController@getDadosAudio');
 	
 	Route::get('radio/conteudo/{id_noticia}/monitoramento/{id_monitoramento}','NoticiaRadioController@destacaConteudo');
