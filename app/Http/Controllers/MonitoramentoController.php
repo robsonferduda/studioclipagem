@@ -756,8 +756,7 @@ class MonitoramentoController extends Controller
                             conteudo_noticia_web cnw ON cnw.id_noticia_web = n.id
                         JOIN 
                             fonte_web fw ON fw.id = n.id_fonte 
-                        WHERE 1=1 
-                        AND n.created_at >= $dt_inicial ";
+                        WHERE 1=1 ";
                         
 
                 if($monitoramento->filtro_web){
