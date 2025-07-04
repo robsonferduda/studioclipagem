@@ -602,7 +602,7 @@ class NoticiaRadioController extends Controller
 
     public function retorno()
     {
-        $total_nulos = NoticiaRadio::whereNull('valor_retorno')->where('dt_clipagem', '>', '2025-05-01')->count();
+        $total_nulos = NoticiaRadio::whereNull('valor_retorno')->whereNotNull('emissora_id')->where('dt_clipagem', '>', '2025-05-01')->count();
 
         $sql = "SELECT t2.id, t2.nome_emissora, t2.nu_valor, count(*) as total 
                 FROM noticia_radio t1
@@ -627,8 +627,6 @@ class NoticiaRadioController extends Controller
             ->whereNotNull('emissora_id')
             ->where('dt_clipagem', '>', '2025-05-01')
             ->get();
-
-            dd($noticias);
 
         foreach ($noticias as $noticia) {
                     
