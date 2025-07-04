@@ -628,6 +628,8 @@ class NoticiaRadioController extends Controller
             ->where('dt_clipagem', '>', '2025-05-01')
             ->get();
 
+            dd($noticias);
+
         foreach ($noticias as $noticia) {
                     
                     $emissora = Emissora::find($noticia->emissora_id);
