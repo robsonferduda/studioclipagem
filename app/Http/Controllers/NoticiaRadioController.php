@@ -622,11 +622,13 @@ class NoticiaRadioController extends Controller
     {
         $totalAtualizadas = 0;
 
-        NoticiaRadio::whereNotNull('duracao')
+        $noticias = NoticiaRadio::whereNotNull('duracao')
             ->whereNull('valor_retorno')
             ->whereNotNull('emissora_id')
-            ->chunk(500, function ($noticias) use (&$totalAtualizadas) {
-                foreach ($noticias as $noticia) {
+            ->where('dt_clipagem', '>', '2025-05-01')
+            ->get();
+
+        foreach ($noticias as $noticia) {
                     
                     $emissora = Emissora::find($noticia->emissora_id);
 
@@ -646,8 +648,7 @@ class NoticiaRadioController extends Controller
                     $noticia->save();
 
                     $totalAtualizadas++;
-                }
-            });
+        }
         
         return redirect('radio/noticias/retorno')->withInput();
     }
