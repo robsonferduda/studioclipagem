@@ -757,7 +757,7 @@ class MonitoramentoController extends Controller
                         JOIN 
                             fonte_web fw ON fw.id = n.id_fonte 
                         WHERE 1=1 
-                        AND n.created_at >= now() - interval '3 hours' ";
+                        AND n.created_at >= $dt_inicial ";
                         
 
                 if($monitoramento->filtro_web){
