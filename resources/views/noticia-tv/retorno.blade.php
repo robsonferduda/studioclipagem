@@ -96,7 +96,7 @@
                                         <div class="col-lg-10">
                                             <h6>
                                                 <a href="{{ url('tv/emissoras/editar/'.$noticia->emissora_id) }}" target="_BLANK">{{ ($noticia->emissora_id) ? $noticia->nome_emissora : '' }}</a>
-                                                - <a href="{{ url('tv/emissoras/programas/editar/'.$noticia->id_programa) }}" target="_BLANK">{{ ($noticia->id_programa) ? $noticia->nome_programa : '' }}</a>
+                                                - <a href="{{ url('tv/emissoras/programas/editar/'.$noticia->id_programa) }}" target="_BLANK">{!! ($noticia->id_programa) ? $noticia->nome_programa : '<span class="text-danger">Sem programa</span>' !!}</a>
                                                 - {{ ($noticia->dt_noticia) ? \Carbon\Carbon::parse($noticia->dt_noticia)->format('d/m/Y') : 'Não informada' }} 
                                             </h6>
                                             <p class="mb-1">
