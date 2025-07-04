@@ -197,7 +197,7 @@
                                     </div>
                                 @else
                                     <div class="col-md-12">
-                                        <p class="text-danger mb-2">A notícia não possui nenhum arquivo de áudio vinculado</p>
+                                        <p class="text-danger mb-1">A notícia não possui nenhum arquivo de áudio vinculado</p>
                                     </div>
                                     <div class="col-md-12">
                                         <label for="arquivo">Áudio da Notícia</label>
