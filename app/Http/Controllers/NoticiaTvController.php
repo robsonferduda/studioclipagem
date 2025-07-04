@@ -728,6 +728,7 @@ class NoticiaTvController extends Controller
                 FROM noticia_tv t1
                 JOIN emissora_web t2 ON t2.id = t1.emissora_id 
                 JOIN programa_emissora_web t3 ON t3.id = t1.programa_id AND t3.id_emissora = t2.id
+                JOIN noticia_cliente t4 ON t4.noticia_id = t1.id AND tipo_id = 4 AND t4.deleted_at IS NULL
                 WHERE valor_retorno IS NULL
                 AND dt_noticia > '2025-05-01'
                 AND t1.deleted_at IS NULL
