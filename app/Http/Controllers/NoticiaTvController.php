@@ -751,10 +751,7 @@ class NoticiaTvController extends Controller
         foreach ($noticias as $noticia) {
                     
                     $emissora = EmissoraWeb::find($noticia->emissora_id);
-
-                    if (!$emissora || !is_numeric($emissora->nu_valor)) {
-                        continue;
-                    }
+                    $programa = ProgramaEmissoraWeb::find($noticia->programa_id);
 
                     // Converte 'duracao' de TIME para segundos
                     $duracao = $noticia->duracao;
@@ -762,9 +759,12 @@ class NoticiaTvController extends Controller
                         + \Carbon\Carbon::parse($duracao)->minute * 60
                         + \Carbon\Carbon::parse($duracao)->second;
 
-                    $valorRetorno = $duracaoEmSegundos * $emissora->nu_valor;
+                    $valor_retorno_emissora = ($emissora) ? $duracaoEmSegundos * $emissora->valor : null;
+                    $valor_retorno_programa = ($programa) ? $duracaoEmSegundos * $programa->valor_segundo : null;
 
-                    $noticia->valor_retorno = $valorRetorno;
+                    $valor_retorno = ($valor_retorno_programa) ? $valor_retorno_programa : $valor_retorno_emissora;
+
+                    $noticia->valor_retorno = $valor_retorno;
                     $noticia->save();
 
                     $totalAtualizadas++;
