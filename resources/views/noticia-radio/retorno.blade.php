@@ -20,7 +20,7 @@
             <div class="col-md-12">
                 @include('layouts.mensagens')
             </div>
-            <div class="row">
+            <div class="row ml-1 mr-1">
                 <div class="col-lg-3 col-md-3 col-sm-12">
                         <div class="card card-stats">
                             <div class="card-body ">
@@ -48,8 +48,25 @@
                             </div>
                         </div>
                 </div>
-                <div class="col-lg-12 col-md-6 col-sm-6">
-                                 
+                <div class="col-lg-9 col-md-9 col-sm-6">
+                    <table id="" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Emissora</th>
+                                <th>Valor</th>
+                                <th class="center">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($inconsistencias as $inconsistencia)
+                                <tr>
+                                    <td><a title="Editar" href="{{ route('emissora.edit', $inconsistencia->id) }}" target="BLANK" class="text-info">{!! $inconsistencia->nome_emissora !!}</a></td>
+                                    <td>{!! $inconsistencia->nu_valor !!}</td>
+                                    <td class="center">{!! $inconsistencia->total !!}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>                    
                 </div>
             </div>
         </div>

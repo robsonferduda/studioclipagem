@@ -604,7 +604,17 @@ class NoticiaRadioController extends Controller
     {
         $total_nulos = NoticiaRadio::whereNull('valor_retorno')->where('dt_clipagem', '>', '2025-05-01')->count();
 
-        return view('noticia-radio/retorno', compact('total_nulos'));
+        $sql = "SELECT t2.id, t2.nome_emissora, t2.nu_valor, count(*) as total 
+                FROM noticia_radio t1
+                JOIN emissora_radio t2 ON t2.id = t1.emissora_id 
+                WHERE valor_retorno IS NULL
+                AND dt_clipagem > '2025-05-01'
+                GROUP BY t2.id, t2.nome_emissora, t2.nu_valor
+                ORDER BY nome_emissora";
+
+        $inconsistencias = DB::select($sql);
+
+        return view('noticia-radio/retorno', compact('total_nulos','inconsistencias'));
     }
 
     public function excluir($id)
