@@ -196,6 +196,7 @@
                                         <input type="hidden" name="arquivo" id="arquivo">
                                     </div>
                                 @else
+                                    <p class="text-danger mb-2">A notícia não possui nenhum arquivo de áudio vinculado</p>
                                     <div class="col-md-12">
                                         <label for="arquivo">Áudio da Notícia</label>
                                         <div style="min-height: 200px;" class="dropzone" id="dropzone"><div class="dz-message" data-dz-message><span>CLIQUE AQUI<br/> ou <br/>ARRASTE</span></div></div>
