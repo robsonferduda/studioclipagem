@@ -6,7 +6,7 @@
             <div class="row">
                 <div class="col-md-8">
                     <h4 class="card-title">
-                        <i class="fa fa-tv ml-3"></i> Rádio 
+                        <i class="fa fa-tv ml-3"></i> TV 
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i> Retorno de Mídia 
                     </h4>
                 </div>
@@ -47,25 +47,45 @@
                                 </div>
                             </div>
                         </div>
-
+                        <h6>Emissoras</h6>
                         <table id="" class="table table-striped table-bordered" cellspacing="0" width="100%">
-                        <thead>
-                            <tr>
-                                <th>Emissora</th>
-                                <th class="text-right">Valor</th>
-                                <th class="center">Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($inconsistencias as $inconsistencia)
+                            <thead>
                                 <tr>
-                                    <td><a title="Editar" href="{{ route('emissora.edit', $inconsistencia->id) }}" target="BLANK" class="text-info">{!! $inconsistencia->nome_emissora !!}</a></td>
-                                    <td class="text-right">{!! $inconsistencia->valor !!}</td>
-                                    <td class="center">{!! $inconsistencia->total !!}</td>
+                                    <th>Emissora</th>
+                                    <th class="text-right">Valor</th>
+                                    <th class="center">Total</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>     
+                            </thead>
+                            <tbody>
+                                @foreach($inconsistencias as $inconsistencia)
+                                    <tr>
+                                        <td><a title="Editar" href="{{ route('emissora.edit', $inconsistencia->id) }}" target="BLANK" class="text-info">{!! $inconsistencia->nome_emissora !!}</a></td>
+                                        <td class="text-right">{!! $inconsistencia->valor !!}</td>
+                                        <td class="center">{!! $inconsistencia->total !!}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>  
+
+                        <h6>Programas</h6>
+                        <table id="" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>Emissora</th>
+                                    <th class="text-right">Valor</th>
+                                    <th class="center">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($programas as $inconsistencia)
+                                    <tr>
+                                        <td><a title="Editar" href="{{ url('tv/emissoras/programas/editar', $inconsistencia->id) }}" target="BLANK" class="text-info">{!! $inconsistencia->nome_programa !!}</a></td>
+                                        <td class="text-right">{!! $inconsistencia->valor_segundo !!}</td>
+                                        <td class="center">{!! $inconsistencia->total !!}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>    
                 </div>
                 <div class="col-lg-8 col-md-8 col-sm-12">
                     @foreach($noticias as $noticia)
@@ -76,6 +96,7 @@
                                         <div class="col-lg-10">
                                             <h6>
                                                 <a href="{{ url('tv/emissoras/editar/'.$noticia->emissora_id) }}" target="_BLANK">{{ ($noticia->emissora_id) ? $noticia->nome_emissora : '' }}</a>
+                                                - <a href="{{ url('tv/emissoras/programas/editar/'.$noticia->id_programa) }}" target="_BLANK">{{ ($noticia->id_programa) ? $noticia->nome_programa : '' }}</a>
                                                 - {{ ($noticia->dt_noticia) ? \Carbon\Carbon::parse($noticia->dt_noticia)->format('d/m/Y') : 'Não informada' }} 
                                             </h6>
                                             <p class="mb-1">

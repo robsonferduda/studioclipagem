@@ -713,9 +713,21 @@ class NoticiaTvController extends Controller
 
         $inconsistencias = DB::select($sql);
 
-       $sql = "SELECT t1.id, t2.nome_emissora, t1.emissora_id, t2.valor, valor_retorno, sinopse, duracao, dt_noticia 
+        $sql = "SELECT t2.id, t2.nome_programa, t2.valor_segundo, count(*) as total 
+                FROM noticia_tv t1
+                JOIN programa_emissora_web t2 ON t2.id = t1.programa_id 
+                WHERE valor_retorno IS NULL
+                AND dt_noticia > '2025-05-01'
+                AND t1.deleted_at IS NULL
+                GROUP BY t2.id, t2.nome_programa, t2.valor_segundo
+                ORDER BY nome_programa";
+
+        $programas = DB::select($sql);
+
+        $sql = "SELECT t1.id, t2.nome_emissora, t1.emissora_id, t2.valor, valor_retorno, sinopse, duracao, dt_noticia, nome_programa, t3.id AS id_programa 
                 FROM noticia_tv t1
                 JOIN emissora_web t2 ON t2.id = t1.emissora_id 
+                JOIN programa_emissora_web t3 ON t3.id = t1.programa_id AND t3.id_emissora = t2.id
                 WHERE valor_retorno IS NULL
                 AND dt_noticia > '2025-05-01'
                 AND t1.deleted_at IS NULL
@@ -723,7 +735,7 @@ class NoticiaTvController extends Controller
 
         $noticias = DB::select($sql);
 
-        return view('noticia-tv/retorno', compact('total_nulos','inconsistencias','noticias'));
+        return view('noticia-tv/retorno', compact('total_nulos','inconsistencias','programas','noticias'));
     }
 
     public function calcularValorRetornoRadio()
