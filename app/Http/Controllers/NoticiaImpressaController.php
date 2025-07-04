@@ -443,6 +443,7 @@ class NoticiaImpressaController extends Controller
             ->whereNotNull('nu_altura')
             ->whereNotNull('local_impressao')
             ->whereNotNull('id_fonte')
+            ->whereNull('valor_retorno')
             ->get();
 
         foreach ($noticias as $noticia) {

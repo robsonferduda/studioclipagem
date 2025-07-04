@@ -600,6 +600,13 @@ class NoticiaRadioController extends Controller
         return response()->json($dados);
     }
 
+    public function retorno()
+    {
+        $total_nulos = NoticiaRadio::whereNull('valor_retorno')->where('dt_clipagem', '>', '2025-05-01')->count();
+
+        return view('noticia-radio/retorno', compact('total_nulos'));
+    }
+
     public function excluir($id)
     {
         $noticia = NoticiaRadio::find($id);
