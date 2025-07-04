@@ -729,7 +729,7 @@ class NoticiaTvController extends Controller
         $sql = "SELECT t1.id, t2.nome_emissora, t1.emissora_id, t2.valor, valor_retorno, sinopse, duracao, dt_noticia, nome_programa, t3.id AS id_programa 
                 FROM noticia_tv t1
                 JOIN emissora_web t2 ON t2.id = t1.emissora_id 
-                JOIN programa_emissora_web t3 ON t3.id = t1.programa_id AND t3.id_emissora = t2.id
+                JOIN programa_emissora_web t3 ON t3.id = t1.programa_id
                 JOIN noticia_cliente t4 ON t4.noticia_id = t1.id AND tipo_id = 4 AND t4.deleted_at IS NULL
                 WHERE valor_retorno IS NULL
                 AND dt_noticia > '2025-05-01'
