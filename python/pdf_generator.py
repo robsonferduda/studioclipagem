@@ -1238,6 +1238,15 @@ class PDFGenerator:
         if date_column in data.columns:
             data = data.sort_values(date_column, ascending=True)
         
+        def truncate_text(text, max_length=800):
+            """Trunca texto se for muito longo para evitar células gigantes"""
+            if not text or str(text) == 'nan':
+                return ''
+            text = str(text).strip()
+            if len(text) > max_length:
+                return text[:max_length] + '...'
+            return text
+        
         for _, row in data.iterrows():
             # Formata valor apenas se necessário
             if mostrar_valores:
@@ -1250,6 +1259,11 @@ class PDFGenerator:
                 arquivo_text = arquivo if arquivo and arquivo != 'nan' and arquivo != '' else "não disponível"
                 sinopse = self._clean_html(row.get('Linha3 Sinopse', '')) or self._clean_html(row.get('linha3_sinopse', '')) or self._clean_html(row.get('sinopse', '')) or self._clean_html(row.get('descricao', ''))
                 sinopse_text = sinopse if sinopse else "não disponível"
+                
+                # Trunca textos longos para evitar células gigantes
+                linha1 = truncate_text(linha1, 200)
+                arquivo_text = truncate_text(arquivo_text, 150)
+                sinopse_text = truncate_text(sinopse_text, 450)
                 
                 # Formatação com estilo específico para cada linha
                 linha1_formatted = f"<b>{linha1}</b>" if linha1 else "<b>Informação não disponível</b>"
@@ -1264,6 +1278,10 @@ class PDFGenerator:
                 linha1 = self._clean_html(row.get('Título Linha 1', '')) or self._clean_html(row.get('titulo_linha1', ''))
                 descricao = self._clean_html(row.get('Título Linha 2', '')) or self._clean_html(row.get('titulo_linha2', '')) or self._clean_html(row.get('descricao', '')) or self._clean_html(row.get('sinopse', ''))
                 
+                # Trunca textos longos para evitar células gigantes
+                linha1 = truncate_text(linha1, 200)
+                descricao = truncate_text(descricao, 600)
+                
                 # Formatação com estilo específico
                 linha1_formatted = f"<b>{linha1}</b>" if linha1 else "<b>Informação não disponível</b>"
                 descricao_formatted = descricao if descricao else "Descrição não disponível"
@@ -1271,7 +1289,7 @@ class PDFGenerator:
                 # Combina as 2 linhas
                 clipagem_text = f"{linha1_formatted}<br/>{descricao_formatted}"
             
-            # Estilo customizado para clipagens
+            # Estilo customizado para clipagens com altura controlada
             clipagem_style = ParagraphStyle(
                 'ClipAgemText',
                 parent=self.normal_style,
@@ -1280,7 +1298,13 @@ class PDFGenerator:
                 spaceBefore=2,
                 spaceAfter=2,
                 leftIndent=5,
-                rightIndent=5
+                rightIndent=5,
+                # Adiciona controle de altura máxima
+                leading=10,  # Espaçamento entre linhas
+                splitLongWords=True,  # Permite quebra de palavras longas
+                allowWidows=1,  # Permite linha órfã
+                allowOrphans=1,  # Permite linha órfã
+                wordWrap='LTR'  # Quebra de linha da esquerda para direita
             )
             
             # Cria parágrafo com HTML interno para formatação

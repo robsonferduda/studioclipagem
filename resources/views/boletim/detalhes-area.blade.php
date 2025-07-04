@@ -157,7 +157,7 @@
                             </div>
                             
                         @endif
-
+                        
                         @php
                             $area = $noticia['area'];
                             $tipo = $noticia['tipo'];
