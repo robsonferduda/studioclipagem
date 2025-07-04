@@ -602,6 +602,8 @@ class NoticiaRadioController extends Controller
 
     public function retorno()
     {
+        Session::put('sub-menu','radio-retorno');
+
         $total_nulos = NoticiaRadio::whereNull('valor_retorno')->whereNotNull('emissora_id')->where('dt_clipagem', '>', '2025-05-01')->count();
 
         $sql = "SELECT t2.id, t2.nome_emissora, t2.nu_valor, count(*) as total 

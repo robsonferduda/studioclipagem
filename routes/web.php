@@ -344,6 +344,8 @@ Route::middleware(['web'])->group(function () {
 	Route::post('tv/emissoras/programas/atualizar','ProgramaTvController@atualizar');
 
 	Route::get('tv/estatisticas','NoticiaTvController@estatisticas');
+	Route::get('tv/noticias/retorno','NoticiaTvController@retorno');
+	Route::get('tv/noticias/atualizar-valores','NoticiaTvController@calcularValorRetornoRadio');
 
 	Route::get('tv/decupagem','NoticiaTvController@decupagem');
 

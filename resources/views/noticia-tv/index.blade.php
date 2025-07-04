@@ -103,7 +103,7 @@
                                             <div class="col-lg-8 col-md-8 col-sm-12 mb-1"> 
                                                 <div class="conteudo-{{ $noticia->id }}">
                                                     
-                                                    <h6><a href="{{ url('fonte-impresso/'.$noticia->id_fonte.'/editar') }}" target="_BLANK">{{ ($noticia->fonte) ? $noticia->fonte->nome_emissora : '' }}</a></h6>  
+                                                    <h6><a href="{{ url('tv/emissoras/editar/'.$noticia->emissora_id) }}" target="_BLANK">{{ ($noticia->emissora) ? $noticia->emissora->nome_emissora : '' }}</a></h6>  
                                                     <h6 style="color: #FF5722;">{{ ($noticia->cd_estado) ? $noticia->estado->nm_estado : '' }}{{ ($noticia->cd_cidade) ? "/".$noticia->cidade->nm_cidade : '' }}</h6>  
                                                     <h6 class="text-muted mb-1">
                                                         {{ \Carbon\Carbon::parse($noticia->dt_noticia)->format('d/m/Y') }} 
