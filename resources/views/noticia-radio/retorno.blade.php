@@ -75,7 +75,7 @@
                                     <div class="row">
                                         <div class="col-lg-10">
                                             <h6>
-                                                <a href="{{ url('fonte-impresso/'.$noticia->emissora_id.'/editar') }}" target="_BLANK">{{ ($noticia->emissora_id) ? $noticia->nome_emissora : '' }}</a>
+                                                <a href="{{ url('emissora/'.$noticia->emissora_id.'/edit') }}" target="_BLANK">{{ ($noticia->emissora_id) ? $noticia->nome_emissora : '' }}</a>
                                                 - {{ ($noticia->dt_clipagem) ? \Carbon\Carbon::parse($noticia->dt_clipagem)->format('d/m/Y') : 'Não informada' }} 
                                             </h6>
                                             <p class="mb-1">
