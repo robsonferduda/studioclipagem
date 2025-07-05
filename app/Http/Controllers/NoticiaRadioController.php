@@ -608,7 +608,7 @@ class NoticiaRadioController extends Controller
 
         $sql = "SELECT t2.id, t2.nome_emissora, t2.nu_valor, count(*) as total 
                 FROM noticia_radio t1
-                JOIN emissora_radio t2 ON t2.id = t1.emissora_id 
+                LEFT JOIN emissora_radio t2 ON t2.id = t1.emissora_id 
                 WHERE valor_retorno IS NULL
                 AND dt_clipagem > '2025-05-01'
                 AND t1.deleted_at IS NULL
@@ -619,7 +619,7 @@ class NoticiaRadioController extends Controller
 
        $sql = "SELECT t1.id, t2.nome_emissora, t1.emissora_id, t2.nu_valor, valor_retorno, sinopse, duracao, dt_clipagem 
                 FROM noticia_radio t1
-                JOIN emissora_radio t2 ON t2.id = t1.emissora_id 
+                LEFT JOIN emissora_radio t2 ON t2.id = t1.emissora_id 
                 WHERE valor_retorno IS NULL
                 AND dt_clipagem > '2025-05-01'
                 AND t1.deleted_at IS NULL
