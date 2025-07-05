@@ -459,7 +459,7 @@ class MonitoramentoController extends Controller
 
                 $titulo = "Notificação de Monitoramento - Erro de Consulta - ".date("d/m/Y H:i:s"); 
 
-                $data['dados'] = array('cliente' => $monitoramento->cliente->nome,
+                $data['dados'] = array('cliente' => ($monitoramento->cliente) ? $monitoramento->cliente->nome : 'Cliente não informado',
                                        'expressao' => $monitoramento->expressao,
                                        'id' => $monitoramento->id);
 
