@@ -59,7 +59,7 @@
                             <tbody>
                                 @foreach($inconsistencias as $inconsistencia)
                                     <tr>
-                                        <td><a title="Editar" href="{{ route('emissora.edit', $inconsistencia->id) }}" target="BLANK" class="text-info">{!! $inconsistencia->nome_emissora !!}</a></td>
+                                        <td><a title="Editar" href="{{ ($inconsistencia->nome_emissora ) ? route('emissora.edit', $inconsistencia->id) : '' }}" target="BLANK" class="text-info">{!! $inconsistencia->nome_emissora !!}</a></td>
                                         <td class="text-right">{!! $inconsistencia->valor !!}</td>
                                         <td class="center">{!! $inconsistencia->total !!}</td>
                                     </tr>
