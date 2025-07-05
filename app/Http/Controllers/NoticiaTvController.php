@@ -714,6 +714,7 @@ class NoticiaTvController extends Controller
                 WHERE valor_retorno IS NULL
                 AND dt_noticia > '2025-05-01'
                 AND t1.deleted_at IS NULL
+                AND t3.deleted_at IS NULL
                 GROUP BY t2.id, t2.nome_emissora, t2.valor
                 ORDER BY nome_emissora";
 
@@ -726,6 +727,7 @@ class NoticiaTvController extends Controller
                 WHERE valor_retorno IS NULL
                 AND dt_noticia > '2025-05-01'
                 AND t1.deleted_at IS NULL
+                AND t3.deleted_at IS NULL
                 GROUP BY t2.id, t2.nome_programa, t2.valor_segundo
                 ORDER BY nome_programa";
 
@@ -739,6 +741,7 @@ class NoticiaTvController extends Controller
                 WHERE valor_retorno IS NULL
                 AND dt_noticia > '2025-05-01'
                 AND t1.deleted_at IS NULL
+                AND t4.deleted_at IS NULL
                 ORDER BY nome_emissora";
 
         $noticias = DB::select($sql);
