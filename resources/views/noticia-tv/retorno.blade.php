@@ -71,7 +71,7 @@
                         <table id="" class="table table-striped table-bordered" cellspacing="0" width="100%">
                             <thead>
                                 <tr>
-                                    <th>Emissora</th>
+                                    <th>Programa</th>
                                     <th class="text-right">Valor</th>
                                     <th class="center">Total</th>
                                 </tr>
@@ -79,8 +79,14 @@
                             <tbody>
                                 @foreach($programas as $inconsistencia)
                                     <tr>
-                                        <td><a title="Editar" href="{{ url('tv/emissoras/programas/editar', $inconsistencia->id) }}" target="BLANK" class="text-info">{!! $inconsistencia->nome_programa !!}</a></td>
-                                        <td class="text-right">{!! $inconsistencia->valor_segundo !!}</td>
+                                        <td>
+                                            @if($inconsistencia->nome_programa)
+                                                <a title="Editar" href="{{ url('tv/emissoras/programas/editar', $inconsistencia->id) }}" target="BLANK" class="text-info">{!! ($inconsistencia->nome_programa) ? $inconsistencia->nome_programa : 'Sem programa' !!}</a>
+                                            @else
+                                                <span>Sem Programa</span>
+                                            @endif
+                                        </td>
+                                        <td class="text-right">{!! ($inconsistencia->valor_segundo) ? $inconsistencia->valor_segundo : '<span class="text-danger">Pendente</span>' !!}</td>
                                         <td class="center">{!! $inconsistencia->total !!}</td>
                                     </tr>
                                 @endforeach

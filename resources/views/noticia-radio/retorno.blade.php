@@ -71,7 +71,7 @@
                         <table id="" class="table table-striped table-bordered" cellspacing="0" width="100%">
                             <thead>
                                 <tr>
-                                    <th>Emissora</th>
+                                    <th>Programa</th>
                                     <th class="text-right">Valor</th>
                                     <th class="center">Total</th>
                                 </tr>
