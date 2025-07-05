@@ -106,7 +106,7 @@
                                                     <span class="text-danger">Duração não informada</span>
                                                 @endif
                                             </p>  
-                                            {{ $noticia->sinopse }}
+                                            {!! ($noticia->sinopse) ? Str::limit($noticia->sinopse, 500, " ...") : '<span class="text-danger center">Notícia não possui texto</span>' !!}
                                         </div>
                                         <div class="col-lg-2">
                                             <div class="pull-right">
