@@ -75,7 +75,7 @@
                                     <div class="row">
                                         <div class="col-lg-10">
                                             <h6>
-                                                <a href="{{ url('fonte-web/editar/'.$noticia->id_fonte) }}" target="_BLANK">{!! ($noticia->fonte) ? $noticia->fonte->nome : '<span>Sem Fonte</span>' !!}</a>
+                                                <a href="{{ url('fonte-web/editar/'.$noticia->id_fonte) }}" target="_BLANK">{!! ($noticia->id_fonte) ? $noticia->nome : '<span>Sem Fonte</span>' !!}</a>
                                                 {{ ($noticia->data_noticia) ? \Carbon\Carbon::parse($noticia->data_noticia)->format('d/m/Y') : 'Não informada' }} 
                                             </h6>
                                             {!! ($noticia->sinopse) ? Str::limit($noticia->sinopse, 500, " ...") : '<span class="text-danger center">Notícia não possui texto</span>' !!}
