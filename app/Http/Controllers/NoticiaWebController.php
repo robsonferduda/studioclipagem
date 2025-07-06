@@ -774,6 +774,9 @@ class NoticiaWebController extends Controller
                         ->whereHas('clientes', function($q){
                             $q->where('noticia_cliente.tipo_id', 2);
                         })
+                        ->whereHas('fonte', function($q){
+                            $q->whereNotNull('fonte_web.deleted_at');
+                        })
                         ->where('data_noticia', '>', '2025-05-01')
                         ->count();
 
@@ -784,6 +787,7 @@ class NoticiaWebController extends Controller
                 WHERE t1.nu_valor IS NULL
                 AND data_noticia > '2025-05-01'
                 AND t1.deleted_at IS NULL
+                AND t2.deleted_at IS NULL
                 AND t3.deleted_at IS NULL
                 GROUP BY t2.id, t2.nome
                 ORDER BY nome";
@@ -797,6 +801,7 @@ class NoticiaWebController extends Controller
                 WHERE t1.nu_valor IS NULL
                 AND data_noticia > '2025-05-01'
                 AND t1.deleted_at IS NULL
+                AND t2.deleted_at IS NULL
                 AND t3.deleted_at IS NULL
                 ORDER BY id_fonte";
 
@@ -813,7 +818,9 @@ class NoticiaWebController extends Controller
                         ->whereHas('clientes', function($q){
                             $q->where('noticia_cliente.tipo_id', 2);
                         })
-                        ->with('fonte')
+                        ->whereHas('fonte', function($q){
+                            $q->whereNotNull('fonte_web.deleted_at');
+                        })
                         ->where('data_noticia', '>', '2025-05-01')
                         ->get();
 
