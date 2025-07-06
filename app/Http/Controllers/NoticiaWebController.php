@@ -766,6 +766,45 @@ class NoticiaWebController extends Controller
         return redirect()->back();
     }
 
+    public function retorno()
+    {
+        Session::put('sub-menu','tv-retorno');
+
+        $total_nulos = NoticiaWeb::whereNull('nu_valor')
+                        ->whereHas('clientes', function($q){
+                            $q->where('noticia_cliente.tipo_id', 2);
+                        })
+                        ->where('data_noticia', '>', '2025-05-01')
+                        ->count();
+
+        $sql = "SELECT t2.id, t2.nome, t2.nu_valor, count(*) as total 
+                FROM noticias_web t1
+                LEFT JOIN fonte_web t2 ON t2.id = t1.id_fonte 
+                JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 2 AND t3.deleted_at IS NULL
+                WHERE t1.nu_valor IS NULL
+                AND data_noticia > '2025-05-01'
+                AND t1.deleted_at IS NULL
+                AND t3.deleted_at IS NULL
+                GROUP BY t2.id, t2.nome
+                ORDER BY nome";
+
+        $inconsistencias = DB::select($sql);
+
+        $sql = "SELECT t1.id, t2.nome, t1.id_fonte, t2.nu_valor, t1.nu_valor AS valor_retorno, sinopse, data_noticia 
+                FROM noticias_web t1
+                LEFT JOIN fonte_web t2 ON t2.id = t1.id_fonte 
+                JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 2 AND t3.deleted_at IS NULL
+                WHERE t1.nu_valor IS NULL
+                AND data_noticia > '2025-05-01'
+                AND t1.deleted_at IS NULL
+                AND t3.deleted_at IS NULL
+                ORDER BY id_fonte";
+
+        $noticias = DB::select($sql);
+
+        return view('noticia-web/retorno', compact('total_nulos','inconsistencias','noticias'));
+    }
+
     public function calcularValorRetornoWeb()
     {
         $totalAtualizadas = 0;

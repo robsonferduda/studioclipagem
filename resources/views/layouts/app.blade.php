@@ -215,6 +215,11 @@
                           <span class="sidebar-normal">Nova Notícia</span>
                           </a>
                        </li>
+                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'web-retorno') ? 'active' : '' }}">
+                          <a href="{{ url('noticia/web/retorno') }}">
+                          <span class="sidebar-normal">Retorno de Mídia</span>
+                          </a>
+                        </li>
                        </ul>
                     </div>
                  </li>                  
