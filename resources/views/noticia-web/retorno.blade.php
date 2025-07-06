@@ -75,22 +75,13 @@
                                     <div class="row">
                                         <div class="col-lg-10">
                                             <h6>
-                                                <a href="{{ url('tv/emissoras/editar/'.$noticia->emissora_id) }}" target="_BLANK">{!! ($noticia->emissora_id) ? $noticia->nome_emissora : '<span>Sem Emissora</span>' !!}</a>
-                                                - <a href="{{ url('tv/emissoras/programas/editar/'.$noticia->id_programa) }}" target="_BLANK">{!! ($noticia->id_programa) ? $noticia->nome_programa : '<span class="text-danger">Sem programa</span>' !!}</a>
-                                                - {{ ($noticia->dt_noticia) ? \Carbon\Carbon::parse($noticia->dt_noticia)->format('d/m/Y') : 'Não informada' }} 
+                                                {{ ($noticia->adta_noticia) ? \Carbon\Carbon::parse($noticia->data_noticia)->format('d/m/Y') : 'Não informada' }} 
                                             </h6>
-                                            <p class="mb-1">
-                                                @if($noticia->duracao)
-                                                    Duração <strong>{{ $noticia->duracao }}</strong></strong>
-                                                @else
-                                                    <span class="text-danger">Duração não informada</span>
-                                                @endif
-                                            </p>  
                                             {!! ($noticia->sinopse) ? Str::limit($noticia->sinopse, 500, " ...") : '<span class="text-danger center">Notícia não possui texto</span>' !!}
                                         </div>
                                         <div class="col-lg-2">
                                             <div class="pull-right">
-                                                <span class="badge badge-pill badge-danger">{{ ($noticia->valor_retorno ) ? $noticia->valor_retorno : 'R$ ---' }}</span>
+                                                <span class="badge badge-pill badge-danger">{{ ($noticia->nu_valor ) ? $noticia->nu_valor : 'R$ ---' }}</span>
                                                 <br/>
 
                                                 <a title="Editar" href="{{ url('noticia/tv/'.$noticia->id.'/editar') }}" target="_BLANK" class="btn btn-primary btn-fill btn-icon btn-sm pull-right" style="border-radius: 20px;">
