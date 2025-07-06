@@ -75,7 +75,7 @@
                                     <div class="row">
                                         <div class="col-lg-10">
                                             <h6>
-                                                {{ ($noticia->adta_noticia) ? \Carbon\Carbon::parse($noticia->data_noticia)->format('d/m/Y') : 'Não informada' }} 
+                                                {{ ($noticia->data_noticia) ? \Carbon\Carbon::parse($noticia->data_noticia)->format('d/m/Y') : 'Não informada' }} 
                                             </h6>
                                             {!! ($noticia->sinopse) ? Str::limit($noticia->sinopse, 500, " ...") : '<span class="text-danger center">Notícia não possui texto</span>' !!}
                                         </div>
