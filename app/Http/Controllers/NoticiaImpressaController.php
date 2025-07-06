@@ -437,6 +437,50 @@ class NoticiaImpressaController extends Controller
         return redirect('noticias/impresso')->withInput();
     }
 
+    public function retorno()
+    {
+        Session::put('sub-menu','web-retorno');
+
+        $total_nulos = NoticiaImpresso::whereNull('valor_retorno')
+                        ->whereHas('clientes', function($q){
+                            $q->where('noticia_cliente.tipo_id', 1);
+                        })
+                        ->whereHas('fonte', function($q){
+                            $q->whereNotNull('jornal_online.deleted_at');
+                        })
+                        ->where('dt_clipagem', '>', '2025-05-01')
+                        ->count();
+
+        $sql = "SELECT t2.id, t2.nome, count(*) as total 
+                FROM noticia_impresso t1
+                LEFT JOIN jornal_online t2 ON t2.id = t1.id_fonte 
+                JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 1 AND t3.deleted_at IS NULL
+                WHERE t1.valor_retorno IS NULL
+                AND dt_clipagem > '2025-05-01'
+                AND t1.deleted_at IS NULL
+                AND t2.deleted_at IS NULL
+                AND t3.deleted_at IS NULL
+                GROUP BY t2.id, t2.nome
+                ORDER BY nome";
+
+        $inconsistencias = DB::select($sql);
+
+        $sql = "SELECT DISTINCT t1.id, t2.nome, t1.id_fonte, t2.retorno_midia, t1.valor_retorno AS valor_retorno, sinopse, dt_clipagem 
+                FROM noticia_impresso t1
+                LEFT JOIN jornal_online t2 ON t2.id = t1.id_fonte 
+                JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 1 AND t3.deleted_at IS NULL
+                WHERE t1.valor_retorno IS NULL
+                AND dt_clipagem > '2025-05-01'
+                AND t1.deleted_at IS NULL
+                AND t2.deleted_at IS NULL
+                AND t3.deleted_at IS NULL
+                ORDER BY id_fonte";
+
+        $noticias = DB::select($sql);
+
+        return view('noticia-impressa/retorno', compact('total_nulos','inconsistencias','noticias'));
+    }
+
     public function calcularValorRetornoImpresso()
     {
         $noticias = NoticiaImpresso::whereNotNull('nu_colunas')
@@ -469,6 +513,6 @@ class NoticiaImpressaController extends Controller
             $noticia->save();
         }
 
-        return response()->json(['status' => 'ok', 'atualizadas' => $noticias->count()]);
+        return redirect('noticia/impresso/retorno')->withInput();
     }
 }

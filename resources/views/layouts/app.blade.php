@@ -158,7 +158,12 @@
                                 <span class="sidebar-normal">Nova Notícia</span>
                                 </a>
                             </li> 
-                          @endpermission                
+                          @endpermission    
+                          <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'impresso-retorno') ? 'active' : '' }}">
+                            <a href="{{ url('noticia/impresso/retorno') }}">
+                            <span class="sidebar-normal">Retorno de Mídia</span>
+                            </a>
+                          </li>            
                         </ul>
                      </div>
                   </li>

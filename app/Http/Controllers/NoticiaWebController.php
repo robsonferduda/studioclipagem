@@ -768,7 +768,7 @@ class NoticiaWebController extends Controller
 
     public function retorno()
     {
-        Session::put('sub-menu','tv-retorno');
+        Session::put('sub-menu','web-retorno');
 
         $total_nulos = NoticiaWeb::whereNull('nu_valor')
                         ->whereHas('clientes', function($q){

@@ -186,7 +186,8 @@ Route::middleware(['web'])->group(function () {
 	Route::get('noticia-impressa/imagem/download/{id}','NoticiaImpressaController@getImagem');
 	Route::get('noticias/impresso/limpar','NoticiaImpressaController@limpar');
 	Route::get('noticia/impressa/imagem-path/{id}','NoticiaImpressaController@getImagemView');
-	Route::get('noticia/impressa/atualiza-retorno','NoticiaImpressaController@calcularValorRetornoImpresso');
+	Route::get('noticia/impresso/atualiza-retorno','NoticiaImpressaController@calcularValorRetornoImpresso');
+	Route::get('noticia/impresso/retorno','NoticiaImpressaController@retorno');
 	
 	Route::resource('noticia-radio','NoticiaRadioController');
 	Route::match(array('GET', 'POST'),'noticias/radio','NoticiaRadioController@index');
