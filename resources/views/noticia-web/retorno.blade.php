@@ -11,8 +11,8 @@
                     </h4>
                 </div>
                 <div class="col-md-4">
-                    <a href="{{ url('noticias/tv') }}" class="btn btn-info pull-right mr-3"><i class="fa fa-table"></i> Notícias</a>
-                    <a href="{{ url('tv/noticias/atualizar-valores') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-dollar"></i> Atualizar Valores</a>
+                    <a href="{{ url('noticia/web') }}" class="btn btn-info pull-right mr-3"><i class="fa fa-table"></i> Notícias</a>
+                    <a href="{{ url('noticia/web/atualiza-retorno') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-dollar"></i> Atualizar Valores</a>
                 </div>
             </div>
         </div>

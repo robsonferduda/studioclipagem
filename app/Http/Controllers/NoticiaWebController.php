@@ -790,7 +790,7 @@ class NoticiaWebController extends Controller
 
         $inconsistencias = DB::select($sql);
 
-        $sql = "SELECT t1.id, t2.nome, t1.id_fonte, t2.nu_valor, t1.nu_valor AS valor_retorno, sinopse, data_noticia 
+        $sql = "SELECT DISTINCT t1.id, t2.nome, t1.id_fonte, t2.nu_valor, t1.nu_valor AS valor_retorno, sinopse, data_noticia 
                 FROM noticias_web t1
                 LEFT JOIN fonte_web t2 ON t2.id = t1.id_fonte 
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 2 AND t3.deleted_at IS NULL
@@ -809,33 +809,27 @@ class NoticiaWebController extends Controller
     {
         $totalAtualizadas = 0;
 
-        NoticiaCliente::where('tipo_id', 2)
-            ->whereNotNull('noticia_id')
-            ->where('created_at', '>=', Carbon::now()->subDays(60))
-            ->chunk(500, function ($noticiaClientes) use (&$totalAtualizadas) {
-                foreach ($noticiaClientes as $nc) {
+        $noticias = NoticiaWeb::whereNull('nu_valor')
+                        ->whereHas('clientes', function($q){
+                            $q->where('noticia_cliente.tipo_id', 2);
+                        })
+                        ->with('fonte')
+                        ->where('data_noticia', '>', '2025-05-01')
+                        ->get();
 
-                    $noticia = NoticiaWeb::where('id', $nc->noticia_id)->whereNull('nu_valor')->first();
+            
+                foreach ($noticias as $noticia) {
 
-                    if (!$noticia || $noticia->nu_valor !== null) {
+                    if (!$noticia->fonte || !is_numeric($noticia->fonte->nu_valor)) {
                         continue;
                     }
 
-                    $fonte = FonteWeb::find($noticia->id_fonte);
-
-                    if (!$fonte || !is_numeric($fonte->nu_valor)) {
-                        continue;
-                    }
-
-                    $noticia->nu_valor = $fonte->nu_valor;
+                    $noticia->nu_valor = $noticia->fonte->nu_valor;
                     $noticia->save();
                     $totalAtualizadas++;
                 }
-            });
+            
 
-        return response()->json([
-            'status' => 'ok',
-            'total_atualizadas' => $totalAtualizadas
-        ]);
+        return redirect('noticia/web/retorno')->withInput();
     }
 }
