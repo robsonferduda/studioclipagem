@@ -33,7 +33,7 @@
                                     <div class="col-7 col-md-8">
                                         <div class="numbers">
                                         <p class="card-category">Pendentes</p>
-                                        <p class="card-title">{{ $total_nulos }}</p>
+                                        <p class="card-title">{{ count($noticias) }}</p>
                                         <p></p>
                                         </div>
                                     </div>
