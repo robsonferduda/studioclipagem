@@ -827,6 +827,10 @@ class NoticiaWebController extends Controller
             
                 foreach ($noticias as $noticia) {
 
+                    if($noticia->id == 37417270){
+                        $noticia->fonte->nu_valor;
+                    }
+
                     $noticia->nu_valor = $noticia->fonte->nu_valor;
                     $noticia->save();
                     $totalAtualizadas++;
