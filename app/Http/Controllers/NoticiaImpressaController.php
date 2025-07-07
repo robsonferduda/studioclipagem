@@ -442,6 +442,7 @@ class NoticiaImpressaController extends Controller
         Session::put('sub-menu','web-retorno');
 
         $total_nulos = NoticiaImpresso::whereNull('valor_retorno')
+                        ->whereNotNull('titulo')
                         ->whereHas('clientes', function($q){
                             $q->where('noticia_cliente.tipo_id', 1);
                         })
@@ -457,6 +458,7 @@ class NoticiaImpressaController extends Controller
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 1 AND t3.deleted_at IS NULL
                 WHERE t1.valor_retorno IS NULL
                 AND dt_clipagem > '2025-05-01'
+                AND titulo IS NOT NULL
                 AND t1.deleted_at IS NULL
                 AND t2.deleted_at IS NULL
                 AND t3.deleted_at IS NULL
@@ -471,6 +473,7 @@ class NoticiaImpressaController extends Controller
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 1 AND t3.deleted_at IS NULL
                 WHERE t1.valor_retorno IS NULL
                 AND dt_clipagem > '2025-05-01'
+                AND titulo IS NOT NULL
                 AND t1.deleted_at IS NULL
                 AND t2.deleted_at IS NULL
                 AND t3.deleted_at IS NULL
