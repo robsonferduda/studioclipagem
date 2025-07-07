@@ -74,7 +74,8 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-lg-10">
-                                            <h6>
+                                            <p class="mb-1 fw-bold" style="font-weight: bold;">{{ $noticia->titulo }}</p>
+                                            <h6 class="text-muted">
                                                 <a href="{{ url('fonte-impresso/'.$noticia->id_fonte.'/editar') }}" target="_BLANK">{!! ($noticia->id_fonte) ? $noticia->nome : '<span>Sem Fonte</span>' !!}</a>
                                                 {{ ($noticia->dt_clipagem) ? \Carbon\Carbon::parse($noticia->dt_clipagem)->format('d/m/Y') : 'Não informada' }} 
                                             </h6>

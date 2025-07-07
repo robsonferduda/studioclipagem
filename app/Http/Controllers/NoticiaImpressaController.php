@@ -467,7 +467,7 @@ class NoticiaImpressaController extends Controller
 
         $inconsistencias = DB::select($sql);
 
-        $sql = "SELECT DISTINCT t1.id, t2.nome, t1.id_fonte, t2.retorno_midia, t1.valor_retorno AS valor_retorno, sinopse, dt_clipagem 
+        $sql = "SELECT DISTINCT t1.id, t2.nome, t1.id_fonte, t2.retorno_midia, t1.valor_retorno AS valor_retorno, sinopse, dt_clipagem, titulo 
                 FROM noticia_impresso t1
                 LEFT JOIN jornal_online t2 ON t2.id = t1.id_fonte 
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 1 AND t3.deleted_at IS NULL
