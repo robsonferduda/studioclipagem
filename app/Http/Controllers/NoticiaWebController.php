@@ -814,24 +814,26 @@ class NoticiaWebController extends Controller
     {
         $totalAtualizadas = 0;
 
-        $noticias = NoticiaWeb::whereNull('nu_valor')
-                        ->whereHas('clientes', function($q){
-                            $q->where('noticia_cliente.tipo_id', 2);
-                        })
-                        ->whereHas('fonte', function($q){
-                            $q->whereNotNull('fonte_web.deleted_at');
-                        })
-                        ->where('data_noticia', '>', '2025-05-01')
-                        ->get();
+        $sql = "SELECT DISTINCT t1.id, t2.nome, t1.id_fonte, t2.nu_valor, t1.nu_valor AS valor_retorno, sinopse, data_noticia, titulo_noticia 
+                FROM noticias_web t1
+                LEFT JOIN fonte_web t2 ON t2.id = t1.id_fonte 
+                JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 2 AND t3.deleted_at IS NULL
+                WHERE t1.nu_valor IS NULL
+                AND data_noticia > '2025-05-01'
+                AND t1.deleted_at IS NULL
+                AND t2.deleted_at IS NULL
+                AND t3.deleted_at IS NULL
+                ORDER BY id_fonte";
+
+        $noticias = DB::select($sql);
 
             
                 foreach ($noticias as $noticia) {
 
-                    if($noticia->id == 37417270){
-                        $noticia->fonte->nu_valor;
-                    }
+                    $noticia = NoticiaWeb::find($noticia->id);
+                    $fonte = FonteWeb::find($noticia->id_fonte);
 
-                    $noticia->nu_valor = $noticia->fonte->nu_valor;
+                    $noticia->nu_valor = $fonte->nu_valor;
                     $noticia->save();
                     $totalAtualizadas++;
                 }
