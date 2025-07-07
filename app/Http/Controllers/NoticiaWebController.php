@@ -827,10 +827,6 @@ class NoticiaWebController extends Controller
             
                 foreach ($noticias as $noticia) {
 
-                    if (!$noticia->fonte || !is_numeric($noticia->fonte->nu_valor)) {
-                        continue;
-                    }
-
                     $noticia->nu_valor = $noticia->fonte->nu_valor;
                     $noticia->save();
                     $totalAtualizadas++;
