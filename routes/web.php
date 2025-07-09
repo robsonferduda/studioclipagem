@@ -71,6 +71,8 @@ Route::middleware(['web'])->group(function () {
 
 	Route::resource('cliente','ClienteController');
 	Route::match(array('GET', 'POST'),'clientes','ClienteController@index');
+	Route::match(array('GET', 'POST'),'cliente/relatorios/gerar','ClienteController@gerarRelatorios');
+	Route::match(array('GET', 'POST'),'cliente/relatorios/listar','ClienteController@relatorios');
 
 	Route::match(array('GET', 'POST'),'coletas','ColetaController@index');
 

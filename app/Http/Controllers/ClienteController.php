@@ -56,6 +56,34 @@ class ClienteController extends Controller
         return view('cliente/index',compact('clientes','nome'));
     }
 
+    public function relatorios(Request $request): View
+    {
+        Session::put('url','relatorios');
+        Session::put('sub-menu','cliente-relatorios');
+
+        $clientes = Cliente::where('fl_ativo', true)->orderBy('nome')->get();
+
+        return view('cliente/relatorios/listar');
+    }
+
+    public function gerarRelatorios(Request $request): View
+    {
+        Session::put('url','relatorios');
+        Session::put('sub-menu','cliente-gerar-relatorios');
+
+        $tipo_data = ($request->tipo_data) ? $request->tipo_data : 'data_cadastro';
+        $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00" : date("Y-m-d")." 00:00:00";
+        $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d")." 23:59:59";
+        $fl_web = $request->fl_web == true ? true : false;
+        $fl_tv = $request->fl_tv == true ? true : false;
+        $fl_impresso = $request->fl_impresso == true ? true : false;
+        $fl_radio = $request->fl_radio == true ? true : false;
+
+        $relatorios = array();
+
+        return view('cliente/relatorios/gerar', compact('relatorios','tipo_data','dt_inicial','dt_final','fl_web','fl_tv','fl_radio','fl_impresso'));
+    }
+
     public function create(): View
     {
         $areas = Area::all();
