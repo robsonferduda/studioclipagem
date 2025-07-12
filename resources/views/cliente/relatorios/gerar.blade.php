@@ -227,6 +227,9 @@
 
 @endsection
 @section('script')
+<!-- Arquivo de debug (opcional) -->
+<script src="{{ asset('js/debug-relatorio.js') }}"></script>
+
 <style>
 .checkbox-table {
     width: 18px !important;
@@ -371,20 +374,21 @@
 }
 </style>
 <script>
-    $( document ).ready(function() {
+    // Definir variáveis globais no escopo window
+    window.host = $('meta[name="base-url"]').attr('content');
+    window.noticiasCarregadas = {};
+    window.noticiasCarregadasCount = 0;
+    
+    // Flag para controlar visibilidade das áreas
+    window.mostrarAreas = {{ $fl_areas ? 'true' : 'false' }};
+    
+    // Flag para controlar visibilidade do sentimento
+    window.mostrarSentimento = {{ $fl_sentimento ? 'true' : 'false' }};
+    
+    // Flag para controlar visibilidade do retorno de mídia
+    window.mostrarRetornoMidia = {{ $fl_retorno_midia ? 'true' : 'false' }};
 
-        var host =  $('meta[name="base-url"]').attr('content');
-        var noticiasCarregadas = {};
-        var noticiasCarregadasCount = 0;
-        
-        // Flag para controlar visibilidade das áreas
-        var mostrarAreas = {{ $fl_areas ? 'true' : 'false' }};
-        
-        // Flag para controlar visibilidade do sentimento
-        var mostrarSentimento = {{ $fl_sentimento ? 'true' : 'false' }};
-        
-        // Flag para controlar visibilidade do retorno de mídia
-        var mostrarRetornoMidia = {{ $fl_retorno_midia ? 'true' : 'false' }};
+    $( document ).ready(function() {
 
         // Carregar áreas do cliente logado ao inicializar (apenas se a seção existir)
         if ($('#areas-checkbox-group').length > 0) {
@@ -440,17 +444,23 @@
         function carregarAreasCliente() {
             // Verificar se o elemento existe antes de fazer a requisição
             if ($('#areas-checkbox-group').length === 0) {
+                console.log('Elemento #areas-checkbox-group não encontrado');
                 return;
             }
             
+            console.log('Carregando áreas do cliente...');
+            
             $.ajax({
-                url: host + '/api/cliente/areas',
+                url: window.host + '/api/cliente/areas',
                 type: 'GET',
                 dataType: 'json',
+                timeout: 10000,
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function(response) {
+                    console.log('Áreas carregadas:', response);
+                    
                     var areasHtml = '';
                     
                     if (response && Array.isArray(response)) {
@@ -470,7 +480,11 @@
                     $('#areas-checkbox-group').html(areasHtml);
                 },
                 error: function(xhr, status, error) {
-                    console.error('Erro ao carregar áreas:', error);
+                    console.error('Erro ao carregar áreas:', {
+                        status: status,
+                        error: error,
+                        xhr: xhr.responseText
+                    });
                     
                     if (xhr.status === 404) {
                         $('#areas-checkbox-group').html('<p class="text-warning">Rota não encontrada. Verifique se o sistema está configurado corretamente.</p>');
@@ -501,7 +515,7 @@
                 tipos_midia: [],
                 status: [],
                 retorno: $('input[name="retorno"]:checked').val() || 'com_retorno',
-                valor: [],
+                valor: ['com_valor', 'sem_valor'], // Incluir ambos por padrão
                 areas: []
             };
 
@@ -512,21 +526,22 @@
             if ($('input[name="fl_impresso"]').length && $('input[name="fl_impresso"]').is(':checked')) formData.tipos_midia.push('impresso');
 
             // Status/Sentimento (apenas se a seção existir)
-            if (mostrarSentimento) {
+            if (window.mostrarSentimento) {
                 $('input[name="sentimento[]"]:checked').each(function() {
                     var valor = $(this).val();
                     if (valor == '1') formData.status.push('positivo');
                     else if (valor == '-1') formData.status.push('negativo');
                     else if (valor == '0') formData.status.push('neutro');
                 });
+                
+                // Se nenhum sentimento foi selecionado, incluir todos
+                if (formData.status.length === 0) {
+                    formData.status = ['positivo', 'negativo', 'neutro'];
+                }
             } else {
                 // Se não mostrar sentimento, incluir todos os status por padrão
                 formData.status = ['positivo', 'negativo', 'neutro'];
             }
-
-            // Valor
-            if ($('input[name="valor_com"]:checked').length > 0) formData.valor.push('com_valor');
-            if ($('input[name="valor_sem"]:checked').length > 0) formData.valor.push('sem_valor');
 
             // Áreas (apenas se a seção existir)
             if ($('#areas-checkbox-group').length > 0) {
@@ -558,25 +573,34 @@
             // Adicionar token CSRF
             formData._token = $('meta[name="csrf-token"]').attr('content');
 
+            console.log('Enviando dados para pesquisa:', formData);
+
             $.ajax({
-                url: host + '/cliente/relatorios/listar-noticias',
+                url: window.host + '/cliente/relatorios/listar-noticias',
                 type: 'POST',
                 data: formData,
                 dataType: 'json',
+                timeout: 30000, // 30 segundos de timeout
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function(response) {
-                    if (response.success) {
-                        noticiasCarregadas = response.noticias;
+                    console.log('Resposta recebida:', response);
+                    
+                    if (response.success && response.noticias) {
+                        window.noticiasCarregadas = response.noticias;
                         exibirNoticias(response.noticias);
                         atualizarContadores();
                     } else {
-                        $('#resultado-relatorio').html('<div class="alert alert-danger">' + response.message + '</div>');
+                        $('#resultado-relatorio').html('<div class="alert alert-danger">' + (response.message || 'Erro desconhecido') + '</div>');
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.error('Erro ao pesquisar notícias:', error);
+                    console.error('Erro na requisição:', {
+                        status: status,
+                        error: error,
+                        xhr: xhr.responseText
+                    });
                     
                     var errorMessage = '';
                     if (xhr.status === 404) {
@@ -585,6 +609,8 @@
                         errorMessage = 'Acesso negado. Faça login novamente.';
                     } else if (xhr.status === 500) {
                         errorMessage = 'Erro interno do servidor. Tente novamente mais tarde.';
+                    } else if (status === 'timeout') {
+                        errorMessage = 'Tempo limite da requisição excedido. Tente novamente.';
                     } else {
                         errorMessage = 'Erro ao buscar notícias. Tente novamente.';
                     }
@@ -596,106 +622,118 @@
 
         // Exibir notícias
         function exibirNoticias(noticias) {
-            var html = '';
-            var totalNoticias = 0;
+            try {
+                var html = '';
+                var totalNoticias = 0;
 
-            // Contar total de notícias
-            Object.keys(noticias).forEach(function(tipo) {
-                totalNoticias += noticias[tipo].length;
-            });
+                // Contar total de notícias
+                if (noticias && typeof noticias === 'object') {
+                    Object.keys(noticias).forEach(function(tipo) {
+                        if (noticias[tipo] && Array.isArray(noticias[tipo])) {
+                            totalNoticias += noticias[tipo].length;
+                        }
+                    });
+                }
 
-            if (totalNoticias === 0) {
-                html = '<div class="alert alert-info">Nenhuma notícia encontrada para os critérios informados.</div>';
-            } else {
-                // Cabeçalho com controles
-                html += '<div class="d-flex justify-content-between align-items-center mb-3">';
-                html += '<h5>Notícias Encontradas (' + totalNoticias + ')</h5>';
-                html += '<div>';
-                html += '<button type="button" class="btn btn-sm btn-outline-primary" onclick="selecionarTodas()">Selecionar Todas</button>';
-                html += '<button type="button" class="btn btn-sm btn-outline-secondary ml-2" onclick="deselecionarTodas()">Desmarcar Todas</button>';
-                html += '<button type="button" class="btn btn-sm btn-outline-warning ml-2" onclick="fecharTodasExpandidas()">Fechar Todas Expandidas</button>';
-                html += '</div>';
-                html += '</div>';
-
-                // Criar estrutura de abas
-                html += '<div class="tabs-container">';
-                html += '<ul class="nav nav-tabs nav-fill" id="noticiasTab" role="tablist">';
-                
-                var primeiraAba = true;
-                var tiposComNoticias = [];
-                
-                // Criar abas apenas para tipos com notícias
-                Object.keys(noticias).forEach(function(tipo) {
-                    if (noticias[tipo].length > 0) {
-                        tiposComNoticias.push(tipo);
-                        var icone = obterIconeTipo(tipo);
-                        var titulo = obterTituloTipo(tipo);
-                        var cor = obterCorTipo(tipo);
-                        
-                        html += '<li class="nav-item" role="presentation">';
-                        html += '<a class="nav-link ' + (primeiraAba ? 'active' : '') + '" id="' + tipo + '-tab" data-toggle="tab" href="#' + tipo + '-content" role="tab" aria-controls="' + tipo + '-content" aria-selected="' + (primeiraAba ? 'true' : 'false') + '">';
-                        html += '<i class="fa ' + icone + ' ' + cor + '"></i> ';
-                        html += titulo + ' (' + noticias[tipo].length + ')';
-                        html += '</a>';
-                        html += '</li>';
-                        
-                        primeiraAba = false;
-                    }
-                });
-                
-                html += '</ul>';
-                html += '<div class="tab-content" id="noticiasTabContent">';
-                
-                // Criar conteúdo das abas
-                primeiraAba = true;
-                tiposComNoticias.forEach(function(tipo) {
-                    html += '<div class="tab-pane fade ' + (primeiraAba ? 'show active' : '') + '" id="' + tipo + '-content" role="tabpanel" aria-labelledby="' + tipo + '-tab">';
-                    html += gerarTabelaTipoMidia(tipo, noticias[tipo]);
+                if (totalNoticias === 0) {
+                    html = '<div class="alert alert-info">Nenhuma notícia encontrada para os critérios informados.</div>';
+                } else {
+                    // Cabeçalho com controles
+                    html += '<div class="d-flex justify-content-between align-items-center mb-3">';
+                    html += '<h5>Notícias Encontradas (' + totalNoticias + ')</h5>';
+                    html += '<div>';
+                    html += '<button type="button" class="btn btn-sm btn-outline-primary" onclick="selecionarTodas()">Selecionar Todas</button>';
+                    html += '<button type="button" class="btn btn-sm btn-outline-secondary ml-2" onclick="deselecionarTodas()">Desmarcar Todas</button>';
+                    html += '<button type="button" class="btn btn-sm btn-outline-warning ml-2" onclick="fecharTodasExpandidas()">Fechar Todas Expandidas</button>';
                     html += '</div>';
-                    primeiraAba = false;
-                });
-                
-                html += '</div>';
-                html += '</div>';
-            }
+                    html += '</div>';
 
-            $('#resultado-relatorio').html(html);
-            
-            // Inicializar as tabs do Bootstrap
-            if (typeof $.fn.tab !== 'undefined') {
-                $('#noticiasTab a').on('click', function(e) {
-                    e.preventDefault();
-                    $(this).tab('show');
-                });
-                
-                // Mostrar a primeira aba por padrão
-                $('#noticiasTab a:first').tab('show');
-            } else {
-                // Fallback manual para as tabs se o Bootstrap não estiver disponível
-                $('#noticiasTab a').on('click', function(e) {
-                    e.preventDefault();
-                    var target = $(this).attr('href');
+                    // Criar estrutura de abas
+                    html += '<div class="tabs-container">';
+                    html += '<ul class="nav nav-tabs nav-fill" id="noticiasTab" role="tablist">';
                     
-                    // Remover active de todas as tabs
-                    $('#noticiasTab a').removeClass('active');
-                    $('.tab-pane').removeClass('active show');
+                    var primeiraAba = true;
+                    var tiposComNoticias = [];
                     
-                    // Adicionar active na tab clicada
-                    $(this).addClass('active');
-                    $(target).addClass('active show');
-                });
+                    // Criar abas apenas para tipos com notícias
+                    Object.keys(noticias).forEach(function(tipo) {
+                        if (noticias[tipo] && Array.isArray(noticias[tipo]) && noticias[tipo].length > 0) {
+                            tiposComNoticias.push(tipo);
+                            var icone = obterIconeTipo(tipo);
+                            var titulo = obterTituloTipo(tipo);
+                            var cor = obterCorTipo(tipo);
+                            
+                            html += '<li class="nav-item" role="presentation">';
+                            html += '<a class="nav-link ' + (primeiraAba ? 'active' : '') + '" id="' + tipo + '-tab" data-toggle="tab" href="#' + tipo + '-content" role="tab" aria-controls="' + tipo + '-content" aria-selected="' + (primeiraAba ? 'true' : 'false') + '">';
+                            html += '<i class="fa ' + icone + ' ' + cor + '"></i> ';
+                            html += titulo + ' (' + noticias[tipo].length + ')';
+                            html += '</a>';
+                            html += '</li>';
+                            
+                            primeiraAba = false;
+                        }
+                    });
+                    
+                    html += '</ul>';
+                    html += '<div class="tab-content" id="noticiasTabContent">';
+                    
+                    // Criar conteúdo das abas
+                    primeiraAba = true;
+                    tiposComNoticias.forEach(function(tipo) {
+                        html += '<div class="tab-pane fade ' + (primeiraAba ? 'show active' : '') + '" id="' + tipo + '-content" role="tabpanel" aria-labelledby="' + tipo + '-tab">';
+                        html += gerarTabelaTipoMidia(tipo, noticias[tipo]);
+                        html += '</div>';
+                        primeiraAba = false;
+                    });
+                    
+                    html += '</div>';
+                    html += '</div>';
+                }
+
+                $('#resultado-relatorio').html(html);
                 
-                // Mostrar a primeira aba por padrão
-                $('#noticiasTab a:first').addClass('active');
-                $('.tab-pane:first').addClass('active show');
+                // Inicializar as tabs do Bootstrap
+                setTimeout(function() {
+                    try {
+                        if (typeof $.fn.tab !== 'undefined') {
+                            $('#noticiasTab a').on('click', function(e) {
+                                e.preventDefault();
+                                $(this).tab('show');
+                            });
+                            
+                            // Mostrar a primeira aba por padrão
+                            $('#noticiasTab a:first').tab('show');
+                        } else {
+                            // Fallback manual para as tabs se o Bootstrap não estiver disponível
+                            $('#noticiasTab a').on('click', function(e) {
+                                e.preventDefault();
+                                var target = $(this).attr('href');
+                                
+                                // Remover active de todas as tabs
+                                $('#noticiasTab a').removeClass('active');
+                                $('.tab-pane').removeClass('active show');
+                                
+                                // Adicionar active na tab clicada
+                                $(this).addClass('active');
+                                $(target).addClass('active show');
+                            });
+                            
+                            // Mostrar a primeira aba por padrão
+                            $('#noticiasTab a:first').addClass('active');
+                            $('.tab-pane:first').addClass('active show');
+                        }
+                    } catch (e) {
+                        console.error('Erro ao inicializar tabs:', e);
+                    }
+                }, 100); // Pequeno delay para garantir que o DOM foi renderizado
+                
+                // Atualizar contador de notícias totais
+                $('#totalNoticias').text(totalNoticias);
+                
+            } catch (e) {
+                console.error('Erro ao exibir notícias:', e);
+                $('#resultado-relatorio').html('<div class="alert alert-danger">Erro ao exibir notícias. Tente novamente.</div>');
             }
-            
-            // Atualizar contador de notícias totais
-            var totalEncontradas = 0;
-            Object.keys(noticias).forEach(function(tipo) {
-                totalEncontradas += noticias[tipo].length;
-            });
-            $('#totalNoticias').text(totalEncontradas);
         }
 
         // Funções auxiliares para obter propriedades dos tipos de mídia
@@ -731,87 +769,100 @@
 
         // Gerar tabela para um tipo de mídia (sem card wrapper)
         function gerarTabelaTipoMidia(tipo, noticiasArray) {
-            var html = '';
+            try {
+                var html = '';
 
-            // Cabeçalho com controles específicos do tipo
-            html += '<div class="d-flex justify-content-between align-items-center mb-3">';
-            html += '<div>';
-            html += '<button type="button" class="btn btn-sm btn-outline-primary" onclick="selecionarTodasTipoBtn(\'' + tipo + '\', true)">Selecionar Todas</button>';
-            html += '<button type="button" class="btn btn-sm btn-outline-secondary ml-2" onclick="selecionarTodasTipoBtn(\'' + tipo + '\', false)">Desmarcar Todas</button>';
-            html += '</div>';
-            html += '<div class="text-muted">';
-            html += '<i class="fa fa-info-circle"></i> ' + noticiasArray.length + ' notícias encontradas';
-            html += '</div>';
-            html += '</div>';
+                // Verificar se noticiasArray é válido
+                if (!noticiasArray || !Array.isArray(noticiasArray)) {
+                    return '<div class="alert alert-warning">Nenhuma notícia encontrada para este tipo de mídia.</div>';
+                }
 
-            // Cabeçalho da tabela
-            html += '<div class="table-responsive">';
-            html += '<table class="table table-sm table-hover">';
-            html += '<thead>';
-            html += '<tr>';
-            html += '<th width="50"><input type="checkbox" class="selecionar-todas-' + tipo + ' checkbox-table" onchange="selecionarTodasTipo(\'' + tipo + '\', this)"></th>';
-            
-            // Colunas diferentes para TV e Rádio
-            if (tipo === 'tv' || tipo === 'radio') {
-                html += '<th>Programa</th>';
-                html += '<th>Veículo</th>';
-                html += '<th>Horário</th>';
-                html += '<th>Duração</th>';
-            } else {
-                html += '<th>Título</th>';
-                html += '<th>Veículo</th>';
-            }
-            
-            html += '<th>Data</th>';
-            if (mostrarAreas) {
+                // Cabeçalho com controles específicos do tipo
+                html += '<div class="d-flex justify-content-between align-items-center mb-3">';
+                html += '<div>';
+                html += '<button type="button" class="btn btn-sm btn-outline-primary" onclick="selecionarTodasTipoBtn(\'' + tipo + '\', true)">Selecionar Todas</button>';
+                html += '<button type="button" class="btn btn-sm btn-outline-secondary ml-2" onclick="selecionarTodasTipoBtn(\'' + tipo + '\', false)">Desmarcar Todas</button>';
+                html += '</div>';
+                html += '<div class="text-muted">';
+                html += '<i class="fa fa-info-circle"></i> ' + noticiasArray.length + ' notícias encontradas';
+                html += '</div>';
+                html += '</div>';
+
+                // Cabeçalho da tabela
+                html += '<div class="table-responsive">';
+                html += '<table class="table table-sm table-hover">';
+                html += '<thead>';
+                html += '<tr>';
+                html += '<th width="50"><input type="checkbox" class="selecionar-todas-' + tipo + ' checkbox-table" onchange="selecionarTodasTipo(\'' + tipo + '\', this)"></th>';
+                
+                // Colunas diferentes para TV e Rádio
+                if (tipo === 'tv' || tipo === 'radio') {
+                    html += '<th>Programa</th>';
+                    html += '<th>Veículo</th>';
+                    html += '<th>Horário</th>';
+                    html += '<th>Duração</th>';
+                } else {
+                    html += '<th>Título</th>';
+                    html += '<th>Veículo</th>';
+                }
+                
+                            html += '<th>Data</th>';
+            if (window.mostrarAreas) {
                 html += '<th>Área</th>';
             }
-            if (mostrarSentimento) {
+            if (window.mostrarSentimento) {
                 html += '<th>Sentimento</th>';
             }
-            if (mostrarRetornoMidia) {
+            if (window.mostrarRetornoMidia) {
                 html += '<th>Valor</th>';
             }
-            html += '<th width="30" class="text-center"><i class="fa fa-expand-alt" title="Clique na linha para expandir/recolher"></i></th>';
-            html += '</tr>';
-            html += '</thead>';
-            html += '<tbody>';
-
-            // Notícias
-            noticiasArray.forEach(function(noticia) {
-                html += '<tr class="noticia-row" data-noticia-id="' + noticia.id + '" data-tipo="' + tipo + '" style="cursor: pointer;" onclick="toggleNoticiaDetalhes(' + noticia.id + ', \'' + tipo + '\', this)">';
-                html += '<td onclick="event.stopPropagation()"><input type="checkbox" class="selecionar-noticia checkbox-table" data-tipo="' + tipo + '" data-id="' + noticia.id + '" onchange="atualizarContadores()"></td>';
-                
-                // Dados diferentes para TV e Rádio
-                if (tipo === 'tv' || tipo === 'radio') {
-                    html += '<td>' + (noticia.programa || 'N/A') + '</td>';
-                    html += '<td>' + noticia.veiculo + '</td>';
-                    html += '<td>' + (noticia.horario || 'N/A') + '</td>';
-                    html += '<td>' + (noticia.duracao || 'N/A') + '</td>';
-                } else {
-                    html += '<td><strong>' + noticia.titulo + '</strong></td>';
-                    html += '<td>' + noticia.veiculo + '</td>';
-                }
-                
-                html += '<td>' + noticia.data_formatada + '</td>';
-                if (mostrarAreas) {
-                    html += '<td>' + noticia.area + '</td>';
-                }
-                if (mostrarSentimento) {
-                    html += '<td>' + obterSentimentoHtml(noticia.sentimento) + '</td>';
-                }
-                if (mostrarRetornoMidia) {
-                    html += '<td>' + (noticia.valor > 0 ? 'R$ ' + Number(noticia.valor).toLocaleString('pt-BR', {minimumFractionDigits: 2}) : 'N/A') + '</td>';
-                }
-                html += '<td class="text-center"><i class="fa fa-chevron-down expand-icon" data-noticia-id="' + noticia.id + '"></i></td>';
+                html += '<th width="30" class="text-center"><i class="fa fa-expand-alt" title="Clique na linha para expandir/recolher"></i></th>';
                 html += '</tr>';
-            });
+                html += '</thead>';
+                html += '<tbody>';
 
-            html += '</tbody>';
-            html += '</table>';
-            html += '</div>';
+                // Notícias
+                noticiasArray.forEach(function(noticia) {
+                    if (noticia && noticia.id) {
+                        html += '<tr class="noticia-row" data-noticia-id="' + noticia.id + '" data-tipo="' + tipo + '" style="cursor: pointer;" onclick="toggleNoticiaDetalhes(' + noticia.id + ', \'' + tipo + '\', this)">';
+                        html += '<td onclick="event.stopPropagation()"><input type="checkbox" class="selecionar-noticia checkbox-table" data-tipo="' + tipo + '" data-id="' + noticia.id + '" onchange="atualizarContadores()"></td>';
+                        
+                        // Dados diferentes para TV e Rádio
+                        if (tipo === 'tv' || tipo === 'radio') {
+                            html += '<td>' + (noticia.programa || 'N/A') + '</td>';
+                            html += '<td>' + (noticia.veiculo || 'N/A') + '</td>';
+                            html += '<td>' + (noticia.horario || 'N/A') + '</td>';
+                            html += '<td>' + (noticia.duracao || 'N/A') + '</td>';
+                        } else {
+                            html += '<td><strong>' + (noticia.titulo || 'Sem título') + '</strong></td>';
+                            html += '<td>' + (noticia.veiculo || 'N/A') + '</td>';
+                        }
+                        
+                        html += '<td>' + (noticia.data_formatada || 'N/A') + '</td>';
+                        if (window.mostrarAreas) {
+                            html += '<td>' + (noticia.area || 'N/A') + '</td>';
+                        }
+                        if (window.mostrarSentimento) {
+                            html += '<td>' + obterSentimentoHtml(noticia.sentimento) + '</td>';
+                        }
+                        if (window.mostrarRetornoMidia) {
+                            html += '<td>' + (noticia.valor > 0 ? 'R$ ' + Number(noticia.valor).toLocaleString('pt-BR', {minimumFractionDigits: 2}) : 'N/A') + '</td>';
+                        }
+                        html += '<td class="text-center"><i class="fa fa-chevron-down expand-icon" data-noticia-id="' + noticia.id + '"></i></td>';
+                        html += '</tr>';
+                    }
+                });
 
-            return html;
+                html += '</tbody>';
+                html += '</table>';
+                html += '</div>';
+
+                return html;
+                
+            } catch (e) {
+                console.error('Erro ao gerar tabela para tipo ' + tipo + ':', e);
+                return '<div class="alert alert-danger">Erro ao gerar tabela para ' + tipo + '. Tente novamente.</div>';
+            }
         }
 
         // Botão gerar relatório
@@ -840,14 +891,14 @@
             };
             
             // Adiciona flag de mostrar retorno de mídia se o usuário tem permissão
-            if (mostrarRetornoMidia) {
+            if (window.mostrarRetornoMidia) {
                 formData.mostrar_retorno_relatorio = $('#mostrar_retorno_relatorio').is(':checked') ? 'true' : 'false';
             } else {
                 formData.mostrar_retorno_relatorio = 'false';
             }
             
             // Adiciona flag de mostrar sentimento se o usuário tem permissão
-            if (mostrarSentimento) {
+            if (window.mostrarSentimento) {
                 formData.mostrar_sentimento_relatorio = $('#mostrar_sentimento_relatorio').is(':checked') ? 'true' : 'false';
             } else {
                 formData.mostrar_sentimento_relatorio = 'false';
@@ -860,7 +911,7 @@
             $('#btnGerarRelatorio').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Gerando...');
 
             $.ajax({
-                url: host + '/cliente/relatorios/gerar-pdf',
+                url: window.host + '/cliente/relatorios/gerar-pdf',
                 type: 'POST',
                 data: formData,
                 dataType: 'json',
@@ -873,7 +924,7 @@
                         console.log('Download URL:', response.download_url);
                         
                         // Download direto usando a nova rota que força download
-                        var downloadUrl = response.download_url || (host + '/cliente/relatorios/download/' + response.arquivo);
+                        var downloadUrl = response.download_url || (window.host + '/cliente/relatorios/download/' + response.arquivo);
                         var fileName = response.arquivo || 'relatorio.pdf';
                         console.log('Iniciando download de:', downloadUrl);
                         console.log('Nome do arquivo:', fileName);
@@ -936,14 +987,31 @@
 
         // Atualizar contadores
         function atualizarContadores() {
-            var totalSelecionadas = $('.selecionar-noticia:checked').length;
-            $('#totalSelecionadas').text(totalSelecionadas);
-            $('#qtdSelecionadasBtn').text(totalSelecionadas);
+            try {
+                var totalSelecionadas = $('.selecionar-noticia:checked').length;
+                $('#totalSelecionadas').text(totalSelecionadas);
+                $('#qtdSelecionadasBtn').text(totalSelecionadas);
+            } catch (e) {
+                console.error('Erro ao atualizar contadores:', e);
+            }
         }
 
         // Inicializar contadores
         $('#totalNoticias').text(0);
 
+        // Função para debug
+        function debugInfo() {
+            console.log('=== DEBUG INFO ===');
+            console.log('Host:', window.host);
+            console.log('Mostrar áreas:', window.mostrarAreas);
+            console.log('Mostrar sentimento:', window.mostrarSentimento);
+            console.log('Mostrar retorno de mídia:', window.mostrarRetornoMidia);
+            console.log('Notícias carregadas:', window.noticiasCarregadas);
+            console.log('==================');
+        }
+        
+        // Adicionar função de debug ao escopo global para facilitar o debug
+        window.debugRelatorioDados = debugInfo;
 
     });
 
@@ -998,7 +1066,6 @@
     }
 
     function toggleNoticiaDetalhes(id, tipo, elemento) {
-        var host = $('meta[name="base-url"]').attr('content');
         var $row = $(elemento);
         var $icon = $row.find('.expand-icon');
         var detalhesId = 'detalhes-' + tipo + '-' + id;
@@ -1031,16 +1098,21 @@
         $row.after(loadingRow);
         $icon.addClass('rotated');
         
+        console.log('Carregando detalhes para:', {id: id, tipo: tipo, url: window.host + '/cliente/relatorios/noticia/' + id + '/' + tipo});
+        
         // Carregar detalhes via AJAX
         $.ajax({
-            url: host + '/cliente/relatorios/noticia/' + id + '/' + tipo,
+            url: window.host + '/cliente/relatorios/noticia/' + id + '/' + tipo,
             type: 'GET',
             dataType: 'json',
+            timeout: 15000, // 15 segundos de timeout
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function(response) {
-                if (response.success) {
+                console.log('Resposta recebida para notícia:', response);
+                
+                if (response.success && response.noticia) {
                     var noticia = response.noticia;
                     var detalhesHtml = '';
                     
@@ -1049,20 +1121,20 @@
                     detalhesHtml += '<div class="col-md-12">';
                     
                     detalhesHtml += '<h6>Título:</h6>';
-                    detalhesHtml += '<p>' + noticia.titulo + '</p>';
+                    detalhesHtml += '<p>' + (noticia.titulo || 'Sem título') + '</p>';
                     
                     detalhesHtml += '<h6>Veículo:</h6>';
-                    detalhesHtml += '<p>' + noticia.veiculo + '</p>';
+                    detalhesHtml += '<p>' + (noticia.veiculo || 'Sem veículo') + '</p>';
                     
                     detalhesHtml += '<h6>Data:</h6>';
-                    detalhesHtml += '<p>' + noticia.data_formatada + '</p>';
+                    detalhesHtml += '<p>' + (noticia.data_formatada || 'Sem data') + '</p>';
                     
-                    if (mostrarAreas) {
+                    if (window.mostrarAreas) {
                         detalhesHtml += '<h6>Área:</h6>';
-                        detalhesHtml += '<p>' + noticia.area + '</p>';
+                        detalhesHtml += '<p>' + (noticia.area || 'Sem área') + '</p>';
                     }
                     
-                    if (mostrarSentimento) {
+                    if (window.mostrarSentimento) {
                         detalhesHtml += '<h6>Sentimento:</h6>';
                         detalhesHtml += '<p>' + obterSentimentoHtml(noticia.sentimento) + '</p>';
                     }
@@ -1080,17 +1152,19 @@
                         detalhesHtml += '<p>' + (noticia.horario || 'N/A') + '</p>';
                     }
                     
-                    if (mostrarRetornoMidia) {
+                    if (window.mostrarRetornoMidia) {
                         detalhesHtml += '<h6>Valor:</h6>';
                         detalhesHtml += '<p>' + (noticia.valor > 0 ? 'R$ ' + Number(noticia.valor).toLocaleString('pt-BR', {minimumFractionDigits: 2}) : 'N/A') + '</p>';
                     }
                     
-                    detalhesHtml += '<h6>Tags:</h6>';
-                    detalhesHtml += '<p>' + (noticia.tags || 'Nenhuma tag') + '</p>';
+                    if (noticia.tags) {
+                        detalhesHtml += '<h6>Tags:</h6>';
+                        detalhesHtml += '<p>' + noticia.tags + '</p>';
+                    }
                     
                     detalhesHtml += '<h6>Conteúdo:</h6>';
                     detalhesHtml += '<div class="detalhes-texto">';
-                    detalhesHtml += noticia.texto.replace(/\n/g, '<br>');
+                    detalhesHtml += (noticia.texto || 'Sem conteúdo').replace(/\n/g, '<br>');
                     detalhesHtml += '</div>';
                     
                     detalhesHtml += '</div>';
@@ -1100,12 +1174,28 @@
                     $('#' + detalhesId + ' td').html(detalhesHtml);
                     
                 } else {
-                    $('#' + detalhesId + ' td').html('<div class="detalhes-container"><div class="alert alert-danger">' + response.message + '</div></div>');
+                    $('#' + detalhesId + ' td').html('<div class="detalhes-container"><div class="alert alert-danger">' + (response.message || 'Erro ao carregar detalhes') + '</div></div>');
                 }
             },
             error: function(xhr, status, error) {
-                console.error('Erro ao carregar notícia:', error);
-                $('#' + detalhesId + ' td').html('<div class="detalhes-container"><div class="alert alert-danger">Erro ao carregar detalhes. Tente novamente.</div></div>');
+                console.error('Erro ao carregar notícia:', {
+                    status: status,
+                    error: error,
+                    xhr: xhr.responseText
+                });
+                
+                var errorMessage = '';
+                if (xhr.status === 404) {
+                    errorMessage = 'Notícia não encontrada.';
+                } else if (xhr.status === 500) {
+                    errorMessage = 'Erro interno do servidor.';
+                } else if (status === 'timeout') {
+                    errorMessage = 'Tempo limite excedido.';
+                } else {
+                    errorMessage = 'Erro ao carregar detalhes. Tente novamente.';
+                }
+                
+                $('#' + detalhesId + ' td').html('<div class="detalhes-container"><div class="alert alert-danger">' + errorMessage + '</div></div>');
             }
         });
     }
@@ -1113,13 +1203,20 @@
 
 
     function obterSentimentoHtml(sentimento) {
-        if (sentimento === 1) {
-            return '<span class="text-success"><i class="fa fa-smile-o text-success"></i> Positivo</span>';
-        } else if (sentimento === -1) {
-            return '<span class="text-danger"><i class="fa fa-frown-o text-danger"></i> Negativo</span>';
-        } else if (sentimento === 0) {
-            return '<span class="text-warning"><i class="fa fa-ban text-warning"></i> Neutro</span>';
-        } else {
+        try {
+            var sentimentoInt = parseInt(sentimento);
+            
+            if (sentimentoInt === 1) {
+                return '<span class="text-success"><i class="fa fa-smile-o text-success"></i> Positivo</span>';
+            } else if (sentimentoInt === -1) {
+                return '<span class="text-danger"><i class="fa fa-frown-o text-danger"></i> Negativo</span>';
+            } else if (sentimentoInt === 0) {
+                return '<span class="text-warning"><i class="fa fa-ban text-warning"></i> Neutro</span>';
+            } else {
+                return '<span class="text-secondary"><i class="fa fa-question text-secondary"></i> Não definido</span>';
+            }
+        } catch (e) {
+            console.error('Erro ao processar sentimento:', e);
             return '<span class="text-secondary"><i class="fa fa-question text-secondary"></i> Não definido</span>';
         }
     }
