@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <meta name="base-url" content="{{ env('BASE_URL') }}">
+  <meta name="base-url" content="http://localhost:8080">
   <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
   <link href="images/favicon.png" rel="shortcut icon">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />

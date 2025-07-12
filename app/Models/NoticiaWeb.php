@@ -60,4 +60,16 @@ class NoticiaWeb extends Model
             $noticia->conteudo()->delete();
         });
     }  
+
+    public function area()
+    {
+        return $this->hasOneThrough(
+            Area::class,
+            NoticiaCliente::class,
+            'noticia_id', // Foreign key on noticia_cliente table
+            'id', // Foreign key on area table
+            'id', // Local key on noticias_web table
+            'area' // Local key on noticia_cliente table
+        )->where('noticia_cliente.tipo_id', 2);
+    }
 }

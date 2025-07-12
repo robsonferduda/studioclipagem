@@ -1,15 +1,28 @@
-version: "3.7"
 services:
   apache:
-    image: rafael01costa/php:7.3-apache-studiosocial
+    build:
+      context: .
     container_name: studioclipagem
     restart: always
-    expose:
-      - "443"
+    platform: linux/arm64
+    ports:
+      - "8080:80"
+      - "8443:443"
     volumes:
       - ./:/var/www/html
     environment:
       - VIRTUAL_HOST=studioclipagem.localhost
+    networks:
+      - network
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7-alpine
+    container_name: studioclipagem-redis
+    restart: always
+    ports:
+      - "6379:6379"
     networks:
       - network
 networks:

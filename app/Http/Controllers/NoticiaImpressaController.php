@@ -190,7 +190,7 @@ class NoticiaImpressaController extends Controller
         $dt_cadastro = ($request->dt_cadastro) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_cadastro)->format('Y-m-d') : date("Y-m-d");
         $request->merge(['dt_cadastro' => $dt_cadastro]);
 
-        $dt_clipagem = ($request->dt_clipagem) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_clipagem)->format('Y-m-d') : date("Y-m-d");
+        $dt_clipagem = ($request->dt_clipagem) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_clipagem)->format('Y-m-d H:i:s') : date("Y-m-d H:i:s");
         $request->merge(['dt_clipagem' => $dt_clipagem]);
 
         $request->merge(['cd_usuario' => Auth::user()->id]);
@@ -285,7 +285,7 @@ class NoticiaImpressaController extends Controller
             $dt_cadastro = ($request->dt_cadastro) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_cadastro)->format('Y-m-d') : date("Y-m-d");
             $request->merge(['dt_cadastro' => $dt_cadastro]);
 
-            $dt_clipagem = ($request->dt_clipagem) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_clipagem)->format('Y-m-d') : date("Y-m-d");
+            $dt_clipagem = ($request->dt_clipagem) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_clipagem)->format('Y-m-d H:i:s') : date("Y-m-d H:i:s");
             $request->merge(['dt_clipagem' => $dt_clipagem]);
 
             $request->merge(['cd_cidade' => $request->cidade]);

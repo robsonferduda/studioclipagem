@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
 use Laracasts\Flash\Flash;
 use Illuminate\Support\Facades\Storage;
+use App\Services\RelatorioService;
+use Illuminate\Support\Facades\Log;
 
 class ClienteController extends Controller
 {
@@ -30,6 +32,9 @@ class ClienteController extends Controller
         $this->middleware('auth');
         Session::put('url','cliente');
         $this->carbon = new Carbon();
+        
+        // Obtém o ID do cliente logado da sessão
+        $this->client_id = session('cliente')['id'] ?? null;
     }
 
     public function index(Request $request): View
@@ -71,17 +76,46 @@ class ClienteController extends Controller
         Session::put('url','relatorios');
         Session::put('sub-menu','cliente-gerar-relatorios');
 
+        // Buscar dados do cliente logado usando múltiplas estratégias
+        $cliente_id = $this->client_id;
+        
+        // Fallback: tentar obter da sessão se não encontrar no atributo
+        if (!$cliente_id) {
+            $cliente_id = session('cliente')['id'] ?? null;
+        }
+        
+        // Fallback: tentar obter do usuário autenticado
+        if (!$cliente_id && Auth::check()) {
+            $cliente_id = Auth::user()->client_id;
+        }
+        
+        $cliente = null;
+        if ($cliente_id) {
+            $cliente = Cliente::find($cliente_id);
+        }
+
         $tipo_data = ($request->tipo_data) ? $request->tipo_data : 'data_cadastro';
         $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d')." 00:00:00" : date("Y-m-d")." 00:00:00";
         $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d")." 23:59:59";
-        $fl_web = $request->fl_web == true ? true : false;
-        $fl_tv = $request->fl_tv == true ? true : false;
-        $fl_impresso = $request->fl_impresso == true ? true : false;
-        $fl_radio = $request->fl_radio == true ? true : false;
+        
+        // Usar as flags do cliente em vez das do request
+        $fl_web = $cliente && $cliente->fl_web ? true : false;
+        $fl_tv = $cliente && $cliente->fl_tv ? true : false;
+        $fl_impresso = $cliente && $cliente->fl_impresso ? true : false;
+        $fl_radio = $cliente && $cliente->fl_radio ? true : false;
+        
+        // Flag para controlar visibilidade das áreas (se true, MOSTRA áreas)
+        $fl_areas = $cliente && $cliente->fl_areas ? true : false;
+        
+        // Flag para controlar visibilidade do sentimento (se true, MOSTRA sentimento)
+        $fl_sentimento = $cliente && $cliente->fl_sentimento ? true : false;
+        
+        // Flag para controlar visibilidade do retorno de mídia (se true, MOSTRA valores)
+        $fl_retorno_midia = $cliente && $cliente->fl_retorno_midia ? true : false;
 
         $relatorios = array();
 
-        return view('cliente/relatorios/gerar', compact('relatorios','tipo_data','dt_inicial','dt_final','fl_web','fl_tv','fl_radio','fl_impresso'));
+        return view('cliente/relatorios/gerar', compact('relatorios','tipo_data','dt_inicial','dt_final','fl_web','fl_tv','fl_radio','fl_impresso','fl_areas','fl_sentimento','fl_retorno_midia','cliente'));
     }
 
     public function create(): View
@@ -701,5 +735,814 @@ class ClienteController extends Controller
         }
 
         return $dados = DB::select($sql);
+    }
+
+    /**
+     * Lista notícias por período com filtros aplicados (substitui /listar_noticias do Flask)
+     */
+    public function listarNoticias(Request $request): JsonResponse
+    {
+        Log::info('=== INICIANDO listarNoticias ===', [
+            'request_data' => $request->all(),
+            'client_id' => $this->client_id,
+            'session_cliente' => session('cliente')
+        ]);
+        
+        try {
+            // Usa o cliente logado da sessão
+            $clienteId = $this->client_id;
+            $dataInicio = $request->input('data_inicio');
+            $dataFim = $request->input('data_fim');
+            
+            Log::info('Dados extraídos da requisição:', [
+                'clienteId' => $clienteId,
+                'dataInicio' => $dataInicio,
+                'dataFim' => $dataFim
+            ]);
+            
+            // Filtros avançados
+            $tiposMidia = $request->input('tipos_midia', ['web', 'tv', 'radio', 'impresso']);
+            $statusFiltros = $request->input('status', ['positivo', 'negativo', 'neutro']);
+            $retornoFiltro = $request->input('retorno', 'com_retorno');
+            $valorFiltros = $request->input('valor', ['com_valor', 'sem_valor']);
+            $areasFiltros = $request->input('areas', []);
+            
+            Log::info('Filtros processados:', [
+                'tiposMidia' => $tiposMidia,
+                'statusFiltros' => $statusFiltros,
+                'retornoFiltro' => $retornoFiltro,
+                'valorFiltros' => $valorFiltros,
+                'areasFiltros' => $areasFiltros
+            ]);
+            
+            // Validações
+            if (!$clienteId || !$dataInicio || !$dataFim) {
+                Log::warning('Validação falhou:', [
+                    'clienteId' => $clienteId,
+                    'dataInicio' => $dataInicio,
+                    'dataFim' => $dataFim
+                ]);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cliente não identificado ou campos obrigatórios não preenchidos'
+                ], 400);
+            }
+            
+            // Monta filtros
+            $filtros = [
+                'tipos_midia' => $tiposMidia,
+                'status' => $statusFiltros,
+                'retorno' => [$retornoFiltro],
+                'valor' => $valorFiltros,
+                'areas' => $areasFiltros
+            ];
+            
+            Log::info('Filtros montados:', $filtros);
+            
+            $relatorioService = new RelatorioService();
+            Log::info('RelatorioService criado com sucesso');
+            
+            // Verifica se cliente existe
+            Log::info('Verificando se cliente existe...', ['clienteId' => $clienteId]);
+            if (!$relatorioService->checkCliente($clienteId)) {
+                Log::warning('Cliente não encontrado:', ['clienteId' => $clienteId]);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cliente não encontrado'
+                ], 404);
+            }
+            
+            Log::info('Cliente existe, buscando notícias...');
+            
+            // Lista as notícias
+            $noticias = $relatorioService->listarNoticiasPorPeriodoComFiltros($clienteId, $dataInicio, $dataFim, $filtros);
+            
+            Log::info('Notícias encontradas:', [
+                'total_web' => count($noticias['web'] ?? []),
+                'total_tv' => count($noticias['tv'] ?? []),
+                'total_radio' => count($noticias['radio'] ?? []),
+                'total_impresso' => count($noticias['impresso'] ?? [])
+            ]);
+            
+            Log::info('Retornando resposta de sucesso');
+            return response()->json([
+                'success' => true,
+                'message' => 'Notícias listadas com sucesso',
+                'noticias' => $noticias,
+                'filtros_aplicados' => $filtros
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::error('=== ERRO EM listarNoticias ===', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro interno: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Gera relatório PDF (substitui /gerar_relatorio do Flask)
+     */
+    public function gerarRelatorioPDF(Request $request): JsonResponse
+    {
+        try {
+            // Usa o cliente logado da sessão
+            $clienteId = $this->client_id;
+            $dataInicio = $request->input('data_inicio');
+            $dataFim = $request->input('data_fim');
+            
+            // IDs das notícias específicas
+            $idsWeb = $request->input('ids_web', []);
+            $idsImpresso = $request->input('ids_impresso', []);
+            $idsTv = $request->input('ids_tv', []);
+            $idsRadio = $request->input('ids_radio', []);
+            
+            // Validações
+            if (!$clienteId || !$dataInicio || !$dataFim) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cliente não identificado ou campos obrigatórios não preenchidos'
+                ], 400);
+            }
+            
+            $relatorioService = new RelatorioService();
+            
+            // Verifica se cliente existe e busca suas configurações
+            if (!$relatorioService->checkCliente($clienteId)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cliente não encontrado'
+                ], 404);
+            }
+            
+            // Busca configurações do cliente
+            $cliente = Cliente::find($clienteId);
+            $temPermissaoRetorno = $cliente && $cliente->fl_retorno_midia ? true : false;
+            $temPermissaoSentimento = $cliente && $cliente->fl_sentimento ? true : false;
+            
+            // Extrai flag de mostrar retorno de mídia no relatório (vem do frontend)
+            $mostrarRetornoRelatorio = $request->input('mostrar_retorno_relatorio', 'true') === 'true';
+            
+            // Extrai flag de mostrar sentimento no relatório (vem do frontend)
+            $mostrarSentimentoRelatorio = $request->input('mostrar_sentimento_relatorio', 'true') === 'true';
+            
+            // Se o cliente não tem permissão, força as flags para false
+            if (!$temPermissaoRetorno) {
+                $mostrarRetornoRelatorio = false;
+            }
+            
+            if (!$temPermissaoSentimento) {
+                $mostrarSentimentoRelatorio = false;
+            }
+            
+            // Define tipos de mídia baseado nas permissões do cliente
+            $tiposMidiaPermitidos = [];
+            if ($cliente && $cliente->fl_web) {
+                $tiposMidiaPermitidos[] = 'web';
+            }
+            if ($cliente && $cliente->fl_tv) {
+                $tiposMidiaPermitidos[] = 'tv';
+            }
+            if ($cliente && $cliente->fl_radio) {
+                $tiposMidiaPermitidos[] = 'radio';
+            }
+            if ($cliente && $cliente->fl_impresso) {
+                $tiposMidiaPermitidos[] = 'impresso';
+            }
+            
+            Log::info('Configurações de retorno de mídia:', [
+                'cliente_id' => $clienteId,
+                'tem_permissao_retorno' => $temPermissaoRetorno,
+                'mostrar_retorno_relatorio' => $mostrarRetornoRelatorio
+            ]);
+            
+            Log::info('Configurações de sentimento:', [
+                'cliente_id' => $clienteId,
+                'tem_permissao_sentimento' => $temPermissaoSentimento,
+                'mostrar_sentimento_relatorio' => $mostrarSentimentoRelatorio,
+                'raw_input_mostrar_sentimento' => $request->input('mostrar_sentimento_relatorio'),
+                'cliente_fl_sentimento' => $cliente ? $cliente->fl_sentimento : 'null'
+            ]);
+            
+            Log::info('Tipos de mídia permitidos:', [
+                'cliente_id' => $clienteId,
+                'tipos_midia_permitidos' => $tiposMidiaPermitidos,
+                'cliente_fl_web' => $cliente ? $cliente->fl_web : 'null',
+                'cliente_fl_tv' => $cliente ? $cliente->fl_tv : 'null',
+                'cliente_fl_radio' => $cliente ? $cliente->fl_radio : 'null',
+                'cliente_fl_impresso' => $cliente ? $cliente->fl_impresso : 'null'
+            ]);
+            
+            // Gera nome do arquivo
+            $dataInicioClean = str_replace('-', '', $dataInicio);
+            $dataFimClean = str_replace('-', '', $dataFim);
+            $nomeArquivo = "relatorio_{$clienteId}_{$dataInicioClean}_{$dataFimClean}.pdf";
+            
+            // Monta filtros com IDs específicos se fornecidos
+            $filtros = [
+                'tipos_midia' => $tiposMidiaPermitidos,  // CORRIGIDO: usa apenas os tipos de mídia que o cliente tem permissão para não mostrar seções vazias
+                'status' => ['positivo', 'negativo', 'neutro'],
+                'retorno' => ['com_retorno'],
+                'valor' => ['com_valor', 'sem_valor'],
+                'areas' => [],
+                'mostrar_retorno_relatorio' => $mostrarRetornoRelatorio,  // NOVO: controla se mostra seções de retorno
+                'tem_permissao_retorno' => $temPermissaoRetorno,  // NOVO: indica se o cliente tem permissão para retorno
+                'mostrar_sentimento_relatorio' => $mostrarSentimentoRelatorio,  // NOVO: controla se mostra seções de sentimento
+                'tem_permissao_sentimento' => $temPermissaoSentimento  // NOVO: indica se o cliente tem permissão para sentimento
+            ];
+            
+            if (!empty($idsWeb) || !empty($idsImpresso) || !empty($idsTv) || !empty($idsRadio)) {
+                $filtros['ids_especificos'] = [
+                    'web' => $idsWeb,
+                    'impresso' => $idsImpresso,
+                    'tv' => $idsTv,
+                    'radio' => $idsRadio
+                ];
+            }
+            
+            // Chama o script Python para gerar PDF
+            $filtrosJson = json_encode($filtros);
+            
+            // Caminho para o diretório dos scripts Python
+            $pythonDir = base_path('python/relatorios');
+            
+            // Comando melhorado com tratamento de erros
+            $escapedPythonDir = escapeshellarg($pythonDir);
+            $escapedClienteId = escapeshellarg($clienteId);
+            $escapedDataInicio = escapeshellarg($dataInicio);
+            $escapedDataFim = escapeshellarg($dataFim);
+            $escapedNomeArquivo = escapeshellarg($nomeArquivo);
+            $escapedFiltros = escapeshellarg($filtrosJson);
+            
+            // Tenta primeiro python3, depois python
+            $comando = "cd $escapedPythonDir && (python3 main.py --cliente $escapedClienteId --data_inicio $escapedDataInicio --data_fim $escapedDataFim --output $escapedNomeArquivo --filtros $escapedFiltros 2>&1 || python main.py --cliente $escapedClienteId --data_inicio $escapedDataInicio --data_fim $escapedDataFim --output $escapedNomeArquivo --filtros $escapedFiltros 2>&1)";
+            
+            Log::info('Executando comando Python: ' . $comando);
+            
+            $resultado = shell_exec($comando);
+            
+            Log::info('Resultado do comando Python: ' . ($resultado ?? 'null'));
+            
+            // Verifica se o arquivo foi gerado no diretório dos scripts Python
+            $caminhoArquivoPython = $pythonDir . '/output/' . $nomeArquivo;
+            $caminhoArquivoDestino = storage_path('app/public/relatorios/' . $nomeArquivo);
+            
+            // Cria o diretório de destino se não existir
+            if (!is_dir(dirname($caminhoArquivoDestino))) {
+                mkdir(dirname($caminhoArquivoDestino), 0755, true);
+            }
+            
+            // Move o arquivo para o diretório público
+            if (file_exists($caminhoArquivoPython)) {
+                copy($caminhoArquivoPython, $caminhoArquivoDestino);
+                unlink($caminhoArquivoPython); // Remove o arquivo temporário
+            }
+            
+            $caminhoArquivo = $caminhoArquivoDestino;
+            
+            if (file_exists($caminhoArquivo)) {
+                            return response()->json([
+                'success' => true,
+                'message' => 'Relatório gerado com sucesso',
+                'arquivo' => $nomeArquivo,
+                'download_url' => url('cliente/relatorios/download/' . $nomeArquivo)
+            ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Erro ao gerar relatório PDF'
+                ], 500);
+            }
+            
+        } catch (\Exception $e) {
+            Log::error('Erro ao gerar relatório: ' . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
+            Log::error('Resultado do comando Python: ' . ($resultado ?? 'null'));
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro interno: ' . $e->getMessage(),
+                'debug' => config('app.debug') ? [
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
+                    'command_result' => $resultado ?? 'null'
+                ] : null
+            ], 500);
+        }
+    }
+
+    /**
+     * Download de relatório PDF com headers corretos
+     */
+    public function downloadRelatorio($arquivo)
+    {
+        try {
+            // Usa o cliente logado da sessão
+            $clienteId = $this->client_id;
+            
+            if (!$clienteId) {
+                abort(403, 'Acesso negado');
+            }
+            
+            // Verifica se o arquivo pertence ao cliente (por segurança)
+            if (!str_contains($arquivo, "relatorio_{$clienteId}_")) {
+                abort(403, 'Acesso negado ao arquivo');
+            }
+            
+            $caminhoArquivo = storage_path('app/public/relatorios/' . $arquivo);
+            
+            if (!file_exists($caminhoArquivo)) {
+                abort(404, 'Arquivo não encontrado');
+            }
+            
+            return response()->download($caminhoArquivo, $arquivo, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="' . $arquivo . '"'
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::error('Erro ao fazer download do relatório: ' . $e->getMessage());
+            abort(500, 'Erro interno do servidor');
+        }
+    }
+
+    /**
+     * Adiciona uma nova notícia (substitui /adicionar_noticia do Flask)
+     */
+    public function adicionarNoticia(Request $request): JsonResponse
+    {
+        try {
+            // Usa o cliente logado da sessão
+            $clienteId = $this->client_id;
+            
+            if (!$clienteId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cliente não identificado'
+                ], 400);
+            }
+            
+            $dados = [
+                'tipo' => $request->input('tipo'),
+                'cliente_id' => $clienteId,
+                'data' => $request->input('data'),
+                'titulo' => $request->input('titulo'),
+                'veiculo' => $request->input('veiculo'),
+                'texto' => $request->input('texto'),
+                'valor' => $request->input('valor', 0),
+                'tags' => $request->input('tags', '')
+            ];
+            
+            // Campos específicos por tipo
+            if ($dados['tipo'] === 'WEB') {
+                $dados['link'] = $request->input('link', '');
+            } elseif ($dados['tipo'] === 'TV') {
+                $dados['programa'] = $request->input('programa', '');
+                $dados['horario'] = $request->input('horario', '');
+            } elseif ($dados['tipo'] === 'RADIO') {
+                $dados['programa_radio'] = $request->input('programa_radio', '');
+                $dados['horario_radio'] = $request->input('horario_radio', '');
+            }
+            
+            $relatorioService = new RelatorioService();
+            $resultado = $relatorioService->adicionarNoticia($dados);
+            
+            if ($resultado['success']) {
+                return response()->json($resultado);
+            } else {
+                return response()->json($resultado, 400);
+            }
+            
+        } catch (\Exception $e) {
+            Log::error('Erro ao adicionar notícia: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro interno: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Edita uma notícia existente (substitui /editar_noticia do Flask)
+     */
+    public function editarNoticia(Request $request): JsonResponse
+    {
+        try {
+            // Usa o cliente logado da sessão
+            $clienteId = $this->client_id;
+            $noticiaId = $request->input('noticia_id');
+            
+            if (!$clienteId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cliente não identificado'
+                ], 400);
+            }
+            
+            if (!$noticiaId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'ID da notícia é obrigatório'
+                ], 400);
+            }
+            
+            // Normalizar o tipo para minúsculo
+            $tipo = strtolower($request->input('tipo', ''));
+            
+            // Mapear tipos se necessário
+            if ($tipo === 'jornal') {
+                $tipo = 'impresso';
+            }
+            
+            $dados = [
+                'tipo' => $tipo,
+                'cliente_id' => $clienteId,
+                'data' => $request->input('data'),
+                'titulo' => $request->input('titulo'),
+                'veiculo' => $request->input('veiculo'),
+                'texto' => $request->input('texto'),
+                'valor' => $request->input('valor') ? floatval($request->input('valor')) : 0,
+                'tags' => $request->input('tags', ''),
+                'sentimento' => $request->input('sentimento') !== null ? intval($request->input('sentimento')) : null
+            ];
+            
+            // Campos específicos por tipo
+            if ($tipo === 'web') {
+                $dados['link'] = $request->input('link', '');
+            } elseif (in_array($tipo, ['tv', 'radio'])) {
+                $dados['programa'] = $request->input('programa', '');
+                $dados['horario'] = $request->input('horario', '');
+            }
+            
+            Log::info('Dados para edição:', $dados);
+            
+            $relatorioService = new RelatorioService();
+            $resultado = $relatorioService->editarNoticia($noticiaId, $dados);
+            
+            if ($resultado['success']) {
+                return response()->json($resultado);
+            } else {
+                return response()->json($resultado, 400);
+            }
+            
+        } catch (\Exception $e) {
+            Log::error('Erro ao editar notícia: ' . $e->getMessage(), [
+                'request_data' => $request->all(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro interno: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Exclui uma notícia (substitui /excluir_noticia do Flask)
+     */
+    public function excluirNoticia(Request $request): JsonResponse
+    {
+        try {
+            $vinculoId = $request->input('vinculo_id');
+            
+            if (!$vinculoId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'ID do vínculo é obrigatório'
+                ], 400);
+            }
+            
+            $relatorioService = new RelatorioService();
+            $resultado = $relatorioService->excluirNoticia($vinculoId);
+            
+            if ($resultado['success']) {
+                return response()->json($resultado);
+            } else {
+                return response()->json($resultado, 404);
+            }
+            
+        } catch (\Exception $e) {
+            Log::error('Erro ao excluir notícia: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro interno: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Aplica tags a múltiplas notícias (substitui /aplicar_tags_lote do Flask)
+     */
+    public function aplicarTagsLote(Request $request): JsonResponse
+    {
+        try {
+            $noticiasIds = $request->input('noticias_ids', []);
+            $tags = $request->input('tags', '');
+            $acao = $request->input('acao', 'adicionar');
+            
+            if (empty($noticiasIds)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Nenhuma notícia selecionada'
+                ], 400);
+            }
+            
+            if (empty($tags) && $acao !== 'remover') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tags não fornecidas'
+                ], 400);
+            }
+            
+            $relatorioService = new RelatorioService();
+            $resultado = $relatorioService->aplicarTagsLote($noticiasIds, $tags, $acao);
+            
+            if ($resultado['success']) {
+                return response()->json($resultado);
+            } else {
+                return response()->json($resultado, 400);
+            }
+            
+        } catch (\Exception $e) {
+            Log::error('Erro ao aplicar tags em lote: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro interno: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Vincula notícia a uma área (substitui /vincular_noticia_area do Flask)
+     */
+    public function vincularNoticiaArea(Request $request): JsonResponse
+    {
+        try {
+            $noticiaId = $request->input('noticia_id');
+            $tipoMidia = $request->input('tipo_midia');
+            $areaId = $request->input('area_id');
+            
+            if (!$noticiaId || !$tipoMidia) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'noticia_id e tipo_midia são obrigatórios'
+                ], 400);
+            }
+            
+            $relatorioService = new RelatorioService();
+            $sucesso = $relatorioService->vincularNoticiaArea($noticiaId, $tipoMidia, $areaId);
+            
+            if ($sucesso) {
+                $areaTexto = $areaId ? "área ID $areaId" : "nenhuma área";
+                return response()->json([
+                    'success' => true,
+                    'message' => "Notícia vinculada à $areaTexto com sucesso"
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Erro ao vincular notícia à área'
+                ], 500);
+            }
+            
+        } catch (\Exception $e) {
+            Log::error('Erro ao vincular notícia à área: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro interno: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Busca áreas de um cliente para relatórios (substitui /api/areas/<cliente_id> do Flask)
+     */
+    public function getAreasClienteRelatorio(Request $request): JsonResponse
+    {
+        try {
+            // Usa o cliente logado da sessão
+            $clienteId = $this->client_id;
+            
+            if (!$clienteId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cliente não identificado'
+                ], 400);
+            }
+            
+            $relatorioService = new RelatorioService();
+            $areas = $relatorioService->getAreasByCliente($clienteId);
+            
+            return response()->json($areas);
+            
+        } catch (\Exception $e) {
+            Log::error('Erro ao buscar áreas do cliente: ' . $e->getMessage());
+            return response()->json([
+                'error' => 'Erro interno: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Busca lista de todos os clientes (substitui /api/clientes do Flask)
+     */
+    public function getClientesApi(): JsonResponse
+    {
+        try {
+            $relatorioService = new RelatorioService();
+            $clientes = $relatorioService->getClientes();
+            
+            return response()->json($clientes);
+            
+        } catch (\Exception $e) {
+            Log::error('Erro ao buscar clientes: ' . $e->getMessage());
+            return response()->json([
+                'error' => 'Erro interno: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Valida se um cliente existe (substitui /api/validar_cliente/<cliente_id> do Flask)
+     */
+    public function validarCliente(Request $request): JsonResponse
+    {
+        try {
+            // Usa o cliente logado da sessão
+            $clienteId = $this->client_id;
+            
+            if (!$clienteId) {
+                return response()->json([
+                    'existe' => false,
+                    'message' => 'Cliente não identificado'
+                ], 400);
+            }
+            
+            $relatorioService = new RelatorioService();
+            $existe = $relatorioService->checkCliente($clienteId);
+            
+            return response()->json(['existe' => $existe]);
+            
+        } catch (\Exception $e) {
+            Log::error('Erro ao validar cliente: ' . $e->getMessage());
+            return response()->json([
+                'error' => 'Erro interno: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Upload de imagem para notícias (substitui /upload_imagem do Flask)
+     */
+    public function uploadImagem(Request $request): JsonResponse
+    {
+        try {
+            // Usa o cliente logado da sessão
+            $clienteId = $this->client_id;
+            $noticiaId = $request->input('noticia_id');
+            $tipoMidia = $request->input('tipo_midia');
+            
+            if (!$clienteId || !$noticiaId || !$tipoMidia) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Campos obrigatórios: noticia_id, tipo_midia (cliente identificado automaticamente)'
+                ], 400);
+            }
+            
+            if (!$request->hasFile('imagem')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Arquivo de imagem não encontrado'
+                ], 400);
+            }
+            
+            $arquivo = $request->file('imagem');
+            
+            // Validações
+            $extensoesPermitidas = ['jpg', 'jpeg', 'png'];
+            $extensao = strtolower($arquivo->getClientOriginalExtension());
+            
+            if (!in_array($extensao, $extensoesPermitidas)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Formato não suportado. Use: ' . implode(', ', $extensoesPermitidas)
+                ], 400);
+            }
+            
+            // Validar tamanho (5MB)
+            if ($arquivo->getSize() > 5 * 1024 * 1024) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Arquivo muito grande. Máximo: 5MB'
+                ], 400);
+            }
+            
+            // Salvar arquivo
+            $nomeArquivo = "arquivo{$noticiaId}_1.{$extensao}";
+            $caminhoStorage = "public/images/{$tipoMidia}/{$nomeArquivo}";
+            
+            $arquivo->storeAs("public/images/{$tipoMidia}", $nomeArquivo);
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Imagem enviada com sucesso',
+                'arquivo' => $nomeArquivo,
+                'url' => Storage::url("images/{$tipoMidia}/{$nomeArquivo}")
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::error('Erro no upload de imagem: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro interno: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Busca detalhes de uma notícia específica para visualização
+     */
+    public function buscarNoticia(Request $request, $id, $tipo): JsonResponse
+    {
+        try {
+            // Usa o cliente logado da sessão
+            $clienteId = $this->client_id;
+            
+            if (!$clienteId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cliente não identificado'
+                ], 400);
+            }
+            
+            $relatorioService = new RelatorioService();
+            $noticia = $relatorioService->buscarNoticia($id, $tipo, $clienteId);
+            
+            if ($noticia) {
+                return response()->json([
+                    'success' => true,
+                    'noticia' => $noticia
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Notícia não encontrada'
+                ], 404);
+            }
+            
+        } catch (\Exception $e) {
+            Log::error('Erro ao buscar notícia: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro interno: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Seleciona um cliente na sessão (para troca de cliente)
+     */
+    public function selecionar(Request $request): JsonResponse
+    {
+        try {
+            $clienteId = $request->input('cliente');
+            
+            if (!$clienteId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'ID do cliente é obrigatório'
+                ], 400);
+            }
+            
+            $cliente = Cliente::find($clienteId);
+            
+            if (!$cliente) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cliente não encontrado'
+                ], 404);
+            }
+            
+            // Atualizar sessão com novo cliente
+            Session::put('cliente', ['id' => $cliente->id, 'nome' => $cliente->nome]);
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Cliente selecionado com sucesso',
+                'cliente' => ['id' => $cliente->id, 'nome' => $cliente->nome]
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::error('Erro ao selecionar cliente: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro interno: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

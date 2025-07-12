@@ -34,41 +34,30 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label>Tipo de Data</label>
-                                <select class="form-control select2" name="tipo_data" id="tipo_data">
-                                    <option value="data_cadastro" {{ ($tipo_data == "data_cadastro") ? 'selected' : '' }}>Data de Cadastro</option>
-                                    <option value="data_noticia" {{ ($tipo_data == "data_noticia") ? 'selected' : '' }}>Data do Clipping</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-2 col-sm-6">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-group">
                                 <label>Data Inicial</label>
                                 <input type="text" class="form-control datepicker" name="dt_inicial" id="dt_inicial" placeholder="__/__/____" value="{{ ($dt_inicial) ? \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y') : '' }}">
                             </div>
                         </div>
-                        <div class="col-md-2 col-sm-6">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-group">
                                 <label>Data Final</label>
                                 <input type="text" class="form-control datepicker" name="dt_final" id="dt_final" placeholder="__/__/____" value="{{ ($dt_final) ? \Carbon\Carbon::parse($dt_final)->format('d/m/Y') : '' }}">
                             </div>
                         </div>
+
+                        @if($fl_areas)
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Áreas do Cliente</label>
-                                <div id="areas-checkbox-group" class="d-flex flex-wrap gap-2">
+                                <div id="areas-checkbox-group" class="d-flex flex-wrap" style="gap: 15px;">
             
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label>Termo de busca</label>
-                                <input type="text" class="form-control" name="termo" id="termo" placeholder="Termo" value="{{ old('nome') }}">
-                            </div>
-                        </div>
+                        @endif
+                        @if($fl_sentimento)
                         <div class="col-md-12">
                             <label class="form-label fw-semibold mb-2">
                                 Sentimento
@@ -92,58 +81,112 @@
                                     <label class="form-check-label check-midia">
                                         <input class="form-check-input" type="checkbox" name="sentimento[]" value="0" id="sentimento_neutro" checked>
                                         <span class="form-check-sign"></span>
-                                        <span class="text-secondary"><i class="fa fa-ban text-default"></i> Neutro</span>
+                                        <span class="text-warning"><i class="fa fa-ban text-warning"></i> Neutro</span>
                                     </label>
                                 </div>
                             </div>
                         </div>
+                        @endif
+                        @if($fl_sentimento)
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="form-label fw-semibold mb-2">
+                                    Incluir sentimento no relatório
+                                </label>
+                                <div class="form-check">
+                                    <label class="form-check-label check-midia">
+                                        <input class="form-check-input" type="checkbox" name="mostrar_sentimento_relatorio" id="mostrar_sentimento_relatorio" checked value="true">
+                                        <span class="form-check-sign"></span>
+                                        <span class="text-info"><i class="fa fa-smile-o text-info"></i> Incluir análise de sentimento</span>
+                                    </label>
+                                </div>
+                                <small class="form-text text-muted">
+                                    Desmarque esta opção se não quiser incluir a análise de sentimento no relatório PDF.
+                                </small>
+                            </div>
+                        </div>
+                        @endif
+                        @if($fl_retorno_midia)
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="form-label fw-semibold mb-2">
+                                    Incluir retorno de mídia no relatório
+                                </label>
+                                <div class="form-check">
+                                    <label class="form-check-label check-midia">
+                                        <input class="form-check-input" type="checkbox" name="mostrar_retorno_relatorio" id="mostrar_retorno_relatorio" checked value="true">
+                                        <span class="form-check-sign"></span>
+                                        <span class="text-info"><i class="fa fa-money text-info"></i> Incluir valores de retorno de mídia</span>
+                                    </label>
+                                </div>
+                                <small class="form-text text-muted">
+                                    Desmarque esta opção se não quiser incluir os valores de retorno de mídia no relatório PDF.
+                                </small>
+                            </div>
+                        </div>
+                        @endif
                     </div>  
                     <div class="row">
                         <div class="col-md-12 mt-2">
                             <label class="form-label fw-semibold mb-2">
                                 Clipagem por tipo de mídia
                             </label>
-                            <div class="d-flex flex-wrap gap-2">
-                                <div class="form-check">
-                                    <div class="form-check">
-                                        <label class="form-check-label check-midia">
-                                            <input class="form-check-input" type="checkbox" name="fl_impresso" {{ ($fl_impresso == true) ? 'checked' : '' }} checked value="true">
-                                            <span class="form-check-sign"></span>
-                                            <span class="text-secondary"><i class="fa fa-newspaper-o"></i> Impressos</span>
-                                        </label>
-                                    </div>
+                            @if($fl_impresso || $fl_web || $fl_radio || $fl_tv)
+                                <div class="d-flex flex-wrap gap-2">
+                                    @if($fl_impresso)
+                                        <div class="form-check">
+                                            <div class="form-check">
+                                                <label class="form-check-label check-midia">
+                                                    <input class="form-check-input" type="checkbox" name="fl_impresso" checked value="true">
+                                                    <span class="form-check-sign"></span>
+                                                    <span class="text-secondary"><i class="fa fa-newspaper-o"></i> Impressos</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    @endif
+                            
+                                    @if($fl_web)
+                                        <div class="form-check ml-3">
+                                            <div class="form-check">
+                                                <label class="form-check-label check-midia">
+                                                    <input class="form-check-input" type="checkbox" name="fl_web" checked value="true">
+                                                    <span class="form-check-sign"></span>
+                                                    <span class="text-secondary"><i class="fa fa-globe"></i> Web</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    @endif
+                            
+                                    @if($fl_radio)
+                                        <div class="form-check ml-3">
+                                            <div class="form-check">
+                                                <label class="form-check-label check-midia">
+                                                    <input class="form-check-input" type="checkbox" name="fl_radio" checked value="true">
+                                                    <span class="form-check-sign"></span>
+                                                    <span class="text-secondary"><i class="fa fa-volume-up"></i> Rádio</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    @endif
+                            
+                                    @if($fl_tv)
+                                        <div class="form-check ml-3">
+                                            <div class="form-check">
+                                                <label class="form-check-label check-midia">
+                                                    <input class="form-check-input" type="checkbox" name="fl_tv" checked value="true">
+                                                    <span class="form-check-sign"></span>
+                                                    <span class="text-secondary"><i class="fa fa-television"></i> TV</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    @endif
                                 </div>
-                        
-                                <div class="form-check ml-3">
-                                    <div class="form-check">
-                                        <label class="form-check-label check-midia">
-                                            <input class="form-check-input" type="checkbox" name="fl_web" {{ ($fl_web == true) ? 'checked' : '' }} checked value="true">
-                                            <span class="form-check-sign"></span>
-                                            <span class="text-secondary"><i class="fa fa-globe"></i> Web</span>
-                                        </label>
-                                    </div>
+                            @else
+                                <div class="alert alert-warning">
+                                    <i class="fa fa-exclamation-triangle"></i>
+                                    <strong>Atenção:</strong> Nenhum tipo de mídia está habilitado para seu cliente. Entre em contato com o administrador para configurar os tipos de mídia disponíveis.
                                 </div>
-                        
-                                <div class="form-check ml-3">
-                                    <div class="form-check">
-                                        <label class="form-check-label check-midia">
-                                            <input class="form-check-input" type="checkbox" name="fl_radio" {{ ($fl_radio == true) ? 'checked' : '' }} checked value="true">
-                                            <span class="form-check-sign"></span>
-                                            <span class="text-secondary"><i class="fa fa-volume-up"></i> Rádio</span>
-                                        </label>
-                                    </div>
-                                </div>
-                        
-                                <div class="form-check ml-3">
-                                    <div class="form-check">
-                                        <label class="form-check-label check-midia">
-                                            <input class="form-check-input" type="checkbox" name="fl_tv" {{ ($fl_tv == true) ? 'checked' : '' }} checked value="true">
-                                            <span class="form-check-sign"></span>
-                                            <span class="text-secondary"><i class="fa fa-television"></i> TV</span>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
+                            @endif
                         </div>        
                     </div>             
                     <div class="card-footer text-center mb-3">
@@ -164,10 +207,6 @@
                         </div>
                     </div>
                     <div class="d-flex gap-2 flex-wrap align-items-center mt-2 mt-md-0">
-                        <button type="button" class="btn btn-primary" id="btnSelecionarTodasGeral">
-                            <i class="fa fa-list-ul" aria-hidden="true"></i>
-                            Selecionar Todas
-                        </button>
                         <button type="button" class="btn btn-danger" id="btnGerarRelatorio">
                             <i class="fa fa-file-pdf-o"></i>
                             Gerar Relatório PDF (<span id="qtdSelecionadasBtn">0</span>)
@@ -181,13 +220,183 @@
         </div>
     </div>
 </div> 
+
+
+
+
+
 @endsection
 @section('script')
+<style>
+.checkbox-table {
+    width: 18px !important;
+    height: 18px !important;
+    margin: 0 !important;
+    appearance: checkbox !important;
+    -webkit-appearance: checkbox !important;
+    -moz-appearance: checkbox !important;
+    position: relative !important;
+}
+
+.checkbox-table::after,
+.checkbox-table::before {
+    display: none !important;
+    content: none !important;
+}
+
+.checkbox-table:checked::after,
+.checkbox-table:checked::before {
+    display: none !important;
+    content: none !important;
+}
+
+/* Estilos para as tabs */
+.tabs-container {
+    margin-top: 1rem;
+}
+
+.nav-tabs .nav-link {
+    border: 1px solid transparent;
+    border-top-left-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
+    padding: 0.75rem 1rem;
+    font-weight: 500;
+    color: #495057;
+    text-decoration: none;
+}
+
+.nav-tabs .nav-link:hover {
+    border-color: #e9ecef #e9ecef #dee2e6;
+    color: #495057;
+    text-decoration: none;
+}
+
+.nav-tabs .nav-link.active {
+    color: #495057;
+    background-color: #fff;
+    border-color: #dee2e6 #dee2e6 #fff;
+}
+
+.nav-tabs .nav-link.active .fa {
+    color: inherit;
+}
+
+.nav-tabs .nav-link .fa {
+    margin-right: 0.5rem;
+}
+
+.tab-content {
+    border: 1px solid #dee2e6;
+    border-top: 0;
+    border-bottom-left-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+    padding: 1.5rem;
+    background-color: #fff;
+}
+
+.nav-tabs {
+    border-bottom: 1px solid #dee2e6;
+}
+
+.tab-pane {
+    display: none;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+/* Estilos para expandir notícias */
+.noticia-row {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.noticia-row:hover {
+    background-color: #f8f9fa;
+}
+
+.noticia-row:hover .expand-icon {
+    color: #007bff;
+}
+
+.noticia-detalhes {
+    background-color: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+}
+
+.expand-icon {
+    transition: transform 0.2s, color 0.2s;
+    color: #6c757d;
+}
+
+.expand-icon.rotated {
+    transform: rotate(180deg);
+    color: #007bff;
+}
+
+.detalhes-container {
+    padding: 20px;
+    margin: 10px 0;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+.detalhes-container h6 {
+    color: #495057;
+    font-weight: 600;
+    margin-bottom: 5px;
+    margin-top: 15px;
+}
+
+.detalhes-container h6:first-child {
+    margin-top: 0;
+}
+
+.detalhes-container p {
+    margin-bottom: 10px;
+    color: #6c757d;
+}
+
+.detalhes-texto {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #dee2e6;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    font-size: 14px;
+    line-height: 1.5;
+}
+</style>
 <script>
     $( document ).ready(function() {
 
         var host =  $('meta[name="base-url"]').attr('content');
+        var noticiasCarregadas = {};
+        var noticiasCarregadasCount = 0;
+        
+        // Flag para controlar visibilidade das áreas
+        var mostrarAreas = {{ $fl_areas ? 'true' : 'false' }};
+        
+        // Flag para controlar visibilidade do sentimento
+        var mostrarSentimento = {{ $fl_sentimento ? 'true' : 'false' }};
+        
+        // Flag para controlar visibilidade do retorno de mídia
+        var mostrarRetornoMidia = {{ $fl_retorno_midia ? 'true' : 'false' }};
 
+        // Carregar áreas do cliente logado ao inicializar (apenas se a seção existir)
+        if ($('#areas-checkbox-group').length > 0) {
+            carregarAreasCliente();
+        }
+
+        // Verificar se Font Awesome está carregado
+        if (!$('.fa').length && !$('link[href*="font-awesome"]').length) {
+            console.warn('Font Awesome não está carregado corretamente. Alguns ícones podem não ser exibidos.');
+        }
+
+        // Preset de datas
         $('#presetsData button').on('click', function() {
             let preset = $(this).data('preset');
             let hoje = moment();
@@ -225,10 +434,696 @@
             $('#dt_final').val(dt_final);
         });
 
+
+
+        // Carregar áreas do cliente logado
+        function carregarAreasCliente() {
+            // Verificar se o elemento existe antes de fazer a requisição
+            if ($('#areas-checkbox-group').length === 0) {
+                return;
+            }
+            
+            $.ajax({
+                url: host + '/api/cliente/areas',
+                type: 'GET',
+                dataType: 'json',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    var areasHtml = '';
+                    
+                    if (response && Array.isArray(response)) {
+                        response.forEach(function(area) {
+                            areasHtml += '<div class="form-check" style="margin-right: 10px; margin-bottom: 8px;">';
+                            areasHtml += '<label class="form-check-label">';
+                            areasHtml += '<input class="form-check-input" type="checkbox" name="areas[]" value="' + area.id + '">';
+                            areasHtml += '<span class="form-check-sign"></span>';
+                            areasHtml += '<span>' + area.nome + '</span>';
+                            areasHtml += '</label>';
+                            areasHtml += '</div>';
+                        });
+                    } else {
+                        areasHtml = '<p class="text-muted">Nenhuma área encontrada</p>';
+                    }
+                    
+                    $('#areas-checkbox-group').html(areasHtml);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Erro ao carregar áreas:', error);
+                    
+                    if (xhr.status === 404) {
+                        $('#areas-checkbox-group').html('<p class="text-warning">Rota não encontrada. Verifique se o sistema está configurado corretamente.</p>');
+                    } else if (xhr.status === 401) {
+                        $('#areas-checkbox-group').html('<p class="text-danger">Acesso negado. Faça login novamente.</p>');
+                    } else {
+                        $('#areas-checkbox-group').html('<p class="text-muted">Erro ao carregar áreas. Tente novamente mais tarde.</p>');
+                    }
+                }
+            });
+        }
+
+        // Limpar áreas
+        function limparAreas() {
+            $('#areas-checkbox-group').empty();
+        }
+
+        // Botão pesquisar
+        $('#btn-pesquisar').on('click', function() {
+            pesquisarNoticias();
+        });
+
+        // Pesquisar notícias
+        function pesquisarNoticias() {
+            var formData = {
+                data_inicio: converterDataParaISO($('#dt_inicial').val()),
+                data_fim: converterDataParaISO($('#dt_final').val()),
+                tipos_midia: [],
+                status: [],
+                retorno: $('input[name="retorno"]:checked').val() || 'com_retorno',
+                valor: [],
+                areas: []
+            };
+
+            // Tipos de mídia
+            if ($('input[name="fl_web"]').length && $('input[name="fl_web"]').is(':checked')) formData.tipos_midia.push('web');
+            if ($('input[name="fl_tv"]').length && $('input[name="fl_tv"]').is(':checked')) formData.tipos_midia.push('tv');
+            if ($('input[name="fl_radio"]').length && $('input[name="fl_radio"]').is(':checked')) formData.tipos_midia.push('radio');
+            if ($('input[name="fl_impresso"]').length && $('input[name="fl_impresso"]').is(':checked')) formData.tipos_midia.push('impresso');
+
+            // Status/Sentimento (apenas se a seção existir)
+            if (mostrarSentimento) {
+                $('input[name="sentimento[]"]:checked').each(function() {
+                    var valor = $(this).val();
+                    if (valor == '1') formData.status.push('positivo');
+                    else if (valor == '-1') formData.status.push('negativo');
+                    else if (valor == '0') formData.status.push('neutro');
+                });
+            } else {
+                // Se não mostrar sentimento, incluir todos os status por padrão
+                formData.status = ['positivo', 'negativo', 'neutro'];
+            }
+
+            // Valor
+            if ($('input[name="valor_com"]:checked').length > 0) formData.valor.push('com_valor');
+            if ($('input[name="valor_sem"]:checked').length > 0) formData.valor.push('sem_valor');
+
+            // Áreas (apenas se a seção existir)
+            if ($('#areas-checkbox-group').length > 0) {
+                $('input[name="areas[]"]:checked').each(function() {
+                    formData.areas.push(parseInt($(this).val()));
+                });
+            }
+
+            // Validações
+            if (!formData.data_inicio || !formData.data_fim) {
+                alert('Por favor, preencha as datas inicial e final.');
+                return;
+            }
+
+            if (formData.tipos_midia.length === 0) {
+                // Verificar se há pelo menos uma opção de mídia disponível
+                var opcoesMidiaDisponiveis = $('input[name="fl_web"], input[name="fl_tv"], input[name="fl_radio"], input[name="fl_impresso"]').length;
+                if (opcoesMidiaDisponiveis === 0) {
+                    alert('Nenhum tipo de mídia está habilitado para seu cliente. Entre em contato com o administrador.');
+                } else {
+                    alert('Por favor, selecione ao menos um tipo de mídia.');
+                }
+                return;
+            }
+
+            // Mostrar loading
+            $('#resultado-relatorio').html('<div class="text-center my-4"><i class="fa fa-spinner fa-spin fa-2x"></i> Carregando notícias...</div>');
+
+            // Adicionar token CSRF
+            formData._token = $('meta[name="csrf-token"]').attr('content');
+
+            $.ajax({
+                url: host + '/cliente/relatorios/listar-noticias',
+                type: 'POST',
+                data: formData,
+                dataType: 'json',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    if (response.success) {
+                        noticiasCarregadas = response.noticias;
+                        exibirNoticias(response.noticias);
+                        atualizarContadores();
+                    } else {
+                        $('#resultado-relatorio').html('<div class="alert alert-danger">' + response.message + '</div>');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Erro ao pesquisar notícias:', error);
+                    
+                    var errorMessage = '';
+                    if (xhr.status === 404) {
+                        errorMessage = 'Rota não encontrada. Verifique se o sistema está configurado corretamente.';
+                    } else if (xhr.status === 401) {
+                        errorMessage = 'Acesso negado. Faça login novamente.';
+                    } else if (xhr.status === 500) {
+                        errorMessage = 'Erro interno do servidor. Tente novamente mais tarde.';
+                    } else {
+                        errorMessage = 'Erro ao buscar notícias. Tente novamente.';
+                    }
+                    
+                    $('#resultado-relatorio').html('<div class="alert alert-danger">' + errorMessage + '</div>');
+                }
+            });
+        }
+
+        // Exibir notícias
+        function exibirNoticias(noticias) {
+            var html = '';
+            var totalNoticias = 0;
+
+            // Contar total de notícias
+            Object.keys(noticias).forEach(function(tipo) {
+                totalNoticias += noticias[tipo].length;
+            });
+
+            if (totalNoticias === 0) {
+                html = '<div class="alert alert-info">Nenhuma notícia encontrada para os critérios informados.</div>';
+            } else {
+                // Cabeçalho com controles
+                html += '<div class="d-flex justify-content-between align-items-center mb-3">';
+                html += '<h5>Notícias Encontradas (' + totalNoticias + ')</h5>';
+                html += '<div>';
+                html += '<button type="button" class="btn btn-sm btn-outline-primary" onclick="selecionarTodas()">Selecionar Todas</button>';
+                html += '<button type="button" class="btn btn-sm btn-outline-secondary ml-2" onclick="deselecionarTodas()">Desmarcar Todas</button>';
+                html += '<button type="button" class="btn btn-sm btn-outline-warning ml-2" onclick="fecharTodasExpandidas()">Fechar Todas Expandidas</button>';
+                html += '</div>';
+                html += '</div>';
+
+                // Criar estrutura de abas
+                html += '<div class="tabs-container">';
+                html += '<ul class="nav nav-tabs nav-fill" id="noticiasTab" role="tablist">';
+                
+                var primeiraAba = true;
+                var tiposComNoticias = [];
+                
+                // Criar abas apenas para tipos com notícias
+                Object.keys(noticias).forEach(function(tipo) {
+                    if (noticias[tipo].length > 0) {
+                        tiposComNoticias.push(tipo);
+                        var icone = obterIconeTipo(tipo);
+                        var titulo = obterTituloTipo(tipo);
+                        var cor = obterCorTipo(tipo);
+                        
+                        html += '<li class="nav-item" role="presentation">';
+                        html += '<a class="nav-link ' + (primeiraAba ? 'active' : '') + '" id="' + tipo + '-tab" data-toggle="tab" href="#' + tipo + '-content" role="tab" aria-controls="' + tipo + '-content" aria-selected="' + (primeiraAba ? 'true' : 'false') + '">';
+                        html += '<i class="fa ' + icone + ' ' + cor + '"></i> ';
+                        html += titulo + ' (' + noticias[tipo].length + ')';
+                        html += '</a>';
+                        html += '</li>';
+                        
+                        primeiraAba = false;
+                    }
+                });
+                
+                html += '</ul>';
+                html += '<div class="tab-content" id="noticiasTabContent">';
+                
+                // Criar conteúdo das abas
+                primeiraAba = true;
+                tiposComNoticias.forEach(function(tipo) {
+                    html += '<div class="tab-pane fade ' + (primeiraAba ? 'show active' : '') + '" id="' + tipo + '-content" role="tabpanel" aria-labelledby="' + tipo + '-tab">';
+                    html += gerarTabelaTipoMidia(tipo, noticias[tipo]);
+                    html += '</div>';
+                    primeiraAba = false;
+                });
+                
+                html += '</div>';
+                html += '</div>';
+            }
+
+            $('#resultado-relatorio').html(html);
+            
+            // Inicializar as tabs do Bootstrap
+            if (typeof $.fn.tab !== 'undefined') {
+                $('#noticiasTab a').on('click', function(e) {
+                    e.preventDefault();
+                    $(this).tab('show');
+                });
+                
+                // Mostrar a primeira aba por padrão
+                $('#noticiasTab a:first').tab('show');
+            } else {
+                // Fallback manual para as tabs se o Bootstrap não estiver disponível
+                $('#noticiasTab a').on('click', function(e) {
+                    e.preventDefault();
+                    var target = $(this).attr('href');
+                    
+                    // Remover active de todas as tabs
+                    $('#noticiasTab a').removeClass('active');
+                    $('.tab-pane').removeClass('active show');
+                    
+                    // Adicionar active na tab clicada
+                    $(this).addClass('active');
+                    $(target).addClass('active show');
+                });
+                
+                // Mostrar a primeira aba por padrão
+                $('#noticiasTab a:first').addClass('active');
+                $('.tab-pane:first').addClass('active show');
+            }
+            
+            // Atualizar contador de notícias totais
+            var totalEncontradas = 0;
+            Object.keys(noticias).forEach(function(tipo) {
+                totalEncontradas += noticias[tipo].length;
+            });
+            $('#totalNoticias').text(totalEncontradas);
+        }
+
+        // Funções auxiliares para obter propriedades dos tipos de mídia
+        function obterIconeTipo(tipo) {
+            switch(tipo) {
+                case 'web': return 'fa-globe';
+                case 'tv': return 'fa-television';
+                case 'radio': return 'fa-volume-up';
+                case 'impresso': return 'fa-newspaper-o';
+                default: return 'fa-file';
+            }
+        }
+
+        function obterTituloTipo(tipo) {
+            switch(tipo) {
+                case 'web': return 'Notícias Web';
+                case 'tv': return 'Notícias TV';
+                case 'radio': return 'Notícias Rádio';
+                case 'impresso': return 'Notícias Impressas';
+                default: return 'Notícias';
+            }
+        }
+
+        function obterCorTipo(tipo) {
+            switch(tipo) {
+                case 'web': return 'text-primary';
+                case 'tv': return 'text-danger';
+                case 'radio': return 'text-success';
+                case 'impresso': return 'text-warning';
+                default: return 'text-secondary';
+            }
+        }
+
+        // Gerar tabela para um tipo de mídia (sem card wrapper)
+        function gerarTabelaTipoMidia(tipo, noticiasArray) {
+            var html = '';
+
+            // Cabeçalho com controles específicos do tipo
+            html += '<div class="d-flex justify-content-between align-items-center mb-3">';
+            html += '<div>';
+            html += '<button type="button" class="btn btn-sm btn-outline-primary" onclick="selecionarTodasTipoBtn(\'' + tipo + '\', true)">Selecionar Todas</button>';
+            html += '<button type="button" class="btn btn-sm btn-outline-secondary ml-2" onclick="selecionarTodasTipoBtn(\'' + tipo + '\', false)">Desmarcar Todas</button>';
+            html += '</div>';
+            html += '<div class="text-muted">';
+            html += '<i class="fa fa-info-circle"></i> ' + noticiasArray.length + ' notícias encontradas';
+            html += '</div>';
+            html += '</div>';
+
+            // Cabeçalho da tabela
+            html += '<div class="table-responsive">';
+            html += '<table class="table table-sm table-hover">';
+            html += '<thead>';
+            html += '<tr>';
+            html += '<th width="50"><input type="checkbox" class="selecionar-todas-' + tipo + ' checkbox-table" onchange="selecionarTodasTipo(\'' + tipo + '\', this)"></th>';
+            
+            // Colunas diferentes para TV e Rádio
+            if (tipo === 'tv' || tipo === 'radio') {
+                html += '<th>Programa</th>';
+                html += '<th>Veículo</th>';
+                html += '<th>Horário</th>';
+                html += '<th>Duração</th>';
+            } else {
+                html += '<th>Título</th>';
+                html += '<th>Veículo</th>';
+            }
+            
+            html += '<th>Data</th>';
+            if (mostrarAreas) {
+                html += '<th>Área</th>';
+            }
+            if (mostrarSentimento) {
+                html += '<th>Sentimento</th>';
+            }
+            if (mostrarRetornoMidia) {
+                html += '<th>Valor</th>';
+            }
+            html += '<th width="30" class="text-center"><i class="fa fa-expand-alt" title="Clique na linha para expandir/recolher"></i></th>';
+            html += '</tr>';
+            html += '</thead>';
+            html += '<tbody>';
+
+            // Notícias
+            noticiasArray.forEach(function(noticia) {
+                html += '<tr class="noticia-row" data-noticia-id="' + noticia.id + '" data-tipo="' + tipo + '" style="cursor: pointer;" onclick="toggleNoticiaDetalhes(' + noticia.id + ', \'' + tipo + '\', this)">';
+                html += '<td onclick="event.stopPropagation()"><input type="checkbox" class="selecionar-noticia checkbox-table" data-tipo="' + tipo + '" data-id="' + noticia.id + '" onchange="atualizarContadores()"></td>';
+                
+                // Dados diferentes para TV e Rádio
+                if (tipo === 'tv' || tipo === 'radio') {
+                    html += '<td>' + (noticia.programa || 'N/A') + '</td>';
+                    html += '<td>' + noticia.veiculo + '</td>';
+                    html += '<td>' + (noticia.horario || 'N/A') + '</td>';
+                    html += '<td>' + (noticia.duracao || 'N/A') + '</td>';
+                } else {
+                    html += '<td><strong>' + noticia.titulo + '</strong></td>';
+                    html += '<td>' + noticia.veiculo + '</td>';
+                }
+                
+                html += '<td>' + noticia.data_formatada + '</td>';
+                if (mostrarAreas) {
+                    html += '<td>' + noticia.area + '</td>';
+                }
+                if (mostrarSentimento) {
+                    html += '<td>' + obterSentimentoHtml(noticia.sentimento) + '</td>';
+                }
+                if (mostrarRetornoMidia) {
+                    html += '<td>' + (noticia.valor > 0 ? 'R$ ' + Number(noticia.valor).toLocaleString('pt-BR', {minimumFractionDigits: 2}) : 'N/A') + '</td>';
+                }
+                html += '<td class="text-center"><i class="fa fa-chevron-down expand-icon" data-noticia-id="' + noticia.id + '"></i></td>';
+                html += '</tr>';
+            });
+
+            html += '</tbody>';
+            html += '</table>';
+            html += '</div>';
+
+            return html;
+        }
+
+        // Botão gerar relatório
+        $('#btnGerarRelatorio').on('click', function() {
+            gerarRelatorio();
+        });
+
+        // Gerar relatório
+        function gerarRelatorio() {
+            var noticiasSelecionadas = obterNoticiasSelecionadas();
+            
+            if (Object.keys(noticiasSelecionadas).length === 0 || 
+                (noticiasSelecionadas.web.length === 0 && noticiasSelecionadas.tv.length === 0 && 
+                 noticiasSelecionadas.radio.length === 0 && noticiasSelecionadas.impresso.length === 0)) {
+                alert('Por favor, selecione ao menos uma notícia para gerar o relatório.');
+                return;
+            }
+
+            var formData = {
+                data_inicio: converterDataParaISO($('#dt_inicial').val()),
+                data_fim: converterDataParaISO($('#dt_final').val()),
+                ids_web: noticiasSelecionadas.web,
+                ids_tv: noticiasSelecionadas.tv,
+                ids_radio: noticiasSelecionadas.radio,
+                ids_impresso: noticiasSelecionadas.impresso
+            };
+            
+            // Adiciona flag de mostrar retorno de mídia se o usuário tem permissão
+            if (mostrarRetornoMidia) {
+                formData.mostrar_retorno_relatorio = $('#mostrar_retorno_relatorio').is(':checked') ? 'true' : 'false';
+            } else {
+                formData.mostrar_retorno_relatorio = 'false';
+            }
+            
+            // Adiciona flag de mostrar sentimento se o usuário tem permissão
+            if (mostrarSentimento) {
+                formData.mostrar_sentimento_relatorio = $('#mostrar_sentimento_relatorio').is(':checked') ? 'true' : 'false';
+            } else {
+                formData.mostrar_sentimento_relatorio = 'false';
+            }
+
+            // Adicionar token CSRF
+            formData._token = $('meta[name="csrf-token"]').attr('content');
+
+            // Mostrar loading
+            $('#btnGerarRelatorio').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Gerando...');
+
+            $.ajax({
+                url: host + '/cliente/relatorios/gerar-pdf',
+                type: 'POST',
+                data: formData,
+                dataType: 'json',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    console.log('Response:', response);
+                    if (response.success) {
+                        console.log('Download URL:', response.download_url);
+                        
+                        // Download direto usando a nova rota que força download
+                        var downloadUrl = response.download_url || (host + '/cliente/relatorios/download/' + response.arquivo);
+                        var fileName = response.arquivo || 'relatorio.pdf';
+                        console.log('Iniciando download de:', downloadUrl);
+                        console.log('Nome do arquivo:', fileName);
+                        
+                        // Método simples e eficaz: redirecionamento da janela
+                        window.location.href = downloadUrl;
+                    } else {
+                        alert('Erro ao gerar relatório: ' + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Erro ao gerar relatório:', error);
+                    
+                    var errorMessage = '';
+                    if (xhr.status === 404) {
+                        errorMessage = 'Rota não encontrada. Verifique se o sistema está configurado corretamente.';
+                    } else if (xhr.status === 401) {
+                        errorMessage = 'Acesso negado. Faça login novamente.';
+                    } else if (xhr.status === 500) {
+                        errorMessage = 'Erro interno do servidor. Tente novamente mais tarde.';
+                    } else {
+                        errorMessage = 'Erro ao gerar relatório. Tente novamente.';
+                    }
+                    
+                    alert(errorMessage);
+                },
+                complete: function() {
+                    $('#btnGerarRelatorio').prop('disabled', false).html('<i class="fa fa-file-pdf-o"></i> Gerar Relatório PDF (<span id="qtdSelecionadasBtn">0</span>)');
+                }
+            });
+        }
+
+        // Converter data DD/MM/YYYY para YYYY-MM-DD
+        function converterDataParaISO(data) {
+            if (!data) return '';
+            var partes = data.split('/');
+            if (partes.length === 3) {
+                return partes[2] + '-' + partes[1] + '-' + partes[0];
+            }
+            return data;
+        }
+
+        // Obter notícias selecionadas
+        function obterNoticiasSelecionadas() {
+            var selecionadas = {
+                web: [],
+                tv: [],
+                radio: [],
+                impresso: []
+            };
+
+            $('.selecionar-noticia:checked').each(function() {
+                var tipo = $(this).data('tipo');
+                var id = $(this).data('id');
+                selecionadas[tipo].push(id);
+            });
+
+            return selecionadas;
+        }
+
+        // Atualizar contadores
+        function atualizarContadores() {
+            var totalSelecionadas = $('.selecionar-noticia:checked').length;
+            $('#totalSelecionadas').text(totalSelecionadas);
+            $('#qtdSelecionadasBtn').text(totalSelecionadas);
+        }
+
+        // Inicializar contadores
+        $('#totalNoticias').text(0);
+
+
     });
-    
-    $(document).ready(function(){
-        $("#id_cliente").trigger('change');
-    });
+
+    // Funções globais
+    function selecionarTodas() {
+        $('.selecionar-noticia').prop('checked', true);
+        $('.selecionar-todas-web, .selecionar-todas-tv, .selecionar-todas-radio, .selecionar-todas-impresso').prop('checked', true);
+        atualizarContadores();
+    }
+
+    function deselecionarTodas() {
+        $('.selecionar-noticia').prop('checked', false);
+        $('.selecionar-todas-web, .selecionar-todas-tv, .selecionar-todas-radio, .selecionar-todas-impresso').prop('checked', false);
+        atualizarContadores();
+    }
+
+    function selecionarTodasTipo(tipo, checkbox) {
+        $('.selecionar-noticia[data-tipo="' + tipo + '"]').prop('checked', checkbox.checked);
+        atualizarContadores();
+    }
+
+    function selecionarTodasTipoBtn(tipo, selecionar) {
+        $('.selecionar-noticia[data-tipo="' + tipo + '"]').prop('checked', selecionar);
+        $('.selecionar-todas-' + tipo).prop('checked', selecionar);
+        atualizarContadores();
+    }
+
+    function atualizarContadores() {
+        var totalSelecionadas = $('.selecionar-noticia:checked').length;
+        $('#totalSelecionadas').text(totalSelecionadas);
+        $('#qtdSelecionadasBtn').text(totalSelecionadas);
+    }
+
+    function fecharTodasExpandidas() {
+        // Contar quantas notícias estão expandidas
+        var expandidas = $('.noticia-detalhes:visible').length;
+        
+        if (expandidas === 0) {
+            alert('Nenhuma notícia está expandida no momento.');
+            return;
+        }
+        
+        // Fechar todas as linhas de detalhes visíveis
+        $('.noticia-detalhes').hide();
+        
+        // Resetar todos os ícones de expansão
+        $('.expand-icon').removeClass('rotated');
+        
+        // Mostrar mensagem de confirmação
+        var mensagem = expandidas === 1 ? '1 notícia expandida foi fechada.' : expandidas + ' notícias expandidas foram fechadas.';
+        console.log(mensagem);
+    }
+
+    function toggleNoticiaDetalhes(id, tipo, elemento) {
+        var host = $('meta[name="base-url"]').attr('content');
+        var $row = $(elemento);
+        var $icon = $row.find('.expand-icon');
+        var detalhesId = 'detalhes-' + tipo + '-' + id;
+        var $detalhesRow = $('#' + detalhesId);
+        
+        // Se já existe a linha de detalhes, apenas mostrar/esconder
+        if ($detalhesRow.length > 0) {
+            if ($detalhesRow.is(':visible')) {
+                // Esconder detalhes
+                $detalhesRow.hide();
+                $icon.removeClass('rotated');
+            } else {
+                // Mostrar detalhes
+                $detalhesRow.show();
+                $icon.addClass('rotated');
+            }
+            return;
+        }
+        
+        // Criar nova linha de detalhes
+        var colunas = $row.find('td').length;
+        var loadingRow = '<tr id="' + detalhesId + '" class="noticia-detalhes">';
+        loadingRow += '<td colspan="' + colunas + '">';
+        loadingRow += '<div class="detalhes-container">';
+        loadingRow += '<div class="text-center"><i class="fa fa-spinner fa-spin"></i> Carregando detalhes...</div>';
+        loadingRow += '</div>';
+        loadingRow += '</td>';
+        loadingRow += '</tr>';
+        
+        $row.after(loadingRow);
+        $icon.addClass('rotated');
+        
+        // Carregar detalhes via AJAX
+        $.ajax({
+            url: host + '/cliente/relatorios/noticia/' + id + '/' + tipo,
+            type: 'GET',
+            dataType: 'json',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                if (response.success) {
+                    var noticia = response.noticia;
+                    var detalhesHtml = '';
+                    
+                    detalhesHtml += '<div class="detalhes-container">';
+                    detalhesHtml += '<div class="row">';
+                    detalhesHtml += '<div class="col-md-12">';
+                    
+                    detalhesHtml += '<h6>Título:</h6>';
+                    detalhesHtml += '<p>' + noticia.titulo + '</p>';
+                    
+                    detalhesHtml += '<h6>Veículo:</h6>';
+                    detalhesHtml += '<p>' + noticia.veiculo + '</p>';
+                    
+                    detalhesHtml += '<h6>Data:</h6>';
+                    detalhesHtml += '<p>' + noticia.data_formatada + '</p>';
+                    
+                    if (mostrarAreas) {
+                        detalhesHtml += '<h6>Área:</h6>';
+                        detalhesHtml += '<p>' + noticia.area + '</p>';
+                    }
+                    
+                    if (mostrarSentimento) {
+                        detalhesHtml += '<h6>Sentimento:</h6>';
+                        detalhesHtml += '<p>' + obterSentimentoHtml(noticia.sentimento) + '</p>';
+                    }
+                    
+                    // Campos específicos por tipo
+                    if (tipo === 'web' && noticia.link) {
+                        detalhesHtml += '<h6>Link:</h6>';
+                        detalhesHtml += '<p><a href="' + noticia.link + '" target="_blank">Acessar notícia</a></p>';
+                    }
+                    
+                    if ((tipo === 'tv' || tipo === 'radio') && (noticia.programa || noticia.horario)) {
+                        detalhesHtml += '<h6>Programa:</h6>';
+                        detalhesHtml += '<p>' + (noticia.programa || 'N/A') + '</p>';
+                        detalhesHtml += '<h6>Horário:</h6>';
+                        detalhesHtml += '<p>' + (noticia.horario || 'N/A') + '</p>';
+                    }
+                    
+                    if (mostrarRetornoMidia) {
+                        detalhesHtml += '<h6>Valor:</h6>';
+                        detalhesHtml += '<p>' + (noticia.valor > 0 ? 'R$ ' + Number(noticia.valor).toLocaleString('pt-BR', {minimumFractionDigits: 2}) : 'N/A') + '</p>';
+                    }
+                    
+                    detalhesHtml += '<h6>Tags:</h6>';
+                    detalhesHtml += '<p>' + (noticia.tags || 'Nenhuma tag') + '</p>';
+                    
+                    detalhesHtml += '<h6>Conteúdo:</h6>';
+                    detalhesHtml += '<div class="detalhes-texto">';
+                    detalhesHtml += noticia.texto.replace(/\n/g, '<br>');
+                    detalhesHtml += '</div>';
+                    
+                    detalhesHtml += '</div>';
+                    detalhesHtml += '</div>';
+                    detalhesHtml += '</div>';
+                    
+                    $('#' + detalhesId + ' td').html(detalhesHtml);
+                    
+                } else {
+                    $('#' + detalhesId + ' td').html('<div class="detalhes-container"><div class="alert alert-danger">' + response.message + '</div></div>');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Erro ao carregar notícia:', error);
+                $('#' + detalhesId + ' td').html('<div class="detalhes-container"><div class="alert alert-danger">Erro ao carregar detalhes. Tente novamente.</div></div>');
+            }
+        });
+    }
+
+
+
+    function obterSentimentoHtml(sentimento) {
+        if (sentimento === 1) {
+            return '<span class="text-success"><i class="fa fa-smile-o text-success"></i> Positivo</span>';
+        } else if (sentimento === -1) {
+            return '<span class="text-danger"><i class="fa fa-frown-o text-danger"></i> Negativo</span>';
+        } else if (sentimento === 0) {
+            return '<span class="text-warning"><i class="fa fa-ban text-warning"></i> Neutro</span>';
+        } else {
+            return '<span class="text-secondary"><i class="fa fa-question text-secondary"></i> Não definido</span>';
+        }
+    }
+
+
 </script>
 @endsection

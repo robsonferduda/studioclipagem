@@ -96,7 +96,7 @@ $(function () {
 
 
   // Download
-  if (typeof $download[0].download === 'undefined') {
+  if ($download && $download.length > 0 && typeof $download[0].download === 'undefined') {
     $download.addClass('disabled');
   }
 
@@ -248,8 +248,10 @@ $(function () {
             });
             
 
-            if (!$download.hasClass('disabled')) {
-              download.download = uploadedImageName;
+            if ($download && $download.length > 0 && !$download.hasClass('disabled')) {
+              if (typeof download !== 'undefined') {
+                download.download = uploadedImageName;
+              }
               $download.attr('href', result.toDataURL(uploadedImageType));
             }
           }
