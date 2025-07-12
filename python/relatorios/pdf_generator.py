@@ -1427,16 +1427,8 @@ class PDFGenerator:
             else:
                 table_data.append([clipagem_paragraph])
         
-        # Verifica se precisa dividir a tabela
-        table_chunks = self._split_table_if_needed(table_data, max_rows_per_page=30)
-        
-        # Se há apenas uma tabela, retorna como antes
-        if len(table_chunks) == 1:
-            table_data = table_chunks[0]
-        else:
-            # Se há múltiplas tabelas, cria a primeira e retorna
-            # (as outras serão criadas separadamente se necessário)
-            table_data = table_chunks[0]
+        # Não divide a tabela - mostra todas as clipagens em uma tabela contínua
+        # O ReportLab gerencia automaticamente as quebras de página
         
         # Cria tabela com larguras otimizadas - condicional baseado em mostrar_valores
         if mostrar_valores:
