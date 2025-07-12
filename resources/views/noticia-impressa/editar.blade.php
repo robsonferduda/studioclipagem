@@ -26,7 +26,7 @@
                 <div class="col-lg-12 col-sm-12">
                     {!! Form::open(['id' => 'frm_user_edit', 'url' => ['noticia-impressa', $noticia->id], 'method' => 'patch']) !!}
                         <div class="form-group m-3 w-70">
-                            <div class="row">
+                            <div class="row mb-0">
                                 <input type="hidden" name="id_noticia" id="id_noticia" value="{{ $noticia->id }}">
                                 <input type="hidden" name="clientes[]" id="clientes">
                                 <input type="hidden" name="ds_caminho_img" id="ds_caminho_img" value="{{ ($noticia->ds_caminho_img) ? $noticia->ds_caminho_img : '' }}">
@@ -62,7 +62,7 @@
                                 </div>
                                 
                                 <div class="col-md-12">
-                                    <ul class="list-unstyled metadados"></ul>
+                                    <ul class="list-unstyled mb-0 metadados"></ul>
                                 </div>
                             </div>
                             <div class="row">

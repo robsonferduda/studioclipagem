@@ -159,7 +159,7 @@
                                         {{ number_format($fonte->nu_valor, 2, ".","") }}
                                     </td>
                                     <td>
-                                        <span class="badge badge-default" style="background: {{ $fonte->situacao->ds_color }} !important; border-color:  {{ $fonte->situacao->ds_color }} !important;">{{ $fonte->situacao->ds_situacao }}</span>
+                                        <span class="badge badge-default" style="background: {{ ($fonte->situacao) ? $fonte->situacao->ds_color : 'black' }} !important; border-color:  {{ ($fonte->situacao) ? $fonte->situacao->ds_color : '' }} !important;">{{ ($fonte->situacao) ? $fonte->situacao->ds_situacao : 'Não Informado' }}</span>
                                     </td>
                                     <td>
                                         <span data-fonte="{{ $fonte->id }}" data-id="{{ $fonte->prioridade->id }}" class="badge badge-default btn-prioridade" style="background: {{ $fonte->prioridade->ds_color }} !important; border-color: {{ $fonte->prioridade->ds_color }} !important;">Prioridade {{ $fonte->prioridade->id }}</span>                  

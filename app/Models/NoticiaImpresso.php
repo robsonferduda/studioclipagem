@@ -32,6 +32,7 @@ class NoticiaImpresso extends Model
                             'local_impressao',
                             'cd_usuario',
                             'ordem',
+                            'fl_boletim',
                             'valor_retorno'];
 
     public function origem()

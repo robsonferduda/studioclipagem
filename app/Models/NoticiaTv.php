@@ -34,7 +34,8 @@ class NoticiaTv extends Model
         'decupagem_id',
         'ordem',
         'cd_usuario',
-        'ds_caminho_video'
+        'ds_caminho_video',
+        'fl_boletim'
     ];
 
     public function cliente()
