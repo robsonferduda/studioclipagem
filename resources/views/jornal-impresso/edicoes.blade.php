@@ -77,7 +77,7 @@
                                         <div class="col-lg-12 col-sm-12 mb-1">
                                             <span class="pull-right">{{ $edicao->paginas->count() }} Páginas</span>
                                             <h6>
-                                                <a href="{{ ($edicao->fonte) ? url('fonte-impresso/'.$edicao->fonte->id.'/editar') : '#' }}" target="_BLANK">{{ ($edicao->fonte) ? $edicao->fonte->nome : '' }}</a>
+                                                <a href="{!! ($edicao->fonte) ? url('fonte-impresso/'.$edicao->fonte->id.'/editar') : '#' }}" target="_BLANK">{{ ($edicao->fonte) ? $edicao->fonte->nome : '<span>Fonte não informada</span>' !!}</a>
                                             </h6>  
                                             <h6 style="color: #FF5722;">
                                                 {{ ($edicao->fonte and $edicao->fonte->estado) ? $edicao->fonte->estado->nm_estado : '' }}
