@@ -109,6 +109,9 @@ $(document).ready(function() {
         $.ajax({
             url: host+'/assessorias/clientes',
             type: 'GET',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
             success: function(response) {
 
                 $.map(response,
@@ -117,6 +120,10 @@ $(document).ready(function() {
                     });
 
                 resolve(options)               
+            },
+            error: function(xhr, status, error) {
+                console.error('Erro ao carregar clientes:', error);
+                resolve({}); // Resolve com objeto vazio em caso de erro
             }
         });
     });

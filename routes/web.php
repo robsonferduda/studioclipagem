@@ -25,7 +25,7 @@ Route::middleware(['web'])->group(function () {
 
 	// Route::resource('client', 'ClientController');
 	Route::resource('tag', 'TagController');
-	Route::resource('notification', 'NotificacaoController');
+	// Route::resource('notification', 'NotificacaoController'); // Controller não existe
 	Route::resource('usuario', 'UserController');
 	Route::resource('perfis','RoleController');
 	Route::resource('email', 'EmailController');
@@ -73,6 +73,22 @@ Route::middleware(['web'])->group(function () {
 	Route::match(array('GET', 'POST'),'clientes','ClienteController@index');
 	Route::match(array('GET', 'POST'),'cliente/relatorios/gerar','ClienteController@gerarRelatorios');
 	Route::match(array('GET', 'POST'),'cliente/relatorios/listar','ClienteController@relatorios');
+
+	// Novas rotas para substituir funcionalidades do Flask app.py
+	Route::post('cliente/relatorios/listar-noticias','ClienteController@listarNoticias');
+	Route::post('cliente/relatorios/gerar-pdf','ClienteController@gerarRelatorioPDF');
+Route::get('cliente/relatorios/download/{arquivo}','ClienteController@downloadRelatorio');
+Route::post('cliente/relatorios/adicionar-noticia','ClienteController@adicionarNoticia');
+	Route::post('cliente/relatorios/editar-noticia','ClienteController@editarNoticia');
+	Route::post('cliente/relatorios/excluir-noticia','ClienteController@excluirNoticia');
+	Route::get('cliente/relatorios/noticia/{id}/{tipo}','ClienteController@buscarNoticia');
+	Route::post('cliente/relatorios/vincular-noticia-area','ClienteController@vincularNoticiaArea');
+	Route::post('cliente/relatorios/upload-imagem','ClienteController@uploadImagem');
+	
+	// API routes para dados de relatórios
+	Route::get('api/clientes','ClienteController@getClientesApi');
+	Route::get('api/cliente/validar','ClienteController@validarCliente');
+	Route::get('api/cliente/areas','ClienteController@getAreasClienteRelatorio');
 
 	Route::match(array('GET', 'POST'),'coletas','ColetaController@index');
 
@@ -343,7 +359,6 @@ Route::middleware(['web'])->group(function () {
 	Route::get('tv/emissora/programa/{id}/gravacao/atualiza','ProgramaTvController@atualizaGravacao');
 	Route::get('tv/emissora/horario/excluir/{horario}','ProgramaTvController@excluirHorario');
 	Route::post('tv/emissoras/programa/horario/adicionar','ProgramaTvController@adicionarHorarios');
-	Route::post('tv/emissora/horario/atualizar','ProgramaTvController@atualizarHorarios');
 	Route::post('tv/emissoras/programas/adicionar','ProgramaTvController@adicionar');
 	Route::post('tv/emissoras/programas/atualizar','ProgramaTvController@atualizar');
 
@@ -385,7 +400,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('client/accounts/facebook/{cliente}','ClientController@getFacebookAccounts');
 	Route::get('client/hashtags/{cliente}','ClientController@getHashtags');
 	Route::get('client/emails/{cliente}','ClientController@emails');
-	Route::post('cliente/selecionar','ClientController@selecionar');
+	Route::post('cliente/selecionar','ClienteController@selecionar');
 	Route::get('cliente/paginas-associadas/{client}','ClientController@connectedtPages');
 
 	Route::get('cliente/area/{id}/remover','ClienteController@removerArea');

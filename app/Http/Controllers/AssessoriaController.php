@@ -23,7 +23,19 @@ class AssessoriaController extends Controller
 
     public function clientes()
     {
+        $clientes = \App\Models\Cliente::where('fl_ativo', true)
+            ->orderBy('nome')
+            ->get()
+            ->map(function($cliente) {
+                return [
+                    'id' => $cliente->id,
+                    'pessoa' => [
+                        'nome' => $cliente->nome
+                    ]
+                ];
+            });
         
+        return response()->json($clientes);
     }
 
     public function show($id)

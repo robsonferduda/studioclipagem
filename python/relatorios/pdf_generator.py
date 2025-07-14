@@ -117,6 +117,28 @@ class PDFGenerator:
             '#455a64'   # Cinza azulado
         ]
     
+    def _convert_sentiment_to_text(self, sentiment_value):
+        """
+        Converte valor de sentimento de formato numérico para texto legível
+        
+        Args:
+            sentiment_value: Valor do sentimento (-1, 0, 1, '-1', '0', '1')
+            
+        Returns:
+            str: Texto do sentimento ('Negativo', 'Neutro', 'Positivo')
+        """
+        # Converte para string para normalizar
+        sentiment_str = str(sentiment_value).strip()
+        
+        # Mapeamento de sentimentos
+        sentiment_map = {
+            '-1': 'Negativo',
+            '0': 'Neutro', 
+            '1': 'Positivo'
+        }
+        
+        return sentiment_map.get(sentiment_str, 'Neutro')  # Default para Neutro se não encontrar
+    
     def _get_dynamic_color(self, index: int):
         """Retorna cor da paleta baseada no índice, ciclando se necessário"""
         return colors.HexColor(self.color_palette[index % len(self.color_palette)])
@@ -220,6 +242,9 @@ class PDFGenerator:
                         formatted_value = str(value)
                 elif col_config.get('format') == 'time':
                     formatted_value = str(value)
+                elif col_config.get('format') == 'sentiment':
+                    # Formatação para valores de sentimento
+                    formatted_value = self._convert_sentiment_to_text(value)
                 else:
                     formatted_value = str(value)
                 
@@ -462,20 +487,32 @@ class PDFGenerator:
         emissoras_data = {}
         
         for _, row in clipagens_data.iterrows():
-            # Extrai nome da emissora da linha1 (formato: "data - Programa: X - Emissora: Y - Tempo Total: 00:00:00")
+            # Extrai nome da emissora da linha1 
+            # Formato real: "12/02/2025 - Nome do Programa - Nome da Emissora - 00:05:30"
             linha1 = str(row.get('linha1_data_programa_emissora', ''))
             emissora = 'Não identificada'
             tempo_str = '00:00:00'
             
-            # Extrai emissora usando regex
-            emissora_match = re.search(r'Emissora:\s*([^-]+?)(?:\s*-\s*Tempo Total:|$)', linha1)
-            if emissora_match:
-                emissora = emissora_match.group(1).strip()
+            # Nova regex para capturar o formato real: data - programa - emissora - tempo
+            if linha1:
+                # Divide por ' - ' e pega as partes
+                partes = linha1.split(' - ')
+                if len(partes) >= 4:
+                    # partes[0] = data, partes[1] = programa, partes[2] = emissora, partes[3] = tempo
+                    emissora = partes[2].strip()
+                    tempo_str = partes[3].strip()
+                elif len(partes) >= 3:
+                    # Fallback: se não tem 4 partes, assume que partes[2] é emissora ou tempo
+                    if ':' in partes[2]:  # Se tem dois pontos, provavelmente é tempo
+                        tempo_str = partes[2].strip()
+                        emissora = partes[1].strip() if len(partes) > 1 else 'Não identificada'
+                    else:  # Se não tem dois pontos, provavelmente é emissora
+                        emissora = partes[2].strip()
+                        tempo_str = '00:00:00'
             
-            # Extrai tempo usando regex
-            tempo_match = re.search(r'Tempo Total:\s*(\d{2}:\d{2}:\d{2})', linha1)
-            if tempo_match:
-                tempo_str = tempo_match.group(1)
+            # Validação básica do tempo
+            if not re.match(r'\d{2}:\d{2}:\d{2}', tempo_str):
+                tempo_str = '00:00:00'
             
             # Converte tempo para segundos para soma
             def time_to_seconds(time_str):
@@ -535,20 +572,32 @@ class PDFGenerator:
         programas_data = {}
         
         for _, row in clipagens_data.iterrows():
-            # Extrai nome do programa da linha1 (formato: "data - Programa: X - Emissora: Y - Tempo Total: 00:00:00")
+            # Extrai nome do programa da linha1
+            # Formato real: "12/02/2025 - Nome do Programa - Nome da Emissora - 00:05:30"
             linha1 = str(row.get('linha1_data_programa_emissora', ''))
             programa = 'Não identificado'
             tempo_str = '00:00:00'
             
-            # Extrai programa usando regex
-            programa_match = re.search(r'Programa:\s*([^-]+?)(?:\s*-\s*Emissora:|$)', linha1)
-            if programa_match:
-                programa = programa_match.group(1).strip()
+            # Nova regex para capturar o formato real: data - programa - emissora - tempo
+            if linha1:
+                # Divide por ' - ' e pega as partes
+                partes = linha1.split(' - ')
+                if len(partes) >= 4:
+                    # partes[0] = data, partes[1] = programa, partes[2] = emissora, partes[3] = tempo
+                    programa = partes[1].strip()
+                    tempo_str = partes[3].strip()
+                elif len(partes) >= 2:
+                    # Fallback: se não tem 4 partes, assume que partes[1] é programa
+                    programa = partes[1].strip()
+                    # Procura por tempo nas partes disponíveis
+                    for parte in partes:
+                        if ':' in parte and re.match(r'\d{2}:\d{2}:\d{2}', parte.strip()):
+                            tempo_str = parte.strip()
+                            break
             
-            # Extrai tempo usando regex
-            tempo_match = re.search(r'Tempo Total:\s*(\d{2}:\d{2}:\d{2})', linha1)
-            if tempo_match:
-                tempo_str = tempo_match.group(1)
+            # Validação básica do tempo
+            if not re.match(r'\d{2}:\d{2}:\d{2}', tempo_str):
+                tempo_str = '00:00:00'
             
             # Converte tempo para segundos para soma
             def time_to_seconds(time_str):
@@ -608,20 +657,32 @@ class PDFGenerator:
         emissoras_data = {}
         
         for _, row in clipagens_data.iterrows():
-            # Extrai nome da emissora da linha1 (formato: "data - Programa: X - Emissora: Y - Tempo Total: 00:00:00")
+            # Extrai nome da emissora da linha1
+            # Formato real: "12/02/2025 - Nome do Programa - Nome da Emissora - 00:05:30"
             linha1 = str(row.get('linha1_data_programa_emissora', ''))
             emissora = 'Não identificada'
             tempo_str = '00:00:00'
             
-            # Extrai emissora usando regex
-            emissora_match = re.search(r'Emissora:\s*([^-]+?)(?:\s*-\s*Tempo Total:|$)', linha1)
-            if emissora_match:
-                emissora = emissora_match.group(1).strip()
+            # Nova regex para capturar o formato real: data - programa - emissora - tempo
+            if linha1:
+                # Divide por ' - ' e pega as partes
+                partes = linha1.split(' - ')
+                if len(partes) >= 4:
+                    # partes[0] = data, partes[1] = programa, partes[2] = emissora, partes[3] = tempo
+                    emissora = partes[2].strip()
+                    tempo_str = partes[3].strip()
+                elif len(partes) >= 3:
+                    # Fallback: se não tem 4 partes, assume que partes[2] é emissora ou tempo
+                    if ':' in partes[2]:  # Se tem dois pontos, provavelmente é tempo
+                        tempo_str = partes[2].strip()
+                        emissora = partes[1].strip() if len(partes) > 1 else 'Não identificada'
+                    else:  # Se não tem dois pontos, provavelmente é emissora
+                        emissora = partes[2].strip()
+                        tempo_str = '00:00:00'
             
-            # Extrai tempo usando regex
-            tempo_match = re.search(r'Tempo Total:\s*(\d{2}:\d{2}:\d{2})', linha1)
-            if tempo_match:
-                tempo_str = tempo_match.group(1)
+            # Validação básica do tempo
+            if not re.match(r'\d{2}:\d{2}:\d{2}', tempo_str):
+                tempo_str = '00:00:00'
             
             # Converte tempo para segundos para soma
             def time_to_seconds(time_str):
@@ -681,20 +742,32 @@ class PDFGenerator:
         programas_data = {}
         
         for _, row in clipagens_data.iterrows():
-            # Extrai nome do programa da linha1 (formato: "data - Programa: X - Emissora: Y - Tempo Total: 00:00:00")
+            # Extrai nome do programa da linha1
+            # Formato real: "12/02/2025 - Nome do Programa - Nome da Emissora - 00:05:30"
             linha1 = str(row.get('linha1_data_programa_emissora', ''))
             programa = 'Não identificado'
             tempo_str = '00:00:00'
             
-            # Extrai programa usando regex
-            programa_match = re.search(r'Programa:\s*([^-]+?)(?:\s*-\s*Emissora:|$)', linha1)
-            if programa_match:
-                programa = programa_match.group(1).strip()
+            # Nova regex para capturar o formato real: data - programa - emissora - tempo
+            if linha1:
+                # Divide por ' - ' e pega as partes
+                partes = linha1.split(' - ')
+                if len(partes) >= 4:
+                    # partes[0] = data, partes[1] = programa, partes[2] = emissora, partes[3] = tempo
+                    programa = partes[1].strip()
+                    tempo_str = partes[3].strip()
+                elif len(partes) >= 2:
+                    # Fallback: se não tem 4 partes, assume que partes[1] é programa
+                    programa = partes[1].strip()
+                    # Procura por tempo nas partes disponíveis
+                    for parte in partes:
+                        if ':' in parte and re.match(r'\d{2}:\d{2}:\d{2}', parte.strip()):
+                            tempo_str = parte.strip()
+                            break
             
-            # Extrai tempo usando regex
-            tempo_match = re.search(r'Tempo Total:\s*(\d{2}:\d{2}:\d{2})', linha1)
-            if tempo_match:
-                tempo_str = tempo_match.group(1)
+            # Validação básica do tempo
+            if not re.match(r'\d{2}:\d{2}:\d{2}', tempo_str):
+                tempo_str = '00:00:00'
             
             # Converte tempo para segundos para soma
             def time_to_seconds(time_str):
@@ -1021,7 +1094,7 @@ class PDFGenerator:
                 'Valor (%)': f"{valor_percentual_geral:.1f}%",  # Percentual em relação ao total geral
                 'Qtd.': total_quantidade_cidade,
                 'Qtd. (%)': f"{quantidade_percentual_geral:.1f}%",  # Percentual em relação ao total geral
-                'Sentimento_Predominante': sentimento_predominante
+                'Sentimento_Predominante': self._convert_sentiment_to_text(sentimento_predominante)
             }
             
             result_data.append(row_data)
@@ -1225,6 +1298,32 @@ class PDFGenerator:
         
         return table
     
+    def _split_table_if_needed(self, table_data, max_rows_per_page=50):
+        """
+        Divide uma tabela grande em várias tabelas menores para evitar problemas de layout
+        
+        Args:
+            table_data: Dados da tabela (incluindo cabeçalho)
+            max_rows_per_page: Número máximo de linhas por página (excluindo cabeçalho)
+            
+        Returns:
+            Lista de conjuntos de dados da tabela divididos
+        """
+        if len(table_data) <= max_rows_per_page + 1:  # +1 para o cabeçalho
+            return [table_data]
+        
+        # Extrai cabeçalho
+        header = table_data[0]
+        data_rows = table_data[1:]
+        
+        # Divide os dados em chunks
+        chunks = []
+        for i in range(0, len(data_rows), max_rows_per_page):
+            chunk = [header] + data_rows[i:i + max_rows_per_page]
+            chunks.append(chunk)
+        
+        return chunks
+
     def _create_clipagens_table(self, data: pd.DataFrame, midia_tipo: str, mostrar_valores: bool = True):
         """Cria tabela para seção de clipagens com formato otimizado"""
         # Dados da tabela - condicional baseado em mostrar_valores
@@ -1238,14 +1337,29 @@ class PDFGenerator:
         if date_column in data.columns:
             data = data.sort_values(date_column, ascending=True)
         
-        def truncate_text(text, max_length=800):
-            """Trunca texto se for muito longo para evitar células gigantes"""
-            if not text or str(text) == 'nan':
-                return ''
-            text = str(text).strip()
-            if len(text) > max_length:
-                return text[:max_length] + '...'
-            return text
+        # Função para truncar texto longo
+        def truncate_text(text, max_length=500):
+            """Trunca texto para evitar células muito grandes"""
+            if not text or len(str(text)) <= max_length:
+                return str(text)
+            return str(text)[:max_length] + "..."
+        
+        # Função para limpar e formatar texto
+        def clean_and_format_text(text):
+            """Limpa HTML e formata texto para evitar problemas de layout"""
+            if not text:
+                return ""
+            
+            # Remove HTML e limpa o texto
+            cleaned = self._clean_html(str(text))
+            
+            # Remove quebras de linha excessivas
+            cleaned = ' '.join(cleaned.split())
+            
+            # Trunca se muito longo
+            cleaned = truncate_text(cleaned, 400)
+            
+            return cleaned
         
         for _, row in data.iterrows():
             # Formata valor apenas se necessário
@@ -1254,33 +1368,27 @@ class PDFGenerator:
             
             if midia_tipo in ['TV', 'Rádio']:
                 # Formato para TV e Rádio (3 linhas bem definidas)
-                linha1 = self._clean_html(row.get('Linha1 Data Programa Emissora', '')) or self._clean_html(row.get('linha1_data_programa_emissora', ''))
-                arquivo = row.get('Linha2 Arquivo', '') or row.get('linha2_arquivo', '') or row.get('arquivo_url', '') or row.get('url', '')
-                arquivo_text = arquivo if arquivo and arquivo != 'nan' and arquivo != '' else "não disponível"
-                sinopse = self._clean_html(row.get('Linha3 Sinopse', '')) or self._clean_html(row.get('linha3_sinopse', '')) or self._clean_html(row.get('sinopse', '')) or self._clean_html(row.get('descricao', ''))
+                linha1 = clean_and_format_text(row.get('Linha1 Data Programa Emissora', '') or row.get('linha1_data_programa_emissora', ''))
+                arquivo = str(row.get('Linha2 Arquivo', '') or row.get('linha2_arquivo', '') or row.get('arquivo_url', '') or row.get('url', ''))
+                sinopse = clean_and_format_text(row.get('Linha3 Sinopse', '') or row.get('linha3_sinopse', '') or row.get('sinopse', '') or row.get('descricao', ''))
                 sinopse_text = sinopse if sinopse else "não disponível"
-                
-                # Trunca textos longos para evitar células gigantes
-                linha1 = truncate_text(linha1, 200)
-                arquivo_text = truncate_text(arquivo_text, 150)
-                sinopse_text = truncate_text(sinopse_text, 450)
                 
                 # Formatação com estilo específico para cada linha
                 linha1_formatted = f"<b>{linha1}</b>" if linha1 else "<b>Informação não disponível</b>"
-                arquivo_formatted = f"<font color='#666666'><i>Arquivo: {arquivo_text}</i></font>"
                 sinopse_formatted = f"Sinopse: {sinopse_text}"
                 
-                # Combina as 3 linhas com quebras definidas
-                clipagem_text = f"{linha1_formatted}<br/>{arquivo_formatted}<br/>{sinopse_formatted}"
+                # Combina as linhas - inclui arquivo apenas se disponível
+                if arquivo and arquivo != 'nan' and arquivo != '' and arquivo.strip() and arquivo != 'Arquivo não disponível':
+                    arquivo_truncated = truncate_text(arquivo, 100)
+                    arquivo_formatted = f"<font color='#666666'><i>Arquivo: {arquivo_truncated}</i></font>"
+                    clipagem_text = f"{linha1_formatted}<br/>{arquivo_formatted}<br/>{sinopse_formatted}"
+                else:
+                    clipagem_text = f"{linha1_formatted}<br/>{sinopse_formatted}"
                 
             else:  # Impresso e Web
                 # Formato para Impresso e Web (2 linhas bem definidas)
-                linha1 = self._clean_html(row.get('Título Linha 1', '')) or self._clean_html(row.get('titulo_linha1', ''))
-                descricao = self._clean_html(row.get('Título Linha 2', '')) or self._clean_html(row.get('titulo_linha2', '')) or self._clean_html(row.get('descricao', '')) or self._clean_html(row.get('sinopse', ''))
-                
-                # Trunca textos longos para evitar células gigantes
-                linha1 = truncate_text(linha1, 200)
-                descricao = truncate_text(descricao, 600)
+                linha1 = clean_and_format_text(row.get('Título Linha 1', '') or row.get('titulo_linha1', ''))
+                descricao = clean_and_format_text(row.get('Título Linha 2', '') or row.get('titulo_linha2', '') or row.get('descricao', '') or row.get('sinopse', ''))
                 
                 # Formatação com estilo específico
                 linha1_formatted = f"<b>{linha1}</b>" if linha1 else "<b>Informação não disponível</b>"
@@ -1289,7 +1397,7 @@ class PDFGenerator:
                 # Combina as 2 linhas
                 clipagem_text = f"{linha1_formatted}<br/>{descricao_formatted}"
             
-            # Estilo customizado para clipagens com altura controlada
+            # Estilo customizado para clipagens com melhor quebra de linha
             clipagem_style = ParagraphStyle(
                 'ClipAgemText',
                 parent=self.normal_style,
@@ -1299,13 +1407,16 @@ class PDFGenerator:
                 spaceAfter=2,
                 leftIndent=5,
                 rightIndent=5,
-                # Adiciona controle de altura máxima
+                # Adiciona propriedades para melhor quebra de linha
+                wordWrap='CJK',  # Permite quebra de linha em qualquer caractere
+                splitLongWords=True,  # Permite quebrar palavras longas
+                allowWidows=1,  # Permite linhas órfãs
+                allowOrphans=1,  # Permite linhas viúvas
                 leading=10,  # Espaçamento entre linhas
-                splitLongWords=True,  # Permite quebra de palavras longas
-                allowWidows=1,  # Permite linha órfã
-                allowOrphans=1,  # Permite linha órfã
-                wordWrap='LTR'  # Quebra de linha da esquerda para direita
             )
+            
+            # Trunca o texto final se ainda estiver muito longo
+            clipagem_text = truncate_text(clipagem_text, 600)
             
             # Cria parágrafo com HTML interno para formatação
             clipagem_paragraph = Paragraph(clipagem_text, clipagem_style)
@@ -1315,6 +1426,9 @@ class PDFGenerator:
                 table_data.append([clipagem_paragraph, valor])
             else:
                 table_data.append([clipagem_paragraph])
+        
+        # Não divide a tabela - mostra todas as clipagens em uma tabela contínua
+        # O ReportLab gerencia automaticamente as quebras de página
         
         # Cria tabela com larguras otimizadas - condicional baseado em mostrar_valores
         if mostrar_valores:
@@ -1343,7 +1457,10 @@ class PDFGenerator:
                 ('RIGHTPADDING', (0, 1), (0, -1), 8),  # Padding direito para clipagens
                 
                 # Linhas alternadas com cores suaves
-                ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f8f9fa')])
+                ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f8f9fa')]),
+                
+                # Adiciona altura máxima para as linhas para evitar células muito grandes
+                ('ROWHEIGHT', (0, 1), (-1, -1), None),  # Altura automática mas controlada
             ]))
         else:
             table.setStyle(TableStyle([
@@ -1364,7 +1481,10 @@ class PDFGenerator:
                 ('RIGHTPADDING', (0, 1), (0, -1), 8),  # Padding direito para clipagens
                 
                 # Linhas alternadas com cores suaves
-                ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f8f9fa')])
+                ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f8f9fa')]),
+                
+                # Adiciona altura máxima para as linhas para evitar células muito grandes
+                ('ROWHEIGHT', (0, 1), (-1, -1), None),  # Altura automática mas controlada
             ]))
         
         return table
@@ -1495,10 +1615,26 @@ class PDFGenerator:
         mostrar_secoes_retorno = mostrar_retorno_relatorio and tem_permissao_retorno
         mostrar_valores = mostrar_retorno_relatorio and tem_permissao_retorno
         
+        # NOVA LÓGICA: Controla seções de análise de sentimento baseado na permissão do cliente e escolha do usuário
+        mostrar_sentimento_relatorio = filtros.get('mostrar_sentimento_relatorio', True) if filtros else True
+        tem_permissao_sentimento = filtros.get('tem_permissao_sentimento', True) if filtros else True
+        
+        # Se o cliente não tem permissão, força ocultar seções de sentimento
+        if not tem_permissao_sentimento:
+            mostrar_sentimento_relatorio = False
+        
+        # Controla seções de análise de sentimento baseado na permissão do cliente e escolha do usuário
+        mostrar_secoes_sentimento = mostrar_sentimento_relatorio and tem_permissao_sentimento
+        
         print(f"🔐 Cliente tem permissão para retorno: {tem_permissao_retorno}")
         print(f"🎯 Usuário quer mostrar retorno no relatório: {mostrar_retorno_relatorio}")
         print(f"📊 Mostrar seções de retorno: {mostrar_secoes_retorno}")
         print(f"💰 Mostrar valores: {mostrar_valores}")
+        print(f"🧠 Cliente tem permissão para sentimento: {tem_permissao_sentimento}")
+        print(f"🎭 Usuário quer mostrar sentimento no relatório: {mostrar_sentimento_relatorio}")
+        print(f"📈 Mostrar seções de sentimento: {mostrar_secoes_sentimento}")
+        print(f"🔎 DEBUG FILTROS SENTIMENTO: {filtros.get('mostrar_sentimento_relatorio') if filtros else 'Filtros None'}")
+        print(f"🔎 DEBUG TEM PERMISSAO SENTIMENTO: {filtros.get('tem_permissao_sentimento') if filtros else 'Filtros None'}")
         
         # Lista de elementos do PDF
         story = []
@@ -1753,17 +1889,17 @@ class PDFGenerator:
                 story.append(Spacer(1, 10))
         
         # NOVA LÓGICA: SEÇÕES DE RETORNO - Usa a variável já definida no início da função
-        print(f"🔍 Filtros de retorno: {retorno_filtros}")
+        print(f"🔍 Permissão de retorno: {tem_permissao_retorno}")
         print(f"📊 Mostrar seções de retorno: {mostrar_secoes_retorno}")
         
         if database_manager and mostrar_secoes_retorno:
             # Quebra de página antes das seções de retorno
             story.append(PageBreak())
             
-            # NOVO: Verificar filtros de mídia para retornos
+            # CORRIGIDO: Verificar filtros de mídia para retornos - agora só inclui tipos de mídia que o cliente tem permissão
             tipos_midia_filtrados = filtros.get('tipos_midia', ['web', 'tv', 'radio', 'impresso']) if filtros else ['web', 'tv', 'radio', 'impresso']
             
-            # 1. Retornos de Mídia TV
+            # 1. Retornos de Mídia TV - só mostra se o cliente tem permissão para TV
             if 'tv' in tipos_midia_filtrados:
                 retornos_tv = database_manager.get_retornos_tv(usuario_id, data_inicio, data_fim, filtros)
                 if not retornos_tv.empty:
@@ -1771,18 +1907,10 @@ class PDFGenerator:
                     tv_retorno_section = self._create_retorno_section("Retornos de Mídia TV", tv_retorno_tables)
                     for element in tv_retorno_section:
                         story.append(element)
-                else:
-                    # Exibe seção indicando que não há dados para mostrar
-                    no_data_section = self._create_retorno_section("Retornos de Mídia TV", [self._create_no_data_table("Nenhum retorno encontrado no período com os filtros aplicados")])
-                    for element in no_data_section:
-                        story.append(element)
-            else:
-                # Exibe seção indicando que dados não foram filtrados
-                no_data_section = self._create_retorno_section("Retornos de Mídia TV", [self._create_no_data_table("Dados não incluídos nos filtros aplicados")])
-                for element in no_data_section:
-                    story.append(element)
+                
+            # REMOVIDO: Não mostra seção se o cliente não tem permissão para TV
             
-            # 2. Retornos de Mídia Rádio
+            # 2. Retornos de Mídia Rádio - só mostra se o cliente tem permissão para Rádio
             if 'radio' in tipos_midia_filtrados:
                 retornos_radio = database_manager.get_retornos_radio(usuario_id, data_inicio, data_fim, filtros)
                 if not retornos_radio.empty:
@@ -1790,18 +1918,10 @@ class PDFGenerator:
                     radio_retorno_section = self._create_retorno_section("Retornos de Mídia Rádio", radio_retorno_tables)
                     for element in radio_retorno_section:
                         story.append(element)
-                else:
-                    # Exibe seção indicando que não há dados para mostrar
-                    no_data_section = self._create_retorno_section("Retornos de Mídia Rádio", [self._create_no_data_table("Nenhum retorno encontrado no período com os filtros aplicados")])
-                    for element in no_data_section:
-                        story.append(element)
-            else:
-                # Exibe seção indicando que dados não foram filtrados
-                no_data_section = self._create_retorno_section("Retornos de Mídia Rádio", [self._create_no_data_table("Dados não incluídos nos filtros aplicados")])
-                for element in no_data_section:
-                    story.append(element)
+                
+            # REMOVIDO: Não mostra seção se o cliente não tem permissão para Rádio
             
-            # 3. Retornos de Mídia Web
+            # 3. Retornos de Mídia Web - só mostra se o cliente tem permissão para Web
             if 'web' in tipos_midia_filtrados:
                 retornos_web = database_manager.get_retornos_web(usuario_id, data_inicio, data_fim, filtros)
                 if not retornos_web.empty:
@@ -1809,18 +1929,10 @@ class PDFGenerator:
                     web_retorno_section = self._create_retorno_section("Retornos de Mídia Web", web_retorno_tables)
                     for element in web_retorno_section:
                         story.append(element)
-                else:
-                    # Exibe seção indicando que não há dados para mostrar
-                    no_data_section = self._create_retorno_section("Retornos de Mídia Web", [self._create_no_data_table("Nenhum retorno encontrado no período com os filtros aplicados")])
-                    for element in no_data_section:
-                        story.append(element)
-            else:
-                # Exibe seção indicando que dados não foram filtrados
-                no_data_section = self._create_retorno_section("Retornos de Mídia Web", [self._create_no_data_table("Dados não incluídos nos filtros aplicados")])
-                for element in no_data_section:
-                    story.append(element)
+                
+            # REMOVIDO: Não mostra seção se o cliente não tem permissão para Web
             
-            # 4. Retornos de Mídia Impressa
+            # 4. Retornos de Mídia Impressa - só mostra se o cliente tem permissão para Impresso
             if 'impresso' in tipos_midia_filtrados:
                 retornos_impresso = database_manager.get_retornos_impresso(usuario_id, data_inicio, data_fim, filtros)
                 if not retornos_impresso.empty:
@@ -1828,16 +1940,8 @@ class PDFGenerator:
                     impresso_retorno_section = self._create_retorno_section("Retornos de Mídia Impressa", impresso_retorno_tables)
                     for element in impresso_retorno_section:
                         story.append(element)
-                else:
-                    # Exibe seção indicando que não há dados para mostrar
-                    no_data_section = self._create_retorno_section("Retornos de Mídia Impressa", [self._create_no_data_table("Nenhum retorno encontrado no período com os filtros aplicados")])
-                    for element in no_data_section:
-                        story.append(element)
-            else:
-                # Exibe seção indicando que dados não foram filtrados
-                no_data_section = self._create_retorno_section("Retornos de Mídia Impressa", [self._create_no_data_table("Dados não incluídos nos filtros aplicados")])
-                for element in no_data_section:
-                    story.append(element)
+                
+            # REMOVIDO: Não mostra seção se o cliente não tem permissão para Impresso
         else:
             # Se não deve mostrar seções de retorno, adiciona uma seção explicativa
             if not mostrar_secoes_retorno:
@@ -1854,35 +1958,23 @@ class PDFGenerator:
                     spaceBefore=10
                 )
                 
-                info_title = Paragraph("Informação sobre Retornos", self.section_title_style)
-                story.append(info_title)
-                story.append(Spacer(1, 10))
+                if mostrar_retorno_relatorio:
+                    info_title = Paragraph("Informação sobre Retornos", self.section_title_style)
+                    story.append(info_title)
+                    story.append(Spacer(1, 10))
                 
-                # Mensagem diferente baseada na razão da ocultação
-                if not tem_permissao_retorno:
-                    info_text = Paragraph(
-                        "As seções de retorno não estão disponíveis para este cliente.<br/>"
-                        "Todas as notícias foram incluídas no relatório independentemente do valor de retorno.",
-                        info_style
-                    )
-                else:
-                    info_text = Paragraph(
-                        "As seções de retorno foram ocultadas conforme solicitado.<br/>"
-                        "Todas as notícias foram incluídas no relatório independentemente do valor de retorno.",
-                        info_style
-                    )
-                story.append(info_text)
-                story.append(Spacer(1, 20))
+                
+                    story.append(Spacer(1, 20))
 
         # SEÇÕES DE ANÁLISE POR CIDADE - Adicionadas após todas as seções de retorno
-        if database_manager:
+        if database_manager and mostrar_secoes_sentimento:
             # Quebra de página antes das seções de análise
             story.append(PageBreak())
             
-            # NOVO: Verificar filtros de mídia aplicados
+            # CORRIGIDO: Verificar filtros de mídia aplicados - agora só inclui tipos de mídia que o cliente tem permissão
             tipos_midia_filtrados = filtros.get('tipos_midia', ['web', 'tv', 'radio', 'impresso']) if filtros else ['web', 'tv', 'radio', 'impresso']
             
-            # 1. Análise de Mídia TV
+            # 1. Análise de Mídia TV - só mostra se o cliente tem permissão para TV
             if 'tv' in tipos_midia_filtrados:
                 sentimentos_tv_raw = database_manager.get_sentimentos_tv(usuario_id, data_inicio, data_fim, filtros)
                 if not sentimentos_tv_raw.empty:
@@ -1892,13 +1984,9 @@ class PDFGenerator:
                         tv_sentimento_section = self._create_retorno_section("Análise - TV", [tv_sentimento_table])
                         for element in tv_sentimento_section:
                             story.append(element)
-            else:
-                # Exibe seção indicando que dados não foram filtrados
-                no_data_section = self._create_retorno_section("Análise - TV", [self._create_no_data_table("Dados não incluídos nos filtros aplicados")])
-                for element in no_data_section:
-                    story.append(element)
+            # REMOVIDO: Não mostra seção se o cliente não tem permissão para TV
             
-            # 2. Análise de Mídia Rádio
+            # 2. Análise de Mídia Rádio - só mostra se o cliente tem permissão para Rádio
             if 'radio' in tipos_midia_filtrados:
                 sentimentos_radio_raw = database_manager.get_sentimentos_radio(usuario_id, data_inicio, data_fim, filtros)
                 if not sentimentos_radio_raw.empty:
@@ -1908,13 +1996,9 @@ class PDFGenerator:
                         radio_sentimento_section = self._create_retorno_section("Análise - Rádio", [radio_sentimento_table])
                         for element in radio_sentimento_section:
                             story.append(element)
-            else:
-                # Exibe seção indicando que dados não foram filtrados
-                no_data_section = self._create_retorno_section("Análise - Rádio", [self._create_no_data_table("Dados não incluídos nos filtros aplicados")])
-                for element in no_data_section:
-                    story.append(element)
+            # REMOVIDO: Não mostra seção se o cliente não tem permissão para Rádio
             
-            # 3. Análise de Mídia Impressa
+            # 3. Análise de Mídia Impressa - só mostra se o cliente tem permissão para Impresso
             if 'impresso' in tipos_midia_filtrados:
                 sentimentos_impresso_raw = database_manager.get_sentimentos_impresso(usuario_id, data_inicio, data_fim, filtros)
                 if not sentimentos_impresso_raw.empty:
@@ -1924,13 +2008,9 @@ class PDFGenerator:
                         impresso_sentimento_section = self._create_retorno_section("Análise - Impresso", [impresso_sentimento_table])
                         for element in impresso_sentimento_section:
                             story.append(element)
-            else:
-                # Exibe seção indicando que dados não foram filtrados
-                no_data_section = self._create_retorno_section("Análise - Impresso", [self._create_no_data_table("Dados não incluídos nos filtros aplicados")])
-                for element in no_data_section:
-                    story.append(element)
+            # REMOVIDO: Não mostra seção se o cliente não tem permissão para Impresso
             
-            # 4. Análise de Mídia Web
+            # 4. Análise de Mídia Web - só mostra se o cliente tem permissão para Web
             if 'web' in tipos_midia_filtrados:
                 sentimentos_web_raw = database_manager.get_sentimentos_web(usuario_id, data_inicio, data_fim, filtros)
                 if not sentimentos_web_raw.empty:
@@ -1940,14 +2020,10 @@ class PDFGenerator:
                         web_sentimento_section = self._create_retorno_section("Análise - Web", [web_sentimento_table])
                         for element in web_sentimento_section:
                             story.append(element)
-            else:
-                # Exibe seção indicando que dados não foram filtrados
-                no_data_section = self._create_retorno_section("Análise - Web", [self._create_no_data_table("Dados não incluídos nos filtros aplicados")])
-                for element in no_data_section:
-                    story.append(element)
+            # REMOVIDO: Não mostra seção se o cliente não tem permissão para Web
         
         # SEÇÕES DE STATUS DE MÍDIA - Adicionadas após todas as seções de análise
-        if database_manager:
+        if database_manager and mostrar_secoes_sentimento:
             # Quebra de página antes das seções de status
             story.append(PageBreak())
             
@@ -1970,8 +2046,8 @@ class PDFGenerator:
                     story.append(element)
                 story.append(Spacer(1, 20))
             
-            # 2. Status detalhado por mídia
-            # TV
+            # 2. Status detalhado por mídia - CORRIGIDO: agora só mostra tipos de mídia que o cliente tem permissão
+            # TV - só mostra se o cliente tem permissão para TV
             if 'tv' in tipos_midia_filtrados:
                 status_tv_data = database_manager.get_status_tv_detalhado(usuario_id, data_inicio, data_fim, filtros)
                 if not status_tv_data.empty:
@@ -1979,13 +2055,9 @@ class PDFGenerator:
                     tv_status_section = self._create_retorno_section("Status Detalhado - TV", tv_status_tables)
                     for element in tv_status_section:
                         story.append(element)
-            else:
-                # Exibe seção indicando que dados não foram filtrados
-                no_data_section = self._create_retorno_section("Status Detalhado - TV", [self._create_no_data_table("Dados não incluídos nos filtros aplicados")])
-                for element in no_data_section:
-                    story.append(element)
+            # REMOVIDO: Não mostra seção se o cliente não tem permissão para TV
             
-            # Rádio
+            # Rádio - só mostra se o cliente tem permissão para Rádio
             if 'radio' in tipos_midia_filtrados:
                 status_radio_data = database_manager.get_status_radio_detalhado(usuario_id, data_inicio, data_fim, filtros)
                 if not status_radio_data.empty:
@@ -1993,13 +2065,9 @@ class PDFGenerator:
                     radio_status_section = self._create_retorno_section("Status Detalhado - Rádio", radio_status_tables)
                     for element in radio_status_section:
                         story.append(element)
-            else:
-                # Exibe seção indicando que dados não foram filtrados
-                no_data_section = self._create_retorno_section("Status Detalhado - Rádio", [self._create_no_data_table("Dados não incluídos nos filtros aplicados")])
-                for element in no_data_section:
-                    story.append(element)
+            # REMOVIDO: Não mostra seção se o cliente não tem permissão para Rádio
             
-            # Web
+            # Web - só mostra se o cliente tem permissão para Web
             if 'web' in tipos_midia_filtrados:
                 status_web_data = database_manager.get_status_web_detalhado(usuario_id, data_inicio, data_fim, filtros)
                 if not status_web_data.empty:
@@ -2007,13 +2075,9 @@ class PDFGenerator:
                     web_status_section = self._create_retorno_section("Status Detalhado - Web", web_status_tables)
                     for element in web_status_section:
                         story.append(element)
-            else:
-                # Exibe seção indicando que dados não foram filtrados
-                no_data_section = self._create_retorno_section("Status Detalhado - Web", [self._create_no_data_table("Dados não incluídos nos filtros aplicados")])
-                for element in no_data_section:
-                    story.append(element)
+            # REMOVIDO: Não mostra seção se o cliente não tem permissão para Web
             
-            # Impresso
+            # Impresso - só mostra se o cliente tem permissão para Impresso
             if 'impresso' in tipos_midia_filtrados:
                 status_impresso_data = database_manager.get_status_impresso_detalhado(usuario_id, data_inicio, data_fim, filtros)
                 if not status_impresso_data.empty:
@@ -2021,24 +2085,8 @@ class PDFGenerator:
                     impresso_status_section = self._create_retorno_section("Status Detalhado - Impresso", impresso_status_tables)
                     for element in impresso_status_section:
                         story.append(element)
-            else:
-                # Exibe seção indicando que dados não foram filtrados
-                no_data_section = self._create_retorno_section("Status Detalhado - Impresso", [self._create_no_data_table("Dados não incluídos nos filtros aplicados")])
-                for element in no_data_section:
-                    story.append(element)
-
-        # Rodapé com data de geração (menor e discreta)
-        now = datetime.now()
-        footer_text = f"Gerado em {now.strftime('%d/%m/%Y às %H:%M')}"
-        footer_style = ParagraphStyle(
-            'Footer',
-            parent=self.normal_style,
-            fontSize=8,
-            textColor=colors.HexColor('#7f8c8d'),
-            alignment=TA_CENTER
-        )
-        footer = Paragraph(footer_text, footer_style)
-        story.append(footer)
+            # REMOVIDO: Não mostra seção se o cliente não tem permissão para Impresso
+        
         
         # Gera o PDF
         doc = SimpleDocTemplate(
@@ -2453,9 +2501,14 @@ class PDFGenerator:
             formatted_date = self._format_date(data_value)
             row_data.append(formatted_date)
             
-            # Status
+            # Status - Converte sentimentos numéricos para texto legível
             status_value = str(row.get('status', ''))
-            row_data.append(status_value)
+            # Se o status é um valor de sentimento numérico, converte para texto
+            if status_value in ['-1', '0', '1']:
+                status_formatted = self._convert_sentiment_to_text(status_value)
+            else:
+                status_formatted = status_value
+            row_data.append(status_formatted)
             
             table_data.append(row_data)
         

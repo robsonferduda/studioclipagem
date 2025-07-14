@@ -578,12 +578,12 @@ class FonteWebController extends Controller
     {
         $dados = array();
         $dt_final = Carbon::parse($this->data_atual);
-        $dt_final_formatada = $dt_final->format('Y-m-d');
+        $dt_final_formatada = $dt_final->format('Y-m-d') . ' 23:59:59';
         $dt_inicial = $dt_final->subDays(7);
 
         $total_semana =  JornalWeb::select(DB::raw('dt_clipagem::date as data'), DB::raw('COUNT(dt_clipagem) as total'))
                                 ->where("id_fonte", $id_fonte)
-                                ->whereBetween('dt_clipagem', [$dt_inicial->format('Y-m-d'), $dt_final_formatada])
+                                ->whereBetween('dt_clipagem', [$dt_inicial->format('Y-m-d') . ' 00:00:00', $dt_final_formatada])
                                 ->groupBy('data')
                                 ->get(); 
 
