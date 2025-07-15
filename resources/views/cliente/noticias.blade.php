@@ -198,31 +198,35 @@
                                     <p style="text-transform: uppercase; font-weight: 600;">{!! $tipo_formatado !!}</p>                            
                                     <h6 style="font-weight: 600;">{{ $noticia->titulo }}</h6>
                                     <h6 style="font-weight: 600;" class="text-muted">{{ $noticia->data_formatada }} - {{ $noticia->fonte }} {{ ($noticia->programa) ? " - ".$noticia->programa : '' }}</h6>
-                                    <p class="mb-1">
-                                        <strong>Retorno de Mídia: </strong>{{ ($noticia->valor_retorno) ? "R$ ".$noticia->valor_retorno : '--' }}
-                                    </p>
-                                    <p class="mb-2">
-                                        <span>{{ $noticia->cliente }}</span>
-                                        @if($cliente->fl_sentimento_cli)
-                                            @switch($noticia->sentimento)
-                                                @case(-1)
-                                                    <i class="fa fa-frown-o text-danger"></i>
-                                                    <a href="{{ url('noticia/'.$noticia->id.'/tipo/'.$tipo.'/cliente/'.$noticia->id_cliente.'/sentimento/0/atualizar') }}"><i class="fa fa-ban op-2"></i></a>
-                                                    <a href="{{ url('noticia/'.$noticia->id.'/tipo/'.$tipo.'/cliente/'.$noticia->id_cliente.'/sentimento/1/atualizar') }}"><i class="fa fa-smile-o op-2"></i></a>
-                                                @break
-                                                @case(0)
-                                                    <a href="{{ url('noticia/'.$noticia->id.'/tipo/'.$tipo.'/cliente/'.$noticia->id_cliente.'/sentimento/-1/atualizar') }}"><i class="fa fa-frown-o op-2"></i></a> 
-                                                    <i class="fa fa-ban text-primary"></i>
-                                                    <a href="{{ url('noticia/'.$noticia->id.'/tipo/'.$tipo.'/cliente/'.$noticia->id_cliente.'/sentimento/1/atualizar') }}"><i class="fa fa-smile-o op-2"></i></a>                                            
-                                                @break
-                                                @case(1)
-                                                    <a href="{{ url('noticia/'.$noticia->id.'/tipo/'.$tipo.'/cliente/'.$noticia->id_cliente.'/sentimento/-1/atualizar') }}"><i class="fa fa-frown-o op-2"></i></a>
-                                                    <a href="{{ url('noticia/'.$noticia->id.'/tipo/'.$tipo.'/cliente/'.$noticia->id_cliente.'/sentimento/0/atualizar') }}"><i class="fa fa-ban op-2"></i></a>
-                                                    <i class="fa fa-smile-o text-success"></i>
-                                                @break                                            
-                                            @endswitch
-                                        @endif
-                                    </p>
+                                    @if($cliente->fl_retorno_midia)
+                                        <p class="mb-1">
+                                            <strong>Retorno de Mídia: </strong>{{ ($noticia->valor_retorno) ? "R$ ".$noticia->valor_retorno : '--' }}
+                                        </p>
+                                    @endif
+                                    @if($cliente->fl_sentimento)
+                                        <p class="mb-2">
+                                            <span>{{ $noticia->cliente }}</span>
+                                            @if($cliente->fl_sentimento_cli)
+                                                @switch($noticia->sentimento)
+                                                    @case(-1)
+                                                        <i class="fa fa-frown-o text-danger"></i>
+                                                        <a href="{{ url('noticia/'.$noticia->id.'/tipo/'.$tipo.'/cliente/'.$noticia->id_cliente.'/sentimento/0/atualizar') }}"><i class="fa fa-ban op-2"></i></a>
+                                                        <a href="{{ url('noticia/'.$noticia->id.'/tipo/'.$tipo.'/cliente/'.$noticia->id_cliente.'/sentimento/1/atualizar') }}"><i class="fa fa-smile-o op-2"></i></a>
+                                                    @break
+                                                    @case(0)
+                                                        <a href="{{ url('noticia/'.$noticia->id.'/tipo/'.$tipo.'/cliente/'.$noticia->id_cliente.'/sentimento/-1/atualizar') }}"><i class="fa fa-frown-o op-2"></i></a> 
+                                                        <i class="fa fa-ban text-primary"></i>
+                                                        <a href="{{ url('noticia/'.$noticia->id.'/tipo/'.$tipo.'/cliente/'.$noticia->id_cliente.'/sentimento/1/atualizar') }}"><i class="fa fa-smile-o op-2"></i></a>                                            
+                                                    @break
+                                                    @case(1)
+                                                        <a href="{{ url('noticia/'.$noticia->id.'/tipo/'.$tipo.'/cliente/'.$noticia->id_cliente.'/sentimento/-1/atualizar') }}"><i class="fa fa-frown-o op-2"></i></a>
+                                                        <a href="{{ url('noticia/'.$noticia->id.'/tipo/'.$tipo.'/cliente/'.$noticia->id_cliente.'/sentimento/0/atualizar') }}"><i class="fa fa-ban op-2"></i></a>
+                                                        <i class="fa fa-smile-o text-success"></i>
+                                                    @break                                            
+                                                @endswitch
+                                            @endif
+                                        </p>
+                                    @endif
                                     <p>
                                         {!! $noticia->sinopse !!}
                                     </p>
