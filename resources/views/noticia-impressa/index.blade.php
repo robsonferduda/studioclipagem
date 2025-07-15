@@ -153,8 +153,8 @@
                                                     </p>  
                                                     <p class="mb-1">
                                                         <strong>Retorno de Mídia: </strong>
-                                                        @if(is_numeric($noticia->valor))
-                                                            {{ number_format((float) $noticia->valor, 2, ',', '.') }}
+                                                        @if(is_numeric($noticia->valor_retorno))
+                                                            {{ number_format((float) $noticia->valor_retorno, 2, ',', '.') }}
                                                         @else
                                                             Não informado
                                                         @endif
