@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <meta name="base-url" content="http://localhost:8080">
+  <meta name="base-url" content="{{ env('BASE_URL') }}">
   <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
   <link href="images/favicon.png" rel="shortcut icon">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -73,11 +73,13 @@
                            <span class="sidebar-normal">Gerar</span>
                            </a>
                         </li>
+                        <!--
                         <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'cliente-relatorios') ? 'active' : '' }}">
                           <a href="{{ url('cliente/relatorios/listar') }}">
                           <span class="sidebar-normal">Meus Relatórios</span>
                           </a>
                        </li>
+                        -->
                      </ul>
                   </div>
                </li>
