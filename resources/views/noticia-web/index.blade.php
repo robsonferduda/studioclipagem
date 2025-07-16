@@ -28,7 +28,7 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Tipo de Data</label>
-                                        <select class="form-control select2" name="tipo_data" id="tipo_data">
+                                        <select class="form-control" name="tipo_data" id="tipo_data">
                                             <option value="data_insert" {{ ($tipo_data == "data_insert") ? 'selected' : '' }}>Data de Cadastro</option>
                                             <option value="data_noticia" {{ ($tipo_data == "data_noticia") ? 'selected' : '' }}>Data do Clipping</option>
                                         </select>
@@ -53,7 +53,7 @@
                                         <div class="input-group">
                                             <input type="text" class="form-control" style="height: 40px;" id="nome_fonte" placeholder="Selecione uma fonte" value="" readonly>
                                             <div class="input-group-append">
-                                                <button type="button" style="margin: 0px;" class="btn btn-primary" data-toggle="modal" data-target="#modalFonte">Buscar Fonte</button>
+                                                <button type="button" style="margin: 0px;" class="btn btn-primary" data-toggle="modal" data-target="#modalFonte">Selecionar Fonte</button>
                                             </div>
                                         </div>
                                     </div>
@@ -61,7 +61,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Cliente</label>
-                                        <select class="form-control select2" name="cliente" id="cliente">
+                                        <select class="form-control cliente" name="cliente" id="cliente">
                                             <option value="">Selecione um cliente</option>
                                             @foreach ($clientes as $cliente)
                                                 <option value="{{ $cliente->id }}" {{ ($cliente_selecionado == $cliente->id) ? 'selected' : '' }}>{{ $cliente->nome }}</option>
@@ -83,9 +83,9 @@
                                         <label>Sentimento</label>
                                         <select class="form-control" name="sentimento" id="sentimento">
                                             <option value="">Selecione um sentimento</option>
-                                            <option value="1" {{ ($sentimento == '1') ? 'selected' : '' }}>Positivo</option>
-                                            <option value="0" {{ ($sentimento == '0') ? 'selected' : '' }}>Neutro</option>
-                                            <option value="-1" {{ ($sentimento == '-1') ? 'selected' : '' }}>Negativo</option>
+                                            <option value="positivo" {{ ($sentimento == 'positivo') ? 'selected' : '' }}>Positivo</option>
+                                            <option value="neutro" {{ ($sentimento == 'neutro') ? 'selected' : '' }}>Neutro</option>
+                                            <option value="negativo" {{ ($sentimento == 'negativo') ? 'selected' : '' }}>Negativo</option>
                                         </select>
                                     </div>
                                 </div>
@@ -93,7 +93,7 @@
                             <div class="row">
                                 <div class="col-md-6 col-sm-6">
                                     <div class="form-group">
-                                        <label>Buscar por <span class="text-primary">Digite o termo ou expressão de busca</span></label>
+                                        <label>Termo <span class="text-primary">Busca considera título e conteúdo da notícia</span></label>
                                         <input type="text" class="form-control" name="termo" id="termo" minlength="3" placeholder="Termo" value="{{ $termo }}">
                                     </div>
                                 </div>
@@ -296,6 +296,13 @@
             var host =  $('meta[name="base-url"]').attr('content');
             var token = $('meta[name="csrf-token"]').attr('content');
 
+            $(document).on('change', '.cliente', function() {
+                var cliente = $(this).val();
+                buscarAreas(cliente);
+            });
+
+            $(".cliente").trigger('change');
+
             $(".btn-visualizar-noticia").click(function(){
 
                 var id = $(this).data("id");
@@ -310,6 +317,52 @@
                 $("#showNoticia").modal("show");
 
             });
+
+            function buscarAreas(cliente){
+
+                if(cliente == '') {
+                    $('.area').attr('disabled', true);
+                    $('.area').append('<option value="">Nenhuma área cadastrada</option>').val('');
+                    return;
+                }
+
+                $.ajax({
+                    url: host+'/api/cliente/getAreasCliente',
+                    type: 'GET',
+                    data: {
+                        "_token": $('meta[name="csrf-token"]').attr('content'),
+                        "cliente": cliente,
+                    },
+                    beforeSend: function() {
+                        $('.area').append('<option value="">Carregando...</option>').val('');
+                    },
+                    success: function(data) {
+
+                        $('.area').find('option').remove();
+                        $('.area').attr('disabled', false);
+
+                        if(data.length == 0) {                            
+                            $('.area').append('<option value="">Nenhuma área cadastrada</option>').val('');
+                            return;
+                        }
+                                
+                        $('.area').append('<option value="">Selecione uma área</option>').val('');
+                        data.forEach(element => {
+                            let option = new Option(element.descricao, element.id);
+                            $('.area').append(option);
+                        });  
+
+                        var area_selecionada = $("#area_selecionada").val();
+
+                        if(area_selecionada > 0){
+                            $('#cd_area').val(area_selecionada).change();
+                        }           
+                    },
+                    complete: function(){
+                                
+                    }
+                });
+            }
 
              function buscarFontes(pagina = 1) {
             var nome = $('#filtro_nome').val();
@@ -400,6 +453,12 @@
                 $('#modalFonte').modal('hide');
             });
 
+        });
+
+        $(document).ready(function() {
+
+            
+            
         });
     </script>
 @endsection

@@ -64,6 +64,41 @@ class NoticiaWebController extends Controller
                               ->whereNull('noticia_cliente.deleted_at');
                         });
                     })
+                    ->when($area_selecionada, function ($query) use ($area_selecionada) { 
+                        return $query->whereHas('clientes', function($q) use ($area_selecionada) {
+                            $q->where('noticia_cliente.area', $area_selecionada)
+                              ->where('noticia_cliente.tipo_id', 2)
+                              ->whereNull('noticia_cliente.deleted_at');
+                        });
+                    })
+                    ->when($sentimento, function ($query) use ($sentimento) { 
+                        return $query->whereHas('clientes', function($q) use ($sentimento) {
+
+                            $valor_sentimento = null;
+
+                            switch ($sentimento) {
+                                case 'negativo':
+                                    $valor_sentimento = '-1';
+                                    break;
+
+                                case 'neutro':
+                                    $valor_sentimento = '0';
+                                    break;
+
+                                case 'positivo':
+                                    $valor_sentimento = '1';
+                                    break;
+                                
+                                default:
+                                    $valor_sentimento = null;
+                                    break;
+                            }
+
+                            $q->where('noticia_cliente.sentimento', $valor_sentimento)
+                              ->where('noticia_cliente.tipo_id', 2)
+                              ->whereNull('noticia_cliente.deleted_at');
+                        });
+                    })
                     ->when($termo, function ($query) use ($termo) {
                         return $query->whereHas('conteudo', function($q) use ($termo) {
                             $q->where('conteudo', 'ILIKE', '%'.trim($termo).'%')
