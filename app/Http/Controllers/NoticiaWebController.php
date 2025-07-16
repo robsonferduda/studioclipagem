@@ -56,6 +56,12 @@ class NoticiaWebController extends Controller
         $termo = ($request->termo) ? $request->termo : null;
         $usuario = ($request->usuario) ? $request->usuario : null;
 
+        if($fonte_selecionada){
+            $fonte_web = FonteWeb::find($fonte_selecionada);
+        }else{
+            $fonte_web = null;
+        }
+
         $dados = NoticiaWeb::with('fonte')
                     ->when($cliente_selecionado, function ($query) use ($cliente_selecionado) { 
                         return $query->whereHas('clientes', function($q) use ($cliente_selecionado) {
@@ -121,7 +127,7 @@ class NoticiaWebController extends Controller
                     ->orderBy('created_at', 'DESC')
                     ->paginate(50);
 
-        return view('noticia-web/index', compact('dados','fontes','clientes','tipo_data','dt_inicial','dt_final','cliente_selecionado','sentimento','fonte_selecionada','termo','usuarios','usuario','estados','area_selecionada'));
+        return view('noticia-web/index', compact('dados','fonte_web','fontes','clientes','tipo_data','dt_inicial','dt_final','cliente_selecionado','sentimento','fonte_selecionada','termo','usuarios','usuario','estados','area_selecionada'));
     }
 
     public function coletas(Request $request)

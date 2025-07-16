@@ -49,9 +49,9 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Fonte <span class="text-danger"></label>
-                                        <input type="hidden" name="fonte" id="id_fonte" value="">
+                                        <input type="hidden" name="fonte" id="id_fonte" value="{{ ($fonte_web) ? $fonte_web->id : '' }}">
                                         <div class="input-group">
-                                            <input type="text" class="form-control" style="height: 40px;" id="nome_fonte" placeholder="Selecione uma fonte" value="" readonly>
+                                            <input type="text" class="form-control" style="height: 40px;" id="nome_fonte" placeholder="Selecione uma fonte" value="{{ ($fonte_web) ? $fonte_web->nome : '' }}" readonly>
                                             <div class="input-group-append">
                                                 <button type="button" style="margin: 0px;" class="btn btn-primary" data-toggle="modal" data-target="#modalFonte">Selecionar Fonte</button>
                                             </div>
@@ -61,6 +61,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Cliente</label>
+                                        <input type="hidden" name="cliente_selecionado" id="cliente_selecionado" value="{{ ($cliente_selecionado) ? $cliente_selecionado : 0 }}">
                                         <select class="form-control cliente" name="cliente" id="cliente">
                                             <option value="">Selecione um cliente</option>
                                             @foreach ($clientes as $cliente)
@@ -364,73 +365,73 @@
                 });
             }
 
-             function buscarFontes(pagina = 1) {
-            var nome = $('#filtro_nome').val();
-            var estado = $('#filtro_estado').val();
-            var cidade = $('#filtro_cidade').val();
+            function buscarFontes(pagina = 1) {
+                var nome = $('#filtro_nome').val();
+                var estado = $('#filtro_estado').val();
+                var cidade = $('#filtro_cidade').val();
 
-            // Limpa o resultado antes de buscar
-            $('#resultadoFontes').html('');
+                // Limpa o resultado antes de buscar
+                $('#resultadoFontes').html('');
 
-            $.ajax({
-                url: '{{ url("fonte-web/buscar/combo") }}',
-                type: 'GET',
-                data: {
-                    nome: nome,
-                    estado: estado,
-                    cidade: cidade,
-                    page: pagina
-                },
-                success: function(res) {
-                    var html = '<table class="table table-bordered"><tr><th>Nome</th><th>Estado</th><th>Cidade</th><th>Ação</th></tr>';
-                    if(res.data.length == 0) {
-                        html += '<tr><td colspan="4">Nenhuma fonte encontrada.</td></tr>';
-                    } else {
-                        $.each(res.data, function(i, fonte) {
-                            html += '<tr>';
-                            html += '<td>' + fonte.nome + '</td>';
-                            html += '<td>' + (fonte.estado || '') + '</td>';
-                            html += '<td>' + (fonte.cidade || '') + '</td>';
-                            html += '<td><button type="button" class="btn btn-success btn-sm selecionar-fonte" data-id="'+fonte.id+'" data-nome="'+fonte.nome+'">Selecionar</button></td>';
-                            html += '</tr>';
-                        });
+                $.ajax({
+                    url: '{{ url("fonte-web/buscar/combo") }}',
+                    type: 'GET',
+                    data: {
+                        nome: nome,
+                        estado: estado,
+                        cidade: cidade,
+                        page: pagina
+                    },
+                    success: function(res) {
+                        var html = '<table class="table table-bordered"><tr><th>Nome</th><th>Estado</th><th>Cidade</th><th>Ação</th></tr>';
+                        if(res.data.length == 0) {
+                            html += '<tr><td colspan="4">Nenhuma fonte encontrada.</td></tr>';
+                        } else {
+                            $.each(res.data, function(i, fonte) {
+                                html += '<tr>';
+                                html += '<td>' + fonte.nome + '</td>';
+                                html += '<td>' + (fonte.estado || '') + '</td>';
+                                html += '<td>' + (fonte.cidade || '') + '</td>';
+                                html += '<td><button type="button" class="btn btn-success btn-sm selecionar-fonte" data-id="'+fonte.id+'" data-nome="'+fonte.nome+'">Selecionar</button></td>';
+                                html += '</tr>';
+                            });
+                        }
+                        html += '</table>';
+
+                         // Paginação customizada
+                        var current = res.current_page;
+                        var last = res.last_page;
+                        var start = Math.max(1, current - 5);
+                        var end = Math.min(last, start + 9);
+                        start = Math.max(1, end - 9); // Garante que sempre mostre até 10 páginas
+
+                        html += '<nav><ul class="pagination justify-content-center">';
+
+                        // Botão anterior
+                        if(current > 1) {
+                            html += '<li class="page-item"><a class="page-link paginacao-fonte" href="#" data-pagina="'+(current-1)+'">&laquo; Anterior</a></li>';
+                        } else {
+                            html += '<li class="page-item disabled"><span class="page-link">&laquo; Anterior</span></li>';
+                        }
+
+                        // Números das páginas
+                        for(var i = start; i <= end; i++) {
+                            html += '<li class="page-item '+(i==current?'active':'')+'"><a class="page-link paginacao-fonte" href="#" data-pagina="'+i+'">'+i+'</a></li>';
+                        }
+
+                        // Botão próxima
+                        if(current < last) {
+                            html += '<li class="page-item"><a class="page-link paginacao-fonte" href="#" data-pagina="'+(current+1)+'">Próxima &raquo;</a></li>';
+                        } else {
+                            html += '<li class="page-item disabled"><span class="page-link">Próxima &raquo;</span></li>';
+                        }
+
+                        html += '</ul></nav>';
+
+                        $('#resultadoFontes').html(html);
                     }
-                    html += '</table>';
-
-                     // Paginação customizada
-                    var current = res.current_page;
-                    var last = res.last_page;
-                    var start = Math.max(1, current - 5);
-                    var end = Math.min(last, start + 9);
-                    start = Math.max(1, end - 9); // Garante que sempre mostre até 10 páginas
-
-                    html += '<nav><ul class="pagination justify-content-center">';
-
-                    // Botão anterior
-                    if(current > 1) {
-                        html += '<li class="page-item"><a class="page-link paginacao-fonte" href="#" data-pagina="'+(current-1)+'">&laquo; Anterior</a></li>';
-                    } else {
-                        html += '<li class="page-item disabled"><span class="page-link">&laquo; Anterior</span></li>';
-                    }
-
-                    // Números das páginas
-                    for(var i = start; i <= end; i++) {
-                        html += '<li class="page-item '+(i==current?'active':'')+'"><a class="page-link paginacao-fonte" href="#" data-pagina="'+i+'">'+i+'</a></li>';
-                    }
-
-                    // Botão próxima
-                    if(current < last) {
-                        html += '<li class="page-item"><a class="page-link paginacao-fonte" href="#" data-pagina="'+(current+1)+'">Próxima &raquo;</a></li>';
-                    } else {
-                        html += '<li class="page-item disabled"><span class="page-link">Próxima &raquo;</span></li>';
-                    }
-
-                    html += '</ul></nav>';
-
-                    $('#resultadoFontes').html(html);
-                }
-            });
-        }
+                });
+            }
 
             // Evento de clique no botão de buscar fontes
             $('#btnBuscarFonte').click(function() {
