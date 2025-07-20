@@ -308,6 +308,13 @@ class PDFGeneratorImpresso:
             
             print(f"✅ Estrutura do PDF inicializada")
             
+            # Adiciona cabeçalho do relatório
+            elements.append(Paragraph("Relatório de Clipagem Impressa", self.title_style))
+            elements.append(Paragraph(f"Cliente: {cliente_nome}", self.subtitle_style))
+            elements.append(Paragraph(f"Período: {self._format_date(data_inicio)} a {self._format_date(data_fim)}", self.subtitle_style))
+            elements.append(Paragraph(f"Total de notícias: {len(noticias_data)}", self.subtitle_style))
+            elements.append(Spacer(1, 30))
+            
             # Processa cada notícia
             for i, noticia in enumerate(noticias_data, 1):
                 try:

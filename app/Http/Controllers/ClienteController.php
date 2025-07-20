@@ -112,10 +112,20 @@ class ClienteController extends Controller
         
         // Flag para controlar visibilidade do retorno de mídia (se true, MOSTRA valores)
         $fl_retorno_midia = $cliente && $cliente->fl_retorno_midia ? true : false;
+        
+        // Flag para controlar visibilidade dos botões de relatório com imagens (se true, MOSTRA botões)
+        $fl_print = $cliente && $cliente->fl_print ? true : false;
+        
+        // Debug simples
+        if ($cliente) {
+            Log::info('DEBUG FL_PRINT - Cliente: ' . $cliente->nome . ' (ID: ' . $cliente->id . ')');
+            Log::info('DEBUG FL_PRINT - fl_print do banco: ' . (property_exists($cliente, 'fl_print') ? ($cliente->fl_print ? 'TRUE' : 'FALSE') : 'PROPRIEDADE NÃO EXISTE'));
+            Log::info('DEBUG FL_PRINT - fl_print final: ' . ($fl_print ? 'TRUE' : 'FALSE'));
+        }
 
         $relatorios = array();
 
-        return view('cliente/relatorios/gerar', compact('relatorios','tipo_data','dt_inicial','dt_final','fl_web','fl_tv','fl_radio','fl_impresso','fl_areas','fl_sentimento','fl_retorno_midia','cliente'));
+        return view('cliente/relatorios/gerar', compact('relatorios','tipo_data','dt_inicial','dt_final','fl_web','fl_tv','fl_radio','fl_impresso','fl_areas','fl_sentimento','fl_retorno_midia','fl_print','cliente'));
     }
 
     public function create(): View
@@ -1050,7 +1060,9 @@ class ClienteController extends Controller
             }
             
             // Verifica se o arquivo pertence ao cliente (por segurança)
-            if (!str_contains($arquivo, "relatorio_{$clienteId}_")) {
+            if (!str_contains($arquivo, "relatorio_{$clienteId}_") && 
+                !str_contains($arquivo, "relatorio_web_{$clienteId}_") &&
+                !str_contains($arquivo, "relatorio_impresso_{$clienteId}_")) {
                 abort(403, 'Acesso negado ao arquivo');
             }
             
@@ -1068,6 +1080,473 @@ class ClienteController extends Controller
         } catch (\Exception $e) {
             Log::error('Erro ao fazer download do relatório: ' . $e->getMessage());
             abort(500, 'Erro interno do servidor');
+        }
+    }
+
+    /**
+     * Gera relatório PDF específico para notícias Web com imagens usando pdf_generator_web.py
+     */
+    public function gerarRelatorioPDFWeb(Request $request): JsonResponse
+    {
+        try {
+            // Usa o cliente logado da sessão
+            $clienteId = $this->client_id;
+            $dataInicio = $request->input('data_inicio');
+            $dataFim = $request->input('data_fim');
+            
+            // IDs das notícias web específicas
+            $idsWeb = $request->input('ids_web', []);
+            
+            // Validações
+            if (!$clienteId || !$dataInicio || !$dataFim) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cliente não identificado ou campos obrigatórios não preenchidos'
+                ], 400);
+            }
+            
+            if (empty($idsWeb)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Nenhuma notícia web selecionada'
+                ], 400);
+            }
+            
+            // Verifica se cliente existe
+            $cliente = Cliente::find($clienteId);
+            if (!$cliente) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cliente não encontrado'
+                ], 404);
+            }
+            
+            // Verifica se cliente tem permissão para web
+            if (!$cliente->fl_web) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cliente não tem permissão para notícias web'
+                ], 403);
+            }
+            
+            // Verifica se cliente tem permissão para gerar relatórios com imagens
+            if (!$cliente->fl_print) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cliente não tem permissão para gerar relatórios com imagens'
+                ], 403);
+            }
+            
+            // Gera nome do arquivo
+            $timestamp = date('YmdHis');
+            $nomeArquivo = "relatorio_web_{$clienteId}_{$timestamp}.pdf";
+            
+            // Monta dados das notícias web para o Python
+            $noticiasWebData = $this->buscarNoticiasWebParaPDF($idsWeb, $clienteId);
+            
+            if (empty($noticiasWebData)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Nenhuma notícia web encontrada com os IDs fornecidos'
+                ], 404);
+            }
+            
+            // Caminho para o arquivo de saída
+            $outputDir = storage_path('app/public/relatorios');
+            if (!is_dir($outputDir)) {
+                mkdir($outputDir, 0755, true);
+            }
+            $outputPath = $outputDir . '/' . $nomeArquivo;
+            
+            // Chama o script Python específico para web
+            $pythonDir = base_path('python/relatorios');
+            $scriptPath = $pythonDir . '/pdf_generator_web.py';
+            
+            // Dados para passar ao script Python
+            $dadosRelatorio = [
+                'noticias' => $noticiasWebData,
+                'cliente_nome' => $cliente->nome,
+                'data_inicio' => $dataInicio,
+                'data_fim' => $dataFim,
+                'output_path' => $outputPath
+            ];
+            
+            // Salva dados temporários em JSON
+            $tempDataFile = tempnam(sys_get_temp_dir(), 'relatorio_web_data_');
+            file_put_contents($tempDataFile, json_encode($dadosRelatorio, JSON_UNESCAPED_UNICODE));
+            
+            // Comando para executar o script Python
+            $escapedScriptPath = escapeshellarg($scriptPath);
+            $escapedDataFile = escapeshellarg($tempDataFile);
+            $comando = "cd " . escapeshellarg($pythonDir) . " && (python3 -c \"
+import sys, json
+sys.path.append('.')
+from pdf_generator_web import PDFGeneratorWeb
+
+# Carrega dados
+with open('$tempDataFile', 'r', encoding='utf-8') as f:
+    dados = json.load(f)
+
+# Gera relatório
+generator = PDFGeneratorWeb()
+success = generator.generate_web_report(
+    dados['noticias'],
+    dados['cliente_nome'],
+    dados['data_inicio'],
+    dados['data_fim'],
+    dados['output_path']
+)
+
+print('SUCCESS' if success else 'ERROR')
+\" 2>&1 || python -c \"
+import sys, json
+sys.path.append('.')
+from pdf_generator_web import PDFGeneratorWeb
+
+# Carrega dados
+with open('$tempDataFile', 'r', encoding='utf-8') as f:
+    dados = json.load(f)
+
+# Gera relatório
+generator = PDFGeneratorWeb()
+success = generator.generate_web_report(
+    dados['noticias'],
+    dados['cliente_nome'],
+    dados['data_inicio'],
+    dados['data_fim'],
+    dados['output_path']
+)
+
+print('SUCCESS' if success else 'ERROR')
+\" 2>&1)";
+            
+            Log::info('Executando comando Python para relatório web: ' . $comando);
+            
+            $resultado = shell_exec($comando);
+            
+            // Remove arquivo temporário
+            unlink($tempDataFile);
+            
+            Log::info('Resultado do comando Python: ' . ($resultado ?? 'null'));
+            
+            // Verifica se o arquivo foi gerado
+            if (file_exists($outputPath) && strpos($resultado, 'SUCCESS') !== false) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Relatório web gerado com sucesso',
+                    'arquivo' => $nomeArquivo,
+                    'download_url' => url('cliente/relatorios/download/' . $nomeArquivo)
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Erro ao gerar relatório web PDF',
+                    'debug' => config('app.debug') ? [
+                        'command_result' => $resultado ?? 'null',
+                        'output_path' => $outputPath,
+                        'file_exists' => file_exists($outputPath)
+                    ] : null
+                ], 500);
+            }
+            
+        } catch (\Exception $e) {
+            Log::error('Erro ao gerar relatório web: ' . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro interno: ' . $e->getMessage(),
+                'debug' => config('app.debug') ? [
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ] : null
+            ], 500);
+        }
+    }
+
+    /**
+     * Gera relatório PDF específico para notícias Impressas com imagens usando pdf_generator_impresso.py
+     */
+    public function gerarRelatorioPDFImpresso(Request $request): JsonResponse
+    {
+        try {
+            // Usa o cliente logado da sessão
+            $clienteId = $this->client_id;
+            $dataInicio = $request->input('data_inicio');
+            $dataFim = $request->input('data_fim');
+            
+            // IDs das notícias impressas específicas
+            $idsImpresso = $request->input('ids_impresso', []);
+            
+            // Validações
+            if (!$clienteId || !$dataInicio || !$dataFim) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cliente não identificado ou campos obrigatórios não preenchidos'
+                ], 400);
+            }
+            
+            if (empty($idsImpresso)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Nenhuma notícia impressa selecionada'
+                ], 400);
+            }
+            
+            // Verifica se cliente existe
+            $cliente = Cliente::find($clienteId);
+            if (!$cliente) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cliente não encontrado'
+                ], 404);
+            }
+            
+            // Verifica se cliente tem permissão para impressos
+            if (!$cliente->fl_impresso) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cliente não tem permissão para notícias impressas'
+                ], 403);
+            }
+            
+            // Verifica se cliente tem permissão para gerar relatórios com imagens
+            if (!$cliente->fl_print) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cliente não tem permissão para gerar relatórios com imagens'
+                ], 403);
+            }
+            
+            // Gera nome do arquivo
+            $timestamp = date('YmdHis');
+            $nomeArquivo = "relatorio_impresso_{$clienteId}_{$timestamp}.pdf";
+            
+            // Monta dados das notícias impressas para o Python
+            $noticiasImpressoData = $this->buscarNoticiasImpressoParaPDF($idsImpresso, $clienteId);
+            
+            if (empty($noticiasImpressoData)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Nenhuma notícia impressa encontrada com os IDs fornecidos'
+                ], 404);
+            }
+            
+            // Caminho para o arquivo de saída
+            $outputDir = storage_path('app/public/relatorios');
+            if (!is_dir($outputDir)) {
+                mkdir($outputDir, 0755, true);
+            }
+            $outputPath = $outputDir . '/' . $nomeArquivo;
+            
+            // Chama o script Python específico para impressos
+            $pythonDir = base_path('python/relatorios');
+            $scriptPath = $pythonDir . '/pdf_generator_impresso.py';
+            
+            // Dados para passar ao script Python
+            $dadosRelatorio = [
+                'noticias' => $noticiasImpressoData,
+                'cliente_nome' => $cliente->nome,
+                'data_inicio' => $dataInicio,
+                'data_fim' => $dataFim,
+                'output_path' => $outputPath
+            ];
+            
+            // Salva dados temporários em JSON
+            $tempDataFile = tempnam(sys_get_temp_dir(), 'relatorio_impresso_data_');
+            file_put_contents($tempDataFile, json_encode($dadosRelatorio, JSON_UNESCAPED_UNICODE));
+            
+            // Comando para executar o script Python
+            $escapedScriptPath = escapeshellarg($scriptPath);
+            $escapedDataFile = escapeshellarg($tempDataFile);
+            $comando = "cd " . escapeshellarg($pythonDir) . " && (python3 -c \"
+import sys, json
+sys.path.append('.')
+from pdf_generator_impresso import PDFGeneratorImpresso
+
+# Carrega dados
+with open('$tempDataFile', 'r', encoding='utf-8') as f:
+    dados = json.load(f)
+
+# Gera relatório
+generator = PDFGeneratorImpresso()
+success = generator.generate_impresso_report(
+    dados['noticias'],
+    dados['cliente_nome'],
+    dados['data_inicio'],
+    dados['data_fim'],
+    dados['output_path']
+)
+
+print('SUCCESS' if success else 'ERROR')
+\" 2>&1 || python -c \"
+import sys, json
+sys.path.append('.')
+from pdf_generator_impresso import PDFGeneratorImpresso
+
+# Carrega dados
+with open('$tempDataFile', 'r', encoding='utf-8') as f:
+    dados = json.load(f)
+
+# Gera relatório
+generator = PDFGeneratorImpresso()
+success = generator.generate_impresso_report(
+    dados['noticias'],
+    dados['cliente_nome'],
+    dados['data_inicio'],
+    dados['data_fim'],
+    dados['output_path']
+)
+
+print('SUCCESS' if success else 'ERROR')
+\" 2>&1)";
+            
+            Log::info('Executando comando Python para relatório impresso: ' . $comando);
+            
+            $resultado = shell_exec($comando);
+            
+            // Remove arquivo temporário
+            unlink($tempDataFile);
+            
+            Log::info('Resultado do comando Python: ' . ($resultado ?? 'null'));
+            
+            // Verifica se o arquivo foi gerado
+            if (file_exists($outputPath) && strpos($resultado, 'SUCCESS') !== false) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Relatório impresso gerado com sucesso',
+                    'arquivo' => $nomeArquivo,
+                    'download_url' => url('cliente/relatorios/download/' . $nomeArquivo)
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Erro ao gerar relatório impresso PDF',
+                    'debug' => config('app.debug') ? [
+                        'command_result' => $resultado ?? 'null',
+                        'output_path' => $outputPath,
+                        'file_exists' => file_exists($outputPath)
+                    ] : null
+                ], 500);
+            }
+            
+        } catch (\Exception $e) {
+            Log::error('Erro ao gerar relatório impresso: ' . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro interno: ' . $e->getMessage(),
+                'debug' => config('app.debug') ? [
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ] : null
+            ], 500);
+        }
+    }
+
+    /**
+     * Busca dados das notícias impressas formatados para o PDF
+     */
+    private function buscarNoticiasImpressoParaPDF($idsImpresso, $clienteId)
+    {
+        try {
+            $sql = "
+                SELECT 
+                    t1.id,
+                    t1.titulo,
+                    t2.nome as veiculo,
+                    t1.dt_clipagem as data,
+                    TO_CHAR(t1.dt_clipagem, 'DD/MM/YYYY') as data_publicacao,
+                    t1.sinopse as texto,
+                    t1.ds_caminho_img,
+                    t1.valor_retorno as valor,
+                    t3.sentimento
+                FROM noticia_impresso t1
+                JOIN jornal_online t2 ON t2.id = t1.id_fonte
+                JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND t3.tipo_id = 1
+                WHERE t3.cliente_id = ?
+                AND t1.id IN (" . implode(',', array_fill(0, count($idsImpresso), '?')) . ")
+                ORDER BY t1.dt_clipagem DESC
+            ";
+            
+            $params = array_merge([$clienteId], $idsImpresso);
+            $noticias = DB::select($sql, $params);
+            
+            // Converte para array associativo
+            $noticiasArray = [];
+            foreach ($noticias as $noticia) {
+                $noticiasArray[] = [
+                    'id' => $noticia->id,
+                    'titulo' => $noticia->titulo,
+                    'veiculo' => $noticia->veiculo,
+                    'data' => $noticia->data,
+                    'data_publicacao' => $noticia->data_publicacao,
+                    'texto' => $noticia->texto,
+                    'ds_caminho_img' => $noticia->ds_caminho_img,
+                    'valor' => $noticia->valor,
+                    'sentimento' => $noticia->sentimento
+                ];
+            }
+            
+            return $noticiasArray;
+            
+        } catch (\Exception $e) {
+            Log::error('Erro ao buscar notícias impressas para PDF: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Busca dados das notícias web formatados para o PDF
+     */
+    private function buscarNoticiasWebParaPDF($idsWeb, $clienteId)
+    {
+        try {
+            $sql = "
+                SELECT 
+                    t1.id,
+                    t1.titulo_noticia as titulo,
+                    t2.nome as veiculo,
+                    t1.data_noticia,
+                    TO_CHAR(t1.data_noticia, 'DD/MM/YYYY') as data_publicacao,
+                    t4.conteudo as descricao,
+                    t1.url_noticia as link,
+                    t1.ds_caminho_img,
+                    t1.nu_valor as valor,
+                    t3.sentimento
+                FROM noticias_web t1
+                JOIN fonte_web t2 ON t2.id = t1.id_fonte
+                JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND t3.tipo_id = 2
+                JOIN conteudo_noticia_web t4 ON t4.id_noticia_web = t1.id
+                WHERE t3.cliente_id = ?
+                AND t1.id IN (" . implode(',', array_fill(0, count($idsWeb), '?')) . ")
+                ORDER BY t1.data_noticia DESC
+            ";
+            
+            $params = array_merge([$clienteId], $idsWeb);
+            $noticias = DB::select($sql, $params);
+            
+            // Converte para array associativo
+            $noticiasArray = [];
+            foreach ($noticias as $noticia) {
+                $noticiasArray[] = [
+                    'id' => $noticia->id,
+                    'titulo' => $noticia->titulo,
+                    'veiculo' => $noticia->veiculo,
+                    'data_noticia' => $noticia->data_noticia,
+                    'data_publicacao' => $noticia->data_publicacao,
+                    'descricao' => $noticia->descricao,
+                    'link' => $noticia->link,
+                    'ds_caminho_img' => $noticia->ds_caminho_img,
+                    'valor' => $noticia->valor,
+                    'sentimento' => $noticia->sentimento
+                ];
+            }
+            
+            return $noticiasArray;
+            
+        } catch (\Exception $e) {
+            Log::error('Erro ao buscar notícias web para PDF: ' . $e->getMessage());
+            return [];
         }
     }
 

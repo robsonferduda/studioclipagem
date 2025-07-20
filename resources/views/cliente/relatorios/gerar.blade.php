@@ -387,6 +387,28 @@
     
     // Flag para controlar visibilidade do retorno de mídia
     window.mostrarRetornoMidia = {{ $fl_retorno_midia ? 'true' : 'false' }};
+    
+    // Flag para controlar visibilidade dos botões de relatório com imagens
+    @if(isset($fl_print))
+        window.mostrarBotoesImagem = {{ $fl_print ? 'true' : 'false' }};
+        console.log('🔍 DEBUG fl_print definido:', '{{ $fl_print ? "true" : "false" }}');
+        console.log('🔍 DEBUG fl_print valor bruto:', {{ isset($fl_print) ? ($fl_print ? 1 : 0) : 'null' }});
+    @else
+        window.mostrarBotoesImagem = false;
+        console.log('❌ DEBUG fl_print NÃO DEFINIDO - usando false por padrão');
+    @endif
+    
+    // Debug: verificar valores finais
+    console.log('🔍 DEBUG mostrarBotoesImagem final:', window.mostrarBotoesImagem);
+    console.log('🔍 DEBUG tipo da variável:', typeof window.mostrarBotoesImagem);
+    
+    // Debug: informações do cliente
+    @if(isset($cliente))
+        console.log('🔍 DEBUG Cliente ID:', {{ $cliente->id ?? 'null' }});
+        console.log('🔍 DEBUG Cliente Nome:', '{{ $cliente->nome ?? "sem nome" }}');
+    @else
+        console.log('❌ DEBUG Cliente não definido');
+    @endif
 
     $( document ).ready(function() {
 
@@ -782,6 +804,22 @@
                 html += '<div>';
                 html += '<button type="button" class="btn btn-sm btn-outline-primary" onclick="selecionarTodasTipoBtn(\'' + tipo + '\', true)">Selecionar Todas</button>';
                 html += '<button type="button" class="btn btn-sm btn-outline-secondary ml-2" onclick="selecionarTodasTipoBtn(\'' + tipo + '\', false)">Desmarcar Todas</button>';
+                
+                // Botões específicos com imagens (apenas se cliente tem permissão fl_print)
+                console.log('🔍 DEBUG gerarTabelaTipoMidia - tipo:', tipo, 'mostrarBotoesImagem:', window.mostrarBotoesImagem);
+                if (window.mostrarBotoesImagem === true) {
+                    console.log('✅ Adicionando botões de imagem para tipo:', tipo);
+                    if (tipo === 'web') {
+                        html += '<button type="button" class="btn btn-sm btn-success ml-3" id="btnGerarRelatorioWebAba" onclick="gerarRelatorioWebAba()"><i class="fa fa-globe"></i> Gerar Relatório Web com Imagens</button>';
+                    }
+                    
+                    if (tipo === 'impresso') {
+                        html += '<button type="button" class="btn btn-sm btn-warning ml-3" id="btnGerarRelatorioImpressoAba" onclick="gerarRelatorioImpressoAba()"><i class="fa fa-newspaper-o"></i> Gerar Relatório Impresso com Imagens</button>';
+                    }
+                } else {
+                    console.log('❌ Botões de imagem bloqueados - fl_print = false');
+                }
+                
                 html += '</div>';
                 html += '<div class="text-muted">';
                 html += '<i class="fa fa-info-circle"></i> ' + noticiasArray.length + ' notícias encontradas';
@@ -870,6 +908,8 @@
             gerarRelatorio();
         });
 
+        // A função gerarRelatorioWebAba() será chamada diretamente pelo onclick do botão na aba
+
         // Gerar relatório
         function gerarRelatorio() {
             var noticiasSelecionadas = obterNoticiasSelecionadas();
@@ -957,15 +997,7 @@
             });
         }
 
-        // Converter data DD/MM/YYYY para YYYY-MM-DD
-        function converterDataParaISO(data) {
-            if (!data) return '';
-            var partes = data.split('/');
-            if (partes.length === 3) {
-                return partes[2] + '-' + partes[1] + '-' + partes[0];
-            }
-            return data;
-        }
+        
 
         // Obter notícias selecionadas
         function obterNoticiasSelecionadas() {
@@ -1219,6 +1251,162 @@
             console.error('Erro ao processar sentimento:', e);
             return '<span class="text-secondary"><i class="fa fa-question text-secondary"></i> Não definido</span>';
         }
+    }
+
+    // Gerar relatório web específico com imagens (função global para onclick)
+    // NOTA: Esta função só é chamada se o cliente tiver fl_print = true
+    function gerarRelatorioWebAba() {
+        // Pega apenas as notícias web selecionadas
+        var noticiasWebSelecionadas = [];
+        $('.selecionar-noticia[data-tipo="web"]:checked').each(function() {
+            noticiasWebSelecionadas.push($(this).data('id'));
+        });
+        
+        if (noticiasWebSelecionadas.length === 0) {
+            alert('Por favor, selecione ao menos uma notícia Web para gerar o relatório.');
+            return;
+        }
+
+        var formData = {
+            data_inicio: converterDataParaISO($('#dt_inicial').val()),
+            data_fim: converterDataParaISO($('#dt_final').val()),
+            ids_web: noticiasWebSelecionadas
+        };
+        
+        // Adicionar token CSRF
+        formData._token = $('meta[name="csrf-token"]').attr('content');
+
+        // Mostrar loading no botão da aba
+        $('#btnGerarRelatorioWebAba').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Gerando...');
+
+        $.ajax({
+            url: window.host + '/cliente/relatorios/gerar-pdf-web',
+            type: 'POST',
+            data: formData,
+            dataType: 'json',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                console.log('Response:', response);
+                if (response.success) {
+                    console.log('Download URL:', response.download_url);
+                    
+                    // Download direto usando a nova rota que força download
+                    var downloadUrl = response.download_url || (window.host + '/cliente/relatorios/download/' + response.arquivo);
+                    var fileName = response.arquivo || 'relatorio-web.pdf';
+                    console.log('Iniciando download de:', downloadUrl);
+                    console.log('Nome do arquivo:', fileName);
+                    
+                    // Método simples e eficaz: redirecionamento da janela
+                    window.location.href = downloadUrl;
+                } else {
+                    alert('Erro ao gerar relatório Web: ' + response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Erro ao gerar relatório Web:', error);
+                
+                var errorMessage = '';
+                if (xhr.status === 404) {
+                    errorMessage = 'Rota não encontrada. Verifique se o sistema está configurado corretamente.';
+                } else if (xhr.status === 401) {
+                    errorMessage = 'Acesso negado. Faça login novamente.';
+                } else if (xhr.status === 500) {
+                    errorMessage = 'Erro interno do servidor. Tente novamente mais tarde.';
+                } else {
+                    errorMessage = 'Erro ao gerar relatório Web. Tente novamente.';
+                }
+                
+                alert(errorMessage);
+            },
+            complete: function() {
+                $('#btnGerarRelatorioWebAba').prop('disabled', false).html('<i class="fa fa-globe"></i> Gerar Relatório Web com Imagens');
+            }
+        });
+    }
+
+    // Gerar relatório impresso específico com imagens (função global para onclick)
+    // NOTA: Esta função só é chamada se o cliente tiver fl_print = true
+    function gerarRelatorioImpressoAba() {
+        // Pega apenas as notícias impressas selecionadas
+        var noticiasImpressoSelecionadas = [];
+        $('.selecionar-noticia[data-tipo="impresso"]:checked').each(function() {
+            noticiasImpressoSelecionadas.push($(this).data('id'));
+        });
+        
+        if (noticiasImpressoSelecionadas.length === 0) {
+            alert('Por favor, selecione ao menos uma notícia Impressa para gerar o relatório.');
+            return;
+        }
+
+        var formData = {
+            data_inicio: converterDataParaISO($('#dt_inicial').val()),
+            data_fim: converterDataParaISO($('#dt_final').val()),
+            ids_impresso: noticiasImpressoSelecionadas
+        };
+        
+        // Adicionar token CSRF
+        formData._token = $('meta[name="csrf-token"]').attr('content');
+
+        // Mostrar loading no botão da aba
+        $('#btnGerarRelatorioImpressoAba').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Gerando...');
+
+        $.ajax({
+            url: window.host + '/cliente/relatorios/gerar-pdf-impresso',
+            type: 'POST',
+            data: formData,
+            dataType: 'json',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                console.log('Response:', response);
+                if (response.success) {
+                    console.log('Download URL:', response.download_url);
+                    
+                    // Download direto usando a nova rota que força download
+                    var downloadUrl = response.download_url || (window.host + '/cliente/relatorios/download/' + response.arquivo);
+                    var fileName = response.arquivo || 'relatorio-impresso.pdf';
+                    console.log('Iniciando download de:', downloadUrl);
+                    console.log('Nome do arquivo:', fileName);
+                    
+                    // Método simples e eficaz: redirecionamento da janela
+                    window.location.href = downloadUrl;
+                } else {
+                    alert('Erro ao gerar relatório Impresso: ' + response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Erro ao gerar relatório Impresso:', error);
+                
+                var errorMessage = '';
+                if (xhr.status === 404) {
+                    errorMessage = 'Rota não encontrada. Verifique se o sistema está configurado corretamente.';
+                } else if (xhr.status === 401) {
+                    errorMessage = 'Acesso negado. Faça login novamente.';
+                } else if (xhr.status === 500) {
+                    errorMessage = 'Erro interno do servidor. Tente novamente mais tarde.';
+                } else {
+                    errorMessage = 'Erro ao gerar relatório Impresso. Tente novamente.';
+                }
+                
+                alert(errorMessage);
+            },
+            complete: function() {
+                $('#btnGerarRelatorioImpressoAba').prop('disabled', false).html('<i class="fa fa-newspaper-o"></i> Gerar Relatório Impresso com Imagens');
+            }
+        });
+    }
+
+    // Função auxiliar para converter data (também precisa estar no escopo global)
+    function converterDataParaISO(data) {
+        if (!data) return '';
+        var partes = data.split('/');
+        if (partes.length === 3) {
+            return partes[2] + '-' + partes[1] + '-' + partes[0];
+        }
+        return data;
     }
 
 

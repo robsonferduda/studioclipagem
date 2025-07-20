@@ -77,8 +77,10 @@ Route::middleware(['web'])->group(function () {
 	// Novas rotas para substituir funcionalidades do Flask app.py
 	Route::post('cliente/relatorios/listar-noticias','ClienteController@listarNoticias');
 	Route::post('cliente/relatorios/gerar-pdf','ClienteController@gerarRelatorioPDF');
-Route::get('cliente/relatorios/download/{arquivo}','ClienteController@downloadRelatorio');
-Route::post('cliente/relatorios/adicionar-noticia','ClienteController@adicionarNoticia');
+	Route::post('cliente/relatorios/gerar-pdf-web','ClienteController@gerarRelatorioPDFWeb');
+	Route::post('cliente/relatorios/gerar-pdf-impresso','ClienteController@gerarRelatorioPDFImpresso');
+	Route::get('cliente/relatorios/download/{arquivo}','ClienteController@downloadRelatorio');
+	Route::post('cliente/relatorios/adicionar-noticia','ClienteController@adicionarNoticia');
 	Route::post('cliente/relatorios/editar-noticia','ClienteController@editarNoticia');
 	Route::post('cliente/relatorios/excluir-noticia','ClienteController@excluirNoticia');
 	Route::get('cliente/relatorios/noticia/{id}/{tipo}','ClienteController@buscarNoticia');
