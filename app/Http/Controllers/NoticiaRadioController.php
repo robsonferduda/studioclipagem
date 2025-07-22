@@ -610,7 +610,6 @@ class NoticiaRadioController extends Controller
                 FROM noticia_radio t1
                 LEFT JOIN emissora_radio t2 ON t2.id = t1.emissora_id 
                 WHERE valor_retorno IS NULL
-                AND dt_clipagem > '2025-05-01'
                 AND t1.deleted_at IS NULL
                 GROUP BY t2.id, t2.nome_emissora, t2.nu_valor
                 ORDER BY nome_emissora";
