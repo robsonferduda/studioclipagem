@@ -20,7 +20,7 @@ ln -sf /usr/bin/python3 /usr/bin/python
 # Instala dependências Python
 echo "📦 Instalando dependências Python..."
 if [ -f "/var/www/studioclipagem/python/relatorios/requirements.txt" ]; then
-    pip3 install -r /var/www/html/python/relatorios/requirements.txt
+    pip3 install -r /var/www/studioclipagem/python/relatorios/requirements.txt
 else
     echo "❌ Arquivo requirements.txt não encontrado!"
     exit 1
@@ -28,12 +28,12 @@ fi
 
 # Cria diretório de saída
 echo "📁 Criando diretório de saída..."
-mkdir -p /var/www/html/python/relatorios/output
-chown -R www-data:www-data /var/www/html/python/relatorios/output
+mkdir -p /var/www/studioclipagem/python/relatorios/output
+chown -R www-data:www-data /var/www/studioclipagem/python/relatorios/output
 
 # Testa instalação
 echo "🧪 Testando instalação..."
-cd /var/www/html/python/relatorios
+cd /var/www/studioclipagem/python/relatorios
 python3 test_connection.py
 
 echo "✅ Instalação concluída!"
