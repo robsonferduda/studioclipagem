@@ -1170,6 +1170,8 @@ class ClienteController extends Controller
                 'data_fim' => $dataFim,
                 'output_path' => $outputPath
             ];
+
+            dd("dsfsdf");
             
             // Salva dados temporários em JSON
             $tempDataFile = tempnam(sys_get_temp_dir(), 'relatorio_web_data_');
@@ -1179,46 +1181,46 @@ class ClienteController extends Controller
             $escapedScriptPath = escapeshellarg($scriptPath);
             $escapedDataFile = escapeshellarg($tempDataFile);
             $comando = "cd " . escapeshellarg($pythonDir) . " && (python3 -c \"
-import sys, json
-sys.path.append('.')
-from pdf_generator_web import PDFGeneratorWeb
+                        import sys, json
+                        sys.path.append('.')
+                        from pdf_generator_web import PDFGeneratorWeb
 
-# Carrega dados
-with open('$tempDataFile', 'r', encoding='utf-8') as f:
-    dados = json.load(f)
+                        # Carrega dados
+                        with open('$tempDataFile', 'r', encoding='utf-8') as f:
+                            dados = json.load(f)
 
-# Gera relatório
-generator = PDFGeneratorWeb()
-success = generator.generate_web_report(
-    dados['noticias'],
-    dados['cliente_nome'],
-    dados['data_inicio'],
-    dados['data_fim'],
-    dados['output_path']
-)
+                        # Gera relatório
+                        generator = PDFGeneratorWeb()
+                        success = generator.generate_web_report(
+                            dados['noticias'],
+                            dados['cliente_nome'],
+                            dados['data_inicio'],
+                            dados['data_fim'],
+                            dados['output_path']
+                        )
 
-print('SUCCESS' if success else 'ERROR')
-\" 2>&1 || python -c \"
-import sys, json
-sys.path.append('.')
-from pdf_generator_web import PDFGeneratorWeb
+                        print('SUCCESS' if success else 'ERROR')
+                        \" 2>&1 || python3 -c \"
+                        import sys, json
+                        sys.path.append('.')
+                        from pdf_generator_web import PDFGeneratorWeb
 
-# Carrega dados
-with open('$tempDataFile', 'r', encoding='utf-8') as f:
-    dados = json.load(f)
+                        # Carrega dados
+                        with open('$tempDataFile', 'r', encoding='utf-8') as f:
+                            dados = json.load(f)
 
-# Gera relatório
-generator = PDFGeneratorWeb()
-success = generator.generate_web_report(
-    dados['noticias'],
-    dados['cliente_nome'],
-    dados['data_inicio'],
-    dados['data_fim'],
-    dados['output_path']
-)
+                        # Gera relatório
+                        generator = PDFGeneratorWeb()
+                        success = generator.generate_web_report(
+                            dados['noticias'],
+                            dados['cliente_nome'],
+                            dados['data_inicio'],
+                            dados['data_fim'],
+                            dados['output_path']
+                        )
 
-print('SUCCESS' if success else 'ERROR')
-\" 2>&1)";
+                        print('SUCCESS' if success else 'ERROR')
+                        \" 2>&1)";
             
             Log::info('Executando comando Python para relatório web: ' . $comando);
             
