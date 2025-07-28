@@ -1170,8 +1170,6 @@ class ClienteController extends Controller
                 'data_fim' => $dataFim,
                 'output_path' => $outputPath
             ];
-
-            dd("dsfsdf");
             
             // Salva dados temporários em JSON
             $tempDataFile = tempnam(sys_get_temp_dir(), 'relatorio_web_data_');
