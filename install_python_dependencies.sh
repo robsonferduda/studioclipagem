@@ -19,7 +19,7 @@ ln -sf /usr/bin/python3 /usr/bin/python
 
 # Instala dependências Python
 echo "📦 Instalando dependências Python..."
-if [ -f "/var/www/html/python/relatorios/requirements.txt" ]; then
+if [ -f "/var/www/html/styduiclipagem/python/relatorios/requirements.txt" ]; then
     pip3 install -r /var/www/html/python/relatorios/requirements.txt
 else
     echo "❌ Arquivo requirements.txt não encontrado!"
