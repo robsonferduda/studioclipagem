@@ -71,27 +71,46 @@ class ClienteController extends Controller
         return view('cliente/relatorios/listar');
     }
 
+    public function flagsMidia($id)
+    {
+        $cliente = Cliente::find($id);
+        return response()->json([
+            'fl_impresso' => (bool) $cliente->fl_impresso,
+            'fl_web' => (bool) $cliente->fl_web,
+            'fl_radio' => (bool) $cliente->fl_radio,
+            'fl_tv' => (bool) $cliente->fl_tv,
+        ]);
+    }
+
     public function gerarRelatorios(Request $request): View
     {
         Session::put('url','relatorios');
         Session::put('sub-menu','cliente-gerar-relatorios');
 
+        $clientes = array();
+        $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
+
         // Buscar dados do cliente logado usando múltiplas estratégias
         $cliente_id = $this->client_id;
+
+        if($this->client_id){
         
-        // Fallback: tentar obter da sessão se não encontrar no atributo
-        if (!$cliente_id) {
-            $cliente_id = session('cliente')['id'] ?? null;
-        }
-        
-        // Fallback: tentar obter do usuário autenticado
-        if (!$cliente_id && Auth::check()) {
-            $cliente_id = Auth::user()->client_id;
-        }
-        
-        $cliente = null;
-        if ($cliente_id) {
-            $cliente = Cliente::find($cliente_id);
+            // Fallback: tentar obter da sessão se não encontrar no atributo
+            if (!$cliente_id) {
+                $cliente_id = session('cliente')['id'] ?? null;
+            }
+            
+            // Fallback: tentar obter do usuário autenticado
+            if (!$cliente_id && Auth::check()) {
+                $cliente_id = Auth::user()->client_id;
+            }
+            
+            $cliente = null;
+            if ($cliente_id) {
+                $cliente = Cliente::find($cliente_id);
+            }
+        } else {
+            $cliente = null;
         }
 
         $tipo_data = ($request->tipo_data) ? $request->tipo_data : 'data_cadastro';
@@ -125,7 +144,7 @@ class ClienteController extends Controller
 
         $relatorios = array();
 
-        return view('cliente/relatorios/gerar', compact('relatorios','tipo_data','dt_inicial','dt_final','fl_web','fl_tv','fl_radio','fl_impresso','fl_areas','fl_sentimento','fl_retorno_midia','fl_print','cliente'));
+        return view('cliente/relatorios/gerar', compact('relatorios','tipo_data','dt_inicial','dt_final','fl_web','fl_tv','fl_radio','fl_impresso','fl_areas','fl_sentimento','fl_retorno_midia','fl_print','cliente','clientes'));
     }
 
     public function create(): View

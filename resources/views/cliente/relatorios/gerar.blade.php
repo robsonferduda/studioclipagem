@@ -46,6 +46,19 @@
                                 <input type="text" class="form-control datepicker" name="dt_final" id="dt_final" placeholder="__/__/____" value="{{ ($dt_final) ? \Carbon\Carbon::parse($dt_final)->format('d/m/Y') : '' }}">
                             </div>
                         </div>
+                        @role('administradores')
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Cliente</label>
+                                    <select class="form-control cliente" name="id_cliente" id="id_cliente">
+                                        <option value="">Selecione um cliente</option>
+                                        @foreach($clientes as $cli)
+                                            <option value="{{ $cli->id }}">{{ $cli->nome }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        @endrole
 
                         @if($fl_areas)
                         <div class="col-md-12">
@@ -126,69 +139,76 @@
                         </div>
                         @endif
                     </div>  
-                    <div class="row">
-                        <div class="col-md-12 mt-2">
-                            <label class="form-label fw-semibold mb-2">
-                                Clipagem por tipo de mídia
-                            </label>
-                            @if($fl_impresso || $fl_web || $fl_radio || $fl_tv)
-                                <div class="d-flex flex-wrap gap-2">
-                                    @if($fl_impresso)
-                                        <div class="form-check">
+                    
+                    @if($cliente)
+                        <div class="row">
+                            <div class="col-md-12 mt-2">
+                                <label class="form-label fw-semibold mb-2">
+                                    Clipagem por tipo de mídia
+                                </label>                            
+                                @if($fl_impresso || $fl_web || $fl_radio || $fl_tv)
+                                    <div class="d-flex flex-wrap gap-2">
+                                        @if($fl_impresso)
                                             <div class="form-check">
-                                                <label class="form-check-label check-midia">
-                                                    <input class="form-check-input" type="checkbox" name="fl_impresso" checked value="true">
-                                                    <span class="form-check-sign"></span>
-                                                    <span class="text-secondary"><i class="fa fa-newspaper-o"></i> Impressos</span>
-                                                </label>
+                                                <div class="form-check">
+                                                    <label class="form-check-label check-midia">
+                                                        <input class="form-check-input" type="checkbox" name="fl_impresso" checked value="true">
+                                                        <span class="form-check-sign"></span>
+                                                        <span class="text-secondary"><i class="fa fa-newspaper-o"></i> Impressos</span>
+                                                    </label>
+                                                </div>
                                             </div>
-                                        </div>
-                                    @endif
-                            
-                                    @if($fl_web)
-                                        <div class="form-check ml-3">
-                                            <div class="form-check">
-                                                <label class="form-check-label check-midia">
-                                                    <input class="form-check-input" type="checkbox" name="fl_web" checked value="true">
-                                                    <span class="form-check-sign"></span>
-                                                    <span class="text-secondary"><i class="fa fa-globe"></i> Web</span>
-                                                </label>
+                                        @endif
+                                
+                                        @if($fl_web)
+                                            <div class="form-check ml-3">
+                                                <div class="form-check">
+                                                    <label class="form-check-label check-midia">
+                                                        <input class="form-check-input" type="checkbox" name="fl_web" checked value="true">
+                                                        <span class="form-check-sign"></span>
+                                                        <span class="text-secondary"><i class="fa fa-globe"></i> Web</span>
+                                                    </label>
+                                                </div>
                                             </div>
-                                        </div>
-                                    @endif
-                            
-                                    @if($fl_radio)
-                                        <div class="form-check ml-3">
-                                            <div class="form-check">
-                                                <label class="form-check-label check-midia">
-                                                    <input class="form-check-input" type="checkbox" name="fl_radio" checked value="true">
-                                                    <span class="form-check-sign"></span>
-                                                    <span class="text-secondary"><i class="fa fa-volume-up"></i> Rádio</span>
-                                                </label>
+                                        @endif
+                                
+                                        @if($fl_radio)
+                                            <div class="form-check ml-3">
+                                                <div class="form-check">
+                                                    <label class="form-check-label check-midia">
+                                                        <input class="form-check-input" type="checkbox" name="fl_radio" checked value="true">
+                                                        <span class="form-check-sign"></span>
+                                                        <span class="text-secondary"><i class="fa fa-volume-up"></i> Rádio</span>
+                                                    </label>
+                                                </div>
                                             </div>
-                                        </div>
-                                    @endif
-                            
-                                    @if($fl_tv)
-                                        <div class="form-check ml-3">
-                                            <div class="form-check">
-                                                <label class="form-check-label check-midia">
-                                                    <input class="form-check-input" type="checkbox" name="fl_tv" checked value="true">
-                                                    <span class="form-check-sign"></span>
-                                                    <span class="text-secondary"><i class="fa fa-television"></i> TV</span>
-                                                </label>
+                                        @endif
+                                
+                                        @if($fl_tv)
+                                            <div class="form-check ml-3">
+                                                <div class="form-check">
+                                                    <label class="form-check-label check-midia">
+                                                        <input class="form-check-input" type="checkbox" name="fl_tv" checked value="true">
+                                                        <span class="form-check-sign"></span>
+                                                        <span class="text-secondary"><i class="fa fa-television"></i> TV</span>
+                                                    </label>
+                                                </div>
                                             </div>
-                                        </div>
-                                    @endif
-                                </div>
-                            @else
-                                <div class="alert alert-warning">
-                                    <i class="fa fa-exclamation-triangle"></i>
-                                    <strong>Atenção:</strong> Nenhum tipo de mídia está habilitado para seu cliente. Entre em contato com o administrador para configurar os tipos de mídia disponíveis.
-                                </div>
-                            @endif
-                        </div>        
-                    </div>             
+                                        @endif
+                                    </div>
+                                @else
+                                    <div class="alert alert-warning">
+                                        <i class="fa fa-exclamation-triangle"></i>
+                                        <strong>Atenção:</strong> Nenhum tipo de mídia está habilitado para seu cliente. Entre em contato com o administrador para configurar os tipos de mídia disponíveis.
+                                    </div>
+                                @endif
+                            </div>        
+                        </div>       
+                    @else
+                        <div class="col-md-12 mt-2" id="tipos-midia-container">
+                            <!-- Os checkboxes de mídia serão inseridos aqui via JS -->
+                        </div>
+                    @endif
                     <div class="card-footer text-center mb-3">
                         <button type="button" class="btn btn-info" id="btn-pesquisar" name="acao" value="pesquisar"><i class="fa fa-search"></i> Pesquisar</button>
                     </div>
@@ -378,6 +398,73 @@
     window.host = $('meta[name="base-url"]').attr('content');
     window.noticiasCarregadas = {};
     window.noticiasCarregadasCount = 0;
+
+    $('#id_cliente').on('change', function() {
+
+        var clienteId = $(this).val();
+        // Limpa o container
+        $('#tipos-midia-container').html('<div class="text-muted">Carregando tipos de mídia...</div>');
+        if (!clienteId) {
+            $('#tipos-midia-container').html('');
+            return;
+        }
+        $.ajax({
+            url: window.host + '/cliente/flags-midia/' + clienteId,
+            type: 'GET',
+            dataType: 'json',
+            success: function(flags) {
+                var html = '<label class="form-label fw-semibold mb-2">Clipagem por tipo de mídia</label>';
+                html += '<div class="d-flex flex-wrap gap-2">';
+                if (flags.fl_impresso) {
+                    html += `<div class="form-check">
+                        <label class="form-check-label check-midia">
+                            <input class="form-check-input" type="checkbox" name="fl_impresso" checked value="true">
+                            <span class="form-check-sign"></span>
+                            <span class="text-secondary"><i class="fa fa-newspaper-o"></i> Impressos</span>
+                        </label>
+                    </div>`;
+                }
+                if (flags.fl_web) {
+                    html += `<div class="form-check ml-3">
+                        <label class="form-check-label check-midia">
+                            <input class="form-check-input" type="checkbox" name="fl_web" checked value="true">
+                            <span class="form-check-sign"></span>
+                            <span class="text-secondary"><i class="fa fa-globe"></i> Web</span>
+                        </label>
+                    </div>`;
+                }
+                if (flags.fl_radio) {
+                    html += `<div class="form-check ml-3">
+                        <label class="form-check-label check-midia">
+                            <input class="form-check-input" type="checkbox" name="fl_radio" checked value="true">
+                            <span class="form-check-sign"></span>
+                            <span class="text-secondary"><i class="fa fa-volume-up"></i> Rádio</span>
+                        </label>
+                    </div>`;
+                }
+                if (flags.fl_tv) {
+                    html += `<div class="form-check ml-3">
+                        <label class="form-check-label check-midia">
+                            <input class="form-check-input" type="checkbox" name="fl_tv" checked value="true">
+                            <span class="form-check-sign"></span>
+                            <span class="text-secondary"><i class="fa fa-television"></i> TV</span>
+                        </label>
+                    </div>`;
+                }
+                if (!flags.fl_impresso && !flags.fl_web && !flags.fl_radio && !flags.fl_tv) {
+                    html += `<div class="alert alert-warning">
+                        <i class="fa fa-exclamation-triangle"></i>
+                        <strong>Atenção:</strong> Nenhum tipo de mídia está habilitado para este cliente.
+                    </div>`;
+                }
+                html += '</div>';
+                $('#tipos-midia-container').html(html);
+            },
+            error: function() {
+                $('#tipos-midia-container').html('<div class="alert alert-danger">Erro ao carregar tipos de mídia do cliente.</div>');
+            }
+        });
+    });
     
     // Flag para controlar visibilidade das áreas
     window.mostrarAreas = {{ $fl_areas ? 'true' : 'false' }};
@@ -411,6 +498,8 @@
     @endif
 
     $( document ).ready(function() {
+
+
 
         // Carregar áreas do cliente logado ao inicializar (apenas se a seção existir)
         if ($('#areas-checkbox-group').length > 0) {
