@@ -230,12 +230,18 @@ class RelatorioService
                     {$buildTermoCondition('w.', $termo)}
                     ORDER BY w.data_noticia DESC, w.titulo_noticia ASC
                 ";
-                
-                $noticiasWeb = DB::select($sql, [
+
+                $params = [
                     'clienteId' => $clienteId,
                     'dataInicio' => $dataInicio,
                     'dataFim' => $dataFim
-                ]);
+                ];
+
+                if (!empty($termo)) {
+                    $params['termo'] = '%' . $termo . '%';
+                }
+                
+                $noticiasWeb = DB::select($sql, $params);
                 
                 Log::info('Query WEB executada:', [
                     'count' => count($noticiasWeb),
