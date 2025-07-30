@@ -155,11 +155,41 @@ class RelatorioService
             $termoLike = '%' . addcslashes($termo, '%_') . '%';
 
             // Adapte os campos conforme cada mídia/tabela
-            $campos = [
-                "{$tablePrefix}sinopse",
-                "{$tablePrefix}titulo_noticia",
-            ];
 
+            switch ($tablePrefix) {
+                case 'w':
+                    $campos = [
+                        "{$tablePrefix}sinopse",
+                        "{$tablePrefix}titulo_noticia",
+                    ];
+                    break;
+
+                case 'r':
+                    $campos = [
+                        "{$tablePrefix}sinopse",
+                    ];
+                    break;
+
+                case 'j':
+                    $campos = [
+                        "{$tablePrefix}sinopse",
+                        "{$tablePrefix}titulo",
+                    ];
+                    break;
+
+                case 't':
+                    $campos = [
+                        "{$tablePrefix}sinopse",
+                    ];
+                    break;
+                
+                default:
+                    $campos = [
+                        "{$tablePrefix}sinopse",
+                    ];
+                    break;
+            }
+            
             $conditions = [];
             foreach ($campos as $campo) {
                 $conditions[] = "$campo ILIKE :termo";
@@ -309,14 +339,21 @@ class RelatorioService
                     {$buildStatusCondition('nc.')}
                     {$buildValorCondition('t.', 'valor_retorno')}
                     {$buildAreaCondition('nc.')}
+                    {$buildTermoCondition('t.', $termo)}
                     ORDER BY t.dt_noticia DESC, t.sinopse ASC
                 ";
-                
-                $noticiasTV = DB::select($sql, [
+
+                $params = [
                     'clienteId' => $clienteId,
                     'dataInicio' => $dataInicio,
                     'dataFim' => $dataFim
-                ]);
+                ];
+
+                if (!empty($termo)) {
+                    $params['termo'] = '%' . $termo . '%';
+                }
+                
+                $noticiasTV = DB::select($sql, $params);
                 
                 Log::info('Query TV executada:', [
                     'count' => count($noticiasTV)
@@ -382,14 +419,21 @@ class RelatorioService
                     {$buildStatusCondition('nc.')}
                     {$buildValorCondition('r.', 'valor_retorno')}
                     {$buildAreaCondition('nc.')}
+                    {$buildTermoCondition('r.', $termo)}
                     ORDER BY r.dt_clipagem DESC, r.titulo ASC
                 ";
-                
-                $noticiasRadio = DB::select($sql, [
+
+                $params = [
                     'clienteId' => $clienteId,
                     'dataInicio' => $dataInicio,
                     'dataFim' => $dataFim
-                ]);
+                ];
+
+                if (!empty($termo)) {
+                    $params['termo'] = '%' . $termo . '%';
+                }
+                
+                $noticiasRadio = DB::select($sql, $params);
                 
                 Log::info('Query RÁDIO executada:', [
                     'count' => count($noticiasRadio)
@@ -449,14 +493,21 @@ class RelatorioService
                     {$buildStatusCondition('nc.')}
                     {$buildValorCondition('j.', 'valor_retorno')}
                     {$buildAreaCondition('nc.')}
+                    {$buildTermoCondition('j.', $termo)}
                     ORDER BY j.dt_clipagem DESC, j.titulo ASC
                 ";
-                
-                $noticiasImpresso = DB::select($sql, [
+
+                $params = [
                     'clienteId' => $clienteId,
                     'dataInicio' => $dataInicio,
                     'dataFim' => $dataFim
-                ]);
+                ];
+
+                if (!empty($termo)) {
+                    $params['termo'] = '%' . $termo . '%';
+                }
+                
+                $noticiasImpresso = DB::select($sql, $params);
                 
                 Log::info('Query IMPRESSO executada:', [
                     'count' => count($noticiasImpresso)
