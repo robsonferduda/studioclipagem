@@ -157,6 +157,7 @@ class RelatorioService
             // Adapte os campos conforme cada mídia/tabela
             $campos = [
                 "{$tablePrefix}sinopse",
+                "{$tablePrefix}titulo_noticia",
             ];
 
             $conditions = [];
