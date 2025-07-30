@@ -64,13 +64,14 @@ class RelatorioService
     /**
      * Lista notícias por período com filtros aplicados
      */
-    public function listarNoticiasPorPeriodoComFiltros($clienteId, $dataInicio, $dataFim, $filtros = [])
+    public function listarNoticiasPorPeriodoComFiltros($clienteId, $dataInicio, $dataFim, $filtros = [], $termo = null)
     {
         Log::info('=== INICIANDO listarNoticiasPorPeriodoComFiltros ===', [
             'clienteId' => $clienteId,
             'dataInicio' => $dataInicio,
             'dataFim' => $dataFim,
-            'filtros' => $filtros
+            'filtros' => $filtros,
+            'termo' => $termo
         ]);
         
         // Converte datas para o formato correto incluindo horário
@@ -145,6 +146,27 @@ class RelatorioService
             return "";
         };
 
+        $buildTermoCondition = function($tablePrefix = "", $termo = null) {
+            
+            if (empty($termo)) {
+                return "";
+            }
+            // Escapa o termo para evitar SQL injection (usando parâmetros depois)
+            $termoLike = '%' . addcslashes($termo, '%_') . '%';
+
+            // Adapte os campos conforme cada mídia/tabela
+            $campos = [
+                "{$tablePrefix}sinopse",
+            ];
+
+            $conditions = [];
+            foreach ($campos as $campo) {
+                $conditions[] = "$campo ILIKE :termo";
+            }
+
+            return " AND (" . implode(' OR ', $conditions) . ")";
+        };
+
         $buildAreaCondition = function($tablePrefix = "") use ($areasFiltros) {
             if (!empty($areasFiltros)) {
                 $areaIds = implode(',', $areasFiltros);
@@ -205,6 +227,7 @@ class RelatorioService
                     {$buildStatusCondition('nc.')}
                     {$buildValorCondition('w.', 'nu_valor')}
                     {$buildAreaCondition('nc.')}
+                    {$buildTermoCondition('w.', $termo)}
                     ORDER BY w.data_noticia DESC, w.titulo_noticia ASC
                 ";
                 

@@ -782,11 +782,13 @@ class ClienteController extends Controller
             $clienteId = $this->client_id;
             $dataInicio = $request->input('data_inicio');
             $dataFim = $request->input('data_fim');
+            $termo = $request->input('termo', null);
             
             Log::info('Dados extraídos da requisição:', [
                 'clienteId' => $clienteId,
                 'dataInicio' => $dataInicio,
-                'dataFim' => $dataFim
+                'dataFim' => $dataFim,
+                'termo' => $termo
             ]);
             
             // Filtros avançados
@@ -844,7 +846,7 @@ class ClienteController extends Controller
             Log::info('Cliente existe, buscando notícias...');
             
             // Lista as notícias
-            $noticias = $relatorioService->listarNoticiasPorPeriodoComFiltros($clienteId, $dataInicio, $dataFim, $filtros);
+            $noticias = $relatorioService->listarNoticiasPorPeriodoComFiltros($clienteId, $dataInicio, $dataFim, $filtros, $termo);
             
             Log::info('Notícias encontradas:', [
                 'total_web' => count($noticias['web'] ?? []),

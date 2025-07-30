@@ -45,7 +45,8 @@
                                 <label>Data Final</label>
                                 <input type="text" class="form-control datepicker" name="dt_final" id="dt_final" placeholder="__/__/____" value="{{ ($dt_final) ? \Carbon\Carbon::parse($dt_final)->format('d/m/Y') : '' }}">
                             </div>
-                        </div>
+                        </div>                        
+                    
                         @role('administradores')
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -59,6 +60,13 @@
                                 </div>
                             </div>
                         @endrole
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Termo de busca</label>
+                                <input type="text" class="form-control" name="termo" id="termo" placeholder="Termo" value="{{ old('termo') }}">
+                            </div>
+                        </div>
 
                         @if($fl_areas)
                         <div class="col-md-12">
@@ -209,6 +217,7 @@
                             <!-- Os checkboxes de mídia serão inseridos aqui via JS -->
                         </div>
                     @endif
+                    
                     <div class="card-footer text-center mb-3">
                         <button type="button" class="btn btn-info" id="btn-pesquisar" name="acao" value="pesquisar"><i class="fa fa-search"></i> Pesquisar</button>
                     </div>
