@@ -693,6 +693,9 @@
             // Adicionar token CSRF
             formData._token = $('meta[name="csrf-token"]').attr('content');
 
+            // Adicionar termo de busca
+            formData.termo = $('#termo').val().trim();
+
             console.log('Enviando dados para pesquisa:', formData);
 
             $.ajax({
