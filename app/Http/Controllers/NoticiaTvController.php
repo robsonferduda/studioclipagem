@@ -301,6 +301,11 @@ class NoticiaTvController extends Controller
         try {
            
             $emissora = EmissoraWeb::find($request->emissora);
+
+            $valor_retorno = $request->input('valor_retorno'); // Ex: "1.234,56"
+            $valor_retorno = str_replace('.', '', $valor_retorno);     // Remove pontos (milhar)
+            $valor_retorno = str_replace(',', '.', $valor_retorno);    // Troca vírgula por ponto
+            $valor_retorno = floatval($valor_retorno); 
            
             $dados = array('dt_cadastro' => ($request->dt_cadastro) ? $carbon->createFromFormat('d/m/Y', $request->dt_cadastro)->format('Y-m-d') : date("Y-m-d"),
                            'duracao' => $request->duracao,
@@ -310,7 +315,7 @@ class NoticiaTvController extends Controller
                            'programa_id' => $request->programa_id,
                            'arquivo' => $request->arquivo,
                            'sinopse' => $request->sinopse,
-                           'valor_retorno' => $request->valor_retorno,
+                           'valor_retorno' => $valor_retorno,
                            'cd_estado' => $request->cd_estado,
                            'cd_cidade' => $request->cd_cidade,
                            'cd_usuario' => Auth::user()->id,
@@ -320,6 +325,23 @@ class NoticiaTvController extends Controller
            
             if($noticia = NoticiaTv::create($dados))
             {
+
+                if((is_null($noticia->valor_retorno) || $noticia->valor_retorno == 0) and $noticia->duracao != null) {
+                    
+                    $duracao = $noticia->duracao;
+                    $duracaoEmSegundos = \Carbon\Carbon::parse($duracao)->hour * 3600
+                            + \Carbon\Carbon::parse($duracao)->minute * 60
+                            + \Carbon\Carbon::parse($duracao)->second;
+
+                    $valor_retorno_emissora = ($noticia->emissora) ? $duracaoEmSegundos * $noticia->emissora->valor : null;
+                    $valor_retorno_programa = ($noticia->programa) ? $duracaoEmSegundos * $noticia->programa->valor_segundo : null;
+
+                    $valor_retorno = ($valor_retorno_programa) ? $valor_retorno_programa : $valor_retorno_emissora;
+
+                    $noticia->valor_retorno = $valor_retorno;
+                    $noticia->save();
+
+                }
                
                 $tags = collect($request->tags)->mapWithKeys(function($tag){
                     return [$tag => ['tipo_id' => 4]];
@@ -402,9 +424,7 @@ class NoticiaTvController extends Controller
             $valor_retorno = str_replace(',', '.', $valor_retorno);    // Troca vírgula por ponto
             $valor_retorno = floatval($valor_retorno); 
 
-            $emissora = EmissoraWeb::find($request->emissora);
-
-            
+            $emissora = EmissoraWeb::find($request->emissora);            
             
             $dados = array('dt_cadastro' => ($request->dt_cadastro) ? $carbon->createFromFormat('d/m/Y', $request->dt_cadastro)->format('Y-m-d') : date("Y-m-d"),
                            'duracao' => $request->duracao,
