@@ -783,7 +783,7 @@ class NoticiaTvController extends Controller
                         ->where('dt_noticia', '>', '2025-05-01')
                         ->count();
 
-        $sql = "SELECT t2.id, t2.nome_emissora, t2.valor, count(*) as total 
+        $sql = "SELECT DISTINCT t2.id, t2.nome_emissora, t2.valor, count(*) as total 
                 FROM noticia_tv t1
                 JOIN emissora_web t2 ON t2.id = t1.emissora_id 
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 4 AND t3.deleted_at IS NULL
@@ -796,7 +796,7 @@ class NoticiaTvController extends Controller
 
         $inconsistencias = DB::select($sql);
 
-        $sql = "SELECT t2.id, t2.nome_programa, t2.valor_segundo, count(*) as total 
+        $sql = "SELECT DISTINCT t2.id, t2.nome_programa, t2.valor_segundo, count(*) as total 
                 FROM noticia_tv t1
                 LEFT JOIN programa_emissora_web t2 ON t2.id = t1.programa_id 
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 4 AND t3.deleted_at IS NULL
@@ -809,18 +809,15 @@ class NoticiaTvController extends Controller
 
         $programas = DB::select($sql);
 
-        $sql = "SELECT t1.id, t2.nome_emissora, t1.emissora_id, t2.valor, valor_retorno, sinopse, duracao, dt_noticia, nome_programa, t3.id AS id_programa 
-                FROM noticia_tv t1
-                LEFT JOIN emissora_web t2 ON t2.id = t1.emissora_id 
-                LEFT JOIN programa_emissora_web t3 ON t3.id = t1.programa_id
-                JOIN noticia_cliente t4 ON t4.noticia_id = t1.id AND tipo_id = 4 AND t4.deleted_at IS NULL
-                WHERE valor_retorno IS NULL
-                AND dt_noticia > '2025-05-01'
-                AND t1.deleted_at IS NULL
-                AND t4.deleted_at IS NULL
-                ORDER BY nome_emissora";
-
-        $noticias = DB::select($sql);
+        $noticias = NoticiaTv::whereNull('valor_retorno')
+                        ->whereHas('clientes', function($q){
+                            $q->where('noticia_cliente.tipo_id', 4);
+                        })
+                        ->whereHas('emissora', function($q){
+                            $q->where('emissora_web.id_situacao', 1);
+                        })
+                        ->where('dt_noticia', '>', '2025-05-01')
+                        ->get();
 
         return view('noticia-tv/retorno', compact('total_nulos','inconsistencias','programas','noticias'));
     }
