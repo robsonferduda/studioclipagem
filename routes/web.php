@@ -341,6 +341,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('tags/cadastrar','TagController@cadastrar');
 	Route::get('tags/{id}/remover','TagController@destroy');
 
+	Route::get('tv/noticias/limpar-filtros', 'NoticiaTvController@limparFiltrosTv');
 	Route::get('tv/dashboard','NoticiaTvController@dashboard');
 	Route::match(array('GET', 'POST'),'tv/emissoras','EmissoraTvController@index');
 	Route::get('tv/emissoras/editar/{id}','EmissoraTvController@editar');

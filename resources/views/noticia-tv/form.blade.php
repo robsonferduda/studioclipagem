@@ -236,6 +236,37 @@
             var token = $('meta[name="csrf-token"]').attr('content');
             var cd_emissora = $("#cd_emissora").val();
             var cliente_id = $("#cliente_id").val();
+
+            $(document).on('change', '#duracao', function() {
+
+                var valor = $('#valor_segundo').data("valor");
+                calculaTempo(valor);
+
+            });
+
+            function calculaTempo(valor){
+
+                let tempo = $('#duracao').val();
+                let valorPorSegundo = parseFloat(valor);
+
+                if(tempo){
+                    if (!tempo.match(/^\d{2}:\d{2}:\d{2}$/)) {
+                    alert("Formato de tempo inválido. Use HH:MM:SS.");
+                    return;
+                    }
+
+                    let partes = tempo.split(':');
+                    let horas = parseInt(partes[0], 10);
+                    let minutos = parseInt(partes[1], 10);
+                    let segundos = parseInt(partes[2], 10);
+
+                    let totalSegundos = (horas * 3600) + (minutos * 60) + segundos;
+
+                    let valorTotal = totalSegundos * valorPorSegundo;
+
+                    $('#valor_retorno').val(valorTotal.toFixed(2));
+                }
+            }
             
             $(".dropzone").dropzone({ 
                 acceptedFiles: ".mp4",

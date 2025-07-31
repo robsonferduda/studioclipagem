@@ -91,6 +91,14 @@ class NoticiaTvController extends Controller
         return view('noticia-tv/index', compact('dados','emissora','clientes','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo'));
     }
 
+    public function limparFiltrosTv()
+    {
+        foreach (['tipo_data','dt_inicial','dt_final','cliente','fontes','termo'] as $filtro) {
+            Session::forget('tv_filtro_' . $filtro);
+        }
+        return redirect('noticias/tv');
+    }
+
     public function monitoramento(Request $request)
     {
         Session::put('sub-menu','noticia-tv/monitoramento');

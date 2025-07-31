@@ -65,7 +65,8 @@
                                         <input type="text" class="form-control" name="termo" id="termo" minlength="3" placeholder="Termo" value="{{ $termo }}">
                                     </div>
                                 </div>
-                                <div class="col-md-12 checkbox-radios mb-0">
+                                <div class="col-md-12 center mb-0">
+                                    <a href="{{ url('tv/noticias/limpar-filtros') }}" class="btn btn-warning btn-limpar mb-3"><i class="fa fa-refresh"></i> Limpar</a>
                                     <button type="submit" id="btn-find" class="btn btn-primary mb-3"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
