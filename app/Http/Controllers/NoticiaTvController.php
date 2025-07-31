@@ -702,6 +702,9 @@ class NoticiaTvController extends Controller
                         ->whereHas('clientes', function($q){
                             $q->where('noticia_cliente.tipo_id', 4);
                         })
+                        ->whereHas('emissora', function($q){
+                            $q->where('emissora_web.fl_ativo', true);
+                        })
                         ->where('dt_noticia', '>', '2025-05-01')
                         ->count();
 
