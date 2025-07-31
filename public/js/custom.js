@@ -13,7 +13,9 @@ $(document).ready(function() {
     $('.monetario').mask("#######0.00" , {reverse: true});
     $('#nu_valor').mask("#######0.00" , {reverse: true});
     $('.valor').mask("#######0.00" , {reverse: true});
-    $('.retorno_midia').mask("#######0.00" , {reverse: true});
+    $('.retorno_midia').mask('#.##0,00', {reverse: true});
+
+
     
     var host =  $('meta[name="base-url"]').attr('content');
     var token = $('meta[name="csrf-token"]').attr('content');

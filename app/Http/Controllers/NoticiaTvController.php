@@ -44,15 +44,36 @@ class NoticiaTvController extends Controller
     {
         Session::put('sub-menu','noticias-tv');
 
+        // Lista de campos de filtro que você deseja manter em sessão
+        $filtros = [
+            'tipo_data',
+            'dt_inicial',
+            'dt_final',
+            'cliente',
+            'fontes',
+            'termo'
+        ];
+
+        // Salva cada filtro na sessão, se vier na requisição
+        foreach ($filtros as $filtro) {
+            if ($request->has($filtro)) {
+                Session::put('tv_filtro_' . $filtro, $request->input($filtro));
+            }
+        }
+
         $emissora = EmissoraWeb::orderBy('nome_emissora')->get();
         $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
 
-        $tipo_data = ($request->tipo_data) ? $request->tipo_data : 'dt_cadastro';
-        $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
-        $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
-        $cliente_selecionado = ($request->cliente) ? $request->cliente : null;
-        $fonte = ($request->fontes) ? $request->fontes : null;
-        $termo = ($request->termo) ? $request->termo : null;
+        // Recupera os filtros da sessão (ou da request, se vier)
+        $tipo_data = Session::get('tv_filtro_tipo_data', $request->input('tipo_data', 'dt_cadastro'));
+        $dt_inicial = Session::get('tv_filtro_dt_inicial', $request->input('dt_inicial', date('d/m/Y')));
+        $dt_final = Session::get('tv_filtro_dt_final', $request->input('dt_final', date('d/m/Y')));
+        $cliente_selecionado = Session::get('tv_filtro_cliente', $request->input('cliente'));
+        $fonte = Session::get('tv_filtro_fontes', $request->input('fontes'));
+        $termo = Session::get('tv_filtro_termo', $request->input('termo'));
+
+        $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $dt_inicial)->format('Y-m-d');
+        $dt_final = $this->carbon->createFromFormat('d/m/Y', $dt_final)->format('Y-m-d');
 
         $dados = NoticiaTv::with('emissora')
                     ->when($cliente_selecionado, function ($query) use ($cliente_selecionado) { 
@@ -376,7 +397,14 @@ class NoticiaTvController extends Controller
                 throw new \Exception('Notícia não encontrada');
             }
 
+            $valor_retorno = $request->input('valor_retorno'); // Ex: "1.234,56"
+            $valor_retorno = str_replace('.', '', $valor_retorno);     // Remove pontos (milhar)
+            $valor_retorno = str_replace(',', '.', $valor_retorno);    // Troca vírgula por ponto
+            $valor_retorno = floatval($valor_retorno); 
+
             $emissora = EmissoraWeb::find($request->emissora);
+
+            
             
             $dados = array('dt_cadastro' => ($request->dt_cadastro) ? $carbon->createFromFormat('d/m/Y', $request->dt_cadastro)->format('Y-m-d') : date("Y-m-d"),
                            'duracao' => $request->duracao,
@@ -386,7 +414,7 @@ class NoticiaTvController extends Controller
                            'programa_id' => $request->programa_id,
                            'arquivo' => $request->arquivo,
                            'sinopse' => $request->sinopse,
-                           'valor_retorno' => $request->valor_retorno,
+                           'valor_retorno' => $valor_retorno,
                            'cd_estado' => $request->cd_estado,
                            'cd_usuario' => Auth::user()->id,
                            'cd_cidade' => $request->cd_cidade,
@@ -395,6 +423,23 @@ class NoticiaTvController extends Controller
             ); 
 
             if($noticia->update($dados)){
+
+                if((is_null($noticia->valor_retorno) || $noticia->valor_retorno == 0) and $noticia->duracao != null) {
+                    
+                    $duracao = $noticia->duracao;
+                    $duracaoEmSegundos = \Carbon\Carbon::parse($duracao)->hour * 3600
+                            + \Carbon\Carbon::parse($duracao)->minute * 60
+                            + \Carbon\Carbon::parse($duracao)->second;
+
+                    $valor_retorno_emissora = ($noticia->emissora) ? $duracaoEmSegundos * $noticia->emissora->valor : null;
+                    $valor_retorno_programa = ($noticia->programa) ? $duracaoEmSegundos * $noticia->programa->valor_segundo : null;
+
+                    $valor_retorno = ($valor_retorno_programa) ? $valor_retorno_programa : $valor_retorno_emissora;
+
+                    $noticia->valor_retorno = $valor_retorno;
+                    $noticia->save();
+
+                }
 
                 $tags = collect($request->tags)->mapWithKeys(function($tag){
                     return [$tag => ['tipo_id' => 4]];
@@ -430,6 +475,8 @@ class NoticiaTvController extends Controller
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
 
         } catch (\Exception $e) {
+
+            dd($e);
 
             $retorno = array('flag' => false,
                              'msg' => "Ocorreu um erro ao atualizar o registro");

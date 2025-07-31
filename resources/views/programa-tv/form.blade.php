@@ -95,7 +95,7 @@
                         <div class="col-md-2 col-sm-6">
                             <div class="form-group">
                                 <label>Valor do Segundo</label>
-                                <input type="text" class="form-control monetario" name="valor_segundo" id="valor_segundo" placeholder="0.00" value="{{ ($programa) ? $programa->valor_segundo : old('valor_segundo') }}">
+                                <input type="text" class="form-control retorno_midia" name="valor_segundo" id="valor_segundo" placeholder="0,00" value="{{ ($programa) ? $programa->valor_segundo : old('valor_segundo') }}">
                             </div>
                         </div>
                         <div class="col-md-12">

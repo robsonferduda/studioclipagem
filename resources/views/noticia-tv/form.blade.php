@@ -130,7 +130,7 @@
                         <div class="row">
                             <div class="col-md-12 col-sm-12">
                                 <div class="form-group">
-                                    <label>Retorno</label>
+                                    <label>Retorno <span class="text-info">Digite somente números. Formato 1.111,00</span></label>
                                     <input type="text" class="form-control retorno_midia" name="valor_retorno" id="valor_retorno" placeholder="Retorno" value="{{ ($dados and $dados->valor_retorno) ? $dados->valor_retorno : old('valor_retorno') }}">
                                 </div>                                    
                             </div>
