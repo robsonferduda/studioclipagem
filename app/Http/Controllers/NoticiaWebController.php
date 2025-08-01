@@ -886,6 +886,6 @@ class NoticiaWebController extends Controller
     public function getPrint($id)
     {
         $noticia = NoticiaWeb::find($id);
-        return Storage::disk('s3')->temporaryUrl($noticia->path_screenshot, '+30 minutes');
+        return redirect(Storage::disk('s3')->temporaryUrl($noticia->path_screenshot, '+30 minutes'));
     } 
 }
