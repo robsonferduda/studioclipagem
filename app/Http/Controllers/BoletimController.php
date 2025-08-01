@@ -479,6 +479,10 @@ class BoletimController extends Controller
             if($noticia_web->ds_caminho_img){
                 $path = 'img/noticia-web/'.$noticia_web->ds_caminho_img;
             }else{
+
+                $path = 'noticia/web/print/'.$noticia_web->id;
+
+                /*
                 try {
                     $path = Storage::disk('s3')->temporaryUrl($noticia_web->path_screenshot, '+30 minutes');
                 } catch (Exception $e) {
@@ -487,7 +491,7 @@ class BoletimController extends Controller
                 } catch (\Throwable $e){
                     $path = '';
                     $erro = 'Erro na imagem';
-                }
+                }*/
             }
 
             $area = (NoticiaCliente::where('noticia_id', $noticia_web->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 2)->first() and NoticiaCliente::where('noticia_id', $noticia_web->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 2)->first()->area) ?

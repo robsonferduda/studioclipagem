@@ -882,4 +882,10 @@ class NoticiaWebController extends Controller
 
         return redirect('noticia/web/retorno')->withInput();
     }
+
+    public function getPrint($id)
+    {
+        $noticia = NoticiaWeb::find($id);
+        return Storage::disk('s3')->temporaryUrl($noticia->path_screenshot, '+30 minutes');
+    } 
 }
