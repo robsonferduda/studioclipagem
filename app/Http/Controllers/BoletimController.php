@@ -606,7 +606,7 @@ class BoletimController extends Controller
             return strtotime($b['data_noticia']) <=> strtotime($a['data_noticia']);
         });
 
-        if($boletim->id_cliente == 307){
+        if($boletim->id_cliente == 307 or $boletim->id_cliente == 217){
             $dados = $noticias;
             return view('boletim/detalhes-area', compact('boletim','dados'));
         }else{
@@ -646,7 +646,7 @@ class BoletimController extends Controller
             return strtotime($b['data_noticia']) <=> strtotime($a['data_noticia']);
         });
 
-        if($boletim->id_cliente == 307){
+        if($boletim->id_cliente == 307 or $boletim->id_cliente == 217){
             $dados = $noticias;
             return view('boletim/visualizar-area', compact('boletim','dados'));
         }else{
@@ -686,7 +686,7 @@ class BoletimController extends Controller
             return strtotime($b['data_noticia']) <=> strtotime($a['data_noticia']);
         });
 
-        if($boletim->id_cliente == 307){
+        if($boletim->id_cliente == 307 or $boletim->id_cliente == 217){
             $dados = $noticias;
             return view('boletim/outlook-area', compact('boletim','dados'));
         }else{
@@ -751,7 +751,7 @@ class BoletimController extends Controller
             return strtotime($b['data_noticia']) <=> strtotime($a['data_noticia']);
         });
 
-        if($boletim->id_cliente == 307){
+        if($boletim->id_cliente == 307 or $boletim->id_cliente == 217){
 
             $view = 'boletim.outlook-area';
 
