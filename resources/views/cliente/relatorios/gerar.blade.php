@@ -1062,8 +1062,10 @@
             // Mostrar loading
             $('#btnGerarRelatorio').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Gerando...');
 
+            var host =  $('meta[name="base-url"]').attr('content');
+
             $.ajax({
-                url: window.host + '/cliente/relatorios/gerar-pdf',
+                url: host + '/cliente/relatorios/gerar-pdf',
                 type: 'POST',
                 data: formData,
                 dataType: 'json',
@@ -1076,7 +1078,7 @@
                         console.log('Download URL:', response.download_url);
                         
                         // Download direto usando a nova rota que força download
-                        var downloadUrl = response.download_url || (window.host + '/cliente/relatorios/download/' + response.arquivo);
+                        var downloadUrl = response.download_url || (host + '/cliente/relatorios/download/' + response.arquivo);
                         var fileName = response.arquivo || 'relatorio.pdf';
                         console.log('Iniciando download de:', downloadUrl);
                         console.log('Nome do arquivo:', fileName);
@@ -1388,6 +1390,11 @@
         // Adicionar token CSRF
         formData._token = $('meta[name="csrf-token"]').attr('content');
 
+        var cliente = $("#id_cliente").val();
+        if(cliente){
+            formData.cliente = cliente;
+        }
+
         // Mostrar loading no botão da aba
         $('#btnGerarRelatorioWebAba').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Gerando...');
 
@@ -1461,11 +1468,18 @@
         // Adicionar token CSRF
         formData._token = $('meta[name="csrf-token"]').attr('content');
 
+        var cliente = $("#id_cliente").val();
+        if(cliente){
+            formData.cliente = cliente;
+        }
+
         // Mostrar loading no botão da aba
         $('#btnGerarRelatorioImpressoAba').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Gerando...');
 
+        var host =  $('meta[name="base-url"]').attr('content');
+
         $.ajax({
-            url: window.host + '/cliente/relatorios/gerar-pdf-impresso',
+            url: host + '/cliente/relatorios/gerar-pdf-impresso',
             type: 'POST',
             data: formData,
             dataType: 'json',
@@ -1478,7 +1492,7 @@
                     console.log('Download URL:', response.download_url);
                     
                     // Download direto usando a nova rota que força download
-                    var downloadUrl = response.download_url || (window.host + '/cliente/relatorios/download/' + response.arquivo);
+                    var downloadUrl = response.download_url || (host + '/cliente/relatorios/download/' + response.arquivo);
                     var fileName = response.arquivo || 'relatorio-impresso.pdf';
                     console.log('Iniciando download de:', downloadUrl);
                     console.log('Nome do arquivo:', fileName);
