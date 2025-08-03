@@ -898,6 +898,12 @@ class ClienteController extends Controller
             $idsImpresso = $request->input('ids_impresso', []);
             $idsTv = $request->input('ids_tv', []);
             $idsRadio = $request->input('ids_radio', []);
+
+            if(Auth::user()->hasRole('cliente')){
+                $clienteId = $this->client_id;
+            }else{
+                $clienteId = $request->cliente;
+            }
             
             // Validações
             if (!$clienteId || !$dataInicio || !$dataFim) {

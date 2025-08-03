@@ -1054,6 +1054,11 @@
             // Adicionar token CSRF
             formData._token = $('meta[name="csrf-token"]').attr('content');
 
+            var cliente = $("#id_cliente").val();
+            if(cliente){
+                formData.cliente = cliente;
+            }
+
             // Mostrar loading
             $('#btnGerarRelatorio').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Gerando...');
 
