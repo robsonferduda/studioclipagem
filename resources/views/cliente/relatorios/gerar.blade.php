@@ -629,6 +629,7 @@
 
         // Pesquisar notícias
         function pesquisarNoticias() {
+
             var formData = {
                 data_inicio: converterDataParaISO($('#dt_inicial').val()),
                 data_fim: converterDataParaISO($('#dt_final').val()),
@@ -693,6 +694,11 @@
             // Adicionar token CSRF
             formData._token = $('meta[name="csrf-token"]').attr('content');
 
+            var cliente = $("#id_cliente").val();
+            if(cliente){
+                formData.cliente = cliente;
+            }
+            
             // Adicionar termo de busca
             formData.termo = $('#termo').val().trim();
 

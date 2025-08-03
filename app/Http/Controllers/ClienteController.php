@@ -779,7 +779,12 @@ class ClienteController extends Controller
         
         try {
             // Usa o cliente logado da sessão
-            $clienteId = $this->client_id;
+            if(Auth::user()->hasRole('cliente')){
+                $clienteId = $this->client_id;
+            }else{
+                $clienteId = $request->cliente;
+            }
+
             $dataInicio = $request->input('data_inicio');
             $dataFim = $request->input('data_fim');
             $termo = $request->input('termo', null);
