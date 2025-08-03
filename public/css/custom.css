@@ -312,3 +312,11 @@ div .box-horario:not(:last-child) {
 .btn-excluir-noticia:hover{
     cursor: pointer;
 }
+#sortable-areas tr {
+    transition: all 0.2s ease;
+}
+
+.ui-sortable-helper {
+    background-color: #f0f8ff !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}

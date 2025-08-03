@@ -17,6 +17,7 @@ class ClienteArea extends Model
         'area_id',
         'expressao',
         'ativo',
+        'ordem'
     ];
 
     public function cliente()

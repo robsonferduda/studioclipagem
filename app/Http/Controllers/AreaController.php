@@ -119,6 +119,7 @@ class AreaController extends Controller
             $cliente_area = ClienteArea::where('id', $id)->first();
             $cliente_area->area_id = $request->area;
             $cliente_area->ativo = $request->situacao;
+            $cliente_area->ordem = (int) $request->ordem;
             $cliente_area->expressao = $request->expressao;
             $cliente_area->save();
 
@@ -127,10 +128,34 @@ class AreaController extends Controller
             $created = ClienteArea::create([
                 'cliente_id' => $request->cliente,
                 'area_id' => $request->area,
+                'ordem' => (int) $request->ordem,
                 'expressao' => $request->expressao,
                 'ativo' => $request->situacao
             ]);
         }
+    }
+
+    public function alternarSituacao($id)
+    {
+        $area = DB::table('area_cliente')->where('id', $id)->first();
+
+        if (!$area) {
+            return response()->json(['success' => false, 'message' => 'Área não encontrada.'], 404);
+        }
+
+        $novoValor = !$area->ativo;
+
+        DB::table('area_cliente')
+            ->where('id', $id)
+            ->update(['ativo' => $novoValor]);
+
+        return response()->json([
+            'success' => true,
+            'ativo' => $novoValor,
+            'badge' => $novoValor
+                ? '<span class="badge badge-pill badge-success">ATIVO</span>'
+                : '<span class="badge badge-pill badge-danger">INATIVO</span>'
+        ]);
     }
 
     public function executarWeb()

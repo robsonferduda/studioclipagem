@@ -2045,4 +2045,16 @@ print('SUCCESS' if success else 'ERROR')
             ], 500);
         }
     }
+
+    public function reordenarAreas(Request $request, $id)
+    {
+        foreach ($request->ordem as $item) {
+            DB::table('area_cliente')
+                ->where('id', $item['id'])
+                ->update(['ordem' => $item['ordem']]);
+        }
+
+        return response()->json(['status' => 'ok']);
+    }
+
 }

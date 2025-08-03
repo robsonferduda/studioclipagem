@@ -86,7 +86,9 @@ Route::middleware(['web'])->group(function () {
 	Route::get('cliente/relatorios/noticia/{id}/{tipo}','ClienteController@buscarNoticia');
 	Route::post('cliente/relatorios/vincular-noticia-area','ClienteController@vincularNoticiaArea');
 	Route::post('cliente/relatorios/upload-imagem','ClienteController@uploadImagem');
-	
+	Route::post('cliente/{id}/areas/reordenar', 'ClienteController@reordenarAreas');
+	Route::post('cliente/area/{id}/toggle-situacao', 'AreaController@alternarSituacao');
+
 	// API routes para dados de relatórios
 	Route::get('api/clientes','ClienteController@getClientesApi');
 	Route::get('api/cliente/validar','ClienteController@validarCliente');

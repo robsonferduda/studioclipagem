@@ -15,6 +15,6 @@ class AreaCliente extends Model implements Auditable
     protected $connection = 'pgsql';
     protected $table = 'area_cliente';
 
-    protected $fillable = ['ordem'];
+    protected $fillable = ['ordem','expressao','ativo'];
 
 }

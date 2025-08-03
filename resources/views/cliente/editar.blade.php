@@ -221,79 +221,100 @@
                             </div>
                         </div>
                     </div>
-                <div class="col-md-12 mt-4">
-                    <p class="mb-1"><i class="fa fa-tags"></i> Áreas do Cliente</p>
-                    {!! Form::open(['id' => 'frm_cliente_edit', 'url' => ['cliente', $cliente->id], 'method' => 'patch', 'files' => true]) !!}
-                        <div class="row">
-                            <input type="hidden" name="id_cliente_area" id="id_cliente_area">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>Áreas</label>
-                                        <select class="form-control" name="area" id="area">
-                                            <option value="">Selecione</option>
+
+                    <div class="col-md-12 mt-4">
+                        <p class="mb-1"><i class="fa fa-tags"></i> Áreas do Cliente</p>
+                        {!! Form::open(['id' => 'frm_area_edit', 'url' => ['cliente', $cliente->id], 'method' => 'patch', 'files' => true]) !!}
+                            <div class="row">
+                                <input type="hidden" name="id_cliente_area" id="id_cliente_area">
+
+                                <div class="col-md-3">
+                                    <label>Área</label>
+                                    <select class="form-control" name="area" id="area">
+                                        <option value="">Selecione</option>
                                         @foreach($areas as $area)
-                                            <option value="{{ $area->id }}" >{{ $area->descricao }}</option>
+                                            <option value="{{ $area->id }}">{{ $area->descricao }}</option>
                                         @endforeach
-                                        </select>
+                                    </select>
                                 </div>
-                            </div>
-                            <div class="col-md-2 col-sm-6">
-                                <div class="form-group">
+
+                                <div class="col-md-2">
                                     <label>Situação</label>
-                                        <select class="form-control" name="situacao" id="situacao">
-                                            <option value="">Selecione</option>
-                                            <option value="true">Ativo</option>
-                                            <option value="false">Inativo</option>
-                                        </select>
+                                    <select class="form-control" name="situacao" id="situacao">
+                                        <option value="">Selecione</option>
+                                        <option value="true">Ativo</option>
+                                        <option value="false">Inativo</option>
+                                    </select>
                                 </div>
-                            </div>
-                            <div class="col-md-5 col-sm-12">
-                                <div class="form-group">
+
+                                <div class="col-md-4">
                                     <label>Expressão</label>
                                     <input type="text" class="form-control" name="expressao" id="expressao">
                                 </div>
-                            </div>
-                            <div class="col-md-1">
-                                <div class="form-group mt-3">
-                                    <button type="button" class="btn btn-success btn-add-area">Salvar</button>
+
+                                <div class="col-md-1">
+                                    <label>Ordem</label>
+                                    <input type="number" class="form-control" name="ordem" id="ordem" min="1" step="1">
+                                </div>
+
+                                <div class="col-md-2 mt-3">                                    
+                                    <button type="button" class="btn btn-success btn-sm btn-block btn-add-area"><i class="fa fa-save"></i> Salvar</button>
                                 </div>
                             </div>
-                        </div>
-                    {!! Form::close() !!}
-                    <div class="row">
-                        @foreach ($cliente->areas->sortBy('created_at') as $area_cliente)
-                            <div class="col-lg-12 col-sm-12">
-                                <div class="card">
-                                    <div class="card-content ">
-                                        <div class="row px-3">                                        
-                                            <div class="col-lg-9 col-md-9 col-sm-12">
-                                                <p><strong>{{ $area_cliente->area->descricao }}</strong></p>
-                                                <p>{{ $area_cliente->expressao }}</p>
-                                            </div>
-                                            <div class="col-lg-3 col-md-3 col-sm-12">
-                                                <div class="row">
-                                                    <div class="col-lg-12 col-sm-12">
-                                                        <a class="pull-right" href="{{ url('cliente/area/'.$area_cliente->id.'/situacao') }}">{!! ($area_cliente->ativo) ? '<span class="badge badge-pill badge-success">ATIVO</span>' : '<span class="badge badge-pill badge-danger">INATIVO</span>' !!}</a>   
-                                                    </div>
-                                                    <div class="col-lg-12 col-sm-12">                                            
-                                                        <a title="Excluir" href="{{ url('cliente/area/'.$area_cliente->id.'/remover') }}" class="btn btn-danger btn-link btn-icon btn-excluir pull-right"><i class="fa fa-trash fa-2x"></i></a>
-                                                        <a title="Editar" data-id="{{ $area_cliente->id }}" 
-                                                                          data-area="{{ $area_cliente->area_id }}" 
-                                                                          data-situacao="{{ $area_cliente->ativo }}" 
-                                                                          data-expressao="{{ $area_cliente->expressao }}" 
-                                                        class="btn btn-info btn-link btn-icon pull-right btn-editar-area">
-                                                            <i class="fa fa-edit fa-2x text-info"></i>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
+                        {!! Form::close() !!}
+
+                        <table class="table table-bordered table-striped mt-3">
+                            <thead class="text-primary">
+                                <tr>
+                                    <th class="center">Ordem</th>
+                                    <th>Área</th>
+                                    <th>Expressão</th>
+                                    <th class="center">Situação</th>
+                                    <th class="center">Ordem</th>
+                                    <th class="center">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sortable-areas">
+                                @forelse ($cliente->areas->sortBy('ordem') as $index => $area_cliente)
+                                    <tr data-id="{{ $area_cliente->id }}">
+                                        <td class="handle center" style="cursor: move;">☰</td>
+                                        <td>{{ $area_cliente->area->descricao }}</td>
+                                        <td>{{ $area_cliente->expressao }}</td>
+                                        <td class="center">
+                                            <a href="javascript:void(0);" 
+                                               class="btn-alternar-situacao" 
+                                               data-id="{{ $area_cliente->id }}" 
+                                               data-ativo="{{ $area_cliente->ativo }}">
+                                               {!! $area_cliente->ativo 
+                                                    ? '<span class="badge badge-pill badge-success">ATIVO</span>' 
+                                                    : '<span class="badge badge-pill badge-danger">INATIVO</span>' !!}
+                                            </a>
+                                        </td>
+                                        <td class="ordem-numero center">{{ $area_cliente->ordem ?? '-' }}</td>
+                                        <td class="td-actions center">
+                                            <button type="button" class="btn btn-link btn-icon text-info btn-editar-area" 
+                                                title="Editar"
+                                                data-id="{{ $area_cliente->id }}"
+                                                data-area="{{ $area_cliente->area_id }}"
+                                                data-situacao="{{ $area_cliente->ativo ? 'true' : 'false' }}"
+                                                data-expressao="{{ $area_cliente->expressao }}"
+                                                data-ordem="{{ $area_cliente->ordem }}">
+                                                <i class="fa fa-edit fa-lg text-info"></i>
+                                            </button>
+                                            <a href="{{ url('cliente/area/'.$area_cliente->id.'/remover') }}" class="btn btn-link btn-icon text-danger btn-excluir" title="Excluir">
+                                                <i class="fa fa-trash fa-lg"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr><td colspan="6" class="text-center">Nenhuma área vinculada.</td></tr>
+                                @endforelse
+                            </tbody>
+                        </table>
                     </div>
-                </div>
+
+               
+           
             </div>
             <div class="card-footer text-center mb-3">
                 <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Salvar</button>
@@ -404,12 +425,114 @@
 
 @endsection
 @section('script')
-    <script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+<script>
+
+    $(function () {
+        $("#sortable-areas").sortable({
+            handle: '.handle',
+            helper: fixWidthHelper,
+            update: function () {
+                let ordem = [];
+                let host =  $('meta[name="base-url"]').attr('content');
+                let cliente = $("#cliente_id").val();
+
+                $('#sortable-areas tr').each(function (index) {
+                    const id = $(this).data('id');
+                    ordem.push({
+                        id: id,
+                        ordem: index + 1
+                    });
+
+                    // Atualiza o número da ordem no TD correspondente
+                    $(this).find('td.ordem-numero').text(index + 1);
+                });
+
+                // Envia a ordem atualizada via AJAX
+                $.ajax({
+                    url: host+'/cliente/'+cliente+'/areas/reordenar',
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        ordem: ordem
+                    },
+                    success: function () {
+                        // Feedback opcional
+                        showToast("Ordem salva com sucesso!");
+                    }
+                });
+            }
+        }).disableSelection();
+
+        // Mantém largura das colunas ao arrastar
+        function fixWidthHelper(e, ui) {
+            ui.children().each(function () {
+                $(this).width($(this).width());
+            });
+            return ui;
+        }
+
+        // Função para mostrar notificação simples
+        function showToast(msg) {
+            let toast = $('<div class="alert alert-success" style="position:fixed; top:20px; right:20px; z-index:9999;">' + msg + '</div>');
+            $('body').append(toast);
+            setTimeout(() => toast.fadeOut(300, () => toast.remove()), 1500);
+        }
+    });
+
+
        
 
         $(document).ready(function() {
             
             let host =  $('meta[name="base-url"]').attr('content');
+
+            $(document).on('click', '.btn-alternar-situacao', function () {
+                const $el = $(this);
+                const id = $el.data('id');
+
+                $.ajax({
+                    url: host+`/cliente/area/${id}/toggle-situacao`,
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            // Atualiza o badge HTML
+                            $el.html(response.badge);
+
+                            // Atualiza o data-ativo
+                            $el.data('ativo', response.ativo);
+
+                            // Feedback suave
+                            showToast('Situação atualizada.');
+                        }
+                    },
+                    error: function () {
+                        alert('Erro ao atualizar situação.');
+                    }
+                });
+            });
+
+            function showToast(msg) {
+                let toast = $('<div class="alert alert-success" style="position:fixed; top:20px; right:20px; z-index:9999;">' + msg + '</div>');
+                $('body').append(toast);
+                setTimeout(() => toast.fadeOut(300, () => toast.remove()), 1500);
+            }
+
+            $(document).on('click', '.btn-editar-area', function () {
+                $('#id_cliente_area').val($(this).data('id'));
+                $('#area').val($(this).data('area'));
+                $('#situacao').val(String($(this).data('situacao')));
+                $('#expressao').val($(this).data('expressao'));
+                $('#ordem').val($(this).data('ordem'));
+
+                // Scrola até o formulário (opcional)
+                $('html, body').animate({
+                    scrollTop: $('#frm_area_edit').offset().top - 50
+                }, 300);
+            });
 
             $(".btn-salvar-usuario-modal").click(function(){
 
@@ -483,6 +606,7 @@
 
                 var id = $("#id_cliente_area").val();
                 var area = $("#area").val();
+                var ordem = $("#ordem").val();
                 var situacao = $("#situacao").val();
                 var expressao = $("#expressao").val();
                 var cliente = $("#cliente_id").val();
@@ -507,6 +631,7 @@
                                 "id": id,
                                 "situacao": situacao,
                                 "expressao": expressao,
+                                "ordem": ordem,
                                 "cliente": cliente
                         },
                         success: function(response) {
