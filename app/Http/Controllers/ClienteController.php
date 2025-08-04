@@ -1274,7 +1274,8 @@ print('SUCCESS' if success else 'ERROR')
                     'success' => true,
                     'message' => 'Relatório web gerado com sucesso',
                     'arquivo' => $nomeArquivo,
-                    'download_url' => url('cliente/relatorios/download/' . $nomeArquivo)
+                    'cliente' => $clienteId,
+                    'download_url' => url('cliente/'.$clienteId.'/relatorios/download/' . $nomeArquivo)
                 ]);
             } else {
                 return response()->json([
@@ -1460,7 +1461,8 @@ print('SUCCESS' if success else 'ERROR')
                     'success' => true,
                     'message' => 'Relatório impresso gerado com sucesso',
                     'arquivo' => $nomeArquivo,
-                    'download_url' => url('cliente/relatorios/download/' . $nomeArquivo)
+                    'cliente' => $clienteId,
+                    'download_url' => url('cliente/'.$clienteId.'/relatorios/download/' . $nomeArquivo)
                 ]);
             } else {
                 return response()->json([
