@@ -263,6 +263,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('noticia/web/atualiza-retorno','NoticiaWebController@calcularValorRetornoWeb');
 	Route::get('noticia/web/retorno','NoticiaWebController@retorno');
 	Route::get('noticia/web/print/{id}','NoticiaWebController@getPrint');
+	Route::get('noticia/web/print','NoticiaWebController@getPrintS3');
 
 	Route::get('noticia/impresso/clientes/{noticia}','NoticiaImpressaController@clientes');
 	

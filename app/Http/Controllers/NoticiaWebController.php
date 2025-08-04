@@ -888,4 +888,38 @@ class NoticiaWebController extends Controller
         $noticia = NoticiaWeb::find($id);
         return redirect(Storage::disk('s3')->temporaryUrl($noticia->path_screenshot, '+30 minutes'));
     } 
+
+    public function getPrintS3()
+    {
+        $sql = "SELECT * 
+                FROM noticias_web t1
+                JOIN noticia_cliente t2 ON t2.noticia_id = t1.id AND t2.tipo_id = 2
+                WHERE t1.ds_caminho_img IS null 
+                AND data_noticia > '2025-07-01'
+                AND t2.cliente_id IN(2,255)";
+
+        $noticias = DB::select($sql);
+
+        foreach ($noticias as $noticia) {
+            if ($noticia->path_screenshot && $noticia->path_screenshot != 'ERROR') {
+                try {
+                    // Baixa o arquivo do S3
+                    $arquivo = Storage::disk('s3')->get($noticia->path_screenshot);
+
+                    // Define o nome do arquivo local
+                    $filename = $noticia->id . ".jpg";
+
+                    // Salva na pasta local de imagens
+                    Storage::disk('web-img')->put($filename, $arquivo);
+
+                    // Atualiza o campo ds_caminho_img
+                    \App\Models\NoticiaWeb::where('id', $noticia->id)
+                        ->update(['ds_caminho_img' => $filename]);
+                } catch (\Exception $e) {
+                    // Log de erro ou tratamento
+                    \Log::error("Erro ao baixar imagem S3 da notícia {$noticia->id}: " . $e->getMessage());
+                }
+            }
+        }
+    }
 }
