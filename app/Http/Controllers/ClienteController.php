@@ -1054,7 +1054,7 @@ class ClienteController extends Controller
                 'message' => 'Relatório gerado com sucesso',
                 'arquivo' => $nomeArquivo,
                 'cliente' => $clienteId,
-                'download_url' => url('cliente/'+$clienteId+'/relatorios/download/' . $nomeArquivo)
+                'download_url' => url('cliente/'.$clienteId.'/relatorios/download/' . $nomeArquivo)
             ]);
             } else {
                 return response()->json([
