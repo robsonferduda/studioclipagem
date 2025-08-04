@@ -891,11 +891,10 @@ class NoticiaWebController extends Controller
 
     public function getPrintS3()
     {
-        $sql = "SELECT * 
+        $sql = "SELECT t1.id, t1.path_screenshot, ds_caminho_img 
                 FROM noticias_web t1
                 JOIN noticia_cliente t2 ON t2.noticia_id = t1.id AND t2.tipo_id = 2
-                WHERE t1.ds_caminho_img IS null 
-                AND data_noticia > '2025-07-01'
+                WHERE data_noticia > '2025-08-01'
                 AND t2.cliente_id IN(2,255)";
 
         $noticias = DB::select($sql);
