@@ -894,7 +894,7 @@ class NoticiaWebController extends Controller
         $sql = "SELECT t1.id, t1.path_screenshot, ds_caminho_img 
                 FROM noticias_web t1
                 JOIN noticia_cliente t2 ON t2.noticia_id = t1.id AND t2.tipo_id = 2
-                WHERE data_noticia > '2025-08-01'
+                WHERE data_noticia > '2025-07-01'
                 AND t2.cliente_id IN(2,255)";
 
         $noticias = DB::select($sql);
