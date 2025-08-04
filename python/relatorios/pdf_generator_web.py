@@ -362,11 +362,7 @@ class PDFGeneratorWeb:
                         try:
                             print(f"🔄 Tentando baixar imagem para notícia {noticia.get('id')}: {ds_caminho_img}...")
                             image_path, success = self._download_image_from_scp(ds_caminho_img)
-
-                            image_path = ds_caminho_img if not success else image_path
-                            print(f"📷 Caminho da imagem: {image_path}")
-
-                            if image_path:
+                            if success and image_path:
                                 try:
                                     print(f"✅ Imagem baixada, processando dimensões...")
                                     # Calcula largura máxima da página (descontando margens)

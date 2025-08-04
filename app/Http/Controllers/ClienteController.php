@@ -888,8 +888,7 @@ class ClienteController extends Controller
     public function gerarRelatorioPDF(Request $request): JsonResponse
     {
         try {
-            // Usa o cliente logado da sessão
-            $clienteId = $this->client_id;
+
             $dataInicio = $request->input('data_inicio');
             $dataFim = $request->input('data_fim');
             
@@ -899,6 +898,7 @@ class ClienteController extends Controller
             $idsTv = $request->input('ids_tv', []);
             $idsRadio = $request->input('ids_radio', []);
 
+            // Usa o cliente logado da sessão ou parâmetro
             if(Auth::user()->hasRole('cliente')){
                 $clienteId = $this->client_id;
             }else{
@@ -1122,10 +1122,16 @@ class ClienteController extends Controller
     public function gerarRelatorioPDFWeb(Request $request): JsonResponse
     {
         try {
-            // Usa o cliente logado da sessão
-            $clienteId = $this->client_id;
+        
             $dataInicio = $request->input('data_inicio');
             $dataFim = $request->input('data_fim');
+
+            // Usa o cliente logado da sessão ou parâmetro
+            if(Auth::user()->hasRole('cliente')){
+                $clienteId = $this->client_id;
+            }else{
+                $clienteId = $request->cliente;
+            }
             
             // IDs das notícias web específicas
             $idsWeb = $request->input('ids_web', []);
@@ -1302,10 +1308,16 @@ print('SUCCESS' if success else 'ERROR')
     public function gerarRelatorioPDFImpresso(Request $request): JsonResponse
     {
         try {
-            // Usa o cliente logado da sessão
-            $clienteId = $this->client_id;
+            
             $dataInicio = $request->input('data_inicio');
             $dataFim = $request->input('data_fim');
+
+            // Usa o cliente logado da sessão ou parâmetro
+            if(Auth::user()->hasRole('cliente')){
+                $clienteId = $this->client_id;
+            }else{
+                $clienteId = $request->cliente;
+            }
             
             // IDs das notícias impressas específicas
             $idsImpresso = $request->input('ids_impresso', []);
