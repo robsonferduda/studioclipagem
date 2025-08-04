@@ -454,16 +454,7 @@ class PDFGeneratorImpresso:
             else:
                 print(f"❌ Arquivo PDF não foi criado: {output_path}")
                 raise Exception("Arquivo PDF não foi gerado")
-            
-            # Limpa arquivos temporários
-            print(f"🧹 Limpando {len(temp_files)} arquivos temporários...")
-            for temp_file in temp_files:
-                try:
-                    os.unlink(temp_file)
-                    print(f"🗑️  Removido: {temp_file}")
-                except Exception as e:
-                    print(f"⚠️  Erro ao remover {temp_file}: {str(e)}")
-            
+                        
             print(f"✅ Relatório de impressos gerado com sucesso: {output_path}")
             return True
             
