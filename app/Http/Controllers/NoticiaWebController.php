@@ -913,8 +913,10 @@ class NoticiaWebController extends Controller
                     Storage::disk('web-img')->put($filename, $arquivo);
 
                     // Atualiza o campo ds_caminho_img
-                    \App\Models\NoticiaWeb::where('id', $noticia->id)
-                        ->update(['ds_caminho_img' => $filename]);
+                    $n = NoticiaWeb::where('id', $noticia->id)->first();
+                    $n->ds_caminho_img = $filename;
+                    $n->save();
+
                 } catch (\Exception $e) {
                     // Log de erro ou tratamento
                     \Log::error("Erro ao baixar imagem S3 da notícia {$noticia->id}: " . $e->getMessage());
