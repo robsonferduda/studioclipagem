@@ -340,7 +340,8 @@ class PDFGeneratorImpresso:
                     if ds_caminho_img:
                         try:
                             print(f"🔄 Tentando baixar imagem para notícia {noticia.get('id')}: {ds_caminho_img}...")
-                            image_path, success = self._download_image_from_scp(ds_caminho_img)
+                            #image_path, success = self._download_image_from_scp(ds_caminho_img) - Alteração para usar caminho remoto
+                            image_path, success = self.remote_image_path+ds_caminho_img, True
                             if success and image_path:
                                 try:
                                     print(f"✅ Imagem baixada, processando dimensões...")
