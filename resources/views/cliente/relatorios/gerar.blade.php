@@ -1078,7 +1078,7 @@
                         console.log('Download URL:', response.download_url);
                         
                         // Download direto usando a nova rota que força download
-                        var downloadUrl = response.download_url || (host + '/cliente/relatorios/download/' + response.arquivo);
+                        var downloadUrl = response.download_url || (host + '/cliente/'+response.cliente+'/relatorios/download/' + response.arquivo);
                         var fileName = response.arquivo || 'relatorio.pdf';
                         console.log('Iniciando download de:', downloadUrl);
                         console.log('Nome do arquivo:', fileName);
