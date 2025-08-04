@@ -917,10 +917,15 @@ class NoticiaWebController extends Controller
                     $n->ds_caminho_img = $filename;
                     $n->save();
 
+                    echo "Imagem da notícia {$noticia->id} baixada com sucesso.<br>";
+
                 } catch (\Exception $e) {
                     // Log de erro ou tratamento
                     \Log::error("Erro ao baixar imagem S3 da notícia {$noticia->id}: " . $e->getMessage());
+                    echo "Erro ao baixar imagem da notícia {$noticia->id}.<br>";
                 }
+            }else{
+                echo "Notícia {$noticia->id} não possui imagem válida.<br>";
             }
         }
     }
