@@ -1082,11 +1082,11 @@ class ClienteController extends Controller
     /**
      * Download de relatório PDF com headers corretos
      */
-    public function downloadRelatorio($arquivo)
+    public function downloadRelatorio($cliente, $arquivo)
     {
         try {
             // Usa o cliente logado da sessão
-            $clienteId = $this->client_id;
+            $clienteId = $cliente;
             
             if (!$clienteId) {
                 abort(403, 'Acesso negado');
