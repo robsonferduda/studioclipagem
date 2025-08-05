@@ -572,10 +572,13 @@ class BoletimController extends Controller
 
         }
 
+        $cliente = Cliente::where('id', $boletim->id_cliente)->first();
+
         $dados['impresso'] = $noticias_impresso;
         $dados['web'] = $noticias_web;
         $dados['radio'] = $noticias_radio;
         $dados['tv'] = $noticias_tv;
+        $dados['fl_print'] = $cliente->fl_print;
 
         return $dados;
 
