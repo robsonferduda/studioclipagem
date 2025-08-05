@@ -783,6 +783,7 @@ class BoletimController extends Controller
                       "noticias_web" => $noticias_web,
                       "noticias_radio" => $noticias_radio,
                       "noticias_tv" => $noticias_tv, 
+                      "dados" => $dados,
                       "boletim" => $boletim);
 
               $htmlContent = view('boletim.outlook', [
