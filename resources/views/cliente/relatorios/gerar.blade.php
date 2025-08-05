@@ -711,7 +711,7 @@
                 dataType: 'json',
                 timeout: 30000, // 30 segundos de timeout
                 headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') 
                 },
                 success: function(response) {
                     console.log('Resposta recebida:', response);
