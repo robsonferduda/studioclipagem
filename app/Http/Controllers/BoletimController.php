@@ -613,6 +613,8 @@ class BoletimController extends Controller
             return strtotime($b['data_noticia']) <=> strtotime($a['data_noticia']);
         });
 
+        $noticias['fl_print'] = $dados['fl_print'];
+
         if($boletim->id_cliente == 307 or $boletim->id_cliente == 217){
             $dados = $noticias;
             return view('boletim/detalhes-area', compact('boletim','dados'));
@@ -694,6 +696,8 @@ class BoletimController extends Controller
             // Por fim, data_noticia (mais recente primeiro)
             return strtotime($b['data_noticia']) <=> strtotime($a['data_noticia']);
         });
+
+        $noticias['fl_print'] = $dados['fl_print'];
 
         if($boletim->id_cliente == 307 or $boletim->id_cliente == 217){
             $dados = $noticias;

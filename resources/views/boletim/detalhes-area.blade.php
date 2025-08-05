@@ -136,7 +136,7 @@
                                 @endif
                                 <p style="margin-bottom: 0px; margin-top: 0px;"><strong>Sinopse:</strong> {!! $noticia['sinopse'] !!}</p>
                                 <p style="margin-bottom: 0px; margin-top: 0px;"><strong>Link:</strong><a href="{{ $noticia['url_noticia'] }}" target="_blank"> Acesse</a></p>
-                                @if($dados->fl_print)
+                                @if($dados['fl_print'])
                                     <p style="margin-bottom: 10px; margin-top: 0px;"><strong>Print:</strong><a href="{{ asset($noticia['path_midia']) }}" target="_blank"> Veja</a></p>
                                 @endif
                             </div>                            
