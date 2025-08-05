@@ -661,7 +661,7 @@ class BoletimController extends Controller
             $dados = $noticias;
             return view('boletim/visualizar-area', compact('boletim','dados'));
         }else{
-            return view('boletim/visualizar', compact('boletim','noticias_impresso','noticias_web','noticias_radio','noticias_tv'));
+            return view('boletim/visualizar', compact('dados','boletim','noticias_impresso','noticias_web','noticias_radio','noticias_tv'));
         }
     }
 
