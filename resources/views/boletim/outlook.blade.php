@@ -36,7 +36,7 @@
                 @if(count($noticias_impresso) > 0)
                     <p style="text-transform: uppercase; font-weight: 600;"><i class="fa fa-newspaper-o"></i> Clipagens de Jornal</p>
                     @foreach($noticias_impresso as $key => $noticia)
-                        <p style="margin-bottom: 0px; margin-top: 0px;"><strong>Título:</strong> {!! ($noticia['titulo']) ? : '<span class="text-danger">Notícia sem título</span>' !!}</p>
+                        <p style="margin-bottom: 0px; margin-top: 0px; font-weight: bold;"><strong>Título:</strong> {!! ($noticia['titulo']) ? : '<span class="text-danger">Notícia sem título</span>' !!}</p>
                         <p style="margin-bottom: 0px; margin-top: 0px;"><strong>Data:</strong> {{ date('d/m/Y', strtotime($noticia['data_noticia'])) }}</p>
                         <p style="margin-bottom: 0px; margin-top: 0px;"><strong>Veículo:</strong> {{ $noticia['fonte'] }}</p>
                         @if($noticia['secao'])
@@ -51,7 +51,7 @@
                     <p style="text-transform: uppercase; font-weight: 600;"><i class="fa fa-globe"></i> Clipagens de Web</p>
                     @foreach($noticias_web as $key => $noticia)
                             <div style="border-bottom: 1px solid #e3e3e3; margin-bottom: 10px; padding-bottom: 10px;">
-                                <p style="margin-bottom: 0px; margin-top: 0px;"><strong>Título:</strong> {!! ($noticia['titulo']) ? : '<span class="text-danger">Notícia sem título</span>' !!}</p>
+                                <p style="margin-bottom: 0px; margin-top: 0px; font-weight: bold;"><strong>Título:</strong> {!! ($noticia['titulo']) ? : '<span class="text-danger">Notícia sem título</span>' !!}</p>
                                 <p style="margin-bottom: 0px; margin-top: 0px;"><strong>Data:</strong> {{ date('d/m/Y', strtotime($noticia['data_noticia'])) }}</p>
                                 <p style="margin-bottom: 0px; margin-top: 0px;"><strong>Veículo:</strong> {{ $noticia['fonte'] }}</p>
                                 @if($noticia['secao'])
@@ -59,7 +59,7 @@
                                 @endif
                                 <p style="margin-bottom: 0px; margin-top: 0px;"><strong>Sinopse:</strong> {!! $noticia['sinopse'] !!}</p>
                                 <p style="margin-bottom: 0px; margin-top: 0px;"><strong>Link:</strong><a href="{{ $noticia['url_noticia'] }}" target="_blank"> Acesse</a></p>
-                                @if($dados['fl_print'])
+                                @if($fl_print)
                                     <p style="margin-bottom: 10px; margin-top: 0px;"><strong>Print:</strong><a href="{{ asset($noticia['path_midia']) }}" target="_blank"> Veja</a></p>
                                 @endif
                             </div>

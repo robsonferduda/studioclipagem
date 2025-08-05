@@ -57,7 +57,7 @@
                         @endif
                         <p style="margin-bottom: 0px;"><strong>Sinopse:</strong> {!! $noticia['sinopse'] !!}</p>
                         <p style="margin-bottom: 0px;"><strong>Link:</strong><a href="{{ $noticia['url_noticia'] }}" target="_blank"> Acesse</a></p>
-                        @if($dados['fl_print'])
+                        @if($fl_print)
                             <p style="margin-bottom: 10px;">
                                 <strong>Print:</strong>
                                 @if($noticia['erro'])

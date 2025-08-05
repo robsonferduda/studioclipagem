@@ -572,14 +572,11 @@ class BoletimController extends Controller
 
         }
 
-        $cliente = Cliente::where('id', $boletim->id_cliente)->first();
-
         $dados['impresso'] = $noticias_impresso;
         $dados['web'] = $noticias_web;
         $dados['radio'] = $noticias_radio;
         $dados['tv'] = $noticias_tv;
-        $dados['fl_print'] = $cliente->fl_print;
-
+        
         return $dados;
 
     }
@@ -588,6 +585,9 @@ class BoletimController extends Controller
     {   
         $boletim = Boletim::where('id', $id)->first();    
         $dados = $this->getDadosBoletim($id);     
+
+        $cliente = Cliente::where('id', $boletim->id_cliente)->first();
+        $fl_print = $cliente->fl_print;
 
         $noticias_impresso = $dados['impresso'];
         $noticias_web = $dados['web']; 
@@ -613,13 +613,11 @@ class BoletimController extends Controller
             return strtotime($b['data_noticia']) <=> strtotime($a['data_noticia']);
         });
 
-        $noticias['fl_print'] = $dados['fl_print'];
-
         if($boletim->id_cliente == 307 or $boletim->id_cliente == 217){
             $dados = $noticias;
-            return view('boletim/detalhes-area', compact('boletim','dados'));
+            return view('boletim/detalhes-area', compact('boletim','dados','fl_print'));
         }else{
-            return view('boletim/detalhes', compact('boletim','noticias_impresso','noticias_web','noticias_radio','noticias_tv'));
+            return view('boletim/detalhes', compact('boletim','noticias_impresso','noticias_web','noticias_radio','noticias_tv','fl_print'));
         }      
     }
 
@@ -628,6 +626,9 @@ class BoletimController extends Controller
         $boletim = Boletim::where('id', $id)->first(); 
         $boletim->total_views = $boletim->total_views + 1;
         $boletim->save();
+
+        $cliente = Cliente::where('id', $boletim->id_cliente)->first();
+        $fl_print = $cliente->fl_print;
 
         $dados = $this->getDadosBoletim($id);
 
@@ -655,13 +656,11 @@ class BoletimController extends Controller
             return strtotime($b['data_noticia']) <=> strtotime($a['data_noticia']);
         });
 
-        $noticias['fl_print'] = $dados['fl_print'];
-
         if($boletim->id_cliente == 307 or $boletim->id_cliente == 217){
             $dados = $noticias;
-            return view('boletim/visualizar-area', compact('boletim','dados'));
+            return view('boletim/visualizar-area', compact('boletim','dados','fl_print'));
         }else{
-            return view('boletim/visualizar', compact('dados','boletim','noticias_impresso','noticias_web','noticias_radio','noticias_tv'));
+            return view('boletim/visualizar', compact('dados','boletim','noticias_impresso','noticias_web','noticias_radio','noticias_tv','fl_print'));
         }
     }
 
@@ -670,6 +669,9 @@ class BoletimController extends Controller
         $boletim = Boletim::where('id', $id)->first(); 
         $boletim->total_views_email = $boletim->total_views_email + 1;
         $boletim->save();
+
+        $cliente = Cliente::where('id', $boletim->id_cliente)->first();
+        $fl_print = $cliente->fl_print;
 
         $dados = $this->getDadosBoletim($id);
 
@@ -697,13 +699,11 @@ class BoletimController extends Controller
             return strtotime($b['data_noticia']) <=> strtotime($a['data_noticia']);
         });
 
-        $noticias['fl_print'] = $dados['fl_print'];
-
         if($boletim->id_cliente == 307 or $boletim->id_cliente == 217){
             $dados = $noticias;
-            return view('boletim/outlook-area', compact('boletim','dados'));
+            return view('boletim/outlook-area', compact('boletim','dados','fl_print'));
         }else{
-            return view('boletim/outlook', compact('dados','boletim','noticias_impresso','noticias_web','noticias_radio','noticias_tv'));
+            return view('boletim/outlook', compact('dados','boletim','noticias_impresso','noticias_web','noticias_radio','noticias_tv','fl_print'));
         }
             
     }
@@ -738,6 +738,9 @@ class BoletimController extends Controller
         $detalhe = '';
         $boletim = Boletim::where('id', $request->id)->first();  
 
+        $cliente = Cliente::where('id', $boletim->id_cliente)->first();
+        $fl_print = $cliente->fl_print;
+
         $dados = $this->getDadosBoletim($request->id);
 
         $noticias_impresso = $dados['impresso'];
@@ -768,12 +771,13 @@ class BoletimController extends Controller
 
             $view = 'boletim.outlook-area';
 
-             $data = array("dados" => $noticias, 
+            $data = array("dados" => $noticias, 
                            "boletim" => $boletim);
 
               $htmlContent = view('boletim.outlook-area', [
                 'boletim' => $boletim,
-                'dados' => $noticias
+                'dados' => $noticias,
+                'fl_print' => $fl_print
             ])->render();
 
         }else{
@@ -783,7 +787,7 @@ class BoletimController extends Controller
                       "noticias_web" => $noticias_web,
                       "noticias_radio" => $noticias_radio,
                       "noticias_tv" => $noticias_tv, 
-                      "dados" => $dados,
+                      "fl_print" => $fl_print,
                       "boletim" => $boletim);
 
               $htmlContent = view('boletim.outlook', [
@@ -792,7 +796,7 @@ class BoletimController extends Controller
                 'noticias_web' => $noticias_web,
                 'noticias_radio' => $noticias_radio,
                 'noticias_tv' => $noticias_tv,
-                'dados' => $dados
+                'fl_print' => $fl_print
             ])->render();
         }             
 
