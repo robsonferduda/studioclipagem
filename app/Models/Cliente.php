@@ -26,6 +26,7 @@ class Cliente extends Model
                         'fl_radio',
                         'fl_web',
                         'fl_impresso',
+                        'fl_texto_logo',
                         'fl_tv',
                         'fl_sentimento_cli',
                         'fl_relatorio_completo',

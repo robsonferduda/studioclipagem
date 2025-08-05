@@ -629,6 +629,7 @@ class BoletimController extends Controller
 
         $cliente = Cliente::where('id', $boletim->id_cliente)->first();
         $fl_print = $cliente->fl_print;
+        $fl_texto_logo = $cliente->fl_texto_logo;
 
         $dados = $this->getDadosBoletim($id);
 
@@ -658,9 +659,9 @@ class BoletimController extends Controller
 
         if($boletim->id_cliente == 307 or $boletim->id_cliente == 217){
             $dados = $noticias;
-            return view('boletim/visualizar-area', compact('boletim','dados','fl_print'));
+            return view('boletim/visualizar-area', compact('boletim','dados','fl_print','fl_texto_logo'));
         }else{
-            return view('boletim/visualizar', compact('dados','boletim','noticias_impresso','noticias_web','noticias_radio','noticias_tv','fl_print'));
+            return view('boletim/visualizar', compact('dados','boletim','noticias_impresso','noticias_web','noticias_radio','noticias_tv','fl_print','fl_texto_logo'));
         }
     }
 
@@ -672,6 +673,7 @@ class BoletimController extends Controller
 
         $cliente = Cliente::where('id', $boletim->id_cliente)->first();
         $fl_print = $cliente->fl_print;
+        $fl_texto_logo = $cliente->fl_texto_logo;
 
         $dados = $this->getDadosBoletim($id);
 
@@ -701,9 +703,9 @@ class BoletimController extends Controller
 
         if($boletim->id_cliente == 307 or $boletim->id_cliente == 217){
             $dados = $noticias;
-            return view('boletim/outlook-area', compact('boletim','dados','fl_print'));
+            return view('boletim/outlook-area', compact('boletim','dados','fl_print','fl_texto_logo'));
         }else{
-            return view('boletim/outlook', compact('dados','boletim','noticias_impresso','noticias_web','noticias_radio','noticias_tv','fl_print'));
+            return view('boletim/outlook', compact('dados','boletim','noticias_impresso','noticias_web','noticias_radio','noticias_tv','fl_print','fl_texto_logo'));
         }
             
     }
@@ -740,6 +742,7 @@ class BoletimController extends Controller
 
         $cliente = Cliente::where('id', $boletim->id_cliente)->first();
         $fl_print = $cliente->fl_print;
+        $fl_texto_logo = $cliente->fl_texto_logo;
 
         $dados = $this->getDadosBoletim($request->id);
 
@@ -773,12 +776,14 @@ class BoletimController extends Controller
 
             $data = array("dados" => $noticias, 
                             "fl_print" => $fl_print,
+                            "fl_texto_logo" => $fl_texto_logo,
                            "boletim" => $boletim);
 
               $htmlContent = view('boletim.outlook-area', [
                 'boletim' => $boletim,
                 'dados' => $noticias,
-                'fl_print' => $fl_print
+                'fl_print' => $fl_print,
+                'fl_texto_logo' => $fl_texto_logo
             ])->render();
 
         }else{
@@ -789,6 +794,7 @@ class BoletimController extends Controller
                       "noticias_radio" => $noticias_radio,
                       "noticias_tv" => $noticias_tv, 
                       "fl_print" => $fl_print,
+                      'fl_texto_logo' => $fl_texto_logo,
                       "boletim" => $boletim);
 
               $htmlContent = view('boletim.outlook', [
@@ -797,7 +803,8 @@ class BoletimController extends Controller
                 'noticias_web' => $noticias_web,
                 'noticias_radio' => $noticias_radio,
                 'noticias_tv' => $noticias_tv,
-                'fl_print' => $fl_print
+                'fl_print' => $fl_print,
+                'fl_texto_logo' => $fl_texto_logo
             ])->render();
         }             
 

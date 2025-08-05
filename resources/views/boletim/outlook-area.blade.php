@@ -26,16 +26,18 @@
                     </tr>
                 </tbody>
             </table>
-            <div style="text-align: right;">
-                @if(count($dados) > 1)
-                    <span>Foram encontradas {{ count($dados) }} notícias</span>
-                @else
-                    <span>Foi encontrada {{ count($dados) }} notícia</span>
-                @endif
-            </div>  
-            <div style="text-align: right; margin-top: 5px;">
-                <span><a href="{{ url('boletim/'.$boletim->id.'/visualizar') }}">Clique aqui</a> para ver o boletim no navegador</span>
-            </div>      
+            @if($fl_texto_logo)
+                <div style="text-align: right;">
+                    @if(count($dados) > 1)
+                        <span>Foram encontradas {{ count($dados) }} notícias</span>
+                    @else
+                        <span>Foi encontrada {{ count($dados) }} notícia</span>
+                    @endif
+                </div>  
+                <div style="text-align: right; margin-top: 5px;">
+                    <span><a href="{{ url('boletim/'.$boletim->id.'/visualizar') }}">Clique aqui</a> para ver o boletim no navegador</span>
+                </div>    
+            @endif  
 
                 @php
                     $area = "";

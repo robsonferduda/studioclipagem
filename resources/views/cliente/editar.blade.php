@@ -69,7 +69,15 @@
                                             RETORNO DE MÍDIA
                                         <span class="form-check-sign"></span>
                                     </label>
-                                </div>                       
+                                </div>  
+
+                                <div class="form-check float-left mr-3">
+                                    <label class="form-check-label mt-2">
+                                        <input class="form-check-input" {{ ($cliente->fl_texto_logo) ? 'checked' : '' }} type="checkbox" name="fl_texto_logo" value="true">
+                                            TEXTO LOGO
+                                        <span class="form-check-sign"></span>
+                                    </label>
+                                </div>                         
                                 
                             </div>
                         </div>

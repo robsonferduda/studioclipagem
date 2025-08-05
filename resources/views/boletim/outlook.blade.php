@@ -26,12 +26,14 @@
                         </tr>
                     </tbody>
                 </table>
-                <div style="text-align: right;">
-                    <span style="position: absolute; bottom: 0px; right: 0px;">Total de notícias: {{ count($noticias_impresso) + count($noticias_web) + count($noticias_radio) + count($noticias_tv) }}</span>
-                </div>  
-                <div style="text-align: right; margin-top: 5px;">
-                    <span><a href="{{ url('boletim/'.$boletim->id.'/visualizar') }}">Clique aqui</a> para ver o boletim no navegador</span>
-                </div>
+                @if($fl_texto_logo)
+                    <div style="text-align: right;">
+                        <span style="position: absolute; bottom: 0px; right: 0px;">Total de notícias: {{ count($noticias_impresso) + count($noticias_web) + count($noticias_radio) + count($noticias_tv) }}</span>
+                    </div>  
+                    <div style="text-align: right; margin-top: 5px;">
+                        <span><a href="{{ url('boletim/'.$boletim->id.'/visualizar') }}">Clique aqui</a> para ver o boletim no navegador</span>
+                    </div>
+                @endif
 
                 @if(count($noticias_impresso) > 0)
                     <p style="text-transform: uppercase; font-weight: 600;"><i class="fa fa-newspaper-o"></i> Clipagens de Jornal</p>

@@ -168,7 +168,8 @@ class ClienteController extends Controller
         $fl_relatorio_consolidado = $request->fl_relatorio_consolidado == true ? true : false;
         $fl_relatorio_completo = $request->fl_relatorio_completo == true ? true : false;
         $fl_link_relatorio = $request->fl_link_relatorio == true ? true : false;
-        $fl_area_restrita = $request->fl_area_restrita == true ? true : false;      
+        $fl_area_restrita = $request->fl_area_restrita == true ? true : false;    
+        $fl_texto_logo = $request->fl_texto_logo == true ? true : false;    
         
         try {
 
@@ -176,6 +177,7 @@ class ClienteController extends Controller
             $request->merge(['fl_print' => $fl_print]);
             $request->merge(['fl_sentimento' => $fl_sentimento]);
             $request->merge(['fl_retorno_midia' => $fl_retorno_midia]);
+            $request->merge(['fl_texto_logo' => $fl_texto_logo]);
 
             $request->merge(['fl_tv' => $fl_tv]);
             $request->merge(['fl_impresso' => $fl_impresso]);
@@ -190,6 +192,7 @@ class ClienteController extends Controller
             $cliente = Cliente::create([
                 'fl_ativo' => $fl_ativo,
                 'fl_print' => $request->fl_print,
+                'fl_texto_logo' => $request->fl_texto_logo,
                 'fl_tv' => $request->fl_tv,
                 'fl_impresso' => $request->fl_impresso,
                 'fl_web' => $request->fl_web,
@@ -326,7 +329,8 @@ class ClienteController extends Controller
         $fl_relatorio_consolidado = $request->fl_relatorio_consolidado == true ? true : false;
         $fl_relatorio_completo = $request->fl_relatorio_completo == true ? true : false;
         $fl_link_relatorio = $request->fl_link_relatorio == true ? true : false;
-        $fl_area_restrita = $request->fl_area_restrita == true ? true : false;      
+        $fl_area_restrita = $request->fl_area_restrita == true ? true : false;    
+        $fl_texto_logo = $request->fl_texto_logo == true ? true : false;   
         
         $cliente = Cliente::find($id);
 
@@ -336,6 +340,7 @@ class ClienteController extends Controller
             $request->merge(['fl_print' => $fl_print]);
             $request->merge(['fl_sentimento' => $fl_sentimento]);
             $request->merge(['fl_retorno_midia' => $fl_retorno_midia]);
+            $request->merge(['fl_texto_logo' => $fl_texto_logo]);
             
             $request->merge(['fl_tv' => $fl_tv]);
             $request->merge(['fl_impresso' => $fl_impresso]);
