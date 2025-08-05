@@ -653,6 +653,8 @@ class BoletimController extends Controller
             return strtotime($b['data_noticia']) <=> strtotime($a['data_noticia']);
         });
 
+        $noticias['fl_print'] = $dados['fl_print'];
+
         if($boletim->id_cliente == 307 or $boletim->id_cliente == 217){
             $dados = $noticias;
             return view('boletim/visualizar-area', compact('boletim','dados'));
