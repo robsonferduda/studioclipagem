@@ -772,6 +772,7 @@ class BoletimController extends Controller
             $view = 'boletim.outlook-area';
 
             $data = array("dados" => $noticias, 
+                            "fl_print" => $fl_print,
                            "boletim" => $boletim);
 
               $htmlContent = view('boletim.outlook-area', [
