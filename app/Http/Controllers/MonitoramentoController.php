@@ -1204,6 +1204,8 @@ class MonitoramentoController extends Controller
 
     public function qualidade()
     {
+        Session::put('sub-menu','monitoramento-qualidade');
+
         $atrasados = DB::table('monitoramento as t1')
                         ->join('clientes as c', 'c.id', '=', 't1.id_cliente')
                         ->leftJoin('monitoramento_execucao as t2', function ($join) {
