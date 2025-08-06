@@ -1205,15 +1205,22 @@ class MonitoramentoController extends Controller
     public function qualidade()
     {
         $atrasados = DB::table('monitoramento as t1')
+                        ->join('clientes as c', 'c.id', '=', 't1.id_cliente')
                         ->leftJoin('monitoramento_execucao as t2', function ($join) {
                             $join->on('t2.monitoramento_id', '=', 't1.id')
                                 ->whereRaw('t2.created_at::date = CURRENT_DATE'); // só execuções de hoje
                         })
                         ->where('t1.fl_ativo', true)
-                        ->groupBy('t1.id', 't1.nome')
+                        ->groupBy('t1.id', 't1.nome', 'c.nome')
                         ->select([
                             't1.id',
                             't1.nome',
+                            't1.expressao',
+                            't1.fl_web',
+                            't1.fl_impresso',
+                            't1.fl_radio',
+                            't1.fl_tv',
+                            'c.nome as cliente_nome',
                             DB::raw('MAX(t2.created_at) AS ultima_execucao'),
                             DB::raw("
                                 TO_CHAR(

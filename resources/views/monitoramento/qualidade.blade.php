@@ -24,16 +24,30 @@
                     <table class="table">
                             <thead>
                                 <tr>
-                                <th>ID</th><th>Nome</th><th>Última execução</th><th>Horas desde a última</th>
+                                <th>ID</th>
+                                <th>Tipo</th>
+                                <th>Cliente</th>
+                                <th>Nome</th>
+                                <th>Última execução</th>
+                                <th d class="center">Horas desde a última</th>
                                 </tr>
                             </thead>
                             <tbody>
                             @foreach ($atrasados as $m)
                                 <tr>
-                                <td>{{ $m->id }}</td>
+                                <td>
+                                    <a title="Editar" class="text-primary" target="_BLANK" href="{{ url('monitoramento/'.$m->id.'/editar') }}" class="" style="">{{ $m->id }}</a>
+                                </td>
+                                <td>
+                                    @if ($m->fl_web) <span class="badge badge-danger">Web</span> @endif
+                                    @if ($m->fl_impresso) <span class="badge badge-success">Impresso</span> @endif
+                                    @if ($m->fl_radio) <span class="badge badge-primary">Rádio</span> @endif
+                                    @if ($m->fl_tv) <span class="badge badge-warning">TV</span> @endif
+                                </td>
+                                <td>{{ $m->cliente_nome }}</td>
                                 <td>{{ $m->nome }}</td>
-                                <td>{{ $m->ultima_execucao ?? '—' }}</td>
-                                <td>{{ $m->tempo_desde_ultima }}</td>
+                                <td>{{ \Carbon\Carbon::parse($m->ultima_execucao)->format('d/m/Y H:i:s') ?? '—' }}</td>
+                                <td class="center">{{ $m->tempo_desde_ultima }}</td>
                                 </tr>
                             @endforeach
                             </tbody>
