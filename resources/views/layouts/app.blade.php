@@ -422,9 +422,9 @@
                             <span class="sidebar-normal">Cadastrar</span>
                             </a>
                          </li>
-                         <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'monitoramento-exportar-web') ? 'active' : '' }}">
-                          <a href="{{ url('monitoramento/exportacao/web') }}">
-                          <span class="sidebar-normal">Exportação Web</span>
+                         <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'monitoramento-qualidade') ? 'active' : '' }}">
+                          <a href="{{ url('monitoramento/qualidade') }}">
+                          <span class="sidebar-normal">Qualidade</span>
                           </a>
                        </li>
                        </ul>

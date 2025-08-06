@@ -291,6 +291,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('monitoramento/cliente/{id}','MonitoramentoController@getMonitoramentoCliente');
 	Route::get('monitoramento/limpar/{id}','MonitoramentoController@limparMonitoramento');
 	Route::get('monitoramento/clonar/{id}','MonitoramentoController@clonar');
+	Route::get('monitoramento/qualidade','MonitoramentoController@qualidade');
 	Route::post('monitoramento/update','MonitoramentoController@update');
 	Route::post('monitoramento/filtrar/conteudo','MonitoramentoController@getConteudo');
 	Route::post('monitoramento/filtrar','MonitoramentoController@filtrar');

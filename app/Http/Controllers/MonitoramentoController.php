@@ -1202,6 +1202,38 @@ class MonitoramentoController extends Controller
         return redirect()->back()->withInput();
     }
 
+    public function qualidade()
+    {
+        $atrasados = DB::table('monitoramento as t1')
+                        ->leftJoin('monitoramento_execucao as t2', function ($join) {
+                            $join->on('t2.monitoramento_id', '=', 't1.id')
+                                ->whereRaw('t2.created_at::date = CURRENT_DATE'); // só execuções de hoje
+                        })
+                        ->where('t1.fl_ativo', true)
+                        ->groupBy('t1.id', 't1.nome')
+                        ->select([
+                            't1.id',
+                            't1.nome',
+                            DB::raw('MAX(t2.created_at) AS ultima_execucao'),
+                            DB::raw("
+                                TO_CHAR(
+                                    JUSTIFY_INTERVAL(
+                                        NOW() - COALESCE(MAX(t2.created_at), NOW() - INTERVAL '100 years')
+                                    ),
+                                    'FMHH24\"h\" MI\"min\"'
+                                ) AS tempo_desde_ultima
+                            "),
+                        ])
+                        ->havingRaw("
+                            MAX(t2.created_at) IS NULL
+                            OR MAX(t2.created_at) < (NOW() - INTERVAL '3 hours')
+                        ")
+                        ->orderByRaw('ultima_execucao NULLS FIRST')
+                        ->get();
+
+        return view('monitoramento/qualidade', compact('atrasados'));
+    }  
+
     public function loadEmissoras($tipo, $id_monitoramento)
     {
         $filtro = "filtro_".$tipo;
