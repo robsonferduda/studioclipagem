@@ -1211,6 +1211,7 @@ class MonitoramentoController extends Controller
                                 ->whereRaw('t2.created_at::date = CURRENT_DATE'); // só execuções de hoje
                         })
                         ->where('t1.fl_ativo', true)
+                        ->where('t1.deleted_at', null)
                         ->groupBy('t1.id', 't1.nome', 'c.nome')
                         ->select([
                             't1.id',
