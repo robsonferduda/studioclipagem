@@ -77,6 +77,10 @@ class NoticiaWebController extends Controller
         $termo = Session::get('web_filtro_termo', $request->input('termo'));
         $usuario = Session::get('web_filtro_usuario', $request->input('usuario'));
 
+        // Converta as datas para o formato do banco
+        $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $dt_inicial)->format('Y-m-d');
+        $dt_final = $this->carbon->createFromFormat('d/m/Y', $dt_final)->format('Y-m-d');
+
         if($fonte_selecionada){
             $fonte_web = FonteWeb::find($fonte_selecionada);
         }else{

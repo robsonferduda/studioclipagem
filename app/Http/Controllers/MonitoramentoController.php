@@ -924,6 +924,7 @@ class MonitoramentoController extends Controller
                 $dados = array('cliente_id' => $monitoramento->id_cliente,
                             'tipo_id'    => $tipo,
                             'noticia_id' => $noticia->id,
+                            'sentimento' => 1,
                             'monitoramento_id' => $monitoramento->id);
 
                 NoticiaCliente::create($dados);
