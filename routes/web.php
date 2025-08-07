@@ -264,6 +264,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('noticia/web/retorno','NoticiaWebController@retorno');
 	Route::get('noticia/web/print/{id}','NoticiaWebController@getPrint');
 	Route::get('noticia/web/print','NoticiaWebController@getPrintS3');
+	Route::get('noticia/web/limpar-filtros','NoticiaWebController@limparFiltrosWeb');
 
 	Route::get('noticia/impresso/clientes/{noticia}','NoticiaImpressaController@clientes');
 	

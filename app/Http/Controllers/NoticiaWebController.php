@@ -46,15 +46,36 @@ class NoticiaWebController extends Controller
                         ->orderBy('name')
                         ->get();
 
-        $tipo_data = ($request->tipo_data) ? $request->tipo_data : 'data_insert';
-        $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
-        $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
-        $cliente_selecionado = ($request->cliente) ? $request->cliente : null;
-        $sentimento = ($request->sentimento) ? $request->sentimento : null;
-        $fonte_selecionada = ($request->fonte) ? $request->fonte : null;
-        $area_selecionada = ($request->cd_area) ? $request->cd_area : null;
-        $termo = ($request->termo) ? $request->termo : null;
-        $usuario = ($request->usuario) ? $request->usuario : null;
+        // Lista de filtros que você deseja manter em sessão
+        $filtros = [
+            'tipo_data',
+            'dt_inicial',
+            'dt_final',
+            'cliente',
+            'sentimento',
+            'fonte',
+            'cd_area',
+            'termo',
+            'usuario'
+        ];
+
+        // Salva cada filtro na sessão, se vier na requisição
+        foreach ($filtros as $filtro) {
+            if ($request->has($filtro)) {
+                Session::put('web_filtro_' . $filtro, $request->input($filtro));
+            }
+        }        
+
+        // Recupera os filtros da sessão (ou da request, se vier)
+        $tipo_data = Session::get('web_filtro_tipo_data', $request->input('tipo_data', 'data_insert'));
+        $dt_inicial = Session::get('web_filtro_dt_inicial', $request->input('dt_inicial', date('d/m/Y')));
+        $dt_final = Session::get('web_filtro_dt_final', $request->input('dt_final', date('d/m/Y')));
+        $cliente_selecionado = Session::get('web_filtro_cliente', $request->input('cliente'));
+        $sentimento = Session::get('web_filtro_sentimento', $request->input('sentimento'));
+        $fonte_selecionada = Session::get('web_filtro_fonte', $request->input('fonte'));
+        $area_selecionada = Session::get('web_filtro_cd_area', $request->input('cd_area'));
+        $termo = Session::get('web_filtro_termo', $request->input('termo'));
+        $usuario = Session::get('web_filtro_usuario', $request->input('usuario'));
 
         if($fonte_selecionada){
             $fonte_web = FonteWeb::find($fonte_selecionada);
@@ -128,6 +149,14 @@ class NoticiaWebController extends Controller
                     ->paginate(50);
 
         return view('noticia-web/index', compact('dados','fonte_web','fontes','clientes','tipo_data','dt_inicial','dt_final','cliente_selecionado','sentimento','fonte_selecionada','termo','usuarios','usuario','estados','area_selecionada'));
+    }
+
+    public function limparFiltrosWeb()
+    {
+        foreach (['tipo_data','dt_inicial','dt_final','cliente','sentimento','fonte','cd_area','termo','usuario'] as $filtro) {
+            Session::forget('web_filtro_' . $filtro);
+        }
+        return redirect('noticia/web');
     }
 
     public function coletas(Request $request)
