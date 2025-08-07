@@ -91,6 +91,14 @@ class NoticiaRadioController extends Controller
                     ->when($termo, function ($q) use ($termo) {
                         return $q->where('sinopse', 'ILIKE', '%'.trim($termo).'%');
                     })
+                    ->when($usuario, function ($q) use ($usuario) {
+
+                        if($usuario == "S"){
+                            return $q->whereNull('cd_usuario');
+                        }else{
+                            return $q->where('cd_usuario', $usuario);
+                        }
+                    })
                     ->whereBetween($tipo_data, [$dt_inicial." 00:00:00", $dt_final." 23:59:59"])
                     ->orderBy('created_at','DESC') 
                     ->paginate(50);
