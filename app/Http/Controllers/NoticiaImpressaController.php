@@ -53,15 +53,40 @@ class NoticiaImpressaController extends Controller
                         ->orderBy('name')
                         ->get();
 
-        $tipo_data = ($request->tipo_data) ? $request->tipo_data : 'dt_cadastro';
-        $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
-        $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
-        $cliente_selecionado = ($request->cliente) ? $request->cliente : null;
-        $sentimento = ($request->sentimento) ? $request->sentimento : null;
-        $fonte_selecionada = ($request->id_fonte) ? $request->id_fonte : null;
-        $area_selecionada = ($request->cd_area) ? $request->cd_area : null;
-        $termo = ($request->termo) ? $request->termo : null;
-        $usuario = ($request->usuario) ? $request->usuario : null;
+        // Lista de filtros que você deseja manter em sessão
+        $filtros = [
+            'tipo_data',
+            'dt_inicial',
+            'dt_final',
+            'cliente',
+            'sentimento',
+            'id_fonte',
+            'cd_area',
+            'termo',
+            'usuario'
+        ];
+
+        // Salva cada filtro na sessão, se vier na requisição
+        foreach ($filtros as $filtro) {
+            if ($request->has($filtro)) {
+                Session::put('impresso_filtro_' . $filtro, $request->input($filtro));
+            }
+        }
+
+        // Recupera os filtros da sessão (ou da request, se vier)
+        $tipo_data = Session::get('impresso_filtro_tipo_data', $request->input('tipo_data', 'dt_cadastro'));
+        $dt_inicial = Session::get('impresso_filtro_dt_inicial', $request->input('dt_inicial', date('d/m/Y')));
+        $dt_final = Session::get('impresso_filtro_dt_final', $request->input('dt_final', date('d/m/Y')));
+        $cliente_selecionado = Session::get('impresso_filtro_cliente', $request->input('cliente'));
+        $sentimento = Session::get('impresso_filtro_sentimento', $request->input('sentimento'));
+        $fonte_selecionada = Session::get('impresso_filtro_id_fonte', $request->input('id_fonte'));
+        $area_selecionada = Session::get('impresso_filtro_cd_area', $request->input('cd_area'));
+        $termo = Session::get('impresso_filtro_termo', $request->input('termo'));
+        $usuario = Session::get('impresso_filtro_usuario', $request->input('usuario'));
+
+        // Converta as datas para o formato do banco
+        $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $dt_inicial)->format('Y-m-d');
+        $dt_final = $this->carbon->createFromFormat('d/m/Y', $dt_final)->format('Y-m-d');
 
         $dados = NoticiaImpresso::with('fonte')
                     ->when($cliente_selecionado, function ($query) use ($cliente_selecionado, $area_selecionada) { 
@@ -97,6 +122,10 @@ class NoticiaImpressaController extends Controller
 
     public function limpar()
     {
+        foreach (['tipo_data','dt_inicial','dt_final','cliente','sentimento','id_fonte','cd_area','termo','usuario'] as $filtro) {
+            Session::forget('impresso_filtro_' . $filtro);
+        }
+        
         return redirect('noticias/impresso');
     }
 
