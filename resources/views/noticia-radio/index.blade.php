@@ -58,15 +58,28 @@
                                         </select>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12 col-sm-12">
+                                <div class="col-md-6 col-sm-6">
                                     <div class="form-group">
-                                        <label>Buscar por <span class="text-primary">Digite o termo ou expressão de busca</span></label>
+                                        <label>Termo <span class="text-primary">Busca considera título e conteúdo da notícia</span></label>
                                         <input type="text" class="form-control" name="termo" id="termo" minlength="3" placeholder="Termo" value="{{ $termo }}">
                                     </div>
                                 </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Responsável pelo cadastro</label>
+                                        <select class="form-control" name="usuario" id="usuario">
+                                            <option value="">Selecione um usuário</option>
+                                            <option value="S" {{ ($usuario == 'S') ? 'selected' : '' }}>Sistema</option>
+                                            @foreach ($usuarios as $user)
+                                                <option value="{{ $user->id }}" {{ ($usuario == $user->id) ? 'selected' : '' }}>{{ $user->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-12 checkbox-radios mb-0">
+                                    <a href="{{ url('noticia/radio/limpar-filtros') }}" class="btn btn-warning btn-limpar mb-3"><i class="fa fa-refresh"></i> Limpar</a>
                                     <button type="submit" id="btn-find" class="btn btn-primary mb-3"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>

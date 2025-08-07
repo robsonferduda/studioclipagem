@@ -8,6 +8,7 @@ use DateTime;
 use DateInterval;
 use DatePeriod;
 use Storage;
+use App\User;
 use App\Models\Area;
 use App\Models\Cliente;
 use App\Models\Cidade;
@@ -44,13 +45,42 @@ class NoticiaRadioController extends Controller
 
         $emissora = Emissora::orderBy('nome_emissora')->get();
         $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
+        $usuarios = User::whereHas('role', function($q){
+                            return $q->whereIn('role_id', ['5','8']);
+                        })
+                        ->orderBy('name')
+                        ->get();
 
-        $tipo_data = ($request->tipo_data) ? $request->tipo_data : 'dt_cadastro';
-        $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
-        $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
-        $cliente_selecionado = ($request->cliente) ? $request->cliente : null;
-        $fonte = ($request->fontes) ? $request->fontes : null;
-        $termo = ($request->termo) ? $request->termo : null;
+        // Lista de filtros que você deseja manter em sessão
+        $filtros = [
+            'tipo_data',
+            'dt_inicial',
+            'dt_final',
+            'cliente',
+            'fontes',
+            'termo',
+            'usuario'
+        ];
+
+        // Salva cada filtro na sessão, se vier na requisição
+        foreach ($filtros as $filtro) {
+            if ($request->has($filtro)) {
+                Session::put('radio_filtro_' . $filtro, $request->input($filtro));
+            }
+        }
+
+        // Recupera os filtros da sessão (ou da request, se vier)
+        $tipo_data = Session::get('radio_filtro_tipo_data', $request->input('tipo_data', 'dt_cadastro'));
+        $dt_inicial = Session::get('radio_filtro_dt_inicial', $request->input('dt_inicial', date('d/m/Y')));
+        $dt_final = Session::get('radio_filtro_dt_final', $request->input('dt_final', date('d/m/Y')));
+        $cliente_selecionado = Session::get('radio_filtro_cliente', $request->input('cliente'));
+        $fonte = Session::get('radio_filtro_fontes', $request->input('fontes'));
+        $termo = Session::get('radio_filtro_termo', $request->input('termo'));
+        $usuario = Session::get('impresso_filtro_usuario', $request->input('usuario'));
+
+        // Converta as datas para o formato do banco
+        $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $dt_inicial)->format('Y-m-d');
+        $dt_final = $this->carbon->createFromFormat('d/m/Y', $dt_final)->format('Y-m-d');
 
         $dados = NoticiaRadio::with('emissora')
                     ->when($cliente_selecionado, function ($query) use ($cliente_selecionado) { 
@@ -65,7 +95,18 @@ class NoticiaRadioController extends Controller
                     ->orderBy('created_at','DESC') 
                     ->paginate(50);
 
-        return view('noticia-radio/index', compact('dados','emissora','clientes','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo'));
+        return view('noticia-radio/index', compact('dados',
+        'emissora','clientes','tipo_data','dt_inicial','dt_final','cliente_selecionado',
+        'fonte',
+        'termo','usuarios','usuario'));
+    }
+
+    public function limparFiltrosRadio()
+    {
+        foreach (['tipo_data','dt_inicial','dt_final','cliente','fontes','termo','usuario'] as $filtro) {
+            Session::forget('radio_filtro_' . $filtro);
+        }
+        return redirect('noticias/radio');
     }
 
     public function monitoramento(Request $request)

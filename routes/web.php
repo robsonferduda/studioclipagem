@@ -229,6 +229,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('radio/noticias/atualizar-valores','NoticiaRadioController@calcularValorRetornoRadio');
 	Route::get('radio/adjacentes/{id}/monitoramento/{monitoramento}','NoticiaRadioController@getDadosAudio');
 	
+	Route::get('noticia/radio/limpar-filtros','NoticiaRadioController@limparFiltrosRadio');
 	Route::get('radio/conteudo/{id_noticia}/monitoramento/{id_monitoramento}','NoticiaRadioController@destacaConteudo');
 	Route::get('noticia/radio/clientes/{noticia}','NoticiaRadioController@clientes');
 	Route::post('radio/noticias/inserir','NoticiaRadioController@inserir');
