@@ -46,7 +46,7 @@ class NoticiaRadioController extends Controller
         $emissora = Emissora::orderBy('nome_emissora')->get();
         $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
         $usuarios = User::whereHas('role', function($q){
-                            return $q->whereIn('role_id', ['5','8']);
+                            return $q->whereIn('role_id', ['6']);
                         })
                         ->orderBy('name')
                         ->get();
