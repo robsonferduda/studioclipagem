@@ -237,6 +237,14 @@ class FonteImpressoController extends Controller
 
             $flag = $request->fl_ativo == true ? true : false;
 
+            $request->merge([
+                'valor_cm_capa_semana' => str_replace(',', '.', $request->valor_cm_capa_semana),
+                'valor_cm_capa_fim_semana' => str_replace(',', '.', $request->valor_cm_capa_fim_semana),
+                'valor_cm_contracapa' => str_replace(',', '.', $request->valor_cm_contracapa),
+                'valor_cm_demais_semana' => str_replace(',', '.', $request->valor_cm_demais_semana),
+                'valor_cm_demais_fim_semana' => str_replace(',', '.', $request->valor_cm_demais_fim_semana),
+            ]);
+
             FonteImpressa::create([
                 'codigo' => $request->codigo ?? null,
                 'nome' => $request->nome,
@@ -288,6 +296,15 @@ class FonteImpressoController extends Controller
 
             $flag = $request->fl_ativo == true ? true : false;
             $flag_preferencia = $request->mapeamento_matinal == true ? true : false;
+
+            $request->merge([
+                'valor_cm_capa_semana' => str_replace(',', '.', $request->valor_cm_capa_semana),
+                'valor_cm_capa_fim_semana' => str_replace(',', '.', $request->valor_cm_capa_fim_semana),
+                'valor_cm_contracapa' => str_replace(',', '.', $request->valor_cm_contracapa),
+                'valor_cm_demais_semana' => str_replace(',', '.', $request->valor_cm_demais_semana),
+                'valor_cm_demais_fim_semana' => str_replace(',', '.', $request->valor_cm_demais_fim_semana),
+            ]);
+
 
             $jornal->update([
                 'codigo'    => $request->codigo,
