@@ -20,6 +20,7 @@ use Illuminate\View\View;
 use Laracasts\Flash\Flash;
 use Illuminate\Support\Facades\Storage;
 use App\Services\RelatorioService;
+use App\Models\RelatorioGerado;
 use Illuminate\Support\Facades\Log;
 
 class ClienteController extends Controller
@@ -792,12 +793,14 @@ class ClienteController extends Controller
 
             $dataInicio = $request->input('data_inicio');
             $dataFim = $request->input('data_fim');
+            $tipoFiltroData = $request->input('tipo_filtro_data', 'coleta'); // padrão: coleta
             $termo = $request->input('termo', null);
             
             Log::info('Dados extraídos da requisição:', [
                 'clienteId' => $clienteId,
                 'dataInicio' => $dataInicio,
                 'dataFim' => $dataFim,
+                'tipoFiltroData' => $tipoFiltroData,
                 'termo' => $termo
             ]);
             
@@ -807,13 +810,17 @@ class ClienteController extends Controller
             $retornoFiltro = $request->input('retorno', 'com_retorno');
             $valorFiltros = $request->input('valor', ['com_valor', 'sem_valor']);
             $areasFiltros = $request->input('areas', []);
+            $tagsFiltros = $request->input('tags_filtro', []);
             
-            Log::info('Filtros processados:', [
+            Log::info('=== FILTROS EXTRAÍDOS DA REQUISIÇÃO ===', [
                 'tiposMidia' => $tiposMidia,
                 'statusFiltros' => $statusFiltros,
                 'retornoFiltro' => $retornoFiltro,
                 'valorFiltros' => $valorFiltros,
-                'areasFiltros' => $areasFiltros
+                'areasFiltros' => $areasFiltros,
+                'tagsFiltros' => $tagsFiltros,
+                'tem_tags_filtro' => !empty($tagsFiltros),
+                'count_tags_filtro' => count($tagsFiltros)
             ]);
             
             // Validações
@@ -829,16 +836,24 @@ class ClienteController extends Controller
                 ], 400);
             }
             
+            // Filtros de fontes/emissoras/programas
+            $fontesFiltros = $request->input('fontes_filtro', []);
+            
             // Monta filtros
             $filtros = [
                 'tipos_midia' => $tiposMidia,
                 'status' => $statusFiltros,
                 'retorno' => [$retornoFiltro],
                 'valor' => $valorFiltros,
-                'areas' => $areasFiltros
+                'areas' => $areasFiltros,
+                'tags_filtro' => $tagsFiltros,
+                'fontes_filtro' => $fontesFiltros
             ];
             
-            Log::info('Filtros montados:', $filtros);
+            Log::info('=== FILTROS MONTADOS PARA RELATORIO SERVICE ===', [
+                'filtros_completos' => $filtros,
+                'tem_tags_no_filtro' => isset($filtros['tags_filtro']) && !empty($filtros['tags_filtro'])
+            ]);
             
             $relatorioService = new RelatorioService();
             Log::info('RelatorioService criado com sucesso');
@@ -856,7 +871,7 @@ class ClienteController extends Controller
             Log::info('Cliente existe, buscando notícias...');
             
             // Lista as notícias
-            $noticias = $relatorioService->listarNoticiasPorPeriodoComFiltros($clienteId, $dataInicio, $dataFim, $filtros, $termo);
+            $noticias = $relatorioService->listarNoticiasPorPeriodoComFiltros($clienteId, $dataInicio, $dataFim, $filtros, $termo, $tipoFiltroData);
             
             Log::info('Notícias encontradas:', [
                 'total_web' => count($noticias['web'] ?? []),
@@ -1054,13 +1069,97 @@ class ClienteController extends Controller
             $caminhoArquivo = $caminhoArquivoDestino;
             
             if (file_exists($caminhoArquivo)) {
-                            return response()->json([
-                'success' => true,
-                'message' => 'Relatório gerado com sucesso',
-                'arquivo' => $nomeArquivo,
-                'cliente' => $clienteId,
-                'download_url' => url('cliente/'.$clienteId.'/relatorios/download/' . $nomeArquivo)
-            ]);
+                try {
+                    // Upload para S3
+                    $s3Path = 'relatorios/' . date('Y/m/') . $nomeArquivo;
+                    $s3Upload = Storage::disk('relatorios-s3')->put($s3Path, file_get_contents($caminhoArquivo), [
+                        'ContentType' => 'application/pdf',
+                        'CacheControl' => 'max-age=31536000',
+                    ]);
+                    
+                    if ($s3Upload) {
+                        // Gera URL pública do S3
+                        $urlS3 = 'https://relatorios-studio-clipagem.s3.amazonaws.com/' . $s3Path;
+                        
+                        // Calcula total de notícias e valor de retorno (estimativa)
+                        $totalNoticias = count($idsWeb) + count($idsImpresso) + count($idsTv) + count($idsRadio);
+                        
+                        // Salva registro no banco
+                        $dadosRelatorio = [
+                            'titulo' => 'Relatório Completo - ' . now()->format('d/m/Y H:i'),
+                            'descricao' => 'Relatório PDF gerado automaticamente pelo sistema',
+                            'nome_arquivo' => $nomeArquivo,
+                            'url_s3' => $urlS3,
+                            'data_inicio' => $dataInicio,
+                            'data_fim' => $dataFim,
+                            'cliente_id' => $clienteId,
+                            'tamanho_arquivo' => filesize($caminhoArquivo),
+                            'total_noticias' => $totalNoticias,
+                            'tipos_midia' => array_filter([
+                                'web' => !empty($idsWeb),
+                                'impresso' => !empty($idsImpresso),
+                                'tv' => !empty($idsTv),
+                                'radio' => !empty($idsRadio)
+                            ]),
+                            'filtros' => [
+                                'tipo_filtro_data' => $request->input('tipo_filtro_data'),
+                                'termo_busca' => $request->input('termo'),
+                                'tags_selecionadas' => $request->input('tags', []),
+                                'fontes_selecionadas' => $request->input('fontes', []),
+                                'mostrar_retorno_relatorio' => $mostrarRetornoRelatorio,
+                                'mostrar_sentimento_relatorio' => $mostrarSentimentoRelatorio,
+                                'ids_especificos' => [
+                                    'web' => $idsWeb,
+                                    'impresso' => $idsImpresso,
+                                    'tv' => $idsTv,
+                                    'radio' => $idsRadio
+                                ]
+                            ]
+                        ];
+                        
+                        $relatorioGerado = RelatorioGerado::criarRelatorioGerado($dadosRelatorio);
+                        
+                        Log::info('Relatório salvo no S3 e banco de dados', [
+                            'arquivo' => $nomeArquivo,
+                            'url_s3' => $urlS3,
+                            'registro_id' => $relatorioGerado->id,
+                            'cliente_id' => $clienteId
+                        ]);
+                        
+                        return response()->json([
+                            'success' => true,
+                            'message' => 'Relatório gerado e salvo com sucesso',
+                            'arquivo' => $nomeArquivo,
+                            'cliente' => $clienteId,
+                            'download_url' => url('cliente/'.$clienteId.'/relatorios/download/' . $nomeArquivo),
+                            'url_s3' => $urlS3,
+                            'registro_id' => $relatorioGerado->id
+                        ]);
+                    } else {
+                        Log::error('Falha no upload para S3', ['arquivo' => $nomeArquivo]);
+                        
+                        return response()->json([
+                            'success' => true,
+                            'message' => 'Relatório gerado com sucesso, mas falha no backup S3',
+                            'arquivo' => $nomeArquivo,
+                            'cliente' => $clienteId,
+                            'download_url' => url('cliente/'.$clienteId.'/relatorios/download/' . $nomeArquivo)
+                        ]);
+                    }
+                } catch (\Exception $e) {
+                    Log::error('Erro ao salvar relatório no S3/banco', [
+                        'erro' => $e->getMessage(),
+                        'arquivo' => $nomeArquivo
+                    ]);
+                    
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Relatório gerado com sucesso, mas falha no backup S3',
+                        'arquivo' => $nomeArquivo,
+                        'cliente' => $clienteId,
+                        'download_url' => url('cliente/'.$clienteId.'/relatorios/download/' . $nomeArquivo)
+                    ]);
+                }
             } else {
                 return response()->json([
                     'success' => false,
@@ -1080,6 +1179,107 @@ class ClienteController extends Controller
                     'trace' => $e->getTraceAsString(),
                     'command_result' => $resultado ?? 'null'
                 ] : null
+            ], 500);
+        }
+    }
+
+    /**
+     * Exibe a tela de relatórios salvos
+     */
+    public function relatoriosSalvos(Request $request): View
+    {
+        Session::put('url','relatorios');
+        Session::put('sub-menu','cliente-relatorios-salvos');
+
+        return view('cliente.relatorios.salvos');
+    }
+
+    /**
+     * Lista relatórios salvos do cliente (API)
+     */
+    public function listarRelatorios(Request $request): JsonResponse
+    {
+        try {
+            // Usa o cliente logado da sessão ou parâmetro
+            if(Auth::user()->hasRole('cliente')){
+                $clienteId = $this->client_id;
+            } else {
+                $clienteId = $request->input('cliente_id');
+            }
+            
+            if (!$clienteId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cliente não identificado'
+                ], 400);
+            }
+            
+            // Parâmetros de paginação
+            $perPage = $request->input('per_page', 15);
+            $page = $request->input('page', 1);
+            
+            // Filtros opcionais
+            $dataInicio = $request->input('data_inicio');
+            $dataFim = $request->input('data_fim');
+            
+            // Query base
+            $query = RelatorioGerado::doCliente($clienteId)
+                ->orderBy('created_at', 'desc');
+            
+            // Aplica filtros de período se fornecidos
+            if ($dataInicio && $dataFim) {
+                $query->whereBetween('created_at', [$dataInicio, $dataFim]);
+            }
+            
+            // Paginação
+            $relatorios = $query->paginate($perPage, ['*'], 'page', $page);
+            
+            // Processa os dados para a resposta
+            $relatoriosFormatados = $relatorios->getCollection()->map(function ($relatorio) {
+                return [
+                    'id' => $relatorio->id,
+                    'titulo' => $relatorio->titulo,
+                    'descricao' => $relatorio->misc_data['descricao'] ?? 'Relatório PDF',
+                    'nome_arquivo' => $relatorio->nome_arquivo,
+                    'url_s3' => $relatorio->url_s3,
+                    'data_criacao' => $relatorio->created_at->format('d/m/Y H:i'),
+                    'data_inicio' => $relatorio->misc_data['data_inicio'] ?? null,
+                    'data_fim' => $relatorio->misc_data['data_fim'] ?? null,
+                    'tamanho_arquivo' => $relatorio->misc_data['tamanho_arquivo'] ?? null,
+                    'total_noticias' => $relatorio->misc_data['total_noticias'] ?? 0,
+                    'tipos_midia' => $relatorio->misc_data['tipos_midia'] ?? [],
+                    'filtros_aplicados' => [
+                        'termo_busca' => $relatorio->misc_data['filtros']['termo_busca'] ?? null,
+                        'tipo_filtro_data' => $relatorio->misc_data['filtros']['tipo_filtro_data'] ?? null,
+                        'tags_count' => is_array($relatorio->misc_data['filtros']['tags_selecionadas'] ?? []) ? 
+                                      count($relatorio->misc_data['filtros']['tags_selecionadas']) : 0,
+                        'fontes_count' => is_array($relatorio->misc_data['filtros']['fontes_selecionadas'] ?? []) ? 
+                                        count($relatorio->misc_data['filtros']['fontes_selecionadas']) : 0,
+                    ],
+                    'valor_total' => $relatorio->misc_data['valor_total_retorno'] ? 
+                                   'R$ ' . number_format($relatorio->misc_data['valor_total_retorno'], 2, ',', '.') : null,
+                    'situacao' => $relatorio->situacao ?? 0
+                ];
+            });
+            
+            return response()->json([
+                'success' => true,
+                'data' => $relatoriosFormatados,
+                'pagination' => [
+                    'current_page' => $relatorios->currentPage(),
+                    'last_page' => $relatorios->lastPage(),
+                    'per_page' => $relatorios->perPage(),
+                    'total' => $relatorios->total(),
+                    'from' => $relatorios->firstItem(),
+                    'to' => $relatorios->lastItem()
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::error('Erro ao listar relatórios: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro interno: ' . $e->getMessage()
             ], 500);
         }
     }
@@ -1517,7 +1717,7 @@ print('SUCCESS' if success else 'ERROR')
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND t3.tipo_id = 1
                 WHERE t3.cliente_id = ?
                 AND t1.id IN (" . implode(',', array_fill(0, count($idsImpresso), '?')) . ")
-                ORDER BY t1.dt_clipagem DESC
+                ORDER BY t1.dt_clipagem ASC
             ";
             
             $params = array_merge([$clienteId], $idsImpresso);
@@ -1571,7 +1771,7 @@ print('SUCCESS' if success else 'ERROR')
                 JOIN conteudo_noticia_web t4 ON t4.id_noticia_web = t1.id
                 WHERE t3.cliente_id = ?
                 AND t1.id IN (" . implode(',', array_fill(0, count($idsWeb), '?')) . ")
-                ORDER BY t1.data_noticia DESC
+                ORDER BY t1.data_noticia ASC
             ";
             
             $params = array_merge([$clienteId], $idsWeb);
@@ -1899,6 +2099,440 @@ print('SUCCESS' if success else 'ERROR')
     }
 
     /**
+     * Obter tags disponíveis para filtro
+     */
+    public function getTagsDisponiveis(): JsonResponse
+    {
+        try {
+            $clienteId = $this->client_id;
+            
+            if (!$clienteId) {
+                return response()->json([
+                    'error' => 'Cliente não identificado'
+                ], 400);
+            }
+            
+            // Buscar todas as tags utilizadas nas notícias do cliente
+            $tags = \App\Models\NoticiaCliente::where('cliente_id', $clienteId)
+                ->whereNotNull('misc_data')
+                ->get()
+                ->pluck('misc_data')
+                ->filter(function($miscData) {
+                    return isset($miscData['tags_noticia']) && is_array($miscData['tags_noticia']);
+                })
+                ->map(function($miscData) {
+                    return $miscData['tags_noticia'];
+                })
+                ->flatten()
+                ->unique()
+                ->values()
+                ->toArray();
+            
+            return response()->json($tags);
+            
+        } catch (\Exception $e) {
+            Log::error('Erro ao buscar tags disponíveis: ' . $e->getMessage());
+            return response()->json([
+                'error' => 'Erro interno: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Obter tags das notícias selecionadas
+     */
+    public function getTagsNoticias(Request $request): JsonResponse
+    {
+        try {
+            $clienteId = $this->client_id;
+            
+            if (!$clienteId) {
+                return response()->json([
+                    'error' => 'Cliente não identificado'
+                ], 400);
+            }
+
+            $idsWeb = $request->input('ids_web', []);
+            $idsTv = $request->input('ids_tv', []);
+            $idsRadio = $request->input('ids_radio', []);
+            $idsImpresso = $request->input('ids_impresso', []);
+
+            $todasTags = [];
+
+            // Buscar tags de cada tipo de notícia
+            if (!empty($idsWeb)) {
+                $tagsWeb = \App\Models\NoticiaCliente::where('cliente_id', $clienteId)
+                    ->where('tipo_id', 2) // web
+                    ->whereIn('noticia_id', $idsWeb)
+                    ->whereNotNull('misc_data')
+                    ->get()
+                    ->pluck('misc_data')
+                    ->filter(function($miscData) {
+                        return isset($miscData['tags_noticia']) && is_array($miscData['tags_noticia']);
+                    })
+                    ->map(function($miscData) {
+                        return $miscData['tags_noticia'];
+                    })
+                    ->flatten()
+                    ->toArray();
+                
+                $todasTags = array_merge($todasTags, $tagsWeb);
+            }
+
+            if (!empty($idsTv)) {
+                $tagsTv = \App\Models\NoticiaCliente::where('cliente_id', $clienteId)
+                    ->where('tipo_id', 4) // tv
+                    ->whereIn('noticia_id', $idsTv)
+                    ->whereNotNull('misc_data')
+                    ->get()
+                    ->pluck('misc_data')
+                    ->filter(function($miscData) {
+                        return isset($miscData['tags_noticia']) && is_array($miscData['tags_noticia']);
+                    })
+                    ->map(function($miscData) {
+                        return $miscData['tags_noticia'];
+                    })
+                    ->flatten()
+                    ->toArray();
+                
+                $todasTags = array_merge($todasTags, $tagsTv);
+            }
+
+            if (!empty($idsRadio)) {
+                $tagsRadio = \App\Models\NoticiaCliente::where('cliente_id', $clienteId)
+                    ->where('tipo_id', 3) // radio
+                    ->whereIn('noticia_id', $idsRadio)
+                    ->whereNotNull('misc_data')
+                    ->get()
+                    ->pluck('misc_data')
+                    ->filter(function($miscData) {
+                        return isset($miscData['tags_noticia']) && is_array($miscData['tags_noticia']);
+                    })
+                    ->map(function($miscData) {
+                        return $miscData['tags_noticia'];
+                    })
+                    ->flatten()
+                    ->toArray();
+                
+                $todasTags = array_merge($todasTags, $tagsRadio);
+            }
+
+            if (!empty($idsImpresso)) {
+                $tagsImpresso = \App\Models\NoticiaCliente::where('cliente_id', $clienteId)
+                    ->where('tipo_id', 1) // impresso
+                    ->whereIn('noticia_id', $idsImpresso)
+                    ->whereNotNull('misc_data')
+                    ->get()
+                    ->pluck('misc_data')
+                    ->filter(function($miscData) {
+                        return isset($miscData['tags_noticia']) && is_array($miscData['tags_noticia']);
+                    })
+                    ->map(function($miscData) {
+                        return $miscData['tags_noticia'];
+                    })
+                    ->flatten()
+                    ->toArray();
+                
+                $todasTags = array_merge($todasTags, $tagsImpresso);
+            }
+
+            // Remover duplicatas e retornar array com valores únicos
+            $tagsUnicas = array_values(array_unique($todasTags));
+            
+            return response()->json($tagsUnicas);
+            
+        } catch (\Exception $e) {
+            Log::error('Erro ao buscar tags das notícias: ' . $e->getMessage());
+            return response()->json([
+                'error' => 'Erro interno: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Adicionar tag às notícias selecionadas
+     */
+    public function adicionarTag(Request $request): JsonResponse
+    {
+        try {
+            $clienteId = $this->client_id;
+            
+            if (!$clienteId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cliente não identificado'
+                ], 400);
+            }
+
+            $tag = trim($request->input('tag'));
+            $idsWeb = $request->input('ids_web', []);
+            $idsTv = $request->input('ids_tv', []);
+            $idsRadio = $request->input('ids_radio', []);
+            $idsImpresso = $request->input('ids_impresso', []);
+
+            if (empty($tag)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Nome da tag é obrigatório'
+                ], 400);
+            }
+
+            $noticiasAfetadas = 0;
+
+            // Adicionar tag para cada tipo de notícia
+            if (!empty($idsWeb)) {
+                $registros = \App\Models\NoticiaCliente::where('cliente_id', $clienteId)
+                    ->where('tipo_id', 2) // web
+                    ->whereIn('noticia_id', $idsWeb)
+                    ->get();
+                
+                foreach ($registros as $registro) {
+                    $registro->addTag($tag);
+                    $noticiasAfetadas++;
+                }
+            }
+
+            if (!empty($idsTv)) {
+                $registros = \App\Models\NoticiaCliente::where('cliente_id', $clienteId)
+                    ->where('tipo_id', 4) // tv
+                    ->whereIn('noticia_id', $idsTv)
+                    ->get();
+                
+                foreach ($registros as $registro) {
+                    $registro->addTag($tag);
+                    $noticiasAfetadas++;
+                }
+            }
+
+            if (!empty($idsRadio)) {
+                $registros = \App\Models\NoticiaCliente::where('cliente_id', $clienteId)
+                    ->where('tipo_id', 3) // radio
+                    ->whereIn('noticia_id', $idsRadio)
+                    ->get();
+                
+                foreach ($registros as $registro) {
+                    $registro->addTag($tag);
+                    $noticiasAfetadas++;
+                }
+            }
+
+            if (!empty($idsImpresso)) {
+                $registros = \App\Models\NoticiaCliente::where('cliente_id', $clienteId)
+                    ->where('tipo_id', 1) // impresso
+                    ->whereIn('noticia_id', $idsImpresso)
+                    ->get();
+                
+                foreach ($registros as $registro) {
+                    $registro->addTag($tag);
+                    $noticiasAfetadas++;
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => "Tag '$tag' adicionada com sucesso",
+                'noticias_afetadas' => $noticiasAfetadas
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::error('Erro ao adicionar tag: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro interno: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Remover tag das notícias selecionadas
+     */
+    public function removerTag(Request $request): JsonResponse
+    {
+        try {
+            $clienteId = $this->client_id;
+            
+            if (!$clienteId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cliente não identificado'
+                ], 400);
+            }
+
+            $tag = trim($request->input('tag'));
+            $idsWeb = $request->input('ids_web', []);
+            $idsTv = $request->input('ids_tv', []);
+            $idsRadio = $request->input('ids_radio', []);
+            $idsImpresso = $request->input('ids_impresso', []);
+
+            if (empty($tag)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Nome da tag é obrigatório'
+                ], 400);
+            }
+
+            $noticiasAfetadas = 0;
+
+            // Remover tag de cada tipo de notícia
+            if (!empty($idsWeb)) {
+                $registros = \App\Models\NoticiaCliente::where('cliente_id', $clienteId)
+                    ->where('tipo_id', 2) // web
+                    ->whereIn('noticia_id', $idsWeb)
+                    ->get();
+                
+                foreach ($registros as $registro) {
+                    $registro->removeTag($tag);
+                    $noticiasAfetadas++;
+                }
+            }
+
+            if (!empty($idsTv)) {
+                $registros = \App\Models\NoticiaCliente::where('cliente_id', $clienteId)
+                    ->where('tipo_id', 4) // tv
+                    ->whereIn('noticia_id', $idsTv)
+                    ->get();
+                
+                foreach ($registros as $registro) {
+                    $registro->removeTag($tag);
+                    $noticiasAfetadas++;
+                }
+            }
+
+            if (!empty($idsRadio)) {
+                $registros = \App\Models\NoticiaCliente::where('cliente_id', $clienteId)
+                    ->where('tipo_id', 3) // radio
+                    ->whereIn('noticia_id', $idsRadio)
+                    ->get();
+                
+                foreach ($registros as $registro) {
+                    $registro->removeTag($tag);
+                    $noticiasAfetadas++;
+                }
+            }
+
+            if (!empty($idsImpresso)) {
+                $registros = \App\Models\NoticiaCliente::where('cliente_id', $clienteId)
+                    ->where('tipo_id', 1) // impresso
+                    ->whereIn('noticia_id', $idsImpresso)
+                    ->get();
+                
+                foreach ($registros as $registro) {
+                    $registro->removeTag($tag);
+                    $noticiasAfetadas++;
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => "Tag '$tag' removida com sucesso",
+                'noticias_afetadas' => $noticiasAfetadas
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::error('Erro ao remover tag: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro interno: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Alterar sentimento de uma notícia
+     */
+    public function alterarSentimento(Request $request): JsonResponse
+    {
+        try {
+            $clienteId = $this->client_id;
+            
+            if (!$clienteId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cliente não identificado'
+                ], 400);
+            }
+
+            $noticiaId = $request->input('noticia_id');
+            $tipo = $request->input('tipo');
+            $sentimento = $request->input('sentimento');
+
+            // Validações
+            if (empty($noticiaId)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'ID da notícia é obrigatório'
+                ], 400);
+            }
+
+            if (empty($tipo)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tipo da notícia é obrigatório'
+                ], 400);
+            }
+
+            if (!in_array($sentimento, ['1', '0', '-1'])) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Valor de sentimento inválido'
+                ], 400);
+            }
+
+            // Mapear tipos para tipo_id
+            $tipoIdMap = [
+                'impresso' => 1,
+                'web' => 2,
+                'radio' => 3,
+                'tv' => 4
+            ];
+
+            if (!isset($tipoIdMap[$tipo])) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tipo de mídia inválido'
+                ], 400);
+            }
+
+            $tipoId = $tipoIdMap[$tipo];
+
+            // Buscar e atualizar o registro na tabela noticia_cliente
+            $registro = \App\Models\NoticiaCliente::where('cliente_id', $clienteId)
+                ->where('tipo_id', $tipoId)
+                ->where('noticia_id', $noticiaId)
+                ->first();
+
+            if (!$registro) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Notícia não encontrada para este cliente'
+                ], 404);
+            }
+
+            // Atualizar o sentimento
+            $registro->sentimento = intval($sentimento);
+            $registro->save();
+
+            // Log da alteração
+            Log::info("Sentimento da notícia {$tipo} #{$noticiaId} alterado para {$sentimento} pelo cliente {$clienteId}");
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Sentimento alterado com sucesso',
+                'noticia_id' => $noticiaId,
+                'tipo' => $tipo,
+                'novo_sentimento' => intval($sentimento)
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::error('Erro ao alterar sentimento: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro interno: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Valida se um cliente existe (substitui /api/validar_cliente/<cliente_id> do Flask)
      */
     public function validarCliente(Request $request): JsonResponse
@@ -2087,5 +2721,267 @@ print('SUCCESS' if success else 'ERROR')
 
         return response()->json(['status' => 'ok']);
     }
+
+    /**
+     * Busca fontes disponíveis para Web (apenas as que têm notícias do cliente)
+     */
+    public function obterFontesWeb(): JsonResponse
+    {
+        try {
+            // Usa o cliente logado da sessão
+            $clienteId = $this->client_id;
+            
+            if (!$clienteId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cliente não identificado'
+                ], 400);
+            }
+
+            // Query principal
+            $fontes = DB::table('fonte_web as fw')
+                ->select('fw.id', 'fw.nome', 'fw.fl_coleta', DB::raw('COUNT(DISTINCT nw.id) as total_noticias'))
+                ->join('noticias_web as nw', 'fw.id', '=', 'nw.id_fonte')
+                ->join('noticia_cliente as nc', function($join) use ($clienteId) {
+                    $join->on('nw.id', '=', 'nc.noticia_id')
+                         ->where('nc.tipo_id', '=', 2)
+                         ->where('nc.cliente_id', '=', $clienteId);
+                })
+                ->whereNull('fw.deleted_at')
+                ->whereNull('nw.deleted_at')
+                ->groupBy('fw.id', 'fw.nome', 'fw.fl_coleta')
+                ->orderBy('fw.nome')
+                ->get();
+
+            // Filtrar apenas as com fl_coleta se necessário
+            $fontesFiltered = $fontes->where('fl_coleta', true);
+
+            // Formatar resultado final
+            $resultado = $fontesFiltered->map(function($fonte) {
+                return [
+                    'id' => (int) $fonte->id,
+                    'nome' => (string) $fonte->nome,
+                    'total_noticias' => (int) $fonte->total_noticias
+                ];
+            })->values();
+
+            // Se não encontrou fontes com fl_coleta, tentar sem esse filtro
+            if (count($resultado) == 0) {
+                // Retornar todas as fontes que têm notícias do cliente, independente de fl_coleta
+                $resultado = $fontes->map(function($fonte) {
+                    return [
+                        'id' => (int) $fonte->id,
+                        'nome' => (string) $fonte->nome . ($fonte->fl_coleta ? '' : ' (inativa)'),
+                        'total_noticias' => (int) $fonte->total_noticias
+                    ];
+                })->values();
+            }
+
+            return response()->json($resultado);
+        } catch (\Exception $e) {
+            Log::error('Erro ao buscar fontes web: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao buscar fontes web: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Busca fontes disponíveis para Impresso (apenas as que têm notícias do cliente)
+     */
+    public function obterFontesImpresso(): JsonResponse
+    {
+        try {
+            // Usa o cliente logado da sessão
+            $clienteId = $this->client_id;
+            
+            if (!$clienteId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cliente não identificado'
+                ], 400);
+            }
+
+            $fontes = DB::table('jornal_online as jo')
+                ->select('jo.id', 'jo.nome', DB::raw('COUNT(DISTINCT ni.id) as total_noticias'))
+                ->join('noticia_impresso as ni', 'jo.id', '=', 'ni.id_fonte')
+                ->join('noticia_cliente as nc', function($join) use ($clienteId) {
+                    $join->on('ni.id', '=', 'nc.noticia_id')
+                         ->where('nc.tipo_id', '=', 1)
+                         ->where('nc.cliente_id', '=', $clienteId);
+                })
+                ->where('jo.fl_ativo', true)
+                ->whereNull('jo.deleted_at')
+                ->whereNull('ni.deleted_at')
+                ->groupBy('jo.id', 'jo.nome')
+                ->orderBy('jo.nome')
+                ->get();
+
+            return response()->json($fontes);
+        } catch (\Exception $e) {
+            Log::error('Erro ao buscar fontes impresso: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao buscar fontes impresso'
+            ], 500);
+        }
+    }
+
+    /**
+     * Busca emissoras e programas disponíveis para TV (apenas as que têm notícias do cliente)
+     */
+    public function obterFontesTv(): JsonResponse
+    {
+        try {
+            // Usa o cliente logado da sessão
+            $clienteId = $this->client_id;
+            
+            if (!$clienteId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cliente não identificado'
+                ], 400);
+            }
+
+            // Buscar emissoras que têm notícias do cliente
+            $emissoras = DB::table('emissora_web as ew')
+                ->select('ew.id', 'ew.nome_emissora as nome', DB::raw('COUNT(DISTINCT nt.id) as total_noticias'))
+                ->join('noticia_tv as nt', 'ew.id', '=', 'nt.emissora_id')
+                ->join('noticia_cliente as nc', function($join) use ($clienteId) {
+                    $join->on('nt.id', '=', 'nc.noticia_id')
+                         ->where('nc.tipo_id', '=', 4)
+                         ->where('nc.cliente_id', '=', $clienteId);
+                })
+                ->whereNull('ew.deleted_at')
+                ->whereNull('nt.deleted_at')
+                ->groupBy('ew.id', 'ew.nome_emissora')
+                ->orderBy('ew.nome_emissora')
+                ->get()
+                ->map(function($item) {
+                    return [
+                        'id' => $item->id,
+                        'nome' => $item->nome,
+                        'tipo' => 'emissora',
+                        'total_noticias' => $item->total_noticias
+                    ];
+                });
+
+            // Buscar programas que têm notícias do cliente
+            $programas = DB::table('programa_emissora_web as p')
+                ->join('emissora_web as e', 'e.id', '=', 'p.id_emissora')
+                ->join('noticia_tv as nt', 'p.id', '=', 'nt.programa_id')
+                ->join('noticia_cliente as nc', function($join) use ($clienteId) {
+                    $join->on('nt.id', '=', 'nc.noticia_id')
+                         ->where('nc.tipo_id', '=', 4)
+                         ->where('nc.cliente_id', '=', $clienteId);
+                })
+                ->select('p.id', 'p.nome_programa as nome', 'e.nome_emissora as emissora', DB::raw('COUNT(DISTINCT nt.id) as total_noticias'))
+                ->whereNull('p.deleted_at')
+                ->whereNull('e.deleted_at')
+                ->whereNull('nt.deleted_at')
+                ->groupBy('p.id', 'p.nome_programa', 'e.nome_emissora')
+                ->orderBy('e.nome_emissora')
+                ->orderBy('p.nome_programa')
+                ->get()
+                ->map(function($item) {
+                    return [
+                        'id' => $item->id,
+                        'nome' => $item->nome . ' (' . $item->emissora . ')',
+                        'tipo' => 'programa',
+                        'total_noticias' => $item->total_noticias
+                    ];
+                });
+
+            $fontes = $emissoras->concat($programas);
+
+            return response()->json($fontes);
+        } catch (\Exception $e) {
+            Log::error('Erro ao buscar fontes TV: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao buscar fontes TV'
+            ], 500);
+        }
+    }
+
+    /**
+     * Busca emissoras e programas disponíveis para Rádio (apenas as que têm notícias do cliente)
+     */
+    public function obterFontesRadio(): JsonResponse
+    {
+        try {
+            // Usa o cliente logado da sessão
+            $clienteId = $this->client_id;
+            
+            if (!$clienteId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cliente não identificado'
+                ], 400);
+            }
+
+            // Buscar emissoras que têm notícias do cliente
+            $emissoras = DB::table('emissora_radio as er')
+                ->select('er.id', 'er.nome_emissora as nome', DB::raw('COUNT(DISTINCT nr.id) as total_noticias'))
+                ->join('noticia_radio as nr', 'er.id', '=', 'nr.emissora_id')
+                ->join('noticia_cliente as nc', function($join) use ($clienteId) {
+                    $join->on('nr.id', '=', 'nc.noticia_id')
+                         ->where('nc.tipo_id', '=', 3)
+                         ->where('nc.cliente_id', '=', $clienteId);
+                })
+                ->whereNull('er.deleted_at')
+                ->whereNull('nr.deleted_at')
+                ->groupBy('er.id', 'er.nome_emissora')
+                ->orderBy('er.nome_emissora')
+                ->get()
+                ->map(function($item) {
+                    return [
+                        'id' => $item->id,
+                        'nome' => $item->nome,
+                        'tipo' => 'emissora',
+                        'total_noticias' => $item->total_noticias
+                    ];
+                });
+
+            // Buscar programas que têm notícias do cliente
+            $programas = DB::table('programa_emissora_radio as p')
+                ->join('emissora_radio as e', 'e.id', '=', 'p.id_emissora')
+                ->join('noticia_radio as nr', 'p.id', '=', 'nr.programa_id')
+                ->join('noticia_cliente as nc', function($join) use ($clienteId) {
+                    $join->on('nr.id', '=', 'nc.noticia_id')
+                         ->where('nc.tipo_id', '=', 3)
+                         ->where('nc.cliente_id', '=', $clienteId);
+                })
+                ->select('p.id', 'p.nome_programa as nome', 'e.nome_emissora as emissora', DB::raw('COUNT(DISTINCT nr.id) as total_noticias'))
+                ->whereNull('p.deleted_at')
+                ->whereNull('e.deleted_at')
+                ->whereNull('nr.deleted_at')
+                ->groupBy('p.id', 'p.nome_programa', 'e.nome_emissora')
+                ->orderBy('e.nome_emissora')
+                ->orderBy('p.nome_programa')
+                ->get()
+                ->map(function($item) {
+                    return [
+                        'id' => $item->id,
+                        'nome' => $item->nome . ' (' . $item->emissora . ')',
+                        'tipo' => 'programa',
+                        'total_noticias' => $item->total_noticias
+                    ];
+                });
+
+            $fontes = $emissoras->concat($programas);
+
+            return response()->json($fontes);
+        } catch (\Exception $e) {
+            Log::error('Erro ao buscar fontes Rádio: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao buscar fontes Rádio'
+            ], 500);
+        }
+    }
+
+
 
 }

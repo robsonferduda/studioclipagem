@@ -64,12 +64,13 @@ class RelatorioService
     /**
      * Lista notícias por período com filtros aplicados
      */
-    public function listarNoticiasPorPeriodoComFiltros($clienteId, $dataInicio, $dataFim, $filtros = [], $termo = null)
+    public function listarNoticiasPorPeriodoComFiltros($clienteId, $dataInicio, $dataFim, $filtros = [], $termo = null, $tipoFiltroData = 'coleta')
     {
         Log::info('=== INICIANDO listarNoticiasPorPeriodoComFiltros ===', [
             'clienteId' => $clienteId,
             'dataInicio' => $dataInicio,
             'dataFim' => $dataFim,
+            'tipoFiltroData' => $tipoFiltroData,
             'filtros' => $filtros,
             'termo' => $termo
         ]);
@@ -83,13 +84,20 @@ class RelatorioService
         $retornoFiltros = $filtros['retorno'] ?? ['com_retorno'];
         $valorFiltros = $filtros['valor'] ?? ['com_valor', 'sem_valor'];
         $areasFiltros = $filtros['areas'] ?? [];
+        $tagsFiltros = $filtros['tags_filtro'] ?? [];
+        $fontesFiltros = $filtros['fontes_filtro'] ?? [];
         
-        Log::info('Filtros processados:', [
+        Log::info('=== FILTROS PROCESSADOS ===', [
             'tiposMidia' => $tiposMidia,
             'statusFiltros' => $statusFiltros,
             'retornoFiltros' => $retornoFiltros,
             'valorFiltros' => $valorFiltros,
-            'areasFiltros' => $areasFiltros
+            'areasFiltros' => $areasFiltros,
+            'tagsFiltros' => $tagsFiltros,
+            'tags_count' => count($tagsFiltros),
+            'tem_tags' => !empty($tagsFiltros),
+            'fontesFiltros' => $fontesFiltros,
+            'tem_fontes' => !empty($fontesFiltros)
         ]);
 
         $resultado = [
@@ -98,6 +106,36 @@ class RelatorioService
             'radio' => [],
             'impresso' => []
         ];
+
+        // Função auxiliar para obter coluna de data baseada no tipo de filtro
+        $getDataColumn = function($tipoMidia) use ($tipoFiltroData) {
+            if ($tipoFiltroData === 'coleta') {
+                // Para data de coleta, sempre usa created_at
+                return 'created_at';
+            }
+            
+            // Para data de clipagem, usa as colunas específicas de cada tipo
+            switch ($tipoMidia) {
+                case 'web':
+                    return 'data_noticia';
+                case 'tv':
+                    return 'dt_noticia';
+                case 'radio':
+                    return 'dt_clipagem';
+                case 'impresso':
+                    return 'dt_clipagem';
+                default:
+                    return 'created_at';
+            }
+        };
+
+        Log::info('=== CONFIGURAÇÃO DE COLUNAS DE DATA ===', [
+            'tipoFiltroData' => $tipoFiltroData,
+            'coluna_web' => $getDataColumn('web'),
+            'coluna_tv' => $getDataColumn('tv'),
+            'coluna_radio' => $getDataColumn('radio'),
+            'coluna_impresso' => $getDataColumn('impresso')
+        ]);
 
         // Funções auxiliares para construir condições SQL
         $buildStatusCondition = function($tablePrefix = "") use ($statusFiltros) {
@@ -206,6 +244,103 @@ class RelatorioService
             return "";
         };
 
+        $buildTagsCondition = function($clienteId, $tipoId) use ($tagsFiltros) {
+            if (empty($tagsFiltros)) {
+                Log::info('buildTagsCondition: Nenhuma tag para filtrar', [
+                    'cliente_id' => $clienteId,
+                    'tipo_id' => $tipoId
+                ]);
+                return "";
+            }
+            
+            Log::info('=== CONSTRUINDO FILTRO TAGS ===', [
+                'cliente_id' => $clienteId,
+                'tipo_id' => $tipoId,
+                'tags_filtros' => $tagsFiltros,
+                'count_tags' => count($tagsFiltros)
+            ]);
+            
+            // Usando abordagem mais simples com LIKE em PostgreSQL
+            $tagConditions = [];
+            foreach ($tagsFiltros as $tag) {
+                // Escape caracteres especiais para LIKE
+                $tagEscaped = str_replace(['\\', '%', '_', '"'], ['\\\\', '\\%', '\\_', '\\"'], $tag);
+                // Verificar se a tag existe como string dentro do array JSON
+                $tagConditions[] = "nc.misc_data::text LIKE '%\"$tagEscaped\"%'";
+            }
+            
+            if (!empty($tagConditions)) {
+                // IMPORTANTE: Todas as tags devem estar presentes (AND) ou pelo menos uma (OR)?
+                // Para filtro funcional, usamos OR (mostrar notícias que tenham pelo menos uma das tags selecionadas)
+                $condition = " AND (" . implode(' OR ', $tagConditions) . ")";
+                
+                Log::info('=== CONDIÇÃO SQL TAGS GERADA ===', [
+                    'condition' => $condition,
+                    'tag_conditions_array' => $tagConditions
+                ]);
+                
+                return $condition;
+            }
+            return "";
+        };
+
+        // Função auxiliar para construir condições de fontes
+        $buildFontesCondition = function($tipoMidia) use ($fontesFiltros) {
+            if (empty($fontesFiltros)) {
+                return "";
+            }
+            
+            $fontesTipo = $fontesFiltros[$tipoMidia] ?? [];
+            
+            switch ($tipoMidia) {
+                case 'web':
+                    if (!empty($fontesTipo)) {
+                        $fontesIds = implode(',', $fontesTipo);
+                        return " AND w.id_fonte IN ({$fontesIds})";
+                    }
+                    break;
+                    
+                case 'impresso':
+                    if (!empty($fontesTipo)) {
+                        $fontesIds = implode(',', $fontesTipo);
+                        return " AND j.id_fonte IN ({$fontesIds})";
+                    }
+                    break;
+                    
+                case 'tv':
+                    $conditions = [];
+                    if (!empty($fontesTipo['emissoras'])) {
+                        $emissorasIds = implode(',', $fontesTipo['emissoras']);
+                        $conditions[] = "t.emissora_id IN ({$emissorasIds})";
+                    }
+                    if (!empty($fontesTipo['programas'])) {
+                        $programasIds = implode(',', $fontesTipo['programas']);
+                        $conditions[] = "t.programa_id IN ({$programasIds})";
+                    }
+                    if (!empty($conditions)) {
+                        return " AND (" . implode(' OR ', $conditions) . ")";
+                    }
+                    break;
+                    
+                case 'radio':
+                    $conditions = [];
+                    if (!empty($fontesTipo['emissoras'])) {
+                        $emissorasIds = implode(',', $fontesTipo['emissoras']);
+                        $conditions[] = "r.emissora_id IN ({$emissorasIds})";
+                    }
+                    if (!empty($fontesTipo['programas'])) {
+                        $programasIds = implode(',', $fontesTipo['programas']);
+                        $conditions[] = "r.programa_id IN ({$programasIds})";
+                    }
+                    if (!empty($conditions)) {
+                        return " AND (" . implode(' OR ', $conditions) . ")";
+                    }
+                    break;
+            }
+            
+            return "";
+        };
+
         // Função auxiliar para converter sentimento string/numérico para inteiro
         $convertSentimento = function($sentimento) {
             $sentimentoInt = 0;
@@ -233,9 +368,10 @@ class RelatorioService
             return $sentimentoInt;
         };
 
-        // Buscar notícias Web - USANDO CAMPO CORRETO data_noticia
+        // Buscar notícias Web
         if (in_array('web', $tiposMidia)) {
-            Log::info('Buscando notícias WEB...');
+            $colunaDataWeb = $getDataColumn('web');
+            Log::info('Buscando notícias WEB...', ['coluna_data' => $colunaDataWeb]);
             try {
                 $sql = "
                     SELECT 
@@ -248,18 +384,21 @@ class RelatorioService
                         COALESCE(w.nu_valor, 0) as valor,
                         COALESCE(nc.sentimento, '0') as sentimento,
                         COALESCE(nc.area, 0) as area_id,
-                        nc.id as vinculo_id
+                        nc.id as vinculo_id,
+                        nc.misc_data
                     FROM noticias_web w
                     LEFT JOIN fonte_web fw ON w.id_fonte = fw.id
                     JOIN noticia_cliente nc ON w.id = nc.noticia_id AND nc.tipo_id = 2
                     WHERE nc.cliente_id = :clienteId
-                    AND w.data_noticia BETWEEN :dataInicio AND :dataFim
+                    AND w.$colunaDataWeb BETWEEN :dataInicio AND :dataFim
                     AND w.deleted_at IS NULL
                     {$buildStatusCondition('nc.')}
                     {$buildValorCondition('w.', 'nu_valor')}
                     {$buildAreaCondition('nc.')}
                     {$buildTermoCondition('w.', $termo)}
-                    ORDER BY w.data_noticia DESC, w.titulo_noticia ASC
+                    {$buildTagsCondition($clienteId, 2)}
+                    {$buildFontesCondition('web')}
+                    ORDER BY w.$colunaDataWeb ASC, w.titulo_noticia ASC
                 ";
 
                 $params = [
@@ -272,14 +411,42 @@ class RelatorioService
                     $params['termo'] = '%' . $termo . '%';
                 }
                 
+                // Log da query completa ANTES da execução
+                Log::info('=== EXECUTANDO QUERY WEB ===', [
+                    'sql_completa' => $sql,
+                    'params' => $params,
+                    'tem_filtro_tags' => !empty($tagsFiltros),
+                    'tags_solicitadas' => $tagsFiltros
+                ]);
+
                 $noticiasWeb = DB::select($sql, $params);
                 
-                Log::info('Query WEB executada:', [
+                Log::info('=== QUERY WEB EXECUTADA ===', [
                     'count' => count($noticiasWeb),
-                    'sql' => $sql
+                    'tem_filtro_tags' => !empty($tagsFiltros),
+                    'tags_solicitadas' => $tagsFiltros
                 ]);
                 
+                // Log de algumas notícias para debug
+                if (!empty($noticiasWeb)) {
+                    Log::info('=== AMOSTRA NOTÍCIAS WEB ===', [
+                        'primeira_noticia' => [
+                            'id' => $noticiasWeb[0]->id ?? 'N/A',
+                            'titulo' => substr($noticiasWeb[0]->titulo ?? 'N/A', 0, 50),
+                            'misc_data' => $noticiasWeb[0]->misc_data ?? 'N/A'
+                        ],
+                        'total_com_misc_data' => count(array_filter($noticiasWeb, function($n) { return !empty($n->misc_data); }))
+                    ]);
+                }
+                
                 foreach ($noticiasWeb as $noticia) {
+                    // Buscar tags do misc_data
+                    $tags = [];
+                    if (!empty($noticia->misc_data)) {
+                        $miscData = json_decode($noticia->misc_data, true);
+                        $tags = $miscData['tags_noticia'] ?? [];
+                    }
+                    
                     $resultado['web'][] = [
                         'id' => $noticia->id,
                         'vinculo_id' => $noticia->vinculo_id,
@@ -293,11 +460,16 @@ class RelatorioService
                         'valor' => (float)$noticia->valor,
                         'area' => $noticia->area_id ? 'Área ' . $noticia->area_id : 'Sem área',
                         'area_id' => $noticia->area_id,
-                        'tags' => '',
+                        'tags' => $tags,
                         'tipo_midia' => 'web'
                     ];
                 }
                 
+                // Ordenar explicitamente por data no PHP como garantia
+                usort($resultado['web'], function($a, $b) {
+                    return strtotime($a['data']) - strtotime($b['data']);
+                });
+
                 Log::info('Processamento WEB concluído:', [
                     'quantidade' => count($resultado['web'])
                 ]);
@@ -312,9 +484,10 @@ class RelatorioService
             }
         }
 
-        // Buscar notícias TV - USANDO CAMPO CORRETO dt_noticia
+        // Buscar notícias TV
         if (in_array('tv', $tiposMidia)) {
-            Log::info('Buscando notícias TV...');
+            $colunaDataTv = $getDataColumn('tv');
+            Log::info('Buscando notícias TV...', ['coluna_data' => $colunaDataTv]);
             try {
                 $sql = "
                     SELECT 
@@ -328,19 +501,22 @@ class RelatorioService
                         COALESCE(t.valor_retorno, 0) as valor,
                         COALESCE(nc.sentimento, '0') as sentimento,
                         COALESCE(nc.area, 0) as area_id,
-                        nc.id as vinculo_id
+                        nc.id as vinculo_id,
+                        nc.misc_data
                     FROM noticia_tv t
                     LEFT JOIN emissora_web e ON t.emissora_id = e.id
                     LEFT JOIN programa_emissora_web p ON t.programa_id = p.id
                     JOIN noticia_cliente nc ON t.id = nc.noticia_id AND nc.tipo_id = 4
                     WHERE nc.cliente_id = :clienteId
-                    AND t.dt_noticia BETWEEN :dataInicio AND :dataFim
+                    AND t.$colunaDataTv BETWEEN :dataInicio AND :dataFim
                     AND t.deleted_at IS NULL
                     {$buildStatusCondition('nc.')}
                     {$buildValorCondition('t.', 'valor_retorno')}
                     {$buildAreaCondition('nc.')}
                     {$buildTermoCondition('t.', $termo)}
-                    ORDER BY t.dt_noticia DESC, t.sinopse ASC
+                    {$buildTagsCondition($clienteId, 4)}
+                    {$buildFontesCondition('tv')}
+                    ORDER BY t.$colunaDataTv ASC, t.sinopse ASC
                 ";
 
                 $params = [
@@ -360,6 +536,13 @@ class RelatorioService
                 ]);
                 
                 foreach ($noticiasTV as $noticia) {
+                    // Buscar tags do misc_data
+                    $tags = [];
+                    if (!empty($noticia->misc_data)) {
+                        $miscData = json_decode($noticia->misc_data, true);
+                        $tags = $miscData['tags_noticia'] ?? [];
+                    }
+                    
                     $resultado['tv'][] = [
                         'id' => $noticia->id,
                         'vinculo_id' => $noticia->vinculo_id,
@@ -374,10 +557,15 @@ class RelatorioService
                         'valor' => (float)$noticia->valor,
                         'area' => $noticia->area_id ? 'Área ' . $noticia->area_id : 'Sem área',
                         'area_id' => $noticia->area_id,
-                        'tags' => '',
+                        'tags' => $tags,
                         'tipo_midia' => 'tv'
                     ];
                 }
+                
+                // Ordenar explicitamente por data no PHP como garantia
+                usort($resultado['tv'], function($a, $b) {
+                    return strtotime($a['data']) - strtotime($b['data']);
+                });
                 
             } catch (\Exception $e) {
                 Log::error('Erro ao processar notícias TV:', [
@@ -387,9 +575,10 @@ class RelatorioService
             }
         }
 
-        // Buscar notícias Rádio - USANDO CAMPO CORRETO dt_clipagem
+        // Buscar notícias Rádio
         if (in_array('radio', $tiposMidia)) {
-            Log::info('Buscando notícias RÁDIO...');
+            $colunaDataRadio = $getDataColumn('radio');
+            Log::info('Buscando notícias RÁDIO...', ['coluna_data' => $colunaDataRadio]);
             try {
                 $sql = "
                     SELECT 
@@ -407,20 +596,23 @@ class RelatorioService
                         COALESCE(r.valor_retorno, 0) as valor,
                         COALESCE(nc.sentimento, '0') as sentimento,
                         COALESCE(nc.area, 0) as area_id,
-                        nc.id as vinculo_id
+                        nc.id as vinculo_id,
+                        nc.misc_data
                     FROM noticia_radio r
                     LEFT JOIN emissora_radio e ON r.emissora_id = e.id
                     LEFT JOIN programa_emissora_radio p ON r.programa_id = p.id
                     LEFT JOIN emissora_radio pe ON p.id_emissora = pe.id
                     JOIN noticia_cliente nc ON r.id = nc.noticia_id AND nc.tipo_id = 3
                     WHERE nc.cliente_id = :clienteId
-                    AND r.dt_clipagem BETWEEN :dataInicio AND :dataFim
+                    AND r.$colunaDataRadio BETWEEN :dataInicio AND :dataFim
                     AND r.deleted_at IS NULL
                     {$buildStatusCondition('nc.')}
                     {$buildValorCondition('r.', 'valor_retorno')}
                     {$buildAreaCondition('nc.')}
                     {$buildTermoCondition('r.', $termo)}
-                    ORDER BY r.dt_clipagem DESC, r.titulo ASC
+                    {$buildTagsCondition($clienteId, 3)}
+                    {$buildFontesCondition('radio')}
+                    ORDER BY r.$colunaDataRadio ASC, r.titulo ASC
                 ";
 
                 $params = [
@@ -440,6 +632,13 @@ class RelatorioService
                 ]);
                 
                 foreach ($noticiasRadio as $noticia) {
+                    // Buscar tags do misc_data
+                    $tags = [];
+                    if (!empty($noticia->misc_data)) {
+                        $miscData = json_decode($noticia->misc_data, true);
+                        $tags = $miscData['tags_noticia'] ?? [];
+                    }
+                    
                     $resultado['radio'][] = [
                         'id' => $noticia->id,
                         'vinculo_id' => $noticia->vinculo_id,
@@ -454,10 +653,15 @@ class RelatorioService
                         'valor' => (float)$noticia->valor,
                         'area' => $noticia->area_id ? 'Área ' . $noticia->area_id : 'Sem área',
                         'area_id' => $noticia->area_id,
-                        'tags' => '',
+                        'tags' => $tags,
                         'tipo_midia' => 'radio'
                     ];
                 }
+                
+                // Ordenar explicitamente por data no PHP como garantia
+                usort($resultado['radio'], function($a, $b) {
+                    return strtotime($a['data']) - strtotime($b['data']);
+                });
                 
             } catch (\Exception $e) {
                 Log::error('Erro ao processar notícias RÁDIO:', [
@@ -467,9 +671,10 @@ class RelatorioService
             }
         }
 
-        // Buscar notícias Impresso - USANDO CAMPO CORRETO dt_clipagem
+        // Buscar notícias Impresso
         if (in_array('impresso', $tiposMidia)) {
-            Log::info('Buscando notícias IMPRESSO...');
+            $colunaDataImpresso = $getDataColumn('impresso');
+            Log::info('Buscando notícias IMPRESSO...', ['coluna_data' => $colunaDataImpresso]);
             try {
                 $sql = "
                     SELECT 
@@ -481,12 +686,13 @@ class RelatorioService
                         COALESCE(j.valor_retorno, 0) as valor,
                         COALESCE(nc.sentimento, '0') as sentimento,
                         COALESCE(nc.area, 0) as area_id,
-                        nc.id as vinculo_id
+                        nc.id as vinculo_id,
+                        nc.misc_data
                     FROM noticia_impresso j
                     LEFT JOIN jornal_online ji ON j.id_fonte = ji.id
                     JOIN noticia_cliente nc ON j.id = nc.noticia_id AND nc.tipo_id = 1
                     WHERE nc.cliente_id = :clienteId
-                    AND j.dt_clipagem BETWEEN :dataInicio AND :dataFim
+                    AND j.$colunaDataImpresso BETWEEN :dataInicio AND :dataFim
                     AND j.deleted_at IS NULL
                     AND j.sinopse IS NOT NULL
                     AND j.sinopse != ''
@@ -494,7 +700,9 @@ class RelatorioService
                     {$buildValorCondition('j.', 'valor_retorno')}
                     {$buildAreaCondition('nc.')}
                     {$buildTermoCondition('j.', $termo)}
-                    ORDER BY j.dt_clipagem DESC, j.titulo ASC
+                    {$buildTagsCondition($clienteId, 1)}
+                    {$buildFontesCondition('impresso')}
+                    ORDER BY j.$colunaDataImpresso ASC, j.titulo ASC
                 ";
 
                 $params = [
@@ -514,6 +722,13 @@ class RelatorioService
                 ]);
                 
                 foreach ($noticiasImpresso as $noticia) {
+                    // Buscar tags do misc_data
+                    $tags = [];
+                    if (!empty($noticia->misc_data)) {
+                        $miscData = json_decode($noticia->misc_data, true);
+                        $tags = $miscData['tags_noticia'] ?? [];
+                    }
+                    
                     $resultado['impresso'][] = [
                         'id' => $noticia->id,
                         'vinculo_id' => $noticia->vinculo_id,
@@ -526,10 +741,15 @@ class RelatorioService
                         'valor' => (float)$noticia->valor,
                         'area' => $noticia->area_id ? 'Área ' . $noticia->area_id : 'Sem área',
                         'area_id' => $noticia->area_id,
-                        'tags' => '',
+                        'tags' => $tags,
                         'tipo_midia' => 'impresso'
                     ];
                 }
+                
+                // Ordenar explicitamente por data no PHP como garantia
+                usort($resultado['impresso'], function($a, $b) {
+                    return strtotime($a['data']) - strtotime($b['data']);
+                });
                 
             } catch (\Exception $e) {
                 Log::error('Erro ao processar notícias IMPRESSO:', [

@@ -2434,7 +2434,7 @@ class DatabaseManager:
                 WHERE nc.cliente_id = %s
                 AND w.data_noticia BETWEEN %s AND %s
                 AND w.deleted_at IS NULL
-                ORDER BY w.data_noticia DESC, w.titulo_noticia ASC
+                ORDER BY w.data_noticia ASC, w.titulo_noticia ASC
             """
             
             cursor.execute(query_web, (usuario_id, data_inicio, data_fim))
@@ -2470,7 +2470,7 @@ class DatabaseManager:
                 AND j.deleted_at IS NULL
                 AND j.sinopse IS NOT NULL
                 AND j.sinopse != ''
-                ORDER BY j.dt_clipagem DESC, j.titulo ASC
+                ORDER BY j.dt_clipagem ASC, j.titulo ASC
             """
             
             cursor.execute(query_impresso, (usuario_id, data_inicio, data_fim))
@@ -2517,7 +2517,7 @@ class DatabaseManager:
                 WHERE nc.cliente_id = %s
                 AND t.dt_noticia BETWEEN %s AND %s
                 AND t.deleted_at IS NULL
-                ORDER BY t.dt_noticia DESC, t.sinopse ASC
+                ORDER BY t.dt_noticia ASC, t.sinopse ASC
             """
             
             cursor.execute(query_tv, (usuario_id, data_inicio, data_fim))
@@ -2559,7 +2559,7 @@ class DatabaseManager:
                 WHERE nc.cliente_id = %s
                 AND r.dt_clipagem BETWEEN %s AND %s
                 AND r.deleted_at IS NULL
-                ORDER BY r.dt_clipagem DESC, r.titulo ASC
+                ORDER BY r.dt_clipagem ASC, r.titulo ASC
             """
             
             cursor.execute(query_radio, (usuario_id, data_inicio, data_fim))
@@ -2732,7 +2732,7 @@ class DatabaseManager:
                     {_build_retorno_condition('w.')}
                     {_build_valor_condition('w.', 'nu_valor')}
                     {_build_area_condition()}
-                    ORDER BY w.data_noticia DESC, w.titulo_noticia ASC
+                    ORDER BY w.data_noticia ASC, w.titulo_noticia ASC
                 """
                 
                 cursor.execute(query_web, (usuario_id, data_inicio, data_fim))
@@ -2783,7 +2783,7 @@ class DatabaseManager:
                     {_build_retorno_condition('j.')}
                     {_build_valor_condition('j.', 'valor_retorno')}
                     {_build_area_condition()}
-                    ORDER BY j.dt_clipagem DESC, j.titulo ASC
+                    ORDER BY j.dt_clipagem ASC, j.titulo ASC
                 """
                 
                 cursor.execute(query_impresso, (usuario_id, data_inicio, data_fim))
@@ -2869,7 +2869,7 @@ class DatabaseManager:
                     {_build_status_condition('nc.')}
                     {_build_area_condition()}
                     {valor_condition_tv}
-                    ORDER BY t.dt_noticia DESC, t.sinopse ASC
+                    ORDER BY t.dt_noticia ASC, t.sinopse ASC
                 """
                 
                 cursor.execute(query_tv, (usuario_id, data_inicio, data_fim))
@@ -2937,7 +2937,7 @@ class DatabaseManager:
                         {_build_status_condition('nc.')}
                         {_build_area_condition()}
                         {valor_condition_radio}
-                        ORDER BY r.dt_clipagem DESC, r.titulo ASC
+                        ORDER BY r.dt_clipagem ASC, r.titulo ASC
                 """
                 
                 cursor.execute(query_radio, (usuario_id, data_inicio, data_fim))

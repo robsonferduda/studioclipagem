@@ -80,12 +80,30 @@ Route::middleware(['web'])->group(function () {
 	Route::post('cliente/relatorios/gerar-pdf-web','ClienteController@gerarRelatorioPDFWeb');
 	Route::post('cliente/relatorios/gerar-pdf-impresso','ClienteController@gerarRelatorioPDFImpresso');
 	Route::get('cliente/{cliente}/relatorios/download/{arquivo}','ClienteController@downloadRelatorio');
+	Route::get('cliente/relatorios/historico','ClienteController@relatoriosSalvos');
+	Route::get('cliente/relatorios/salvos','ClienteController@listarRelatorios');
 	Route::post('cliente/relatorios/adicionar-noticia','ClienteController@adicionarNoticia');
 	Route::post('cliente/relatorios/editar-noticia','ClienteController@editarNoticia');
 	Route::post('cliente/relatorios/excluir-noticia','ClienteController@excluirNoticia');
 	Route::get('cliente/relatorios/noticia/{id}/{tipo}','ClienteController@buscarNoticia');
 	Route::post('cliente/relatorios/vincular-noticia-area','ClienteController@vincularNoticiaArea');
 	Route::post('cliente/relatorios/upload-imagem','ClienteController@uploadImagem');
+	
+	// Rotas para gerenciamento de tags
+	Route::get('cliente/tags/disponiveis','ClienteController@getTagsDisponiveis');
+	Route::post('cliente/tags/noticias','ClienteController@getTagsNoticias');
+	Route::post('cliente/tags/adicionar','ClienteController@adicionarTag');
+	Route::post('cliente/tags/remover','ClienteController@removerTag');
+	
+	// Rota para alterar sentimento de notícias
+	Route::post('cliente/relatorios/alterar-sentimento','ClienteController@alterarSentimento');
+	
+	// Rotas para buscar fontes/emissoras/programas para filtros
+	Route::get('cliente/fontes/web','ClienteController@obterFontesWeb');
+	Route::get('cliente/fontes/impresso','ClienteController@obterFontesImpresso');
+	Route::get('cliente/fontes/tv','ClienteController@obterFontesTv');
+	Route::get('cliente/fontes/radio','ClienteController@obterFontesRadio');
+	
 	Route::post('cliente/{id}/areas/reordenar', 'ClienteController@reordenarAreas');
 	Route::post('cliente/area/{id}/toggle-situacao', 'AreaController@alternarSituacao');
 

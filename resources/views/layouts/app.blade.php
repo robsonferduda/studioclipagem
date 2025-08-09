@@ -73,13 +73,11 @@
                            <span class="sidebar-normal">Gerar</span>
                            </a>
                         </li>
-                        <!--
-                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'cliente-relatorios') ? 'active' : '' }}">
-                          <a href="{{ url('cliente/relatorios/listar') }}">
-                          <span class="sidebar-normal">Meus Relatórios</span>
+                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'cliente-relatorios-salvos') ? 'active' : '' }}">
+                          <a href="{{ url('cliente/relatorios/historico') }}">
+                          <span class="sidebar-normal">Relatórios Salvos</span>
                           </a>
                        </li>
-                        -->
                      </ul>
                   </div>
                </li>
@@ -455,13 +453,11 @@
                            <span class="sidebar-normal">Gerar</span>
                            </a>
                         </li>
-                        <!--
-                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'cliente-relatorios') ? 'active' : '' }}">
-                          <a href="{{ url('cliente/relatorios/listar') }}">
-                          <span class="sidebar-normal">Meus Relatórios</span>
+                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'cliente-relatorios-salvos') ? 'active' : '' }}">
+                          <a href="{{ url('cliente/relatorios/historico') }}">
+                          <span class="sidebar-normal">Relatórios Salvos</span>
                           </a>
                        </li>
-                        -->
                      </ul>
                   </div>
                </li>
