@@ -160,7 +160,7 @@ $(document).ready(function() {
         };
 
         $.ajax({
-            url: '{{ url("cliente/relatorios") }}',
+            url: '{{ url("cliente/relatorios/api") }}',
             method: 'GET',
             data: params,
             success: function(response) {

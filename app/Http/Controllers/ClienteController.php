@@ -1188,8 +1188,8 @@ class ClienteController extends Controller
      */
     public function relatoriosSalvos(Request $request): View
     {
-        Session::put('url','relatorios');
-        Session::put('sub-menu','cliente-relatorios-salvos');
+        Session::put('url','cliente-relatorios');
+        Session::put('sub-menu','cliente-relatorios');
 
         return view('cliente.relatorios');
     }
