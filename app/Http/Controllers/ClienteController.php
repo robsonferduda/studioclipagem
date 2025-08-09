@@ -145,7 +145,7 @@ class ClienteController extends Controller
 
         $relatorios = array();
 
-        return view('cliente/relatorios/gerar', compact('relatorios','tipo_data','dt_inicial','dt_final','fl_web','fl_tv','fl_radio','fl_impresso','fl_areas','fl_sentimento','fl_retorno_midia','fl_print','cliente','clientes'));
+        return view('cliente/noticias', compact('relatorios','tipo_data','dt_inicial','dt_final','fl_web','fl_tv','fl_radio','fl_impresso','fl_areas','fl_sentimento','fl_retorno_midia','fl_print','cliente','clientes'));
     }
 
     public function create(): View
@@ -1191,7 +1191,7 @@ class ClienteController extends Controller
         Session::put('url','relatorios');
         Session::put('sub-menu','cliente-relatorios-salvos');
 
-        return view('cliente.relatorios.salvos');
+        return view('cliente.relatorios');
     }
 
     /**

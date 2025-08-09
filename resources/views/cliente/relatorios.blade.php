@@ -6,12 +6,11 @@
             <div class="row">
                 <div class="col-md-8">
                     <h4 class="card-title">
-                        <i class="fa fa-file-pdf-o ml-3"></i> Relatórios 
-                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Relatórios Salvos
+                        <i class="fa fa-file-pdf-o ml-3"></i> Relatórios
                     </h4>
                 </div>
                 <div class="col-md-4">
-                    <a href="{{ url('cliente/relatorios/gerar') }}" class="btn btn-primary pull-right" style="margin-right: 12px;">
+                    <a href="{{ url('cliente/noticias') }}" class="btn btn-primary pull-right" style="margin-right: 12px;">
                         <i class="fa fa-plus"></i> Gerar Novo Relatório
                     </a>
                 </div>
@@ -84,7 +83,7 @@
                 <h4 class="text-muted">Nenhum relatório encontrado</h4>
                 <p class="text-muted">
                     Não há relatórios salvos para os filtros selecionados.<br>
-                    <a href="{{ url('cliente/relatorios/gerar') }}" class="btn btn-primary mt-2">
+                    <a href="{{ url('cliente/noticias') }}" class="btn btn-primary mt-2">
                         <i class="fa fa-plus"></i> Gerar seu primeiro relatório
                     </a>
                 </p>
@@ -161,7 +160,7 @@ $(document).ready(function() {
         };
 
         $.ajax({
-            url: '{{ url("cliente/relatorios/salvos") }}',
+            url: '{{ url("cliente/relatorios") }}',
             method: 'GET',
             data: params,
             success: function(response) {

@@ -69,9 +69,11 @@ Route::middleware(['web'])->group(function () {
 	Route::post('boletim/noticia/remover','BoletimController@removerNoticia');
 	Route::resource('boletim','BoletimController');
 
-	Route::resource('cliente','ClienteController');
+	// Rotas específicas do cliente (devem vir ANTES do resource)
 	Route::match(array('GET', 'POST'),'clientes','ClienteController@index');
-	Route::match(array('GET', 'POST'),'cliente/relatorios/gerar','ClienteController@gerarRelatorios');
+	Route::match(array('GET', 'POST'),'cliente/noticias','ClienteController@gerarRelatorios');
+	Route::get('cliente/relatorios','ClienteController@listarRelatorios');
+	Route::get('cliente/relatorios/historico','ClienteController@relatoriosSalvos');
 	Route::match(array('GET', 'POST'),'cliente/relatorios/listar','ClienteController@relatorios');
 
 	// Novas rotas para substituir funcionalidades do Flask app.py
@@ -80,8 +82,6 @@ Route::middleware(['web'])->group(function () {
 	Route::post('cliente/relatorios/gerar-pdf-web','ClienteController@gerarRelatorioPDFWeb');
 	Route::post('cliente/relatorios/gerar-pdf-impresso','ClienteController@gerarRelatorioPDFImpresso');
 	Route::get('cliente/{cliente}/relatorios/download/{arquivo}','ClienteController@downloadRelatorio');
-	Route::get('cliente/relatorios/historico','ClienteController@relatoriosSalvos');
-	Route::get('cliente/relatorios/salvos','ClienteController@listarRelatorios');
 	Route::post('cliente/relatorios/adicionar-noticia','ClienteController@adicionarNoticia');
 	Route::post('cliente/relatorios/editar-noticia','ClienteController@editarNoticia');
 	Route::post('cliente/relatorios/excluir-noticia','ClienteController@excluirNoticia');
@@ -106,6 +106,16 @@ Route::middleware(['web'])->group(function () {
 	
 	Route::post('cliente/{id}/areas/reordenar', 'ClienteController@reordenarAreas');
 	Route::post('cliente/area/{id}/toggle-situacao', 'AreaController@alternarSituacao');
+	
+	// Outras rotas específicas de cliente
+	Route::post('cliente/selecionar','ClienteController@selecionar');
+	Route::get('cliente/paginas-associadas/{client}','ClientController@connectedtPages');
+	Route::get('cliente/area/{id}/remover','ClienteController@removerArea');
+	Route::get('cliente/area/{id}/situacao','ClienteController@alteraSituacao');
+	Route::post('cliente/area/adicionar','ClienteController@adicionarArea');
+	Route::get('cliente/flags-midia/{id}', 'ClienteController@flagsMidia');
+	
+	Route::resource('cliente','ClienteController');
 
 	// API routes para dados de relatórios
 	Route::get('api/clientes','ClienteController@getClientesApi');
@@ -428,13 +438,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('client/accounts/facebook/{cliente}','ClientController@getFacebookAccounts');
 	Route::get('client/hashtags/{cliente}','ClientController@getHashtags');
 	Route::get('client/emails/{cliente}','ClientController@emails');
-	Route::post('cliente/selecionar','ClienteController@selecionar');
-	Route::get('cliente/paginas-associadas/{client}','ClientController@connectedtPages');
 
-	Route::get('cliente/area/{id}/remover','ClienteController@removerArea');
-	Route::get('cliente/area/{id}/situacao','ClienteController@alteraSituacao');
-
-	Route::post('cliente/area/adicionar','ClienteController@adicionarArea');
 
 	Route::get('configuracoes','ConfiguracoesController@index');
 	Route::post('configuracoes/flag-regras/atualizar','ConfiguracoesController@atualizarFlag');
@@ -451,10 +455,10 @@ Route::middleware(['web'])->group(function () {
 	Route::get('perfil/novo','RoleController@create');
 
 	Route::get('pdf','RelatorioController@pdf');
-	Route::match(array('GET', 'POST'),'relatorios/gerar','ClienteController@gerarRelatorios');
+	Route::match(array('GET', 'POST'),'relatorios','ClienteController@gerarRelatorios');
 	Route::get('relatorios/clipping','RelatorioController@clipping');
 	Route::get('relatorios/clipping/{arquivo}','RelatorioController@getClipping');
-	Route::get('cliente/flags-midia/{id}', 'ClienteController@flagsMidia');
+
 
 	Route::match(array('GET', 'POST'),'noticias','ClienteController@noticias');
 

@@ -6,8 +6,7 @@
             <div class="row">
                 <div class="col-md-8">
                     <h4 class="card-title">
-                        <i class="fa fa-file-pdf-o ml-3"></i> Relatórios 
-                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Gerar
+                        <i class="fa fa-newspaper-o ml-3"></i> Notícias
                     </h4>
                 </div>
                 <div class="col-md-4">
