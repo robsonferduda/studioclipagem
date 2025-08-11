@@ -69,9 +69,12 @@ Route::middleware(['web'])->group(function () {
 	Route::post('boletim/noticia/remover','BoletimController@removerNoticia');
 	Route::resource('boletim','BoletimController');
 
-	Route::resource('cliente','ClienteController');
+	// Rotas específicas do cliente (devem vir ANTES do resource)
 	Route::match(array('GET', 'POST'),'clientes','ClienteController@index');
-	Route::match(array('GET', 'POST'),'cliente/relatorios/gerar','ClienteController@gerarRelatorios');
+	Route::match(array('GET', 'POST'),'cliente/noticias','ClienteController@gerarRelatorios');
+	Route::get('cliente/relatorios','ClienteController@relatoriosSalvos');
+	Route::get('cliente/relatorios/api','ClienteController@listarRelatorios');
+	Route::get('cliente/relatorios/historico','ClienteController@relatoriosSalvos');
 	Route::match(array('GET', 'POST'),'cliente/relatorios/listar','ClienteController@relatorios');
 
 	// Novas rotas para substituir funcionalidades do Flask app.py
@@ -86,8 +89,34 @@ Route::middleware(['web'])->group(function () {
 	Route::get('cliente/relatorios/noticia/{id}/{tipo}','ClienteController@buscarNoticia');
 	Route::post('cliente/relatorios/vincular-noticia-area','ClienteController@vincularNoticiaArea');
 	Route::post('cliente/relatorios/upload-imagem','ClienteController@uploadImagem');
+	
+	// Rotas para gerenciamento de tags
+	Route::get('cliente/tags/disponiveis','ClienteController@getTagsDisponiveis');
+	Route::post('cliente/tags/noticias','ClienteController@getTagsNoticias');
+	Route::post('cliente/tags/adicionar','ClienteController@adicionarTag');
+	Route::post('cliente/tags/remover','ClienteController@removerTag');
+	
+	// Rota para alterar sentimento de notícias
+	Route::post('cliente/relatorios/alterar-sentimento','ClienteController@alterarSentimento');
+	
+	// Rotas para buscar fontes/emissoras/programas para filtros
+	Route::get('cliente/fontes/web','ClienteController@obterFontesWeb');
+	Route::get('cliente/fontes/impresso','ClienteController@obterFontesImpresso');
+	Route::get('cliente/fontes/tv','ClienteController@obterFontesTv');
+	Route::get('cliente/fontes/radio','ClienteController@obterFontesRadio');
+	
 	Route::post('cliente/{id}/areas/reordenar', 'ClienteController@reordenarAreas');
 	Route::post('cliente/area/{id}/toggle-situacao', 'AreaController@alternarSituacao');
+	
+	// Outras rotas específicas de cliente
+	Route::post('cliente/selecionar','ClienteController@selecionar');
+	Route::get('cliente/paginas-associadas/{client}','ClientController@connectedtPages');
+	Route::get('cliente/area/{id}/remover','ClienteController@removerArea');
+	Route::get('cliente/area/{id}/situacao','ClienteController@alteraSituacao');
+	Route::post('cliente/area/adicionar','ClienteController@adicionarArea');
+	Route::get('cliente/flags-midia/{id}', 'ClienteController@flagsMidia');
+	
+	Route::resource('cliente','ClienteController');
 
 	// API routes para dados de relatórios
 	Route::get('api/clientes','ClienteController@getClientesApi');
@@ -410,13 +439,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('client/accounts/facebook/{cliente}','ClientController@getFacebookAccounts');
 	Route::get('client/hashtags/{cliente}','ClientController@getHashtags');
 	Route::get('client/emails/{cliente}','ClientController@emails');
-	Route::post('cliente/selecionar','ClienteController@selecionar');
-	Route::get('cliente/paginas-associadas/{client}','ClientController@connectedtPages');
 
-	Route::get('cliente/area/{id}/remover','ClienteController@removerArea');
-	Route::get('cliente/area/{id}/situacao','ClienteController@alteraSituacao');
-
-	Route::post('cliente/area/adicionar','ClienteController@adicionarArea');
 
 	Route::get('configuracoes','ConfiguracoesController@index');
 	Route::post('configuracoes/flag-regras/atualizar','ConfiguracoesController@atualizarFlag');
@@ -433,10 +456,10 @@ Route::middleware(['web'])->group(function () {
 	Route::get('perfil/novo','RoleController@create');
 
 	Route::get('pdf','RelatorioController@pdf');
-	Route::match(array('GET', 'POST'),'relatorios/gerar','ClienteController@gerarRelatorios');
+	Route::match(array('GET', 'POST'),'relatorios','ClienteController@gerarRelatorios');
 	Route::get('relatorios/clipping','RelatorioController@clipping');
 	Route::get('relatorios/clipping/{arquivo}','RelatorioController@getClipping');
-	Route::get('cliente/flags-midia/{id}', 'ClienteController@flagsMidia');
+
 
 	Route::match(array('GET', 'POST'),'noticias','ClienteController@noticias');
 

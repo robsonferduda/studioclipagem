@@ -54,35 +54,17 @@
                 </li>
                 @role('cliente')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'cliente-noticias') ? 'active' : '' }}">
-                    <a href="{{ url('noticias') }}">
+                    <a href="{{ url('cliente/noticias') }}">
                     <i class="fa fa-newspaper-o"></i>
                     <p>Notícias</p>
                     </a>
                   </li>
-                  <li class="{{ (Session::has('url') and Session::get('url') == 'relatorios') ? 'active' : '' }}">
-                  <a data-toggle="collapse" href="#submenu-relatorio" class="{{ (Session::has('url') and Session::get('url') == 'pautas') ? '' : 'collapsed' }}" aria-expanded="{{ (Session::has('url') and Session::get('url') == 'jornal-web') ? 'true' : 'false' }}">
-                      <i class="fa fa-file-pdf-o"></i>
-                      <p>Relatórios
-                        <b class="caret"></b>
-                      </p>
-                  </a>
-                  <div class="collapse {{ (Session::has('url') and Session::get('url') == 'relatorios') ? 'show' : '' }}" id="submenu-relatorio" aria-expanded="false">
-                     <ul class="nav ml-5">
-                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'cliente-gerar-relatorio') ? 'active' : '' }}">
-                           <a href="{{ url('cliente/relatorios/gerar') }}">
-                           <span class="sidebar-normal">Gerar</span>
-                           </a>
-                        </li>
-                        <!--
-                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'cliente-relatorios') ? 'active' : '' }}">
-                          <a href="{{ url('cliente/relatorios/listar') }}">
-                          <span class="sidebar-normal">Meus Relatórios</span>
-                          </a>
-                       </li>
-                        -->
-                     </ul>
-                  </div>
-               </li>
+                  <li class="{{ (Session::has('url') and Session::get('url') == 'cliente-relatorios') ? 'active' : '' }}">
+                    <a href="{{ url('cliente/relatorios') }}">
+                    <i class="fa fa-file-pdf-o"></i>
+                    <p>Relatórios</p>
+                    </a>
+                  </li>
                 @endrole
                 @permission('menu-clientes')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'cliente') ? 'active' : '' }}">
@@ -440,39 +422,15 @@
                   </li>
                  @endpermission
                 @permission('menu-relatorio')
-
-                  <li class="{{ (Session::has('url') and Session::get('url') == 'relatorios') ? 'active' : '' }}">
-                  <a data-toggle="collapse" href="#submenu-relatorio" class="{{ (Session::has('url') and Session::get('url') == 'relatorios') ? '' : 'collapsed' }}" aria-expanded="{{ (Session::has('url') and Session::get('url') == 'jornal-web') ? 'true' : 'false' }}">
-                      <i class="fa fa-file-pdf-o"></i>
-                      <p>Relatórios
-                        <b class="caret"></b>
-                      </p>
-                  </a>
-                  <div class="collapse {{ (Session::has('url') and Session::get('url') == 'relatorios') ? 'show' : '' }}" id="submenu-relatorio" aria-expanded="false">
-                     <ul class="nav ml-5">
-                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'cliente-gerar-relatorio') ? 'active' : '' }}">
-                           <a href="{{ url('relatorios/gerar') }}">
-                           <span class="sidebar-normal">Gerar</span>
-                           </a>
-                        </li>
-                        <!--
-                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'cliente-relatorios') ? 'active' : '' }}">
-                          <a href="{{ url('cliente/relatorios/listar') }}">
-                          <span class="sidebar-normal">Meus Relatórios</span>
-                          </a>
-                       </li>
-                        -->
-                     </ul>
-                  </div>
-               </li>
-
                   <li class="{{ (Session::has('url') and Session::get('url') == 'relatorios') ? 'active' : '' }}">
                     <a href="{{ url('relatorios') }}">
                     <i class="fa fa-file-pdf-o"></i>
-                    <p>Relatórios (OLD)</p>
+                    <p>Relatórios</p>
                     </a>
                   </li>
+                @endpermission
 
+                @permission('menu-relatorio')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'relatorios') ? 'active' : '' }}">
                     <a href="{{ url('relatorios/clipping') }}">
                     <i class="fa fa-file-pdf-o"></i>

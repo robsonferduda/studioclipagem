@@ -129,6 +129,19 @@ return [
             'suppress_php_deprecation_warning' => true,
         ],
 
+        'relatorios-s3' => [
+            'driver' => 's3',
+            'key' => env('AWS_ACCESS_KEY_ID'),
+            'secret' => env('AWS_SECRET_ACCESS_KEY'),
+            'region' => env('AWS_DEFAULT_REGION'),
+            'bucket' => 'relatorios-studio-clipagem',
+            'url' => env('AWS_URL',''),
+            'endpoint' => env('AWS_ENDPOINT',''),
+            'suppress_php_deprecation_warning' => true,
+            'use_path_style_endpoint' => false,
+            'throw' => false,
+        ],
+
     ],
 
     /*
