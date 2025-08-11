@@ -152,7 +152,8 @@ def associar(conn, dados, tipo, monitoramento):
             # Já existe vínculo?
             cur.execute("""
                 SELECT 1
-                  FROM noticia_cliente
+                  FROM noticia_cliente t1
+                  JOIN noticia_web t2 ON t2.id = t1.noticia_id 
                  WHERE noticia_id = %s AND tipo_id = %s
                    AND cliente_id = %s AND monitoramento_id = %s
                  LIMIT 1
