@@ -5,7 +5,7 @@ from datetime import datetime
 
 # Configurações
 ACCESS_TOKEN = '565829271321837|xGQc9z5vEJP4qSxsJ7iWJrrgnY8'
-PAGE_ID = 'MisteriosDoMundoMDM'
+PAGE_ID = '396998350479791'
 GRAPH_API_URL = f'https://graph.facebook.com/v19.0/{PAGE_ID}/posts'
 DB_CONFIG = {
     'dbname': 'postgres',
