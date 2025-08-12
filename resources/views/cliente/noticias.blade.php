@@ -2075,6 +2075,8 @@
                         detalhesHtml += '<p>' + (noticia.programa || 'N/A') + '</p>';
                         detalhesHtml += '<h6>Horário:</h6>';
                         detalhesHtml += '<p>' + (noticia.horario || 'N/A') + '</p>';
+                        detalhesHtml += '<h6>Duração:</h6>';
+                        detalhesHtml += '<p>' + (noticia.duracao || 'N/A') + '</p>';
                     }
                     
                     if (window.mostrarRetornoMidia) {

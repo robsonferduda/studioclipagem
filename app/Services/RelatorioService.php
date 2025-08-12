@@ -497,6 +497,7 @@ class RelatorioService
                         COALESCE(e.nome_emissora, 'Emissora Não Identificada') as veiculo,
                         COALESCE(p.nome_programa, 'Programa Não Identificado') as programa,
                         COALESCE(t.horario, '00:00:00') as horario,
+                        COALESCE(t.duracao, '00:00:00') as duracao,
                         COALESCE(t.sinopse, '') as texto,
                         COALESCE(t.valor_retorno, 0) as valor,
                         COALESCE(nc.sentimento, '0') as sentimento,
@@ -553,6 +554,7 @@ class RelatorioService
                         'data_formatada' => Carbon::parse($noticia->data)->format('d/m/Y'),
                         'programa' => $noticia->programa,
                         'horario' => $noticia->horario,
+                        'duracao' => $noticia->duracao,
                         'sentimento' => $convertSentimento($noticia->sentimento),
                         'valor' => (float)$noticia->valor,
                         'area' => $noticia->area_id ? 'Área ' . $noticia->area_id : 'Sem área',
@@ -592,6 +594,7 @@ class RelatorioService
                         END as veiculo,
                         COALESCE(p.nome_programa, 'Programa Não Identificado') as programa,
                         COALESCE(r.horario, '00:00:00') as horario,
+                        COALESCE(r.duracao, '00:00:00') as duracao,
                         COALESCE(r.sinopse, '') as texto,
                         COALESCE(r.valor_retorno, 0) as valor,
                         COALESCE(nc.sentimento, '0') as sentimento,
@@ -649,6 +652,7 @@ class RelatorioService
                         'data_formatada' => Carbon::parse($noticia->data)->format('d/m/Y'),
                         'programa' => $noticia->programa,
                         'horario' => $noticia->horario,
+                        'duracao' => $noticia->duracao,
                         'sentimento' => $convertSentimento($noticia->sentimento),
                         'valor' => (float)$noticia->valor,
                         'area' => $noticia->area_id ? 'Área ' . $noticia->area_id : 'Sem área',
@@ -1265,6 +1269,7 @@ class RelatorioService
                         'tags' => '', // TV não tem tags diretas
                         'programa' => $programaTexto,
                         'horario' => $noticia->horario ?? '',
+                        'duracao' => $noticia->duracao ?? '',
                         'midia' => $noticia->ds_caminho_video ?? null
                     ]);
                     break;
@@ -1283,6 +1288,7 @@ class RelatorioService
                         'tags' => '', // Radio não tem tags diretas
                         'programa' => $programaTexto,
                         'horario' => $noticia->horario ?? '',
+                        'duracao' => $noticia->duracao ?? '',
                         'midia' => $noticia->ds_caminho_audio ?? null
                     ]);
                     break;
