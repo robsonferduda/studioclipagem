@@ -1230,7 +1230,8 @@ class RelatorioService
                         'data_noticia' => $noticia->data_noticia,
                         'valor' => $noticia->nu_valor ?? 0,
                         'tags' => '', // Web não tem tags diretas
-                        'link' => $noticia->url_noticia ?? ''
+                        'link' => $noticia->url_noticia ?? '',
+                        'midia' => $noticia->ds_caminho_img ?? null
                     ]);
                     break;
 
@@ -1245,7 +1246,8 @@ class RelatorioService
                         'data_noticia' => $noticia->dt_clipagem,
                         'valor' => $noticia->valor_retorno ?? 0,
                         'tags' => '', // Impresso não tem tags diretas
-                        'pagina' => $noticia->nu_pagina_atual ?? ''
+                        'pagina' => $noticia->nu_pagina_atual ?? '',
+                        'midia' => $noticia->ds_caminho_img ?? null
                     ]);
                     break;
 
@@ -1262,7 +1264,8 @@ class RelatorioService
                         'valor' => $noticia->valor_retorno ?? 0,
                         'tags' => '', // TV não tem tags diretas
                         'programa' => $programaTexto,
-                        'horario' => $noticia->horario ?? ''
+                        'horario' => $noticia->horario ?? '',
+                        'midia' => $noticia->ds_caminho_video ?? null
                     ]);
                     break;
 
@@ -1279,7 +1282,8 @@ class RelatorioService
                         'valor' => $noticia->valor_retorno ?? 0,
                         'tags' => '', // Radio não tem tags diretas
                         'programa' => $programaTexto,
-                        'horario' => $noticia->horario ?? ''
+                        'horario' => $noticia->horario ?? '',
+                        'midia' => $noticia->ds_caminho_audio ?? null
                     ]);
                     break;
             }
