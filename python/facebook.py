@@ -8,6 +8,7 @@ from datetime import datetime, timezone
 import requests
 import psycopg2
 from psycopg2.extras import RealDictCursor, execute_values
+from config import DB_CONFIG
 
 # =========================
 # CONFIG
@@ -23,11 +24,11 @@ PAGE_FETCH_LIMIT = 10       # limite lógico por página (pode paginar além)
 TS_CONFIG = 'portuguese'     # 'portuguese' ou 'simple'
 
 DB_CONFIG = {
-    'dbname': os.getenv('DB_DATABASE', 'postgres'),
-    'user': os.getenv('DB_USERNAME', 'postgres'),
-    'password': os.getenv('DB_PASSWORD', 'cipplp10'),
-    'host': os.getenv('DB_HOST', 'localhost'),
-    'port': int(os.getenv('DB_PORT', '5432')),
+    'dbname': DB_CONFIG['database'],
+    'user': DB_CONFIG['username'],
+    'password': DB_CONFIG['password'],
+    'host': DB_CONFIG['host'],
+    'port': DB_CONFIG['port']
 }
 
 # =========================
