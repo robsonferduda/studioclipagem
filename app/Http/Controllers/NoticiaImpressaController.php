@@ -309,6 +309,8 @@ class NoticiaImpressaController extends Controller
     {
         $noticia = NoticiaImpresso::find($id);
 
+        dd($request->nu_largura);
+
         dd($request->all());
 
         try {
