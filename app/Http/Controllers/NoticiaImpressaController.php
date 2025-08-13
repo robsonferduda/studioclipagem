@@ -309,10 +309,6 @@ class NoticiaImpressaController extends Controller
     {
         $noticia = NoticiaImpresso::find($id);
 
-    
-
-        dd($request->all());
-
         try {
 
             $dt_cadastro = ($request->dt_cadastro) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_cadastro)->format('Y-m-d') : date("Y-m-d");
