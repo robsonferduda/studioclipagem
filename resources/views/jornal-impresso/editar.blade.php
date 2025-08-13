@@ -246,13 +246,13 @@
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text input-impresso" id="basic-addon1">Largura</span>
                                                         </div>
-                                                        <input type="text" class="form-control" name="nu_largura" id="dataWidth" placeholder="0">
+                                                        <input type="text" class="form-control" name="nu_largura_px" id="dataWidth" placeholder="0">
                                                         </div>
                                                         <div class="input-group mb-3">
                                                             <div class="input-group-prepend">
                                                             <span class="input-group-text input-impresso" id="basic-addon1">Altura</span>
                                                             </div>
-                                                            <input type="text" class="form-control" name="nu_altura" id="dataHeight" placeholder="0">
+                                                            <input type="text" class="form-control" name="nu_altura_px" id="dataHeight" placeholder="0">
                                                         </div>                                                                            
                                                     </div>
                                                     <div class="docs-buttons center">
