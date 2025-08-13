@@ -361,10 +361,6 @@ class JornalImpressoController extends Controller
                                       "cd_usuario" => Auth::user()->id,
                                       "nu_paginas_total" => $conteudo->edicao->paginas->count(),
                                       "nu_pagina_atual" => $conteudo->n_pagina,
-                                      "nu_altura" => $request->nu_altura,
-                                      "nu_largura" => $request->nu_largura,
-                                      "nu_colunas" => $request->nu_colunas,
-                                      "valor_retorno" => $request->valor_retorno,
                                       "ds_caminho_img" => $filename);
 
                 $noticia = NoticiaImpresso::create($nova_noticia);
