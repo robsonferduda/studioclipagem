@@ -142,6 +142,10 @@ Route::middleware(['web'])->group(function () {
 	Route::match(array('GET', 'POST'),'importar','ExportarController@importar');
 	Route::get('teste','EmailController@teste');
 
+	Route::get('facebook/coletas','FacebookController@coletas');
+	Route::get('facebook/postagens','FacebookController@postagens');
+	Route::get('facebook/posts', 'FacebookController@listarPostsAjax');
+
 	Route::match(array('GET', 'POST'),'fonte-impresso/listar','FonteImpressoController@listar');
 
 	Route::get('fonte-impresso/cadastrar','FonteImpressoController@cadastrar');
