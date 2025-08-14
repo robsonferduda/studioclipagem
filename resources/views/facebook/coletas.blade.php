@@ -93,6 +93,7 @@
                                             </div>
                                             <div class="col-md-10">
                                                 <div class="card-body">
+                                                    <h6>${post.pagina ? post.pagina.name : ''}</h6>
                                                     <p class="card-title">${post.mensagem ? post.mensagem : 'Sem mensagem'}</p>
                                                     <p class="card-text">
                                                         <small>${post.data_postagem ? formatarDataBR(post.data_postagem) : ''}</small>

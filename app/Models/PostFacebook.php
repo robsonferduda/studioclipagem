@@ -13,4 +13,9 @@ class PostFacebook extends Model
     protected $table = 'post_facebook';
 
     protected $fillable = [''];
+
+    public function pagina()
+    {
+        return $this->hasOne(FacebookPage::class, 'id', 'page_id');
+    }
 }
