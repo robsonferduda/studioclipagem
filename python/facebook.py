@@ -209,6 +209,9 @@ def inserir_posts(conn, posts: List[Dict]) -> int:
             p.get('status_type'),
         ))
 
+        print("created_time:", p.get('created_time'), "->", type(p.get('created_time')))
+        print("parse_dt_iso_to_utc_str:", parse_dt_iso_to_utc_str(p.get('created_time')))
+   
     sql = """
         INSERT INTO post_facebook (
             post_id, mensagem, data_postagem, link, story, imagem,
