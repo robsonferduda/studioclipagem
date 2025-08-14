@@ -109,6 +109,16 @@ def parse_dt_iso_to_utc(dt_str: Optional[str]) -> Optional[datetime]:
         return dt.astimezone(timezone.utc)
     except Exception:
         return None
+    
+def parse_dt_iso_to_utc_str(dt_str: Optional[str]) -> Optional[str]:
+    if not dt_str:
+        return None
+    try:
+        dt = datetime.fromisoformat(dt_str.replace('Z', '+00:00'))
+        dt_utc = dt.astimezone(timezone.utc)
+        return dt_utc.strftime('%Y-%m-%d %H:%M:%S')
+    except Exception:
+        return None
 
 def safe_get(d: dict, path: str, default=None):
     cur = d
@@ -188,7 +198,7 @@ def inserir_posts(conn, posts: List[Dict]) -> int:
         rows.append((
             p.get('id'),
             p.get('message') or '',
-            parse_dt_iso_to_utc(p.get('created_time')),
+            parse_dt_iso_to_utc_str(p.get('created_time')),
             p.get('permalink_url'),
             p.get('story'),
             p.get('full_picture'),
