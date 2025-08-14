@@ -114,10 +114,14 @@ def parse_dt_iso_to_utc_str(dt_str: Optional[str]) -> Optional[str]:
     if not dt_str:
         return None
     try:
-        dt = datetime.fromisoformat(dt_str.replace('Z', '+00:00'))
+        # Converte "+0000" para "+00:00"
+        if dt_str.endswith('+0000'):
+            dt_str = dt_str[:-5] + '+00:00'
+        dt = datetime.fromisoformat(dt_str)
         dt_utc = dt.astimezone(timezone.utc)
         return dt_utc.strftime('%Y-%m-%d %H:%M:%S')
-    except Exception:
+    except Exception as e:
+        print("Erro ao converter data:", dt_str, e)
         return None
 
 def safe_get(d: dict, path: str, default=None):
