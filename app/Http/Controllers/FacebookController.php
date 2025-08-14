@@ -39,7 +39,7 @@ class FacebookController extends Controller
 
     public function listarPostsAjax(Request $request)
     {
-        $query = PostFacebook::orderBy('data_postagem', 'desc');
+        $query = PostFacebook::with('pagina')->orderBy('data_postagem', 'desc');
 
         if ($request->filled('data')) {
             $data = $request->input('data');
