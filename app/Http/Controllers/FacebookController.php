@@ -41,6 +41,11 @@ class FacebookController extends Controller
     {
         $query = PostFacebook::with('pagina')->orderBy('data_postagem', 'desc');
 
+        if ($request->filled('texto')) {
+            $texto = $request->input('texto');
+            $query->where('mensagem', 'ilike', '%' . $texto . '%');
+        }
+
         if ($request->filled('data')) {
             $data = $request->input('data');
             $inicio = $data . ' 00:00:00';

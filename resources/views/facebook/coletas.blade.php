@@ -24,6 +24,7 @@
                     <form id="form-filtro-data" class="form-inline float-right">
                         <label for="filtro-data" class="mr-2">Filtrar por data:</label>
                         <input type="date" id="filtro-data" name="filtro-data" class="form-control form-control-sm mr-2">
+                        <input type="text" id="filtro-texto" name="filtro-texto" class="form-control form-control-sm mr-2" placeholder="Buscar texto...">
                         <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
                     </form>
                 </div>
@@ -43,6 +44,7 @@
             var pagina = 1;
 
            var filtroData = '';
+           var filtroTexto = '';
 
             function formatarDataBR(dataIso) {
                 if (!dataIso) return '';
@@ -59,7 +61,9 @@
 
             function carregarPosts(pagina = 1) {
                 $.ajax({
-                    url: host + '/facebook/posts?page=' + pagina + (filtroData ? '&data=' + filtroData : ''),
+                    url: host + '/facebook/posts?page=' + pagina +
+                        (filtroData ? '&data=' + filtroData : '') +
+                        (filtroTexto ? '&texto=' + encodeURIComponent(filtroTexto) : ''),
                     type: 'GET',
                     success: function(response) {
                         let posts = response.data || response;
@@ -144,8 +148,11 @@
 
             // Evento do filtro por data
             $('#form-filtro-data').on('submit', function(e) {
+                
                 e.preventDefault();
                 filtroData = $('#filtro-data').val();
+                filtroTexto = $('#filtro-texto').val();
+               
                 carregarPosts(1);
             });
 
