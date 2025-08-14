@@ -73,6 +73,16 @@
                                 </div>
                             `;
                         } else {
+
+                            // Paginação
+                            if (response.last_page && response.last_page > 1) {
+                                html += `<div class="col-md-12 text-center mt-3">`;
+                                for (let i = 1; i <= response.last_page; i++) {
+                                    html += `<button class="btn btn-outline-primary btn-sm mx-1 pagina-btn" data-pagina="${i}">${i}</button>`;
+                                }
+                                html += `</div>`;
+                            }
+
                             posts.forEach(function(post) {
                                 html += `
                                 <div class="col-md-12 mb-3">

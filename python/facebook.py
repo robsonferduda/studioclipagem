@@ -193,7 +193,7 @@ def coletar_posts_pagina(page_id: str, limit_total=PAGE_FETCH_LIMIT, since_iso: 
 # =========================
 # Persistência
 # =========================
-def inserir_posts(conn, posts: List[Dict]) -> int:
+def inserir_posts(conn, page_id: int, posts: List[Dict]) -> int:
     if not posts:
         return 0
 
@@ -206,38 +206,38 @@ def inserir_posts(conn, posts: List[Dict]) -> int:
             p.get('permalink_url'),
             p.get('story'),
             p.get('full_picture'),
-            p.get('message') or '',  # texto para tsv_mensagem
+            p.get('message') or '',
             safe_get(p, 'shares.count'),
             safe_get(p, 'reactions.summary.total_count'),
             safe_get(p, 'comments.summary.total_count'),
             p.get('status_type'),
+            page_id
         ))
-   
     sql = """
         INSERT INTO post_facebook (
             post_id, mensagem, data_postagem, link, story, imagem,
-            tsv_mensagem, shares, reactions, comments, status_type
+            tsv_mensagem, shares, reactions, comments, status_type, page_id
         )
         VALUES %s
         ON CONFLICT (post_id) DO NOTHING
     """
     template = f"""
         (%s, %s, %s, %s, %s, %s,
-         to_tsvector('{TS_CONFIG}', %s), %s, %s, %s, %s)
+         to_tsvector('{TS_CONFIG}', %s), %s, %s, %s, %s, %s)
     """
-
-    # mede before/after para saber quantos realmente entraram
-    with conn.cursor() as cur:
-        cur.execute("SELECT COUNT(*) FROM post_facebook")
-        before = cur.fetchone()[0]
-
-        execute_values(cur, sql, rows, template=template, page_size=500)
-
-        cur.execute("SELECT COUNT(*) FROM post_facebook")
-        after = cur.fetchone()[0]
-
-    conn.commit()
-    return max(0, after - before)
+    try:
+        with conn.cursor() as cur:
+            cur.execute("SELECT COUNT(*) FROM post_facebook")
+            before = cur.fetchone()[0]
+            execute_values(cur, sql, rows, template=template, page_size=500)
+            cur.execute("SELECT COUNT(*) FROM post_facebook")
+            after = cur.fetchone()[0]
+        conn.commit()
+        return max(0, after - before)
+    except Exception as e:
+        conn.rollback()
+        log(f"❌ Erro ao inserir posts: {e}")
+        return 0
 
 def registrar_log_pagina(conn, id_pagina: int, total_inseridos: int):
     with conn.cursor() as cur:
@@ -266,7 +266,7 @@ def processar_pagina(conn, page_row: Dict):
     for tentativa in (1, 2):
         try:
             posts = coletar_posts_pagina(page_id, limit_total=PAGE_FETCH_LIMIT, since_iso=since_iso)
-            inseridos = inserir_posts(conn, posts)
+            inseridos = inserir_posts(conn, page_db_id, posts)
             registrar_log_pagina(conn, page_db_id, inseridos)
             log(f"✔ Página {page_name}: {inseridos} posts novos")
             break
