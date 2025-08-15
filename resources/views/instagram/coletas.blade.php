@@ -105,7 +105,7 @@
                                                         <i class="fa fa-thumbs-up text-info mr-2"></i> ${post.like_count || 0}
                                                         <i class="fa fa-comment text-success mr-2"></i> ${post.comments_count || 0}
                                                     </div>
-                                                    <a href="${post.permalink}" target="_blank" style="background: #3b5998;" class="btn btn-primary btn-sm pull-right mt-2"><i class="fa fa-instagram"></i> Ver no Instagram</a>
+                                                    <a href="${post.permalink}" target="_blank" style="background: #962fbf;" class="btn btn-primary btn-sm pull-right mt-2"><i class="fa fa-instagram"></i> Ver no Instagram</a>
                                                 </div>
                                             </div>
                                         </div>
