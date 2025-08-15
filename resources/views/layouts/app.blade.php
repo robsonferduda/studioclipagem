@@ -99,6 +99,31 @@
                 </li>
               @endrole
 
+              @role('administradores')
+                <li class="{{ (Session::has('url') and Session::get('url') == 'instagram') ? 'active' : '' }}">
+                  <a data-toggle="collapse" href="#submenu-instagram" class="{{ (Session::has('url') and Session::get('url') == 'instagram') ? '' : 'collapsed' }}" aria-expanded="{{ (Session::has('url') and Session::get('url') == 'instagram') ? 'true' : 'false' }}">
+                      <i class="fa fa-instagram"></i>
+                      <p>Instagram
+                        <b class="caret"></b>
+                      </p>
+                  </a>
+                  <div class="collapse {{ (Session::has('url') and Session::get('url') == 'instagram') ? 'show' : '' }}" id="submenu-instagram" aria-expanded="false">
+                     <ul class="nav ml-5">
+                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'instagram-coletas') ? 'active' : '' }}">
+                           <a href="{{ url('instagram/coletas') }}">
+                           <span class="sidebar-normal">Coletas</span>
+                           </a>
+                        </li>
+                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'instagram-postagens') ? 'active' : '' }}">
+                          <a href="{{ url('instagram/postagens') }}">
+                          <span class="sidebar-normal">Postagens</span>
+                          </a>
+                       </li>
+                     </ul>
+                  </div>
+               </li>                  
+              @endrole
+
                @role('administradores')
                 <li class="{{ (Session::has('url') and Session::get('url') == 'facebook') ? 'active' : '' }}">
                   <a data-toggle="collapse" href="#submenu-facebook" class="{{ (Session::has('url') and Session::get('url') == 'facebook') ? '' : 'collapsed' }}" aria-expanded="{{ (Session::has('url') and Session::get('url') == 'facebook') ? 'true' : 'false' }}">

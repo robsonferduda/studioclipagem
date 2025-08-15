@@ -31,6 +31,8 @@ class Cliente extends Model
                         'fl_sentimento_cli',
                         'fl_relatorio_completo',
                         'fl_relatorio_consolidado',
+                        'fl_hashtag',
+                        'hashtags',
                         'fl_retorno_midia'];
 
     public function area()

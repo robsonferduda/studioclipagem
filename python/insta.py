@@ -1,44 +1,48 @@
+import os
+import json
 import requests
 
-ACCESS_TOKEN = 'IGAARqxnNOaohBZAE9CUVhXTUhZANWlyTURoQUo5QjBGai1WMjBGOWNtZAGNLdlZAVdU04THM1MTc2T2VEWjRvZAUp2cS1YR3RKZAmZAYTkhyeGEySHhBZADlLb0lJLUhWNURmSnRBclNhdFYwdGV6SW5HQjRTYVZAEZA2xkMGNVRFNfYnMySQZDZD'
-IG_USER_ID = '17841401430343493'  # ID da conta Instagram Business (obtido via /{page_id}?fields=instagram_business_account)
+GRAPH_VER = 'v12.0'
+IG_TOKEN = 'EAAICnmS4fO0BO5RV3GJqmbJ32WaNGdOmjUzZCtStd4BwakTx8jjcZA1RAHNO0sp6PikoyqZBSMYIA3L5aoc4KMz6RJFfqwYZA4n7FoEx5IsR3a7xmnYvpkGrATu34nmcSGoWdzydZAyRlaYADX3RLQBE2uRGGvWUacZA0j1gYw4jLfAZBJLtyogZBsvYDd6COTIZD'
+IG_USER_ID = '17841408416359361'
 
-def buscar_id_hashtag(palavra_chave):
-    url = f'https://graph.facebook.com/v19.0/ig_hashtag_search'
-    params = {
-        'user_id': IG_USER_ID,
-        'q': palavra_chave,
-        'access_token': ACCESS_TOKEN
-    }
-    res = requests.get(url, params=params)
-    res.raise_for_status()
-    data = res.json().get('data', [])
-    if data:
-        print(f"✅ Hashtag '{palavra_chave}' encontrada com ID {data[0]['id']}")
-        return data[0]['id']
-    else:
-        raise Exception(f"❌ Hashtag '{palavra_chave}' não encontrada.")
+def get(url, params):
+    r = requests.get(url, params=params, timeout=20)
+    if r.status_code != 200:
+        try:
+            err = r.json()
+        except Exception:
+            r.raise_for_status()
+        print("Erro Graph:", json.dumps(err, ensure_ascii=False, indent=2))
+        r.raise_for_status()
+    return r.json()
 
-def buscar_midias(hashtag_id):
-    url = f'https://graph.facebook.com/v19.0/{hashtag_id}/recent_media'
-    params = {
-        'user_id': IG_USER_ID,
-        'fields': 'id,caption,media_type,media_url,timestamp,permalink',
-        'access_token': ACCESS_TOKEN
-    }
-    res = requests.get(url, params=params)
-    res.raise_for_status()
-    data = res.json().get('data', [])
-    print(f"📦 {len(data)} mídias encontradas para essa hashtag.\n")
-    for m in data:
-        print(f"📅 {m['timestamp']}")
-        print(f"📝 {m.get('caption', '(sem legenda)')[:80]}")
-        print(f"🔗 {m['permalink']}\n")
+def main():
+    if not IG_TOKEN or not IG_USER_ID:
+        print("Defina IG_TOKEN e IG_USER_ID.")
+        return
 
-# Uso
-try:
-    hashtag_id = buscar_id_hashtag('trilhas')
-    buscar_midias(hashtag_id)
-except Exception as e:
-    print(str(e))
+    base = f'https://graph.facebook.com/{GRAPH_VER}'
 
+    # Sanidade: id e username
+    me = get(f'{base}/{IG_USER_ID}', {
+        'fields': 'id,username',
+        'access_token': IG_TOKEN
+    })
+    print("IG user:", me)
+
+    # Mídias (campos mínimos, sem counts)
+    data = get(f'{base}/{IG_USER_ID}/media', {
+        'fields': 'id,caption,media_type,media_url,permalink,timestamp',
+        'limit': 5,
+        'access_token': IG_TOKEN
+    })
+    items = data.get('data', [])
+    print(f"Midias retornadas: {len(items)}")
+    for m in items:
+        print("-", m.get('id'), m.get('media_type'), m.get('timestamp'),
+              (m.get('caption') or '')[:80])
+    print("Paging:", data.get('paging', {}))
+
+if __name__ == '__main__':
+    main()
