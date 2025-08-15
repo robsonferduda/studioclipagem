@@ -29,7 +29,7 @@
                     </form>
                 </div>
                 <div class="col-md-12">
-                    <div class="row" id="facebook-cards"></div>
+                    <div class="row" id="instagram-cards"></div>
                 </div>
             </div>
         </div>
@@ -123,13 +123,13 @@
                                 html += `</div>`;
                             }
                         }
-                        $('#facebook-cards').html(html);
+                        $('#instagram-cards').html(html);
                     },
                     error: function(xhr, status, error) {
-                        $('#facebook-cards').html(`
+                        $('#instagram-cards').html(`
                             <div class="col-md-12">
                                 <div class="alert alert-danger text-center">
-                                    Ocorreu um erro ao buscar os posts do Facebook.<br>
+                                    Ocorreu um erro ao buscar os posts do Instagram.<br>
                                     Tente novamente mais tarde.
                                 </div>
                             </div>
