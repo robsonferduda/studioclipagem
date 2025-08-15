@@ -93,7 +93,7 @@
                                     <div class="card">
                                         <div class="row no-gutters">
                                             <div class="col-md-2 d-flex align-items-center justify-content-center mb-3 mt-3">
-                                                ${post.media_url ? `<img src="${post.media_url}" class="img-fluid rounded" style="max-height:120px;">` : '<i style="color: #3b5998;" class="fa fa-instagram fa-4x"></i>'}
+                                                ${post.media_url ? `<img src="${post.media_url}" class="img-fluid rounded" style="max-height:220px;">` : '<i style="color: #3b5998;" class="fa fa-instagram fa-4x"></i>'}
                                             </div>
                                             <div class="col-md-10">
                                                 <div class="card-body">
