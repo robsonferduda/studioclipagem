@@ -105,6 +105,17 @@ def buscar_hashtag_id(termo: str) -> Optional[str]:
     arr = data.get('data', [])
     return arr[0]['id'] if arr else None
 
+def listar_midias_mencionadas(ig_user_id: str, after: Optional[str] = None) -> dict:
+    url = f"https://graph.facebook.com/{GRAPH_VER}/{ig_user_id}/mentioned_media"
+    params = {
+        'fields': 'id,caption,media_type,media_url,permalink,timestamp,username,comments_count,like_count',
+        'access_token': IG_TOKEN,
+        'limit': PAGE_LIMIT
+    }
+    if after:
+        params['after'] = after
+    return request_json(url, params)
+
 def listar_midias_por_hashtag(hashtag_id: str, after: Optional[str] = None, top: bool = False) -> dict:
     tipo = 'top_media' if top else 'recent_media'
     url = f"https://graph.facebook.com/{GRAPH_VER}/{hashtag_id}/{tipo}"
@@ -201,6 +212,21 @@ def executar():
                 break
             time.sleep(PAGE_SLEEP_SECONDS)
         log(f"Inseridos {total_global} registros do Instagram.")
+
+        # ...dentro do executar()...
+        # 3) Coleta de mídias em que a conta foi mencionada
+        after = None
+        for _ in range(10):  # ajuste o limite conforme necessário
+            data = listar_midias_mencionadas(IG_USER_ID, after=after)
+            items = data.get('data', [])
+            inseridos = inserir_midias(conn, items)
+            total_global += inseridos
+            after = data.get('paging', {}).get('cursors', {}).get('after')
+            if not after or not items:
+                break
+            time.sleep(PAGE_SLEEP_SECONDS)
+        log(f"Inseridos {total_global} registros de menções no Instagram.")
+
     finally:
         conn.close()
 
