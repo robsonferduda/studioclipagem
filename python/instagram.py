@@ -108,7 +108,7 @@ def buscar_hashtag_id(termo: str) -> Optional[str]:
 def listar_midias_mencionadas(ig_user_id: str, after: Optional[str] = None) -> dict:
     url = f"https://graph.facebook.com/{GRAPH_VER}/{ig_user_id}/mentioned_media"
     params = {
-        'fields': 'id,caption,media_type,media_url,permalink,timestamp,username,comments_count,like_count',
+        'fields': 'id,caption,media_type,media_url,permalink,timestamp',
         'access_token': IG_TOKEN,
         'limit': PAGE_LIMIT
     }
@@ -132,7 +132,7 @@ def listar_midias_por_hashtag(hashtag_id: str, after: Optional[str] = None, top:
 def listar_midias(ig_user_id: str, after: Optional[str] = None) -> dict:
     url = f"https://graph.facebook.com/{GRAPH_VER}/{ig_user_id}/tags"
     params = {
-        'fields': 'id,caption,media_type,media_url,permalink,timestamp,username,comments_count,like_count',
+        'fields': 'id,caption,media_type,media_url,permalink,timestamp',
         'access_token': IG_TOKEN,
         'limit': PAGE_LIMIT
     }
