@@ -338,8 +338,6 @@ class JornalImpressoController extends Controller
         $estados = Estado::orderBy('nm_estado')->get();
         $cidades = Cidade::where(['cd_estado' => $noticia->cd_estado])->orderBy('nm_cidade')->get();
         $fontes = FonteImpressa::orderBy("nome")->get();
-
-        dd("dadas");
     
         return view('jornal-impresso/editar', compact('noticia','clientes','fontes','estados','cidades','tags'));
     }

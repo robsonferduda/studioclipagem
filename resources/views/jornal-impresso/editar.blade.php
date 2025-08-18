@@ -209,13 +209,15 @@
                             </div>  
                             <div class="row">
                                 <div class="col-md-3">
-                                    <img class="mt-4" src="{{ asset('img/noticia-impressa/'.$noticia->ds_caminho_img) }}" alt="Página {{ $noticia->n_pagina }}">
                                     @if($pagina)
                                         <h6 class="mt-3">Imagem Original
                                             <a href="{{ url('jornal-impresso/web/pagina/download/'.$pagina->id) }}" target="_BLANK"><span class="text-info">Clique para baixar</span></a>
                                         </h6>
                                         <a href="{{ url('jornal-impresso/web/pagina/download/'.$pagina->id) }}" target="_BLANK"><img src="{{ Storage::disk('s3')->temporaryUrl($pagina->path_pagina_s3, '+2 minutes') }}"></a>
                                     @endif
+                                </div>
+                                <div class="col-md-3">
+                                    <img class="mt-4" src="{{ asset('img/noticia-impressa/'.$noticia->ds_caminho_img) }}" alt="Página {{ $noticia->n_pagina }}">
                                 </div>
                                 <div class="col-md-9">
                                     <label for="arquivo">Print da Notícia</label>
