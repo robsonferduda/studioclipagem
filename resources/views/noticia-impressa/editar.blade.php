@@ -197,19 +197,22 @@
                                 </div>                            
                             </div>     
                             <div class="row">
-                                <div class="col-md-3 center">  
-                                    <h6 class="mt-3 mb-0">Página Original</h6>                                  
+                                <div class="col-md-12">
+                                    <h6><i class="fa fa-picture-o"></i> Opções de Imagem</h6>
+                                </div>
+                                <div class="col-md-3">  
+                                    <h6 class="mt-3 mb-0"><i class="fa fa-picture-o"></i> Página Original</h6>                                  
                                     @if($pagina)                                        
                                         <a href="{{ url('jornal-impresso/web/pagina/download/'.$pagina->id) }}" target="_BLANK"><img src="{{ Storage::disk('s3')->temporaryUrl($pagina->path_pagina_s3, '+2 minutes') }}"></a>
                                         <p><a href="{{ url('jornal-impresso/web/pagina/download/'.$pagina->id) }}" target="_BLANK"><span class="text-info">Clique para baixar</span></a></p>
                                     @endif
                                 </div>
-                                <div class="col-md-3 center">
-                                    <h6 class="mt-3">Página Recortada</h6>
+                                <div class="col-md-3">
+                                    <h6 class="mt-3"><i class="fa fa-scissors" aria-hidden="true"></i> Página Recortada</h6>
                                     <img class="mt-4" src="{{ asset('img/noticia-impressa/'.$noticia->ds_caminho_img) }}" alt="Página {{ $noticia->n_pagina }}">
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="arquivo">Upload - Print da Notícia</label>
+                                    <h6 class="mt-3"><i class="fa fa-upload" aria-hidden="true"></i> Upload - Print da Notícia</h6>
                                     <div style="min-height: 302px;" class="dropzone" id="dropzone"><div class="dz-message" data-dz-message><span>CLIQUE AQUI<br/> ou <br/>ARRASTE</span></div></div>
                                     <input type="hidden" name="arquivo" id="arquivo">
                                 </div>
