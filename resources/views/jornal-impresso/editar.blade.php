@@ -219,7 +219,7 @@
                                 <div class="col-md-3">
                                     <img class="mt-4" src="{{ asset('img/noticia-impressa/'.$noticia->ds_caminho_img) }}" alt="Página {{ $noticia->n_pagina }}">
                                 </div>
-                                <div class="col-md-9">
+                                <div class="col-md-6">
                                     <label for="arquivo">Print da Notícia</label>
                                     <div style="min-height: 302px;" class="dropzone" id="dropzone"><div class="dz-message" data-dz-message><span>CLIQUE AQUI<br/> ou <br/>ARRASTE</span></div></div>
                                     <input type="hidden" name="arquivo" id="arquivo">
@@ -230,12 +230,8 @@
                                     <div class="form-group">
                                         <label>Print da Notícia</label>
                                         <div class="row">
-                                            @if($noticia->fl_copia and $noticia->print)
+                                           
                                                 <div class="col-md-12">
-                                                    <img src="{{ asset('jornal-impresso/noticias/'.$noticia->print) }}" alt="Recorte do Jornal">
-                                                </div>
-                                            @else
-                                                <div class="col-md-9">
                                                     <div class="img-container">
                                                         <img id="image" src="{{ asset('img/noticia-impressa/'.$noticia->ds_caminho_img) }}" alt="Recorte do Jornal">
                                                     </div>
@@ -281,7 +277,7 @@
                                                         </button>
                                                     </div>
                                                 </div>                                                
-                                            @endif
+                                          
                                         </div>
                                     </div>
                                 </div>
