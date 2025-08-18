@@ -209,7 +209,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <h6 class="mt-3"><i class="fa fa-scissors" aria-hidden="true"></i> Página Recortada</h6>
-                                    <img class="mt-4" src="{{ asset('img/noticia-impressa/'.$noticia->ds_caminho_img) }}" alt="Página {{ $noticia->n_pagina }}">
+                                    <img src="{{ asset('img/noticia-impressa/'.$noticia->ds_caminho_img) }}" alt="Página {{ $noticia->n_pagina }}">
                                 </div>
                                 <div class="col-md-6">
                                     <h6 class="mt-3"><i class="fa fa-upload" aria-hidden="true"></i> Upload - Print da Notícia</h6>
