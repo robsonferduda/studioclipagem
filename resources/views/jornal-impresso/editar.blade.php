@@ -234,7 +234,7 @@
                                         <h6 class="mt-3"><i class="fa fa-scissors" aria-hidden="true"></i> REcortar Página</h6>
                                         <div class="row">
                                            
-                                                <div class="col-md-12">
+                                                <div class="col-md-9">
                                                     <div class="img-container">
                                                         <img id="image" src="{{ asset('img/noticia-impressa/'.$noticia->ds_caminho_img) }}" alt="Recorte do Jornal">
                                                     </div>
