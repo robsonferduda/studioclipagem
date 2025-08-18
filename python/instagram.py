@@ -212,20 +212,6 @@ def executar():
             time.sleep(PAGE_SLEEP_SECONDS)
         log(f"Inseridos {total_global} registros do Instagram.")
 
-        # ...dentro do executar()...
-        # 3) Coleta de mídias em que a conta foi mencionada
-        after = None
-        for _ in range(10):  # ajuste o limite conforme necessário
-            data = listar_midias_mencionadas(IG_USER_ID, after=after)
-            items = data.get('data', [])
-            inseridos = inserir_midias(conn, items)
-            total_global += inseridos
-            after = data.get('paging', {}).get('cursors', {}).get('after')
-            if not after or not items:
-                break
-            time.sleep(PAGE_SLEEP_SECONDS)
-        log(f"Inseridos {total_global} registros de menções no Instagram.")
-
     finally:
         conn.close()
 
