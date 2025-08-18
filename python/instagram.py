@@ -110,7 +110,7 @@ def listar_midias_por_hashtag(hashtag_id: str, after: Optional[str] = None, top:
     url = f"https://graph.facebook.com/{GRAPH_VER}/{hashtag_id}/{tipo}"
     params = {
         'user_id': IG_USER_ID,
-        'fields': 'id,caption,media_type,media_url,permalink,timestamp,username,comments_count,like_count',  # 'like_count,comments_count' se tiver permissão
+        'fields': 'id,caption,media_type,media_url,permalink,timestamp',  # 'like_count,comments_count' se tiver permissão
         'access_token': IG_TOKEN,
         'limit': PAGE_LIMIT
     }
