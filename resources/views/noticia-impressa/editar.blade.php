@@ -198,12 +198,10 @@
                             </div>     
                             <div class="row">
                                 <div class="col-md-3 center">  
-                                    <h6 class="mt-3">Página Original</h6>                                  
+                                    <h6 class="mt-3 mb-0">Página Original</h6>                                  
                                     @if($pagina)                                        
-                                        <p>
-                                            <a href="{{ url('jornal-impresso/web/pagina/download/'.$pagina->id) }}" target="_BLANK"><span class="text-info">Clique para baixar</span></a>
-                                        </p>
                                         <a href="{{ url('jornal-impresso/web/pagina/download/'.$pagina->id) }}" target="_BLANK"><img src="{{ Storage::disk('s3')->temporaryUrl($pagina->path_pagina_s3, '+2 minutes') }}"></a>
+                                        <p><a href="{{ url('jornal-impresso/web/pagina/download/'.$pagina->id) }}" target="_BLANK"><span class="text-info">Clique para baixar</span></a></p>
                                     @endif
                                 </div>
                                 <div class="col-md-3 center">
