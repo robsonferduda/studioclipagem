@@ -198,7 +198,6 @@ def executar():
                 if len(processadas) >= MAX_HASHTAGS_RUN:
                     break
             log(f"Total inserido via hashtags: {total_global}")
-            return
 
         # 2) (Opcional) Fallback: coleta de mídias da conta (se não houver clientes/hashtags)
         after = None
