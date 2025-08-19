@@ -117,7 +117,7 @@ class Utils
                 break;               
                 
             default:
-                return '<i class="fa fa-times"></i> Código de erro desconhecido: '.$errorCode;
+                return '<i class="fa fa-times"></i> Código de erro não mapeado: '.$errorCode;
                 break;
         }
     }
