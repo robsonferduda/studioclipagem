@@ -38,7 +38,7 @@ $(document).ready(function() {
         retorno = valor * largura * colunas;
 
         // Truncar o valor com duas casas decimais
-        retorno = retorno.toFixed(2);
+        //retorno = retorno.toFixed(2);
 
         $("#valor_retorno").val(retorno);
     });
