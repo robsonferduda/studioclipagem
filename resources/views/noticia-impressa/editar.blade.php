@@ -172,7 +172,7 @@
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
                                         <label>Retorno</label>
-                                        <input type="text" class="form-control" name="valor_retorno" id="valor_retorno" placeholder="Retorno" value="{{ ($noticia->valor_retorno) ? $noticia->valor_retorno : 0 }}" readonly>
+                                        <input type="text" class="form-control" name="valor_retorno" id="valor_retorno" placeholder="Retorno" value="{{ ($noticia->valor_retorno) ? $noticia->valor_retorno : 0 }}">
                                     </div>                                    
                                 </div>
                             </div>
