@@ -274,7 +274,7 @@ class NoticiaImpressaController extends Controller
 
                 if ($retorno['flag']) {
                     Flash::success($retorno['msg']);
-                    return redirect('noticias/impresso')->withInput();
+                    return redirect('noticia/impresso/novo')->withInput();
                 } else {
                     Flash::error($retorno['msg']);
                     return redirect('noticia/impresso/novo')->withInput();
