@@ -352,7 +352,7 @@ class NoticiaImpressaController extends Controller
         } catch (\Illuminate\Database\QueryException $e) {
 
             $retorno = array('flag' => false,
-                             'msg' => Utils::getDatabaseMessageByCode($e->getCode()).$e->getMessage());
+                             'msg' => Utils::getDatabaseMessageByCode($e->getCode()).'<br/>'.$e->getMessage());
 
         } catch (Exception $e) {
             $retorno = array('flag' => true,
