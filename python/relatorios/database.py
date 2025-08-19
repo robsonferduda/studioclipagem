@@ -98,23 +98,78 @@ class DatabaseManager:
             usar_ids_especificos = bool(ids_especificos and any(ids_especificos.values()))
             
             if usar_ids_especificos:
-                print("🎯 Usando IDs específicos para contagem de notícias")
-                # Conta diretamente os IDs fornecidos
-                for midia, ids in ids_especificos.items():
-                    if ids:  # Se há IDs para esta mídia
-                        midia_nome = {
-                            'web': 'Web',
-                            'impresso': 'Impresso', 
-                            'tv': 'TV',
-                            'radio': 'Rádio'
-                        }.get(midia, midia.capitalize())
-                        
-                        resultados.append({
-                            'midia': midia_nome,
-                            'quantidade': len(ids)
-                        })
+                print("🎯 Usando IDs específicos para contagem de notícias - validando no banco")
+                # Valida os IDs no banco de dados em vez de apenas contar
                 
-                print(f"📊 Notícias por IDs específicos: {resultados}")
+                # 1. TV - valida IDs específicos
+                if ids_especificos.get('tv'):
+                    ids_tv = ids_especificos['tv']
+                    ids_str = ','.join(map(str, ids_tv))
+                    query_tv = f"""
+                        SELECT COUNT(*) as quantidade 
+                        FROM noticia_tv t
+                        JOIN noticia_cliente nc ON t.id = nc.noticia_id AND nc.tipo_id = 4
+                        WHERE nc.cliente_id = %s
+                        AND t.dt_noticia BETWEEN %s AND %s
+                        AND t.deleted_at IS NULL
+                        AND t.id IN ({ids_str})
+                    """
+                    cursor.execute(query_tv, (usuario_id, data_inicio, data_fim))
+                    tv_count = cursor.fetchone()[0]
+                    resultados.append({'midia': 'TV', 'quantidade': tv_count})
+                
+                # 2. Rádio - valida IDs específicos
+                if ids_especificos.get('radio'):
+                    ids_radio = ids_especificos['radio']
+                    ids_str = ','.join(map(str, ids_radio))
+                    query_radio = f"""
+                        SELECT COUNT(*) as quantidade 
+                        FROM noticia_radio r
+                        JOIN noticia_cliente nc ON r.id = nc.noticia_id AND nc.tipo_id = 3
+                        WHERE nc.cliente_id = %s
+                        AND r.dt_clipagem BETWEEN %s AND %s
+                        AND r.deleted_at IS NULL
+                        AND r.id IN ({ids_str})
+                    """
+                    cursor.execute(query_radio, (usuario_id, data_inicio, data_fim))
+                    radio_count = cursor.fetchone()[0]
+                    resultados.append({'midia': 'Rádio', 'quantidade': radio_count})
+                
+                # 3. Impresso - valida IDs específicos
+                if ids_especificos.get('impresso'):
+                    ids_impresso = ids_especificos['impresso']
+                    ids_str = ','.join(map(str, ids_impresso))
+                    query_impresso = f"""
+                        SELECT COUNT(*) as quantidade 
+                        FROM noticia_impresso i
+                        JOIN noticia_cliente nc ON i.id = nc.noticia_id AND nc.tipo_id = 1
+                        WHERE nc.cliente_id = %s
+                        AND i.dt_clipagem BETWEEN %s AND %s
+                        AND i.deleted_at IS NULL
+                        AND i.id IN ({ids_str})
+                    """
+                    cursor.execute(query_impresso, (usuario_id, data_inicio, data_fim))
+                    impresso_count = cursor.fetchone()[0]
+                    resultados.append({'midia': 'Impresso', 'quantidade': impresso_count})
+                
+                # 4. Web - valida IDs específicos
+                if ids_especificos.get('web'):
+                    ids_web = ids_especificos['web']
+                    ids_str = ','.join(map(str, ids_web))
+                    query_web = f"""
+                        SELECT COUNT(*) as quantidade 
+                        FROM noticias_web w
+                        JOIN noticia_cliente nc ON w.id = nc.noticia_id AND nc.tipo_id = 2
+                        WHERE nc.cliente_id = %s
+                        AND w.data_noticia BETWEEN %s AND %s
+                        AND w.deleted_at IS NULL
+                        AND w.id IN ({ids_str})
+                    """
+                    cursor.execute(query_web, (usuario_id, data_inicio, data_fim))
+                    web_count = cursor.fetchone()[0]
+                    resultados.append({'midia': 'Web', 'quantidade': web_count})
+                
+                print(f"📊 Notícias validadas por IDs específicos: {resultados}")
                 return resultados
             
             tipos_midia = filtros.get('tipos_midia', ['web', 'tv', 'radio', 'impresso'])
@@ -1439,7 +1494,7 @@ class DatabaseManager:
             query = f"""
                 SELECT 
                     COALESCE(c.nm_cidade, CONCAT('Cidade ID: ', t.cd_cidade)) as cidade,
-                    nc.sentimento as sentimento,
+                    COALESCE(nc.sentimento, '1') as sentimento,
                     COUNT(*) as quantidade,
                     SUM(
                         CASE 
@@ -1469,9 +1524,8 @@ class DatabaseManager:
                 WHERE (nc.cliente_id = %s)
                 AND t.dt_noticia BETWEEN %s AND %s
                 AND t.deleted_at IS NULL
-                AND nc.sentimento IS NOT NULL
                 AND noticia_id IN ({','.join(map(str, ids_especificos.get('tv', [])))})
-                GROUP BY t.cd_cidade, c.nm_cidade, nc.sentimento, e.nome_emissora, p.nome_programa
+                GROUP BY t.cd_cidade, c.nm_cidade, COALESCE(nc.sentimento, '1'), e.nome_emissora, p.nome_programa
                 ORDER BY cidade ASC, sentimento ASC;
             """
             
@@ -1520,7 +1574,7 @@ class DatabaseManager:
             query = f"""
                 SELECT 
                     COALESCE(c.nm_cidade, CONCAT('Cidade ID: ', r.cd_cidade)) as cidade,
-                    nc.sentimento as sentimento,
+                    COALESCE(nc.sentimento, '1') as sentimento,
                     COUNT(*) as quantidade,
                     SUM(
                         CASE 
@@ -1543,9 +1597,8 @@ class DatabaseManager:
                 WHERE (nc.cliente_id = %s)
                 AND r.dt_clipagem BETWEEN %s AND %s
                 AND r.deleted_at IS NULL
-                AND nc.sentimento IS NOT NULL
                 AND noticia_id IN ({','.join(map(str, ids_especificos.get('radio', [])))})
-                GROUP BY r.cd_cidade, c.nm_cidade, nc.sentimento
+                GROUP BY r.cd_cidade, c.nm_cidade, COALESCE(nc.sentimento, '1')
                 ORDER BY cidade ASC, sentimento ASC
             """
             
@@ -1589,7 +1642,7 @@ class DatabaseManager:
             query = f"""
                 SELECT 
                     COALESCE(c.nm_cidade, CONCAT('Cidade ID: ', j.cd_cidade)) as cidade,
-                    nc.sentimento as sentimento,
+                    COALESCE(nc.sentimento, '1') as sentimento,
                     COUNT(*) as quantidade,
                     SUM(COALESCE(j.valor_retorno, 0)) as valor
                 FROM noticia_impresso j
@@ -1598,9 +1651,8 @@ class DatabaseManager:
                 WHERE (nc.cliente_id = %s)
                 AND j.dt_clipagem BETWEEN %s AND %s
                 AND j.deleted_at IS NULL
-                AND nc.sentimento IS NOT NULL
                 AND noticia_id IN ({','.join(map(str, ids_especificos.get('impresso', [])))})
-                GROUP BY j.cd_cidade, c.nm_cidade, nc.sentimento
+                GROUP BY j.cd_cidade, c.nm_cidade, COALESCE(nc.sentimento, '1')
                 ORDER BY cidade ASC, sentimento ASC
             """
             
@@ -1640,7 +1692,7 @@ class DatabaseManager:
             query = f"""
                 SELECT 
                     COALESCE(c.nm_cidade, CONCAT('Cidade ID: ', w.cd_cidade)) as cidade,
-                    nc.sentimento as sentimento,
+                    COALESCE(nc.sentimento, '1') as sentimento,
                     COUNT(*) as quantidade,
                     SUM(COALESCE(w.nu_valor, 0)) as valor
                 FROM noticias_web w
@@ -1649,9 +1701,8 @@ class DatabaseManager:
                 WHERE (nc.cliente_id = %s)
                 AND w.data_noticia BETWEEN %s AND %s
                 AND w.deleted_at IS NULL
-                AND nc.sentimento IS NOT NULL
                 AND noticia_id IN ({','.join(map(str, ids_especificos.get('web', [])))})
-                GROUP BY w.cd_cidade, c.nm_cidade, nc.sentimento
+                GROUP BY w.cd_cidade, c.nm_cidade, COALESCE(nc.sentimento, '1')
                 ORDER BY cidade ASC, sentimento ASC
             """
             
@@ -1730,16 +1781,15 @@ class DatabaseManager:
             if 'tv' in tipos_midia and ids_especificos.get('tv', []):
                 query_tv = f"""
                     SELECT 
-                        SUM(CASE WHEN nc.sentimento = '1' THEN 1 ELSE 0 END) as positivo,
-                        SUM(CASE WHEN nc.sentimento = '-1' THEN 1 ELSE 0 END) as negativo,
-                        SUM(CASE WHEN nc.sentimento = '0' THEN 1 ELSE 0 END) as neutro,
+                        SUM(CASE WHEN COALESCE(nc.sentimento, '1') = '1' THEN 1 ELSE 0 END) as positivo,
+                        SUM(CASE WHEN COALESCE(nc.sentimento, '1') = '-1' THEN 1 ELSE 0 END) as negativo,
+                        SUM(CASE WHEN COALESCE(nc.sentimento, '1') = '0' THEN 1 ELSE 0 END) as neutro,
                         COUNT(*) as total
                     FROM noticia_tv t
                     JOIN noticia_cliente nc ON t.id = nc.noticia_id AND nc.tipo_id = 4
                     WHERE (nc.cliente_id = %s)
                     AND t.dt_noticia BETWEEN %s AND %s
                     AND t.deleted_at IS NULL
-                    AND nc.sentimento IS NOT NULL
                     AND noticia_id IN ({','.join(map(str, ids_especificos.get('tv', [])))})
                 """
                 cursor.execute(query_tv, (usuario_id, data_inicio, data_fim))
@@ -1756,16 +1806,15 @@ class DatabaseManager:
             if 'radio' in tipos_midia and ids_especificos.get('radio', []):
                 query_radio = f"""
                    SELECT 
-                        SUM(CASE WHEN nc.sentimento = '1' THEN 1 ELSE 0 END) as positivo,
-                        SUM(CASE WHEN nc.sentimento = '-1' THEN 1 ELSE 0 END) as negativo,
-                        SUM(CASE WHEN nc.sentimento = '0' THEN 1 ELSE 0 END) as neutro,
+                        SUM(CASE WHEN COALESCE(nc.sentimento, '1') = '1' THEN 1 ELSE 0 END) as positivo,
+                        SUM(CASE WHEN COALESCE(nc.sentimento, '1') = '-1' THEN 1 ELSE 0 END) as negativo,
+                        SUM(CASE WHEN COALESCE(nc.sentimento, '1') = '0' THEN 1 ELSE 0 END) as neutro,
                         COUNT(*) as total
                     FROM noticia_radio r
                     JOIN noticia_cliente nc ON r.id = nc.noticia_id AND nc.tipo_id = 3
                     WHERE (nc.cliente_id = %s)
                     AND r.dt_clipagem BETWEEN %s AND %s
                     AND r.deleted_at IS NULL
-                    AND nc.sentimento IS NOT NULL
                     AND noticia_id IN ({','.join(map(str, ids_especificos.get('radio', [])))})
                 """
                 cursor.execute(query_radio, (usuario_id, data_inicio, data_fim))
@@ -1782,16 +1831,15 @@ class DatabaseManager:
             if 'impresso' in tipos_midia and ids_especificos.get('impresso', []):
                 query_jornal = f"""
                     SELECT 
-                        SUM(CASE WHEN nc.sentimento = '1' THEN 1 ELSE 0 END) as positivo,
-                        SUM(CASE WHEN nc.sentimento = '-1' THEN 1 ELSE 0 END) as negativo,
-                        SUM(CASE WHEN nc.sentimento = '0' THEN 1 ELSE 0 END) as neutro,
+                        SUM(CASE WHEN COALESCE(nc.sentimento, '1') = '1' THEN 1 ELSE 0 END) as positivo,
+                        SUM(CASE WHEN COALESCE(nc.sentimento, '1') = '-1' THEN 1 ELSE 0 END) as negativo,
+                        SUM(CASE WHEN COALESCE(nc.sentimento, '1') = '0' THEN 1 ELSE 0 END) as neutro,
                         COUNT(*) as total
                     FROM noticia_impresso j
                     JOIN noticia_cliente nc ON j.id = nc.noticia_id AND nc.tipo_id = 1
                     WHERE (nc.cliente_id = %s)
                     AND j.dt_clipagem BETWEEN %s AND %s
                     AND j.deleted_at IS NULL
-                    AND nc.sentimento IS NOT NULL
                     AND noticia_id IN ({','.join(map(str, ids_especificos.get('impresso', [])))})
                 """
                 cursor.execute(query_jornal, (usuario_id, data_inicio, data_fim))
@@ -1808,16 +1856,15 @@ class DatabaseManager:
             if 'web' in tipos_midia and ids_especificos.get('web', []):
                 query_web = f"""
                     SELECT 
-                        SUM(CASE WHEN nc.sentimento = '1' THEN 1 ELSE 0 END) as positivo,
-                        SUM(CASE WHEN nc.sentimento = '-1' THEN 1 ELSE 0 END) as negativo,
-                        SUM(CASE WHEN nc.sentimento = '0' THEN 1 ELSE 0 END) as neutro,
+                        SUM(CASE WHEN COALESCE(nc.sentimento, '1') = '1' THEN 1 ELSE 0 END) as positivo,
+                        SUM(CASE WHEN COALESCE(nc.sentimento, '1') = '-1' THEN 1 ELSE 0 END) as negativo,
+                        SUM(CASE WHEN COALESCE(nc.sentimento, '1') = '0' THEN 1 ELSE 0 END) as neutro,
                         COUNT(*) as total
                     FROM noticias_web w
                     JOIN noticia_cliente nc ON w.id = nc.noticia_id AND nc.tipo_id = 2
                     WHERE (nc.cliente_id = %s)
                     AND w.data_noticia BETWEEN %s AND %s
                     AND w.deleted_at IS NULL
-                    AND nc.sentimento IS NOT NULL
                     AND noticia_id IN ({','.join(map(str, ids_especificos.get('web', [])))})
                 """
                 cursor.execute(query_web, (usuario_id, data_inicio, data_fim))
@@ -1854,13 +1901,12 @@ class DatabaseManager:
         
         try:
             query = f"""
-                SELECT t.dt_noticia as data, nc.sentimento as status
+                SELECT t.dt_noticia as data, COALESCE(nc.sentimento, '1') as status
                 FROM noticia_tv t
                 JOIN noticia_cliente nc ON t.id = nc.noticia_id AND nc.tipo_id = 4
                 WHERE (nc.cliente_id = %s)
                 AND t.dt_noticia BETWEEN %s AND %s
                 AND t.deleted_at IS NULL
-                AND nc.sentimento IS NOT NULL
                 AND noticia_id IN ({','.join(map(str, ids_especificos.get('tv', [])))})
                 ORDER BY t.dt_noticia ASC
             """
@@ -1893,13 +1939,12 @@ class DatabaseManager:
         
         try:
             query = f"""
-                SELECT r.dt_clipagem as data, nc.sentimento as status
+                SELECT r.dt_clipagem as data, COALESCE(nc.sentimento, '1') as status
                 FROM noticia_radio r
                 JOIN noticia_cliente nc ON r.id = nc.noticia_id AND nc.tipo_id = 3
                 WHERE (nc.cliente_id = %s)
                 AND r.dt_clipagem BETWEEN %s AND %s
                 AND r.deleted_at IS NULL
-                AND nc.sentimento IS NOT NULL
                 AND noticia_id IN ({','.join(map(str, ids_especificos.get('radio', [])))})
                 ORDER BY r.dt_clipagem ASC
             """
@@ -1932,13 +1977,12 @@ class DatabaseManager:
         
         try:
             query = f"""
-                SELECT w.data_noticia as data, nc.sentimento as status
+                SELECT w.data_noticia as data, COALESCE(nc.sentimento, '1') as status
                 FROM noticias_web w
                 JOIN noticia_cliente nc ON w.id = nc.noticia_id AND nc.tipo_id = 2
                 WHERE (nc.cliente_id = %s)
                 AND w.data_noticia BETWEEN %s AND %s
                 AND w.deleted_at IS NULL
-                AND nc.sentimento IS NOT NULL
                 AND noticia_id IN ({','.join(map(str, ids_especificos.get('web', [])))})
                 ORDER BY w.data_noticia ASC
             """
@@ -1972,13 +2016,12 @@ class DatabaseManager:
         
         try:
             query = f"""
-                SELECT j.dt_clipagem as data, nc.sentimento as status
+                SELECT j.dt_clipagem as data, COALESCE(nc.sentimento, '1') as status
                 FROM noticia_impresso j
                 JOIN noticia_cliente nc ON j.id = nc.noticia_id AND nc.tipo_id = 1
                 WHERE (nc.cliente_id = %s)
                 AND j.dt_clipagem BETWEEN %s AND %s
                 AND j.deleted_at IS NULL
-                AND nc.sentimento IS NOT NULL
                 AND noticia_id IN ({','.join(map(str, ids_especificos.get('impresso', [])))})
                 ORDER BY j.dt_clipagem ASC
             """
