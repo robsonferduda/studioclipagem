@@ -28,7 +28,7 @@ $(document).ready(function() {
 
     });
 
-    $(document).on('keyup', '.monetario', function() {
+    $(document).on('keyup', '.calculo-retorno', function() {
                 
         var retorno = 0;
         var valor = ($("#nu_valor_fonte").val()) ? $("#nu_valor_fonte").val() : 1;
