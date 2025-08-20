@@ -15,8 +15,6 @@ $(document).ready(function() {
     $('.valor').mask("#######0.00" , {reverse: true});
     $('.retorno_midia').mask('#.##0,00', {reverse: true});
 
-
-    
     var host =  $('meta[name="base-url"]').attr('content');
     var token = $('meta[name="csrf-token"]').attr('content');
 
@@ -40,7 +38,7 @@ $(document).ready(function() {
       });
 
     $(document).on('change', '#dt_inicial', function() {
-        alert("sfsdfsdf");
+        
     });
 
     $(document).on('change', '#cd_estado', function() {

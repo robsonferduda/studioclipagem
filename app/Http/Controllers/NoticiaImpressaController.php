@@ -224,6 +224,14 @@ class NoticiaImpressaController extends Controller
 
         $request->merge(['cd_usuario' => Auth::user()->id]);
 
+        // Trata o valor_retorno para salvar corretamente
+        if (!empty($request->valor_retorno)) {
+            // Remove pontos de milhar e troca vírgula por ponto
+            $valor = str_replace('.', '', $request->valor_retorno);
+            $valor = str_replace(',', '.', $valor);
+            $request->merge(['valor_retorno' => (float) $valor]);
+        }
+
         try {
             
             $noticia = NoticiaImpresso::create($request->all());
@@ -320,6 +328,14 @@ class NoticiaImpressaController extends Controller
             $request->merge(['cd_cidade' => $request->cidade]);
 
             $request->merge(['ds_caminho_img' => ($request->ds_caminho_img) ? $request->ds_caminho_img : $noticia->ds_caminho_img]);
+
+            // Trata o valor_retorno para salvar corretamente
+            if (!empty($request->valor_retorno)) {
+                // Remove pontos de milhar e troca vírgula por ponto
+                $valor = str_replace('.', '', $request->valor_retorno);
+                $valor = str_replace(',', '.', $valor);
+                $request->merge(['valor_retorno' => (float) $valor]);
+            }
 
             $noticia->update($request->all());
 
