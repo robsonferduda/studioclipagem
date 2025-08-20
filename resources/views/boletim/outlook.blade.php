@@ -78,7 +78,7 @@
                         <p style="margin-bottom: 0px; margin-top: 0px;"><strong>Programa:</strong> {{ $noticia['programa'] }}</p>
                         <p style="margin-bottom: 0px; margin-top: 0px;"><strong>Duração:</strong> {{ $noticia['duracao'] }}</p>
                         <p style="margin-bottom: 0px; margin-top: 0px;"><strong>Sinopse:</strong> {!! $noticia['sinopse'] !!}</p>
-                        <p style="margin-bottom: 10px; margin-top: 0px;"><strong>Link:</strong> <a href="{{ asset($noticia['path_midia']) }}" target="_blank">Ouça</a></p>
+                        <p style="margin-bottom: 10px; margin-top: 0px;"><strong>Link:</strong> <a href="{{ asset($noticia['path_midia']) }}" target="_blank">Assista</a></p>
                     </div>
                 @endforeach
 
