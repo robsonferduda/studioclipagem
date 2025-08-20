@@ -361,7 +361,7 @@ class PDFGeneratorWeb:
                     if ds_caminho_img:
                         try:
                             print(f"🔄 Tentando baixar imagem para notícia {noticia.get('id')}: {ds_caminho_img}...")
-                            image_path, success = self.remote_image_path+ds_caminho_img, True
+                            image_path, success = self._download_image_from_scp(ds_caminho_img)
                             if success and image_path:
                                 try:
                                     print(f"✅ Imagem baixada, processando dimensões...")
@@ -378,43 +378,36 @@ class PDFGeneratorWeb:
                                         print(f"❌ Dimensões inválidas da imagem: {original_width}x{original_height}")
                                         elements.append(Paragraph("❌ Imagem com dimensões inválidas", self.data_style))
                                     else:
-                                        # Calcula dimensões para ocupar quase toda a página
-                                        aspect_ratio = original_height / original_width
+                                        # Define altura máxima fixa para garantir que a imagem caiba na mesma página que o texto
+                                        # Esta altura foi calculada para deixar espaço para o texto e garantir que não quebre a página
+                                        MAX_IMAGE_HEIGHT = 6.5 * inch  # Altura máxima conservadora
+                                        MAX_IMAGE_WIDTH = page_width    # Largura máxima é a largura da página
                                         
-                                        # Largura: ocupar toda a largura da página
-                                        max_width = page_width
+                                        print(f"📏 Limites máximos: {MAX_IMAGE_WIDTH:.2f}x{MAX_IMAGE_HEIGHT:.2f}")
                                         
-                                        # Altura: página inteira menos espaço para texto
-                                        page_height = A4[1] - 2 * inch  # Altura da página menos margens (top/bottom)
+                                        # Calcula proporção da imagem
+                                        aspect_ratio = original_width / original_height
                                         
-                                        # Espaço estimado para texto (título + veículo + link + descrição + data + espaçamentos)
-                                        # Título: ~30px, Veículo: ~20px, Link: ~15px, Descrição: ~60px, Data: ~15px, Espaçamentos: ~30px
-                                        text_space = 2.5 * inch  # Espaço reservado para textos e espaçamentos
-                                        max_height = page_height - text_space
+                                        # Começar com a altura máxima e calcular a largura proporcional
+                                        new_height = min(MAX_IMAGE_HEIGHT, original_height)  # Não aumenta imagens pequenas
+                                        new_width = new_height * aspect_ratio
                                         
-                                        print(f"📏 Espaço disponível: {max_width:.2f}x{max_height:.2f} (página: {page_height:.2f}, texto: {text_space:.2f})")
-                                        
-                                        # Tenta ocupar toda a largura primeiro
-                                        new_width = page_width
-                                        new_height = page_width * aspect_ratio
-                                        
-                                        print(f"📐 Tentativa 1 (largura total): {new_width:.2f}x{new_height:.2f}")
-                                        
-                                        # Se a altura for muito grande, ajusta pela altura máxima
-                                        if new_height > max_height:
-                                            print(f"⚠️  Altura muito grande ({new_height:.2f}), ajustando para altura máxima ({max_height:.2f})")
-                                            new_height = max_height
-                                            new_width = max_height / aspect_ratio
+                                        # Se a largura calculada excede o máximo, ajusta pela largura
+                                        if new_width > MAX_IMAGE_WIDTH:
+                                            print(f"⚠️  Largura calculada ({new_width:.2f}) excede máximo, ajustando...")
+                                            new_width = MAX_IMAGE_WIDTH
+                                            new_height = new_width / aspect_ratio
                                             
-                                            # Se a largura recalculada for maior que o permitido, mantém a largura máxima
-                                            if new_width > max_width:
-                                                print(f"⚠️  Largura recalculada muito grande ({new_width:.2f}), mantendo largura máxima ({max_width:.2f})")
-                                                new_width = max_width
-                                                new_height = max_width * aspect_ratio
+                                            # Garante que mesmo após ajuste pela largura, a altura não exceda o máximo
+                                            if new_height > MAX_IMAGE_HEIGHT:
+                                                print(f"⚠️  Altura ainda excede máximo após ajuste, forçando altura máxima...")
+                                                new_height = MAX_IMAGE_HEIGHT
+                                                new_width = new_height * aspect_ratio
                                         
                                         print(f"📐 Dimensões finais: {new_width:.2f}x{new_height:.2f}")
+                                        print(f"✅ Imagem será exibida com altura máxima de {MAX_IMAGE_HEIGHT/inch:.1f} inches")
                                         
-                                        # Adiciona imagem ao PDF ocupando toda a largura
+                                        # Adiciona imagem ao PDF com dimensões controladas
                                         img = Image(image_path, width=new_width, height=new_height)
                                         elements.append(img)
                                         print(f"✅ Imagem adicionada ao PDF com sucesso")
