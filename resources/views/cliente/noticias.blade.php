@@ -1564,8 +1564,15 @@
                 html += '<tbody>';
 
                 // Notícias
+                var noticiasProcessadas = 0;
+                var noticiasRenderizadas = 0;
+                
+                console.log('🔍 DEBUG gerarTabelaTipoMidia - tipo:', tipo, 'total notícias recebidas:', noticiasArray.length);
+                
                 noticiasArray.forEach(function(noticia) {
-                    if (noticia && noticia.id) {
+                    noticiasProcessadas++;
+                    if (noticia && (noticia.id !== undefined && noticia.id !== null)) {
+                        noticiasRenderizadas++;
                         html += '<tr class="noticia-row" data-noticia-id="' + noticia.id + '" data-tipo="' + tipo + '" style="cursor: pointer;" onclick="toggleNoticiaDetalhes(' + noticia.id + ', \'' + tipo + '\', this)">';
                         html += '<td onclick="event.stopPropagation()"><input type="checkbox" class="selecionar-noticia checkbox-table" data-tipo="' + tipo + '" data-id="' + noticia.id + '" onchange="atualizarContadores()"></td>';
                         
@@ -1604,8 +1611,13 @@
                         
                         html += '<td class="text-center"><i class="fa fa-chevron-down expand-icon" data-noticia-id="' + noticia.id + '"></i></td>';
                         html += '</tr>';
+                    } else {
+                        // Log notícias que estão sendo filtradas
+                        console.log('⚠️ DEBUG Notícia filtrada - tipo:', tipo, 'noticia:', noticia);
                     }
                 });
+                
+                console.log('📊 DEBUG Estatísticas - tipo:', tipo, 'processadas:', noticiasProcessadas, 'renderizadas:', noticiasRenderizadas, 'filtradas:', (noticiasProcessadas - noticiasRenderizadas));
 
                 html += '</tbody>';
                 html += '</table>';
