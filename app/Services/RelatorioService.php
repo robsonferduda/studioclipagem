@@ -497,6 +497,7 @@ class RelatorioService
                         COALESCE(e.nome_emissora, 'Emissora Não Identificada') as veiculo,
                         COALESCE(p.nome_programa, 'Programa Não Identificado') as programa,
                         COALESCE(t.horario, '00:00:00') as horario,
+                        COALESCE(t.duracao, '00:00:00') as duracao,
                         COALESCE(t.sinopse, '') as texto,
                         COALESCE(t.valor_retorno, 0) as valor,
                         COALESCE(nc.sentimento, '0') as sentimento,
@@ -553,6 +554,7 @@ class RelatorioService
                         'data_formatada' => Carbon::parse($noticia->data)->format('d/m/Y'),
                         'programa' => $noticia->programa,
                         'horario' => $noticia->horario,
+                        'duracao' => $noticia->duracao,
                         'sentimento' => $convertSentimento($noticia->sentimento),
                         'valor' => (float)$noticia->valor,
                         'area' => $noticia->area_id ? 'Área ' . $noticia->area_id : 'Sem área',
@@ -592,6 +594,7 @@ class RelatorioService
                         END as veiculo,
                         COALESCE(p.nome_programa, 'Programa Não Identificado') as programa,
                         COALESCE(r.horario, '00:00:00') as horario,
+                        COALESCE(r.duracao, '00:00:00') as duracao,
                         COALESCE(r.sinopse, '') as texto,
                         COALESCE(r.valor_retorno, 0) as valor,
                         COALESCE(nc.sentimento, '0') as sentimento,
@@ -649,6 +652,7 @@ class RelatorioService
                         'data_formatada' => Carbon::parse($noticia->data)->format('d/m/Y'),
                         'programa' => $noticia->programa,
                         'horario' => $noticia->horario,
+                        'duracao' => $noticia->duracao,
                         'sentimento' => $convertSentimento($noticia->sentimento),
                         'valor' => (float)$noticia->valor,
                         'area' => $noticia->area_id ? 'Área ' . $noticia->area_id : 'Sem área',
@@ -1230,7 +1234,8 @@ class RelatorioService
                         'data_noticia' => $noticia->data_noticia,
                         'valor' => $noticia->nu_valor ?? 0,
                         'tags' => '', // Web não tem tags diretas
-                        'link' => $noticia->url_noticia ?? ''
+                        'link' => $noticia->url_noticia ?? '',
+                        'midia' => $noticia->ds_caminho_img ?? null
                     ]);
                     break;
 
@@ -1245,7 +1250,8 @@ class RelatorioService
                         'data_noticia' => $noticia->dt_clipagem,
                         'valor' => $noticia->valor_retorno ?? 0,
                         'tags' => '', // Impresso não tem tags diretas
-                        'pagina' => $noticia->nu_pagina_atual ?? ''
+                        'pagina' => $noticia->nu_pagina_atual ?? '',
+                        'midia' => $noticia->ds_caminho_img ?? null
                     ]);
                     break;
 
@@ -1262,7 +1268,9 @@ class RelatorioService
                         'valor' => $noticia->valor_retorno ?? 0,
                         'tags' => '', // TV não tem tags diretas
                         'programa' => $programaTexto,
-                        'horario' => $noticia->horario ?? ''
+                        'horario' => $noticia->horario ?? '',
+                        'duracao' => $noticia->duracao ?? '',
+                        'midia' => $noticia->ds_caminho_video ?? null
                     ]);
                     break;
 
@@ -1279,7 +1287,9 @@ class RelatorioService
                         'valor' => $noticia->valor_retorno ?? 0,
                         'tags' => '', // Radio não tem tags diretas
                         'programa' => $programaTexto,
-                        'horario' => $noticia->horario ?? ''
+                        'horario' => $noticia->horario ?? '',
+                        'duracao' => $noticia->duracao ?? '',
+                        'midia' => $noticia->ds_caminho_audio ?? null
                     ]);
                     break;
             }
