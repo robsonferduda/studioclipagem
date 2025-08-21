@@ -698,8 +698,6 @@ class RelatorioService
                     WHERE nc.cliente_id = :clienteId
                     AND j.$colunaDataImpresso BETWEEN :dataInicio AND :dataFim
                     AND j.deleted_at IS NULL
-                    AND j.sinopse IS NOT NULL
-                    AND j.sinopse != ''
                     {$buildStatusCondition('nc.')}
                     {$buildValorCondition('j.', 'valor_retorno')}
                     {$buildAreaCondition('nc.')}
@@ -721,8 +719,10 @@ class RelatorioService
                 
                 $noticiasImpresso = DB::select($sql, $params);
                 
-                Log::info('Query IMPRESSO executada:', [
-                    'count' => count($noticiasImpresso)
+                Log::info('Query IMPRESSO executada (após remover filtro restritivo de sinopse):', [
+                    'count' => count($noticiasImpresso),
+                    'sql' => $sql,
+                    'params' => $params
                 ]);
                 
                 foreach ($noticiasImpresso as $noticia) {
