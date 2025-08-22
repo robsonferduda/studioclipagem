@@ -383,10 +383,10 @@ class PDFGenerator:
     
     def _generate_public_media_link(self, ds_caminho_img, midia_tipo):
         """
-        Gera link público da mídia baseado no caminho da imagem
+        Gera link público da mídia baseado no tipo de mídia
         
         Args:
-            ds_caminho_img: Nome do arquivo de imagem (ex: "35442173.jpg")
+            ds_caminho_img: Nome do arquivo de mídia (ex: "35442173.jpg", "audio.mp3", "video.mp4")
             midia_tipo: Tipo da mídia ('TV', 'Rádio', 'Impresso', 'Web')
             
         Returns:
@@ -399,9 +399,10 @@ class PDFGenerator:
         base_url = "https://studioclipagem.com/"
         
         # Mapeia tipo de mídia para pasta correspondente
+        # TV e Rádio usam pastas de vídeo/áudio, não imagens
         midia_folders = {
-            'TV': 'img/noticia-tv/',
-            'Rádio': 'img/noticia-radio/', 
+            'TV': 'video/noticia-tv/',
+            'Rádio': 'audio/noticia-radio/', 
             'Impresso': 'img/noticia-impressa/'
         }
         
@@ -1409,8 +1410,29 @@ class PDFGenerator:
                 sinopse_text = sinopse if sinopse else "não disponível"
                 
                 # Gera link público da mídia
-                ds_caminho_img = row.get('ds_caminho_img', '') or row.get('Caminho Imagem', '')
-                public_link = self._generate_public_media_link(ds_caminho_img, midia_tipo)
+                # Prioriza ds_caminho_img que agora contém o campo correto (ds_caminho_video/ds_caminho_audio)
+                ds_caminho = row.get('ds_caminho_img', '') or row.get('Caminho Imagem', '')
+                arquivo_linha2 = row.get('Linha2 Arquivo', '') or row.get('linha2_arquivo', '')
+                
+                # Ignora valores inválidos como "Arquivo não disponível", "nan", etc.
+                valores_invalidos = ['', 'nan', 'Arquivo não disponível', None]
+                
+                midia_file = ''
+                # Prioridade 1: ds_caminho_img (agora contém ds_caminho_video ou ds_caminho_audio)
+                if ds_caminho and ds_caminho not in valores_invalidos:
+                    midia_file = ds_caminho
+                # Prioridade 2: Linha2 Arquivo (fallback)
+                elif arquivo_linha2 and arquivo_linha2 not in valores_invalidos:
+                    midia_file = arquivo_linha2
+                else:
+                    # Fallback para outros campos
+                    for campo in ['midia', 'arquivo_midia']:
+                        valor = row.get(campo, '')
+                        if valor and valor not in valores_invalidos:
+                            midia_file = valor
+                            break
+                
+                public_link = self._generate_public_media_link(midia_file, midia_tipo) if midia_file else ''
                 
                 # Formatação com estilo específico para cada linha
                 linha1_formatted = f"<b>{linha1}</b>" if linha1 else "<b>Informação não disponível</b>"

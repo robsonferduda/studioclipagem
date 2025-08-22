@@ -654,7 +654,7 @@ class DatabaseManager:
                                     ELSE 0
                                 END
                             ) * COALESCE(p.valor_segundo, 0)) as valor,
-                            '' as ds_caminho_img
+                            COALESCE(t.ds_caminho_video, '') as ds_caminho_img
                         FROM noticia_tv t
                         JOIN noticia_cliente nc ON t.id = nc.noticia_id AND nc.tipo_id = 4
                         LEFT JOIN emissora_web e ON t.emissora_id = e.id
@@ -774,7 +774,7 @@ class DatabaseManager:
                             '' as arquivo,
                             COALESCE(r.sinopse, '') as sinopse,
                             COALESCE(r.valor_retorno, 0) as valor,
-                            '' as ds_caminho_img
+                            COALESCE(r.ds_caminho_audio, '') as ds_caminho_img
                         FROM noticia_radio r
                         LEFT JOIN emissora_radio e ON r.emissora_id = e.id
                         LEFT JOIN programa_emissora_radio p ON r.programa_id = p.id
