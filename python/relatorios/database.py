@@ -99,6 +99,78 @@ class DatabaseManager:
             
             if usar_ids_especificos:
                 print("🎯 Usando IDs específicos para contagem de notícias - validando no banco")
+                
+                # DEBUG: Diagnóstico detalhado dos IDs específicos
+                for midia_key, ids_list in ids_especificos.items():
+                    if ids_list:
+                        print(f"🔍 DEBUG DIAGNÓSTICO {midia_key.upper()}: Verificando {len(ids_list)} IDs fornecidos...")
+                        
+                        # Verifica qual tabela usar
+                        if midia_key == 'tv':
+                            table_name = 'noticia_tv'
+                            tipo_id = 4
+                            date_field = 'dt_noticia'
+                        elif midia_key == 'radio':
+                            table_name = 'noticia_radio'
+                            tipo_id = 3
+                            date_field = 'dt_clipagem'
+                        elif midia_key == 'impresso':
+                            table_name = 'noticia_impresso'
+                            tipo_id = 1
+                            date_field = 'dt_clipagem'
+                        elif midia_key == 'web':
+                            table_name = 'noticias_web'
+                            tipo_id = 2
+                            date_field = 'data_noticia'
+                        else:
+                            continue
+                        
+                        ids_str = ','.join(map(str, ids_list))
+                        
+                        # 1. Verifica quantos IDs existem na tabela principal
+                        cursor.execute(f"SELECT COUNT(*) FROM {table_name} WHERE id IN ({ids_str})")
+                        count_existing = cursor.fetchone()[0]
+                        print(f"   📊 IDs que existem em {table_name}: {count_existing}/{len(ids_list)}")
+                        
+                        # 2. Verifica quantos IDs não foram deletados
+                        cursor.execute(f"SELECT COUNT(*) FROM {table_name} WHERE id IN ({ids_str}) AND deleted_at IS NULL")
+                        count_not_deleted = cursor.fetchone()[0]
+                        print(f"   🗑️ IDs não deletados: {count_not_deleted}/{len(ids_list)}")
+                        
+                        # 3. Verifica quantos IDs estão associados ao cliente
+                        cursor.execute(f"""
+                            SELECT COUNT(*) FROM {table_name} t
+                            JOIN noticia_cliente nc ON t.id = nc.noticia_id AND nc.tipo_id = %s
+                            WHERE t.id IN ({ids_str}) AND nc.cliente_id = %s AND t.deleted_at IS NULL
+                        """, (tipo_id, usuario_id))
+                        count_client_linked = cursor.fetchone()[0]
+                        print(f"   👤 IDs associados ao cliente {usuario_id}: {count_client_linked}/{len(ids_list)}")
+                        
+                        # 4. Verifica quantos IDs estão no período
+                        cursor.execute(f"""
+                            SELECT COUNT(*) FROM {table_name} t
+                            JOIN noticia_cliente nc ON t.id = nc.noticia_id AND nc.tipo_id = %s
+                            WHERE t.id IN ({ids_str}) AND nc.cliente_id = %s 
+                            AND t.{date_field} BETWEEN %s AND %s AND t.deleted_at IS NULL
+                        """, (tipo_id, usuario_id, data_inicio, data_fim))
+                        count_in_period = cursor.fetchone()[0]
+                        print(f"   📅 IDs no período {data_inicio} a {data_fim}: {count_in_period}/{len(ids_list)}")
+                        
+                        if count_in_period < len(ids_list):
+                            # Lista IDs que estão sendo perdidos
+                            cursor.execute(f"""
+                                SELECT t.id FROM {table_name} t
+                                JOIN noticia_cliente nc ON t.id = nc.noticia_id AND nc.tipo_id = %s
+                                WHERE t.id IN ({ids_str}) AND nc.cliente_id = %s 
+                                AND t.{date_field} BETWEEN %s AND %s AND t.deleted_at IS NULL
+                            """, (tipo_id, usuario_id, data_inicio, data_fim))
+                            found_ids = [str(row[0]) for row in cursor.fetchall()]
+                            missing_ids = [id_val for id_val in ids_list if str(id_val) not in found_ids]
+                            print(f"   ⚠️ IDs perdidos: {missing_ids}")
+                        
+                        print(f"   ✅ IDs finais que serão processados: {count_in_period}")
+                        print("")
+                
                 # Valida os IDs no banco de dados em vez de apenas contar
                 
                 # 1. TV - valida IDs específicos
@@ -110,11 +182,10 @@ class DatabaseManager:
                         FROM noticia_tv t
                         JOIN noticia_cliente nc ON t.id = nc.noticia_id AND nc.tipo_id = 4
                         WHERE nc.cliente_id = %s
-                        AND t.dt_noticia BETWEEN %s AND %s
                         AND t.deleted_at IS NULL
                         AND t.id IN ({ids_str})
                     """
-                    cursor.execute(query_tv, (usuario_id, data_inicio, data_fim))
+                    cursor.execute(query_tv, (usuario_id,))
                     tv_count = cursor.fetchone()[0]
                     resultados.append({'midia': 'TV', 'quantidade': tv_count})
                 
@@ -127,11 +198,10 @@ class DatabaseManager:
                         FROM noticia_radio r
                         JOIN noticia_cliente nc ON r.id = nc.noticia_id AND nc.tipo_id = 3
                         WHERE nc.cliente_id = %s
-                        AND r.dt_clipagem BETWEEN %s AND %s
                         AND r.deleted_at IS NULL
                         AND r.id IN ({ids_str})
                     """
-                    cursor.execute(query_radio, (usuario_id, data_inicio, data_fim))
+                    cursor.execute(query_radio, (usuario_id,))
                     radio_count = cursor.fetchone()[0]
                     resultados.append({'midia': 'Rádio', 'quantidade': radio_count})
                 
@@ -144,11 +214,10 @@ class DatabaseManager:
                         FROM noticia_impresso i
                         JOIN noticia_cliente nc ON i.id = nc.noticia_id AND nc.tipo_id = 1
                         WHERE nc.cliente_id = %s
-                        AND i.dt_clipagem BETWEEN %s AND %s
                         AND i.deleted_at IS NULL
                         AND i.id IN ({ids_str})
                     """
-                    cursor.execute(query_impresso, (usuario_id, data_inicio, data_fim))
+                    cursor.execute(query_impresso, (usuario_id,))
                     impresso_count = cursor.fetchone()[0]
                     resultados.append({'midia': 'Impresso', 'quantidade': impresso_count})
                 
@@ -161,11 +230,10 @@ class DatabaseManager:
                         FROM noticias_web w
                         JOIN noticia_cliente nc ON w.id = nc.noticia_id AND nc.tipo_id = 2
                         WHERE nc.cliente_id = %s
-                        AND w.data_noticia BETWEEN %s AND %s
                         AND w.deleted_at IS NULL
                         AND w.id IN ({ids_str})
                     """
-                    cursor.execute(query_web, (usuario_id, data_inicio, data_fim))
+                    cursor.execute(query_web, (usuario_id,))
                     web_count = cursor.fetchone()[0]
                     resultados.append({'midia': 'Web', 'quantidade': web_count})
                 
@@ -585,15 +653,19 @@ class DatabaseManager:
                                         EXTRACT(EPOCH FROM t.duracao)
                                     ELSE 0
                                 END
-                            ) * COALESCE(p.valor_segundo, 0)) as valor
+                            ) * COALESCE(p.valor_segundo, 0)) as valor,
+                            COALESCE(t.ds_caminho_video, '') as ds_caminho_img
                         FROM noticia_tv t
+                        JOIN noticia_cliente nc ON t.id = nc.noticia_id AND nc.tipo_id = 4
                         LEFT JOIN emissora_web e ON t.emissora_id = e.id
                         LEFT JOIN programa_emissora_web p ON t.programa_id = p.id
-                        WHERE t.id IN ({ids_str})
+                        WHERE nc.cliente_id = %s
+                        AND t.deleted_at IS NULL
+                        AND t.id IN ({ids_str})
                         ORDER BY t.dt_noticia ASC, t.sinopse ASC
                         
                     """
-                    params_tv = ()
+                    params_tv = (usuario_id,)
                     print(f"🎯 TV: Usando {len(ids_tv)} IDs específicos")
           
                 
@@ -604,10 +676,33 @@ class DatabaseManager:
                     
                     cursor.execute(query_tv, params_tv)
                     tv_results = cursor.fetchall()
-                    print(f"🔍 DEBUG TV: Query encontrou {len(tv_results)} resultados")
+                    print(f"🔍 DEBUG TV: Query encontrou {len(tv_results)} resultados de {len(ids_tv)} IDs solicitados")
+                    
+                    # DEBUG: Verifica quais IDs não foram encontrados
+                    if len(tv_results) < len(ids_tv):
+                        found_ids = set()
+                        for row in tv_results:
+                            # Busca o ID original na consulta
+                            temp_cursor = self.connection.cursor()
+                            temp_cursor.execute("SELECT id FROM noticia_tv WHERE dt_noticia = %s AND sinopse = %s LIMIT 1", (row[0], row[1]))
+                            temp_result = temp_cursor.fetchone()
+                            if temp_result:
+                                found_ids.add(temp_result[0])
+                        
+                        missing_ids = set(map(int, ids_tv)) - found_ids
+                        if missing_ids:
+                            print(f"⚠️ DEBUG TV: IDs não encontrados: {missing_ids}")
+                            # Verifica se os IDs existem na tabela
+                            missing_ids_str = ','.join(map(str, missing_ids))
+                            temp_cursor.execute(f"SELECT id FROM noticia_tv WHERE id IN ({missing_ids_str}) AND deleted_at IS NULL")
+                            existing_missing = [row[0] for row in temp_cursor.fetchall()]
+                            if existing_missing:
+                                print(f"⚠️ DEBUG TV: IDs existem na tabela mas não passaram nos critérios: {existing_missing}")
+                            else:
+                                print(f"⚠️ DEBUG TV: IDs não existem na tabela ou foram deletados")
                     
                     for row in tv_results:
-                        data, titulo, emissora, programa, tempo, segundos_totais, arquivo, sinopse, valor = row
+                        data, titulo, emissora, programa, tempo, segundos_totais, arquivo, sinopse, valor, ds_caminho_img = row
                         
                         # FORMATO SIMPLIFICADO: programa, emissora, data, tempo e sinopse
                         
@@ -644,7 +739,8 @@ class DatabaseManager:
                             'linha3_sinopse': sinopse_formatada,
                             'tempo': tempo,
                             'segundos': segundos_totais,
-                            'valor': float(valor)
+                            'valor': float(valor),
+                            'ds_caminho_img': ds_caminho_img
                         })
                         print(f"🔍 DEBUG TV: Adicionada clipagem: {programa} - {emissora}")
                 
@@ -677,17 +773,19 @@ class DatabaseManager:
                             COALESCE(r.duracao, '00:00:00') as segundos_totais,
                             '' as arquivo,
                             COALESCE(r.sinopse, '') as sinopse,
-                            COALESCE(r.valor_retorno, 0) as valor
+                            COALESCE(r.valor_retorno, 0) as valor,
+                            COALESCE(r.ds_caminho_audio, '') as ds_caminho_img
                         FROM noticia_radio r
                         LEFT JOIN emissora_radio e ON r.emissora_id = e.id
                         LEFT JOIN programa_emissora_radio p ON r.programa_id = p.id
                         LEFT JOIN emissora_radio pe ON p.id_emissora = pe.id
                         JOIN noticia_cliente nc ON r.id = nc.noticia_id AND nc.tipo_id = 3
-                        WHERE r.id IN ({ids_str})
+                        WHERE nc.cliente_id = %s
                         AND r.deleted_at IS NULL
+                        AND r.id IN ({ids_str})
                         ORDER BY data ASC, r.titulo ASC
                     """
-                    params_radio = ()
+                    params_radio = (usuario_id,)
                     print(f"🎯 RÁDIO: Usando {len(ids_radio)} IDs específicos")
                 
                     # Adiciona LIMIT apenas se especificado
@@ -697,10 +795,10 @@ class DatabaseManager:
                     
                     cursor.execute(query_radio, params_radio)
                     radio_results = cursor.fetchall()
-                    print(f"🔍 DEBUG RÁDIO: Query encontrou {len(radio_results)} resultados")
+                    print(f"🔍 DEBUG RÁDIO: Query encontrou {len(radio_results)} resultados de {len(ids_radio)} IDs solicitados")
                     
                     for row in radio_results:
-                        data, titulo, emissora, programa, tempo, segundos_totais, arquivo, sinopse, valor = row
+                        data, titulo, emissora, programa, tempo, segundos_totais, arquivo, sinopse, valor, ds_caminho_img = row
                         
                         # FORMATO SIMPLIFICADO: programa, emissora, data, tempo e sinopse
                         
@@ -737,7 +835,8 @@ class DatabaseManager:
                             'linha3_sinopse': sinopse_formatada,
                             'tempo': tempo,
                             'segundos': segundos_totais,
-                            'valor': float(valor)
+                            'valor': float(valor),
+                            'ds_caminho_img': ds_caminho_img
                         })
             
             # 3. Clipagens de Impresso - Com filtros aplicados
@@ -759,17 +858,20 @@ class DatabaseManager:
                             COALESCE(j.valor_retorno, 0) as valor,
                             COALESCE(j.nu_colunas, 1) as coluna,
                             COALESCE(j.nu_largura, 1) as largura,
-                            COALESCE(j.nu_altura, 1) as altura
+                            COALESCE(j.nu_altura, 1) as altura,
+                            COALESCE(j.ds_caminho_img, '') as ds_caminho_img
                         FROM noticia_impresso j
+                        JOIN noticia_cliente nc ON j.id = nc.noticia_id AND nc.tipo_id = 1
                         LEFT JOIN jornal_online ji ON j.id_fonte = ji.id
                         LEFT JOIN sessao_impresso si ON j.id_secao = si.id_sessao_impresso
                         LEFT JOIN cidade c ON j.cd_cidade = c.cd_cidade
                         LEFT JOIN estado e ON c.cd_estado = e.cd_estado
-                        WHERE j.id IN ({ids_str})
+                        WHERE nc.cliente_id = %s
                         AND j.deleted_at IS NULL
+                        AND j.id IN ({ids_str})
                         ORDER BY j.dt_clipagem ASC, j.titulo ASC
                     """
-                    params_jornal = ()
+                    params_jornal = (usuario_id,)
                     print(f"🎯 IMPRESSO: Usando {len(ids_impresso)} IDs específicos")
                 
                 
@@ -779,8 +881,11 @@ class DatabaseManager:
                         params_jornal = params_jornal + (limite,)
                     
                     cursor.execute(query_jornal, params_jornal)
-                    for row in cursor.fetchall():
-                        data_clipping, titulo, jornal, secao, uf, sinopse, valor, coluna, largura, altura = row
+                    impresso_results = cursor.fetchall()
+                    print(f"🔍 DEBUG IMPRESSO: Query encontrou {len(impresso_results)} resultados de {len(ids_impresso)} IDs solicitados")
+                    
+                    for row in impresso_results:
+                        data_clipping, titulo, jornal, secao, uf, sinopse, valor, coluna, largura, altura, ds_caminho_img = row
                         
                         # Calcula cm/coluna: altura × número de colunas
                         cm_coluna_real = float(altura or 1) * float(coluna or 1)
@@ -808,7 +913,8 @@ class DatabaseManager:
                             'coluna': float(coluna or 1),
                             'largura': float(largura or 1),
                             'altura': float(altura or 1),
-                            'cm_coluna': cm_coluna_real
+                            'cm_coluna': cm_coluna_real,
+                            'ds_caminho_img': ds_caminho_img
                         })
             
             # 4. Clipagens de Web - Com filtros aplicados  
@@ -826,15 +932,17 @@ class DatabaseManager:
                             COALESCE(fw.nome, 'Site Não Identificado') as site_nome,
                             COALESCE(w.url_noticia, '') as domain,
                             COALESCE(w.sinopse, '') as conteudo,
-                            COALESCE(w.nu_valor, 0) as valor
+                            COALESCE(w.nu_valor, 0) as valor,
+                            COALESCE(w.ds_caminho_img, '') as ds_caminho_img
                         FROM noticias_web w
-                        LEFT JOIN noticia_cliente nc ON w.id = nc.noticia_id AND nc.tipo_id = 2
+                        JOIN noticia_cliente nc ON w.id = nc.noticia_id AND nc.tipo_id = 2
                         JOIN fonte_web fw ON w.id_fonte = fw.id
-                        WHERE w.id IN ({ids_str})
+                        WHERE nc.cliente_id = %s
                         AND w.deleted_at IS NULL
+                        AND w.id IN ({ids_str})
                         ORDER BY w.data_noticia ASC, w.titulo_noticia ASC
                     """
-                    params_web = ()
+                    params_web = (usuario_id,)
                     print(f"🎯 WEB: Usando {len(ids_web)} IDs específicos")
                 
                     # Adiciona LIMIT apenas se especificado
@@ -843,8 +951,11 @@ class DatabaseManager:
                         params_web = params_web + (limite,)
                     
                     cursor.execute(query_web, params_web)
-                    for row in cursor.fetchall():
-                        data_clipping, titulo, site_nome, domain, conteudo, valor = row
+                    web_results = cursor.fetchall()
+                    print(f"🔍 DEBUG WEB: Query encontrou {len(web_results)} resultados de {len(ids_web)} IDs solicitados")
+                    
+                    for row in web_results:
+                        data_clipping, titulo, site_nome, domain, conteudo, valor, ds_caminho_img = row
                         
                         # Trata data nula ou inválida
                         if data_clipping:
@@ -864,7 +975,9 @@ class DatabaseManager:
                             'titulo_linha2': conteudo if conteudo else '',
                             'arquivo': '',
                             'sinopse': '',
-                            'valor': float(valor)
+                            'valor': float(valor),
+                            'ds_caminho_img': ds_caminho_img,
+                            'url': domain if domain else ''
                         })
             
             print(f"📄 Clipagens detalhadas - TV: {len(clipagens['TV'])}, Rádio: {len(clipagens['Rádio'])}, Impresso: {len(clipagens['Impresso'])}, Web: {len(clipagens['Web'])}")
@@ -1522,14 +1635,13 @@ class DatabaseManager:
                 LEFT JOIN programa_emissora_web p ON t.programa_id = p.id
                 JOIN noticia_cliente nc ON t.id = nc.noticia_id AND nc.tipo_id = 4
                 WHERE (nc.cliente_id = %s)
-                AND t.dt_noticia BETWEEN %s AND %s
                 AND t.deleted_at IS NULL
                 AND noticia_id IN ({','.join(map(str, ids_especificos.get('tv', [])))})
                 GROUP BY t.cd_cidade, c.nm_cidade, COALESCE(nc.sentimento, '1'), e.nome_emissora, p.nome_programa
                 ORDER BY cidade ASC, sentimento ASC;
             """
             
-            cursor.execute(query, (usuario_id, data_inicio, data_fim))
+            cursor.execute(query, (usuario_id,))
             data = cursor.fetchall()
             
             # Converte para DataFrame
@@ -1595,14 +1707,13 @@ class DatabaseManager:
                 LEFT JOIN programa_emissora_radio p ON r.programa_id = p.id
                 JOIN noticia_cliente nc ON r.id = nc.noticia_id AND nc.tipo_id = 3
                 WHERE (nc.cliente_id = %s)
-                AND r.dt_clipagem BETWEEN %s AND %s
                 AND r.deleted_at IS NULL
                 AND noticia_id IN ({','.join(map(str, ids_especificos.get('radio', [])))})
                 GROUP BY r.cd_cidade, c.nm_cidade, COALESCE(nc.sentimento, '1')
                 ORDER BY cidade ASC, sentimento ASC
             """
             
-            cursor.execute(query, (usuario_id, data_inicio, data_fim))
+            cursor.execute(query, (usuario_id,))
             data = cursor.fetchall()
             
             # Converte para DataFrame
@@ -1649,14 +1760,13 @@ class DatabaseManager:
                 LEFT JOIN cidade c ON j.cd_cidade = c.cd_cidade
                 JOIN noticia_cliente nc ON j.id = nc.noticia_id AND nc.tipo_id = 1
                 WHERE (nc.cliente_id = %s)
-                AND j.dt_clipagem BETWEEN %s AND %s
                 AND j.deleted_at IS NULL
                 AND noticia_id IN ({','.join(map(str, ids_especificos.get('impresso', [])))})
                 GROUP BY j.cd_cidade, c.nm_cidade, COALESCE(nc.sentimento, '1')
                 ORDER BY cidade ASC, sentimento ASC
             """
             
-            cursor.execute(query, (usuario_id, data_inicio, data_fim))
+            cursor.execute(query, (usuario_id,))
             data = cursor.fetchall()
             
             # Converte para DataFrame
@@ -1699,14 +1809,13 @@ class DatabaseManager:
                 LEFT JOIN cidade c ON w.cd_cidade = c.cd_cidade
                 JOIN noticia_cliente nc ON w.id = nc.noticia_id AND nc.tipo_id = 2
                 WHERE (nc.cliente_id = %s)
-                AND w.data_noticia BETWEEN %s AND %s
                 AND w.deleted_at IS NULL
                 AND noticia_id IN ({','.join(map(str, ids_especificos.get('web', [])))})
                 GROUP BY w.cd_cidade, c.nm_cidade, COALESCE(nc.sentimento, '1')
                 ORDER BY cidade ASC, sentimento ASC
             """
             
-            cursor.execute(query, (usuario_id, data_inicio, data_fim))
+            cursor.execute(query, (usuario_id,))
             data = cursor.fetchall()
             
             # Converte para DataFrame
@@ -1788,11 +1897,10 @@ class DatabaseManager:
                     FROM noticia_tv t
                     JOIN noticia_cliente nc ON t.id = nc.noticia_id AND nc.tipo_id = 4
                     WHERE (nc.cliente_id = %s)
-                    AND t.dt_noticia BETWEEN %s AND %s
                     AND t.deleted_at IS NULL
                     AND noticia_id IN ({','.join(map(str, ids_especificos.get('tv', [])))})
                 """
-                cursor.execute(query_tv, (usuario_id, data_inicio, data_fim))
+                cursor.execute(query_tv, (usuario_id,))
                 tv_data = cursor.fetchone()
                 resultados.append({
                     'midia': 'TV',
@@ -1813,11 +1921,10 @@ class DatabaseManager:
                     FROM noticia_radio r
                     JOIN noticia_cliente nc ON r.id = nc.noticia_id AND nc.tipo_id = 3
                     WHERE (nc.cliente_id = %s)
-                    AND r.dt_clipagem BETWEEN %s AND %s
                     AND r.deleted_at IS NULL
                     AND noticia_id IN ({','.join(map(str, ids_especificos.get('radio', [])))})
                 """
-                cursor.execute(query_radio, (usuario_id, data_inicio, data_fim))
+                cursor.execute(query_radio, (usuario_id,))
                 radio_data = cursor.fetchone()
                 resultados.append({
                     'midia': 'Rádio',
@@ -1838,11 +1945,10 @@ class DatabaseManager:
                     FROM noticia_impresso j
                     JOIN noticia_cliente nc ON j.id = nc.noticia_id AND nc.tipo_id = 1
                     WHERE (nc.cliente_id = %s)
-                    AND j.dt_clipagem BETWEEN %s AND %s
                     AND j.deleted_at IS NULL
                     AND noticia_id IN ({','.join(map(str, ids_especificos.get('impresso', [])))})
                 """
-                cursor.execute(query_jornal, (usuario_id, data_inicio, data_fim))
+                cursor.execute(query_jornal, (usuario_id,))
                 jornal_data = cursor.fetchone()
                 resultados.append({
                     'midia': 'Impresso',
@@ -1863,11 +1969,10 @@ class DatabaseManager:
                     FROM noticias_web w
                     JOIN noticia_cliente nc ON w.id = nc.noticia_id AND nc.tipo_id = 2
                     WHERE (nc.cliente_id = %s)
-                    AND w.data_noticia BETWEEN %s AND %s
                     AND w.deleted_at IS NULL
                     AND noticia_id IN ({','.join(map(str, ids_especificos.get('web', [])))})
                 """
-                cursor.execute(query_web, (usuario_id, data_inicio, data_fim))
+                cursor.execute(query_web, (usuario_id,))
                 web_data = cursor.fetchone()
                 resultados.append({
                     'midia': 'Web',
@@ -1905,13 +2010,12 @@ class DatabaseManager:
                 FROM noticia_tv t
                 JOIN noticia_cliente nc ON t.id = nc.noticia_id AND nc.tipo_id = 4
                 WHERE (nc.cliente_id = %s)
-                AND t.dt_noticia BETWEEN %s AND %s
                 AND t.deleted_at IS NULL
                 AND noticia_id IN ({','.join(map(str, ids_especificos.get('tv', [])))})
                 ORDER BY t.dt_noticia ASC
             """
             
-            cursor.execute(query, (usuario_id, data_inicio, data_fim))
+            cursor.execute(query, (usuario_id,))
             data = cursor.fetchall()
             
             # Converte para DataFrame
@@ -1943,13 +2047,12 @@ class DatabaseManager:
                 FROM noticia_radio r
                 JOIN noticia_cliente nc ON r.id = nc.noticia_id AND nc.tipo_id = 3
                 WHERE (nc.cliente_id = %s)
-                AND r.dt_clipagem BETWEEN %s AND %s
                 AND r.deleted_at IS NULL
                 AND noticia_id IN ({','.join(map(str, ids_especificos.get('radio', [])))})
                 ORDER BY r.dt_clipagem ASC
             """
             
-            cursor.execute(query, (usuario_id, data_inicio, data_fim))
+            cursor.execute(query, (usuario_id,))
             data = cursor.fetchall()
             
             # Converte para DataFrame
@@ -1981,13 +2084,12 @@ class DatabaseManager:
                 FROM noticias_web w
                 JOIN noticia_cliente nc ON w.id = nc.noticia_id AND nc.tipo_id = 2
                 WHERE (nc.cliente_id = %s)
-                AND w.data_noticia BETWEEN %s AND %s
                 AND w.deleted_at IS NULL
                 AND noticia_id IN ({','.join(map(str, ids_especificos.get('web', [])))})
                 ORDER BY w.data_noticia ASC
             """
             
-            cursor.execute(query, (usuario_id, data_inicio, data_fim))
+            cursor.execute(query, (usuario_id,))
             data = cursor.fetchall()
             
             # Converte para DataFrame
@@ -2020,13 +2122,12 @@ class DatabaseManager:
                 FROM noticia_impresso j
                 JOIN noticia_cliente nc ON j.id = nc.noticia_id AND nc.tipo_id = 1
                 WHERE (nc.cliente_id = %s)
-                AND j.dt_clipagem BETWEEN %s AND %s
                 AND j.deleted_at IS NULL
                 AND noticia_id IN ({','.join(map(str, ids_especificos.get('impresso', [])))})
                 ORDER BY j.dt_clipagem ASC
             """
             
-            cursor.execute(query, (usuario_id, data_inicio, data_fim))
+            cursor.execute(query, (usuario_id,))
             data = cursor.fetchall()
             
             # Converte para DataFrame

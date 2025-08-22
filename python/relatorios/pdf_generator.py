@@ -381,6 +381,42 @@ class PDFGenerator:
         
         return text
     
+    def _generate_public_media_link(self, ds_caminho_img, midia_tipo):
+        """
+        Gera link público da mídia baseado no tipo de mídia
+        
+        Args:
+            ds_caminho_img: Nome do arquivo de mídia (ex: "35442173.jpg", "audio.mp3", "video.mp4")
+            midia_tipo: Tipo da mídia ('TV', 'Rádio', 'Impresso', 'Web')
+            
+        Returns:
+            str: URL pública da mídia ou string vazia se não aplicável
+        """
+        if not ds_caminho_img or ds_caminho_img.strip() == '' or midia_tipo == 'Web':
+            return ""
+        
+        # URL base do sistema
+        base_url = "https://studioclipagem.com/"
+        
+        # Mapeia tipo de mídia para pasta correspondente
+        # TV e Rádio usam pastas de vídeo/áudio, não imagens
+        midia_folders = {
+            'TV': 'video/noticia-tv/',
+            'Rádio': 'audio/noticia-radio/', 
+            'Impresso': 'img/noticia-impressa/'
+        }
+        
+        # Obtém pasta baseada no tipo de mídia
+        folder = midia_folders.get(midia_tipo, '')
+        
+        if not folder:
+            return ""
+        
+        # Constrói URL pública
+        public_url = f"{base_url}{folder}{ds_caminho_img}"
+        
+        return public_url
+    
     def _create_noticias_table(self, data: pd.DataFrame):
         """Cria tabela para seção de notícias"""
         # Calcula totais e percentuais
@@ -1373,6 +1409,31 @@ class PDFGenerator:
                 sinopse = clean_and_format_text(row.get('Linha3 Sinopse', '') or row.get('linha3_sinopse', '') or row.get('sinopse', '') or row.get('descricao', ''))
                 sinopse_text = sinopse if sinopse else "não disponível"
                 
+                # Gera link público da mídia
+                # Prioriza ds_caminho_img que agora contém o campo correto (ds_caminho_video/ds_caminho_audio)
+                ds_caminho = row.get('ds_caminho_img', '') or row.get('Caminho Imagem', '')
+                arquivo_linha2 = row.get('Linha2 Arquivo', '') or row.get('linha2_arquivo', '')
+                
+                # Ignora valores inválidos como "Arquivo não disponível", "nan", etc.
+                valores_invalidos = ['', 'nan', 'Arquivo não disponível', None]
+                
+                midia_file = ''
+                # Prioridade 1: ds_caminho_img (agora contém ds_caminho_video ou ds_caminho_audio)
+                if ds_caminho and ds_caminho not in valores_invalidos:
+                    midia_file = ds_caminho
+                # Prioridade 2: Linha2 Arquivo (fallback)
+                elif arquivo_linha2 and arquivo_linha2 not in valores_invalidos:
+                    midia_file = arquivo_linha2
+                else:
+                    # Fallback para outros campos
+                    for campo in ['midia', 'arquivo_midia']:
+                        valor = row.get(campo, '')
+                        if valor and valor not in valores_invalidos:
+                            midia_file = valor
+                            break
+                
+                public_link = self._generate_public_media_link(midia_file, midia_tipo) if midia_file else ''
+                
                 # Formatação com estilo específico para cada linha
                 linha1_formatted = f"<b>{linha1}</b>" if linha1 else "<b>Informação não disponível</b>"
                 sinopse_formatted = f"Sinopse: {sinopse_text}"
@@ -1385,6 +1446,11 @@ class PDFGenerator:
                 else:
                     clipagem_text = f"{linha1_formatted}<br/>{sinopse_formatted}"
                 
+                # Adiciona link público se disponível
+                if public_link:
+                    public_link_formatted = f"<font color='#3498db'>mídia:<i>{public_link}</i></font>"
+                    clipagem_text += f"<br/>{public_link_formatted}"
+                
             else:  # Impresso e Web
                 # Formato para Impresso e Web (2 linhas bem definidas)
                 linha1 = clean_and_format_text(row.get('Título Linha 1', '') or row.get('titulo_linha1', ''))
@@ -1396,6 +1462,20 @@ class PDFGenerator:
                 
                 # Combina as 2 linhas
                 clipagem_text = f"{linha1_formatted}<br/>{descricao_formatted}"
+                
+                if midia_tipo == 'Web':
+                    # Para Web, adiciona URL da notícia (completa, sem truncar)
+                    url_noticia = row.get('url', '') or row.get('link', '') or row.get('url_noticia', '')
+                    if url_noticia:
+                        url_formatted = f"<font color='#3498db'>mídia:<i>{url_noticia}</i></font>"
+                        clipagem_text += f"<br/>{url_formatted}"
+                else:
+                    # Para Impresso, adiciona link público da imagem (completo, sem truncar)
+                    ds_caminho_img = row.get('ds_caminho_img', '') or row.get('Caminho Imagem', '')
+                    public_link = self._generate_public_media_link(ds_caminho_img, midia_tipo)
+                    if public_link:
+                        public_link_formatted = f"<font color='#3498db'>mídia:<i>{public_link}</i></font>"
+                        clipagem_text += f"<br/>{public_link_formatted}"
             
             # Estilo customizado para clipagens com melhor quebra de linha
             clipagem_style = ParagraphStyle(
@@ -1407,16 +1487,18 @@ class PDFGenerator:
                 spaceAfter=2,
                 leftIndent=5,
                 rightIndent=5,
-                # Adiciona propriedades para melhor quebra de linha
+                # Propriedades para garantir que URLs longas apareçam completamente
                 wordWrap='CJK',  # Permite quebra de linha em qualquer caractere
-                splitLongWords=True,  # Permite quebrar palavras longas
+                splitLongWords=True,  # Permite quebrar palavras longas (como URLs)
                 allowWidows=1,  # Permite linhas órfãs
                 allowOrphans=1,  # Permite linhas viúvas
                 leading=10,  # Espaçamento entre linhas
+                hyphenationLang=None,  # Desabilita hifenização automática
+                uriWasteReduce=0.1,  # Reduz "desperdício" para melhor quebra de URLs
+                embeddedHyphenation=1,  # Permite hifenização manual em URLs
             )
             
-            # Trunca o texto final se ainda estiver muito longo
-            clipagem_text = truncate_text(clipagem_text, 600)
+            # Não trunca aqui para evitar cortar tags HTML - já foi truncado nos componentes individuais
             
             # Cria parágrafo com HTML interno para formatação
             clipagem_paragraph = Paragraph(clipagem_text, clipagem_style)
@@ -1431,10 +1513,11 @@ class PDFGenerator:
         # O ReportLab gerencia automaticamente as quebras de página
         
         # Cria tabela com larguras otimizadas - condicional baseado em mostrar_valores
+        # Larguras aumentadas para garantir que URLs longas sejam totalmente visíveis
         if mostrar_valores:
-            table = Table(table_data, colWidths=[5.5*inch, 1.0*inch])
+            table = Table(table_data, colWidths=[5.8*inch, 1.0*inch])
         else:
-            table = Table(table_data, colWidths=[6.5*inch])
+            table = Table(table_data, colWidths=[6.8*inch])
         
         # Estilo da tabela com melhor aparência - condicional baseado em mostrar_valores
         if mostrar_valores:
@@ -1459,8 +1542,8 @@ class PDFGenerator:
                 # Linhas alternadas com cores suaves
                 ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f8f9fa')]),
                 
-                # Adiciona altura máxima para as linhas para evitar células muito grandes
-                ('ROWHEIGHT', (0, 1), (-1, -1), None),  # Altura automática mas controlada
+                # Altura automática para acomodar URLs longas completamente
+                ('ROWHEIGHT', (0, 1), (-1, -1), None),  # Altura automática
             ]))
         else:
             table.setStyle(TableStyle([
@@ -1483,8 +1566,8 @@ class PDFGenerator:
                 # Linhas alternadas com cores suaves
                 ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f8f9fa')]),
                 
-                # Adiciona altura máxima para as linhas para evitar células muito grandes
-                ('ROWHEIGHT', (0, 1), (-1, -1), None),  # Altura automática mas controlada
+                # Altura automática para acomodar URLs longas completamente
+                ('ROWHEIGHT', (0, 1), (-1, -1), None),  # Altura automática
             ]))
         
         return table
