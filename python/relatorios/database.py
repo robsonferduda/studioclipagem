@@ -146,29 +146,22 @@ class DatabaseManager:
                         count_client_linked = cursor.fetchone()[0]
                         print(f"   👤 IDs associados ao cliente {usuario_id}: {count_client_linked}/{len(ids_list)}")
                         
-                        # 4. Verifica quantos IDs estão no período
-                        cursor.execute(f"""
-                            SELECT COUNT(*) FROM {table_name} t
-                            JOIN noticia_cliente nc ON t.id = nc.noticia_id AND nc.tipo_id = %s
-                            WHERE t.id IN ({ids_str}) AND nc.cliente_id = %s 
-                            AND t.{date_field} BETWEEN %s AND %s AND t.deleted_at IS NULL
-                        """, (tipo_id, usuario_id, data_inicio, data_fim))
-                        count_in_period = cursor.fetchone()[0]
-                        print(f"   📅 IDs no período {data_inicio} a {data_fim}: {count_in_period}/{len(ids_list)}")
+                        # 4. Para IDs específicos, usa todos os IDs associados ao cliente (sem filtro de período)
+                        print(f"   📅 Usando IDs específicos - incluindo TODOS os IDs selecionados (sem filtro de período)")
+                        count_final_processed = count_client_linked
                         
-                        if count_in_period < len(ids_list):
-                            # Lista IDs que estão sendo perdidos
+                        if count_final_processed < len(ids_list):
+                            # Lista IDs que estão sendo perdidos (apenas os que não estão associados ao cliente)
                             cursor.execute(f"""
                                 SELECT t.id FROM {table_name} t
                                 JOIN noticia_cliente nc ON t.id = nc.noticia_id AND nc.tipo_id = %s
-                                WHERE t.id IN ({ids_str}) AND nc.cliente_id = %s 
-                                AND t.{date_field} BETWEEN %s AND %s AND t.deleted_at IS NULL
-                            """, (tipo_id, usuario_id, data_inicio, data_fim))
+                                WHERE t.id IN ({ids_str}) AND nc.cliente_id = %s AND t.deleted_at IS NULL
+                            """, (tipo_id, usuario_id))
                             found_ids = [str(row[0]) for row in cursor.fetchall()]
                             missing_ids = [id_val for id_val in ids_list if str(id_val) not in found_ids]
-                            print(f"   ⚠️ IDs perdidos: {missing_ids}")
+                            print(f"   ⚠️ IDs não processados (não associados ao cliente ou deletados): {missing_ids}")
                         
-                        print(f"   ✅ IDs finais que serão processados: {count_in_period}")
+                        print(f"   ✅ IDs finais que serão processados: {count_final_processed}")
                         print("")
                 
                 # Valida os IDs no banco de dados em vez de apenas contar
@@ -740,7 +733,12 @@ class DatabaseManager:
                             'tempo': tempo,
                             'segundos': segundos_totais,
                             'valor': float(valor),
-                            'ds_caminho_img': ds_caminho_img
+                            'ds_caminho_img': ds_caminho_img,
+                            # Campos adicionais para PDF generator
+                            'veiculo': emissora,
+                            'programa': programa,
+                            'duracao': segundos_totais,  # Duração já formatada como HH:MM:SS
+                            'horario': tempo
                         })
                         print(f"🔍 DEBUG TV: Adicionada clipagem: {programa} - {emissora}")
                 
@@ -836,7 +834,12 @@ class DatabaseManager:
                             'tempo': tempo,
                             'segundos': segundos_totais,
                             'valor': float(valor),
-                            'ds_caminho_img': ds_caminho_img
+                            'ds_caminho_img': ds_caminho_img,
+                            # Campos adicionais para PDF generator
+                            'veiculo': emissora,
+                            'programa': programa,  
+                            'duracao': segundos_totais,  # Duração já formatada como HH:MM:SS
+                            'horario': tempo
                         })
             
             # 3. Clipagens de Impresso - Com filtros aplicados
