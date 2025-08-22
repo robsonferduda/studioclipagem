@@ -523,28 +523,11 @@ class PDFGenerator:
         emissoras_data = {}
         
         for _, row in clipagens_data.iterrows():
-            # Extrai nome da emissora da linha1 
-            # Formato real: "12/02/2025 - Nome do Programa - Nome da Emissora - 00:05:30"
-            linha1 = str(row.get('linha1_data_programa_emissora', ''))
-            emissora = 'Não identificada'
-            tempo_str = '00:00:00'
+            # Extrai nome da emissora - usa campo 'veiculo' diretamente dos dados
+            emissora = str(row.get('veiculo', row.get('Veículo', 'Não identificada')))
             
-            # Nova regex para capturar o formato real: data - programa - emissora - tempo
-            if linha1:
-                # Divide por ' - ' e pega as partes
-                partes = linha1.split(' - ')
-                if len(partes) >= 4:
-                    # partes[0] = data, partes[1] = programa, partes[2] = emissora, partes[3] = tempo
-                    emissora = partes[2].strip()
-                    tempo_str = partes[3].strip()
-                elif len(partes) >= 3:
-                    # Fallback: se não tem 4 partes, assume que partes[2] é emissora ou tempo
-                    if ':' in partes[2]:  # Se tem dois pontos, provavelmente é tempo
-                        tempo_str = partes[2].strip()
-                        emissora = partes[1].strip() if len(partes) > 1 else 'Não identificada'
-                    else:  # Se não tem dois pontos, provavelmente é emissora
-                        emissora = partes[2].strip()
-                        tempo_str = '00:00:00'
+            # Extrai duração diretamente dos dados (já formatada como HH:MM:SS)
+            tempo_str = str(row.get('duracao', row.get('Duração', '00:00:00')))
             
             # Validação básica do tempo
             if not re.match(r'\d{2}:\d{2}:\d{2}', tempo_str):
@@ -561,7 +544,7 @@ class PDFGenerator:
             tempo_segundos = time_to_seconds(tempo_str)
             
             # Extrai valor
-            valor = float(row.get('valor', 0)) if pd.notnull(row.get('valor')) else 0
+            valor = float(row.get('valor', row.get('Valor', 0))) if pd.notnull(row.get('valor', row.get('Valor', 0))) else 0
             
             # Agrega dados por emissora
             if emissora not in emissoras_data:
@@ -608,28 +591,11 @@ class PDFGenerator:
         programas_data = {}
         
         for _, row in clipagens_data.iterrows():
-            # Extrai nome do programa da linha1
-            # Formato real: "12/02/2025 - Nome do Programa - Nome da Emissora - 00:05:30"
-            linha1 = str(row.get('linha1_data_programa_emissora', ''))
-            programa = 'Não identificado'
-            tempo_str = '00:00:00'
+            # Extrai nome do programa - usa campo 'programa' diretamente dos dados
+            programa = str(row.get('programa', row.get('Programa', 'Não identificado')))
             
-            # Nova regex para capturar o formato real: data - programa - emissora - tempo
-            if linha1:
-                # Divide por ' - ' e pega as partes
-                partes = linha1.split(' - ')
-                if len(partes) >= 4:
-                    # partes[0] = data, partes[1] = programa, partes[2] = emissora, partes[3] = tempo
-                    programa = partes[1].strip()
-                    tempo_str = partes[3].strip()
-                elif len(partes) >= 2:
-                    # Fallback: se não tem 4 partes, assume que partes[1] é programa
-                    programa = partes[1].strip()
-                    # Procura por tempo nas partes disponíveis
-                    for parte in partes:
-                        if ':' in parte and re.match(r'\d{2}:\d{2}:\d{2}', parte.strip()):
-                            tempo_str = parte.strip()
-                            break
+            # Extrai duração diretamente dos dados (já formatada como HH:MM:SS)
+            tempo_str = str(row.get('duracao', row.get('Duração', '00:00:00')))
             
             # Validação básica do tempo
             if not re.match(r'\d{2}:\d{2}:\d{2}', tempo_str):
@@ -646,7 +612,7 @@ class PDFGenerator:
             tempo_segundos = time_to_seconds(tempo_str)
             
             # Extrai valor
-            valor = float(row.get('valor', 0)) if pd.notnull(row.get('valor')) else 0
+            valor = float(row.get('valor', row.get('Valor', 0))) if pd.notnull(row.get('valor', row.get('Valor', 0))) else 0
             
             # Agrega dados por programa
             if programa not in programas_data:
@@ -693,28 +659,11 @@ class PDFGenerator:
         emissoras_data = {}
         
         for _, row in clipagens_data.iterrows():
-            # Extrai nome da emissora da linha1
-            # Formato real: "12/02/2025 - Nome do Programa - Nome da Emissora - 00:05:30"
-            linha1 = str(row.get('linha1_data_programa_emissora', ''))
-            emissora = 'Não identificada'
-            tempo_str = '00:00:00'
+            # Extrai nome da emissora - usa campo 'veiculo' diretamente dos dados
+            emissora = str(row.get('veiculo', row.get('Veículo', 'Não identificada')))
             
-            # Nova regex para capturar o formato real: data - programa - emissora - tempo
-            if linha1:
-                # Divide por ' - ' e pega as partes
-                partes = linha1.split(' - ')
-                if len(partes) >= 4:
-                    # partes[0] = data, partes[1] = programa, partes[2] = emissora, partes[3] = tempo
-                    emissora = partes[2].strip()
-                    tempo_str = partes[3].strip()
-                elif len(partes) >= 3:
-                    # Fallback: se não tem 4 partes, assume que partes[2] é emissora ou tempo
-                    if ':' in partes[2]:  # Se tem dois pontos, provavelmente é tempo
-                        tempo_str = partes[2].strip()
-                        emissora = partes[1].strip() if len(partes) > 1 else 'Não identificada'
-                    else:  # Se não tem dois pontos, provavelmente é emissora
-                        emissora = partes[2].strip()
-                        tempo_str = '00:00:00'
+            # Extrai duração diretamente dos dados (já formatada como HH:MM:SS)
+            tempo_str = str(row.get('duracao', row.get('Duração', '00:00:00')))
             
             # Validação básica do tempo
             if not re.match(r'\d{2}:\d{2}:\d{2}', tempo_str):
@@ -731,7 +680,7 @@ class PDFGenerator:
             tempo_segundos = time_to_seconds(tempo_str)
             
             # Extrai valor
-            valor = float(row.get('valor', 0)) if pd.notnull(row.get('valor')) else 0
+            valor = float(row.get('valor', row.get('Valor', 0))) if pd.notnull(row.get('valor', row.get('Valor', 0))) else 0
             
             # Agrega dados por emissora
             if emissora not in emissoras_data:
@@ -778,28 +727,11 @@ class PDFGenerator:
         programas_data = {}
         
         for _, row in clipagens_data.iterrows():
-            # Extrai nome do programa da linha1
-            # Formato real: "12/02/2025 - Nome do Programa - Nome da Emissora - 00:05:30"
-            linha1 = str(row.get('linha1_data_programa_emissora', ''))
-            programa = 'Não identificado'
-            tempo_str = '00:00:00'
+            # Extrai nome do programa - usa campo 'programa' diretamente dos dados
+            programa = str(row.get('programa', row.get('Programa', 'Não identificado')))
             
-            # Nova regex para capturar o formato real: data - programa - emissora - tempo
-            if linha1:
-                # Divide por ' - ' e pega as partes
-                partes = linha1.split(' - ')
-                if len(partes) >= 4:
-                    # partes[0] = data, partes[1] = programa, partes[2] = emissora, partes[3] = tempo
-                    programa = partes[1].strip()
-                    tempo_str = partes[3].strip()
-                elif len(partes) >= 2:
-                    # Fallback: se não tem 4 partes, assume que partes[1] é programa
-                    programa = partes[1].strip()
-                    # Procura por tempo nas partes disponíveis
-                    for parte in partes:
-                        if ':' in parte and re.match(r'\d{2}:\d{2}:\d{2}', parte.strip()):
-                            tempo_str = parte.strip()
-                            break
+            # Extrai duração diretamente dos dados (já formatada como HH:MM:SS)
+            tempo_str = str(row.get('duracao', row.get('Duração', '00:00:00')))
             
             # Validação básica do tempo
             if not re.match(r'\d{2}:\d{2}:\d{2}', tempo_str):
@@ -816,7 +748,7 @@ class PDFGenerator:
             tempo_segundos = time_to_seconds(tempo_str)
             
             # Extrai valor
-            valor = float(row.get('valor', 0)) if pd.notnull(row.get('valor')) else 0
+            valor = float(row.get('valor', row.get('Valor', 0))) if pd.notnull(row.get('valor', row.get('Valor', 0))) else 0
             
             # Agrega dados por programa
             if programa not in programas_data:
@@ -1448,7 +1380,7 @@ class PDFGenerator:
                 
                 # Adiciona link público se disponível
                 if public_link:
-                    public_link_formatted = f"<font color='#3498db'>mídia:<i>{public_link}</i></font>"
+                    public_link_formatted = f"<font color='#3498db'><link href='{public_link}'>visualizar</link></font>"
                     clipagem_text += f"<br/>{public_link_formatted}"
                 
             else:  # Impresso e Web
@@ -1467,14 +1399,14 @@ class PDFGenerator:
                     # Para Web, adiciona URL da notícia (completa, sem truncar)
                     url_noticia = row.get('url', '') or row.get('link', '') or row.get('url_noticia', '')
                     if url_noticia:
-                        url_formatted = f"<font color='#3498db'>mídia:<i>{url_noticia}</i></font>"
+                        url_formatted = f"<font color='#3498db'><link href='{url_noticia}'>visualizar</link></font>"
                         clipagem_text += f"<br/>{url_formatted}"
                 else:
                     # Para Impresso, adiciona link público da imagem (completo, sem truncar)
                     ds_caminho_img = row.get('ds_caminho_img', '') or row.get('Caminho Imagem', '')
                     public_link = self._generate_public_media_link(ds_caminho_img, midia_tipo)
                     if public_link:
-                        public_link_formatted = f"<font color='#3498db'>mídia:<i>{public_link}</i></font>"
+                        public_link_formatted = f"<font color='#3498db'><link href='{public_link}'>visualizar</link></font>"
                         clipagem_text += f"<br/>{public_link_formatted}"
             
             # Estilo customizado para clipagens com melhor quebra de linha
