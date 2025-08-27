@@ -840,6 +840,68 @@ class NoticiaWebController extends Controller
         return redirect()->back();
     }
 
+    public function excluirLote(Request $request)
+    {
+        try {
+            $ids = $request->input('ids', []);
+            
+            if (empty($ids)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Nenhuma notícia selecionada para exclusão.'
+                ], 400);
+            }
+
+            // Valida se todos os IDs são números
+            $ids = array_filter($ids, 'is_numeric');
+            
+            if (empty($ids)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'IDs inválidos fornecidos.'
+                ], 400);
+            }
+
+            // Busca as notícias que existem
+            $noticias = NoticiaWeb::whereIn('id', $ids)->get();
+            
+            if ($noticias->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Nenhuma notícia encontrada para exclusão.'
+                ], 404);
+            }
+
+            $deletedCount = 0;
+            
+            // Exclui cada notícia
+            foreach ($noticias as $noticia) {
+                if ($noticia->delete()) {
+                    $deletedCount++;
+                }
+            }
+
+            if ($deletedCount > 0) {
+                return response()->json([
+                    'success' => true,
+                    'message' => $deletedCount . ' notícia(s) excluída(s) com sucesso.',
+                    'deleted_count' => $deletedCount
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Erro ao excluir as notícias selecionadas.'
+                ], 500);
+            }
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro interno: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function retorno()
     {
         Session::put('sub-menu','web-retorno');
