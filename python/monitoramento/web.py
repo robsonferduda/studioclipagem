@@ -145,10 +145,58 @@ def copy_rows_by_fk(conn, src_table, dst_table, fk_field, fk_value, exclude=None
     with conn.cursor() as c:
         c.execute(sql, params)
 
+def verificar_duplicata_web_cliente(conn, cliente_id, url_noticia, titulo_noticia, id_fonte):
+    """
+    Verifica se já existe notícia web vinculada ao cliente por URL ou título+fonte
+    """
+    with conn.cursor() as cur:
+        # Verifica por URL
+        if url_noticia:
+            cur.execute("""
+                SELECT 1 
+                FROM noticia_cliente nc
+                JOIN noticias_web nw ON nw.id = nc.noticia_id
+                WHERE nc.cliente_id = %s 
+                AND nc.tipo_id = 2
+                AND nw.url_noticia = %s
+                AND nc.deleted_at IS NULL
+                LIMIT 1
+            """, (cliente_id, url_noticia))
+            
+            if cur.fetchone():
+                return True
+                
+        # Verifica por título + fonte
+        if titulo_noticia and id_fonte:
+            cur.execute("""
+                SELECT 1 
+                FROM noticia_cliente nc
+                JOIN noticias_web nw ON nw.id = nc.noticia_id
+                WHERE nc.cliente_id = %s 
+                AND nc.tipo_id = 2
+                AND nw.titulo_noticia = %s
+                AND nw.id_fonte = %s
+                AND nc.deleted_at IS NULL
+                LIMIT 1
+            """, (cliente_id, titulo_noticia, id_fonte))
+            
+            if cur.fetchone():
+                return True
+                
+        return False
+
 def associar(conn, dados, tipo, monitoramento):
     total_vinculado = 0
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         for noticia in dados:
+            # Para Web, verifica duplicatas por URL ou título+fonte
+            if tipo == 2:  # Web
+                if verificar_duplicata_web_cliente(conn, monitoramento['id_cliente'], 
+                                                 noticia.get('url_noticia'), 
+                                                 noticia.get('titulo_noticia'), 
+                                                 noticia.get('id_fonte')):
+                    continue  # Pula esta notícia pois já existe uma similar para o cliente
+            
             # Já existe vínculo?
             cur.execute("""
                 SELECT 1

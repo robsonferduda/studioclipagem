@@ -907,11 +907,58 @@ class MonitoramentoController extends Controller
         return redirect()->back()->withInput();
     }
 
+    /**
+     * Verifica se já existe notícia web vinculada ao cliente por URL ou título+fonte
+     */
+    private function verificarDuplicataWebCliente($cliente_id, $url_noticia, $titulo_noticia, $id_fonte)
+    {
+        // Verifica por URL
+        if (!empty($url_noticia)) {
+            $duplicata = NoticiaCliente::join('noticias_web', 'noticias_web.id', '=', 'noticia_cliente.noticia_id')
+                                      ->where('noticia_cliente.cliente_id', $cliente_id)
+                                      ->where('noticia_cliente.tipo_id', 2)
+                                      ->where('noticias_web.url_noticia', $url_noticia)
+                                      ->whereNull('noticia_cliente.deleted_at')
+                                      ->first();
+            
+            if ($duplicata) {
+                return true;
+            }
+        }
+        
+        // Verifica por título + fonte
+        if (!empty($titulo_noticia) && !empty($id_fonte)) {
+            $duplicata = NoticiaCliente::join('noticias_web', 'noticias_web.id', '=', 'noticia_cliente.noticia_id')
+                                      ->where('noticia_cliente.cliente_id', $cliente_id)
+                                      ->where('noticia_cliente.tipo_id', 2)
+                                      ->where('noticias_web.titulo_noticia', $titulo_noticia)
+                                      ->where('noticias_web.id_fonte', $id_fonte)
+                                      ->whereNull('noticia_cliente.deleted_at')
+                                      ->first();
+            
+            if ($duplicata) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
     public function associar($dados, $tipo, $monitoramento)
     {
         $total_vinculado = 0;
 
         foreach ($dados as $key => $noticia) {
+            
+            // Para Web, verifica duplicatas por URL ou título+fonte
+            if ($tipo == 2) { // Web
+                if ($this->verificarDuplicataWebCliente($monitoramento->id_cliente, 
+                                                       $noticia->url_noticia ?? null, 
+                                                       $noticia->titulo_noticia ?? null, 
+                                                       $noticia->id_fonte ?? null)) {
+                    continue; // Pula esta notícia pois já existe uma similar para o cliente
+                }
+            }
 
             $noticia_cliente = NoticiaCliente::where('noticia_id', $noticia->id)
                                             ->where('tipo_id', $tipo)
