@@ -120,7 +120,21 @@
                 </div>
                 <div class="col-lg-12 col-sm-12 conteudo">      
                     @if(count($dados))
-                        <h6 class="px-3">Mostrando {{ $dados->count() }} de {{ $dados->total() }} notícias</h6> 
+                        <div class="d-flex justify-content-between align-items-center px-3 mb-3">
+                            <h6 class="mb-0">Mostrando {{ $dados->count() }} de {{ $dados->total() }} notícias</h6>
+                            <div class="selection-controls">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="selectAll">
+                                    <label class="form-check-label" for="selectAll">
+                                        Selecionar todas desta página
+                                    </label>
+                                </div>
+                                <span class="badge badge-info ml-2" id="selectedCount">0 selecionadas</span>
+                                <button type="button" class="btn btn-danger btn-sm ml-2" id="deleteSelected" disabled>
+                                    <i class="fa fa-trash"></i> Excluir Selecionadas
+                                </button>
+                            </div>
+                        </div>
                         
                         {{ $dados->onEachSide(1)->appends(['dt_inicial' => \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y'), 
                                                             'dt_final' => \Carbon\Carbon::parse($dt_final)->format('d/m/Y'),
@@ -133,8 +147,18 @@
                 <div class="col-lg-12">
                     @if(count($dados) > 0)
                         @foreach ($dados as $key => $dado)
-                            <div class="card">
+                            <div class="card noticia-card" data-id="{{ $dado->id }}">
                                 <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-12 mb-2">
+                                            <div class="form-check float-right">
+                                                <input class="form-check-input noticia-checkbox" type="checkbox" value="{{ $dado->id }}" id="noticia_{{ $dado->id }}">
+                                                <label class="form-check-label text-primary font-weight-bold" for="noticia_{{ $dado->id }}">
+                                                    Selecionar notícia
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="row">
                                         <div class="col-lg-2 col-sm-12 img-{{ $dado->id }}" style="max-height: 300px; overflow: hidden;">   
                                             @if($dado->ds_caminho_img)
@@ -291,11 +315,107 @@
 @endsection
 @section('script')
 <script src="{{ asset('js/noticia_clientes.js') }}"></script>
+<style>
+    .noticia-card.selected {
+        border: 2px solid #007bff;
+        background-color: #f8f9ff;
+    }
+    .selection-controls {
+        background-color: #f8f9fa;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #dee2e6;
+    }
+</style>
     <script>
         $(document).ready(function() {
 
             var host =  $('meta[name="base-url"]').attr('content');
             var token = $('meta[name="csrf-token"]').attr('content');
+
+            // Função para atualizar contador de selecionadas
+            function updateSelectedCount() {
+                var count = $('.noticia-checkbox:checked').length;
+                $('#selectedCount').text(count + ' selecionadas');
+                
+                // Habilita/desabilita botão de excluir
+                $('#deleteSelected').prop('disabled', count === 0);
+                
+                // Atualiza estado do checkbox "Selecionar todas"
+                var total = $('.noticia-checkbox').length;
+                if (count === 0) {
+                    $('#selectAll').prop('indeterminate', false).prop('checked', false);
+                } else if (count === total) {
+                    $('#selectAll').prop('indeterminate', false).prop('checked', true);
+                } else {
+                    $('#selectAll').prop('indeterminate', true);
+                }
+            }
+
+            // Checkbox "Selecionar todas"
+            $('#selectAll').change(function() {
+                var isChecked = $(this).prop('checked');
+                $('.noticia-checkbox').prop('checked', isChecked).trigger('change');
+            });
+
+            // Checkbox individual da notícia
+            $(document).on('change', '.noticia-checkbox', function() {
+                var card = $(this).closest('.noticia-card');
+                if ($(this).prop('checked')) {
+                    card.addClass('selected');
+                } else {
+                    card.removeClass('selected');
+                }
+                updateSelectedCount();
+            });
+
+            // Botão excluir selecionadas
+            $('#deleteSelected').click(function() {
+                var selectedIds = [];
+                $('.noticia-checkbox:checked').each(function() {
+                    selectedIds.push($(this).val());
+                });
+
+                if (selectedIds.length === 0) {
+                    alert('Nenhuma notícia selecionada!');
+                    return;
+                }
+
+                var confirmMessage = 'Tem certeza que deseja excluir ' + selectedIds.length + ' notícia(s) selecionada(s)? Esta ação não pode ser desfeita.';
+                
+                if (confirm(confirmMessage)) {
+                    // Aqui você implementaria a requisição AJAX para excluir
+                    $.ajax({
+                        url: host + '/noticia/web/excluir-lote',
+                        type: 'POST',
+                        data: {
+                            "_token": token,
+                            "ids": selectedIds
+                        },
+                        beforeSend: function() {
+                            $('#deleteSelected').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Excluindo...');
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                alert('Notícias excluídas com sucesso!');
+                                location.reload(); // Recarrega a página para atualizar a lista
+                            } else {
+                                alert('Erro ao excluir notícias: ' + (response.message || 'Erro desconhecido'));
+                            }
+                        },
+                        error: function(xhr) {
+                            alert('Erro ao excluir notícias. Por favor, tente novamente.');
+                            console.error('Erro:', xhr);
+                        },
+                        complete: function() {
+                            $('#deleteSelected').prop('disabled', false).html('<i class="fa fa-trash"></i> Excluir Selecionadas');
+                        }
+                    });
+                }
+            });
+
+            // Inicializa contador
+            updateSelectedCount();
 
             $(document).on('change', '.cliente', function() {
                 var cliente = $(this).val();
