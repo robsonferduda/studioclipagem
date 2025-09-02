@@ -41,7 +41,7 @@ class EmissoraController extends Controller
         $fonte = 0;
         
         if($request->fl_gravacao){
-            $gravar = ($request->fl_gravacao == 'gravando') ? 1 : 2;
+            $gravar = $request->fl_gravacao;
         }else{
             $gravar = null;
         }
@@ -78,8 +78,6 @@ class EmissoraController extends Controller
         });
 
         $emissoras = $emissora->orderBy('ds_emissora')->paginate(10);
-
-        $gravar = $request->fl_gravacao;
 
         return view('emissora/index', compact('emissoras','codigo','descricao','estados','gravar'));
     }
