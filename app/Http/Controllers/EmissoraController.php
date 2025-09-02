@@ -190,6 +190,12 @@ class EmissoraController extends Controller
             $gravar = null;
         }
 
+        if($request->situacao){
+            $situacao = $request->situacao;
+        }else{
+            $situacao = null;
+        }
+
         $nome = ($request->nome) ? $request->nome : null;  
         $cd_cidade = ($request->cd_cidade) ? $request->cd_cidade : null;    
         $cd_estado = ($request->cd_estado) ? $request->cd_estado : null;   
@@ -198,6 +204,7 @@ class EmissoraController extends Controller
         Session::put('filtro_cidade', $cd_cidade);
         Session::put('filtro_gravar', $gravar);
         Session::put('filtro_nome', $nome);
+        Session::put('filtro_situacao', $situacao);
 
         $emissora = Emissora::query();
 
@@ -206,6 +213,11 @@ class EmissoraController extends Controller
             $flag = (Session::get('filtro_gravar') == 1) ? true : false;
 
             return $q->where('gravar', $flag);
+        });
+
+        $emissora->when($situacao, function ($q) use ($situacao) {
+
+            return $q->where('id_situacao', $situacao);
         });
 
         $emissora->when($cd_cidade, function ($q) use ($cd_cidade) {
@@ -222,7 +234,7 @@ class EmissoraController extends Controller
 
         $emissoras = $emissora->orderBy('id_situacao','DESC')->orderBy('nome_emissora')->paginate(20);        
 
-        return view('emissora/index', compact('emissoras','nome','estados','cd_estado','cd_cidade','gravar'));
+        return view('emissora/index', compact('emissoras','nome','estados','cd_estado','cd_cidade','gravar','situacao'));
     }
 
     public function limpar()

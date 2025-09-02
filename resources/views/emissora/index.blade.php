@@ -35,7 +35,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-3 col-sm-12">
+                                <div class="col-md-2 col-sm-12">
                                     <div class="form-group">
                                         <label>Cidade</label>
                                         <select class="form-control select2" name="cd_cidade" id="cidade" disabled="disabled">
@@ -44,10 +44,21 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-5 col-sm-12">
+                                <div class="col-md-4 col-sm-12">
                                     <div class="form-group">
                                         <label>Emissora</label>
                                         <input type="text" class="form-control" name="nome" id="nome" placeholder="Emissora" value="{{ Session::get('filtro_nome') }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-12">
+                                    <div class="form-group">
+                                        <label>Situação</label>
+                                        <select class="form-control" name="situacao" id="situacao">
+                                            <option value="">Selecione uma situação</option>
+                                            <option value="1" {{ (Session::get('filtro_situacao') == 1) ? 'selected' : '' }}>Normal</option>
+                                            <option value="2" {{ (Session::get('filtro_situacao') == 2) ? 'selected' : '' }}>Erro</option>
+                                            <option value="3" {{ (Session::get('filtro_situacao') == 3) ? 'selected' : '' }}>Desabilitada</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-md-2 col-sm-12">
@@ -76,7 +87,7 @@
                 @endif
                 <p class="mt-0 mb-1 text-info">Clique sobre o ícone de <strong>Gravação</strong> para pausar/continuar a gravação</p>
                 @if($emissoras->total())
-                    {{ $emissoras->onEachSide(1)->appends(['gravar' => $gravar, 'cd_estado' => $cd_estado, 'cd_cidade' => $cd_cidade, 'nome' => $nome])->links('vendor.pagination.bootstrap-4') }}
+                    {{ $emissoras->onEachSide(1)->appends(['gravar' => $gravar, 'situacao' => $situacao, 'cd_estado' => $cd_estado, 'cd_cidade' => $cd_cidade, 'nome' => $nome])->links('vendor.pagination.bootstrap-4') }}
                     <table id="" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
@@ -136,7 +147,7 @@
                             @endforeach
                         </tbody>
                     </table>
-                    {{ $emissoras->onEachSide(1)->appends(['gravar' => $gravar, 'cd_estado' => $cd_estado, 'cd_cidade' => $cd_cidade, 'nome' => $nome])->links('vendor.pagination.bootstrap-4') }}
+                    {{ $emissoras->onEachSide(1)->appends(['gravar' => $gravar, 'situacao' => $situacao, 'cd_estado' => $cd_estado, 'cd_cidade' => $cd_cidade, 'nome' => $nome])->links('vendor.pagination.bootstrap-4') }}
                 @else
                     <p>Não existem registros para os termos de busca selecionados.</p>
                 @endif
