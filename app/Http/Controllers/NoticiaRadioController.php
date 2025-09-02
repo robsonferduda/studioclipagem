@@ -300,7 +300,7 @@ class NoticiaRadioController extends Controller
 
         $estados = Estado::orderBy('nm_estado')->get();
         $tags = Tag::orderBy('nome')->get();
-        $emissoras = Emissora::orderBy('nome_emissora')->get();
+        $emissoras = Emissora::where('id_situacao', '<>', 3)->orderBy('nome_emissora')->get();
 
         return view('noticia-radio/form', compact('noticia','estados', 'cidades', 'tags','emissoras'));
     }
@@ -314,7 +314,7 @@ class NoticiaRadioController extends Controller
         $cidades = Cidade::where(['cd_estado' => $noticia->cd_estado])->orderBy('nm_cidade')->get();
       
         $tags = Tag::orderBy('nome')->get();
-        $emissoras = Emissora::orderBy('nome_emissora')->get();
+        $emissoras = Emissora::where('id_situacao', '<>', 3)->orderBy('nome_emissora')->get();
 
         return view('noticia-radio/form', compact('noticia','cliente', 'estados', 'cidades','tags','emissoras'));
     }

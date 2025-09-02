@@ -82,6 +82,7 @@
                                     <option value="">Selecione uma situação</option>
                                     <option value="1" {{ ($emissora and $emissora->id_situacao == "1") ? 'selected' : '' }}>Normal</option>
                                     <option value="2" {{ ($emissora and $emissora->id_situacao == "2") ? 'selected' : '' }}>Erro</option>
+                                    <option value="3" {{ ($emissora and $emissora->id_situacao == "3") ? 'selected' : '' }}>Desabilitada</option>
                                 </select>
                             </div>
                         </div>
