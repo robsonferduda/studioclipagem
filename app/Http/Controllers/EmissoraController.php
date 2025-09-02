@@ -39,22 +39,21 @@ class EmissoraController extends Controller
         $dt_final = date('Y-m-d')." 23:59:59";
         $expressao = "";
         $fonte = 0;
-        $arquivos = array();
-
+        
         if($request->fl_gravacao){
             $gravar = ($request->fl_gravacao == 'gravando') ? 1 : 2;
         }else{
             $gravar = null;
         }
 
-        $nome = ($request->nome) ? $request->nome : null;  
-        $cd_cidade = ($request->cd_cidade) ? $request->cd_cidade : null;    
-        $cd_estado = ($request->cd_estado) ? $request->cd_estado : null;   
-
         Session::put('filtro_estado', $cd_estado);
         Session::put('filtro_cidade', $cd_cidade);
         Session::put('filtro_gravar', $gravar);
-        Session::put('filtro_nome', $nome);     
+        Session::put('filtro_nome', $nome);         
+
+        $nome = ($request->nome) ? $request->nome : null;  
+        $cd_cidade = ($request->cd_cidade) ? $request->cd_cidade : null;    
+        $cd_estado = ($request->cd_estado) ? $request->cd_estado : null;       
 
         $emissora = Emissora::query();
 
@@ -80,7 +79,7 @@ class EmissoraController extends Controller
 
         $emissoras = $emissora->orderBy('ds_emissora')->paginate(10);
 
-        return view('emissora/index', compact('emissoras','codigo','descricao','estados'));
+        return view('emissora/index', compact('emissoras','codigo','descricao','estados','gravar'));
     }
 
     public function valorSegundo($id)
