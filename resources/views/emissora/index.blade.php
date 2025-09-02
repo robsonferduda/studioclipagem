@@ -53,10 +53,10 @@
                                 <div class="col-md-2 col-sm-12">
                                     <div class="form-group">
                                         <label>Gravação</label>
-                                        <select class="form-control select2" name="fl_gravacao" id="fl_gravacao">
+                                        <select class="form-control" name="gravar" id="gravar">
                                             <option value="">Selecione uma opção</option>
-                                            <option value="1" {{ (Session::get('filtro_gravar') === 1) ? 'selected' : '' }}>Gravando</option>
-                                            <option value="2" {{ (Session::get('filtro_gravar') === 2) ? 'selected' : '' }}>Não Gravando</option>
+                                            <option value="1" {{ (Session::get('filtro_gravar') == 1) ? 'selected' : '' }}>Gravando</option>
+                                            <option value="2" {{ (Session::get('filtro_gravar') == 2) ? 'selected' : '' }}>Não Gravando</option>
                                         </select>
                                     </div>
                                 </div>

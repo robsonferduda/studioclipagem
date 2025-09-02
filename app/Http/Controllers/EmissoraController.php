@@ -46,6 +46,8 @@ class EmissoraController extends Controller
             $gravar = null;
         }
 
+        dd($gravar);
+
         Session::put('filtro_estado', $cd_estado);
         Session::put('filtro_cidade', $cd_cidade);
         Session::put('filtro_gravar', $gravar);
@@ -182,8 +184,8 @@ class EmissoraController extends Controller
 
         $estados = Estado::orderBy('nm_estado')->get();
 
-        if($request->fl_gravacao){
-            $gravar = ($request->fl_gravacao == 'gravando') ? 1 : 2;
+        if($request->gravar){
+            $gravar = $request->gravar;
         }else{
             $gravar = null;
         }
