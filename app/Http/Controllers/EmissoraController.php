@@ -232,7 +232,7 @@ class EmissoraController extends Controller
             return $q->where('nome_emissora','ilike','%'.Session::get('filtro_nome').'%');
         });
 
-        $emissoras = $emissora->orderBy('id_situacao','DESC')->orderBy('nome_emissora')->paginate(20);        
+        $emissoras = $emissora->orderBy('id_situacao','ASC')->orderBy('nome_emissora')->paginate(20);        
 
         return view('emissora/index', compact('emissoras','nome','estados','cd_estado','cd_cidade','gravar','situacao'));
     }
