@@ -79,6 +79,8 @@ class EmissoraController extends Controller
 
         $emissoras = $emissora->orderBy('ds_emissora')->paginate(10);
 
+        $gravar = $request->fl_gravacao;
+
         return view('emissora/index', compact('emissoras','codigo','descricao','estados','gravar'));
     }
 
