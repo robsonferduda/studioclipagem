@@ -331,6 +331,21 @@
             $("#btn_enviar").trigger("click");
         });
 
+        $('#valor_retorno').on('input', function() {
+            let v = $(this).val().replace(/\D/g, '');
+            v = (v / 100).toFixed(2) + '';
+            v = v.replace('.', ',');
+            v = v.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            $(this).val(v);
+        });
+
+        // Se já vier preenchido do banco, formate ao carregar
+        let valor = $('#valor_retorno').val();
+        if (valor && !valor.includes(',')) {
+            valor = parseFloat(valor).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            $('#valor_retorno').val(valor);
+        }
+
         //Inicializar o Dropzone
         var myDropzone = new Dropzone("#dropzone", {
             url: host + "/noticia-impressa/upload", // URL para onde os arquivos serão enviados

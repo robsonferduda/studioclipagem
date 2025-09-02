@@ -1564,8 +1564,15 @@
                 html += '<tbody>';
 
                 // Notícias
+                var noticiasProcessadas = 0;
+                var noticiasRenderizadas = 0;
+                
+                console.log('🔍 DEBUG gerarTabelaTipoMidia - tipo:', tipo, 'total notícias recebidas:', noticiasArray.length);
+                
                 noticiasArray.forEach(function(noticia) {
-                    if (noticia && noticia.id) {
+                    noticiasProcessadas++;
+                    if (noticia && (noticia.id !== undefined && noticia.id !== null)) {
+                        noticiasRenderizadas++;
                         html += '<tr class="noticia-row" data-noticia-id="' + noticia.id + '" data-tipo="' + tipo + '" style="cursor: pointer;" onclick="toggleNoticiaDetalhes(' + noticia.id + ', \'' + tipo + '\', this)">';
                         html += '<td onclick="event.stopPropagation()"><input type="checkbox" class="selecionar-noticia checkbox-table" data-tipo="' + tipo + '" data-id="' + noticia.id + '" onchange="atualizarContadores()"></td>';
                         
@@ -1604,8 +1611,13 @@
                         
                         html += '<td class="text-center"><i class="fa fa-chevron-down expand-icon" data-noticia-id="' + noticia.id + '"></i></td>';
                         html += '</tr>';
+                    } else {
+                        // Log notícias que estão sendo filtradas
+                        console.log('⚠️ DEBUG Notícia filtrada - tipo:', tipo, 'noticia:', noticia);
                     }
                 });
+                
+                console.log('📊 DEBUG Estatísticas - tipo:', tipo, 'processadas:', noticiasProcessadas, 'renderizadas:', noticiasRenderizadas, 'filtradas:', (noticiasProcessadas - noticiasRenderizadas));
 
                 html += '</tbody>';
                 html += '</table>';
@@ -1722,34 +1734,7 @@
 
         
 
-        // Obter notícias selecionadas
-        function obterNoticiasSelecionadas() {
-            var selecionadas = {
-                web: [],
-                tv: [],
-                radio: [],
-                impresso: []
-            };
-
-            $('.selecionar-noticia:checked').each(function() {
-                var tipo = $(this).data('tipo');
-                var id = $(this).data('id');
-                selecionadas[tipo].push(id);
-            });
-
-            return selecionadas;
-        }
-
-        // Atualizar contadores
-        function atualizarContadores() {
-            try {
-                var totalSelecionadas = $('.selecionar-noticia:checked').length;
-                $('#totalSelecionadas').text(totalSelecionadas);
-                $('#qtdSelecionadasBtn').text(totalSelecionadas);
-            } catch (e) {
-                console.error('Erro ao atualizar contadores:', e);
-            }
-        }
+        // As funções obterNoticiasSelecionadas e atualizarContadores foram movidas para o escopo global
 
         // Inicializar contadores
         $('#totalNoticias').text(0);
@@ -1828,55 +1813,7 @@
             $('#modalGerenciarTags').modal('show');
         }
 
-        // Carregar tags das notícias selecionadas
-        function carregarTagsNoticiaSelecionadas() {
-            var noticiasSelecionadas = obterNoticiasSelecionadas();
-            
-            $('#tagsExistentes').html('<div class="text-center"><i class="fa fa-spinner fa-spin"></i> Carregando tags...</div>');
-            
-            $.ajax({
-                url: window.host + '/cliente/tags/noticias',
-                type: 'POST',
-                data: {
-                    ids_web: noticiasSelecionadas.web,
-                    ids_tv: noticiasSelecionadas.tv,
-                    ids_radio: noticiasSelecionadas.radio,
-                    ids_impresso: noticiasSelecionadas.impresso,
-                    _token: $('meta[name="csrf-token"]').attr('content')
-                },
-                dataType: 'json',
-                timeout: 15000,
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function(response) {
-                    console.log('Tags das notícias selecionadas:', response);
-                    
-                    var tagsHtml = '';
-                    
-                    if (response && Array.isArray(response) && response.length > 0) {
-                        response.forEach(function(tag) {
-                            tagsHtml += '<span class="tag-badge-removivel" data-tag="' + tag + '">';
-                            tagsHtml += '<i class="fa fa-tag mr-1"></i>' + tag + ' <span class="remove-tag" onclick="removerTagNoticiaSelecionadas(\'' + tag + '\')">×</span>';
-                            tagsHtml += '</span>';
-                        });
-                    } else {
-                        tagsHtml = '<div class="text-muted text-center"><i class="fa fa-info-circle mr-1"></i>Nenhuma tag encontrada nas notícias selecionadas</div>';
-                    }
-                    
-                    $('#tagsExistentes').html(tagsHtml);
-                },
-                error: function(xhr, status, error) {
-                    console.error('Erro ao carregar tags das notícias:', {
-                        status: status,
-                        error: error,
-                        xhr: xhr.responseText
-                    });
-                    
-                    $('#tagsExistentes').html('<div class="alert alert-danger">Erro ao carregar tags. Tente novamente.</div>');
-                }
-            });
-        }
+        // A função carregarTagsNoticiaSelecionadas foi movida para o escopo global
 
         // Adicionar tag às notícias selecionadas
         function adicionarTagNoticiaSelecionadas() {
@@ -1940,7 +1877,87 @@
 
     });
 
-    // Funções globais
+    // ===== FUNÇÕES GLOBAIS =====
+
+    // Obter notícias selecionadas
+    function obterNoticiasSelecionadas() {
+        var selecionadas = {
+            web: [],
+            tv: [],
+            radio: [],
+            impresso: []
+        };
+
+        $('.selecionar-noticia:checked').each(function() {
+            var tipo = $(this).data('tipo');
+            var id = $(this).data('id');
+            selecionadas[tipo].push(id);
+        });
+
+        return selecionadas;
+    }
+
+    // Atualizar contadores
+    function atualizarContadores() {
+        try {
+            var totalSelecionadas = $('.selecionar-noticia:checked').length;
+            $('#totalSelecionadas').text(totalSelecionadas);
+            $('#qtdSelecionadasBtn').text(totalSelecionadas);
+        } catch (e) {
+            console.error('Erro ao atualizar contadores:', e);
+        }
+    }
+
+    // Carregar tags das notícias selecionadas
+    function carregarTagsNoticiaSelecionadas() {
+        var noticiasSelecionadas = obterNoticiasSelecionadas();
+        
+        $('#tagsExistentes').html('<div class="text-center"><i class="fa fa-spinner fa-spin"></i> Carregando tags...</div>');
+        
+        $.ajax({
+            url: window.host + '/cliente/tags/noticias',
+            type: 'POST',
+            data: {
+                ids_web: noticiasSelecionadas.web,
+                ids_tv: noticiasSelecionadas.tv,
+                ids_radio: noticiasSelecionadas.radio,
+                ids_impresso: noticiasSelecionadas.impresso,
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            dataType: 'json',
+            timeout: 15000,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                console.log('Tags das notícias selecionadas:', response);
+                
+                var tagsHtml = '';
+                
+                if (response && Array.isArray(response) && response.length > 0) {
+                    response.forEach(function(tag) {
+                        tagsHtml += '<span class="tag-badge-removivel" data-tag="' + tag + '">';
+                        tagsHtml += '<i class="fa fa-tag mr-1"></i>' + tag + ' <span class="remove-tag" onclick="removerTagNoticiaSelecionadas(\'' + tag + '\')">×</span>';
+                        tagsHtml += '</span>';
+                    });
+                } else {
+                    tagsHtml = '<div class="text-muted text-center"><i class="fa fa-info-circle mr-1"></i>Nenhuma tag encontrada nas notícias selecionadas</div>';
+                }
+                
+                $('#tagsExistentes').html(tagsHtml);
+            },
+            error: function(xhr, status, error) {
+                console.error('Erro ao carregar tags das notícias:', {
+                    status: status,
+                    error: error,
+                    xhr: xhr.responseText
+                });
+                
+                $('#tagsExistentes').html('<div class="alert alert-danger">Erro ao carregar tags. Tente novamente.</div>');
+            }
+        });
+    }
+
     function selecionarTodas() {
         $('.selecionar-noticia').prop('checked', true);
         $('.selecionar-todas-web, .selecionar-todas-tv, .selecionar-todas-radio, .selecionar-todas-impresso').prop('checked', true);
@@ -1964,11 +1981,7 @@
         atualizarContadores();
     }
 
-    function atualizarContadores() {
-        var totalSelecionadas = $('.selecionar-noticia:checked').length;
-        $('#totalSelecionadas').text(totalSelecionadas);
-        $('#qtdSelecionadasBtn').text(totalSelecionadas);
-    }
+    // Função atualizarContadores já existe no escopo global acima
 
     function fecharTodasExpandidas() {
         // Contar quantas notícias estão expandidas
@@ -2075,6 +2088,8 @@
                         detalhesHtml += '<p>' + (noticia.programa || 'N/A') + '</p>';
                         detalhesHtml += '<h6>Horário:</h6>';
                         detalhesHtml += '<p>' + (noticia.horario || 'N/A') + '</p>';
+                        detalhesHtml += '<h6>Duração:</h6>';
+                        detalhesHtml += '<p>' + (noticia.duracao || 'N/A') + '</p>';
                     }
                     
                     if (window.mostrarRetornoMidia) {

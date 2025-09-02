@@ -25,3 +25,4 @@ worker.log
 /public/video/noticia-tv
 /public/img/clientes
 /public/img/impresso-img
+venv/

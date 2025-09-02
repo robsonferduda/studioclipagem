@@ -40,7 +40,9 @@ $(document).ready(function() {
         // Truncar o valor com duas casas decimais
         //retorno = retorno.toFixed(2);
 
-        $("#valor_retorno").val(retorno);
+        $("#valor_retorno").val(
+            parseFloat(retorno).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})
+        );
     });
 
     //Inicializa o combo de clientes
