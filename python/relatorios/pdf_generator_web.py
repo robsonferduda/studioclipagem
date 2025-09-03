@@ -1,6 +1,6 @@
 import os
 import tempfile
-import paramiko
+import requests
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -26,7 +26,7 @@ class PDFGeneratorWeb:
         """Inicializa o gerador de PDF para web"""
         self.styles = getSampleStyleSheet()
         self._setup_custom_styles()
-        self._setup_ssh_config()
+        self._setup_s3_config()
         
     def _setup_custom_styles(self):
         """Configura estilos personalizados para o PDF"""
@@ -106,90 +106,81 @@ class PDFGeneratorWeb:
             fontName='Helvetica-Oblique'
         )
     
-    def _setup_ssh_config(self):
-        """Configura as informações de conexão SSH"""
-        self.ssh_host = 'ubuntu@ec2-54-91-187-59.compute-1.amazonaws.com'
-        self.ssh_key_path = 'cadu.pem'
-        self.remote_image_path = '/var/www/studioclipagem/public/img/noticia-web/'
+    def _setup_s3_config(self):
+        """Configura as informações do S3"""
+        self.s3_bucket = 'docmidia-files'
+        self.s3_base_url = 'https://docmidia-files.s3.amazonaws.com'
+        self.screenshot_path = 'screenshot'
     
-    def _download_image_from_scp(self, ds_caminho_img):
+    def _download_image_from_s3(self, noticia_id):
         """
-        Baixa a imagem do servidor via SSH/SCP usando paramiko para uma notícia específica (web)
+        Baixa a imagem do S3 para uma notícia específica (web)
         
         Args:
-            ds_caminho_img: Nome do arquivo de imagem (ex: "35442173.jpg")
+            noticia_id: ID da notícia
             
         Returns:
             tuple: (caminho_arquivo_temporario, sucesso)
         """
-        ssh_client = None
-        sftp_client = None
-        
         try:
-            if not ds_caminho_img or ds_caminho_img.strip() == '':
-                print(f"❌ Nome do arquivo de imagem não informado")
+            if not noticia_id:
+                print(f"❌ ID da notícia não informado")
                 return None, False
             
-            print(f"🔍 Tentando baixar imagem web via SSH/SCP: {ds_caminho_img}")
+            print(f"🔍 Tentando baixar screenshot do S3 para notícia ID: {noticia_id}")
             
-            # Constrói o caminho completo no servidor remoto
-            remote_file_path = f"{self.remote_image_path}{ds_caminho_img}"
+            # Constrói a URL da imagem no S3
+            s3_url = f"{self.s3_base_url}/{self.screenshot_path}/screenshot_noticia_{noticia_id}.jpg"
+            print(f"🔗 URL do S3: {s3_url}")
             
-            # Cria arquivo temporário com a extensão correta
-            file_extension = os.path.splitext(ds_caminho_img)[1]
-            temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=file_extension)
+            # Cria arquivo temporário
+            temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.jpg')
             temp_file.close()  # Fecha o arquivo para permitir escrita
             
-            print(f"🔄 Conectando via SSH: {self.ssh_host}")
+            print(f"🔄 Fazendo download da imagem...")
             
-            # Configura cliente SSH
-            ssh_client = paramiko.SSHClient()
-            ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            # Baixa a imagem via HTTP
+            response = requests.get(s3_url, timeout=30, stream=True)
             
-            # Conecta usando a chave privada
-            private_key = paramiko.RSAKey.from_private_key_file(self.ssh_key_path)
-            ssh_client.connect(
-                hostname='ec2-54-91-187-59.compute-1.amazonaws.com',
-                username='ubuntu',
-                pkey=private_key,
-                timeout=60,
-                banner_timeout=60
-            )
+            if response.status_code == 200:
+                # Salva a imagem no arquivo temporário
+                with open(temp_file.name, 'wb') as f:
+                    for chunk in response.iter_content(chunk_size=8192):
+                        f.write(chunk)
+                
+                # Verifica se o arquivo foi baixado com sucesso
+                if os.path.exists(temp_file.name) and os.path.getsize(temp_file.name) > 0:
+                    print(f"✅ Screenshot baixado com sucesso do S3: {temp_file.name} ({os.path.getsize(temp_file.name)} bytes)")
+                    return temp_file.name, True
+                else:
+                    print(f"❌ Arquivo baixado está vazio: {temp_file.name}")
+                    try:
+                        os.unlink(temp_file.name)
+                    except:
+                        pass
+                    return None, False
             
-            print(f"✅ Conectado via SSH")
-            
-            # Cria cliente SFTP
-            sftp_client = ssh_client.open_sftp()
-            
-            print(f"🔄 Baixando arquivo: {remote_file_path} -> {temp_file.name}")
-            
-            # Baixa o arquivo
-            sftp_client.get(remote_file_path, temp_file.name)
-            
-            # Verifica se o arquivo foi baixado com sucesso
-            if os.path.exists(temp_file.name) and os.path.getsize(temp_file.name) > 0:
-                print(f"✅ Imagem web baixada com sucesso via SSH/SCP: {temp_file.name} ({os.path.getsize(temp_file.name)} bytes)")
-                return temp_file.name, True
-            else:
-                print(f"❌ Arquivo baixado está vazio ou não existe: {temp_file.name}")
-                # Remove o arquivo temporário vazio
+            elif response.status_code == 404:
+                print(f"❌ Screenshot não encontrado no S3 (404): {s3_url}")
                 try:
                     os.unlink(temp_file.name)
                 except:
                     pass
                 return None, False
             
-        except paramiko.AuthenticationException:
-            print(f"❌ Erro de autenticação SSH")
-            return None, False
-        except paramiko.SSHException as e:
-            print(f"❌ Erro SSH: {str(e)}")
-            return None, False
-        except FileNotFoundError as e:
-            print(f"❌ Arquivo não encontrado no servidor: {remote_file_path}")
+            else:
+                print(f"❌ Erro HTTP {response.status_code} ao acessar S3: {s3_url}")
+                try:
+                    os.unlink(temp_file.name)
+                except:
+                    pass
+                return None, False
+            
+        except requests.exceptions.RequestException as e:
+            print(f"❌ Erro de requisição ao S3: {str(e)}")
             return None, False
         except Exception as e:
-            print(f"❌ Erro ao baixar imagem web via SSH/SCP para arquivo {ds_caminho_img}: {str(e)}")
+            print(f"❌ Erro ao baixar screenshot do S3 para notícia {noticia_id}: {str(e)}")
             # Remove o arquivo temporário em caso de erro
             try:
                 if 'temp_file' in locals() and hasattr(temp_file, 'name'):
@@ -197,16 +188,6 @@ class PDFGeneratorWeb:
             except:
                 pass
             return None, False
-        finally:
-            # Fecha conexões
-            try:
-                if sftp_client:
-                    sftp_client.close()
-                if ssh_client:
-                    ssh_client.close()
-                print(f"🔒 Conexões SSH fechadas")
-            except:
-                pass
     
     def _resize_image_for_pdf(self, image_path, max_width=4*inch, max_height=3*inch):
         """
@@ -284,7 +265,7 @@ class PDFGeneratorWeb:
     
     def generate_web_report(self, noticias_data, cliente_nome, data_inicio, data_fim, output_path):
         """
-        Gera relatório PDF específico para notícias web com imagens do S3
+        Gera relatório PDF específico para notícias web com screenshots do S3
         
         Args:
             noticias_data: Lista de notícias web
@@ -356,12 +337,12 @@ class PDFGeneratorWeb:
                     if data_noticia:
                         elements.append(Paragraph(f"Data: {data_noticia}", self.data_style))
                     
-                    # Tenta baixar e adicionar imagem via SCP
-                    ds_caminho_img = noticia.get('ds_caminho_img')
-                    if ds_caminho_img:
+                    # Tenta baixar e adicionar screenshot do S3
+                    noticia_id = noticia.get('id')
+                    if noticia_id:
                         try:
-                            print(f"🔄 Tentando baixar imagem para notícia {noticia.get('id')}: {ds_caminho_img}...")
-                            image_path, success = self.remote_image_path+ds_caminho_img, True
+                            print(f"🔄 Tentando baixar screenshot para notícia ID {noticia_id}...")
+                            image_path, success = self._download_image_from_s3(noticia_id)
 
                             if success and image_path:
                                 try:
@@ -417,19 +398,19 @@ class PDFGeneratorWeb:
                                     temp_files.append(image_path)
                                     
                                 except Exception as e:
-                                    print(f"❌ Erro ao processar imagem {ds_caminho_img}: {str(e)}")
+                                    print(f"❌ Erro ao processar screenshot para notícia {noticia_id}: {str(e)}")
                                     import traceback
                                     traceback.print_exc()
                                     # Adiciona mensagem de erro no lugar da imagem
-                                    elements.append(Paragraph("❌ Imagem não disponível", self.data_style))
+                                    elements.append(Paragraph("❌ Screenshot não disponível", self.data_style))
                             else:
-                                # Adiciona mensagem quando não há imagem
-                                elements.append(Paragraph("📷 Sem imagem", self.data_style))
+                                # Adiciona mensagem quando não há screenshot
+                                elements.append(Paragraph("📷 Screenshot não encontrado no S3", self.data_style))
                         except Exception as e:
-                            print(f"❌ Erro geral ao processar imagem {ds_caminho_img}: {str(e)}")
+                            print(f"❌ Erro geral ao processar screenshot para notícia {noticia_id}: {str(e)}")
                             import traceback
                             traceback.print_exc()
-                            elements.append(Paragraph("❌ Erro ao processar imagem", self.data_style))
+                            elements.append(Paragraph("❌ Erro ao processar screenshot", self.data_style))
                     
                     elements.append(Spacer(1, 20))
                     

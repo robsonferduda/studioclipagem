@@ -2161,19 +2161,14 @@
                             
                         case 'web':
                             detalhesHtml += '<h6><i class="fa fa-globe text-primary"></i> Imagem:</h6>';
-                            if (noticia.midia) {
-                                detalhesHtml += '<div class="midia-container">';
-                                detalhesHtml += '<a href="' + window.host + '/noticia-web/imagem/download/' + noticia.id + '" target="_blank">';
-                                detalhesHtml += '<img src="' + window.host + '/img/noticia-web/' + noticia.midia + '" alt="Imagem da notícia" class="img-fluid" style="width: 100%; height: auto; max-height: 300px; object-fit: contain;">';
-                                detalhesHtml += '</a>';
-                                detalhesHtml += '</div>';
-                                detalhesHtml += '<small class="text-muted d-block mt-2"><i class="fa fa-info-circle"></i> Clique na imagem para visualizar em tamanho completo</small>';
-                            } else {
-                                detalhesHtml += '<div class="midia-placeholder">';
-                                detalhesHtml += '<i class="fa fa-image"></i>';
-                                detalhesHtml += '<span>Notícia sem print vinculado</span>';
-                                detalhesHtml += '</div>';
-                            }
+                            // URL da imagem no S3 usando o padrão screenshot_noticia_{id}.jpg
+                            var s3ImageUrl = 'https://docmidia-files.s3.amazonaws.com/screenshot/screenshot_noticia_' + noticia.id + '.jpg';
+                            detalhesHtml += '<div class="midia-container">';
+                            detalhesHtml += '<a href="' + s3ImageUrl + '" target="_blank">';
+                            detalhesHtml += '<img src="' + s3ImageUrl + '" alt="Screenshot da notícia" class="img-fluid" style="width: 100%; height: auto; max-height: 300px; object-fit: contain;" onerror="this.parentElement.parentElement.innerHTML=\'<div class=&quot;midia-placeholder&quot;><i class=&quot;fa fa-image&quot;></i><span>Screenshot não disponível</span></div>\'">';
+                            detalhesHtml += '</a>';
+                            detalhesHtml += '</div>';
+                            detalhesHtml += '<small class="text-muted d-block mt-2"><i class="fa fa-info-circle"></i> Clique na imagem para visualizar em tamanho completo (S3)</small>';
                             break;
                     }
                     
