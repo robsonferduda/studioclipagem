@@ -108,8 +108,22 @@
                                             <input class="form-check-input" type="checkbox" {{ ($monitoramento->fl_tv) ? 'checked' : '' }} name="fl_tv" id="fl_tv" value="true">
                                             TV
                                             <span class="form-check-sign"></span>
-                                        </label>
-                                    </div>                                   
+                                        </label>                                        
+                                    </div>     
+                                    <div class="form-check float-left mr-3">
+                                        <label class="form-check-label mt-2">
+                                            <input class="form-check-input" type="checkbox" {{ ($monitoramento->fl_instagram) ? 'checked' : '' }} name="fl_instagram" id="fl_instagram" value="true">
+                                            INSTAGRAM
+                                            <span class="form-check-sign"></span>
+                                        </label>                                        
+                                    </div>   
+                                    <div class="form-check float-left mr-3">
+                                        <label class="form-check-label mt-2">
+                                            <input class="form-check-input" type="checkbox" {{ ($monitoramento->fl_facebook) ? 'checked' : '' }} name="fl_facebook" id="fl_facebook" value="true">
+                                            FACEBOOK
+                                            <span class="form-check-sign"></span>
+                                        </label>                                        
+                                    </div>                              
                                 </div>
                                 <div class="col-md-12 col-sm-12 mt-1">
                                     <p class="mb-0">

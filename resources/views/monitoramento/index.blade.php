@@ -44,6 +44,8 @@
                                             <option value="fl_radio" {{ ($midia === 'fl_radio') ? 'selected' : '' }}>Rádio</option>
                                             <option value="fl_tv" {{ ($midia === 'fl_tv') ? 'selected' : '' }}>TV</option>
                                             <option value="fl_web" {{ ($midia === 'fl_web') ? 'selected' : '' }}>Web</option>
+                                            <option value="fl_instagram" {{ ($midia === 'fl_instagram') ? 'selected' : '' }}>Instagram</option>
+                                            <option value="fl_facebook" {{ ($midia === 'fl_facebook') ? 'selected' : '' }}>Facebook</option>
                                         </select>
                                     </div>
                                 </div>

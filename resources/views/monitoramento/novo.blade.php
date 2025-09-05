@@ -93,6 +93,20 @@
                                             <span class="form-check-sign"></span>
                                         </label>
                                     </div>
+                                    <div class="form-check float-left mr-3">
+                                        <label class="form-check-label mt-2">
+                                            <input class="form-check-input" type="checkbox" name="fl_instagram" id="fl_instagram" value="true">
+                                            INSTAGRAM
+                                            <span class="form-check-sign"></span>
+                                        </label>
+                                    </div>
+                                    <div class="form-check float-left mr-3">
+                                        <label class="form-check-label mt-2">
+                                            <input class="form-check-input" type="checkbox" name="fl_facebook" id="fl_facebook" value="true">
+                                            FACEBOOK
+                                            <span class="form-check-sign"></span>
+                                        </label>
+                                    </div>
                                 </div>
                                 <div class="col-md-12 msg-alerta">
 
