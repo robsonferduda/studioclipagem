@@ -3395,7 +3395,7 @@
     }
 
     // Função para obter fontes selecionadas
-    function getSelectedFontes() {
+    function getSelectedFontes() { 
         var selectedFontes = {
             web: [],
             impresso: [],
