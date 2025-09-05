@@ -409,7 +409,7 @@ class NoticiaWebController extends Controller
             $localFile = public_path('img/noticia-web/' . $noticia->ds_caminho_img);
 
             if (!empty($noticia->ds_caminho_img) && file_exists($localFile)) {
-                $s3Key = 'screenshot/screenshot_noticia_'.$noticia->id.'.png';
+                $s3Key = 'screenshot/screenshot_noticia_'.$noticia->id.'.jpg';
 
                 // Define visibilidade pública (ajuste conforme sua policy)
                 Storage::disk('s3')->put($s3Key, file_get_contents($localFile));
@@ -530,7 +530,7 @@ class NoticiaWebController extends Controller
             $localFile = public_path('img/noticia-web/' . $noticia->ds_caminho_img);
 
             if (!empty($noticia->ds_caminho_img) && file_exists($localFile)) {
-                $s3Key = 'screenshot/screenshot_noticia_'.$noticia->id.'.png';
+                $s3Key = 'screenshot/screenshot_noticia_'.$noticia->id.'.jpg';
 
                 // Define visibilidade pública (ajuste conforme sua policy)
                 Storage::disk('s3')->put($s3Key, file_get_contents($localFile));
