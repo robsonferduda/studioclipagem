@@ -523,7 +523,11 @@ class NoticiaWebController extends Controller
 
         $request->merge(['cd_usuario' => Auth::user()->id]);
 
-        $localFile = public_path('img/noticia-web/' . $noticia->ds_caminho_img);
+        try {
+
+            $noticia->update($request->all());
+
+            $localFile = public_path('img/noticia-web/' . $noticia->ds_caminho_img);
 
             if (!empty($noticia->ds_caminho_img) && file_exists($localFile)) {
                 $s3Key = 'screenshot/screenshot_noticia_'.$noticia->id.'.png';
@@ -535,10 +539,6 @@ class NoticiaWebController extends Controller
                 $noticia->path_screenshot = $s3Key;
                 $noticia->save();
             }
-
-        try {
-
-            $noticia->update($request->all());
 
             if($noticia){
 
