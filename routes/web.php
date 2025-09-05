@@ -115,6 +115,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('cliente/area/{id}/situacao','ClienteController@alteraSituacao');
 	Route::post('cliente/area/adicionar','ClienteController@adicionarArea');
 	Route::get('cliente/flags-midia/{id}', 'ClienteController@flagsMidia');
+	Route::get('cliente/configuracoes/{id}', 'ClienteController@configuracoes');
 	
 	Route::resource('cliente','ClienteController');
 
@@ -122,6 +123,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('api/clientes','ClienteController@getClientesApi');
 	Route::get('api/cliente/validar','ClienteController@validarCliente');
 	Route::get('api/cliente/areas','ClienteController@getAreasClienteRelatorio');
+	Route::get('api/cliente/{id}/areas','ClienteController@getAreasClienteEspecifico');
 
 	Route::match(array('GET', 'POST'),'coletas','ColetaController@index');
 
@@ -466,6 +468,7 @@ Route::middleware(['web'])->group(function () {
 
 	Route::get('pdf','RelatorioController@pdf');
 	Route::match(array('GET', 'POST'),'relatorios','ClienteController@gerarRelatorios');
+	Route::get('relatorios/unificado','RelatorioController@unificado');
 	Route::get('relatorios/clipping','RelatorioController@clipping');
 	Route::get('relatorios/clipping/{arquivo}','RelatorioController@getClipping');
 

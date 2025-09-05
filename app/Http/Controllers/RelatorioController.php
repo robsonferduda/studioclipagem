@@ -191,6 +191,45 @@ class RelatorioController extends Controller
         return Storage::disk('public')->download('relatorios-pdf/'.$arquivo); 
     }
 
+    public function unificado()
+    {
+        Session::put('url','relatorios-unificado');
+
+        // Buscar todos os clientes para administradores
+        $clientes = Cliente::where('fl_ativo', true)
+                           ->orderBy('nome')
+                           ->get();
+
+        $dt_inicial = date('d/m/Y', strtotime('-7 days'));
+        $dt_final = date('d/m/Y');
+
+        // Inicializar flags como false (serão carregadas via AJAX após selecionar cliente)
+        $fl_areas = false;
+        $fl_sentimento = false;
+        $fl_retorno_midia = false;
+        $fl_print = false;
+        $fl_web = false;
+        $fl_tv = false;
+        $fl_radio = false;
+        $fl_impresso = false;
+        $cliente = null;
+
+        return view('relatorio.unificado', compact(
+            'clientes',
+            'dt_inicial',
+            'dt_final',
+            'fl_areas',
+            'fl_sentimento',
+            'fl_retorno_midia',
+            'fl_print',
+            'fl_web',
+            'fl_tv',
+            'fl_radio',
+            'fl_impresso',
+            'cliente'
+        ));
+    }
+
     function pdfIndividual($tipo, $id)
     {
         $nome_arquivo = date("YmdHis").'_'.$tipo.'_'.$id.'.pdf';

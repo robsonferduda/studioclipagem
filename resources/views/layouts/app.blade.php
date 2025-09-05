@@ -488,6 +488,15 @@
                     </a>
                   </li>
                    @endpermission
+
+                @role('administradores')
+                  <li class="{{ (Session::has('url') and Session::get('url') == 'relatorios-unificado') ? 'active' : '' }}">
+                    <a href="{{ url('relatorios/unificado') }}">
+                    <i class="fa fa-files-o"></i>
+                    <p>Relatórios Unificados</p>
+                    </a>
+                  </li>
+                @endrole
                 
               
                 <hr/>
