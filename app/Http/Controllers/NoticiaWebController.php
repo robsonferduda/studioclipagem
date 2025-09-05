@@ -406,6 +406,19 @@ class NoticiaWebController extends Controller
 
             $noticia = NoticiaWeb::create($request->all());
 
+            $localFile = public_path('img/noticia-web/' . $noticia->ds_caminho_img);
+
+            if (!empty($noticia->ds_caminho_img) && file_exists($localFile)) {
+                $s3Key = 'screenshot/screenshot_noticia_'.$noticia->id.'.jpg';
+
+                // Define visibilidade pública (ajuste conforme sua policy)
+                Storage::disk('s3')->put($s3Key, file_get_contents($localFile));
+
+                // Atualiza o caminho no banco para apontar ao S3
+                $noticia->path_screenshot = $s3Key;
+                $noticia->save();
+            }
+
             if($noticia){
                 
                 $request->merge(['id_noticia_web' => $noticia->id]);
@@ -513,6 +526,19 @@ class NoticiaWebController extends Controller
         try {
 
             $noticia->update($request->all());
+
+            $localFile = public_path('img/noticia-web/' . $noticia->ds_caminho_img);
+
+            if (!empty($noticia->ds_caminho_img) && file_exists($localFile)) {
+                $s3Key = 'screenshot/screenshot_noticia_'.$noticia->id.'.jpg';
+
+                // Define visibilidade pública (ajuste conforme sua policy)
+                Storage::disk('s3')->put($s3Key, file_get_contents($localFile));
+
+                // Atualiza o caminho no banco para apontar ao S3
+                $noticia->path_screenshot = $s3Key;
+                $noticia->save();
+            }
 
             if($noticia){
 
@@ -777,9 +803,6 @@ class NoticiaWebController extends Controller
         $file_name = time().'.'.$extension;
         $file_noticia = ($request->id) ? $request->id.'.'.$extension : $file_name;
 
-       //dd($file_noticia);
-
-        //$image->move(public_path('img/noticia-impressa/recorte'),$file_name);
         $image->move(public_path('img/noticia-web'),$file_noticia);
 
         if($request->id){

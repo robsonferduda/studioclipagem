@@ -175,11 +175,9 @@
                                         <textarea class="form-control" name="conteudo" id="conteudo" rows="10" required>{{ (empty($noticia and $noticia->conteudo)) ? old('conteudo') : $noticia->conteudo->conteudo }}</textarea>
                                     </div>
                                 </div> 
-                                @if($noticia and $noticia->ds_caminho_img)    
+                                @if($noticia and $noticia->path_screenshot)    
                                     <div class="col-md-3">
-                                        @if($noticia->ds_caminho_img)
-                                                <img src="{{ asset('img/noticia-web/'.$noticia->ds_caminho_img) }}" alt="Página {{ $noticia->ds_caminho_img }}">
-                                        @elseif($noticia->path_screenshot)                                         
+                                        @if($noticia->path_screenshot)                                         
                                             <img src="{{ Storage::disk('s3')->temporaryUrl($noticia->path_screenshot, '+30 minutes') }}" 
                                                 alt="Print notícia {{ $noticia->id }}" 
                                                 class="img-fluid img-thumbnail" 
