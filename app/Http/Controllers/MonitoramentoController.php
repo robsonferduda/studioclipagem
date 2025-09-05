@@ -756,7 +756,8 @@ class MonitoramentoController extends Controller
                             conteudo_noticia_web cnw ON cnw.id_noticia_web = n.id
                         JOIN 
                             fonte_web fw ON fw.id = n.id_fonte 
-                        WHERE 1=1 ";
+                        WHERE 1=1 
+                        AND n.deleted_at IS NULL ";
                         
 
                 if($monitoramento->filtro_web){
@@ -988,10 +989,15 @@ class MonitoramentoController extends Controller
                     }
                        
                     $noticia_web = NoticiaWeb::find($noticia->id);
-                    $noticia_web->screenshot = true;
-                    $noticia_web->nu_valor = $valor_retorno;
-                    $noticia_web->fl_boletim = true;
-                    $noticia_web->save();
+
+                    if($noticia_web){
+
+                        $noticia_web->screenshot = true;
+                        $noticia_web->nu_valor = $valor_retorno;
+                        $noticia_web->fl_boletim = true;
+                        $noticia_web->save();
+
+                    }
                 }
             }            
         }
