@@ -360,7 +360,7 @@
                         success: function(response) {
 
                             var label = '#label_'+id;
-                            label.remove();
+                            $(label).remove();
                                                     
                             $.notify({
                               icon: "nc-icon nc-bell-55",
@@ -409,7 +409,7 @@
                         success: function(response) {
 
                             var label = '#label_'+id;
-                            label.remove();
+                            $(label).remove();
                             
                             $.notify({
                               icon: "nc-icon nc-bell-55",
