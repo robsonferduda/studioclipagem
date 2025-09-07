@@ -335,11 +335,24 @@ class BoletimController extends Controller
     public function removerNoticia(Request $request)
     {
         $boletim = Boletim::find($request->id_boletim);
-        $boletim_noticias = BoletimNoticias::where('id_boletim', $boletim->id)->where('id_noticia', $request->id_noticia)->withTrashed()->first();
+        $boletim_noticias = BoletimNoticias::where('id_boletim', $boletim->id)
+                                            ->where('id_noticia', $request->id_noticia)
+                                            ->withTrashed()
+                                            ->first();
 
         if($boletim_noticias) {
             // Verifica se existe boletim
             if ($boletim_noticias) {
+
+                //Remove marcação que a notícia já foi enviada para o cliente
+                $noticia_cliente = NoticiaCliente::where('noticia_id', $request->id_noticia)
+                                                    ->where('cliente_id', $boletim->id_cliente)
+                                                    ->where('tipo_id', $id_tipo)
+                                                    ->first();
+
+                $noticia_cliente->fl_enviada =  false;
+                $noticia_cliente->save();
+
                 $boletim_noticias->forceDelete();
             }
         }        
