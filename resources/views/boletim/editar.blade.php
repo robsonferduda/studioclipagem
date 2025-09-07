@@ -254,12 +254,15 @@
             function desenhaTabela(){
 
                 var total_noticias = 0;
+                var id_boletim = $("#id_boletim").val();
                 
                 $(".table-noticias tbody").empty();
 
                 dados.forEach(function (noticia, indice) {  
                     
                     total_noticias = (!noticia.flag) ? total_noticias + 1 : total_noticias;
+
+                    label_pertence_boletim = (id_boletim != noticia.id_boletim) ? 'Vinculada a outro boletim' : 'Vinculada neste boletim';
                     
                     if(noticia.tipo == 'web') icone = '<i class="fa fa-globe"></i> Web';
                     if(noticia.tipo == 'impresso') icone = '<i class="fa fa-newspaper-o"></i> Impresso';
@@ -270,7 +273,7 @@
                     sinopse = (noticia.sinopse) ? noticia.sinopse : 'Sinopse não informada';
 
                     var check = (false) ? 'checked' : '';
-                    var boletim = (noticia.flag) ? '<div class="box_label" id="box_label_'+noticia.id+'"><span class="badge badge-pill badge-success" id="label_'+noticia.id+'"> Vinculada a Boletim</span></div>' : '<div class="box_label" id="box_label_'+noticia.id+'"></div>';
+                    var boletim = (noticia.flag) ? '<div class="box_label" id="box_label_'+noticia.id+'"><span class="badge badge-pill badge-success" id="label_'+noticia.id+'"> '+label_pertence_boletim+'</span></div>' : '<div class="box_label" id="box_label_'+noticia.id+'"></div>';
                     var checked = (noticia.id_boletim) ? 'checked' : '';
                     var programa = (noticia.programa) ? ' - '+noticia.programa : '';
 
@@ -361,7 +364,7 @@
 
                             var div = '#box_label_'+id;
                             
-                            $(div).html('<span class="badge badge-pill badge-success" id="label_'+id+'"> Vinculada a Boletim</span>');
+                            $(div).html('<span class="badge badge-pill badge-success" id="label_'+id+'"> Vinculada neste boletim</span>');
                                                     
                             $.notify({
                               icon: "nc-icon nc-bell-55",
