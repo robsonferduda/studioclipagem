@@ -270,7 +270,7 @@
                     sinopse = (noticia.sinopse) ? noticia.sinopse : 'Sinopse não informada';
 
                     var check = (false) ? 'checked' : '';
-                    var boletim = (noticia.flag) ? '<span class="badge badge-pill badge-success" id="label_'+noticia.id+'"> Vinculada a Boletim</span>' : '';
+                    var boletim = (noticia.flag) ? '<div id="box_label_'+noticia.id+'"><span class="badge badge-pill badge-success" id="label_'+noticia.id+'"> Vinculada a Boletim</span></div>' : '';
                     var checked = (noticia.id_boletim) ? 'checked' : '';
                     var programa = (noticia.programa) ? ' - '+noticia.programa : '';
 
@@ -359,8 +359,9 @@
                         },
                         success: function(response) {
 
-                            var label = '#label_'+id;
-                            $(label).remove();
+                            var div = '#box_label_'+id;
+                            
+                            $(div).html('<span class="badge badge-pill badge-success" id="label_'+id+'"> Vinculada a Boletim</span>');
                                                     
                             $.notify({
                               icon: "nc-icon nc-bell-55",
