@@ -334,6 +334,27 @@ class BoletimController extends Controller
 
     public function removerNoticia(Request $request)
     {
+        switch ($request->tipo) {
+            case 'web':
+                $id_tipo = 2;
+                $noticia = NoticiaWeb::find($request->id_noticia);
+                break;
+            case 'impresso':
+                $id_tipo = 1;
+                $noticia = NoticiaImpresso::find($request->id_noticia);
+                break;
+            case 'radio':
+                $id_tipo = 3;
+                $noticia = NoticiaRadio::find($request->id_noticia);
+                break;
+             case 'tv':
+                $id_tipo = 4;
+                $noticia = NoticiaTv::find($request->id_noticia);
+                break;
+            default:
+                return response()->json(['error' => 'Tipo de notícia inválido'], 400);
+        }
+
         $boletim = Boletim::find($request->id_boletim);
         $boletim_noticias = BoletimNoticias::where('id_boletim', $boletim->id)
                                             ->where('id_noticia', $request->id_noticia)
