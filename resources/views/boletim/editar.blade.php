@@ -407,7 +407,7 @@
                             
                             $.notify({
                               icon: "nc-icon nc-bell-55",
-                              message: "<b>Operação Realizada com Sucesso</b> - a notícia foi removida com sucesso ao boletim."
+                              message: "<b>Operação Realizada com Sucesso</b> - a notícia foi removida com sucesso do boletim."
                             }, {
                               type: 'primary',
                               timer: 500,
