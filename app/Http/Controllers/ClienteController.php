@@ -83,6 +83,29 @@ class ClienteController extends Controller
         ]);
     }
 
+    public function configuracoes($id)
+    {
+        $cliente = Cliente::find($id);
+        
+        if (!$cliente) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cliente não encontrado'
+            ], 404);
+        }
+        
+        return response()->json([
+            'fl_impresso' => (bool) $cliente->fl_impresso,
+            'fl_web' => (bool) $cliente->fl_web,
+            'fl_radio' => (bool) $cliente->fl_radio,
+            'fl_tv' => (bool) $cliente->fl_tv,
+            'fl_areas' => (bool) $cliente->fl_areas,
+            'fl_sentimento' => (bool) $cliente->fl_sentimento,
+            'fl_retorno_midia' => (bool) $cliente->fl_retorno_midia,
+            'fl_print' => (bool) $cliente->fl_print,
+        ]);
+    }
+
     public function gerarRelatorios(Request $request): View
     {
         Session::put('url','relatorios');
@@ -2079,6 +2102,29 @@ print('SUCCESS' if success else 'ERROR')
         }
     }
 
+    public function getAreasClienteEspecifico($id): JsonResponse
+    {
+        try {
+            if (!$id) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'ID do cliente não fornecido'
+                ], 400);
+            }
+            
+            $relatorioService = new RelatorioService();
+            $areas = $relatorioService->getAreasByCliente($id);
+            
+            return response()->json($areas);
+            
+        } catch (\Exception $e) {
+            Log::error('Erro ao buscar áreas do cliente específico: ' . $e->getMessage());
+            return response()->json([
+                'error' => 'Erro interno: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
     /**
      * Busca lista de todos os clientes (substitui /api/clientes do Flask)
      */
@@ -2101,10 +2147,11 @@ print('SUCCESS' if success else 'ERROR')
     /**
      * Obter tags disponíveis para filtro
      */
-    public function getTagsDisponiveis(): JsonResponse
+    public function getTagsDisponiveis(Request $request): JsonResponse
     {
         try {
-            $clienteId = $this->client_id;
+            // Usa o cliente da request ou o cliente logado da sessão
+            $clienteId = $request->get('cliente_id') ?: $this->client_id;
             
             if (!$clienteId) {
                 return response()->json([
@@ -2725,11 +2772,11 @@ print('SUCCESS' if success else 'ERROR')
     /**
      * Busca fontes disponíveis para Web (apenas as que têm notícias do cliente)
      */
-    public function obterFontesWeb(): JsonResponse
+    public function obterFontesWeb(Request $request): JsonResponse
     {
         try {
-            // Usa o cliente logado da sessão
-            $clienteId = $this->client_id;
+            // Usa o cliente da request ou o cliente logado da sessão
+            $clienteId = $request->get('cliente_id') ?: $this->client_id;
             
             if (!$clienteId) {
                 return response()->json([
@@ -2790,11 +2837,11 @@ print('SUCCESS' if success else 'ERROR')
     /**
      * Busca fontes disponíveis para Impresso (apenas as que têm notícias do cliente)
      */
-    public function obterFontesImpresso(): JsonResponse
+    public function obterFontesImpresso(Request $request): JsonResponse
     {
         try {
-            // Usa o cliente logado da sessão
-            $clienteId = $this->client_id;
+            // Usa o cliente da request ou o cliente logado da sessão
+            $clienteId = $request->get('cliente_id') ?: $this->client_id;
             
             if (!$clienteId) {
                 return response()->json([
@@ -2831,11 +2878,11 @@ print('SUCCESS' if success else 'ERROR')
     /**
      * Busca emissoras e programas disponíveis para TV (apenas as que têm notícias do cliente)
      */
-    public function obterFontesTv(): JsonResponse
+    public function obterFontesTv(Request $request): JsonResponse
     {
         try {
-            // Usa o cliente logado da sessão
-            $clienteId = $this->client_id;
+            // Usa o cliente da request ou o cliente logado da sessão
+            $clienteId = $request->get('cliente_id') ?: $this->client_id;
             
             if (!$clienteId) {
                 return response()->json([
@@ -2908,11 +2955,11 @@ print('SUCCESS' if success else 'ERROR')
     /**
      * Busca emissoras e programas disponíveis para Rádio (apenas as que têm notícias do cliente)
      */
-    public function obterFontesRadio(): JsonResponse
+    public function obterFontesRadio(Request $request): JsonResponse
     {
         try {
-            // Usa o cliente logado da sessão
-            $clienteId = $this->client_id;
+            // Usa o cliente da request ou o cliente logado da sessão
+            $clienteId = $request->get('cliente_id') ?: $this->client_id;
             
             if (!$clienteId) {
                 return response()->json([
