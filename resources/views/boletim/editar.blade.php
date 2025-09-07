@@ -270,7 +270,7 @@
                     sinopse = (noticia.sinopse) ? noticia.sinopse : 'Sinopse não informada';
 
                     var check = (false) ? 'checked' : '';
-                    var boletim = (noticia.flag) ? '<div id="box_label_'+noticia.id+'"><span class="badge badge-pill badge-success" id="label_'+noticia.id+'"> Vinculada a Boletim</span></div>' : '';
+                    var boletim = (noticia.flag) ? '<div id="box_label_'+noticia.id+'"><span class="badge badge-pill badge-success" id="label_'+noticia.id+'"> Vinculada a Boletim</span></div>' : '<div id="box_label_'+noticia.id+'"></div>';
                     var checked = (noticia.id_boletim) ? 'checked' : '';
                     var programa = (noticia.programa) ? ' - '+noticia.programa : '';
 
