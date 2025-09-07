@@ -270,7 +270,7 @@
                     sinopse = (noticia.sinopse) ? noticia.sinopse : 'Sinopse não informada';
 
                     var check = (false) ? 'checked' : '';
-                    var boletim = (noticia.flag) ? '<span class="badge badge-pill badge-success"> Enviada</span>' : '';
+                    var boletim = (noticia.flag) ? '<span class="badge badge-pill badge-success"> Vinculada a Boletim</span>' : '';
                     var checked = (noticia.id_boletim) ? 'checked' : '';
                     var programa = (noticia.programa) ? ' - '+noticia.programa : '';
 
@@ -364,7 +364,7 @@
                               message: "<b>Operação Realizada com Sucesso</b> - a notícia foi adicionada com sucesso ao boletim."
                             }, {
                               type: 'success',
-                              timer: 1000,
+                              timer: 500,
                               placement: {
                                 from: 'top',
                                 align: 'right'
@@ -404,7 +404,19 @@
                             "id_boletim": {{ $boletim->id }}
                         },
                         success: function(response) {
-                            console.log(response);
+                            
+                            $.notify({
+                              icon: "nc-icon nc-bell-55",
+                              message: "<b>Operação Realizada com Sucesso</b> - a notícia foi removida com sucesso ao boletim."
+                            }, {
+                              type: 'primary',
+                              timer: 500,
+                              placement: {
+                                from: 'top',
+                                align: 'right'
+                              }
+                            });
+
                         }
                     });
                 }
