@@ -270,7 +270,7 @@
                     sinopse = (noticia.sinopse) ? noticia.sinopse : 'Sinopse não informada';
 
                     var check = (false) ? 'checked' : '';
-                    var boletim = (noticia.flag) ? '<span class="badge badge-pill badge-success" id="label_'+noticia_id+'"> Vinculada a Boletim</span>' : '';
+                    var boletim = (noticia.flag) ? '<span class="badge badge-pill badge-success" id="label_'+noticia.id+'"> Vinculada a Boletim</span>' : '';
                     var checked = (noticia.id_boletim) ? 'checked' : '';
                     var programa = (noticia.programa) ? ' - '+noticia.programa : '';
 
