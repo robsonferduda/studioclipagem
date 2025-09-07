@@ -102,7 +102,7 @@
                             <div class="form-check mt-3">
                                 <label class="form-check-label">
                                     <input class="form-check-input" type="checkbox" name="is_active" id="nao-enviadas" value="true">
-                                    Somente Não Enviadas
+                                    Somente Não Vinculadas
                                     <span class="form-check-sign"></span>
                                 </label>
                             </div>
@@ -165,7 +165,7 @@
                                             <label class="form-check-label"><input class="form-check-input todas" type="checkbox" name="is_active" value="true">
                                                 SELECIONAR TODAS<span class="form-check-sign"></span>
                                             </label>
-                                            Notícias Novas: <span class="" id="total_noticias">0</span>
+                                            Notícias Não Vinculadas: <span class="" id="total_noticias">0</span>
                                         </div>
                                     </td>
                                 </tr>
@@ -270,7 +270,7 @@
                     sinopse = (noticia.sinopse) ? noticia.sinopse : 'Sinopse não informada';
 
                     var check = (false) ? 'checked' : '';
-                    var boletim = (noticia.flag) ? '<span class="badge badge-pill badge-success"> Vinculada a Boletim</span>' : '';
+                    var boletim = (noticia.flag) ? '<span class="badge badge-pill badge-success" id="label_'+noticia_id+'"> Vinculada a Boletim</span>' : '';
                     var checked = (noticia.id_boletim) ? 'checked' : '';
                     var programa = (noticia.programa) ? ' - '+noticia.programa : '';
 
@@ -358,6 +358,9 @@
                             $('.table-noticias').loader('show');
                         },
                         success: function(response) {
+
+                            var label = '#label_'+id;
+                            label.remove();
                                                     
                             $.notify({
                               icon: "nc-icon nc-bell-55",
@@ -404,6 +407,9 @@
                             "id_boletim": {{ $boletim->id }}
                         },
                         success: function(response) {
+
+                            var label = '#label_'+id;
+                            label.remove();
                             
                             $.notify({
                               icon: "nc-icon nc-bell-55",
