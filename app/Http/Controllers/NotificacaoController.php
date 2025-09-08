@@ -65,7 +65,7 @@ class NotificacaoController extends Controller
 
                     $mail_to = 'robsonferduda@gmail.com';
 
-                    Mail::send('notificacoes.email', $data, function($message) use ($mail_to, $msg, $titulo) {
+                    Mail::send('notificacoes.redes-sociais.mensagem', $data, function($message) use ($mail_to, $msg, $titulo) {
                         $message->to($mail_to)
                                 ->subject('Notificação de Monitoramento de Redes Sociais - '.$titulo);
                         $message->from('boletins@clipagens.com.br','Studio Social');
