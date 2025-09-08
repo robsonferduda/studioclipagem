@@ -1098,7 +1098,7 @@
                 url: window.host + '/api/cliente/areas',
                 type: 'GET',
                 dataType: 'json',
-                timeout: 10000,
+                timeout: 3600000, // 1 hora
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
@@ -1292,7 +1292,7 @@
                 type: 'POST',
                 data: formData,
                 dataType: 'json',
-                timeout: 30000, // 30 segundos de timeout
+                timeout: 3600000, // 1 hora de timeout
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') 
                 },
@@ -1763,7 +1763,7 @@
                 url: window.host + '/cliente/tags/disponiveis',
                 type: 'GET',
                 dataType: 'json',
-                timeout: 10000,
+                timeout: 3600000, // 1 hora
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
@@ -1840,7 +1840,7 @@
                     _token: $('meta[name="csrf-token"]').attr('content')
                 },
                 dataType: 'json',
-                timeout: 15000,
+                timeout: 3600000, // 1 hora
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
@@ -1925,7 +1925,7 @@
                 _token: $('meta[name="csrf-token"]').attr('content')
             },
             dataType: 'json',
-            timeout: 15000,
+            timeout: 3600000, // 1 hora
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
@@ -2043,7 +2043,7 @@
             url: window.host + '/cliente/relatorios/noticia/' + id + '/' + tipo,
             type: 'GET',
             dataType: 'json',
-            timeout: 15000, // 15 segundos de timeout
+            timeout: 3600000, // 1 hora de timeout
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
@@ -2483,7 +2483,7 @@
                 _token: $('meta[name="csrf-token"]').attr('content')
             },
             dataType: 'json',
-            timeout: 15000,
+            timeout: 3600000, // 1 hora
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
@@ -2546,7 +2546,7 @@
                 _token: $('meta[name="csrf-token"]').attr('content')
             },
             dataType: 'json',
-            timeout: 10000,
+            timeout: 3600000, // 1 hora
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
@@ -2641,7 +2641,7 @@
             url: window.host + '/cliente/fontes/web',
             type: 'GET',
             dataType: 'json',
-            timeout: 10000,
+            timeout: 3600000, // 1 hora
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
@@ -2720,7 +2720,7 @@
             url: window.host + '/cliente/fontes/impresso',
             type: 'GET',
             dataType: 'json',
-            timeout: 10000,
+            timeout: 3600000, // 1 hora
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
@@ -2762,7 +2762,7 @@
             url: window.host + '/cliente/fontes/tv',
             type: 'GET',
             dataType: 'json',
-            timeout: 10000,
+            timeout: 3600000, // 1 hora
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
@@ -2807,7 +2807,7 @@
             url: window.host + '/cliente/fontes/radio',
             type: 'GET',
             dataType: 'json',
-            timeout: 10000,
+            timeout: 3600000, // 1 hora
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
