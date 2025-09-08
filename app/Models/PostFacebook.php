@@ -18,4 +18,9 @@ class PostFacebook extends Model
     {
         return $this->hasOne(FacebookPage::class, 'id', 'page_id');
     }
+
+    public function clientes()
+    {
+        return $this->belongsToMany(Cliente::class,'noticia_cliente','noticia_id','cliente_id')->withPivot('id','tipo_id','sentimento','area')->where('tipo_id', 5)->withTimestamps();
+    }
 }

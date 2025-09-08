@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Mail;
 use Carbon\Carbon;
 use App\Models\PostInstagram;
+use App\Models\PostFacebook;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -40,11 +41,27 @@ class NotificacaoController extends Controller
                 ->orderBy('timestamp', 'desc')
                 ->get();
 
+        $postagens_facebook = PostFacebook::whereHas('clientes', function($q) {
+                            $q->where('noticia_cliente.tipo_id', 5)
+                              ->whereNull('noticia_cliente.deleted_at');
+                            })
+                ->orderBy('timestamp', 'desc')
+                ->get();
+
         foreach ($postagens_instagram as $key => $post) {
             
             $postagens[] = array('img' => 'instagram',
                                  'msg'  => $post->caption,
                                  'link' => $post->permalink);
+
+            $flag_enviar = true;
+        }
+
+        foreach ($postagens_facebook as $key => $post) {
+            
+            $postagens[] = array('img' => 'facebook',
+                                 'msg'  => $post->mensagem,
+                                 'link' => $post->data_postagem);
 
             $flag_enviar = true;
         }
@@ -57,21 +74,15 @@ class NotificacaoController extends Controller
         if($flag_enviar){
 
             $titulo = "Notificação de Monitoramento de Redes Sociais - ".date("d/m/Y H:i:s"); 
-            $emails = array('robsonferduda@gmail.com');
+          
+            $mail_to = 'robsonferduda@gmail.com';
 
-            if(true){
-
-                //foreach ($emails as $key => $email) {
-
-                    $mail_to = 'robsonferduda@gmail.com';
-
-                    Mail::send('notificacoes.redes-sociais.mensagem', $data, function($message) use ($mail_to, $msg, $titulo) {
-                        $message->to($mail_to)
-                                ->subject('Notificação de Monitoramento de Redes Sociais - '.$titulo);
-                        $message->from('boletins@clipagens.com.br','Studio Social');
-                    });
-                //}
-            }              
+            Mail::send('notificacoes.redes-sociais.mensagem', $data, function($message) use ($mail_to, $msg, $titulo) {
+                $message->to($mail_to)
+                        ->subject($titulo);
+                $message->from('boletins@clipagens.com.br','Studio Social');
+            });
+                       
         }
     }
 }
