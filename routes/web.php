@@ -344,6 +344,8 @@ Route::middleware(['web'])->group(function () {
 
 	Route::get('monitoramento/executar/web/{grupo}','MonitoramentoController@executarWeb');
 	Route::get('monitoramento/executar/radio','MonitoramentoController@executarRadio');
+	Route::get('monitoramento/executar/instagram','MonitoramentoController@executarInstagram');
+	Route::get('monitoramento/executar/facebook','MonitoramentoController@executarFacebook');
 	Route::get('monitoramento/executar/impresso','MonitoramentoController@executarImpresso');
 	Route::get('monitoramento/executar/tv','MonitoramentoController@executarTv');
 	Route::get('monitoramento/cliente/{id_cliente}/{flag}','MonitoramentoController@getMonitoramento');

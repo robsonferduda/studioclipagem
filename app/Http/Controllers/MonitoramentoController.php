@@ -653,6 +653,140 @@ class MonitoramentoController extends Controller
         }
     }
 
+    public function executarFacebook()
+    {
+        $dt_inicial = (Carbon::now())->format('Y-m-d')." 00:00:00";
+        $dt_final = (Carbon::now())->format('Y-m-d')." 23:59:59";
+        $data_inicio = date('Y-m-d H:i:s');
+        $total_vinculado = 0;
+        $tipo_midia = 6;
+
+        $monitoramentos = Monitoramento::where('fl_ativo', true)->where('fl_instagram', true)->get();
+        
+        foreach ($monitoramentos as $key => $monitoramento) {
+
+            try{
+
+                if($monitoramento->dt_inicio){
+                    $dt_inicial = $monitoramento->dt_inicio;
+                }
+                
+                $sql = "SELECT 
+                            post.id
+                        FROM 
+                            post_instagram post
+                        WHERE
+                            post.data_postagem BETWEEN '$dt_inicial' AND '$dt_final'
+                        AND post.tsv_caption @@ to_tsquery('simple', '$monitoramento->expressao')
+                        ORDER BY post.data_postagem DESC";
+
+                $dados = DB::select($sql);
+
+                $total_associado = $this->associar($dados, $tipo_midia, $monitoramento);
+
+                $total_vinculado = $total_associado;
+                
+                $data_termino = date('Y-m-d H:i:s');
+
+                $dado_moninoramento = array('monitoramento_id' => $monitoramento->id, 
+                                            'total_vinculado' => $total_vinculado,
+                                            'created_at' => $data_inicio,
+                                            'updated_at' => $data_termino);
+
+                MonitoramentoExecucao::create($dado_moninoramento);
+
+                $monitoramento->updated_at = date("Y-m-d H:i:s");
+                $monitoramento->save();
+
+            } catch (\Illuminate\Database\QueryException $e) {
+
+                $titulo = "Notificação de Monitoramento de Facebook - Erro de Consulta - ".date("d/m/Y H:i:s"); 
+
+                $data['dados'] = array('cliente' => $monitoramento->cliente->nome,
+                                       'expressao' => $monitoramento->expressao,
+                                       'id' => $monitoramento->id);
+
+                //app('App\Http\Controllers\MonitoramentoController')->executar();
+                
+                Mail::send('notificacoes.monitoramento', $data, function($message) use ($titulo){
+                    $message->to("robsonferduda@gmail.com")
+                            ->subject($titulo);
+                    $message->from('boletins@clipagens.com.br','Studio Clipagem');
+                }); 
+
+            } catch (Exception $e) {
+                
+            }
+        }
+    }
+
+    public function executarInstagram()
+    {
+        $dt_inicial = (Carbon::now())->format('Y-m-d')." 00:00:00";
+        $dt_final = (Carbon::now())->format('Y-m-d')." 23:59:59";
+        $data_inicio = date('Y-m-d H:i:s');
+        $total_vinculado = 0;
+        $tipo_midia = 6;
+
+        $monitoramentos = Monitoramento::where('fl_ativo', true)->where('fl_instagram', true)->get();
+        
+        foreach ($monitoramentos as $key => $monitoramento) {
+
+            try{
+
+                if($monitoramento->dt_inicio){
+                    $dt_inicial = $monitoramento->dt_inicio;
+                }
+                
+                $sql = "SELECT 
+                            post.id
+                        FROM 
+                            post_instagram post
+                        WHERE
+                            post.timestamp BETWEEN '$dt_inicial' AND '$dt_final'
+                        AND post.tsv_caption @@ to_tsquery('simple', '$monitoramento->expressao')
+                        ORDER BY post.timestamp DESC";
+
+                $dados = DB::select($sql);
+
+                $total_associado = $this->associar($dados, $tipo_midia, $monitoramento);
+
+                $total_vinculado = $total_associado;
+                
+                $data_termino = date('Y-m-d H:i:s');
+
+                $dado_moninoramento = array('monitoramento_id' => $monitoramento->id, 
+                                            'total_vinculado' => $total_vinculado,
+                                            'created_at' => $data_inicio,
+                                            'updated_at' => $data_termino);
+
+                MonitoramentoExecucao::create($dado_moninoramento);
+
+                $monitoramento->updated_at = date("Y-m-d H:i:s");
+                $monitoramento->save();
+
+            } catch (\Illuminate\Database\QueryException $e) {
+
+                $titulo = "Notificação de Monitoramento de Instagram - Erro de Consulta - ".date("d/m/Y H:i:s"); 
+
+                $data['dados'] = array('cliente' => $monitoramento->cliente->nome,
+                                       'expressao' => $monitoramento->expressao,
+                                       'id' => $monitoramento->id);
+
+                //app('App\Http\Controllers\MonitoramentoController')->executar();
+                
+                Mail::send('notificacoes.monitoramento', $data, function($message) use ($titulo){
+                    $message->to("robsonferduda@gmail.com")
+                            ->subject($titulo);
+                    $message->from('boletins@clipagens.com.br','Studio Clipagem');
+                }); 
+
+            } catch (Exception $e) {
+                
+            }
+        }
+    }
+
     public function executarTv()
     {
         $dt_inicial = (Carbon::now())->format('Y-m-d')." 00:00:00";
