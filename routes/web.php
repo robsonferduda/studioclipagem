@@ -353,6 +353,8 @@ Route::middleware(['web'])->group(function () {
 	Route::get('monitoramento/{id_monitoramento}/fontes','MonitoramentoController@getFontesMonitoramento');
 	Route::get('monitoramento/{tipo}/emissoras/{monitoramento}','MonitoramentoController@loadEmissoras');
 
+	Route::get('notificacao/redes-sociais','NotificacaoController@notificar');
+
 	Route::get('online','UserController@online');
 
 	Route::get('php','HomeController@php');
