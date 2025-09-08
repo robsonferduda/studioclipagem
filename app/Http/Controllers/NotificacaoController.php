@@ -61,7 +61,7 @@ class NotificacaoController extends Controller
 
             if(true){
 
-                foreach ($emails as $key => $email) {
+                //foreach ($emails as $key => $email) {
 
                     $mail_to = 'robsonferduda@gmail.com';
 
@@ -70,7 +70,7 @@ class NotificacaoController extends Controller
                                 ->subject('Notificação de Monitoramento de Redes Sociais - '.$titulo);
                         $message->from('boletins@clipagens.com.br','Studio Social');
                     });
-                }
+                //}
             }              
         }
     }
