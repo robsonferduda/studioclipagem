@@ -45,7 +45,7 @@ class NotificacaoController extends Controller
                             $q->where('noticia_cliente.tipo_id', 5)
                               ->whereNull('noticia_cliente.deleted_at');
                             })
-                ->orderBy('timestamp', 'desc')
+                ->orderBy('data_postagem', 'desc')
                 ->get();
 
         foreach ($postagens_instagram as $key => $post) {

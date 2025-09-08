@@ -677,7 +677,7 @@ class MonitoramentoController extends Controller
                             post_instagram post
                         WHERE
                             post.data_postagem BETWEEN '$dt_inicial' AND '$dt_final'
-                        AND post.tsv_caption @@ to_tsquery('simple', '$monitoramento->expressao')
+                        AND post.tsv_mensagem @@ to_tsquery('simple', '$monitoramento->expressao')
                         ORDER BY post.data_postagem DESC";
 
                 $dados = DB::select($sql);
