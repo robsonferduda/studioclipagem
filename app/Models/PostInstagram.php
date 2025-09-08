@@ -13,4 +13,9 @@ class PostInstagram extends Model
     protected $table = 'post_instagram';
 
     protected $fillable = [''];
+
+    public function clientes()
+    {
+        return $this->belongsToMany(Cliente::class,'noticia_cliente','noticia_id','cliente_id')->withPivot('id','tipo_id','sentimento','area')->where('tipo_id', 6)->withTimestamps();
+    }
 }

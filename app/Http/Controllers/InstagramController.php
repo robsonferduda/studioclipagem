@@ -35,11 +35,42 @@ class InstagramController extends Controller
     public function postagens()
     {
         Session::put('sub-menu','instagram-postagens');
+
+         return view('instagram.postagens');
     }
 
     public function listarPostsAjax(Request $request)
     {
         $query = PostInstagram::orderBy('timestamp', 'desc');
+
+        if ($request->filled('texto')) {
+            $texto = $request->input('texto');
+            $query->where('caption', 'ilike', '%' . $texto . '%');
+        }
+
+        if ($request->filled('data')) {
+            $data = $request->input('data');
+            $inicio = $data . ' 00:00:00';
+            $fim = $data . ' 23:59:59';
+            $query->whereBetween('timestamp', [$inicio, $fim]);
+        }else{
+            $hoje = $this->carbon->now()->format('Y-m-d');
+            $inicio = $hoje . ' 00:00:00';
+            $fim = $hoje . ' 23:59:59';
+            $query->whereBetween('timestamp', [$inicio, $fim]);
+        }
+
+        $posts = $query->paginate(10);
+        return response()->json($posts);
+    }
+
+    public function listarPostagensAjax(Request $request)
+    {
+        $query = PostInstagram::whereHas('clientes', function($q) {
+                            $q->where('noticia_cliente.tipo_id', 6)
+                              ->whereNull('noticia_cliente.deleted_at');
+                            })
+                ->orderBy('timestamp', 'desc');
 
         if ($request->filled('texto')) {
             $texto = $request->input('texto');

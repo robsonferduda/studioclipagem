@@ -151,6 +151,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('instagram/coletas','InstagramController@coletas');
 	Route::get('instagram/postagens','InstagramController@postagens');
 	Route::get('instagram/posts', 'InstagramController@listarPostsAjax');
+	Route::get('instagram/postagens', 'InstagramController@listarPostagensAjax');
 
 	Route::match(array('GET', 'POST'),'fonte-impresso/listar','FonteImpressoController@listar');
 
