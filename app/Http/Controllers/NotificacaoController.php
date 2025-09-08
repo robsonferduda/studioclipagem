@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use App\Models\PostInstagram;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -25,6 +26,49 @@ class NotificacaoController extends Controller
 
     public function notificar()
     {
-       
+        $flag_enviar = false;
+        $postagens = array();
+
+        $postagens_instagram = array();
+        $postagens_facebook = array();
+
+        $postagens_instagram = PostInstagram::whereHas('clientes', function($q) {
+                            $q->where('noticia_cliente.tipo_id', 6)
+                              ->whereNull('noticia_cliente.deleted_at');
+                            })
+                ->orderBy('timestamp', 'desc')
+                ->get();
+
+        foreach ($postagens_instagram as $key => $post) {
+            
+            $postagens[] = array('img' => 'instagram',
+                                 'msg'  => $post->caption,
+                                 'link' => $post->permalink);
+        }
+
+        $email = null;
+        $msg = '';
+        $data['msg'] = $msg;
+        $data['postagens'] = $postagens;
+
+        if($flag_enviar){
+
+            $titulo = "Notificação de Monitoramento de Redes Sociais - ".date("d/m/Y H:i:s"); 
+            $emails = array('robsonferduda@gmail.com');
+
+            if(true){
+
+                foreach ($emails as $key => $email) {
+
+                    $mail_to = 'robsonferduda@gmail.com';
+
+                    Mail::send('notificacoes.email', $data, function($message) use ($mail_to, $msg, $titulo) {
+                        $message->to($mail_to)
+                                ->subject('Notificação de Monitoramento de Redes Sociais - '.$titulo);
+                        $message->from('boletins@clipagens.com.br','Studio Social');
+                    });
+                }
+            }              
+        }
     }
 }
