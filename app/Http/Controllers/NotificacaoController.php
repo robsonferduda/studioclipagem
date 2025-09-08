@@ -75,7 +75,9 @@ class NotificacaoController extends Controller
 
             $titulo = "Notificação de Monitoramento de Redes Sociais - ".date("d/m/Y H:i:s"); 
           
-            $mail_to = 'robsonferduda@gmail.com';
+            //$mail_to = 'robsonferduda@gmail.com';
+
+            $mail_to = 'alvaro@studioclipagem.com.br';
 
             Mail::send('notificacoes.redes-sociais.mensagem', $data, function($message) use ($mail_to, $msg, $titulo) {
                 $message->to($mail_to)
