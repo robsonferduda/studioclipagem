@@ -61,7 +61,7 @@ class NotificacaoController extends Controller
             
             $postagens[] = array('img' => 'facebook',
                                  'msg'  => $post->mensagem,
-                                 'link' => $post->data_postagem);
+                                 'link' => $post->link);
 
             $flag_enviar = true;
         }
