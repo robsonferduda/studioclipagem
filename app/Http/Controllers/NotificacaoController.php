@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Mail;
 use Carbon\Carbon;
 use App\Models\PostInstagram;
 use Illuminate\Http\Request;
