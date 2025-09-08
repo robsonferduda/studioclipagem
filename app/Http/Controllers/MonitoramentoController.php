@@ -661,7 +661,7 @@ class MonitoramentoController extends Controller
         $total_vinculado = 0;
         $tipo_midia = 6;
 
-        $monitoramentos = Monitoramento::where('fl_ativo', true)->where('fl_instagram', true)->get();
+        $monitoramentos = Monitoramento::where('fl_ativo', true)->where('fl_facebook', true)->get();
         
         foreach ($monitoramentos as $key => $monitoramento) {
 
