@@ -674,7 +674,7 @@ class MonitoramentoController extends Controller
                 $sql = "SELECT 
                             post.id
                         FROM 
-                            post_instagram post
+                            post_facebook post
                         WHERE
                             post.data_postagem BETWEEN '$dt_inicial' AND '$dt_final'
                         AND post.tsv_mensagem @@ to_tsquery('simple', '$monitoramento->expressao')
