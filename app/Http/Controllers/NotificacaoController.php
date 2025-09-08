@@ -44,6 +44,8 @@ class NotificacaoController extends Controller
             $postagens[] = array('img' => 'instagram',
                                  'msg'  => $post->caption,
                                  'link' => $post->permalink);
+
+            $flag_enviar = true;
         }
 
         $email = null;
