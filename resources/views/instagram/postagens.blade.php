@@ -61,7 +61,7 @@
 
             function carregarPosts(pagina = 1) {
                 $.ajax({
-                    url: host + '/instagram/posts?page=' + pagina +
+                    url: host + '/instagram/posts-clientes?page=' + pagina +
                         (filtroData ? '&data=' + filtroData : '') +
                         (filtroTexto ? '&texto=' + encodeURIComponent(filtroTexto) : ''),
                     type: 'GET',
