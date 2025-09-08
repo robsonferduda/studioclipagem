@@ -627,6 +627,7 @@ class ClienteController extends Controller
                 WHERE 1=1
                 AND t1.deleted_at IS NULL
                 AND t3.deleted_at IS NULL
+                AND t1.valor_retorno IS NOT NULL
                 AND t1.dt_clipagem BETWEEN '$dt_inicial' AND '$dt_final'";
 
         if($cliente_selecionado){
@@ -672,6 +673,7 @@ class ClienteController extends Controller
                 WHERE 1=1
                 AND t1.deleted_at IS NULL
                 AND t3.deleted_at IS NULL
+                AND t1.duracao IS NOT NULL
                 AND t1.dt_clipagem BETWEEN '$dt_inicial' AND '$dt_final'";
 
         if($cliente_selecionado){
@@ -782,6 +784,7 @@ class ClienteController extends Controller
                 WHERE 1=1
                 AND t1.deleted_at IS NULL
                 AND t3.deleted_at IS NULL
+                AND t1.duracao IS NOT NULL
                 AND t1.dt_noticia BETWEEN '$dt_inicial' AND '$dt_final'";
 
         if($cliente_selecionado){

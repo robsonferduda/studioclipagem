@@ -511,6 +511,7 @@ class RelatorioService
                     WHERE nc.cliente_id = :clienteId
                     AND t.$colunaDataTv BETWEEN :dataInicio AND :dataFim
                     AND t.deleted_at IS NULL
+                    AND t.duracao IS NOT NULL -- Filtro obrigatório: apenas notícias TV editadas (com duração)
                     {$buildStatusCondition('nc.')}
                     {$buildValorCondition('t.', 'valor_retorno')}
                     {$buildAreaCondition('nc.')}
@@ -609,6 +610,7 @@ class RelatorioService
                     WHERE nc.cliente_id = :clienteId
                     AND r.$colunaDataRadio BETWEEN :dataInicio AND :dataFim
                     AND r.deleted_at IS NULL
+                    AND r.duracao IS NOT NULL -- Filtro obrigatório: apenas notícias Rádio editadas (com duração)
                     {$buildStatusCondition('nc.')}
                     {$buildValorCondition('r.', 'valor_retorno')}
                     {$buildAreaCondition('nc.')}
@@ -698,6 +700,7 @@ class RelatorioService
                     WHERE nc.cliente_id = :clienteId
                     AND j.$colunaDataImpresso BETWEEN :dataInicio AND :dataFim
                     AND j.deleted_at IS NULL
+                    AND j.valor_retorno IS NOT NULL -- Filtro obrigatório: apenas notícias Impressas editadas (com retorno de mídia)
                     {$buildStatusCondition('nc.')}
                     {$buildValorCondition('j.', 'valor_retorno')}
                     {$buildAreaCondition('nc.')}
