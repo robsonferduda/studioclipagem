@@ -803,6 +803,10 @@ class ClienteController extends Controller
      */
     public function listarNoticias(Request $request): JsonResponse
     {
+        // Configurar timeouts para consultas longas
+        set_time_limit(300); // 5 minutos para listagem
+        ini_set('max_execution_time', 300);
+        
         Log::info('=== INICIANDO listarNoticias ===', [
             'request_data' => $request->all(),
             'client_id' => $this->client_id,
@@ -933,6 +937,11 @@ class ClienteController extends Controller
      */
     public function gerarRelatorioPDF(Request $request): JsonResponse
     {
+        // Configurar timeouts para 1 hora
+        set_time_limit(3600); // 1 hora
+        ini_set('max_execution_time', 3600); // 1 hora
+        ini_set('memory_limit', '1024M'); // 1GB de memória
+        
         try {
 
             $dataInicio = $request->input('data_inicio');
@@ -1352,6 +1361,11 @@ class ClienteController extends Controller
      */
     public function gerarRelatorioPDFWeb(Request $request): JsonResponse
     {
+        // Configurar timeouts para 1 hora
+        set_time_limit(3600); // 1 hora
+        ini_set('max_execution_time', 3600); // 1 hora
+        ini_set('memory_limit', '1024M'); // 1GB de memória
+        
         try {
         
             $dataInicio = $request->input('data_inicio');
@@ -1539,6 +1553,11 @@ print('SUCCESS' if success else 'ERROR')
      */
     public function gerarRelatorioPDFImpresso(Request $request): JsonResponse
     {
+        // Configurar timeouts para 1 hora
+        set_time_limit(3600); // 1 hora
+        ini_set('max_execution_time', 3600); // 1 hora
+        ini_set('memory_limit', '1024M'); // 1GB de memória
+        
         try {
             
             $dataInicio = $request->input('data_inicio');

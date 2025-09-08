@@ -12,6 +12,13 @@ RUN docker-php-ext-configure zip
 # Install PHP extensions
 RUN docker-php-ext-install pgsql pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd zip
 
+# Configurar PHP para timeouts longos
+RUN echo "max_execution_time = 3600" >> /usr/local/etc/php/php.ini && \
+    echo "memory_limit = 1024M" >> /usr/local/etc/php/php.ini && \
+    echo "max_input_time = 3600" >> /usr/local/etc/php/php.ini && \
+    echo "post_max_size = 100M" >> /usr/local/etc/php/php.ini && \
+    echo "upload_max_filesize = 100M" >> /usr/local/etc/php/php.ini
+
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
