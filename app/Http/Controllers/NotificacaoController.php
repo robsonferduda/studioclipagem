@@ -76,7 +76,7 @@ class NotificacaoController extends Controller
             foreach ($postagens_facebook as $key => $post) {
 
                 $vinculo = NoticiaCliente::where('noticia_id', $post->id)
-                                            ->where('tipo_id', 6)
+                                            ->where('tipo_id', 5)
                                             ->where('cliente_id', $cliente->id)
                                             ->first();
 
