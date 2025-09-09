@@ -2213,7 +2213,8 @@ print('SUCCESS' if success else 'ERROR')
     public function getTagsNoticias(Request $request): JsonResponse
     {
         try {
-            $clienteId = $this->client_id;
+            // Usa o cliente da request (para administradores) ou o cliente logado da sessão (para clientes)
+            $clienteId = $request->get('cliente_id') ?: $this->client_id;
             
             if (!$clienteId) {
                 return response()->json([
@@ -2324,7 +2325,8 @@ print('SUCCESS' if success else 'ERROR')
     public function adicionarTag(Request $request): JsonResponse
     {
         try {
-            $clienteId = $this->client_id;
+            // Usa o cliente da request (para administradores) ou o cliente logado da sessão (para clientes)
+            $clienteId = $request->get('cliente_id') ?: $this->client_id;
             
             if (!$clienteId) {
                 return response()->json([
@@ -2418,7 +2420,8 @@ print('SUCCESS' if success else 'ERROR')
     public function removerTag(Request $request): JsonResponse
     {
         try {
-            $clienteId = $this->client_id;
+            // Usa o cliente da request (para administradores) ou o cliente logado da sessão (para clientes)
+            $clienteId = $request->get('cliente_id') ?: $this->client_id;
             
             if (!$clienteId) {
                 return response()->json([
@@ -2512,7 +2515,8 @@ print('SUCCESS' if success else 'ERROR')
     public function alterarSentimento(Request $request): JsonResponse
     {
         try {
-            $clienteId = $this->client_id;
+            // Usa o cliente da request (para administradores) ou o cliente logado da sessão (para clientes)
+            $clienteId = $request->get('cliente_id') ?: $this->client_id;
             
             if (!$clienteId) {
                 return response()->json([
@@ -2704,8 +2708,8 @@ print('SUCCESS' if success else 'ERROR')
     public function buscarNoticia(Request $request, $id, $tipo): JsonResponse
     {
         try {
-            // Usa o cliente logado da sessão
-            $clienteId = $this->client_id;
+            // Usa o cliente da request (para administradores) ou o cliente logado da sessão (para clientes)
+            $clienteId = $request->get('cliente_id') ?: $this->client_id;
             
             if (!$clienteId) {
                 return response()->json([
