@@ -41,7 +41,7 @@ class InstagramController extends Controller
 
     public function listarPostsAjax(Request $request)
     {
-        $query = PostInstagram::orderBy('timestamp', 'desc');
+        $query = PostInstagram::with('clientes')->orderBy('timestamp', 'desc');
 
         if ($request->filled('texto')) {
             $texto = $request->input('texto');
