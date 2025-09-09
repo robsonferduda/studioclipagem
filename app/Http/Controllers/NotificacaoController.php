@@ -43,6 +43,7 @@ class NotificacaoController extends Controller
             $postagens_instagram = PostInstagram::whereHas('clientes', function($q) {
                             $q->where('noticia_cliente.tipo_id', 6)
                                 ->where('fl_enviada', false)
+                                ->where('noticia_cliente.cliente_id', $cliente->id)
                                 ->whereNull('noticia_cliente.deleted_at');
                             })
                 ->orderBy('timestamp', 'desc')
@@ -51,6 +52,7 @@ class NotificacaoController extends Controller
             $postagens_facebook = PostFacebook::whereHas('clientes', function($q) {
                                 $q->where('noticia_cliente.tipo_id', 5)
                                     ->where('fl_enviada', false)
+                                    ->where('noticia_cliente.cliente_id', $cliente->id)
                                     ->whereNull('noticia_cliente.deleted_at');
                                 })
                     ->orderBy('data_postagem', 'desc')
