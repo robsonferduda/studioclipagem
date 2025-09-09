@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Mail;
 use Carbon\Carbon;
 use App\Models\Cliente;
+use App\Models\NoticiaCliente;
 use App\Models\PostInstagram;
 use App\Models\PostFacebook;
 use Illuminate\Http\Request;
