@@ -103,7 +103,7 @@ class NotificacaoController extends Controller
 
                 for ($i=0; $i < count($emails); $i++) { 
 
-                    Mail::send('notificacoes.redes-sociais.mensagem', $data, function($message) use ($mail_to, $msg, $titulo) {
+                    Mail::send('notificacoes.redes-sociais.mensagem', $data, function($message) use ($emails, $i, $msg, $titulo) {
                         $message->to($emails[$i])
                                 ->subject($titulo);
                         $message->from('noreply@clipagem.online','Clipping de Redes Sociais');
