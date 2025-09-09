@@ -40,7 +40,7 @@ class NotificacaoController extends Controller
 
         foreach ($clientes as $key => $cliente) {
             
-            $postagens_instagram = PostInstagram::whereHas('clientes', function($q) {
+            $postagens_instagram = PostInstagram::whereHas('clientes', function($q) use($cliente) {
                             $q->where('noticia_cliente.tipo_id', 6)
                                 ->where('fl_enviada', false)
                                 ->where('noticia_cliente.cliente_id', $cliente->id)
@@ -49,7 +49,7 @@ class NotificacaoController extends Controller
                 ->orderBy('timestamp', 'desc')
                 ->get();
 
-            $postagens_facebook = PostFacebook::whereHas('clientes', function($q) {
+            $postagens_facebook = PostFacebook::whereHas('clientes', function($q) use ($cliente) {
                                 $q->where('noticia_cliente.tipo_id', 5)
                                     ->where('fl_enviada', false)
                                     ->where('noticia_cliente.cliente_id', $cliente->id)
