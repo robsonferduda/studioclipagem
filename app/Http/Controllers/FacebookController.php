@@ -35,6 +35,8 @@ class FacebookController extends Controller
     public function postagens()
     {
         Session::put('sub-menu','facebook-postagens');
+
+        return view('facebook.postagens');
     }
 
     public function listarPostsAjax(Request $request)

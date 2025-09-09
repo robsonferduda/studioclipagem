@@ -36,7 +36,7 @@ class InstagramController extends Controller
     {
         Session::put('sub-menu','instagram-postagens');
 
-         return view('instagram.postagens');
+        return view('instagram.postagens');
     }
 
     public function listarPostsAjax(Request $request)
