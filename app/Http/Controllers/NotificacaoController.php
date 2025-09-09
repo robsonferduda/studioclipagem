@@ -64,7 +64,7 @@ class NotificacaoController extends Controller
                                             ->first();
 
                 //$vinculo->fl_enviada = true;
-                $vinculo->save();
+                //$vinculo->save();
                 
                 $postagens[] = array('img' => 'instagram',
                                      'msg'  => $post->caption,
@@ -81,7 +81,7 @@ class NotificacaoController extends Controller
                                             ->first();
 
                 //$vinculo->fl_enviada = true;
-                $vinculo->save();
+                //$vinculo->save();
                 
                 $postagens[] = array('img' => 'facebook',
                                      'msg'  => $post->mensagem,
