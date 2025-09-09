@@ -65,8 +65,8 @@ class NotificacaoController extends Controller
                                             ->where('cliente_id', $cliente->id)
                                             ->first();
 
-                //$vinculo->fl_enviada = true;
-                //$vinculo->save();
+                $vinculo->fl_enviada = true;
+                $vinculo->save();
                 
                 $postagens[] = array('img' => 'instagram',
                                      'msg'  => $post->caption,
@@ -82,8 +82,8 @@ class NotificacaoController extends Controller
                                             ->where('cliente_id', $cliente->id)
                                             ->first();
 
-                //$vinculo->fl_enviada = true;
-                //$vinculo->save();
+                $vinculo->fl_enviada = true;
+                $vinculo->save();
                 
                 $postagens[] = array('img' => 'facebook',
                                      'msg'  => $post->mensagem,
