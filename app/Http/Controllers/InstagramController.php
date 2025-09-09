@@ -66,7 +66,7 @@ class InstagramController extends Controller
 
     public function listarPostagensAjax(Request $request)
     {
-        $query = PostInstagram::whereHas('clientes', function($q) {
+        $query = PostInstagram::with('clientes')->whereHas('clientes', function($q) {
                             $q->where('noticia_cliente.tipo_id', 6)
                               ->whereNull('noticia_cliente.deleted_at');
                             })
