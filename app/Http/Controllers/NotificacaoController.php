@@ -99,7 +99,7 @@ class NotificacaoController extends Controller
 
             if($flag_enviar){
 
-                $titulo = "Notificação de Monitoramento de Redes Sociais - ".date("d/m/Y H:i:s"); 
+                $titulo = "Notificação de Redes Sociais - ".date("d/m/Y H:i:s"); 
               
                 $emails = array('robsonferduda@gmail.com','alvaro@studioclipagem.com.br');
 
@@ -108,7 +108,7 @@ class NotificacaoController extends Controller
                     Mail::send('notificacoes.redes-sociais.mensagem', $data, function($message) use ($emails, $i, $msg, $titulo) {
                         $message->to($emails[$i])
                                 ->subject($titulo);
-                        $message->from('noreply@clipagem.online','Clipping de Redes Sociais');
+                        $message->from('noreply@clipagem.online','Notificação de Redes Sociais');
                     });
                 }                           
             }
