@@ -30,15 +30,15 @@ class NotificacaoController extends Controller
 
     public function notificar()
     {
-        $flag_enviar = false;
-        $postagens = array();
-
-        $postagens_instagram = array();
-        $postagens_facebook = array();
-
         $clientes = Cliente::where('fl_instagram', true)->orWhere('fl_facebook', true)->get();
 
         foreach ($clientes as $key => $cliente) {
+
+            $flag_enviar = false;
+            $postagens = array();
+
+            $postagens_instagram = array();
+            $postagens_facebook = array();
             
             $postagens_instagram = PostInstagram::whereHas('clientes', function($q) use($cliente) {
                             $q->where('noticia_cliente.tipo_id', 6)
