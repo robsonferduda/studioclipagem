@@ -147,6 +147,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('facebook/coletas','FacebookController@coletas');
 	Route::get('facebook/postagens','FacebookController@postagens');
 	Route::get('facebook/posts', 'FacebookController@listarPostsAjax');
+	Route::get('facebook/posts-clientes', 'FacebookController@listarPostagensAjax');
 
 	Route::get('instagram/coletas','InstagramController@coletas');
 	Route::get('instagram/postagens','InstagramController@postagens');

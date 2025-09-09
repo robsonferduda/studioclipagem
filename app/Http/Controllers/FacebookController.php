@@ -58,7 +58,38 @@ class FacebookController extends Controller
             $query->whereBetween('data_postagem', [$inicio, $fim]);
         }
 
-        $posts = $query->paginate(10);
+        $posts = $query->paginate(20);
+
+        return response()->json($posts);
+    }
+
+    public function listarPostagensAjax(Request $request)
+    {
+        $query = PostFacebook::with('clientes')->whereHas('clientes', function($q) {
+                            $q->where('noticia_cliente.tipo_id', 5)
+                              ->whereNull('noticia_cliente.deleted_at');
+                            })
+                ->orderBy('data_postagem', 'desc');
+
+        if ($request->filled('texto')) {
+            $texto = $request->input('texto');
+            $query->where('mensagem', 'ilike', '%' . $texto . '%');
+        }
+
+        if ($request->filled('data')) {
+            $data = $request->input('data');
+            $inicio = $data . ' 00:00:00';
+            $fim = $data . ' 23:59:59';
+            $query->whereBetween('data_postagem', [$inicio, $fim]);
+        }else{
+            $hoje = $this->carbon->now()->format('Y-m-d');
+            $inicio = $hoje . ' 00:00:00';
+            $fim = $hoje . ' 23:59:59';
+            $query->whereBetween('data_postagem', [$inicio, $fim]);
+        }
+
+        $posts = $query->paginate(20);
+
         return response()->json($posts);
     }
 }
