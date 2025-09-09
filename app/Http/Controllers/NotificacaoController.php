@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Mail;
 use Carbon\Carbon;
+use App\Models\Cliente;
 use App\Models\PostInstagram;
 use App\Models\PostFacebook;
 use Illuminate\Http\Request;
@@ -34,57 +35,80 @@ class NotificacaoController extends Controller
         $postagens_instagram = array();
         $postagens_facebook = array();
 
-        $postagens_instagram = PostInstagram::whereHas('clientes', function($q) {
+        $clientes = Cliente::where('fl_instagram', true)->orWhere('fl_facebook', true)->get();
+
+        foreach ($clientes as $key => $cliente) {
+            
+            $postagens_instagram = PostInstagram::whereHas('clientes', function($q) {
                             $q->where('noticia_cliente.tipo_id', 6)
-                              ->whereNull('noticia_cliente.deleted_at');
+                                ->where('fl_enviada', false)
+                                ->whereNull('noticia_cliente.deleted_at');
                             })
                 ->orderBy('timestamp', 'desc')
                 ->get();
 
-        $postagens_facebook = PostFacebook::whereHas('clientes', function($q) {
-                            $q->where('noticia_cliente.tipo_id', 5)
-                              ->whereNull('noticia_cliente.deleted_at');
-                            })
-                ->orderBy('data_postagem', 'desc')
-                ->get();
+            $postagens_facebook = PostFacebook::whereHas('clientes', function($q) {
+                                $q->where('noticia_cliente.tipo_id', 5)
+                                    ->where('fl_enviada', false)
+                                    ->whereNull('noticia_cliente.deleted_at');
+                                })
+                    ->orderBy('data_postagem', 'desc')
+                    ->get();
 
-        foreach ($postagens_instagram as $key => $post) {
-            
-            $postagens[] = array('img' => 'instagram',
-                                 'msg'  => $post->caption,
-                                 'link' => $post->permalink);
+            foreach ($postagens_instagram as $key => $post) {
 
-            $flag_enviar = true;
-        }
+                $vinculo = NoticiaCliente::where('noticia_id', $post->id)
+                                            ->where('tipo_id', 6)
+                                            ->where('cliente_id', $cliente->id)
+                                            ->first();
 
-        foreach ($postagens_facebook as $key => $post) {
-            
-            $postagens[] = array('img' => 'facebook',
-                                 'msg'  => $post->mensagem,
-                                 'link' => $post->link);
+                //$vinculo->fl_enviada = true;
+                $vinculo->save();
+                
+                $postagens[] = array('img' => 'instagram',
+                                     'msg'  => $post->caption,
+                                     'link' => $post->permalink);
 
-            $flag_enviar = true;
-        }
+                $flag_enviar = true;
+            }
 
-        $email = null;
-        $msg = '';
-        $data['msg'] = $msg;
-        $data['postagens'] = $postagens;
+            foreach ($postagens_facebook as $key => $post) {
 
-        if($flag_enviar){
+                $vinculo = NoticiaCliente::where('noticia_id', $post->id)
+                                            ->where('tipo_id', 6)
+                                            ->where('cliente_id', $cliente->id)
+                                            ->first();
 
-            $titulo = "Notificação de Monitoramento de Redes Sociais - ".date("d/m/Y H:i:s"); 
-          
-            //$mail_to = 'robsonferduda@gmail.com';
+                //$vinculo->fl_enviada = true;
+                $vinculo->save();
+                
+                $postagens[] = array('img' => 'facebook',
+                                     'msg'  => $post->mensagem,
+                                     'link' => $post->link);
 
-            $mail_to = 'alvaro@studioclipagem.com.br';
+                $flag_enviar = true;
+            }
 
-            Mail::send('notificacoes.redes-sociais.mensagem', $data, function($message) use ($mail_to, $msg, $titulo) {
-                $message->to($mail_to)
-                        ->subject($titulo);
-                $message->from('boletins@clipagens.com.br','Studio Social');
-            });
-                       
+            $email = null;
+            $msg = '';
+            $data['msg'] = $msg;
+            $data['postagens'] = $postagens;
+
+            if($flag_enviar){
+
+                $titulo = "Notificação de Monitoramento de Redes Sociais - ".date("d/m/Y H:i:s"); 
+              
+                $emails = array('robsonferduda@gmail.com','alvaro@studioclipagem.com.br');
+
+                for ($i=0; $i < count($emails); $i++) { 
+
+                    Mail::send('notificacoes.redes-sociais.mensagem', $data, function($message) use ($mail_to, $msg, $titulo) {
+                        $message->to($emails[$i])
+                                ->subject($titulo);
+                        $message->from('noreply@clipagem.online','Clipping de Redes Sociais');
+                    });
+                }                           
+            }
         }
     }
 }
