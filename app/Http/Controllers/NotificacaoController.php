@@ -105,9 +105,6 @@ class NotificacaoController extends Controller
 
                 $lista = explode(",",$emails);
 
-                $lista[] = 'robsonferduda@gmail.com';
-                $lista[] = 'alvaro@studioclipagem.com.br';
-
                 for ($i=0; $i < count($lista); $i++) { 
 
                     Mail::send('notificacoes.redes-sociais.mensagem', $data, function($message) use ($lista, $i, $msg, $titulo) {
