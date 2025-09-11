@@ -101,12 +101,19 @@ class NotificacaoController extends Controller
 
                 $titulo = "Notificação de Redes Sociais - ".date("d/m/Y H:i:s"); 
               
-                $emails = array('robsonferduda@gmail.com','alvaro@studioclipagem.com.br');
+                $emails = $cliente->emails;
 
-                for ($i=0; $i < count($emails); $i++) { 
+                $lista = explode(",",$emails);
 
-                    Mail::send('notificacoes.redes-sociais.mensagem', $data, function($message) use ($emails, $i, $msg, $titulo) {
-                        $message->to($emails[$i])
+                $lista[] = 'robsonferduda@gmail.com';
+                $lista[] = 'alvaro@studioclipagem.com.br';
+
+                dd($lista);
+
+                for ($i=0; $i < count($lista); $i++) { 
+
+                    Mail::send('notificacoes.redes-sociais.mensagem', $data, function($message) use ($lista, $i, $msg, $titulo) {
+                        $message->to($lista[$i])
                                 ->subject($titulo);
                         $message->from('noreply@clipagem.online','Notificação de Redes Sociais');
                     });
