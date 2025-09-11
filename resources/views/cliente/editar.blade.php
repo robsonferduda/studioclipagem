@@ -167,7 +167,7 @@
                                 <p class="mb-0 mt-3"> <i class="fa fa-hashtag"></i> Monitoramento de Hashtags</p>
                                 <div class="form-check float-left mr-3">
                                     <label class="form-check-label mt-2">
-                                        <input class="form-check-input" {{ ($cliente->fl_hastag) ? 'checked' : '' }} type="checkbox" name="fl_hastag" value="true">
+                                        <input class="form-check-input" {{ ($cliente->fl_hashtag) ? 'checked' : '' }} type="checkbox" name="fl_hastag" value="true">
                                             COLETAR HASHTAGS
                                         <span class="form-check-sign"></span>
                                     </label>
