@@ -2162,6 +2162,7 @@
                     ids_tv: noticiasSelecionadas.tv,
                     ids_radio: noticiasSelecionadas.radio,
                     ids_impresso: noticiasSelecionadas.impresso,
+                    cliente_id: $('#id_cliente').val(), // Adicionar cliente_id selecionado
                     _token: $('meta[name="csrf-token"]').attr('content')
                 },
                 dataType: 'json',
@@ -2247,6 +2248,7 @@
                 ids_tv: noticiasSelecionadas.tv,
                 ids_radio: noticiasSelecionadas.radio,
                 ids_impresso: noticiasSelecionadas.impresso,
+                cliente_id: $('#id_cliente').val(), // Adicionar cliente_id selecionado
                 _token: $('meta[name="csrf-token"]').attr('content')
             },
             dataType: 'json',
@@ -2367,6 +2369,9 @@
         $.ajax({
             url: window.host + '/cliente/relatorios/noticia/' + id + '/' + tipo,
             type: 'GET',
+            data: {
+                cliente_id: $('#id_cliente').val() // Adicionar cliente_id selecionado
+            },
             dataType: 'json',
             timeout: 3600000, // 1 hora de timeout
             headers: {
@@ -2805,6 +2810,7 @@
                 ids_tv: noticiasSelecionadas.tv,
                 ids_radio: noticiasSelecionadas.radio,
                 ids_impresso: noticiasSelecionadas.impresso,
+                cliente_id: $('#id_cliente').val(), // Adicionar cliente_id selecionado
                 _token: $('meta[name="csrf-token"]').attr('content')
             },
             dataType: 'json',
@@ -2868,6 +2874,7 @@
                 noticia_id: noticiaId,
                 tipo: tipo,
                 sentimento: novoSentimento,
+                cliente_id: $('#id_cliente').val(), // Adicionar cliente_id selecionado
                 _token: $('meta[name="csrf-token"]').attr('content')
             },
             dataType: 'json',

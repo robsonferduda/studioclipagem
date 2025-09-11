@@ -1359,9 +1359,9 @@ class PDFGenerator:
                 else:
                     # Fallback para outros campos
                     for campo in ['midia', 'arquivo_midia']:
-                        valor = row.get(campo, '')
-                        if valor and valor not in valores_invalidos:
-                            midia_file = valor
+                        campo_valor = row.get(campo, '')
+                        if campo_valor and campo_valor not in valores_invalidos:
+                            midia_file = campo_valor
                             break
                 
                 public_link = self._generate_public_media_link(midia_file, midia_tipo) if midia_file else ''
