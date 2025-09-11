@@ -120,6 +120,20 @@
                                         <span class="form-check-sign"></span>
                                     </label>
                                 </div>
+                                <div class="form-check float-left mr-3">
+                                    <label class="form-check-label mt-2">
+                                        <input class="form-check-input" {{  old('fl_instagram') ? 'checked' : '' }} type="checkbox" name="fl_instagram" value="true">
+                                        INSTAGRAM
+                                        <span class="form-check-sign"></span>
+                                    </label>
+                                </div>
+                                <div class="form-check float-left mr-3">
+                                    <label class="form-check-label mt-2">
+                                        <input class="form-check-input" {{  old('fl_facebook') ? 'checked' : '' }} type="checkbox" name="fl_facebook" value="true">
+                                        FACEBOOK
+                                        <span class="form-check-sign"></span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -151,12 +165,33 @@
                                 </div>
                             </div>
                         </div>
-                    </div>                   
+                    </div>      
+
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12">
+                                <p class="mb-0 mt-3"> <i class="fa fa-hashtag"></i> Monitoramento de Hashtags</p>
+                                <div class="form-check float-left mr-3">
+                                    <label class="form-check-label mt-2">
+                                        <input class="form-check-input" {{ old('fl_hastag') ? 'checked' : '' }} type="checkbox" name="fl_hastag" value="true">
+                                            COLETAR HASHTAGS
+                                        <span class="form-check-sign"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12">
+                                <p class="mb-0 mt-0"><i class="fa fa-hashtag"></i> Informe as Hashtags <span class="text-info">Informe as hastags separadas por vírgula</span></p>
+                                <div class="form-group">
+                                    <textarea class="form-control" name="hashtags" id="hashtags" rows="3">{{ old('hashtags') }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>             
                  
                     <div class="col-md-12">
                         <div class="row">
                             <div class="col-md-12 col-sm-12">
-                                <p class="mb-2"><i class="fa fa-envelope"></i> Endereços Eletrônicos</p>
+                                <p class="mb-2"><i class="fa fa-envelope"></i> Endereços Eletrônicos <span class="text-info">Informe os endereços separados por vírgula</span></p>
                                 <div class="form-group">
                                     <textarea class="form-control" name="emails" id="emails" rows="3">{{ old('emails') }}</textarea>
                                 </div>

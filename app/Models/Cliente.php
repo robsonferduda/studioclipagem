@@ -33,6 +33,8 @@ class Cliente extends Model
                         'fl_relatorio_consolidado',
                         'fl_hashtag',
                         'hashtags',
+                        'fl_instagram',
+                        'fl_facebook',
                         'fl_retorno_midia'];
 
     public function area()
