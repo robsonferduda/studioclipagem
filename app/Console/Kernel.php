@@ -39,9 +39,9 @@ class Kernel extends ConsoleKernel
         $schedule->command('radio:cron')->everyTwoHours();
         $schedule->command('tv:cron')->everyTwoHours();
 
-        $schedule->command('facebook:cron')->everyTwoHours();
-        $schedule->command('instagram:cron')->everyTwoHours();
-        $schedule->command('notificacao:cron')->everyTwoHours();
+        $schedule->command('facebook:cron')->hourly();
+        $schedule->command('instagram:cron')->hourly();
+        $schedule->command('notificacao:cron')->hourly();
 
        //$schedule->command('impresso:cron')->everyTwoHours()->between('2:00', '22:00'); //Executa a tarefa a cada 2 hora 
         //$schedule->command('radio:cron')->everyThreeHours()->between('0:00', '22:00'); //Executa a tarefa a cada 2 hora 
