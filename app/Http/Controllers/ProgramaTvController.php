@@ -245,6 +245,14 @@ class ProgramaTvController extends Controller
     public function adicionar(Request $request)
     {
         try {
+
+            $valor_segundo = $request->input('valor_segundo'); // Ex: "1.234,56"
+            $valor_segundo = str_replace('.', '', $valor_segundo);     // Remove pontos (milhar)
+            $valor_segundo = str_replace(',', '.', $valor_segundo);    // Troca vírgula por ponto
+            $valor_segundo = floatval($valor_segundo);
+
+            $request->merge(['valor_segundo' => $valor_segundo]); // Atualiza o valor no request
+            
             ProgramaEmissoraWeb::create($request->all());
             $retorno = array('flag' => true,
                              'msg' => "Dados inseridos com sucesso");
