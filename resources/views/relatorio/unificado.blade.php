@@ -205,8 +205,20 @@
                         <div class="col-md-12" id="areas-section" style="display: none;">
                             <div class="form-group">
                                 <label>Áreas do Cliente</label>
-                                <div id="areas-checkbox-group" class="d-flex flex-wrap" style="gap: 15px;">
-            
+                                <div class="d-flex flex-wrap" style="gap: 15px;">
+                                    <!-- Opção para notícias sem área -->
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" type="checkbox" name="sem_area" id="sem_area">
+                                            <span class="form-check-sign"></span>
+                                            <span><i class="fa fa-question-circle text-muted mr-1"></i>Sem área</span>
+                                        </label>
+                                    </div>
+                                    
+                                    <!-- Áreas específicas do cliente -->
+                                    <div id="areas-checkbox-group" class="d-flex flex-wrap" style="gap: 15px;">
+                
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -307,6 +319,9 @@
                         <button type="button" class="btn btn-warning" id="btnGerenciarTags" title="Adicionar tags às notícias selecionadas">
                             <i class="fa fa-tags"></i> Gerenciar Tags
                         </button>
+                        <button type="button" class="btn btn-info" id="btnGerenciarAreas" title="Vincular áreas às notícias selecionadas" style="display: none;">
+                            <i class="fa fa-map-marker"></i> Gerenciar Áreas
+                        </button>
                         <button type="button" class="btn btn-danger" id="btnGerarRelatorio">
                             <i class="fa fa-file-pdf-o"></i>
                             Gerar Relatório PDF (<span id="qtdSelecionadasBtn">0</span>)
@@ -381,6 +396,78 @@
                             </div>
                             <small class="form-text text-muted">
                                 Clique no "X" ao lado de uma tag para removê-la das notícias selecionadas.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    <i class="fa fa-times"></i> Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Gerenciar Áreas -->
+<div class="modal fade" id="modalGerenciarAreas" tabindex="-1" role="dialog" aria-labelledby="modalGerenciarAreasLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalGerenciarAreasLabel">
+                    <i class="fa fa-map-marker"></i> Gerenciar Áreas das Notícias
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-info">
+                            <i class="fa fa-info-circle"></i>
+                            <strong>Notícias selecionadas:</strong> <span id="qtdNoticiasParaAreas">0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="selecionarArea">
+                                <i class="fa fa-map-marker"></i> Vincular Área às Notícias
+                            </label>
+                            <div class="input-group">
+                                <select class="form-control" id="selecionarArea">
+                                    <option value="">Selecione uma área...</option>
+                                </select>
+                                <div class="input-group-append">
+                                    <button class="btn btn-success" type="button" id="btnVincularArea">
+                                        <i class="fa fa-link"></i> Vincular
+                                    </button>
+                                </div>
+                            </div>
+                            <small class="form-text text-muted">
+                                Selecione uma área e clique em "Vincular" para aplicar às notícias selecionadas.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>
+                                <i class="fa fa-list"></i> Áreas Vinculadas às Notícias Selecionadas
+                            </label>
+                            <div id="areasExistentes" class="border rounded p-3" style="min-height: 100px; background-color: #f8f9fa;">
+                                <div class="text-muted text-center">
+                                    <i class="fa fa-spinner fa-spin"></i> Carregando áreas...
+                                </div>
+                            </div>
+                            <small class="form-text text-muted">
+                                Clique no "X" ao lado de uma área para desvinculá-la das notícias selecionadas.
                             </small>
                         </div>
                     </div>
@@ -610,6 +697,30 @@
 }
 
 .tag-badge-removivel .remove-tag {
+    margin-left: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Estilos para badges de áreas */
+.area-badge-removivel {
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 3px;
+    background-color: #28a745;
+    color: white;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.area-badge-removivel:hover {
+    background-color: #dc3545;
+}
+
+.area-badge-removivel .remove-area {
     margin-left: 5px;
     font-weight: bold;
     cursor: pointer;
@@ -1368,9 +1479,11 @@
         if (config.fl_areas) {
             console.log('✅ Mostrando seção de áreas (fl_areas = true)');
             $('#areas-section').show();
+            $('#btnGerenciarAreas').show(); // Mostrar botão de gerenciar áreas
         } else {
             console.log('❌ Ocultando seção de áreas (fl_areas = ' + config.fl_areas + ')');
             $('#areas-section').hide();
+            $('#btnGerenciarAreas').hide(); // Ocultar botão de gerenciar áreas
         }
         
         // Sentimento
@@ -1488,6 +1601,7 @@
     // Limpar áreas (movido para o escopo global)
     function limparAreas() {
         $('#areas-checkbox-group').empty();
+        $('#sem_area').prop('checked', false);
     }
 
     $( document ).ready(function() {
@@ -1548,6 +1662,11 @@
             abrirModalGerenciarTags();
         });
 
+        // Botão gerenciar áreas
+        $('#btnGerenciarAreas').on('click', function() {
+            abrirModalGerenciarAreas();
+        });
+
         // Botão recarregar tags
         $('#btnRecarregarTags').on('click', function() {
             var clienteId = obterClienteSelecionado();
@@ -1591,6 +1710,11 @@
             if (e.which === 13) {
                 adicionarTagNoticiaSelecionadas();
             }
+        });
+
+        // Botão vincular área no modal
+        $('#btnVincularArea').on('click', function() {
+            vincularAreaNoticiaSelecionadas();
         });
 
         // Pesquisar notícias
@@ -1644,6 +1768,9 @@
                     formData.areas.push(parseInt($(this).val()));
                 });
             }
+            
+            // Filtro "Sem área"
+            formData.sem_area = $('#sem_area').is(':checked');
 
             // Validações
             if (!formData.data_inicio || !formData.data_fim) {
@@ -2278,6 +2405,30 @@
             $('#modalGerenciarTags').modal('show');
         }
 
+        // Abrir modal de gerenciar áreas
+        function abrirModalGerenciarAreas() {
+            var clienteId = obterClienteSelecionado();
+            if (!clienteId) {
+                alert('Por favor, selecione um cliente primeiro.');
+                return;
+            }
+            
+            var noticiasSelecionadas = obterNoticiasSelecionadas();
+            var totalSelecionadas = noticiasSelecionadas.web.length + noticiasSelecionadas.tv.length + 
+                                   noticiasSelecionadas.radio.length + noticiasSelecionadas.impresso.length;
+            
+            if (totalSelecionadas === 0) {
+                alert('Por favor, selecione ao menos uma notícia para gerenciar áreas.');
+                return;
+            }
+
+            $('#qtdNoticiasParaAreas').text(totalSelecionadas);
+            $('#selecionarArea').val('');
+            carregarAreasDisponiveisSelect(clienteId);
+            carregarAreasNoticiaSelecionadas();
+            $('#modalGerenciarAreas').modal('show');
+        }
+
         // A função carregarTagsNoticiaSelecionadas foi movida para o escopo global
 
         // Adicionar tag às notícias selecionadas
@@ -2433,6 +2584,349 @@
                 
                 $('#tagsExistentes').html('<div class="alert alert-danger">Erro ao carregar tags. Tente novamente.</div>');
             }
+        });
+    }
+
+    // ===== FUNÇÕES PARA GERENCIAR ÁREAS =====
+
+    // Carregar áreas disponíveis para o select do modal
+    function carregarAreasDisponiveisSelect(clienteId) {
+        console.log('Carregando áreas disponíveis para o select, cliente:', clienteId);
+        
+        $.ajax({
+            url: window.host + '/api/cliente/' + clienteId + '/areas',
+            type: 'GET',
+            dataType: 'json',
+            timeout: 3600000,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                console.log('Áreas disponíveis para select:', response);
+                
+                var selectHtml = '<option value="">Selecione uma área...</option>';
+                
+                if (response && Array.isArray(response) && response.length > 0) {
+                    response.forEach(function(area) {
+                        var nomeArea = area.nome || area.descricao || 'Área sem nome';
+                        selectHtml += '<option value="' + area.id + '">' + escapeHtml(nomeArea) + '</option>';
+                    });
+                }
+                
+                $('#selecionarArea').html(selectHtml);
+            },
+            error: function(xhr, status, error) {
+                console.error('Erro ao carregar áreas para select:', error);
+                $('#selecionarArea').html('<option value="">Erro ao carregar áreas</option>');
+            }
+        });
+    }
+
+    // Carregar áreas das notícias selecionadas
+    function carregarAreasNoticiaSelecionadas() {
+        var noticiasSelecionadas = obterNoticiasSelecionadas();
+        
+        $('#areasExistentes').html('<div class="text-center"><i class="fa fa-spinner fa-spin"></i> Carregando áreas...</div>');
+        
+        $.ajax({
+            url: window.host + '/cliente/areas/noticias',
+            type: 'POST',
+            data: {
+                ids_web: noticiasSelecionadas.web,
+                ids_tv: noticiasSelecionadas.tv,
+                ids_radio: noticiasSelecionadas.radio,
+                ids_impresso: noticiasSelecionadas.impresso,
+                cliente_id: obterClienteSelecionado(),
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            dataType: 'json',
+            timeout: 3600000,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                console.log('Áreas das notícias selecionadas:', response);
+                
+                var areasHtml = '';
+                
+                if (response && Array.isArray(response) && response.length > 0) {
+                    response.forEach(function(area) {
+                        areasHtml += '<span class="area-badge-removivel" data-area-id="' + area.id + '" data-area-nome="' + escapeHtml(area.nome) + '">';
+                        areasHtml += '<i class="fa fa-map-marker mr-1"></i>' + escapeHtml(area.nome) + ' <span class="remove-area" onclick="desvincularAreaNoticiaSelecionadas(' + area.id + ', \'' + escapeHtml(area.nome) + '\')">×</span>';
+                        areasHtml += '</span>';
+                    });
+                } else {
+                    areasHtml = '<div class="text-muted text-center"><i class="fa fa-info-circle mr-1"></i>Nenhuma área encontrada nas notícias selecionadas</div>';
+                }
+                
+                $('#areasExistentes').html(areasHtml);
+            },
+            error: function(xhr, status, error) {
+                console.error('Erro ao carregar áreas das notícias:', {
+                    status: status,
+                    error: error,
+                    xhr: xhr.responseText
+                });
+                
+                var errorMessage = 'Erro ao carregar áreas. Tente novamente.';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                }
+                
+                $('#areasExistentes').html('<div class="alert alert-danger">' + errorMessage + '</div>');
+            }
+        });
+    }
+
+    // Vincular área às notícias selecionadas
+    function vincularAreaNoticiaSelecionadas() {
+        var areaId = $('#selecionarArea').val();
+        var areaNome = $('#selecionarArea option:selected').text();
+        
+        if (!areaId) {
+            alert('Por favor, selecione uma área.');
+            return;
+        }
+
+        var clienteId = obterClienteSelecionado();
+        if (!clienteId) {
+            alert('Por favor, selecione um cliente primeiro.');
+            return;
+        }
+
+        var noticiasSelecionadas = obterNoticiasSelecionadas();
+        
+        $('#btnVincularArea').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Vinculando...');
+        
+        console.log('Iniciando vinculação em lote de área às notícias:', {
+            area_id: areaId,
+            area_nome: areaNome,
+            noticias: noticiasSelecionadas
+        });
+
+        // Vamos vincular individualmente cada notícia usando a rota existente
+        vincularAreaLote(noticiasSelecionadas, areaId, areaNome);
+    }
+
+    // Vincular área em lote às notícias (função auxiliar)
+    function vincularAreaLote(noticiasSelecionadas, areaId, areaNome) {
+        var todasNoticias = [];
+        
+        // Preparar lista de todas as notícias com seus tipos
+        ['web', 'tv', 'radio', 'impresso'].forEach(function(tipo) {
+            if (noticiasSelecionadas[tipo] && noticiasSelecionadas[tipo].length > 0) {
+                noticiasSelecionadas[tipo].forEach(function(id) {
+                    todasNoticias.push({id: id, tipo: tipo});
+                });
+            }
+        });
+
+        if (todasNoticias.length === 0) {
+            $('#btnVincularArea').prop('disabled', false).html('<i class="fa fa-link"></i> Vincular');
+            alert('Nenhuma notícia selecionada.');
+            return;
+        }
+
+        var sucessos = 0;
+        var erros = 0;
+        var processadas = 0;
+
+        console.log('Total de notícias para vincular:', todasNoticias.length);
+
+        todasNoticias.forEach(function(noticia) {
+            $.ajax({
+                url: window.host + '/cliente/relatorios/vincular-noticia-area',
+                type: 'POST',
+                data: {
+                    noticia_id: noticia.id,
+                    tipo_midia: noticia.tipo,
+                    area_id: areaId,
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                dataType: 'json',
+                timeout: 3600000,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    if (response.success) {
+                        sucessos++;
+                    } else {
+                        erros++;
+                    }
+                    processadas++;
+                    
+                    console.log('Progresso vinculação:', {
+                        processadas: processadas,
+                        total: todasNoticias.length,
+                        sucessos: sucessos,
+                        erros: erros
+                    });
+
+                    // Quando terminar todas as requisições
+                    if (processadas === todasNoticias.length) {
+                        finalizarVinculacaoArea(sucessos, erros, areaNome);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    erros++;
+                    processadas++;
+                    
+                    console.error('Erro ao vincular notícia individual:', {
+                        noticia: noticia,
+                        error: error
+                    });
+
+                    // Quando terminar todas as requisições
+                    if (processadas === todasNoticias.length) {
+                        finalizarVinculacaoArea(sucessos, erros, areaNome);
+                    }
+                }
+            });
+        });
+    }
+
+    // Finalizar processo de vinculação em lote
+    function finalizarVinculacaoArea(sucessos, erros, areaNome) {
+        $('#btnVincularArea').prop('disabled', false).html('<i class="fa fa-link"></i> Vincular');
+        
+        var mensagem = 'Vinculação concluída!\n';
+        mensagem += sucessos + ' notícias vinculadas com sucesso à área "' + areaNome + '"';
+        if (erros > 0) {
+            mensagem += '\n' + erros + ' notícias não puderam ser vinculadas.';
+        }
+        
+        alert(mensagem);
+        
+        // Resetar select e recarregar áreas
+        $('#selecionarArea').val('');
+        carregarAreasNoticiaSelecionadas();
+        
+        console.log('✅ Vinculação de área finalizada:', {
+            sucessos: sucessos,
+            erros: erros,
+            area: areaNome
+        });
+    }
+
+    // Desvincular área das notícias selecionadas
+    function desvincularAreaNoticiaSelecionadas(areaId, areaNome) {
+        if (!confirm('Deseja desvincular a área "' + areaNome + '" de todas as notícias selecionadas?')) {
+            return;
+        }
+
+        var clienteId = obterClienteSelecionado();
+        if (!clienteId) {
+            alert('Por favor, selecione um cliente primeiro.');
+            return;
+        }
+
+        var noticiasSelecionadas = obterNoticiasSelecionadas();
+        
+        console.log('Iniciando desvinculação de área das notícias:', {
+            area_id: areaId,
+            area_nome: areaNome,
+            noticias: noticiasSelecionadas
+        });
+
+        // Desvincular individualmente cada notícia (passando null como area_id)
+        desvincularAreaLote(noticiasSelecionadas, areaId, areaNome);
+    }
+
+    // Desvincular área em lote das notícias (função auxiliar)
+    function desvincularAreaLote(noticiasSelecionadas, areaId, areaNome) {
+        var todasNoticias = [];
+        
+        // Preparar lista de todas as notícias com seus tipos
+        ['web', 'tv', 'radio', 'impresso'].forEach(function(tipo) {
+            if (noticiasSelecionadas[tipo] && noticiasSelecionadas[tipo].length > 0) {
+                noticiasSelecionadas[tipo].forEach(function(id) {
+                    todasNoticias.push({id: id, tipo: tipo});
+                });
+            }
+        });
+
+        if (todasNoticias.length === 0) {
+            alert('Nenhuma notícia selecionada.');
+            return;
+        }
+
+        var sucessos = 0;
+        var erros = 0;
+        var processadas = 0;
+
+        console.log('Total de notícias para desvincular área:', todasNoticias.length);
+
+        todasNoticias.forEach(function(noticia) {
+            $.ajax({
+                url: window.host + '/cliente/relatorios/vincular-noticia-area',
+                type: 'POST',
+                data: {
+                    noticia_id: noticia.id,
+                    tipo_midia: noticia.tipo,
+                    area_id: null, // null para desvincular
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                dataType: 'json',
+                timeout: 3600000,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    if (response.success) {
+                        sucessos++;
+                    } else {
+                        erros++;
+                    }
+                    processadas++;
+                    
+                    console.log('Progresso desvinculação:', {
+                        processadas: processadas,
+                        total: todasNoticias.length,
+                        sucessos: sucessos,
+                        erros: erros
+                    });
+
+                    // Quando terminar todas as requisições
+                    if (processadas === todasNoticias.length) {
+                        finalizarDesvinculacaoArea(sucessos, erros, areaNome);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    erros++;
+                    processadas++;
+                    
+                    console.error('Erro ao desvincular notícia individual:', {
+                        noticia: noticia,
+                        error: error
+                    });
+
+                    // Quando terminar todas as requisições
+                    if (processadas === todasNoticias.length) {
+                        finalizarDesvinculacaoArea(sucessos, erros, areaNome);
+                    }
+                }
+            });
+        });
+    }
+
+    // Finalizar processo de desvinculação em lote
+    function finalizarDesvinculacaoArea(sucessos, erros, areaNome) {
+        var mensagem = 'Desvinculação concluída!\n';
+        mensagem += sucessos + ' notícias desvinculadas da área "' + areaNome + '"';
+        if (erros > 0) {
+            mensagem += '\n' + erros + ' notícias não puderam ser desvinculadas.';
+        }
+        
+        alert(mensagem);
+        
+        // Recarregar áreas
+        carregarAreasNoticiaSelecionadas();
+        
+        console.log('✅ Desvinculação de área finalizada:', {
+            sucessos: sucessos,
+            erros: erros,
+            area: areaNome
         });
     }
 

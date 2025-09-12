@@ -96,6 +96,9 @@ Route::middleware(['web'])->group(function () {
 	Route::post('cliente/tags/adicionar','ClienteController@adicionarTag');
 	Route::post('cliente/tags/remover','ClienteController@removerTag');
 	
+	// Rotas para gerenciamento de áreas
+	Route::post('cliente/areas/noticias','ClienteController@getAreasNoticias');
+	
 	// Rota para alterar sentimento de notícias
 	Route::post('cliente/relatorios/alterar-sentimento','ClienteController@alterarSentimento');
 	

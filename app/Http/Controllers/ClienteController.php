@@ -840,6 +840,7 @@ class ClienteController extends Controller
             $retornoFiltro = $request->input('retorno', 'com_retorno');
             $valorFiltros = $request->input('valor', ['com_valor', 'sem_valor']);
             $areasFiltros = $request->input('areas', []);
+            $semAreaFiltro = filter_var($request->input('sem_area', false), FILTER_VALIDATE_BOOLEAN);
             $tagsFiltros = $request->input('tags_filtro', []);
             
             Log::info('=== FILTROS EXTRAÍDOS DA REQUISIÇÃO ===', [
@@ -848,6 +849,11 @@ class ClienteController extends Controller
                 'retornoFiltro' => $retornoFiltro,
                 'valorFiltros' => $valorFiltros,
                 'areasFiltros' => $areasFiltros,
+                'areasFiltros_empty' => empty($areasFiltros),
+                'areasFiltros_count' => count($areasFiltros),
+                'semAreaFiltro' => $semAreaFiltro,
+                'semAreaFiltro_raw' => $request->input('sem_area'),
+                'semAreaFiltro_type' => gettype($semAreaFiltro),
                 'tagsFiltros' => $tagsFiltros,
                 'tem_tags_filtro' => !empty($tagsFiltros),
                 'count_tags_filtro' => count($tagsFiltros)
@@ -876,13 +882,15 @@ class ClienteController extends Controller
                 'retorno' => [$retornoFiltro],
                 'valor' => $valorFiltros,
                 'areas' => $areasFiltros,
+                'sem_area' => $semAreaFiltro,
                 'tags_filtro' => $tagsFiltros,
                 'fontes_filtro' => $fontesFiltros
             ];
             
             Log::info('=== FILTROS MONTADOS PARA RELATORIO SERVICE ===', [
                 'filtros_completos' => $filtros,
-                'tem_tags_no_filtro' => isset($filtros['tags_filtro']) && !empty($filtros['tags_filtro'])
+                'tem_tags_no_filtro' => isset($filtros['tags_filtro']) && !empty($filtros['tags_filtro']),
+                'sem_area_ativo' => $filtros['sem_area'] ?? false
             ]);
             
             $relatorioService = new RelatorioService();
@@ -2120,6 +2128,89 @@ print('SUCCESS' if success else 'ERROR')
             Log::error('Erro ao buscar áreas do cliente: ' . $e->getMessage());
             return response()->json([
                 'error' => 'Erro interno: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Busca áreas vinculadas às notícias selecionadas
+     */
+    public function getAreasNoticias(Request $request): JsonResponse
+    {
+        try {
+            // Para unificado.blade.php, o cliente vem da requisição
+            $clienteId = $request->input('cliente_id');
+            
+            // Se não vier da requisição, tenta pegar da sessão (páginas normais)
+            if (!$clienteId) {
+                $clienteId = $this->client_id;
+            }
+            
+            Log::info('getAreasNoticias - dados recebidos:', [
+                'cliente_id_request' => $request->input('cliente_id'),
+                'cliente_id_sessao' => $this->client_id,
+                'cliente_id_final' => $clienteId,
+                'todos_parametros' => $request->all()
+            ]);
+            
+            if (!$clienteId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cliente não identificado'
+                ], 400);
+            }
+
+            $idsWeb = $request->input('ids_web', []);
+            $idsTv = $request->input('ids_tv', []);
+            $idsRadio = $request->input('ids_radio', []);
+            $idsImpresso = $request->input('ids_impresso', []);
+
+            if (empty($idsWeb) && empty($idsTv) && empty($idsRadio) && empty($idsImpresso)) {
+                return response()->json([]);
+            }
+
+            $areas = [];
+            $tipoIdMap = ['web' => 2, 'impresso' => 1, 'tv' => 4, 'radio' => 3];
+
+            // Buscar áreas para cada tipo de notícia
+            foreach ([
+                'web' => $idsWeb,
+                'tv' => $idsTv,
+                'radio' => $idsRadio,
+                'impresso' => $idsImpresso
+            ] as $tipo => $ids) {
+                if (!empty($ids)) {
+                    $tipoId = $tipoIdMap[$tipo];
+                    
+                    $areasEncontradas = DB::table('noticia_cliente as nc')
+                        ->join('area as a', 'nc.area', '=', 'a.id')
+                        ->whereIn('nc.noticia_id', $ids)
+                        ->where('nc.tipo_id', $tipoId)
+                        ->where('nc.cliente_id', $clienteId)
+                        ->whereNotNull('nc.area')
+                        ->select('a.id', 'a.descricao as nome')
+                        ->distinct()
+                        ->get();
+
+                    foreach ($areasEncontradas as $area) {
+                        $areaKey = $area->id;
+                        if (!isset($areas[$areaKey])) {
+                            $areas[$areaKey] = [
+                                'id' => $area->id,
+                                'nome' => $area->nome
+                            ];
+                        }
+                    }
+                }
+            }
+
+            return response()->json(array_values($areas));
+
+        } catch (\Exception $e) {
+            Log::error('Erro ao buscar áreas das notícias: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro interno: ' . $e->getMessage()
             ], 500);
         }
     }
