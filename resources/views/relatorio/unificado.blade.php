@@ -1202,13 +1202,36 @@
             type: 'GET',
             dataType: 'json',
             success: function(config) {
-                console.log('Configurações do cliente carregadas:', config);
+                console.log('📋 DEBUG Resposta bruta das configurações:', config);
+                console.log('📋 DEBUG Tipo da resposta:', typeof config);
+                console.log('📋 DEBUG Chaves disponíveis:', Object.keys(config || {}));
+                
+                // Verificar se a resposta é válida
+                if (!config || typeof config !== 'object') {
+                    console.error('❌ Configurações inválidas recebidas:', config);
+                    $('#tipos-midia-container').html('<div class="alert alert-danger">Erro: configurações inválidas do cliente.</div>');
+                    resetarFormulario();
+                    return;
+                }
                 
                 // Atualizar flags globais
                 window.mostrarAreas = config.fl_areas || false;
                 window.mostrarSentimento = config.fl_sentimento || false;
                 window.mostrarRetornoMidia = config.fl_retorno_midia || false;
                 window.mostrarBotoesImagem = config.fl_print || false;
+                
+                console.log('🔧 DEBUG Configurações do cliente processadas:', {
+                    cliente_id: clienteId,
+                    'config.fl_areas (raw)': config.fl_areas,
+                    'config.fl_areas (type)': typeof config.fl_areas,
+                    'config.fl_areas (boolean)': !!config.fl_areas,
+                    fl_sentimento: config.fl_sentimento,
+                    fl_retorno_midia: config.fl_retorno_midia,
+                    fl_print: config.fl_print,
+                    'window.mostrarAreas': window.mostrarAreas,
+                    areas_section_exists: $('#areas-section').length > 0,
+                    areas_section_visible_before: $('#areas-section').is(':visible')
+                });
                 
                 // Carregar tipos de mídia
                 carregarTiposMidiaCliente(config);
@@ -1218,7 +1241,17 @@
                 
                 // Carregar áreas se habilitado
                 if (config.fl_areas) {
+                    console.log('✅ Cliente tem permissão para áreas, carregando...', {
+                        fl_areas_value: config.fl_areas,
+                        areas_section_visible_after_toggle: $('#areas-section').is(':visible')
+                    });
                     carregarAreasCliente(clienteId);
+                } else {
+                    console.log('❌ Cliente NÃO tem permissão para áreas', {
+                        fl_areas_value: config.fl_areas,
+                        fl_areas_type: typeof config.fl_areas,
+                        fl_areas_truthy: !!config.fl_areas
+                    });
                 }
                 
                 // Recarregar tags e fontes para o cliente específico
@@ -1329,33 +1362,135 @@
     
     // Função para mostrar/ocultar seções baseado nas permissões
     function toggleSecoesPorPermissoes(config) {
+        console.log('🎛️ DEBUG toggleSecoesPorPermissoes chamado com config:', config);
+        
         // Áreas
         if (config.fl_areas) {
+            console.log('✅ Mostrando seção de áreas (fl_areas = true)');
             $('#areas-section').show();
         } else {
+            console.log('❌ Ocultando seção de áreas (fl_areas = ' + config.fl_areas + ')');
             $('#areas-section').hide();
         }
         
         // Sentimento
         if (config.fl_sentimento) {
+            console.log('✅ Mostrando seções de sentimento (fl_sentimento = true)');
             $('#sentimento-section').show();
             $('#sentimento-relatorio-section').show();
         } else {
+            console.log('❌ Ocultando seções de sentimento (fl_sentimento = ' + config.fl_sentimento + ')');
             $('#sentimento-section').hide();
             $('#sentimento-relatorio-section').hide();
         }
         
         // Retorno de mídia
         if (config.fl_retorno_midia) {
+            console.log('✅ Mostrando seção de retorno de mídia (fl_retorno_midia = true)');
             $('#retorno-midia-section').show();
         } else {
+            console.log('❌ Ocultando seção de retorno de mídia (fl_retorno_midia = ' + config.fl_retorno_midia + ')');
             $('#retorno-midia-section').hide();
         }
+        
+        // Log final do estado das seções
+        setTimeout(function() {
+            console.log('🔍 Estado final das seções após toggleSecoesPorPermissoes:');
+            console.log('  - areas-section visível:', $('#areas-section').is(':visible'));
+            console.log('  - sentimento-section visível:', $('#sentimento-section').is(':visible'));
+            console.log('  - retorno-midia-section visível:', $('#retorno-midia-section').is(':visible'));
+        }, 100);
+    }
+
+    // ===== DEFINIR FUNÇÕES ANTES DE USAR =====
+    
+    // Carregar áreas do cliente específico (movido para o escopo global)
+    function carregarAreasCliente(clienteId) {
+        // Verificar se o elemento existe e se o clienteId foi fornecido
+        if ($('#areas-checkbox-group').length === 0) {
+            console.log('Elemento #areas-checkbox-group não encontrado');
+            return;
+        }
+        
+        if (!clienteId) {
+            console.log('ClienteId não fornecido para carregar áreas');
+            return;
+        }
+        
+        console.log('Carregando áreas do cliente:', clienteId);
+        
+        $.ajax({
+            url: window.host + '/api/cliente/' + clienteId + '/areas',
+            type: 'GET',
+            dataType: 'json',
+            timeout: 3600000, // 1 hora
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                console.log('Áreas carregadas:', response);
+                
+                var areasHtml = '';
+                
+                if (response && Array.isArray(response) && response.length > 0) {
+                    response.forEach(function(area) {
+                        // Usar tanto 'nome' quanto 'descricao' para compatibilidade
+                        var nomeArea = area.nome || area.descricao || 'Área sem nome';
+                        areasHtml += '<div class="form-check" style="margin-right: 10px; margin-bottom: 8px;">';
+                        areasHtml += '<label class="form-check-label">';
+                        areasHtml += '<input class="form-check-input" type="checkbox" name="areas[]" value="' + area.id + '">';
+                        areasHtml += '<span class="form-check-sign"></span>';
+                        areasHtml += '<span>' + escapeHtml(nomeArea) + '</span>';
+                        areasHtml += '</label>';
+                        areasHtml += '</div>';
+                    });
+                } else {
+                    areasHtml = '<p class="text-muted">Nenhuma área encontrada para este cliente</p>';
+                }
+                
+                $('#areas-checkbox-group').html(areasHtml);
+            },
+            error: function(xhr, status, error) {
+                console.error('Erro ao carregar áreas:', {
+                    status: status,
+                    error: error,
+                    xhr: xhr.responseText
+                });
+                
+                var errorMessage = '';
+                try {
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    } else if (xhr.status === 404) {
+                        errorMessage = 'Cliente não possui áreas configuradas ou rota não encontrada.';
+                    } else if (xhr.status === 401) {
+                        errorMessage = 'Acesso negado. Faça login novamente.';
+                    } else if (xhr.status === 500) {
+                        errorMessage = 'Erro interno do servidor. Tente novamente.';
+                    } else {
+                        errorMessage = 'Erro ao carregar áreas. Status: ' + xhr.status;
+                    }
+                } catch (e) {
+                    errorMessage = 'Erro ao carregar áreas. Tente novamente mais tarde.';
+                }
+                
+                $('#areas-checkbox-group').html('<p class="text-warning"><i class="fa fa-exclamation-triangle"></i> ' + errorMessage + '</p>');
+                
+                // Se erro 404, pode ser que o cliente não tenha áreas - ocultar seção
+                if (xhr.status === 404) {
+                    $('#areas-section').hide();
+                    window.mostrarAreas = false;
+                }
+            }
+        });
+    }
+
+    // Limpar áreas (movido para o escopo global)
+    function limparAreas() {
+        $('#areas-checkbox-group').empty();
     }
 
     $( document ).ready(function() {
-
-
 
         // Não carregar automaticamente - será carregado quando cliente for selecionado
         // Tags e fontes serão carregadas após seleção do cliente
@@ -1402,77 +1537,6 @@
             $('#dt_inicial').val(dt_inicial);
             $('#dt_final').val(dt_final);
         });
-
-
-
-        // Funções movidas para o escopo global (início do documento)
-
-        // Carregar áreas do cliente específico
-        function carregarAreasCliente(clienteId) {
-            // Verificar se o elemento existe e se o clienteId foi fornecido
-            if ($('#areas-checkbox-group').length === 0) {
-                console.log('Elemento #areas-checkbox-group não encontrado');
-                return;
-            }
-            
-            if (!clienteId) {
-                console.log('ClienteId não fornecido para carregar áreas');
-                return;
-            }
-            
-            console.log('Carregando áreas do cliente:', clienteId);
-            
-            $.ajax({
-                url: window.host + '/api/cliente/' + clienteId + '/areas',
-                type: 'GET',
-                dataType: 'json',
-                timeout: 3600000, // 1 hora
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function(response) {
-                    console.log('Áreas carregadas:', response);
-                    
-                    var areasHtml = '';
-                    
-                    if (response && Array.isArray(response)) {
-                        response.forEach(function(area) {
-                            areasHtml += '<div class="form-check" style="margin-right: 10px; margin-bottom: 8px;">';
-                            areasHtml += '<label class="form-check-label">';
-                            areasHtml += '<input class="form-check-input" type="checkbox" name="areas[]" value="' + area.id + '">';
-                            areasHtml += '<span class="form-check-sign"></span>';
-                            areasHtml += '<span>' + area.nome + '</span>';
-                            areasHtml += '</label>';
-                            areasHtml += '</div>';
-                        });
-                    } else {
-                        areasHtml = '<p class="text-muted">Nenhuma área encontrada para este cliente</p>';
-                    }
-                    
-                    $('#areas-checkbox-group').html(areasHtml);
-                },
-                error: function(xhr, status, error) {
-                    console.error('Erro ao carregar áreas:', {
-                        status: status,
-                        error: error,
-                        xhr: xhr.responseText
-                    });
-                    
-                    if (xhr.status === 404) {
-                        $('#areas-checkbox-group').html('<p class="text-warning">Rota não encontrada ou cliente não possui áreas configuradas.</p>');
-                    } else if (xhr.status === 401) {
-                        $('#areas-checkbox-group').html('<p class="text-danger">Acesso negado. Faça login novamente.</p>');
-                    } else {
-                        $('#areas-checkbox-group').html('<p class="text-muted">Erro ao carregar áreas. Tente novamente mais tarde.</p>');
-                    }
-                }
-            });
-        }
-
-        // Limpar áreas
-        function limparAreas() {
-            $('#areas-checkbox-group').empty();
-        }
 
         // Botão pesquisar
         $('#btn-pesquisar').on('click', function() {
@@ -2092,6 +2156,61 @@
         
         // Adicionar função de debug ao escopo global para facilitar o debug
         window.debugRelatorioDados = debugInfo;
+        
+        // Função de teste para verificar configurações de um cliente específico
+        window.testarClienteAreas = function(clienteId) {
+            if (!clienteId) {
+                console.error('❌ ID do cliente é obrigatório');
+                return;
+            }
+            
+            console.log('🧪 TESTE: Verificando configurações do cliente', clienteId);
+            
+            $.ajax({
+                url: window.host + '/cliente/configuracoes/' + clienteId,
+                type: 'GET',
+                dataType: 'json',
+                success: function(config) {
+                    console.log('🧪 TESTE: Configurações recebidas:', config);
+                    
+                    var temAreas = config.fl_areas;
+                    console.log('🧪 TESTE: Cliente tem áreas?', {
+                        fl_areas: temAreas,
+                        type: typeof temAreas,
+                        boolean: !!temAreas
+                    });
+                    
+                    if (temAreas) {
+                        console.log('🧪 TESTE: Testando busca de áreas...');
+                        $.ajax({
+                            url: window.host + '/api/cliente/' + clienteId + '/areas',
+                            type: 'GET',
+                            dataType: 'json',
+                            success: function(areas) {
+                                console.log('🧪 TESTE: Áreas encontradas:', areas);
+                                console.log('🧪 TESTE: Quantidade de áreas:', Array.isArray(areas) ? areas.length : 'não é array');
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('🧪 TESTE: Erro ao buscar áreas:', {
+                                    status: xhr.status,
+                                    error: error,
+                                    response: xhr.responseText
+                                });
+                            }
+                        });
+                    } else {
+                        console.log('🧪 TESTE: Cliente não tem permissão para áreas');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('🧪 TESTE: Erro ao buscar configurações:', {
+                        status: xhr.status,
+                        error: error,
+                        response: xhr.responseText
+                    });
+                }
+            });
+        };
 
         // ===== FUNÇÕES DE TAGS =====
 
