@@ -498,6 +498,14 @@
                   </li>
                 @endrole
                 
+                @role('administradores')
+                  <li class="{{ (Session::has('url') and Session::get('url') == 'monitoramento-sistema') ? 'active' : '' }}">
+                    <a href="{{ url('monitoramento/sistema') }}">
+                    <i class="fa fa-desktop"></i>
+                    <p>Monitoramento do Sistema</p>
+                    </a>
+                  </li>
+                @endrole
               
                 <hr/>
 

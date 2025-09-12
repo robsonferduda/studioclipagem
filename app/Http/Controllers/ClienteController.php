@@ -841,6 +841,7 @@ class ClienteController extends Controller
             $valorFiltros = $request->input('valor', ['com_valor', 'sem_valor']);
             $areasFiltros = $request->input('areas', []);
             $semAreaFiltro = filter_var($request->input('sem_area', false), FILTER_VALIDATE_BOOLEAN);
+            $semRetornoFiltro = filter_var($request->input('sem_retorno', false), FILTER_VALIDATE_BOOLEAN);
             $tagsFiltros = $request->input('tags_filtro', []);
             
             Log::info('=== FILTROS EXTRAÍDOS DA REQUISIÇÃO ===', [
@@ -854,6 +855,9 @@ class ClienteController extends Controller
                 'semAreaFiltro' => $semAreaFiltro,
                 'semAreaFiltro_raw' => $request->input('sem_area'),
                 'semAreaFiltro_type' => gettype($semAreaFiltro),
+                'semRetornoFiltro' => $semRetornoFiltro,
+                'semRetornoFiltro_raw' => $request->input('sem_retorno'),
+                'semRetornoFiltro_type' => gettype($semRetornoFiltro),
                 'tagsFiltros' => $tagsFiltros,
                 'tem_tags_filtro' => !empty($tagsFiltros),
                 'count_tags_filtro' => count($tagsFiltros)
@@ -883,6 +887,7 @@ class ClienteController extends Controller
                 'valor' => $valorFiltros,
                 'areas' => $areasFiltros,
                 'sem_area' => $semAreaFiltro,
+                'sem_retorno' => $semRetornoFiltro,
                 'tags_filtro' => $tagsFiltros,
                 'fontes_filtro' => $fontesFiltros
             ];
@@ -890,7 +895,8 @@ class ClienteController extends Controller
             Log::info('=== FILTROS MONTADOS PARA RELATORIO SERVICE ===', [
                 'filtros_completos' => $filtros,
                 'tem_tags_no_filtro' => isset($filtros['tags_filtro']) && !empty($filtros['tags_filtro']),
-                'sem_area_ativo' => $filtros['sem_area'] ?? false
+                'sem_area_ativo' => $filtros['sem_area'] ?? false,
+                'sem_retorno_ativo' => $filtros['sem_retorno'] ?? false
             ]);
             
             $relatorioService = new RelatorioService();

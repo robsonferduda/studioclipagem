@@ -322,6 +322,11 @@ Route::middleware(['web'])->group(function () {
 	Route::get('jornal-web/noticia/{id}','JornalWebController@detalhes');
 	Route::get('jornal-web/noticia/estatisticas/{id}','JornalWebController@getEstatisticas');
 
+	// Monitoramento do Sistema (nova tela admin)
+	Route::get('monitoramento/sistema','MonitoramentoSistemaController@index')->name('monitoramento.sistema');
+	Route::get('monitoramento/sistema/radio','MonitoramentoSistemaController@monitoramentoProgramasRadio')->name('monitoramento.sistema.radio');
+	Route::get('monitoramento/sistema/tv','MonitoramentoSistemaController@monitoramentoProgramasTv')->name('monitoramento.sistema.tv');
+
 	Route::match(array('GET', 'POST'),'monitoramentos','MonitoramentoController@index');
 	Route::match(array('GET', 'POST'),'monitoramento/listar','MonitoramentoController@listar');
 	Route::match(array('GET', 'POST'),'monitoramento/exportacao/web','MonitoramentoController@exportacaoWeb');

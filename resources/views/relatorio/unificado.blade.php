@@ -270,6 +270,21 @@
                         <div class="col-md-12" id="retorno-midia-section" style="display: none;">
                             <div class="form-group">
                                 <label class="form-label fw-semibold mb-2">
+                                    Filtro de retorno de mídia
+                                </label>
+                                
+                                <div class="form-check mb-2">
+                                    <label class="form-check-label check-midia">
+                                        <input class="form-check-input" type="checkbox" name="sem_retorno" id="sem_retorno">
+                                        <span class="form-check-sign"></span>
+                                        <span><i class="fa fa-ban text-muted mr-1"></i>Notícias sem retorno de mídia</span>
+                                    </label>
+                                </div>
+                                <small class="form-text text-muted mb-3">
+                                    Marque esta opção para filtrar apenas notícias que não possuem valor de retorno de mídia definido.
+                                </small>
+                                
+                                <label class="form-label fw-semibold mb-2">
                                     Incluir retorno de mídia no relatório
                                 </label>
                                 <div class="form-check">
@@ -1408,8 +1423,10 @@
             '</div>'
         );
         
-        // Limpar áreas
+        // Limpar áreas e checkboxes de filtros
         $('#areas-checkbox-group').empty();
+        $('#sem_area').prop('checked', false);
+        $('#sem_retorno').prop('checked', false);
         
         // Resetar flags
         window.mostrarAreas = false;
@@ -1602,6 +1619,7 @@
     function limparAreas() {
         $('#areas-checkbox-group').empty();
         $('#sem_area').prop('checked', false);
+        $('#sem_retorno').prop('checked', false);
     }
 
     $( document ).ready(function() {
@@ -1771,6 +1789,9 @@
             
             // Filtro "Sem área"
             formData.sem_area = $('#sem_area').is(':checked');
+            
+            // Filtro "Sem retorno"
+            formData.sem_retorno = $('#sem_retorno').is(':checked');
 
             // Validações
             if (!formData.data_inicio || !formData.data_fim) {

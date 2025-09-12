@@ -85,6 +85,7 @@ class RelatorioService
         $valorFiltros = $filtros['valor'] ?? ['com_valor', 'sem_valor'];
         $areasFiltros = $filtros['areas'] ?? [];
         $semAreaFiltro = $filtros['sem_area'] ?? false;
+        $semRetornoFiltro = $filtros['sem_retorno'] ?? false;
         $tagsFiltros = $filtros['tags_filtro'] ?? [];
         $fontesFiltros = $filtros['fontes_filtro'] ?? [];
         
@@ -98,6 +99,9 @@ class RelatorioService
             'semAreaFiltro' => $semAreaFiltro,
             'semAreaFiltro_type' => gettype($semAreaFiltro),
             'semAreaFiltro_bool' => (bool)$semAreaFiltro,
+            'semRetornoFiltro' => $semRetornoFiltro,
+            'semRetornoFiltro_type' => gettype($semRetornoFiltro),
+            'semRetornoFiltro_bool' => (bool)$semRetornoFiltro,
             'tagsFiltros' => $tagsFiltros,
             'tags_count' => count($tagsFiltros),
             'tem_tags' => !empty($tagsFiltros),
@@ -288,6 +292,28 @@ class RelatorioService
             return "";
         };
 
+        $buildRetornoCondition = function($tablePrefix = "", $valorColumn = "valor_retorno") use ($semRetornoFiltro) {
+            Log::info('🔍 DEBUG buildRetornoCondition:', [
+                'tablePrefix' => $tablePrefix,
+                'valorColumn' => $valorColumn,
+                'semRetornoFiltro' => $semRetornoFiltro,
+                'semRetornoFiltro_type' => gettype($semRetornoFiltro),
+                'semRetornoFiltro_bool_check' => (bool)$semRetornoFiltro
+            ]);
+            
+            // Se filtro sem retorno está ativo, buscar apenas notícias sem valor
+            if ($semRetornoFiltro) {
+                $condition = "({$tablePrefix}{$valorColumn} IS NULL OR {$tablePrefix}{$valorColumn} = 0)";
+                Log::info('✅ Adicionando filtro SEM RETORNO:', [
+                    'condition' => $condition
+                ]);
+                return " AND " . $condition;
+            }
+            
+            Log::info('❌ Filtro sem retorno INATIVO - mostrando TODAS as notícias');
+            return "";
+        };
+
         $buildTagsCondition = function($clienteId, $tipoId) use ($tagsFiltros) {
             if (empty($tagsFiltros)) {
                 Log::info('buildTagsCondition: Nenhuma tag para filtrar', [
@@ -440,6 +466,7 @@ class RelatorioService
                     AND w.deleted_at IS NULL
                     {$buildStatusCondition('nc.')}
                     {$buildValorCondition('w.', 'nu_valor')}
+                    {$buildRetornoCondition('w.', 'nu_valor')}
                     {$buildAreaCondition('nc.')}
                     {$buildTermoCondition('w.', $termo)}
                     {$buildTagsCondition($clienteId, 2)}
@@ -562,6 +589,7 @@ class RelatorioService
                     AND t.duracao IS NOT NULL -- Filtro obrigatório: apenas notícias TV editadas (com duração)
                     {$buildStatusCondition('nc.')}
                     {$buildValorCondition('t.', 'valor_retorno')}
+                    {$buildRetornoCondition('t.', 'valor_retorno')}
                     {$buildAreaCondition('nc.')}
                     {$buildTermoCondition('t.', $termo)}
                     {$buildTagsCondition($clienteId, 4)}
@@ -663,6 +691,7 @@ class RelatorioService
                     AND r.duracao IS NOT NULL -- Filtro obrigatório: apenas notícias Rádio editadas (com duração)
                     {$buildStatusCondition('nc.')}
                     {$buildValorCondition('r.', 'valor_retorno')}
+                    {$buildRetornoCondition('r.', 'valor_retorno')}
                     {$buildAreaCondition('nc.')}
                     {$buildTermoCondition('r.', $termo)}
                     {$buildTagsCondition($clienteId, 3)}
@@ -755,6 +784,7 @@ class RelatorioService
                     AND j.valor_retorno IS NOT NULL -- Filtro obrigatório: apenas notícias Impressas editadas (com retorno de mídia)
                     {$buildStatusCondition('nc.')}
                     {$buildValorCondition('j.', 'valor_retorno')}
+                    {$buildRetornoCondition('j.', 'valor_retorno')}
                     {$buildAreaCondition('nc.')}
                     {$buildTermoCondition('j.', $termo)}
                     {$buildTagsCondition($clienteId, 1)}
