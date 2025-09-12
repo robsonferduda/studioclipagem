@@ -860,6 +860,7 @@
     window.host = $('meta[name="base-url"]').attr('content');
     window.noticiasCarregadas = {};
     window.noticiasCarregadasCount = 0;
+    window.clienteSelecionado = null; // ID do cliente atualmente selecionado
 
     // Função para escapar HTML
     function escapeHtml(text) {
@@ -1182,8 +1183,12 @@
     $('#id_cliente').on('change', function() {
         var clienteId = $(this).val();
         
+        // Armazenar cliente selecionado globalmente
+        window.clienteSelecionado = clienteId;
+        
         if (!clienteId) {
             // Limpar e ocultar seções
+            window.clienteSelecionado = null;
             resetarFormulario();
             return;
         }
@@ -1481,7 +1486,12 @@
 
         // Botão recarregar tags
         $('#btnRecarregarTags').on('click', function() {
-            carregarTagsDisponiveis();
+            var clienteId = obterClienteSelecionado();
+            if (!clienteId) {
+                alert('Por favor, selecione um cliente primeiro.');
+                return;
+            }
+            carregarTagsDisponiveisCliente(clienteId);
         });
 
         // Botão limpar tags selecionadas
@@ -1492,7 +1502,12 @@
 
         // Botão recarregar fontes
         $('#btnRecarregarFontes').on('click', function() {
-            carregarFontesDisponiveis();
+            var clienteId = obterClienteSelecionado();
+            if (!clienteId) {
+                alert('Por favor, selecione um cliente primeiro.');
+                return;
+            }
+            carregarFontesDisponiveisCliente(clienteId);
         });
 
         // Botão limpar fontes selecionadas
@@ -2123,6 +2138,12 @@
 
         // Abrir modal de gerenciar tags
         function abrirModalGerenciarTags() {
+            var clienteId = obterClienteSelecionado();
+            if (!clienteId) {
+                alert('Por favor, selecione um cliente primeiro.');
+                return;
+            }
+            
             var noticiasSelecionadas = obterNoticiasSelecionadas();
             var totalSelecionadas = noticiasSelecionadas.web.length + noticiasSelecionadas.tv.length + 
                                    noticiasSelecionadas.radio.length + noticiasSelecionadas.impresso.length;
@@ -2149,6 +2170,12 @@
                 return;
             }
 
+            var clienteId = obterClienteSelecionado();
+            if (!clienteId) {
+                alert('Por favor, selecione um cliente primeiro.');
+                return;
+            }
+
             var noticiasSelecionadas = obterNoticiasSelecionadas();
             
             $('#btnAdicionarTag').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Adicionando...');
@@ -2162,7 +2189,7 @@
                     ids_tv: noticiasSelecionadas.tv,
                     ids_radio: noticiasSelecionadas.radio,
                     ids_impresso: noticiasSelecionadas.impresso,
-                    cliente_id: $('#id_cliente').val(), // Adicionar cliente_id selecionado
+                    cliente_id: obterClienteSelecionado(), // Usar função auxiliar
                     _token: $('meta[name="csrf-token"]').attr('content')
                 },
                 dataType: 'json',
@@ -2204,6 +2231,11 @@
     });
 
     // ===== FUNÇÕES GLOBAIS =====
+
+    // Função auxiliar para obter cliente selecionado
+    function obterClienteSelecionado() {
+        return window.clienteSelecionado || $('#id_cliente').val() || null;
+    }
 
     // Obter notícias selecionadas
     function obterNoticiasSelecionadas() {
@@ -2248,7 +2280,7 @@
                 ids_tv: noticiasSelecionadas.tv,
                 ids_radio: noticiasSelecionadas.radio,
                 ids_impresso: noticiasSelecionadas.impresso,
-                cliente_id: $('#id_cliente').val(), // Adicionar cliente_id selecionado
+                cliente_id: obterClienteSelecionado(), // Usar função auxiliar
                 _token: $('meta[name="csrf-token"]').attr('content')
             },
             dataType: 'json',
@@ -2370,7 +2402,7 @@
             url: window.host + '/cliente/relatorios/noticia/' + id + '/' + tipo,
             type: 'GET',
             data: {
-                cliente_id: $('#id_cliente').val() // Adicionar cliente_id selecionado
+                cliente_id: obterClienteSelecionado() // Usar função auxiliar
             },
             dataType: 'json',
             timeout: 3600000, // 1 hora de timeout
@@ -2810,7 +2842,7 @@
                 ids_tv: noticiasSelecionadas.tv,
                 ids_radio: noticiasSelecionadas.radio,
                 ids_impresso: noticiasSelecionadas.impresso,
-                cliente_id: $('#id_cliente').val(), // Adicionar cliente_id selecionado
+                cliente_id: obterClienteSelecionado(), // Usar função auxiliar
                 _token: $('meta[name="csrf-token"]').attr('content')
             },
             dataType: 'json',
@@ -2848,6 +2880,12 @@
 
     // Função global para alterar sentimento de uma notícia
     function alterarSentimentoNoticia(selectElement) {
+        var clienteId = obterClienteSelecionado();
+        if (!clienteId) {
+            alert('Por favor, selecione um cliente primeiro.');
+            return;
+        }
+        
         var $select = $(selectElement);
         var noticiaId = $select.data('noticia-id');
         var tipo = $select.data('tipo');
@@ -2874,7 +2912,7 @@
                 noticia_id: noticiaId,
                 tipo: tipo,
                 sentimento: novoSentimento,
-                cliente_id: $('#id_cliente').val(), // Adicionar cliente_id selecionado
+                cliente_id: obterClienteSelecionado(), // Usar função auxiliar
                 _token: $('meta[name="csrf-token"]').attr('content')
             },
             dataType: 'json',
