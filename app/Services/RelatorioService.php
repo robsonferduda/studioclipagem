@@ -84,15 +84,24 @@ class RelatorioService
         $retornoFiltros = $filtros['retorno'] ?? ['com_retorno'];
         $valorFiltros = $filtros['valor'] ?? ['com_valor', 'sem_valor'];
         $areasFiltros = $filtros['areas'] ?? [];
+        $semAreaFiltro = $filtros['sem_area'] ?? false;
+        $semRetornoFiltro = $filtros['sem_retorno'] ?? false;
         $tagsFiltros = $filtros['tags_filtro'] ?? [];
         $fontesFiltros = $filtros['fontes_filtro'] ?? [];
         
-        Log::info('=== FILTROS PROCESSADOS ===', [
+        Log::info('=== FILTROS PROCESSADOS RELATÓRIO SERVICE ===', [
             'tiposMidia' => $tiposMidia,
             'statusFiltros' => $statusFiltros,
             'retornoFiltros' => $retornoFiltros,
             'valorFiltros' => $valorFiltros,
             'areasFiltros' => $areasFiltros,
+            'areasFiltros_empty' => empty($areasFiltros),
+            'semAreaFiltro' => $semAreaFiltro,
+            'semAreaFiltro_type' => gettype($semAreaFiltro),
+            'semAreaFiltro_bool' => (bool)$semAreaFiltro,
+            'semRetornoFiltro' => $semRetornoFiltro,
+            'semRetornoFiltro_type' => gettype($semRetornoFiltro),
+            'semRetornoFiltro_bool' => (bool)$semRetornoFiltro,
             'tagsFiltros' => $tagsFiltros,
             'tags_count' => count($tagsFiltros),
             'tem_tags' => !empty($tagsFiltros),
@@ -236,11 +245,72 @@ class RelatorioService
             return " AND (" . implode(' OR ', $conditions) . ")";
         };
 
-        $buildAreaCondition = function($tablePrefix = "") use ($areasFiltros) {
+        $buildAreaCondition = function($tablePrefix = "") use ($areasFiltros, $semAreaFiltro) {
+            $conditions = [];
+            
+            Log::info('🔍 DEBUG buildAreaCondition:', [
+                'tablePrefix' => $tablePrefix,
+                'areasFiltros' => $areasFiltros,
+                'areasFiltros_empty' => empty($areasFiltros),
+                'areasFiltros_count' => count($areasFiltros),
+                'semAreaFiltro' => $semAreaFiltro,
+                'semAreaFiltro_type' => gettype($semAreaFiltro),
+                'semAreaFiltro_bool_check' => (bool)$semAreaFiltro
+            ]);
+            
+            // Filtro por áreas específicas
             if (!empty($areasFiltros)) {
                 $areaIds = implode(',', $areasFiltros);
-                return " AND {$tablePrefix}area IN ({$areaIds})";
+                $conditions[] = "{$tablePrefix}area IN ({$areaIds})";
+                Log::info('✅ Adicionando filtro áreas específicas:', [
+                    'condition' => "{$tablePrefix}area IN ({$areaIds})"
+                ]);
             }
+            
+            // Filtro para notícias sem área
+            if ($semAreaFiltro) {
+                $conditions[] = "({$tablePrefix}area IS NULL OR {$tablePrefix}area = 0)";
+                Log::info('✅ Adicionando filtro SEM ÁREA:', [
+                    'condition' => "({$tablePrefix}area IS NULL OR {$tablePrefix}area = 0)"
+                ]);
+            }
+            
+            // Se ambos os filtros estão ativos, usar OR
+            if (!empty($conditions)) {
+                if (count($conditions) > 1) {
+                    $result = " AND (" . implode(' OR ', $conditions) . ")";
+                    Log::info('🎯 Condição COMBINADA:', ['result' => $result]);
+                    return $result;
+                } else {
+                    $result = " AND " . $conditions[0];
+                    Log::info('🎯 Condição SIMPLES:', ['result' => $result]);
+                    return $result;
+                }
+            }
+            
+            Log::info('❌ NENHUMA condição de área - mostrando TODAS as notícias');
+            return "";
+        };
+
+        $buildRetornoCondition = function($tablePrefix = "", $valorColumn = "valor_retorno") use ($semRetornoFiltro) {
+            Log::info('🔍 DEBUG buildRetornoCondition:', [
+                'tablePrefix' => $tablePrefix,
+                'valorColumn' => $valorColumn,
+                'semRetornoFiltro' => $semRetornoFiltro,
+                'semRetornoFiltro_type' => gettype($semRetornoFiltro),
+                'semRetornoFiltro_bool_check' => (bool)$semRetornoFiltro
+            ]);
+            
+            // Se filtro sem retorno está ativo, buscar apenas notícias sem valor
+            if ($semRetornoFiltro) {
+                $condition = "({$tablePrefix}{$valorColumn} IS NULL OR {$tablePrefix}{$valorColumn} = 0)";
+                Log::info('✅ Adicionando filtro SEM RETORNO:', [
+                    'condition' => $condition
+                ]);
+                return " AND " . $condition;
+            }
+            
+            Log::info('❌ Filtro sem retorno INATIVO - mostrando TODAS as notícias');
             return "";
         };
 
@@ -384,16 +454,19 @@ class RelatorioService
                         COALESCE(w.nu_valor, 0) as valor,
                         COALESCE(nc.sentimento, '0') as sentimento,
                         COALESCE(nc.area, 0) as area_id,
+                        COALESCE(a.descricao, 'Sem área') as area_nome,
                         nc.id as vinculo_id,
                         nc.misc_data
                     FROM noticias_web w
                     LEFT JOIN fonte_web fw ON w.id_fonte = fw.id
                     JOIN noticia_cliente nc ON w.id = nc.noticia_id AND nc.tipo_id = 2
+                    LEFT JOIN area a ON nc.area = a.id
                     WHERE nc.cliente_id = :clienteId
                     AND w.$colunaDataWeb BETWEEN :dataInicio AND :dataFim
                     AND w.deleted_at IS NULL
                     {$buildStatusCondition('nc.')}
                     {$buildValorCondition('w.', 'nu_valor')}
+                    {$buildRetornoCondition('w.', 'nu_valor')}
                     {$buildAreaCondition('nc.')}
                     {$buildTermoCondition('w.', $termo)}
                     {$buildTagsCondition($clienteId, 2)}
@@ -458,7 +531,7 @@ class RelatorioService
                         'link' => $noticia->link,
                         'sentimento' => $convertSentimento($noticia->sentimento),
                         'valor' => (float)$noticia->valor,
-                        'area' => $noticia->area_id ? 'Área ' . $noticia->area_id : 'Sem área',
+                        'area' => $noticia->area_nome ?? 'Sem área',
                         'area_id' => $noticia->area_id,
                         'tags' => $tags,
                         'tipo_midia' => 'web'
@@ -502,18 +575,21 @@ class RelatorioService
                         COALESCE(t.valor_retorno, 0) as valor,
                         COALESCE(nc.sentimento, '0') as sentimento,
                         COALESCE(nc.area, 0) as area_id,
+                        COALESCE(a.descricao, 'Sem área') as area_nome,
                         nc.id as vinculo_id,
                         nc.misc_data
                     FROM noticia_tv t
                     LEFT JOIN emissora_web e ON t.emissora_id = e.id
                     LEFT JOIN programa_emissora_web p ON t.programa_id = p.id
                     JOIN noticia_cliente nc ON t.id = nc.noticia_id AND nc.tipo_id = 4
+                    LEFT JOIN area a ON nc.area = a.id
                     WHERE nc.cliente_id = :clienteId
                     AND t.$colunaDataTv BETWEEN :dataInicio AND :dataFim
                     AND t.deleted_at IS NULL
                     AND t.duracao IS NOT NULL -- Filtro obrigatório: apenas notícias TV editadas (com duração)
                     {$buildStatusCondition('nc.')}
                     {$buildValorCondition('t.', 'valor_retorno')}
+                    {$buildRetornoCondition('t.', 'valor_retorno')}
                     {$buildAreaCondition('nc.')}
                     {$buildTermoCondition('t.', $termo)}
                     {$buildTagsCondition($clienteId, 4)}
@@ -558,7 +634,7 @@ class RelatorioService
                         'duracao' => $noticia->duracao,
                         'sentimento' => $convertSentimento($noticia->sentimento),
                         'valor' => (float)$noticia->valor,
-                        'area' => $noticia->area_id ? 'Área ' . $noticia->area_id : 'Sem área',
+                        'area' => $noticia->area_nome ?? 'Sem área',
                         'area_id' => $noticia->area_id,
                         'tags' => $tags,
                         'tipo_midia' => 'tv'
@@ -600,6 +676,7 @@ class RelatorioService
                         COALESCE(r.valor_retorno, 0) as valor,
                         COALESCE(nc.sentimento, '0') as sentimento,
                         COALESCE(nc.area, 0) as area_id,
+                        COALESCE(a.descricao, 'Sem área') as area_nome,
                         nc.id as vinculo_id,
                         nc.misc_data
                     FROM noticia_radio r
@@ -607,12 +684,14 @@ class RelatorioService
                     LEFT JOIN programa_emissora_radio p ON r.programa_id = p.id
                     LEFT JOIN emissora_radio pe ON p.id_emissora = pe.id
                     JOIN noticia_cliente nc ON r.id = nc.noticia_id AND nc.tipo_id = 3
+                    LEFT JOIN area a ON nc.area = a.id
                     WHERE nc.cliente_id = :clienteId
                     AND r.$colunaDataRadio BETWEEN :dataInicio AND :dataFim
                     AND r.deleted_at IS NULL
                     AND r.duracao IS NOT NULL -- Filtro obrigatório: apenas notícias Rádio editadas (com duração)
                     {$buildStatusCondition('nc.')}
                     {$buildValorCondition('r.', 'valor_retorno')}
+                    {$buildRetornoCondition('r.', 'valor_retorno')}
                     {$buildAreaCondition('nc.')}
                     {$buildTermoCondition('r.', $termo)}
                     {$buildTagsCondition($clienteId, 3)}
@@ -657,7 +736,7 @@ class RelatorioService
                         'duracao' => $noticia->duracao,
                         'sentimento' => $convertSentimento($noticia->sentimento),
                         'valor' => (float)$noticia->valor,
-                        'area' => $noticia->area_id ? 'Área ' . $noticia->area_id : 'Sem área',
+                        'area' => $noticia->area_nome ?? 'Sem área',
                         'area_id' => $noticia->area_id,
                         'tags' => $tags,
                         'tipo_midia' => 'radio'
@@ -692,17 +771,20 @@ class RelatorioService
                         COALESCE(j.valor_retorno, 0) as valor,
                         COALESCE(nc.sentimento, '0') as sentimento,
                         COALESCE(nc.area, 0) as area_id,
+                        COALESCE(a.descricao, 'Sem área') as area_nome,
                         nc.id as vinculo_id,
                         nc.misc_data
                     FROM noticia_impresso j
                     LEFT JOIN jornal_online ji ON j.id_fonte = ji.id
                     JOIN noticia_cliente nc ON j.id = nc.noticia_id AND nc.tipo_id = 1
+                    LEFT JOIN area a ON nc.area = a.id
                     WHERE nc.cliente_id = :clienteId
                     AND j.$colunaDataImpresso BETWEEN :dataInicio AND :dataFim
                     AND j.deleted_at IS NULL
                     AND j.valor_retorno IS NOT NULL -- Filtro obrigatório: apenas notícias Impressas editadas (com retorno de mídia)
                     {$buildStatusCondition('nc.')}
                     {$buildValorCondition('j.', 'valor_retorno')}
+                    {$buildRetornoCondition('j.', 'valor_retorno')}
                     {$buildAreaCondition('nc.')}
                     {$buildTermoCondition('j.', $termo)}
                     {$buildTagsCondition($clienteId, 1)}
@@ -746,7 +828,7 @@ class RelatorioService
                         'data_formatada' => Carbon::parse($noticia->data)->format('d/m/Y'),
                         'sentimento' => $convertSentimento($noticia->sentimento),
                         'valor' => (float)$noticia->valor,
-                        'area' => $noticia->area_id ? 'Área ' . $noticia->area_id : 'Sem área',
+                        'area' => $noticia->area_nome ?? 'Sem área',
                         'area_id' => $noticia->area_id,
                         'tags' => $tags,
                         'tipo_midia' => 'impresso'

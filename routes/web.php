@@ -96,6 +96,9 @@ Route::middleware(['web'])->group(function () {
 	Route::post('cliente/tags/adicionar','ClienteController@adicionarTag');
 	Route::post('cliente/tags/remover','ClienteController@removerTag');
 	
+	// Rotas para gerenciamento de áreas
+	Route::post('cliente/areas/noticias','ClienteController@getAreasNoticias');
+	
 	// Rota para alterar sentimento de notícias
 	Route::post('cliente/relatorios/alterar-sentimento','ClienteController@alterarSentimento');
 	
@@ -318,6 +321,11 @@ Route::middleware(['web'])->group(function () {
 	Route::get('jornal-web/listar','JornalWebController@listar');
 	Route::get('jornal-web/noticia/{id}','JornalWebController@detalhes');
 	Route::get('jornal-web/noticia/estatisticas/{id}','JornalWebController@getEstatisticas');
+
+	// Monitoramento do Sistema (nova tela admin)
+	Route::get('monitoramento/sistema','MonitoramentoSistemaController@index')->name('monitoramento.sistema');
+	Route::get('monitoramento/sistema/radio','MonitoramentoSistemaController@monitoramentoProgramasRadio')->name('monitoramento.sistema.radio');
+	Route::get('monitoramento/sistema/tv','MonitoramentoSistemaController@monitoramentoProgramasTv')->name('monitoramento.sistema.tv');
 
 	Route::match(array('GET', 'POST'),'monitoramentos','MonitoramentoController@index');
 	Route::match(array('GET', 'POST'),'monitoramento/listar','MonitoramentoController@listar');
