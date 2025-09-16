@@ -520,9 +520,7 @@ class BoletimController extends Controller
                
             }*/
 
-            $path = Storage::disk('s3')->get($noticia_web->path_screenshot);
-
-            dd($path);
+            $path = Storage::disk('s3')->url($noticia_web->path_screenshot);
 
             $area = (NoticiaCliente::where('noticia_id', $noticia_web->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 2)->first() and NoticiaCliente::where('noticia_id', $noticia_web->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 2)->first()->area) ?
                     Area::where('id', NoticiaCliente::where('noticia_id', $noticia_web->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 2)->first()->area)->first()->descricao :
