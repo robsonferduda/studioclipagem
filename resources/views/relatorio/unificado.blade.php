@@ -205,8 +205,20 @@
                         <div class="col-md-12" id="areas-section" style="display: none;">
                             <div class="form-group">
                                 <label>Áreas do Cliente</label>
-                                <div id="areas-checkbox-group" class="d-flex flex-wrap" style="gap: 15px;">
-            
+                                <div class="d-flex flex-wrap" style="gap: 15px;">
+                                    <!-- Opção para notícias sem área -->
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" type="checkbox" name="sem_area" id="sem_area">
+                                            <span class="form-check-sign"></span>
+                                            <span><i class="fa fa-question-circle text-muted mr-1"></i>Sem área</span>
+                                        </label>
+                                    </div>
+                                    
+                                    <!-- Áreas específicas do cliente -->
+                                    <div id="areas-checkbox-group" class="d-flex flex-wrap" style="gap: 15px;">
+                
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -258,6 +270,21 @@
                         <div class="col-md-12" id="retorno-midia-section" style="display: none;">
                             <div class="form-group">
                                 <label class="form-label fw-semibold mb-2">
+                                    Filtro de retorno de mídia
+                                </label>
+                                
+                                <div class="form-check mb-2">
+                                    <label class="form-check-label check-midia">
+                                        <input class="form-check-input" type="checkbox" name="sem_retorno" id="sem_retorno">
+                                        <span class="form-check-sign"></span>
+                                        <span><i class="fa fa-ban text-muted mr-1"></i>Notícias sem retorno de mídia</span>
+                                    </label>
+                                </div>
+                                <small class="form-text text-muted mb-3">
+                                    Marque esta opção para filtrar apenas notícias que não possuem valor de retorno de mídia definido.
+                                </small>
+                                
+                                <label class="form-label fw-semibold mb-2">
                                     Incluir retorno de mídia no relatório
                                 </label>
                                 <div class="form-check">
@@ -306,6 +333,9 @@
                     <div class="d-flex gap-2 flex-wrap align-items-center mt-2 mt-md-0">
                         <button type="button" class="btn btn-warning" id="btnGerenciarTags" title="Adicionar tags às notícias selecionadas">
                             <i class="fa fa-tags"></i> Gerenciar Tags
+                        </button>
+                        <button type="button" class="btn btn-info" id="btnGerenciarAreas" title="Vincular áreas às notícias selecionadas" style="display: none;">
+                            <i class="fa fa-map-marker"></i> Gerenciar Áreas
                         </button>
                         <button type="button" class="btn btn-danger" id="btnGerarRelatorio">
                             <i class="fa fa-file-pdf-o"></i>
@@ -381,6 +411,78 @@
                             </div>
                             <small class="form-text text-muted">
                                 Clique no "X" ao lado de uma tag para removê-la das notícias selecionadas.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    <i class="fa fa-times"></i> Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Gerenciar Áreas -->
+<div class="modal fade" id="modalGerenciarAreas" tabindex="-1" role="dialog" aria-labelledby="modalGerenciarAreasLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalGerenciarAreasLabel">
+                    <i class="fa fa-map-marker"></i> Gerenciar Áreas das Notícias
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-info">
+                            <i class="fa fa-info-circle"></i>
+                            <strong>Notícias selecionadas:</strong> <span id="qtdNoticiasParaAreas">0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="selecionarArea">
+                                <i class="fa fa-map-marker"></i> Vincular Área às Notícias
+                            </label>
+                            <div class="input-group">
+                                <select class="form-control" id="selecionarArea">
+                                    <option value="">Selecione uma área...</option>
+                                </select>
+                                <div class="input-group-append">
+                                    <button class="btn btn-success" type="button" id="btnVincularArea">
+                                        <i class="fa fa-link"></i> Vincular
+                                    </button>
+                                </div>
+                            </div>
+                            <small class="form-text text-muted">
+                                Selecione uma área e clique em "Vincular" para aplicar às notícias selecionadas.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>
+                                <i class="fa fa-list"></i> Áreas Vinculadas às Notícias Selecionadas
+                            </label>
+                            <div id="areasExistentes" class="border rounded p-3" style="min-height: 100px; background-color: #f8f9fa;">
+                                <div class="text-muted text-center">
+                                    <i class="fa fa-spinner fa-spin"></i> Carregando áreas...
+                                </div>
+                            </div>
+                            <small class="form-text text-muted">
+                                Clique no "X" ao lado de uma área para desvinculá-la das notícias selecionadas.
                             </small>
                         </div>
                     </div>
@@ -610,6 +712,30 @@
 }
 
 .tag-badge-removivel .remove-tag {
+    margin-left: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Estilos para badges de áreas */
+.area-badge-removivel {
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 3px;
+    background-color: #28a745;
+    color: white;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.area-badge-removivel:hover {
+    background-color: #dc3545;
+}
+
+.area-badge-removivel .remove-area {
     margin-left: 5px;
     font-weight: bold;
     cursor: pointer;
@@ -860,6 +986,7 @@
     window.host = $('meta[name="base-url"]').attr('content');
     window.noticiasCarregadas = {};
     window.noticiasCarregadasCount = 0;
+    window.clienteSelecionado = null; // ID do cliente atualmente selecionado
 
     // Função para escapar HTML
     function escapeHtml(text) {
@@ -1182,8 +1309,12 @@
     $('#id_cliente').on('change', function() {
         var clienteId = $(this).val();
         
+        // Armazenar cliente selecionado globalmente
+        window.clienteSelecionado = clienteId;
+        
         if (!clienteId) {
             // Limpar e ocultar seções
+            window.clienteSelecionado = null;
             resetarFormulario();
             return;
         }
@@ -1197,13 +1328,36 @@
             type: 'GET',
             dataType: 'json',
             success: function(config) {
-                console.log('Configurações do cliente carregadas:', config);
+                console.log('📋 DEBUG Resposta bruta das configurações:', config);
+                console.log('📋 DEBUG Tipo da resposta:', typeof config);
+                console.log('📋 DEBUG Chaves disponíveis:', Object.keys(config || {}));
+                
+                // Verificar se a resposta é válida
+                if (!config || typeof config !== 'object') {
+                    console.error('❌ Configurações inválidas recebidas:', config);
+                    $('#tipos-midia-container').html('<div class="alert alert-danger">Erro: configurações inválidas do cliente.</div>');
+                    resetarFormulario();
+                    return;
+                }
                 
                 // Atualizar flags globais
                 window.mostrarAreas = config.fl_areas || false;
                 window.mostrarSentimento = config.fl_sentimento || false;
                 window.mostrarRetornoMidia = config.fl_retorno_midia || false;
                 window.mostrarBotoesImagem = config.fl_print || false;
+                
+                console.log('🔧 DEBUG Configurações do cliente processadas:', {
+                    cliente_id: clienteId,
+                    'config.fl_areas (raw)': config.fl_areas,
+                    'config.fl_areas (type)': typeof config.fl_areas,
+                    'config.fl_areas (boolean)': !!config.fl_areas,
+                    fl_sentimento: config.fl_sentimento,
+                    fl_retorno_midia: config.fl_retorno_midia,
+                    fl_print: config.fl_print,
+                    'window.mostrarAreas': window.mostrarAreas,
+                    areas_section_exists: $('#areas-section').length > 0,
+                    areas_section_visible_before: $('#areas-section').is(':visible')
+                });
                 
                 // Carregar tipos de mídia
                 carregarTiposMidiaCliente(config);
@@ -1213,7 +1367,17 @@
                 
                 // Carregar áreas se habilitado
                 if (config.fl_areas) {
+                    console.log('✅ Cliente tem permissão para áreas, carregando...', {
+                        fl_areas_value: config.fl_areas,
+                        areas_section_visible_after_toggle: $('#areas-section').is(':visible')
+                    });
                     carregarAreasCliente(clienteId);
+                } else {
+                    console.log('❌ Cliente NÃO tem permissão para áreas', {
+                        fl_areas_value: config.fl_areas,
+                        fl_areas_type: typeof config.fl_areas,
+                        fl_areas_truthy: !!config.fl_areas
+                    });
                 }
                 
                 // Recarregar tags e fontes para o cliente específico
@@ -1259,8 +1423,10 @@
             '</div>'
         );
         
-        // Limpar áreas
+        // Limpar áreas e checkboxes de filtros
         $('#areas-checkbox-group').empty();
+        $('#sem_area').prop('checked', false);
+        $('#sem_retorno').prop('checked', false);
         
         // Resetar flags
         window.mostrarAreas = false;
@@ -1324,33 +1490,139 @@
     
     // Função para mostrar/ocultar seções baseado nas permissões
     function toggleSecoesPorPermissoes(config) {
+        console.log('🎛️ DEBUG toggleSecoesPorPermissoes chamado com config:', config);
+        
         // Áreas
         if (config.fl_areas) {
+            console.log('✅ Mostrando seção de áreas (fl_areas = true)');
             $('#areas-section').show();
+            $('#btnGerenciarAreas').show(); // Mostrar botão de gerenciar áreas
         } else {
+            console.log('❌ Ocultando seção de áreas (fl_areas = ' + config.fl_areas + ')');
             $('#areas-section').hide();
+            $('#btnGerenciarAreas').hide(); // Ocultar botão de gerenciar áreas
         }
         
         // Sentimento
         if (config.fl_sentimento) {
+            console.log('✅ Mostrando seções de sentimento (fl_sentimento = true)');
             $('#sentimento-section').show();
             $('#sentimento-relatorio-section').show();
         } else {
+            console.log('❌ Ocultando seções de sentimento (fl_sentimento = ' + config.fl_sentimento + ')');
             $('#sentimento-section').hide();
             $('#sentimento-relatorio-section').hide();
         }
         
         // Retorno de mídia
         if (config.fl_retorno_midia) {
+            console.log('✅ Mostrando seção de retorno de mídia (fl_retorno_midia = true)');
             $('#retorno-midia-section').show();
         } else {
+            console.log('❌ Ocultando seção de retorno de mídia (fl_retorno_midia = ' + config.fl_retorno_midia + ')');
             $('#retorno-midia-section').hide();
         }
+        
+        // Log final do estado das seções
+        setTimeout(function() {
+            console.log('🔍 Estado final das seções após toggleSecoesPorPermissoes:');
+            console.log('  - areas-section visível:', $('#areas-section').is(':visible'));
+            console.log('  - sentimento-section visível:', $('#sentimento-section').is(':visible'));
+            console.log('  - retorno-midia-section visível:', $('#retorno-midia-section').is(':visible'));
+        }, 100);
+    }
+
+    // ===== DEFINIR FUNÇÕES ANTES DE USAR =====
+    
+    // Carregar áreas do cliente específico (movido para o escopo global)
+    function carregarAreasCliente(clienteId) {
+        // Verificar se o elemento existe e se o clienteId foi fornecido
+        if ($('#areas-checkbox-group').length === 0) {
+            console.log('Elemento #areas-checkbox-group não encontrado');
+            return;
+        }
+        
+        if (!clienteId) {
+            console.log('ClienteId não fornecido para carregar áreas');
+            return;
+        }
+        
+        console.log('Carregando áreas do cliente:', clienteId);
+        
+        $.ajax({
+            url: window.host + '/api/cliente/' + clienteId + '/areas',
+            type: 'GET',
+            dataType: 'json',
+            timeout: 3600000, // 1 hora
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                console.log('Áreas carregadas:', response);
+                
+                var areasHtml = '';
+                
+                if (response && Array.isArray(response) && response.length > 0) {
+                    response.forEach(function(area) {
+                        // Usar tanto 'nome' quanto 'descricao' para compatibilidade
+                        var nomeArea = area.nome || area.descricao || 'Área sem nome';
+                        areasHtml += '<div class="form-check" style="margin-right: 10px; margin-bottom: 8px;">';
+                        areasHtml += '<label class="form-check-label">';
+                        areasHtml += '<input class="form-check-input" type="checkbox" name="areas[]" value="' + area.id + '">';
+                        areasHtml += '<span class="form-check-sign"></span>';
+                        areasHtml += '<span>' + escapeHtml(nomeArea) + '</span>';
+                        areasHtml += '</label>';
+                        areasHtml += '</div>';
+                    });
+                } else {
+                    areasHtml = '<p class="text-muted">Nenhuma área encontrada para este cliente</p>';
+                }
+                
+                $('#areas-checkbox-group').html(areasHtml);
+            },
+            error: function(xhr, status, error) {
+                console.error('Erro ao carregar áreas:', {
+                    status: status,
+                    error: error,
+                    xhr: xhr.responseText
+                });
+                
+                var errorMessage = '';
+                try {
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    } else if (xhr.status === 404) {
+                        errorMessage = 'Cliente não possui áreas configuradas ou rota não encontrada.';
+                    } else if (xhr.status === 401) {
+                        errorMessage = 'Acesso negado. Faça login novamente.';
+                    } else if (xhr.status === 500) {
+                        errorMessage = 'Erro interno do servidor. Tente novamente.';
+                    } else {
+                        errorMessage = 'Erro ao carregar áreas. Status: ' + xhr.status;
+                    }
+                } catch (e) {
+                    errorMessage = 'Erro ao carregar áreas. Tente novamente mais tarde.';
+                }
+                
+                $('#areas-checkbox-group').html('<p class="text-warning"><i class="fa fa-exclamation-triangle"></i> ' + errorMessage + '</p>');
+                
+                // Se erro 404, pode ser que o cliente não tenha áreas - ocultar seção
+                if (xhr.status === 404) {
+                    $('#areas-section').hide();
+                    window.mostrarAreas = false;
+                }
+            }
+        });
+    }
+
+    // Limpar áreas (movido para o escopo global)
+    function limparAreas() {
+        $('#areas-checkbox-group').empty();
+        $('#sem_area').prop('checked', false);
+        $('#sem_retorno').prop('checked', false);
     }
 
     $( document ).ready(function() {
-
-
 
         // Não carregar automaticamente - será carregado quando cliente for selecionado
         // Tags e fontes serão carregadas após seleção do cliente
@@ -1398,77 +1670,6 @@
             $('#dt_final').val(dt_final);
         });
 
-
-
-        // Funções movidas para o escopo global (início do documento)
-
-        // Carregar áreas do cliente específico
-        function carregarAreasCliente(clienteId) {
-            // Verificar se o elemento existe e se o clienteId foi fornecido
-            if ($('#areas-checkbox-group').length === 0) {
-                console.log('Elemento #areas-checkbox-group não encontrado');
-                return;
-            }
-            
-            if (!clienteId) {
-                console.log('ClienteId não fornecido para carregar áreas');
-                return;
-            }
-            
-            console.log('Carregando áreas do cliente:', clienteId);
-            
-            $.ajax({
-                url: window.host + '/api/cliente/' + clienteId + '/areas',
-                type: 'GET',
-                dataType: 'json',
-                timeout: 3600000, // 1 hora
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function(response) {
-                    console.log('Áreas carregadas:', response);
-                    
-                    var areasHtml = '';
-                    
-                    if (response && Array.isArray(response)) {
-                        response.forEach(function(area) {
-                            areasHtml += '<div class="form-check" style="margin-right: 10px; margin-bottom: 8px;">';
-                            areasHtml += '<label class="form-check-label">';
-                            areasHtml += '<input class="form-check-input" type="checkbox" name="areas[]" value="' + area.id + '">';
-                            areasHtml += '<span class="form-check-sign"></span>';
-                            areasHtml += '<span>' + area.nome + '</span>';
-                            areasHtml += '</label>';
-                            areasHtml += '</div>';
-                        });
-                    } else {
-                        areasHtml = '<p class="text-muted">Nenhuma área encontrada para este cliente</p>';
-                    }
-                    
-                    $('#areas-checkbox-group').html(areasHtml);
-                },
-                error: function(xhr, status, error) {
-                    console.error('Erro ao carregar áreas:', {
-                        status: status,
-                        error: error,
-                        xhr: xhr.responseText
-                    });
-                    
-                    if (xhr.status === 404) {
-                        $('#areas-checkbox-group').html('<p class="text-warning">Rota não encontrada ou cliente não possui áreas configuradas.</p>');
-                    } else if (xhr.status === 401) {
-                        $('#areas-checkbox-group').html('<p class="text-danger">Acesso negado. Faça login novamente.</p>');
-                    } else {
-                        $('#areas-checkbox-group').html('<p class="text-muted">Erro ao carregar áreas. Tente novamente mais tarde.</p>');
-                    }
-                }
-            });
-        }
-
-        // Limpar áreas
-        function limparAreas() {
-            $('#areas-checkbox-group').empty();
-        }
-
         // Botão pesquisar
         $('#btn-pesquisar').on('click', function() {
             pesquisarNoticias();
@@ -1479,9 +1680,19 @@
             abrirModalGerenciarTags();
         });
 
+        // Botão gerenciar áreas
+        $('#btnGerenciarAreas').on('click', function() {
+            abrirModalGerenciarAreas();
+        });
+
         // Botão recarregar tags
         $('#btnRecarregarTags').on('click', function() {
-            carregarTagsDisponiveis();
+            var clienteId = obterClienteSelecionado();
+            if (!clienteId) {
+                alert('Por favor, selecione um cliente primeiro.');
+                return;
+            }
+            carregarTagsDisponiveisCliente(clienteId);
         });
 
         // Botão limpar tags selecionadas
@@ -1492,7 +1703,12 @@
 
         // Botão recarregar fontes
         $('#btnRecarregarFontes').on('click', function() {
-            carregarFontesDisponiveis();
+            var clienteId = obterClienteSelecionado();
+            if (!clienteId) {
+                alert('Por favor, selecione um cliente primeiro.');
+                return;
+            }
+            carregarFontesDisponiveisCliente(clienteId);
         });
 
         // Botão limpar fontes selecionadas
@@ -1512,6 +1728,11 @@
             if (e.which === 13) {
                 adicionarTagNoticiaSelecionadas();
             }
+        });
+
+        // Botão vincular área no modal
+        $('#btnVincularArea').on('click', function() {
+            vincularAreaNoticiaSelecionadas();
         });
 
         // Pesquisar notícias
@@ -1565,6 +1786,12 @@
                     formData.areas.push(parseInt($(this).val()));
                 });
             }
+            
+            // Filtro "Sem área"
+            formData.sem_area = $('#sem_area').is(':checked');
+            
+            // Filtro "Sem retorno"
+            formData.sem_retorno = $('#sem_retorno').is(':checked');
 
             // Validações
             if (!formData.data_inicio || !formData.data_fim) {
@@ -2077,6 +2304,61 @@
         
         // Adicionar função de debug ao escopo global para facilitar o debug
         window.debugRelatorioDados = debugInfo;
+        
+        // Função de teste para verificar configurações de um cliente específico
+        window.testarClienteAreas = function(clienteId) {
+            if (!clienteId) {
+                console.error('❌ ID do cliente é obrigatório');
+                return;
+            }
+            
+            console.log('🧪 TESTE: Verificando configurações do cliente', clienteId);
+            
+            $.ajax({
+                url: window.host + '/cliente/configuracoes/' + clienteId,
+                type: 'GET',
+                dataType: 'json',
+                success: function(config) {
+                    console.log('🧪 TESTE: Configurações recebidas:', config);
+                    
+                    var temAreas = config.fl_areas;
+                    console.log('🧪 TESTE: Cliente tem áreas?', {
+                        fl_areas: temAreas,
+                        type: typeof temAreas,
+                        boolean: !!temAreas
+                    });
+                    
+                    if (temAreas) {
+                        console.log('🧪 TESTE: Testando busca de áreas...');
+                        $.ajax({
+                            url: window.host + '/api/cliente/' + clienteId + '/areas',
+                            type: 'GET',
+                            dataType: 'json',
+                            success: function(areas) {
+                                console.log('🧪 TESTE: Áreas encontradas:', areas);
+                                console.log('🧪 TESTE: Quantidade de áreas:', Array.isArray(areas) ? areas.length : 'não é array');
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('🧪 TESTE: Erro ao buscar áreas:', {
+                                    status: xhr.status,
+                                    error: error,
+                                    response: xhr.responseText
+                                });
+                            }
+                        });
+                    } else {
+                        console.log('🧪 TESTE: Cliente não tem permissão para áreas');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('🧪 TESTE: Erro ao buscar configurações:', {
+                        status: xhr.status,
+                        error: error,
+                        response: xhr.responseText
+                    });
+                }
+            });
+        };
 
         // ===== FUNÇÕES DE TAGS =====
 
@@ -2123,6 +2405,12 @@
 
         // Abrir modal de gerenciar tags
         function abrirModalGerenciarTags() {
+            var clienteId = obterClienteSelecionado();
+            if (!clienteId) {
+                alert('Por favor, selecione um cliente primeiro.');
+                return;
+            }
+            
             var noticiasSelecionadas = obterNoticiasSelecionadas();
             var totalSelecionadas = noticiasSelecionadas.web.length + noticiasSelecionadas.tv.length + 
                                    noticiasSelecionadas.radio.length + noticiasSelecionadas.impresso.length;
@@ -2138,6 +2426,30 @@
             $('#modalGerenciarTags').modal('show');
         }
 
+        // Abrir modal de gerenciar áreas
+        function abrirModalGerenciarAreas() {
+            var clienteId = obterClienteSelecionado();
+            if (!clienteId) {
+                alert('Por favor, selecione um cliente primeiro.');
+                return;
+            }
+            
+            var noticiasSelecionadas = obterNoticiasSelecionadas();
+            var totalSelecionadas = noticiasSelecionadas.web.length + noticiasSelecionadas.tv.length + 
+                                   noticiasSelecionadas.radio.length + noticiasSelecionadas.impresso.length;
+            
+            if (totalSelecionadas === 0) {
+                alert('Por favor, selecione ao menos uma notícia para gerenciar áreas.');
+                return;
+            }
+
+            $('#qtdNoticiasParaAreas').text(totalSelecionadas);
+            $('#selecionarArea').val('');
+            carregarAreasDisponiveisSelect(clienteId);
+            carregarAreasNoticiaSelecionadas();
+            $('#modalGerenciarAreas').modal('show');
+        }
+
         // A função carregarTagsNoticiaSelecionadas foi movida para o escopo global
 
         // Adicionar tag às notícias selecionadas
@@ -2146,6 +2458,12 @@
             
             if (!novaTag) {
                 alert('Por favor, digite o nome da tag.');
+                return;
+            }
+
+            var clienteId = obterClienteSelecionado();
+            if (!clienteId) {
+                alert('Por favor, selecione um cliente primeiro.');
                 return;
             }
 
@@ -2162,7 +2480,7 @@
                     ids_tv: noticiasSelecionadas.tv,
                     ids_radio: noticiasSelecionadas.radio,
                     ids_impresso: noticiasSelecionadas.impresso,
-                    cliente_id: $('#id_cliente').val(), // Adicionar cliente_id selecionado
+                    cliente_id: obterClienteSelecionado(), // Usar função auxiliar
                     _token: $('meta[name="csrf-token"]').attr('content')
                 },
                 dataType: 'json',
@@ -2204,6 +2522,11 @@
     });
 
     // ===== FUNÇÕES GLOBAIS =====
+
+    // Função auxiliar para obter cliente selecionado
+    function obterClienteSelecionado() {
+        return window.clienteSelecionado || $('#id_cliente').val() || null;
+    }
 
     // Obter notícias selecionadas
     function obterNoticiasSelecionadas() {
@@ -2248,7 +2571,7 @@
                 ids_tv: noticiasSelecionadas.tv,
                 ids_radio: noticiasSelecionadas.radio,
                 ids_impresso: noticiasSelecionadas.impresso,
-                cliente_id: $('#id_cliente').val(), // Adicionar cliente_id selecionado
+                cliente_id: obterClienteSelecionado(), // Usar função auxiliar
                 _token: $('meta[name="csrf-token"]').attr('content')
             },
             dataType: 'json',
@@ -2282,6 +2605,349 @@
                 
                 $('#tagsExistentes').html('<div class="alert alert-danger">Erro ao carregar tags. Tente novamente.</div>');
             }
+        });
+    }
+
+    // ===== FUNÇÕES PARA GERENCIAR ÁREAS =====
+
+    // Carregar áreas disponíveis para o select do modal
+    function carregarAreasDisponiveisSelect(clienteId) {
+        console.log('Carregando áreas disponíveis para o select, cliente:', clienteId);
+        
+        $.ajax({
+            url: window.host + '/api/cliente/' + clienteId + '/areas',
+            type: 'GET',
+            dataType: 'json',
+            timeout: 3600000,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                console.log('Áreas disponíveis para select:', response);
+                
+                var selectHtml = '<option value="">Selecione uma área...</option>';
+                
+                if (response && Array.isArray(response) && response.length > 0) {
+                    response.forEach(function(area) {
+                        var nomeArea = area.nome || area.descricao || 'Área sem nome';
+                        selectHtml += '<option value="' + area.id + '">' + escapeHtml(nomeArea) + '</option>';
+                    });
+                }
+                
+                $('#selecionarArea').html(selectHtml);
+            },
+            error: function(xhr, status, error) {
+                console.error('Erro ao carregar áreas para select:', error);
+                $('#selecionarArea').html('<option value="">Erro ao carregar áreas</option>');
+            }
+        });
+    }
+
+    // Carregar áreas das notícias selecionadas
+    function carregarAreasNoticiaSelecionadas() {
+        var noticiasSelecionadas = obterNoticiasSelecionadas();
+        
+        $('#areasExistentes').html('<div class="text-center"><i class="fa fa-spinner fa-spin"></i> Carregando áreas...</div>');
+        
+        $.ajax({
+            url: window.host + '/cliente/areas/noticias',
+            type: 'POST',
+            data: {
+                ids_web: noticiasSelecionadas.web,
+                ids_tv: noticiasSelecionadas.tv,
+                ids_radio: noticiasSelecionadas.radio,
+                ids_impresso: noticiasSelecionadas.impresso,
+                cliente_id: obterClienteSelecionado(),
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            dataType: 'json',
+            timeout: 3600000,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                console.log('Áreas das notícias selecionadas:', response);
+                
+                var areasHtml = '';
+                
+                if (response && Array.isArray(response) && response.length > 0) {
+                    response.forEach(function(area) {
+                        areasHtml += '<span class="area-badge-removivel" data-area-id="' + area.id + '" data-area-nome="' + escapeHtml(area.nome) + '">';
+                        areasHtml += '<i class="fa fa-map-marker mr-1"></i>' + escapeHtml(area.nome) + ' <span class="remove-area" onclick="desvincularAreaNoticiaSelecionadas(' + area.id + ', \'' + escapeHtml(area.nome) + '\')">×</span>';
+                        areasHtml += '</span>';
+                    });
+                } else {
+                    areasHtml = '<div class="text-muted text-center"><i class="fa fa-info-circle mr-1"></i>Nenhuma área encontrada nas notícias selecionadas</div>';
+                }
+                
+                $('#areasExistentes').html(areasHtml);
+            },
+            error: function(xhr, status, error) {
+                console.error('Erro ao carregar áreas das notícias:', {
+                    status: status,
+                    error: error,
+                    xhr: xhr.responseText
+                });
+                
+                var errorMessage = 'Erro ao carregar áreas. Tente novamente.';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                }
+                
+                $('#areasExistentes').html('<div class="alert alert-danger">' + errorMessage + '</div>');
+            }
+        });
+    }
+
+    // Vincular área às notícias selecionadas
+    function vincularAreaNoticiaSelecionadas() {
+        var areaId = $('#selecionarArea').val();
+        var areaNome = $('#selecionarArea option:selected').text();
+        
+        if (!areaId) {
+            alert('Por favor, selecione uma área.');
+            return;
+        }
+
+        var clienteId = obterClienteSelecionado();
+        if (!clienteId) {
+            alert('Por favor, selecione um cliente primeiro.');
+            return;
+        }
+
+        var noticiasSelecionadas = obterNoticiasSelecionadas();
+        
+        $('#btnVincularArea').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Vinculando...');
+        
+        console.log('Iniciando vinculação em lote de área às notícias:', {
+            area_id: areaId,
+            area_nome: areaNome,
+            noticias: noticiasSelecionadas
+        });
+
+        // Vamos vincular individualmente cada notícia usando a rota existente
+        vincularAreaLote(noticiasSelecionadas, areaId, areaNome);
+    }
+
+    // Vincular área em lote às notícias (função auxiliar)
+    function vincularAreaLote(noticiasSelecionadas, areaId, areaNome) {
+        var todasNoticias = [];
+        
+        // Preparar lista de todas as notícias com seus tipos
+        ['web', 'tv', 'radio', 'impresso'].forEach(function(tipo) {
+            if (noticiasSelecionadas[tipo] && noticiasSelecionadas[tipo].length > 0) {
+                noticiasSelecionadas[tipo].forEach(function(id) {
+                    todasNoticias.push({id: id, tipo: tipo});
+                });
+            }
+        });
+
+        if (todasNoticias.length === 0) {
+            $('#btnVincularArea').prop('disabled', false).html('<i class="fa fa-link"></i> Vincular');
+            alert('Nenhuma notícia selecionada.');
+            return;
+        }
+
+        var sucessos = 0;
+        var erros = 0;
+        var processadas = 0;
+
+        console.log('Total de notícias para vincular:', todasNoticias.length);
+
+        todasNoticias.forEach(function(noticia) {
+            $.ajax({
+                url: window.host + '/cliente/relatorios/vincular-noticia-area',
+                type: 'POST',
+                data: {
+                    noticia_id: noticia.id,
+                    tipo_midia: noticia.tipo,
+                    area_id: areaId,
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                dataType: 'json',
+                timeout: 3600000,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    if (response.success) {
+                        sucessos++;
+                    } else {
+                        erros++;
+                    }
+                    processadas++;
+                    
+                    console.log('Progresso vinculação:', {
+                        processadas: processadas,
+                        total: todasNoticias.length,
+                        sucessos: sucessos,
+                        erros: erros
+                    });
+
+                    // Quando terminar todas as requisições
+                    if (processadas === todasNoticias.length) {
+                        finalizarVinculacaoArea(sucessos, erros, areaNome);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    erros++;
+                    processadas++;
+                    
+                    console.error('Erro ao vincular notícia individual:', {
+                        noticia: noticia,
+                        error: error
+                    });
+
+                    // Quando terminar todas as requisições
+                    if (processadas === todasNoticias.length) {
+                        finalizarVinculacaoArea(sucessos, erros, areaNome);
+                    }
+                }
+            });
+        });
+    }
+
+    // Finalizar processo de vinculação em lote
+    function finalizarVinculacaoArea(sucessos, erros, areaNome) {
+        $('#btnVincularArea').prop('disabled', false).html('<i class="fa fa-link"></i> Vincular');
+        
+        var mensagem = 'Vinculação concluída!\n';
+        mensagem += sucessos + ' notícias vinculadas com sucesso à área "' + areaNome + '"';
+        if (erros > 0) {
+            mensagem += '\n' + erros + ' notícias não puderam ser vinculadas.';
+        }
+        
+        alert(mensagem);
+        
+        // Resetar select e recarregar áreas
+        $('#selecionarArea').val('');
+        carregarAreasNoticiaSelecionadas();
+        
+        console.log('✅ Vinculação de área finalizada:', {
+            sucessos: sucessos,
+            erros: erros,
+            area: areaNome
+        });
+    }
+
+    // Desvincular área das notícias selecionadas
+    function desvincularAreaNoticiaSelecionadas(areaId, areaNome) {
+        if (!confirm('Deseja desvincular a área "' + areaNome + '" de todas as notícias selecionadas?')) {
+            return;
+        }
+
+        var clienteId = obterClienteSelecionado();
+        if (!clienteId) {
+            alert('Por favor, selecione um cliente primeiro.');
+            return;
+        }
+
+        var noticiasSelecionadas = obterNoticiasSelecionadas();
+        
+        console.log('Iniciando desvinculação de área das notícias:', {
+            area_id: areaId,
+            area_nome: areaNome,
+            noticias: noticiasSelecionadas
+        });
+
+        // Desvincular individualmente cada notícia (passando null como area_id)
+        desvincularAreaLote(noticiasSelecionadas, areaId, areaNome);
+    }
+
+    // Desvincular área em lote das notícias (função auxiliar)
+    function desvincularAreaLote(noticiasSelecionadas, areaId, areaNome) {
+        var todasNoticias = [];
+        
+        // Preparar lista de todas as notícias com seus tipos
+        ['web', 'tv', 'radio', 'impresso'].forEach(function(tipo) {
+            if (noticiasSelecionadas[tipo] && noticiasSelecionadas[tipo].length > 0) {
+                noticiasSelecionadas[tipo].forEach(function(id) {
+                    todasNoticias.push({id: id, tipo: tipo});
+                });
+            }
+        });
+
+        if (todasNoticias.length === 0) {
+            alert('Nenhuma notícia selecionada.');
+            return;
+        }
+
+        var sucessos = 0;
+        var erros = 0;
+        var processadas = 0;
+
+        console.log('Total de notícias para desvincular área:', todasNoticias.length);
+
+        todasNoticias.forEach(function(noticia) {
+            $.ajax({
+                url: window.host + '/cliente/relatorios/vincular-noticia-area',
+                type: 'POST',
+                data: {
+                    noticia_id: noticia.id,
+                    tipo_midia: noticia.tipo,
+                    area_id: null, // null para desvincular
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                dataType: 'json',
+                timeout: 3600000,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    if (response.success) {
+                        sucessos++;
+                    } else {
+                        erros++;
+                    }
+                    processadas++;
+                    
+                    console.log('Progresso desvinculação:', {
+                        processadas: processadas,
+                        total: todasNoticias.length,
+                        sucessos: sucessos,
+                        erros: erros
+                    });
+
+                    // Quando terminar todas as requisições
+                    if (processadas === todasNoticias.length) {
+                        finalizarDesvinculacaoArea(sucessos, erros, areaNome);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    erros++;
+                    processadas++;
+                    
+                    console.error('Erro ao desvincular notícia individual:', {
+                        noticia: noticia,
+                        error: error
+                    });
+
+                    // Quando terminar todas as requisições
+                    if (processadas === todasNoticias.length) {
+                        finalizarDesvinculacaoArea(sucessos, erros, areaNome);
+                    }
+                }
+            });
+        });
+    }
+
+    // Finalizar processo de desvinculação em lote
+    function finalizarDesvinculacaoArea(sucessos, erros, areaNome) {
+        var mensagem = 'Desvinculação concluída!\n';
+        mensagem += sucessos + ' notícias desvinculadas da área "' + areaNome + '"';
+        if (erros > 0) {
+            mensagem += '\n' + erros + ' notícias não puderam ser desvinculadas.';
+        }
+        
+        alert(mensagem);
+        
+        // Recarregar áreas
+        carregarAreasNoticiaSelecionadas();
+        
+        console.log('✅ Desvinculação de área finalizada:', {
+            sucessos: sucessos,
+            erros: erros,
+            area: areaNome
         });
     }
 
@@ -2370,7 +3036,7 @@
             url: window.host + '/cliente/relatorios/noticia/' + id + '/' + tipo,
             type: 'GET',
             data: {
-                cliente_id: $('#id_cliente').val() // Adicionar cliente_id selecionado
+                cliente_id: obterClienteSelecionado() // Usar função auxiliar
             },
             dataType: 'json',
             timeout: 3600000, // 1 hora de timeout
@@ -2810,7 +3476,7 @@
                 ids_tv: noticiasSelecionadas.tv,
                 ids_radio: noticiasSelecionadas.radio,
                 ids_impresso: noticiasSelecionadas.impresso,
-                cliente_id: $('#id_cliente').val(), // Adicionar cliente_id selecionado
+                cliente_id: obterClienteSelecionado(), // Usar função auxiliar
                 _token: $('meta[name="csrf-token"]').attr('content')
             },
             dataType: 'json',
@@ -2848,6 +3514,12 @@
 
     // Função global para alterar sentimento de uma notícia
     function alterarSentimentoNoticia(selectElement) {
+        var clienteId = obterClienteSelecionado();
+        if (!clienteId) {
+            alert('Por favor, selecione um cliente primeiro.');
+            return;
+        }
+        
         var $select = $(selectElement);
         var noticiaId = $select.data('noticia-id');
         var tipo = $select.data('tipo');
@@ -2874,7 +3546,7 @@
                 noticia_id: noticiaId,
                 tipo: tipo,
                 sentimento: novoSentimento,
-                cliente_id: $('#id_cliente').val(), // Adicionar cliente_id selecionado
+                cliente_id: obterClienteSelecionado(), // Usar função auxiliar
                 _token: $('meta[name="csrf-token"]').attr('content')
             },
             dataType: 'json',

@@ -321,6 +321,13 @@ class NoticiaRadioController extends Controller
 
     public function store(Request $request)
     {
+        $valor_retorno = $request->input('valor_retorno'); // Ex: "1.234,56"
+        $valor_retorno = str_replace('.', '', $valor_retorno);     // Remove pontos (milhar)
+        $valor_retorno = str_replace(',', '.', $valor_retorno);    // Troca vírgula por ponto
+        $valor_retorno = floatval($valor_retorno);
+
+        $request->merge(['valor_retorno' => $valor_retorno]); // Atualiza o valor no request
+
         $dt_cadastro = ($request->dt_cadastro) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_cadastro)->format('Y-m-d') : date("Y-m-d");
         $request->merge(['dt_cadastro' => $dt_cadastro]);
 
@@ -335,6 +342,8 @@ class NoticiaRadioController extends Controller
            
             if($noticia)
             {
+
+                $this->calcularRetorno($noticia);
         
                 $tags = collect($request->tags)->mapWithKeys(function($tag){
                     return [$tag => ['tipo_id' => 3]];
@@ -412,6 +421,13 @@ class NoticiaRadioController extends Controller
 
         try {
 
+            $valor_retorno = $request->input('valor_retorno'); // Ex: "1.234,56"
+            $valor_retorno = str_replace('.', '', $valor_retorno);     // Remove pontos (milhar)
+            $valor_retorno = str_replace(',', '.', $valor_retorno);    // Troca vírgula por ponto
+            $valor_retorno = floatval($valor_retorno);
+
+            $request->merge(['valor_retorno' => $valor_retorno]); // Atualiza o valor no request
+
             $dt_cadastro = ($request->dt_cadastro) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_cadastro)->format('Y-m-d') : date("Y-m-d");
             $request->merge(['dt_cadastro' => $dt_cadastro]);
     
@@ -421,6 +437,8 @@ class NoticiaRadioController extends Controller
             $request->merge(['cd_usuario' => Auth::user()->id]);
             
             $noticia->update($request->all());
+
+            $this->calcularRetorno($noticia);
 
             $tags = collect($request->tags)->mapWithKeys(function($tag){
                 return [$tag => ['tipo_id' => 3]];
@@ -450,14 +468,10 @@ class NoticiaRadioController extends Controller
 
         } catch (\Illuminate\Database\QueryException $e) {
 
-            dd($e);
-
             $retorno = array('flag' => false,
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
 
         } catch (\Exception $e) {
-
-            dd($e);
 
             $retorno = array('flag' => false,
                              'msg' => "Ocorreu um erro ao atualizar o registro");
@@ -722,6 +736,26 @@ class NoticiaRadioController extends Controller
         }
         
         return redirect('radio/noticias/retorno')->withInput();
+    }
+
+    public function calcularRetorno($noticia)
+    {
+        $emissora = Emissora::find($noticia->emissora_id);
+
+        if ($emissora and is_numeric($emissora->nu_valor) and $noticia->duracao) {
+            // Converte 'duracao' de TIME para segundos
+            $duracaoEmSegundos = \Carbon\Carbon::parse($noticia->duracao)->hour * 3600
+                + \Carbon\Carbon::parse($noticia->duracao)->minute * 60
+                + \Carbon\Carbon::parse($noticia->duracao)->second;
+
+            $valorRetorno = $duracaoEmSegundos * $emissora->nu_valor;
+
+            $noticia->valor_retorno = $valorRetorno;
+            $noticia->save();
+        }else{
+            Flash::warning('<i class="fa fa-check"></i> Valor de retorno não calculado por falta de dados para cálculo.');
+        }
+
     }
 
     public function excluir($id)
