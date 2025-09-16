@@ -46,8 +46,6 @@ class EmissoraController extends Controller
             $gravar = null;
         }
 
-        dd($gravar);
-
         Session::put('filtro_estado', $cd_estado);
         Session::put('filtro_cidade', $cd_cidade);
         Session::put('filtro_gravar', $gravar);
