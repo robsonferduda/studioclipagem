@@ -127,7 +127,7 @@ class FonteWebController extends Controller
             });
 
             $fonte->when(Session::get('filtro_nome'), function ($q) {
-                return $q->whereRaw("unaccent(nome) ILIKE unaccent(?)", ['%' . trim($nome) . '%']);
+                return $q->whereRaw("unaccent(nome) ILIKE unaccent(?)", ['%' . Session::get('filtro_nome') . '%']);
             });
 
             $fonte->when(Session::get('filtro_url'), function ($q) {
