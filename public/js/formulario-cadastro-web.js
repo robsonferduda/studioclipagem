@@ -4,6 +4,9 @@ $(document).ready(function() {
     var clientes = [];
     var id_noticia = $("#id_noticia").val();
 
+    //Inicialização de dados
+    buscarSecoes(0);
+
     $("#btn_enviar").click(function(){
 
         if(!clientes.length){
@@ -258,42 +261,42 @@ $(document).ready(function() {
 
     $(document).on('change', '#id_fonte', function() {
                 
-                var fonte = $(this).val();
+        var fonte = $(this).val();
 
-                $(".valor_cm").text("");
-                $("#nu_valor_fonte").val(0);
+        $(".valor_cm").text("");
+        $("#nu_valor_fonte").val(0);
+        buscarSecoes(fonte);
 
-                return $('#id_sessao_impresso').prop('disabled', false);
-            });
+        return $('#id_sessao_impresso').prop('disabled', false);
+    });
 
-    buscarSecoes(0);
-
-     function buscarSecoes(id_fonte){
+    
+    function buscarSecoes(id_fonte){
 
             //var cd_programa = $("#cd_programa").val();
 
             $.ajax({
-                    url: host+'/noticia/impresso/fonte/sessoes/'+id_fonte,
+                    url: host+'/noticia/web/fonte/sessoes/'+id_fonte,
                     type: 'GET',
                     beforeSend: function() {
                         $('.content').loader('show');
-                        $('#id_sessao_impresso').append('<option value="">Buscando seções...</option>').val('');
+                        $('#id_sessao_web').append('<option value="">Buscando seções...</option>').val('');
                     },
                     success: function(data) {
 
-                        $('#id_sessao_impresso').find('option').remove();
-                        $('#id_sessao_impresso').attr('disabled', false);
+                        $('#id_sessao_web').find('option').remove();
+                        $('#id_sessao_web').attr('disabled', false);
 
                         if(data.length == 0) {                            
-                            $('#id_sessao_impresso').append('<option value="">Fonte não possui seções cadastradas</option>').val('');
+                            $('#id_sessao_web').append('<option value="">Fonte não possui seções cadastradas</option>').val('');
                             return;
                         }
 
-                        $('#id_sessao_impresso').append('<option value="">Selecione uma seção</option>').val('');
+                        $('#id_sessao_web').append('<option value="">Selecione uma seção</option>').val('');
 
                         data.forEach(element => {
-                            let option = new Option(element.ds_sessao, element.id_sessao_impresso);
-                            $('#id_sessao_impresso').append(option);
+                            let option = new Option(element.ds_sessao, element.id_sessao_web);
+                            $('#id_sessao_web').append(option);
                         });
                         
                     },
@@ -306,9 +309,9 @@ $(document).ready(function() {
                     }
                 });
 
-        };
+    };
 
-     $(".btn-salvar-secao").click(function(){
+    $(".btn-salvar-secao").click(function(){
 
             var ds_sessao = $("#ds_sessao").val();
             var font_id = $("#id_fonte").val();
@@ -325,7 +328,7 @@ $(document).ready(function() {
             }else{
 
                 $.ajax({
-                    url: host+'/fonte-impresso/secao',
+                    url: host+'/fonte-web/secao',
                     type: 'POST',
                     data: {
                         "_token": $('meta[name="csrf-token"]').attr('content'),
@@ -341,25 +344,5 @@ $(document).ready(function() {
                     }
                 });
             }
-        });
-
-     $(document).on("change", "#local_impressao", function() {
-           
-            var id = $("#id_fonte").val();
-            
-            $.ajax({
-                    url: host+'/fonte-impresso/'+id+'/valores/'+$(this).val(),
-                    type: 'GET',
-                    beforeSend: function() {
-                        
-                    },
-                    success: function(data) {
-                        $(".valor_cm").text("R$ "+data+" cm");   
-                        $("#nu_valor_fonte").val(data);                                      
-                    },
-                    complete: function(){
-                                    
-                    }
-            });  
         });
 });

@@ -73,7 +73,7 @@
                             <div class="row">
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
-                                        <label>Data de Cadastro <span class="text-danger">Campo Obrigatório</span></label>
+                                        <label>Data de Cadastro <span class="text-danger">Obrigatório</span></label>
                                         <input type="text" 
                                         class="form-control datepicker" 
                                         name="data_insert" 
@@ -85,7 +85,7 @@
                                 </div>
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
-                                        <label>Data do Clipping <span class="text-danger">Campo Obrigatório</span></label>
+                                        <label>Data do Clipping <span class="text-danger">Obrigatório</span></label>
                                         <input type="text" 
                                         class="form-control datepicker" 
                                         name="data_noticia" 
@@ -95,7 +95,7 @@
                                     </div>
                                 </div>
                                
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Fonte <span class="text-danger">Campo Obrigatório </span>
                                             <a class="text-info" href="{{ url('fonte-web/listar') }}" target="_BLANK">Listagem de Fontes</a>
@@ -109,6 +109,16 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Seção <span class="text-primary add-secao" data-toggle="modal" data-target="#addSecao">Adicionar Seção</span></label>
+                                        <select class="form-control select2" name="id_sessao_web" id="id_sessao_web" disabled="true">
+                                            <option value="">Selecione uma seção</option>
+                                        </select>
+                                    </div>
+                                </div>
+
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
                                         <label>Retorno</label>
@@ -214,6 +224,32 @@
         </div>
     </div>
 </div> 
+<div class="modal fade" id="addSecao" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">   
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-bookmark "></i> Adicionar Seção</h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Nome da Seção</label>
+                            <input type="mail" class="form-control" name="ds_sessao" id="ds_sessao">
+                        </div>
+                    </div>
+                </div>
+                <div class="center">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
+                    <button type="button" class="btn btn-success btn-salvar-secao"><i class="fa fa-save"></i> Salvar</button>
+                </div>
+        </div>
+        </div>
+    </div>
+</div>
 <div class="modal fade" id="modalFonte" tabindex="-1" role="dialog" aria-labelledby="modalFonteLabel" aria-hidden="true">
     <div class="modal-dialog  modal-dialog-scrollable modal-lg" role="document">
       <div class="modal-content">

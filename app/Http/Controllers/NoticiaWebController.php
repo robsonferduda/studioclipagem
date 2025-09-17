@@ -8,6 +8,7 @@ use Storage;
 use App\Utils;
 use Carbon\Carbon;
 use App\User;
+use App\Models\SecaoWeb;
 use App\Models\Tag;
 use App\Models\Cliente;
 use Laracasts\Flash\Flash;
@@ -1045,5 +1046,16 @@ class NoticiaWebController extends Controller
                 echo "Notícia {$noticia->id} não possui imagem válida.<br>";
             }
         }
+    }
+
+    public function getSecoes($id_fonte)
+    {
+        $secoes = array();
+
+        $secoes = SecaoWeb::orderBy('ds_sessao')->get();
+
+        //$secoes = FonteImpressa::find($id_fonte)->secoes()->orderBy('ds_sessao')->get();
+        
+        return response()->json($secoes);
     }
 }

@@ -180,7 +180,7 @@
                                                     <h6><a href="{{ url('fonte-web/editar', $dado->fonte->id_fonte) }}" target="_BLANK">{{ ($dado->fonte) ? $dado->fonte->nome : '' }}</a></h6>  
                                                 @endif
                                                 <h6 style="color: #FF5722;">{{ ($dado->estado) ? $dado->estado->nm_estado : '' }}{{ ($dado->cidade) ? "/".$dado->cidae->nm_cidade : '' }}</h6> 
-                                                <p class="text-muted mb-1"> {!! ($dado->data_noticia) ? date('d/m/Y', strtotime($dado->data_noticia)) : date('d/m/Y', strtotime($dado->data_noticia)) !!} - {{ ($dado->fonte) ? $dado->fonte->nome : '' }}</p> 
+                                                <p class="text-muted mb-1"> {!! ($dado->data_noticia) ? date('d/m/Y', strtotime($dado->data_noticia)) : date('d/m/Y', strtotime($dado->data_noticia)) !!} - {{ ($dado->fonte) ? $dado->fonte->nome : '' }} {{ ($dado->id_sessao_web) ? "- ".$dado->secao->ds_sessao : '' }}</p> 
                                                 <p class="mb-1">
                                                     <strong>Retorno de Mídia: </strong>{{ ($dado->nu_valor) ? "R$ ".number_format($dado->nu_valor, 2, ',', '.') : 'Não calculado' }}
                                                 </p> 
