@@ -88,7 +88,7 @@ class FonteWebController extends Controller
 
             $fonte->when($nome, function ($q) use ($nome) {
                 Session::put('filtro_nome', $nome);
-                return $q->where('nome', 'ILIKE', '%'.trim($nome).'%');
+                return $q->whereRaw("unaccent(nome) ILIKE unaccent(?)", ['%' . trim($nome) . '%']);
             });
 
             $fonte->when($url, function ($q) use ($url) {
