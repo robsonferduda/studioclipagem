@@ -127,7 +127,7 @@ class FonteWebController extends Controller
             });
 
             $fonte->when(Session::get('filtro_nome'), function ($q) {
-                return $q->where('nome', 'ILIKE', '%'.trim(Session::get('filtro_nome')).'%');
+                return $q->whereRaw("unaccent(nome) ILIKE unaccent(?)", ['%' . trim($nome) . '%']);
             });
 
             $fonte->when(Session::get('filtro_url'), function ($q) {
@@ -526,7 +526,7 @@ class FonteWebController extends Controller
         $query = FonteWeb::query();
 
         if ($request->filled('nome')) {
-            $query->where('nome', 'ilike', '%' . $request->nome . '%');
+            $query->whereRaw("unaccent(nome) ILIKE unaccent(?)", ['%' . trim($request->nome) . '%']);
         }
         if ($request->filled('estado')) {
             $query->where('cd_estado', $request->estado);
