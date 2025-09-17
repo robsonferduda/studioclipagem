@@ -66,6 +66,10 @@ class BoletimController extends Controller
 
         $boletim->whereBetween('dt_boletim', [$dt_inicial." 00:00:00", $dt_final." 23:59:59"]);
 
+        $boletim->whereHas('cliente', function($q) {
+            $q->orderBy('nome');
+        });
+
         $boletins = $boletim->get();
 
         return view('boletim/index',compact('boletins','clientes','dt_inicial','dt_final','cliente_selecionado','flag','situacao'));
