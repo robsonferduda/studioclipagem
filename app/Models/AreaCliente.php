@@ -17,4 +17,8 @@ class AreaCliente extends Model implements Auditable
 
     protected $fillable = ['ordem','expressao','ativo'];
 
+    public function area()
+    {
+        return $this->hasOne('App\Models\Area','id','area_id');
+    }
 }
