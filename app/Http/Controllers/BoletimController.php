@@ -164,7 +164,7 @@ class BoletimController extends Controller
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id
                 LEFT JOIN boletim_noticia t4 ON t4.id_noticia = t3.noticia_id AND id_tipo = 1 AND t4.id_boletim = $request->id_boletim
                 WHERE 1=1
-                --AND retorno_midia NOTNULL 
+                AND valor_retorno NOTNULL 
                 AND t1.deleted_at IS NULL 
                 AND t3.deleted_at IS NULL ";
 
