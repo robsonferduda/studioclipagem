@@ -70,7 +70,7 @@ class BoletimController extends Controller
             $q->orderBy('nome');
         });
 
-        $boletins = $boletim->get();
+        $boletins = $boletim->get()->sortBy('cliente.nome');
 
         return view('boletim/index',compact('boletins','clientes','dt_inicial','dt_final','cliente_selecionado','flag','situacao'));
     }
