@@ -266,7 +266,7 @@
                                                         </div>                                                                            
                                                     </div>
                                                     <div class="docs-buttons center">
-                                                        <button type="button" class="btn btn-info" data-method="getCroppedCanvas" data-option="">
+                                                        <button type="button" class="btn btn-info" data-method="getCroppedCanvas" data-post="/noticia-impressa/upload" data-url="/img/noticia-impressa/" data-option="">
                                                             <span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="">
                                                                 <i class="fa fa-crop"></i> Recortar e Atualizar
                                                             </span>

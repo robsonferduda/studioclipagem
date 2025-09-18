@@ -300,8 +300,8 @@ class NoticiaImpressaController extends Controller
                                     'noticia_id' => $nova_noticia->id,
                                     'cliente_id' => (int) $cliente->id);
                             
-                    $dados = array('area' => (int) $cliente->pivot_area,
-                                   'sentimento' => (int) $cliente->pivot_area);
+                    $dados = array('area' => (int) $cliente->pivot->area,
+                                   'sentimento' => (int) $cliente->pivot->sentimento);
 
                     $noticia_cliente = NoticiaCliente::updateOrCreate($match, $dados);
 
@@ -399,8 +399,8 @@ class NoticiaImpressaController extends Controller
                                     'noticia_id' => $nova_noticia->id,
                                     'cliente_id' => (int) $cliente->id);
                             
-                    $dados = array('area' => (int) $cliente->pivot_area,
-                                   'sentimento' => (int) $cliente->pivot_area);
+                    $dados = array('area' => (int) $cliente->pivot->area,
+                                   'sentimento' => (int) $cliente->pivot->sentimento);
 
                     $noticia_cliente = NoticiaCliente::updateOrCreate($match, $dados);
 

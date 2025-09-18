@@ -203,6 +203,9 @@ $(function () {
               var host =  $('meta[name="base-url"]').attr('content');
               var img = result.toDataURL(uploadedImageType);
 
+              var url_post = $this.data('post');
+              var url_retorno = $this.data('url');
+
               var block = img.split(";");
                 // Get the content type
                 var contentType = block[0].split(":")[1];// In this case "image/gif"
@@ -226,7 +229,7 @@ $(function () {
                 });
 
               $.ajax({
-                url: host+'/noticia-impressa/upload',
+                url: host+url_post,
                 type: 'POST',
                 data: formData,
                 contentType:false,
@@ -237,7 +240,7 @@ $(function () {
                 },
                 success: function(data) {
 
-                  var img = host+"/img/noticia-impressa/"+data;  
+                  var img = host+url_retorno+data;  
                                       
                   $(".img-container img").remove();
                   $(".img-container").html('<img id="image" src="'+img+'">');

@@ -4,6 +4,20 @@ namespace App;
 
 class Utils
 {
+
+    public static function getSinopse($string, $tamanho = 255) {
+        $string = strip_tags($string);
+        if (strlen($string) > $tamanho) {
+
+            // truncate string
+            $stringCut = substr($string, 0, $tamanho);
+
+            // make sure it ends in a word so assassinate doesn't
+            $string = substr($stringCut, 0, strrpos($stringCut, ' ')).'...';
+        }
+        return $string;
+    }
+
     public static function getHashtags($string, $lista_hashtags) {
 
         preg_match_all('/#(\w+)/',$string,$matches);

@@ -313,6 +313,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('noticia/web/print','NoticiaWebController@getPrintS3');
 	Route::get('noticia/web/limpar-filtros','NoticiaWebController@limparFiltrosWeb');
 	Route::get('noticia/web/fonte/sessoes/{id}','NoticiaWebController@getSecoes');
+	Route::post('noticia-web/recorte/upload','NoticiaWebController@recorteUpload');
 
 	Route::get('noticia/impresso/clientes/{noticia}','NoticiaImpressaController@clientes');
 	
