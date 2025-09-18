@@ -406,7 +406,7 @@ class NoticiaWebController extends Controller
             $request->merge(['fl_boletim' => true]);
 
             if(empty($request->sinopse) and !empty($request->conteudo)){
-                $request->merge(['sinopse' => Utils::getSinopse($request->conteudo, 300)]);
+                $request->merge(['sinopse' => Utils::getSinopse($request->conteudo,300)]);
             }
 
             $noticia = NoticiaWeb::create($request->all());
@@ -794,6 +794,28 @@ class NoticiaWebController extends Controller
         $dados = DB::select($sql)[0];
 
         return response()->json($dados); 
+    }
+
+    public function upload(Request $request)
+    {
+        $image = $request->file('picture');
+        $fileInfo = $image->getClientOriginalName();
+        $filesize = $image->getSize()/1024/1024;
+        $filename = pathinfo($fileInfo, PATHINFO_FILENAME);
+        $extension = "jpeg";
+        $file_name = time().'.'.$extension;
+        $file_noticia = ($request->id) ? $request->id.'.'.$extension : $file_name;
+
+        $image->move(public_path('img/noticia-web'),$file_noticia);
+
+        if($request->id){
+            $noticia = NoticiaImpresso::find($request->id);
+
+            $noticia->ds_caminho_img = $file_noticia;
+            $noticia->save();
+        }
+
+        return $file_noticia;
     }
 
     public function recorteUpload(Request $request)
