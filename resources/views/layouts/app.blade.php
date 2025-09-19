@@ -225,7 +225,7 @@
                   </li>
                   @endpermission
                
-                @role('menu-web')
+                @permission('menu-web')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'jornal-web') ? 'active' : '' }}">
                     <a data-toggle="collapse" href="#submenu-web" class="{{ (Session::has('url') and Session::get('url') == 'jornal-web') ? '' : 'collapsed' }}" aria-expanded="{{ (Session::has('url') and Session::get('url') == 'jornal-web') ? 'true' : 'false' }}">
                         <i class="fa fa-globe"></i>
@@ -284,7 +284,7 @@
                        </ul>
                     </div>
                  </li>                  
-                @endrole
+                @endpermission
                 @role('administradores')
                 <li class="{{ (Session::has('url') and Session::get('url') == 'radio') ? 'active' : '' }}">
                   <a data-toggle="collapse" href="#submenu-radio" class="{{ (Session::has('url') and Session::get('url') == 'radio') ? '' : 'collapsed' }}" aria-expanded="{{ (Session::has('url') and Session::get('url') == 'radio') ? 'true' : 'false' }}">
