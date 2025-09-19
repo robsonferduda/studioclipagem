@@ -84,8 +84,7 @@ class UserController extends Controller
                         ->orderBy('name')
                         ->get();
         
-        $recentActivities = Audits::where('created_at', '>=', now()->subHours(1))
-            ->when($usuario, function ($q) use ($usuario) {
+        $recentActivities = Audits::when($usuario, function ($q) use ($usuario) {
                 return $q->where('user_id', $usuario);
             })
             ->whereBetween('created_at', [$dt_inicial." 00:00:00", $dt_final." 23:59:59"])
