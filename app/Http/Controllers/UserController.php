@@ -89,7 +89,6 @@ class UserController extends Controller
             })
             ->whereBetween('created_at', [$dt_inicial." 00:00:00", $dt_final." 23:59:59"])
             ->orderByDesc('created_at')
-            ->limit(15)
             ->get();
 
         return view('usuarios/online', compact('dt_inicial','dt_final','usuarios','usuario','online','recentActivities'));
