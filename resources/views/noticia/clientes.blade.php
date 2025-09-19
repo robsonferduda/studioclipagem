@@ -1,6 +1,14 @@
 @forelse($noticia->clientes as $cliente)
     <p class="mb-2">
         <span>{{ $cliente->nome }}</span>
+        <span>
+            {{ ($cliente->pivot->area) ? 
+                " - ".App\Models\ClienteArea::where('cliente_id', $cliente->pivot->cliente_id)
+                ->where('area_id', $cliente->pivot->area)
+                ->first()
+                ->area->descricao : '' 
+            }}
+        </span>
         <a href="#" class="btn-sentimento" 
            data-noticia-id="{{ $cliente->pivot->noticia_id }}" 
            data-tipo-id="{{ $cliente->pivot->tipo_id }}" 

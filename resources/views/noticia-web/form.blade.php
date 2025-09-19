@@ -33,6 +33,7 @@
                         <div class="form-group m-3 w-70">
                             <div class="row">
                                 <input type="hidden" name="id_noticia" id="id_noticia" value="{{ ($noticia) ? $noticia->id : 0 }}">
+                                <input type="hidden" name="noticia_id" id="noticia_id" value="{{ ($noticia) ? $noticia->id : 0 }}">
                                 <input type="hidden" name="clientes[]" id="clientes">
                                 <input type="hidden" name="ds_caminho_img" id="ds_caminho_img">
                                 <div class="col-md-5">
@@ -73,7 +74,7 @@
                             <div class="row">
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
-                                        <label>Data de Cadastro <span class="text-danger">Campo Obrigatório</span></label>
+                                        <label>Data de Cadastro <span class="text-danger">Obrigatório</span></label>
                                         <input type="text" 
                                         class="form-control datepicker" 
                                         name="data_insert" 
@@ -85,7 +86,7 @@
                                 </div>
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
-                                        <label>Data do Clipping <span class="text-danger">Campo Obrigatório</span></label>
+                                        <label>Data do Clipping <span class="text-danger">Obrigatório</span></label>
                                         <input type="text" 
                                         class="form-control datepicker" 
                                         name="data_noticia" 
@@ -95,7 +96,7 @@
                                     </div>
                                 </div>
                                
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Fonte <span class="text-danger">Campo Obrigatório </span>
                                             <a class="text-info" href="{{ url('fonte-web/listar') }}" target="_BLANK">Listagem de Fontes</a>
@@ -109,6 +110,16 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Seção <span class="text-primary add-secao" data-toggle="modal" data-target="#addSecao">Adicionar Seção</span></label>
+                                        <select class="form-control select2" name="id_sessao_web" id="id_sessao_web" disabled="true">
+                                            <option value="">Selecione uma seção</option>
+                                        </select>
+                                    </div>
+                                </div>
+
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
                                         <label>Retorno</label>
@@ -164,7 +175,7 @@
                                         </div>    
                                     </div> 
                                 <div class="col-md-12">
-                                    <label for="sinopse">Sinopse</label>
+                                    <label for="sinopse">Sinopse <span class="text-info">Campo não obrigatório, o sistema preenche automaticamente com recorte do texto. Você pode editar se for necessário.</span></label>
                                     <div class="form-group">
                                         <textarea class="form-control" name="sinopse" id="sinopse" rows="4">{{ (empty($noticia)) ? old('sinopse') : $noticia->sinopse }}</textarea>
                                     </div>
@@ -200,7 +211,61 @@
                                         <div style="min-height: 200px;" class="dropzone" id="dropzone"><div class="dz-message" data-dz-message><span>CLIQUE AQUI<br/> ou <br/>ARRASTE</span></div></div>
                                         <input type="hidden" name="arquivo" id="arquivo">
                                     </div> 
-                                @endif                                                 
+                                @endif   
+                                
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <h6 class="mt-3"><i class="fa fa-scissors" aria-hidden="true"></i> Recortar Página</h6>
+                                            <div class="row">
+                                            
+                                                    <div class="col-md-9">
+                                                        <div class="img-container">
+                                                            @if($noticia and $noticia->path_screenshot) 
+                                                                <img id="image" src="{{ 'https://docmidia-files.s3.us-east-1.amazonaws.com/'.$noticia->path_screenshot }}" alt="Recorte do Jornal">
+                                                            @else
+                                                                <img id="image" src="{{ asset('img/no-print.png') }}" alt="Recorte do Jornal">
+                                                            @endif                                                            
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-3">
+                                                    
+                                                        <!-- <h3>Preview:</h3> -->
+                                                        <div class="docs-preview clearfix">
+                                                        <div class="img-preview preview-lg"></div>
+                                                        <div class="img-preview preview-md"></div>
+                                                        <div class="img-preview preview-sm"></div>
+                                                        <div class="img-preview preview-xs"></div>
+                                                        </div>
+                                                
+                                                        <!-- <h3>Data:</h3> -->
+                                                        <div class="docs-data mt-2">                                                                                                       
+                                                            <div class="input-group mb-3">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text input-impresso" id="basic-addon1">Largura</span>
+                                                            </div>
+                                                            <input type="text" class="form-control" name="nu_largura_px" id="dataWidth" placeholder="0">
+                                                            </div>
+                                                            <div class="input-group mb-3">
+                                                                <div class="input-group-prepend">
+                                                                <span class="input-group-text input-impresso" id="basic-addon1">Altura</span>
+                                                                </div>
+                                                                <input type="text" class="form-control" name="nu_altura_px" id="dataHeight" placeholder="0">
+                                                            </div>                                                                            
+                                                        </div>
+                                                        <div class="docs-buttons center">
+                                                            <button type="button" class="btn btn-info" data-method="getCroppedCanvas" data-post="/noticia-web/recorte/upload" data-url="/img/noticia-web/" data-option="">
+                                                                <span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="">
+                                                                    <i class="fa fa-crop"></i> Recortar e Atualizar
+                                                                </span>
+                                                            </button>
+                                                        </div>
+                                                    </div>                                                
+                                            
+                                            </div>
+                                        </div>
+                                    </div>
+                                                                    
                             </div>     
                             <div class="text-center mb-2 mt-3">
                                 <button type="submit" class="btn btn-success" name="btn_enviar" id="btn_enviar" value="salvar"><i class="fa fa-save"></i> Salvar</button>
@@ -214,6 +279,32 @@
         </div>
     </div>
 </div> 
+<div class="modal fade" id="addSecao" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">   
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h6 style="text-align: left;" class="modal-title" id="exampleModalLabel"><i class="fa fa-bookmark "></i> Adicionar Seção</h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Nome da Seção</label>
+                            <input type="mail" class="form-control" name="ds_sessao" id="ds_sessao">
+                        </div>
+                    </div>
+                </div>
+                <div class="center">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
+                    <button type="button" class="btn btn-success btn-salvar-secao"><i class="fa fa-save"></i> Salvar</button>
+                </div>
+        </div>
+        </div>
+    </div>
+</div>
 <div class="modal fade" id="modalFonte" tabindex="-1" role="dialog" aria-labelledby="modalFonteLabel" aria-hidden="true">
     <div class="modal-dialog  modal-dialog-scrollable modal-lg" role="document">
       <div class="modal-content">

@@ -23,6 +23,7 @@ class NoticiaWeb extends Model
                             'cd_usuario',
                             'ordem',
                             'sinopse',
+                            'id_sessao_web',
                             'ds_caminho_img'];
 
     public function usuario()
@@ -33,6 +34,11 @@ class NoticiaWeb extends Model
     public function fonte()
     {
         return $this->hasOne(FonteWeb::class, 'id', 'id_fonte');
+    }
+
+    public function secao()
+    {
+        return $this->hasOne(SecaoWeb::class,'id_sessao_web','id_sessao_web');
     }
 
     public function conteudo()

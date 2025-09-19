@@ -66,7 +66,11 @@ class BoletimController extends Controller
 
         $boletim->whereBetween('dt_boletim', [$dt_inicial." 00:00:00", $dt_final." 23:59:59"]);
 
-        $boletins = $boletim->get();
+        $boletim->whereHas('cliente', function($q) {
+            $q->orderBy('nome');
+        });
+
+        $boletins = $boletim->get()->sortBy('cliente.nome');
 
         return view('boletim/index',compact('boletins','clientes','dt_inicial','dt_final','cliente_selecionado','flag','situacao'));
     }
@@ -164,7 +168,7 @@ class BoletimController extends Controller
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id
                 LEFT JOIN boletim_noticia t4 ON t4.id_noticia = t3.noticia_id AND id_tipo = 1 AND t4.id_boletim = $request->id_boletim
                 WHERE 1=1
-                AND retorno_midia NOTNULL
+                AND valor_retorno NOTNULL 
                 AND t1.deleted_at IS NULL 
                 AND t3.deleted_at IS NULL ";
 

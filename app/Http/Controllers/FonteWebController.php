@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use DB;
 use Auth;
+use Response;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use App\Utils;
 use App\Models\FonteTemp;
 use App\Noticia;
 use App\Models\Pais;
+use App\Models\SecaoWeb;
 use App\Models\NoticiaWeb;
 use App\Models\ConteudoNoticiaWeb;
 use App\Models\JornalWeb;
@@ -88,7 +90,7 @@ class FonteWebController extends Controller
 
             $fonte->when($nome, function ($q) use ($nome) {
                 Session::put('filtro_nome', $nome);
-                return $q->where('nome', 'ILIKE', '%'.trim($nome).'%');
+                return $q->whereRaw("unaccent(nome) ILIKE unaccent(?)", ['%' . trim($nome) . '%']);
             });
 
             $fonte->when($url, function ($q) use ($url) {
@@ -125,7 +127,7 @@ class FonteWebController extends Controller
             });
 
             $fonte->when(Session::get('filtro_nome'), function ($q) {
-                return $q->where('nome', 'ILIKE', '%'.trim(Session::get('filtro_nome')).'%');
+                return $q->whereRaw("unaccent(nome) ILIKE unaccent(?)", ['%' . Session::get('filtro_nome') . '%']);
             });
 
             $fonte->when(Session::get('filtro_url'), function ($q) {
@@ -524,7 +526,7 @@ class FonteWebController extends Controller
         $query = FonteWeb::query();
 
         if ($request->filled('nome')) {
-            $query->where('nome', 'ilike', '%' . $request->nome . '%');
+            $query->whereRaw("unaccent(nome) ILIKE unaccent(?)", ['%' . trim($request->nome) . '%']);
         }
         if ($request->filled('estado')) {
             $query->where('cd_estado', $request->estado);
@@ -807,5 +809,40 @@ class FonteWebController extends Controller
         $dados = (new FonteWeb())->getSemColetas($n);
 
         return response()->json($dados);
+    }
+
+    public function secao(Request $request)
+    {
+        $dados_insert = array('id_fonte_web' => $request->font_id,
+                              'ds_sessao' => $request->ds_sessao);
+
+        $nova_secao = SecaoWeb::create($dados_insert);
+
+        if($nova_secao){
+
+            return Response::json(array(
+                    'code'      =>  200,
+                    'message'   =>  'Dados inseridos com sucesso'
+                ), 200);
+
+        }else{
+
+             return Response::json(array(
+                    'code'      =>  401,
+                    'message'   =>  'Erro ao inserir dados'
+                ), 401);
+
+        }
+
+    }
+
+    public function excluirSecao($id)
+    {
+        $secao = SecaoWeb::find($id);
+        $id_fonte_web = $secao->id_fonte_web;
+
+        $secao->delete();
+
+        return redirect('fonte-web/'.$id_fonte_web.'/editar')->withInput();
     }
 }

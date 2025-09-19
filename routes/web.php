@@ -192,6 +192,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('fonte-web/estatisticas/top/{top}','FonteWebController@getTopColetas');
 	Route::get('fonte-web/estatisticas/sem/{top}','FonteWebController@getSemColetas');
 	Route::get('fonte-web/estatisticas/coletas/{fonte}','FonteWebController@getColetasByFonte');
+	Route::post('fonte-web/secao','FonteWebController@secao');
 
 	Route::get('fonte-web/buscar/combo', 'FonteWebController@buscar');
 
@@ -311,6 +312,8 @@ Route::middleware(['web'])->group(function () {
 	Route::get('noticia/web/print/{id}','NoticiaWebController@getPrint');
 	Route::get('noticia/web/print','NoticiaWebController@getPrintS3');
 	Route::get('noticia/web/limpar-filtros','NoticiaWebController@limparFiltrosWeb');
+	Route::get('noticia/web/fonte/sessoes/{id}','NoticiaWebController@getSecoes');
+	Route::post('noticia-web/recorte/upload','NoticiaWebController@recorteUpload');
 
 	Route::get('noticia/impresso/clientes/{noticia}','NoticiaImpressaController@clientes');
 	

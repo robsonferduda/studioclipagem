@@ -85,6 +85,11 @@
                 </div>   
             </div> 
             <div class="col-lg-12 col-md-3 mb-12">
+                @if(count($boletins) > 0)
+                    <p>Foram encontrados <strong>{{ count($boletins) }}</strong> boletins para os filtros selecionados</p>
+                @else
+                    <p>Nenhum boletim encontrado para os filtros selecionados</p>
+                @endif
                 @forelse($boletins as $key => $boletim)
                     <div class="row">
                         <div class="col-lg-12">

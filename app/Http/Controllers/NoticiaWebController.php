@@ -8,6 +8,7 @@ use Storage;
 use App\Utils;
 use Carbon\Carbon;
 use App\User;
+use App\Models\SecaoWeb;
 use App\Models\Tag;
 use App\Models\Cliente;
 use Laracasts\Flash\Flash;
@@ -404,6 +405,10 @@ class NoticiaWebController extends Controller
             $request->merge(['cd_usuario' => Auth::user()->id]);
             $request->merge(['fl_boletim' => true]);
 
+            if(empty($request->sinopse) and !empty($request->conteudo)){
+                $request->merge(['sinopse' => Utils::getSinopse($request->conteudo,300)]);
+            }
+
             $noticia = NoticiaWeb::create($request->all());
 
             $localFile = public_path('img/noticia-web/' . $noticia->ds_caminho_img);
@@ -488,8 +493,8 @@ class NoticiaWebController extends Controller
                                     'noticia_id' => $nova_noticia->id,
                                     'cliente_id' => (int) $cliente->id);
                             
-                    $dados = array('area' => (int) $cliente->pivot_area,
-                                   'sentimento' => (int) $cliente->pivot_area);
+                    $dados = array('area' => (int) $cliente->pivot->area,
+                                   'sentimento' => (int) $cliente->pivot->sentimento);
 
                     $noticia_cliente = NoticiaCliente::updateOrCreate($match, $dados);
 
@@ -577,8 +582,6 @@ class NoticiaWebController extends Controller
 
         } catch (\Illuminate\Database\QueryException $e) {
 
-            dd($e);
-
             DB::rollback();
             $retorno = array('flag' => false,
                              'msg' => Utils::getDatabaseMessageByCode($e->getCode()));
@@ -612,8 +615,8 @@ class NoticiaWebController extends Controller
                                     'noticia_id' => $nova_noticia->id,
                                     'cliente_id' => (int) $cliente->id);
                             
-                    $dados = array('area' => (int) $cliente->pivot_area,
-                                   'sentimento' => (int) $cliente->pivot_area);
+                    $dados = array('area' => (int) $cliente->pivot->area,
+                                   'sentimento' => (int) $cliente->pivot->sentimento);
 
                     $noticia_cliente = NoticiaCliente::updateOrCreate($match, $dados);
 
@@ -807,6 +810,28 @@ class NoticiaWebController extends Controller
 
         if($request->id){
             $noticia = NoticiaImpresso::find($request->id);
+
+            $noticia->ds_caminho_img = $file_noticia;
+            $noticia->save();
+        }
+
+        return $file_noticia;
+    }
+
+    public function recorteUpload(Request $request)
+    {
+        $image = $request->file('picture');
+        $fileInfo = $image->getClientOriginalName();
+        $filesize = $image->getSize()/1024/1024;
+        $filename = pathinfo($fileInfo, PATHINFO_FILENAME);
+        $extension = "jpeg";
+        $file_name = time().'.'.$extension;
+        $file_noticia = ($request->id) ? $request->id.'.'.$extension : $file_name;
+
+        $image->move(public_path('img/noticia-web'),$file_noticia);
+
+        if($request->id){
+            $noticia = NoticiaWeb::find($request->id);
 
             $noticia->ds_caminho_img = $file_noticia;
             $noticia->save();
@@ -1045,5 +1070,16 @@ class NoticiaWebController extends Controller
                 echo "Notícia {$noticia->id} não possui imagem válida.<br>";
             }
         }
+    }
+
+    public function getSecoes($id_fonte)
+    {
+        $secoes = array();
+
+        $secoes = SecaoWeb::orderBy('ds_sessao')->get();
+
+        //$secoes = FonteImpressa::find($id_fonte)->secoes()->orderBy('ds_sessao')->get();
+        
+        return response()->json($secoes);
     }
 }
