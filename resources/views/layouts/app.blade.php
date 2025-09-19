@@ -463,6 +463,7 @@
                     </div>
                  </li>              
                 @endrole
+                
                 @permission('menu-boletim')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'boletins') ? 'active' : '' }}">
                     <a href="{{ url('boletins') }}">
@@ -470,26 +471,9 @@
                     <p>Boletins</p>
                     </a>
                   </li>
-                 @endpermission
-                @permission('menu-relatorio')
-                  <li class="{{ (Session::has('url') and Session::get('url') == 'relatorios') ? 'active' : '' }}">
-                    <a href="{{ url('relatorios') }}">
-                    <i class="fa fa-file-pdf-o"></i>
-                    <p>Relatórios</p>
-                    </a>
-                  </li>
                 @endpermission
-
+               
                 @permission('menu-relatorio')
-                  <li class="{{ (Session::has('url') and Session::get('url') == 'relatorios') ? 'active' : '' }}">
-                    <a href="{{ url('relatorios/clipping') }}">
-                    <i class="fa fa-file-pdf-o"></i>
-                    <p>Clipping</p>
-                    </a>
-                  </li>
-                   @endpermission
-
-                @role('administradores')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'relatorios-unificado') ? 'active' : '' }}">
                     <a href="{{ url('relatorios/unificado') }}">
                     <i class="fa fa-files-o"></i>
