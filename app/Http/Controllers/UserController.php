@@ -53,9 +53,14 @@ class UserController extends Controller
         return view('usuarios/historico', compact('atividades'));
     }
 
-    public function online()
+    public function online(Request $request)
     {
         Session::put('url','online');
+
+        $usuario = ($request->usuario) ? $request->usuario : null;
+
+        $dt_inicial = ($request->dt_inicial) ? $request->input('dt_inicial', date('Y-m-d')) : date("Y-m-d");
+        $dt_final = ($request->dt_final) ? $request->input('dt_final', date('Y-m-d')): date("Y-m-d");
 
         $online = Audits::where(function ($query) {
                 $query->where('event', 'login')
@@ -72,13 +77,23 @@ class UserController extends Controller
         $timeout = now()->subMinutes(30); // Timeout de 30 minutos
 
         $online = User::where('last_active_at', '>=', $timeout)->get();
+
+        $usuarios = User::whereHas('role', function($q){
+                            return $q->whereIn('role_id', ['1','3','4','5','6','7','8']);
+                        })
+                        ->orderBy('name')
+                        ->get();
         
         $recentActivities = Audits::where('created_at', '>=', now()->subHours(1))
+            ->when($usuario, function ($q) use ($usuario) {
+                return $q->where('user_id', $usuario);
+            })
+            ->whereBetween('created_at', [$dt_inicial." 00:00:00", $dt_final." 23:59:59"])
             ->orderByDesc('created_at')
             ->limit(15)
             ->get();
 
-        return view('usuarios/online', compact('online','recentActivities'));
+        return view('usuarios/online', compact('dt_inicial','dt_final','usuarios','usuario','online','recentActivities'));
     }
 
     public function perfil()

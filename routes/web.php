@@ -367,7 +367,7 @@ Route::middleware(['web'])->group(function () {
 
 	Route::get('notificacao/redes-sociais','NotificacaoController@notificar');
 
-	Route::get('online','UserController@online');
+	Route::match(array('GET', 'POST'),'online','UserController@online');
 
 	Route::get('php','HomeController@php');
 

@@ -41,7 +41,20 @@
                     </div>
                 </div>
 
-                <div class="row mt-3 mb-5">
+                <div class="row mt-1 mb-5">
+                    <div class="col-md-12 mb-2">
+                        {!! Form::open(['id' => 'frm_fonte_impressa', 'class' => 'form-inline float-left', 'url' => ['online']]) !!}
+                            <input type="date" id="dt_inicial" name="dt_inicial" class="form-control mr-2" value="{{ \Carbon\Carbon::parse($dt_inicial)->format('Y-m-d') }}">
+                            <input type="date" id="dt_final" name="dt_final" class="form-control mr-2" value="{{ \Carbon\Carbon::parse($dt_final)->format('Y-m-d') }}">
+                            <select class="form-control mr-2" name="usuario" id="usuario">
+                                <option value="">Selecione um colaborador</option>
+                                @foreach($usuarios as $user)
+                                    <option value="{{ $user->id }}" {{ ($usuario and $usuario == $user->id) ? 'selected' : '' }}>{{ $user->name }}</option>
+                                @endforeach
+                            </select>
+                            <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
+                        {!! Form::close() !!} 
+                    </div>
                     <div class="col-md-12">
                         <h6 class="card-title"><i class="fa fa-history text-info"></i> Atividades Recentes</h6>
                         <ul class="list-group">
