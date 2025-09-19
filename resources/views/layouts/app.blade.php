@@ -225,7 +225,7 @@
                   </li>
                   @endpermission
                
-                @role('administradores')
+                @role('menu-web')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'jornal-web') ? 'active' : '' }}">
                     <a data-toggle="collapse" href="#submenu-web" class="{{ (Session::has('url') and Session::get('url') == 'jornal-web') ? '' : 'collapsed' }}" aria-expanded="{{ (Session::has('url') and Session::get('url') == 'jornal-web') ? 'true' : 'false' }}">
                         <i class="fa fa-globe"></i>
@@ -463,7 +463,7 @@
                     </div>
                  </li>              
                 @endrole
-                
+
                 @permission('menu-boletim')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'boletins') ? 'active' : '' }}">
                     <a href="{{ url('boletins') }}">
