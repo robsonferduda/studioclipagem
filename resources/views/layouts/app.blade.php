@@ -169,6 +169,11 @@
                           <span class="sidebar-normal">Posts Coletados</span>
                           </a>
                        </li>
+                       <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'midias-sociais-noticias') ? 'active' : '' }}">
+                          <a href="{{ url('midias-sociais/noticias') }}">
+                          <span class="sidebar-normal">Notícias</span>
+                          </a>
+                       </li>
                      </ul>
                   </div>
                </li>                  

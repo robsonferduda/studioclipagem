@@ -14,6 +14,9 @@
                     <a href="{{ url('midias-sociais/monitoramentos') }}" class="btn btn-primary pull-right" style="margin-right: 12px;">
                         <i class="fa fa-hashtag"></i> Monitoramentos
                     </a>
+                    <a href="{{ url('midias-sociais/noticias') }}" class="btn btn-info pull-right mr-1">
+                        <i class="fa fa-newspaper-o"></i> Notícias
+                    </a>
                     <a href="#" class="btn btn-success pull-right mr-1" onclick="exportarPosts()">
                         <i class="fa fa-download"></i> Exportar
                     </a>
@@ -207,10 +210,20 @@
                             <strong>Mostrando:</strong>
                             <span class="badge bg-info">{{ $posts->count() ?? 0 }}</span>
                         </div>
+                        <div class="ml-2" id="selection-info" style="display: none;">
+                            <strong>Selecionados:</strong>
+                            <span class="badge badge-warning" id="selected-count">0</span>
+                        </div>
                     </div>
                     <div class="d-flex gap-2 flex-wrap align-items-center mt-2 mt-md-0">
+                        <button type="button" class="btn btn-orange" id="btn-criar-noticias" style="display: none;" onclick="criarNoticiasDosPosts()">
+                            <i class="fa fa-newspaper-o"></i> Criar Notícias
+                        </button>
                         <a href="#" class="btn btn-success" onclick="exportarPosts()">
                             <i class="fa fa-download"></i> Exportar Posts
+                        </a>
+                        <a href="{{ url('midias-sociais/noticias') }}" class="btn btn-info">
+                            <i class="fa fa-newspaper-o"></i> Ver Notícias
                         </a>
                         <a href="{{ url('midias-sociais/monitoramentos') }}" class="btn btn-primary">
                             <i class="fa fa-hashtag"></i> Gerenciar Monitoramentos
@@ -219,34 +232,84 @@
                 </div>
             </div>
             
+            <!-- Controles de Seleção -->
+            @if($posts->count() > 0)
+            <div class="border-bottom p-2 bg-light">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <label class="form-check-label mb-0">
+                            <input type="checkbox" id="select-all" class="form-check-input">
+                            <span class="form-check-sign"></span>
+                            <strong>Selecionar todos os posts desta página</strong>
+                        </label>
+                    </div>
+                    <div>
+                        <small class="text-muted">Selecione os posts que deseja converter em notícias</small>
+                    </div>
+                </div>
+            </div>
+            @endif
+            
             <!-- Listagem de Posts -->
             <div class="row">
                 <div class="col-lg-12 col-sm-12">
                     
                     @forelse($posts as $post)
-                        <div class="card mb-3">
+                        <div class="card mb-3 post-card" data-post-id="{{ $post->id }}">
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-md-1 text-center">
-                                        <div class="social-icon">
-                                            @switch($post->tipo_midia)
-                                                @case('twitter')
-                                                    <i class="fa fa-twitter fa-2x text-info"></i>
-                                                    @break
-                                                @case('linkedin')
-                                                    <i class="fa fa-linkedin fa-2x text-primary"></i>
-                                                    @break
-                                                @case('facebook')
-                                                    <i class="fa fa-facebook fa-2x text-primary"></i>
-                                                    @break
-                                                @case('instagram')
-                                                    <i class="fa fa-instagram fa-2x text-danger"></i>
-                                                    @break
-                                                @default
-                                                    <i class="fa fa-share-alt fa-2x text-secondary"></i>
-                                            @endswitch
+                                    <div class="col-md-1 text-center position-relative">
+                                        <!-- Checkbox de seleção -->
+                                        <div class="post-selection-checkbox">
+                                            <label class="form-check-label">
+                                                <input type="checkbox" 
+                                                       class="form-check-input post-checkbox" 
+                                                       value="{{ $post->id }}" 
+                                                       data-processed="{{ $post->processado ? '1' : '0' }}">
+                                                <span class="form-check-sign"></span>
+                                            </label>
                                         </div>
-                                        <small class="text-muted d-block mt-1">{{ ucfirst($post->tipo_midia) }}</small>
+                                        
+                                        <!-- Ícone da rede social -->
+                                        <div class="social-icon-container">
+                                            <div class="social-icon">
+                                                @switch($post->tipo_midia)
+                                                    @case('twitter')
+                                                        <i class="fa fa-twitter fa-2x text-info"></i>
+                                                        @break
+                                                    @case('linkedin')
+                                                        <i class="fa fa-linkedin fa-2x text-primary"></i>
+                                                        @break
+                                                    @case('facebook')
+                                                        <i class="fa fa-facebook fa-2x text-primary"></i>
+                                                        @break
+                                                    @case('instagram')
+                                                        <i class="fa fa-instagram fa-2x text-danger"></i>
+                                                        @break
+                                                    @default
+                                                        <i class="fa fa-share-alt fa-2x text-secondary"></i>
+                                                @endswitch
+                                            </div>
+                                            <small class="text-muted d-block mt-1">{{ ucfirst($post->tipo_midia) }}</small>
+                                        </div>
+                                        
+                                        <!-- Status processado -->
+                                        @if($post->processado)
+                                            <div class="processed-indicator">
+                                                <small class="text-success d-block mt-2">
+                                                    <i class="fa fa-check-circle"></i> Processado
+                                                </small>
+                                            </div>
+                                        @endif
+                                        
+                                        <!-- Indicador se já tem notícia -->
+                                        @if(method_exists($post, 'getTemNoticiaAttribute') && $post->tem_noticia)
+                                            <div class="news-indicator">
+                                                <small class="text-primary d-block mt-1">
+                                                    <i class="fa fa-newspaper-o"></i> Notícia Criada
+                                                </small>
+                                            </div>
+                                        @endif
                                     </div>
                                     
                                     <div class="col-md-11">
@@ -471,9 +534,32 @@
                                                             $imagensIndependentes = [];
                                                     
                                                     foreach($post->urls_midia as $url) {
-                                                        if(Str::contains(strtolower($url), ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
-                                                            // Verificar se é thumbnail de vídeo (padrão Twitter/LinkedIn)
+                                                        // Detectar imagens: extensões explícitas OU padrões específicos de plataformas
+                                                        $isImage = Str::contains(strtolower($url), ['jpg', 'jpeg', 'png', 'gif', 'webp']) ||
+                                                                   (Str::contains($url, 'media.licdn.com') && Str::contains($url, '/image/')) ||
+                                                                   (Str::contains($url, 'scontent') && Str::contains($url, ['_s.', '_n.', '_b.'])) ||
+                                                                   (Str::contains($url, 'fbcdn.net') && Str::contains($url, '/photos/'));
+                                                        
+                                                        if($isImage) {
+                                                            // Verificar se é thumbnail de vídeo (padrões Twitter/LinkedIn/Facebook)
+                                                            $isVideoThumbnail = false;
+                                                            
+                                                            // Padrões Twitter
                                                             if(Str::contains($url, ['amplify_video_thumb', 'video_thumb', 'thumbnail'])) {
+                                                                $isVideoThumbnail = true;
+                                                            }
+                                                            // Padrões LinkedIn - imagens de feed que podem ser thumbnails
+                                                            elseif(Str::contains($url, ['media.licdn.com/dms/image']) && Str::contains($url, 'feedshare')) {
+                                                                // LinkedIn: assumir que imagens de feedshare podem ser independentes
+                                                                // A menos que haja vídeos correspondentes
+                                                                $isVideoThumbnail = false; // Trataremos depois no agrupamento
+                                                            }
+                                                            // Padrões Facebook
+                                                            elseif(Str::contains($url, ['scontent', 'fbcdn']) && Str::contains($url, ['_s.', '_t.', 'thumb'])) {
+                                                                $isVideoThumbnail = true;
+                                                            }
+                                                            
+                                                            if($isVideoThumbnail) {
                                                                 $thumbnails[] = $url;
                                                             } else {
                                                                 $imagensIndependentes[] = $url;
@@ -488,13 +574,34 @@
                                                     // Agrupar vídeos por ID (extrair ID comum dos URLs)
                                                     $gruposVideos = [];
                                                     foreach($videosRaw as $videoUrl) {
-                                                        // Extrair ID do vídeo (padrão Twitter: amplify_video/ID/)
+                                                        $videoId = null;
+                                                        
+                                                        // Padrões Twitter: amplify_video/ID/
                                                         if(preg_match('/amplify_video\/(\d+)\//', $videoUrl, $matches)) {
                                                             $videoId = $matches[1];
-                                                        } elseif(preg_match('/video\/(\d+)\//', $videoUrl, $matches)) {
+                                                        } 
+                                                        // Padrão genérico: video/ID/
+                                                        elseif(preg_match('/video\/(\d+)\//', $videoUrl, $matches)) {
                                                             $videoId = $matches[1];
-                                                        } else {
-                                                            // Se não conseguir extrair ID, usar hash do URL
+                                                        }
+                                                        // Padrões LinkedIn: extrair ID da URL
+                                                        elseif(Str::contains($videoUrl, 'licdn.com')) {
+                                                            // LinkedIn pode ter IDs em diferentes formatos
+                                                            if(preg_match('/\/([A-Za-z0-9_-]{10,})\//', $videoUrl, $matches)) {
+                                                                $videoId = $matches[1];
+                                                            } elseif(preg_match('/\/(\d{10,})/', $videoUrl, $matches)) {
+                                                                $videoId = $matches[1];
+                                                            }
+                                                        }
+                                                        // Padrões Facebook/Instagram
+                                                        elseif(Str::contains($videoUrl, ['facebook.com', 'fbcdn', 'instagram.com', 'cdninstagram'])) {
+                                                            if(preg_match('/\/(\d{10,})/', $videoUrl, $matches)) {
+                                                                $videoId = $matches[1];
+                                                            }
+                                                        }
+                                                        
+                                                        // Se não conseguir extrair ID, usar hash do URL
+                                                        if(!$videoId) {
                                                             $videoId = md5($videoUrl);
                                                         }
                                                         
@@ -530,10 +637,30 @@
                                                         if($melhorVideo) {
                                                             // Procurar thumbnail correspondente
                                                             $thumbnailCorrespondente = null;
-                                                            foreach($thumbnails as $thumb) {
-                                                                if(Str::contains($thumb, $videoId)) {
-                                                                    $thumbnailCorrespondente = $thumb;
-                                                                    break;
+                                                            
+                                                            // Para LinkedIn, pode não haver thumbnails explícitos
+                                                            // Vamos verificar se há imagens que podem servir como thumbnail
+                                                            if(Str::contains($melhorVideo, 'licdn.com') && empty($thumbnails)) {
+                                                                // Para LinkedIn, usar a primeira imagem como thumbnail se disponível
+                                                                if(!empty($imagensIndependentes)) {
+                                                                    foreach($imagensIndependentes as $index => $imagem) {
+                                                                        if(Str::contains($imagem, 'licdn.com')) {
+                                                                            $thumbnailCorrespondente = $imagem;
+                                                                            // Remover da lista de imagens independentes
+                                                                            unset($imagensIndependentes[$index]);
+                                                                            break;
+                                                                        }
+                                                                    }
+                                                                    // Reindexar array
+                                                                    $imagensIndependentes = array_values($imagensIndependentes);
+                                                                }
+                                                            } else {
+                                                                // Lógica original para Twitter e outras redes
+                                                                foreach($thumbnails as $thumb) {
+                                                                    if(Str::contains($thumb, $videoId)) {
+                                                                        $thumbnailCorrespondente = $thumb;
+                                                                        break;
+                                                                    }
                                                                 }
                                                             }
                                                             
@@ -547,6 +674,11 @@
                                                     
                                                     // Imagens finais são as independentes
                                                     $imagens = $imagensIndependentes;
+                                                    
+                                                    // Para LinkedIn, se não há vídeos mas há imagens, todas devem ser tratadas como imagens independentes
+                                                    if($post->tipo_midia === 'linkedin' && empty($videosAgrupados) && !empty($thumbnails)) {
+                                                        $imagens = array_merge($imagens, $thumbnails);
+                                                    }
                                                 @endphp
                                                         <span class="badge badge-info">
                                                             {{ count($imagens) + count($videosAgrupados) + count($outros) }} mídia{{ count($imagens) + count($videosAgrupados) + count($outros) > 1 ? 's' : '' }}
@@ -1681,12 +1813,310 @@
             }
         }
     }
+    
+    // === FUNCIONALIDADE DE SELEÇÃO MÚLTIPLA DE POSTS ===
+    
+    function updateSelectionUI() {
+        const checkboxes = document.querySelectorAll('.post-checkbox:checked');
+        const count = checkboxes.length;
+        
+        // Atualizar contador
+        document.getElementById('selected-count').textContent = count;
+        
+        // Mostrar/esconder elementos baseado na seleção
+        const selectionInfo = document.getElementById('selection-info');
+        const btnCriarNoticias = document.getElementById('btn-criar-noticias');
+        
+        if (count > 0) {
+            selectionInfo.style.display = 'block';
+            btnCriarNoticias.style.display = 'inline-block';
+        } else {
+            selectionInfo.style.display = 'none';
+            btnCriarNoticias.style.display = 'none';
+        }
+        
+        // Atualizar checkbox "selecionar todos"
+        const selectAllCheckbox = document.getElementById('select-all');
+        const allCheckboxes = document.querySelectorAll('.post-checkbox');
+        
+        if (count === 0) {
+            selectAllCheckbox.indeterminate = false;
+            selectAllCheckbox.checked = false;
+        } else if (count === allCheckboxes.length) {
+            selectAllCheckbox.indeterminate = false;
+            selectAllCheckbox.checked = true;
+        } else {
+            selectAllCheckbox.indeterminate = true;
+        }
+    }
+    
+    function criarNoticiasDosPosts() {
+        const checkboxes = document.querySelectorAll('.post-checkbox:checked');
+        const postsIds = Array.from(checkboxes).map(cb => cb.value);
+        
+        if (postsIds.length === 0) {
+            Swal.fire({
+                title: 'Nenhum post selecionado',
+                text: 'Por favor, selecione pelo menos um post para criar notícias.',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+        
+        // Verificar se há posts já processados
+        const processedPosts = Array.from(checkboxes).filter(cb => cb.dataset.processed === '1');
+        let confirmText = `Criar notícias a partir dos ${postsIds.length} posts selecionados?`;
+        
+        if (processedPosts.length > 0) {
+            confirmText += `\n\nAviso: ${processedPosts.length} post(s) já foram processados anteriormente. Estes podem já ter notícias criadas.`;
+        }
+        
+        Swal.fire({
+            title: 'Confirmar criação de notícias',
+            text: confirmText,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sim, criar notícias!',
+            cancelButtonText: 'Cancelar',
+            showLoaderOnConfirm: true,
+            preConfirm: () => {
+                const host = $('meta[name="base-url"]').attr('content');
+                const token = $('meta[name="csrf-token"]').attr('content');
+                
+                return $.ajax({
+                    url: host + '/midias-sociais/posts/criar-noticias',
+                    type: 'POST',
+                    data: {
+                        posts_ids: postsIds,
+                        _token: token
+                    },
+                    dataType: 'json'
+                })
+                .then(response => {
+                    return response;
+                })
+                .catch(xhr => {
+                    console.error('Erro completo:', xhr);
+                    let errorMessage = 'Erro na requisição';
+                    
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    } else if (xhr.responseText) {
+                        // Tentar extrair mensagem de erro do HTML
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = xhr.responseText;
+                        const errorElement = tempDiv.querySelector('.alert-danger, .error');
+                        if (errorElement) {
+                            errorMessage = errorElement.textContent.trim();
+                        }
+                    }
+                    
+                    throw new Error(errorMessage);
+                });
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+        }).then((result) => {
+            if (result.isConfirmed) {
+                if (result.value && result.value.redirect) {
+                    window.location.href = result.value.redirect;
+                } else {
+                    // Mostrar mensagem de sucesso e recarregar
+                    Swal.fire({
+                        title: 'Sucesso!',
+                        text: result.value && result.value.message ? result.value.message : 'Notícias criadas com sucesso!',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                }
+            }
+        });
+    }
+    
+    // Inicializar funcionalidade de seleção quando a página carregar
+    $(document).ready(function() {
+        // Selecionar/deselecionar todos
+        $('#select-all').on('change', function() {
+            const isChecked = this.checked;
+            $('.post-checkbox').prop('checked', isChecked);
+            updateSelectionUI();
+        });
+        
+        // Atualizar UI quando checkbox individual muda
+        $(document).on('change', '.post-checkbox', function() {
+            updateSelectionUI();
+            
+            // Destacar visualmente post selecionado
+            const postCard = $(this).closest('.post-card');
+            if (this.checked) {
+                postCard.addClass('selected-post');
+            } else {
+                postCard.removeClass('selected-post');
+            }
+        });
+        
+        // Inicializar estado da UI
+        updateSelectionUI();
+    });
 </script>
 
 <style>
     /* Estilos para melhorar a apresentação dos posts */
     .post-media {
         transition: all 0.3s ease;
+    }
+    
+    /* === ESTILOS PARA SELEÇÃO MÚLTIPLA === */
+    .post-card {
+        transition: all 0.3s ease;
+    }
+    
+    .post-card.selected-post {
+        border: 2px solid #28a745;
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2);
+        background-color: rgba(40, 167, 69, 0.02);
+    }
+    
+    .selected-post .card-body {
+        border-left: 4px solid #28a745;
+    }
+    
+    /* === LAYOUT DO CHECKBOX E ÍCONE === */
+    .post-selection-checkbox {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        z-index: 10;
+        background: white;
+        border-radius: 50%;
+        padding: 2px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        border: 2px solid #f8f9fa;
+        transition: all 0.3s ease;
+    }
+    
+    .post-selection-checkbox:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        border-color: #28a745;
+    }
+    
+    .post-selection-checkbox .form-check-label {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+    }
+    
+    .post-selection-checkbox .form-check-input {
+        position: relative;
+        margin: 0;
+        width: 16px;
+        height: 16px;
+    }
+    
+    .post-selection-checkbox .form-check-sign {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .social-icon-container {
+        margin-top: 15px;
+    }
+    
+    .processed-indicator {
+        margin-top: 10px;
+    }
+    
+    .processed-indicator small {
+        font-size: 0.7rem;
+        padding: 2px 6px;
+        background: rgba(40, 167, 69, 0.1);
+        border-radius: 10px;
+        display: inline-block;
+    }
+    
+    .news-indicator small {
+        font-size: 0.7rem;
+        padding: 2px 6px;
+        background: rgba(0, 123, 255, 0.1);
+        border-radius: 10px;
+        display: inline-block;
+        border: 1px solid rgba(0, 123, 255, 0.2);
+    }
+    
+    /* Quando o post está selecionado, destacar o checkbox */
+    .selected-post .post-selection-checkbox {
+        background: #28a745;
+        border-color: #28a745;
+    }
+    
+    .selected-post .post-selection-checkbox .form-check-sign::before {
+        border-color: white !important;
+        background: white !important;
+    }
+    
+    .selected-post .post-selection-checkbox .form-check-input:checked + .form-check-sign::before {
+        background-color: white !important;
+        border-color: white !important;
+    }
+    
+    .btn-orange {
+        background-color: #fd7e14;
+        border-color: #fd7e14;
+        color: white;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-orange:hover {
+        background-color: #e8650e;
+        border-color: #e8650e;
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(253, 126, 20, 0.3);
+    }
+    
+    .btn-orange:active {
+        background-color: #d15509;
+        border-color: #d15509;
+    }
+    
+    .form-check-input:checked + .form-check-sign::before {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+    
+    #select-all:indeterminate + .form-check-sign::before {
+        background-color: #ffc107;
+        border-color: #ffc107;
+    }
+    
+    /* Animação para contador de selecionados */
+    #selection-info {
+        animation: slideIn 0.3s ease;
+    }
+    
+    @keyframes slideIn {
+        from { opacity: 0; transform: translateX(-10px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+    
+    /* Hover effect para posts */
+    .post-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .post-card.selected-post:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(40, 167, 69, 0.3);
     }
     
     .image-container:hover {
@@ -1794,6 +2224,41 @@
         .post-tags .badge {
             font-size: 0.7rem;
             margin-bottom: 2px;
+        }
+        
+        /* Checkboxes maiores para mobile */
+        .post-selection-checkbox {
+            top: 5px;
+            right: 5px;
+            padding: 4px;
+            transform: scale(1.2);
+        }
+        
+        .post-selection-checkbox .form-check-label {
+            width: 24px;
+            height: 24px;
+        }
+        
+        .post-selection-checkbox .form-check-input {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .post-selection-checkbox .form-check-sign {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .social-icon-container {
+            margin-top: 25px;
+        }
+        
+        .social-icon-container .social-icon i {
+            font-size: 1.5rem !important;
+        }
+        
+        .processed-indicator small {
+            font-size: 0.6rem;
         }
     }
     

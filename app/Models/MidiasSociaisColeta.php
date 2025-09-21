@@ -232,6 +232,18 @@ class MidiasSociaisColeta extends Model
         }
     }
 
+    // Relacionamento com notícias criadas
+    public function noticiaCriada()
+    {
+        return $this->hasOne(\App\Models\NoticiaMidiaSocial::class, 'post_coleta_id');
+    }
+    
+    // Verificar se já tem notícia criada
+    public function getTemNoticiaAttribute()
+    {
+        return $this->noticiaCriada()->exists();
+    }
+
     // Mutators
     public function setPalavrasChaveAttribute($value)
     {
