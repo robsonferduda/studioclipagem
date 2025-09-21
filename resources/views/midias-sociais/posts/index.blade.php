@@ -823,7 +823,159 @@
             $('#data_inicial').val(dt_inicial);
             $('#data_final').val(dt_final);
         });
+
+        // Detectar e aplicar orientação de vídeos automaticamente
+        detectAndApplyVideoAspectRatios();
     });
+
+    /**
+     * Detecta a orientação dos vídeos baseado nas dimensões da URL e aplica as classes CSS apropriadas
+     */
+    function detectAndApplyVideoAspectRatios() {
+        $('.video-thumbnail-container').each(function() {
+            const container = $(this);
+            const videoUrl = container.attr('onclick');
+            
+            if (!videoUrl) return;
+            
+            // Extrair URL do vídeo do atributo onclick
+            const urlMatch = videoUrl.match(/'([^']+)'/);
+            if (!urlMatch || !urlMatch[1]) return;
+            
+            const url = urlMatch[1];
+            const aspectClass = detectVideoAspectRatio(url);
+            
+            // Remover classes de aspect ratio existentes
+            container.removeClass('aspect-16-9 aspect-9-16 aspect-1-1 aspect-4-3 aspect-3-4 aspect-unknown');
+            
+            // Aplicar nova classe
+            container.addClass(aspectClass);
+            
+            // Adicionar badge indicativo da orientação
+            updateVideoOrientationBadge(container, aspectClass);
+        });
+    }
+
+    /**
+     * Detecta o aspect ratio do vídeo baseado na URL
+     */
+    function detectVideoAspectRatio(videoUrl) {
+        // Padrões comuns de dimensões em URLs de vídeo
+        const dimensionPatterns = [
+            /(\d+)x(\d+)/g,           // 1920x1080, 720x1280, etc.
+            /(\d+)_(\d+)/g,           // 1920_1080, 720_1280, etc.  
+            /_(\d+)p_/g,              // _1080p_, _720p_, etc. (apenas altura)
+            /res_(\d+)_(\d+)/g,       // res_1920_1080, etc.
+        ];
+
+        let width = null;
+        let height = null;
+        
+        // Tentar extrair dimensões da URL
+        for (const pattern of dimensionPatterns) {
+            const matches = Array.from(videoUrl.matchAll(pattern));
+            if (matches.length > 0) {
+                const match = matches[matches.length - 1]; // Usar a última ocorrência
+                
+                if (pattern.source.includes('_(\d+)p_')) {
+                    // Para padrões só com altura, assumir largura baseada em padrões comuns
+                    height = parseInt(match[1]);
+                    if (height <= 720) {
+                        width = height < 640 ? Math.round(height * 9/16) : Math.round(height * 16/9);
+                    } else {
+                        width = Math.round(height * 16/9);
+                    }
+                } else {
+                    width = parseInt(match[1]);
+                    height = parseInt(match[2]);
+                }
+                break;
+            }
+        }
+
+        // Se não encontrou dimensões na URL, tentar padrões específicos de plataforma
+        if (!width || !height) {
+            if (videoUrl.includes('stories') || videoUrl.includes('reel') || videoUrl.includes('short')) {
+                return 'aspect-9-16'; // Stories/Reels são tipicamente verticais
+            }
+            
+            if (videoUrl.includes('720x1280') || videoUrl.includes('1080x1920')) {
+                return 'aspect-9-16'; // Vertical conhecido
+            }
+            
+            if (videoUrl.includes('1920x1080') || videoUrl.includes('1280x720')) {
+                return 'aspect-16-9'; // Horizontal conhecido
+            }
+            
+            return 'aspect-16-9'; // Padrão horizontal
+        }
+
+        // Calcular aspect ratio baseado nas dimensões
+        const aspectRatio = width / height;
+        
+        if (Math.abs(aspectRatio - 16/9) < 0.1) {
+            return 'aspect-16-9'; // 1920x1080, 1280x720, etc.
+        } else if (Math.abs(aspectRatio - 9/16) < 0.1) {
+            return 'aspect-9-16'; // 720x1280, 1080x1920, etc.
+        } else if (Math.abs(aspectRatio - 1) < 0.1) {
+            return 'aspect-1-1'; // 1080x1080, 720x720, etc.
+        } else if (Math.abs(aspectRatio - 4/3) < 0.1) {
+            return 'aspect-4-3'; // 1024x768, 800x600, etc.
+        } else if (Math.abs(aspectRatio - 3/4) < 0.1) {
+            return 'aspect-3-4'; // 768x1024, 600x800, etc.
+        } else if (aspectRatio < 1) {
+            return 'aspect-9-16'; // Qualquer formato vertical
+        } else {
+            return 'aspect-16-9'; // Qualquer formato horizontal
+        }
+    }
+
+    /**
+     * Atualiza o badge de orientação do vídeo
+     */
+    function updateVideoOrientationBadge(container, aspectClass) {
+        let orientationText = '';
+        let badgeClass = 'badge-info';
+        
+        switch(aspectClass) {
+            case 'aspect-9-16':
+                orientationText = 'Vertical';
+                badgeClass = 'badge-warning';
+                break;
+            case 'aspect-16-9':
+                orientationText = 'Horizontal';
+                badgeClass = 'badge-primary';
+                break;
+            case 'aspect-1-1':
+                orientationText = 'Quadrado';
+                badgeClass = 'badge-success';
+                break;
+            case 'aspect-4-3':
+                orientationText = '4:3';
+                badgeClass = 'badge-secondary';
+                break;
+            case 'aspect-3-4':
+                orientationText = '3:4';
+                badgeClass = 'badge-dark';
+                break;
+            default:
+                orientationText = 'Auto';
+                badgeClass = 'badge-light';
+        }
+        
+        // Encontrar badge de tipo existente e adicionar orientação
+        const typeBadge = container.find('.badge-type');
+        if (typeBadge.length > 0) {
+            // Adicionar orientação ao badge existente
+            const currentText = typeBadge.text();
+            typeBadge.html(`${currentText} • ${orientationText}`);
+            
+            // Adicionar classe de orientação se não for o padrão
+            if (aspectClass !== 'aspect-16-9') {
+                typeBadge.addClass(badgeClass.replace('badge-', 'text-'));
+            }
+        }
+    }
     
     function verDetalhes(postId) {
         var host = $('meta[name="base-url"]').attr('content');
@@ -888,23 +1040,128 @@
     function abrirImagem(url) {
         // Verificar se SweetAlert está disponível
         if (typeof Swal !== 'undefined') {
+            // Mostrar loading primeiro
             Swal.fire({
-                imageUrl: url,
-                imageAlt: 'Imagem do post',
+                title: 'Carregando imagem...',
+                html: '<i class="fa fa-spinner fa-spin fa-2x"></i>',
                 showConfirmButton: false,
-                showCloseButton: true,
-                width: 'auto',
-                imageWidth: '90%',
-                imageHeight: 'auto',
-                backdrop: `
-                    rgba(0,0,0,0.8)
-                    center
-                    no-repeat
-                `,
-                customClass: {
-                    image: 'rounded shadow'
-                }
+                allowOutsideClick: false,
+                background: '#000',
+                color: '#fff'
             });
+
+            // Criar uma imagem temporária para verificar se carrega
+            const tempImg = new Image();
+            tempImg.onload = function() {
+                // Imagem carregou com sucesso, mostrar no modal
+                Swal.fire({
+                    imageUrl: url,
+                    imageAlt: 'Imagem ampliada',
+                    showConfirmButton: false,
+                    showCloseButton: true,
+                    showCancelButton: true,
+                    cancelButtonText: '<i class="fa fa-external-link"></i> Nova Aba',
+                    width: '95vw',
+                    padding: '0',
+                    imageWidth: '100%',
+                    imageHeight: 'auto',
+                    backdrop: `rgba(0,0,0,0.95)`,
+                    background: '#000',
+                    customClass: {
+                        popup: 'swal-image-modal-enhanced',
+                        image: 'swal-full-image-enhanced',
+                        cancelButton: 'btn-outline-primary'
+                    },
+                    didOpen: () => {
+                        const image = Swal.getPopup().querySelector('.swal2-image');
+                        if (image) {
+                            // Configurar imagem responsiva
+                            image.style.maxHeight = '90vh';
+                            image.style.maxWidth = '95vw';
+                            image.style.objectFit = 'contain';
+                            image.style.cursor = 'zoom-in';
+                            image.style.borderRadius = '8px';
+                            image.style.boxShadow = '0 10px 30px rgba(0,0,0,0.5)';
+                            image.title = 'Clique para aumentar/diminuir';
+                            
+                            let isZoomed = false;
+                            image.onclick = function(e) {
+                                e.stopPropagation();
+                                if (!isZoomed) {
+                                    image.style.transform = 'scale(1.5)';
+                                    image.style.cursor = 'zoom-out';
+                                    image.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+                                    isZoomed = true;
+                                } else {
+                                    image.style.transform = 'scale(1)';
+                                    image.style.cursor = 'zoom-in';
+                                    isZoomed = false;
+                                }
+                            };
+
+                            // Adicionar suporte para scroll wheel zoom
+                            image.addEventListener('wheel', function(e) {
+                                e.preventDefault();
+                                const delta = e.deltaY > 0 ? -0.1 : 0.1;
+                                const currentScale = image.style.transform ? 
+                                    parseFloat(image.style.transform.match(/scale\(([^)]+)\)/)?.[1] || 1) : 1;
+                                const newScale = Math.max(0.5, Math.min(3, currentScale + delta));
+                                
+                                image.style.transform = `scale(${newScale})`;
+                                image.style.transition = 'transform 0.1s ease';
+                                image.style.cursor = newScale > 1 ? 'zoom-out' : 'zoom-in';
+                            });
+
+                            // Adicionar controles de teclado
+                            const keyHandler = function(e) {
+                                switch(e.key) {
+                                    case 'Escape':
+                                        Swal.close();
+                                        break;
+                                    case '+':
+                                    case '=':
+                                        image.click();
+                                        break;
+                                    case '-':
+                                        if (isZoomed) image.click();
+                                        break;
+                                }
+                            };
+                            document.addEventListener('keydown', keyHandler);
+                            
+                            // Remover listener quando modal fechar
+                            Swal.getPopup().addEventListener('swal2-close', () => {
+                                document.removeEventListener('keydown', keyHandler);
+                            });
+                        }
+                    }
+                }).then((result) => {
+                    if (result.dismiss === Swal.DismissReason.cancel) {
+                        window.open(url, '_blank');
+                    }
+                });
+            };
+
+            tempImg.onerror = function() {
+                // Erro ao carregar imagem
+                Swal.fire({
+                    title: 'Erro ao carregar imagem',
+                    text: 'A imagem não pôde ser carregada. Verifique sua conexão.',
+                    icon: 'error',
+                    showCancelButton: true,
+                    confirmButtonText: '<i class="fa fa-external-link"></i> Tentar em Nova Aba',
+                    cancelButtonText: 'Fechar',
+                    background: '#000',
+                    color: '#fff'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.open(url, '_blank');
+                    }
+                });
+            };
+
+            // Iniciar carregamento da imagem
+            tempImg.src = url;
         } else {
             // Fallback: Criar modal simples se SweetAlert não estiver disponível
             createImageModal(url);
@@ -912,6 +1169,9 @@
     }
     
     function createImageModal(url) {
+        // Fechar modal existente se houver
+        closeImageModal();
+        
         // Criar modal customizado para imagens
         const modal = document.createElement('div');
         modal.className = 'custom-image-modal';
@@ -919,13 +1179,28 @@
             <div class="custom-modal-backdrop" onclick="closeImageModal()">
                 <div class="custom-modal-content" onclick="event.stopPropagation()">
                     <div class="custom-modal-header">
-                        <button class="custom-close-btn" onclick="closeImageModal()">&times;</button>
+                        <button class="custom-close-btn" onclick="closeImageModal()" title="Fechar">&times;</button>
+                        <button class="custom-zoom-btn" onclick="toggleImageZoom()" title="Zoom">🔍</button>
                     </div>
-                    <img src="${url}" alt="Imagem ampliada" class="custom-modal-image">
+                    <div class="custom-modal-body">
+                        <div class="image-loading">
+                            <i class="fa fa-spinner fa-spin fa-2x text-white"></i>
+                            <p class="text-white mt-2">Carregando imagem...</p>
+                        </div>
+                        <img src="${url}" alt="Imagem ampliada" class="custom-modal-image" 
+                             onload="hideImageLoading()" 
+                             onerror="showImageError(this, '${url}')"
+                             style="display: none;">
+                    </div>
                     <div class="custom-modal-footer">
-                        <a href="${url}" target="_blank" class="btn btn-sm btn-primary">
-                            <i class="fa fa-external-link"></i> Abrir em Nova Aba
-                        </a>
+                        <div class="modal-actions">
+                            <button onclick="toggleImageZoom()" class="btn btn-sm btn-outline-light mr-2">
+                                <i class="fa fa-search-plus"></i> Zoom
+                            </button>
+                            <a href="${url}" target="_blank" class="btn btn-sm btn-primary">
+                                <i class="fa fa-external-link"></i> Nova Aba
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -934,17 +1209,100 @@
         modal.style.display = 'flex';
         
         // Adicionar listener para ESC
-        document.addEventListener('keydown', function(e) {
+        const escListener = function(e) {
             if (e.key === 'Escape') {
                 closeImageModal();
+                document.removeEventListener('keydown', escListener);
             }
-        });
+        };
+        document.addEventListener('keydown', escListener);
     }
     
     function closeImageModal() {
         const modal = document.querySelector('.custom-image-modal');
         if (modal) {
-            modal.remove();
+            modal.style.opacity = '0';
+            setTimeout(() => modal.remove(), 200);
+        }
+    }
+    
+    function hideImageLoading() {
+        const loading = document.querySelector('.image-loading');
+        const image = document.querySelector('.custom-modal-image');
+        if (loading && image) {
+            loading.style.display = 'none';
+            image.style.display = 'block';
+            // Animação de entrada da imagem
+            image.style.opacity = '0';
+            image.style.transform = 'scale(0.8)';
+            setTimeout(() => {
+                image.style.transition = 'all 0.3s ease';
+                image.style.opacity = '1';
+                image.style.transform = 'scale(1)';
+            }, 50);
+        }
+    }
+    
+    function showImageError(img, url) {
+        const loading = document.querySelector('.image-loading');
+        const modalBody = img.parentElement;
+        
+        if (loading) {
+            loading.style.display = 'none';
+        }
+        
+        modalBody.innerHTML = `
+            <div class="image-error text-center text-white py-4">
+                <i class="fa fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                <h5>Erro ao carregar imagem</h5>
+                <p class="text-muted">A imagem não pôde ser carregada. Verifique sua conexão ou tente novamente.</p>
+                <div class="mt-3">
+                    <button onclick="retryImageLoad('${url}')" class="btn btn-outline-warning mr-2">
+                        <i class="fa fa-refresh"></i> Tentar Novamente
+                    </button>
+                    <a href="${url}" target="_blank" class="btn btn-primary">
+                        <i class="fa fa-external-link"></i> Abrir em Nova Aba
+                    </a>
+                </div>
+            </div>
+        `;
+    }
+    
+    function retryImageLoad(url) {
+        const modalBody = document.querySelector('.custom-modal-body');
+        if (modalBody) {
+            modalBody.innerHTML = `
+                <div class="image-loading">
+                    <i class="fa fa-spinner fa-spin fa-2x text-white"></i>
+                    <p class="text-white mt-2">Tentando novamente...</p>
+                </div>
+                <img src="${url}?t=${Date.now()}" alt="Imagem ampliada" class="custom-modal-image" 
+                     onload="hideImageLoading()" 
+                     onerror="showImageError(this, '${url}')"
+                     style="display: none;">
+            `;
+        }
+    }
+    
+    function toggleImageZoom() {
+        const image = document.querySelector('.custom-modal-image');
+        const zoomBtn = document.querySelector('.custom-zoom-btn');
+        
+        if (image && zoomBtn) {
+            if (image.style.transform && image.style.transform.includes('scale(1.5)')) {
+                // Zoom out
+                image.style.transform = 'scale(1)';
+                image.style.cursor = 'zoom-in';
+                zoomBtn.innerHTML = '🔍';
+                zoomBtn.title = 'Ampliar';
+            } else {
+                // Zoom in
+                image.style.transform = 'scale(1.5)';
+                image.style.cursor = 'zoom-out';
+                zoomBtn.innerHTML = '🔍-';
+                zoomBtn.title = 'Reduzir';
+                image.style.transition = 'transform 0.3s ease';
+            }
         }
     }
     
@@ -1495,9 +1853,38 @@
         border-radius: 12px;
         overflow: hidden;
         background: #000;
-        aspect-ratio: 16/9;
+        position: relative;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        min-height: 200px;
+    }
+
+    /* Aspect ratios dinâmicos para vídeos */
+    .video-thumbnail-container.aspect-16-9 {
+        aspect-ratio: 16/9;
+    }
+
+    .video-thumbnail-container.aspect-9-16 {
+        aspect-ratio: 9/16;
+        max-height: 400px;
+    }
+
+    .video-thumbnail-container.aspect-1-1 {
+        aspect-ratio: 1/1;
+    }
+
+    .video-thumbnail-container.aspect-4-3 {
+        aspect-ratio: 4/3;
+    }
+
+    .video-thumbnail-container.aspect-3-4 {
+        aspect-ratio: 3/4;
+        max-height: 350px;
+    }
+
+    /* Para vídeos sem dimensões conhecidas - usar padrão quadrado */
+    .video-thumbnail-container.aspect-unknown {
+        aspect-ratio: 16/9;
     }
     
     .video-thumbnail-container:hover {
@@ -1608,8 +1995,35 @@
     
     /* === RESPONSIVIDADE === */
     @media (max-width: 768px) {
-        .video-thumbnail-container {
-            aspect-ratio: 1;
+        /* Ajustar aspect ratios para mobile */
+        .video-thumbnail-container.aspect-16-9 {
+            aspect-ratio: 16/9;
+            max-height: 200px;
+        }
+        
+        .video-thumbnail-container.aspect-9-16 {
+            aspect-ratio: 9/16;
+            max-height: 300px; /* Menor em mobile para vídeos verticais */
+        }
+        
+        .video-thumbnail-container.aspect-1-1 {
+            aspect-ratio: 1/1;
+            max-height: 250px;
+        }
+        
+        .video-thumbnail-container.aspect-4-3 {
+            aspect-ratio: 4/3;
+            max-height: 200px;
+        }
+        
+        .video-thumbnail-container.aspect-3-4 {
+            aspect-ratio: 3/4;
+            max-height: 280px;
+        }
+        
+        .video-thumbnail-container.aspect-unknown {
+            aspect-ratio: 16/9;
+            max-height: 200px;
         }
         
         .video-info-badges {
@@ -1631,6 +2045,38 @@
         
         .play-button i {
             font-size: 2rem !important;
+        }
+
+        /* Melhorar layout em telas pequenas */
+        .video-thumbnail-container {
+            margin-bottom: 15px;
+        }
+    }
+
+    /* === RESPONSIVIDADE PARA TABLETS === */
+    @media (max-width: 992px) and (min-width: 769px) {
+        .video-thumbnail-container.aspect-9-16 {
+            max-height: 350px;
+        }
+        
+        .video-thumbnail-container.aspect-3-4 {
+            max-height: 320px;
+        }
+    }
+
+    /* === LAYOUT ESPECIAL PARA VÍDEOS VERTICAIS EM GRID === */
+    @media (min-width: 992px) {
+        /* Em telas grandes, vídeos verticais devem ter colunas menores */
+        .col-lg-3:has(.video-thumbnail-container.aspect-9-16),
+        .col-lg-3:has(.video-thumbnail-container.aspect-3-4) {
+            flex: 0 0 25%;
+            max-width: 25%;
+        }
+        
+        /* Vídeos quadrados podem ser um pouco maiores */
+        .col-lg-3:has(.video-thumbnail-container.aspect-1-1) {
+            flex: 0 0 33.333%;
+            max-width: 33.333%;
         }
     }
     
@@ -1786,6 +2232,8 @@
         align-items: center;
         justify-content: center;
         animation: fadeIn 0.3s ease;
+        opacity: 1;
+        transition: opacity 0.2s ease;
     }
     
     .custom-modal-backdrop {
@@ -1799,18 +2247,21 @@
         align-items: center;
         justify-content: center;
         cursor: pointer;
+        backdrop-filter: blur(2px);
     }
     
     .custom-modal-content {
         position: relative;
-        max-width: 90vw;
-        max-height: 90vh;
-        background: white;
+        max-width: 95vw;
+        max-height: 95vh;
+        background: #000;
         border-radius: 12px;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.5);
         cursor: default;
         overflow: hidden;
         animation: scaleIn 0.3s ease;
+        display: flex;
+        flex-direction: column;
     }
     
     .custom-modal-header {
@@ -1819,33 +2270,68 @@
         right: 0;
         z-index: 10;
         padding: 10px;
+        display: flex;
+        gap: 8px;
     }
     
-    .custom-close-btn {
-        background: rgba(0,0,0,0.7);
+    .custom-close-btn,
+    .custom-zoom-btn {
+        background: rgba(0,0,0,0.8);
         color: white;
         border: none;
         border-radius: 50%;
         width: 40px;
         height: 40px;
-        font-size: 24px;
+        font-size: 18px;
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
         transition: all 0.3s ease;
+        backdrop-filter: blur(4px);
     }
     
     .custom-close-btn:hover {
-        background: rgba(255,0,0,0.7);
+        background: rgba(220, 53, 69, 0.8);
         transform: scale(1.1);
+    }
+    
+    .custom-zoom-btn:hover {
+        background: rgba(0, 123, 255, 0.8);
+        transform: scale(1.1);
+    }
+    
+    .custom-modal-body {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        min-height: 300px;
     }
     
     .custom-modal-image {
         max-width: 100%;
-        max-height: 80vh;
+        max-height: 85vh;
         object-fit: contain;
         display: block;
+        cursor: zoom-in;
+        transition: transform 0.3s ease;
+    }
+    
+    .image-loading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    
+    .image-error {
+        max-width: 400px;
     }
     
     .custom-modal-footer {
@@ -1857,6 +2343,114 @@
         color: white;
         padding: 15px;
         text-align: center;
+        backdrop-filter: blur(4px);
+    }
+    
+    .modal-actions {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+    
+    /* Estilos específicos para o SweetAlert2 das imagens */
+    .swal-image-modal {
+        border-radius: 15px !important;
+        padding: 0 !important;
+    }
+    
+    .swal-full-image {
+        border-radius: 8px;
+        box-shadow: none !important;
+    }
+    
+    .swal-image-modal .swal2-popup {
+        background: #000 !important;
+        padding: 10px !important;
+    }
+    
+    .swal-image-modal .swal2-close {
+        background: rgba(255,255,255,0.1) !important;
+        border-radius: 50% !important;
+        width: 40px !important;
+        height: 40px !important;
+        color: white !important;
+        font-size: 24px !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .swal-image-modal .swal2-close:hover {
+        background: rgba(220, 53, 69, 0.8) !important;
+        transform: scale(1.1) !important;
+    }
+
+    /* Estilos aprimorados para modal de imagens */
+    .swal-image-modal-enhanced {
+        border-radius: 20px !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.8) !important;
+    }
+    
+    .swal-image-modal-enhanced .swal2-popup {
+        background: #000 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border-radius: 20px !important;
+    }
+    
+    .swal-full-image-enhanced {
+        border-radius: 0 !important;
+        transition: transform 0.3s ease !important;
+        user-select: none;
+    }
+    
+    .swal-image-modal-enhanced .swal2-close {
+        background: rgba(0,0,0,0.7) !important;
+        border: 2px solid rgba(255,255,255,0.3) !important;
+        border-radius: 50% !important;
+        width: 44px !important;
+        height: 44px !important;
+        color: white !important;
+        font-size: 20px !important;
+        font-weight: bold !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        backdrop-filter: blur(4px) !important;
+        z-index: 1000 !important;
+        top: 15px !important;
+        right: 15px !important;
+    }
+    
+    .swal-image-modal-enhanced .swal2-close:hover {
+        background: rgba(220, 53, 69, 0.9) !important;
+        border-color: rgba(220, 53, 69, 0.6) !important;
+        transform: scale(1.15) rotate(90deg) !important;
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4) !important;
+    }
+
+    .swal-image-modal-enhanced .swal2-actions {
+        margin: 0 !important;
+        padding: 15px 20px !important;
+        background: rgba(0,0,0,0.8) !important;
+        backdrop-filter: blur(8px) !important;
+        justify-content: center !important;
+    }
+
+    .swal-image-modal-enhanced .swal2-cancel {
+        background: rgba(0, 123, 255, 0.8) !important;
+        border: 1px solid rgba(0, 123, 255, 0.6) !important;
+        color: white !important;
+        border-radius: 25px !important;
+        padding: 8px 20px !important;
+        font-size: 14px !important;
+        transition: all 0.3s ease !important;
+        backdrop-filter: blur(4px) !important;
+    }
+
+    .swal-image-modal-enhanced .swal2-cancel:hover {
+        background: rgba(0, 123, 255, 1) !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4) !important;
     }
     
     @keyframes fadeIn {
