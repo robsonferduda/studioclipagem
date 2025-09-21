@@ -29,7 +29,7 @@
                                         <label>Tipo de Data</label>
                                         <select class="form-control select2" name="tipo_data" id="tipo_data">
                                             <option value="created_at" {{ ($tipo_data == "created_at") ? 'selected' : '' }}>Data de Cadastro</option>
-                                            <option value="dt_pub" {{ ($tipo_data == "dt_pub") ? 'selected' : '' }}>Data do Clipping</option>
+                                            <option value="horario_start_gravacao" {{ ($tipo_data == "horario_start_gravacao") ? 'selected' : '' }}>Data da Gravação</option>
                                         </select>
                                     </div>
                                 </div>

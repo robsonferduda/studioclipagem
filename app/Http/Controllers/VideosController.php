@@ -41,7 +41,7 @@ class VideosController extends Controller
                                 'flag' => '');
         }
 
-        $tipo_data = $request->tipo_data;
+        $tipo_data = $request->tipo_data ?: 'created_at';
         $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
         $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
         $fonte = ($request->fontes) ? $request->fontes : null;
@@ -102,7 +102,8 @@ class VideosController extends Controller
                             'transcricao',
                             'nome_emissora',
                             'programa_emissora_web.misc_data',
-                            'video_path')
+                            'video_path',
+                            'videos_programa_emissora_web.created_at')
                     ->join('programa_emissora_web','programa_emissora_web.id','=','videos_programa_emissora_web.id_programa_emissora_web')
                     ->join('emissora_web','emissora_web.id','=','programa_emissora_web.id_emissora')
                     ->leftJoin('estado','estado.cd_estado','=','programa_emissora_web.cd_estado')
@@ -113,10 +114,16 @@ class VideosController extends Controller
                     ->when($fonte, function ($q) use ($fonte) {
                         return $q->whereIn('programa_emissora_web.id', $fonte);
                     })
-                    ->when($dt_inicial, function ($q) use ($dt_inicial, $dt_final) {
-                        return $q->whereBetween('videos_programa_emissora_web.horario_start_gravacao', [$dt_inicial." 00:00:00", $dt_final." 23:59:59"]);
+                    ->when($dt_inicial, function ($q) use ($dt_inicial, $dt_final, $tipo_data) {
+                        // Determina qual campo de data usar baseado no tipo_data selecionado
+                        if ($tipo_data == 'created_at') {
+                            $campo_data = 'videos_programa_emissora_web.created_at';
+                        } else {
+                            $campo_data = 'videos_programa_emissora_web.horario_start_gravacao';
+                        }
+                        return $q->whereBetween($campo_data, [$dt_inicial." 00:00:00", $dt_final." 23:59:59"]);
                     })
-                    ->orderBy('videos_programa_emissora_web.horario_start_gravacao','DESC')
+                    ->orderBy(($tipo_data == 'created_at') ? 'videos_programa_emissora_web.created_at' : 'videos_programa_emissora_web.horario_start_gravacao','DESC')
                     ->paginate(10);
 
         return view('videos/videos', compact('fontes','videos','tipo_data','dt_inicial','dt_final','fonte','expressao'));
