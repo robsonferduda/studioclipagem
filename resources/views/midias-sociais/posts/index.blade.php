@@ -1,0 +1,2030 @@
+@extends('layouts.app')
+@section('content')
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-8">
+                    <h4 class="card-title">
+                        <i class="fa fa-comments ml-3"></i> Mídias Sociais
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> Posts Coletados
+                    </h4>
+                </div>
+                <div class="col-md-4">
+                    <a href="{{ url('midias-sociais/monitoramentos') }}" class="btn btn-primary pull-right" style="margin-right: 12px;">
+                        <i class="fa fa-hashtag"></i> Monitoramentos
+                    </a>
+                    <a href="#" class="btn btn-success pull-right mr-1" onclick="exportarPosts()">
+                        <i class="fa fa-download"></i> Exportar
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="col-md-12">
+                @include('layouts.mensagens')
+            </div>
+            
+            <!-- Estatísticas Rápidas -->
+            <div class="col-md-12">
+                <div class="alert alert-info mb-4">
+                    <div class="row text-center">
+                        <div class="col-md-2">
+                            <strong>{{ $estatisticas['total_posts'] ?? 0 }}</strong>
+                            <div><small>Total de Posts</small></div>
+                        </div>
+                        <div class="col-md-2">
+                            <strong>{{ $estatisticas['posts_hoje'] ?? 0 }}</strong>
+                            <div><small>Posts Hoje</small></div>
+                        </div>
+                        <div class="col-md-2">
+                            <strong>{{ number_format($estatisticas['total_likes'] ?? 0) }}</strong>
+                            <div><small>Total Curtidas</small></div>
+                        </div>
+                        <div class="col-md-2">
+                            <strong>{{ number_format($estatisticas['total_shares'] ?? 0) }}</strong>
+                            <div><small>Compartilhamentos</small></div>
+                        </div>
+                        <div class="col-md-2">
+                            <strong>{{ number_format($estatisticas['total_comentarios'] ?? 0) }}</strong>
+                            <div><small>Comentários</small></div>
+                        </div>
+                        <div class="col-md-2">
+                            <strong>{{ $estatisticas['monitoramentos_ativos'] ?? 0 }}</strong>
+                            <div><small>Monitoramentos Ativos</small></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Filtros -->
+            <div class="col-md-12">
+                {!! Form::open(['id' => 'frm_filtro_posts', 'class' => 'form-horizontal', 'url' => ['midias-sociais/posts']]) !!}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <div class="btn-group" role="group" id="presetsData">
+                                    <button type="button" class="btn btn-outline-primary btn-sm" data-preset="hoje">Hoje</button>
+                                    <button type="button" class="btn btn-outline-primary btn-sm" data-preset="ontem">Ontem</button>
+                                    <button type="button" class="btn btn-outline-primary btn-sm" data-preset="7dias">Últimos 7 dias</button>
+                                    <button type="button" class="btn btn-outline-primary btn-sm" data-preset="30dias">Últimos 30 dias</button>
+                                    <button type="button" class="btn btn-outline-primary btn-sm" data-preset="mes">Este mês</button>
+                                    <button type="button" class="btn btn-outline-primary btn-sm" data-preset="mesanterior">Mês anterior</button>
+                                </div>
+                            </div>
+                        </div>
+                    <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label><i class="fa fa-filter"></i> Monitoramento</label>
+                                        <select class="form-control select2" name="monitoramento_id" id="monitoramento_id">
+                                            <option value="">Todos os monitoramentos</option>
+                                            @foreach($monitoramentos as $monitoramento)
+                                                <option value="{{ $monitoramento->id }}" {{ request('monitoramento_id') == $monitoramento->id ? 'selected' : '' }}>
+                                                    {{ $monitoramento->nome }} ({{ $monitoramento->cliente->nome }})
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Rede Social</label>
+                                        <select class="form-control" name="tipo_midia" id="tipo_midia">
+                                            <option value="">Todas</option>
+                                            <option value="twitter" {{ request('tipo_midia') == 'twitter' ? 'selected' : '' }}>Twitter</option>
+                                            <option value="linkedin" {{ request('tipo_midia') == 'linkedin' ? 'selected' : '' }}>LinkedIn</option>
+                                            <option value="facebook" {{ request('tipo_midia') == 'facebook' ? 'selected' : '' }}>Facebook</option>
+                                            <option value="instagram" {{ request('tipo_midia') == 'instagram' ? 'selected' : '' }}>Instagram</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Data Inicial</label>
+                                        <input type="date" class="form-control" name="data_inicial" id="data_inicial" 
+                                            value="{{ request('data_inicial', date('Y-m-d', strtotime('-7 days'))) }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Data Final</label>
+                                        <input type="date" class="form-control" name="data_final" id="data_final" 
+                                            value="{{ request('data_final', date('Y-m-d')) }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Palavra-chave</label>
+                                        <input type="text" class="form-control" name="palavra_chave" id="palavra_chave" 
+                                            placeholder="Ex: exemplo" value="{{ request('palavra_chave') }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-primary mt-4 w-100"><i class="fa fa-search"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>  
+                    
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div class="row">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Min. Curtidas</label>
+                                        <input type="number" class="form-control" name="min_likes" id="min_likes" min="0" placeholder="0" value="{{ request('min_likes') }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Min. Shares</label>
+                                        <input type="number" class="form-control" name="min_shares" id="min_shares" min="0" placeholder="0" value="{{ request('min_shares') }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Relevância</label>
+                                        <select class="form-control" name="relevancia" id="relevancia">
+                                            <option value="">Qualquer</option>
+                                            <option value="alta" {{ request('relevancia') == 'alta' ? 'selected' : '' }}>Alta (&gt;70%)</option>
+                                            <option value="media" {{ request('relevancia') == 'media' ? 'selected' : '' }}>Média (30-70%)</option>
+                                            <option value="baixa" {{ request('relevancia') == 'baixa' ? 'selected' : '' }}>Baixa (&lt;30%)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Com Mídia</label>
+                                        <select class="form-control" name="com_midia" id="com_midia">
+                                            <option value="">Todos</option>
+                                            <option value="imagem" {{ request('com_midia') == 'imagem' ? 'selected' : '' }}>Com Imagem</option>
+                                            <option value="video" {{ request('com_midia') == 'video' ? 'selected' : '' }}>Com Vídeo</option>
+                                            <option value="sem_midia" {{ request('com_midia') == 'sem_midia' ? 'selected' : '' }}>Sem Mídia</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Ordenar por</label>
+                                        <select class="form-control" name="ordenar" id="ordenar">
+                                            <option value="data_desc" {{ request('ordenar', 'data_desc') == 'data_desc' ? 'selected' : '' }}>Data (Mais recente)</option>
+                                            <option value="data_asc" {{ request('ordenar') == 'data_asc' ? 'selected' : '' }}>Data (Mais antigo)</option>
+                                            <option value="likes_desc" {{ request('ordenar') == 'likes_desc' ? 'selected' : '' }}>Curtidas (Maior)</option>
+                                            <option value="relevancia_desc" {{ request('ordenar') == 'relevancia_desc' ? 'selected' : '' }}>Relevância (Maior)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Por página</label>
+                                        <select class="form-control" name="per_page" id="per_page">
+                                            <option value="20" {{ request('per_page') == '20' ? 'selected' : '' }}>20</option>
+                                            <option value="50" {{ request('per_page', '50') == '50' ? 'selected' : '' }}>50</option>
+                                            <option value="100" {{ request('per_page') == '100' ? 'selected' : '' }}>100</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {!! Form::close() !!}
+            </div>
+
+            <!-- Resumo e Ações -->
+            <div class="border-top p-3 bg-light">
+                <div class="d-flex justify-content-between align-items-center flex-wrap">
+                    <div class="d-flex gap-4 flex-wrap align-items-center">
+                        <div>
+                            <strong>Total encontrados:</strong>
+                            <span class="badge bg-secondary">{{ $posts->total() ?? 0 }}</span>
+                        </div>
+                        <div class="ml-2">
+                            <strong>Mostrando:</strong>
+                            <span class="badge bg-info">{{ $posts->count() ?? 0 }}</span>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap align-items-center mt-2 mt-md-0">
+                        <a href="#" class="btn btn-success" onclick="exportarPosts()">
+                            <i class="fa fa-download"></i> Exportar Posts
+                        </a>
+                        <a href="{{ url('midias-sociais/monitoramentos') }}" class="btn btn-primary">
+                            <i class="fa fa-hashtag"></i> Gerenciar Monitoramentos
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Listagem de Posts -->
+            <div class="row">
+                <div class="col-lg-12 col-sm-12">
+                    
+                    @forelse($posts as $post)
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-1 text-center">
+                                        <div class="social-icon">
+                                            @switch($post->tipo_midia)
+                                                @case('twitter')
+                                                    <i class="fa fa-twitter fa-2x text-info"></i>
+                                                    @break
+                                                @case('linkedin')
+                                                    <i class="fa fa-linkedin fa-2x text-primary"></i>
+                                                    @break
+                                                @case('facebook')
+                                                    <i class="fa fa-facebook fa-2x text-primary"></i>
+                                                    @break
+                                                @case('instagram')
+                                                    <i class="fa fa-instagram fa-2x text-danger"></i>
+                                                    @break
+                                                @default
+                                                    <i class="fa fa-share-alt fa-2x text-secondary"></i>
+                                            @endswitch
+                                        </div>
+                                        <small class="text-muted d-block mt-1">{{ ucfirst($post->tipo_midia) }}</small>
+                                    </div>
+                                    
+                                    <div class="col-md-11">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                             <div class="d-flex align-items-center">
+                                                 @php
+                                                     // Prioridade 1: Foto real do misc_data (Twitter)
+                                                     $profilePicUrl = null;
+                                                     
+                                                     if($post->profile_pic_url) {
+                                                         $profilePicUrl = $post->profile_pic_url;
+                                                     } elseif($post->autor_username && $post->tipo_midia == 'twitter') {
+                                                         // Para Twitter, usar Twivatar (API gratuita para avatares) como fallback
+                                                         $username = ltrim($post->autor_username, '@');
+                                                         $profilePicUrl = "https://twivatar.glitch.me/{$username}";
+                                                     } elseif($post->autor_id) {
+                                                         // Para outras redes, usar API genérica ou placeholder
+                                                         $profilePicUrl = "https://ui-avatars.com/api/?name=" . urlencode($post->autor_display) . "&size=96&background=667eea&color=fff";
+                                                     }
+                                                 @endphp
+                                                 
+                                                 
+                                                 @if($profilePicUrl)
+                                                     <div class="profile-pic-container mr-3">
+                                                         <img src="{{ $profilePicUrl }}" 
+                                                              alt="Foto de perfil de {{ $post->autor_display }}" 
+                                                              class="profile-pic profile-pic-clickable"
+                                                              title="Clique para ampliar a foto de perfil"
+                                                              onclick="abrirImagem('{{ $profilePicUrl }}')"
+                                                              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                                         <div class="profile-pic-fallback" style="display: none;">
+                                                             <i class="fa fa-user"></i>
+                                                         </div>
+                                                     </div>
+                                                 @else
+                                                     <!-- Fallback padrão quando não temos dados para foto -->
+                                                     <div class="profile-pic-container mr-3">
+                                                         <div class="profile-pic-fallback">
+                                                             @switch($post->tipo_midia)
+                                                                 @case('twitter')
+                                                                     <i class="fa fa-twitter"></i>
+                                                                     @break
+                                                                 @case('linkedin')
+                                                                     <i class="fa fa-linkedin"></i>
+                                                                     @break
+                                                                 @case('facebook')
+                                                                     <i class="fa fa-facebook"></i>
+                                                                     @break
+                                                                 @case('instagram')
+                                                                     <i class="fa fa-instagram"></i>
+                                                                     @break
+                                                                 @default
+                                                                     <i class="fa fa-user"></i>
+                                                             @endswitch
+                                                         </div>
+                                                     </div>
+                                                 @endif
+                                                <div>
+                                                    <h6 class="mb-0">
+                                                        <strong>{{ $post->autor_display }}</strong>
+                                                        @if($post->autor_nome && $post->autor_username)
+                                                            <span class="text-muted">• {{ $post->autor_nome }}</span>
+                                                        @endif
+                                                        @if($post->idioma)
+                                                            <span class="badge badge-pill badge-light ml-2">
+                                                                <i class="fa fa-language"></i> {{ strtoupper($post->idioma) }}
+                                                            </span>
+                                                        @endif
+                                                    </h6>
+                                                <small class="text-muted">
+                                                    @if($post->data_publicacao)
+                                                        {{ $post->data_publicacao->format('d/m/Y \à\s H:i') }}
+                                                    @else
+                                                        Data não informada
+                                                    @endif
+                                                    @if($post->data_coleta)
+                                                        • Coletado em {{ $post->data_coleta->format('d/m/Y \à\s H:i') }}
+                                                    @endif
+                                                </small>
+                                                </div>
+                                            </div>
+                                            <div class="text-right">
+                                                @if($post->monitoramento)
+                                                    <span class="badge badge-success">{{ $post->monitoramento->nome }}</span>
+                                                    <br>
+                                                    @if($post->monitoramento->cliente)
+                                                        <small class="text-muted">Cliente: {{ $post->monitoramento->cliente->nome }}</small>
+                                                        <br>
+                                                    @endif
+                                                @endif
+                                                @if($post->relevancia_score)
+                                                    <div class="relevancia-score">
+                                                        <span class="badge badge-{{ $post->relevancia_score >= 0.7 ? 'success' : ($post->relevancia_score >= 0.4 ? 'warning' : 'secondary') }}">
+                                                            Relevância: {{ $post->relevancia_percentual }}%
+                                                        </span>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="post-content mb-2">
+                                            <p class="mb-1">{{ Str::limit($post->texto ?: 'Sem conteúdo de texto disponível.', 300) }}</p>
+                                        </div>
+                                        
+                                        <!-- Hashtags e Menções -->
+                                        @if($post->hashtags || $post->mencoes)
+                                            <div class="post-tags mb-3">
+                                                @if($post->hashtags && count($post->hashtags) > 0)
+                                                    <div class="mb-2">
+                                                        <small class="text-muted font-weight-bold mr-2">
+                                                            <i class="fa fa-hashtag"></i> Hashtags:
+                                                        </small>
+                                                        @foreach($post->hashtags as $hashtag)
+                                                            <span class="badge badge-pill badge-primary mr-1" 
+                                                                  style="cursor: pointer;" 
+                                                                  onclick="filtrarHashtag('{{ trim($hashtag, '#') }}')">
+                                                                {{ $hashtag }}
+                                                            </span>
+                                                        @endforeach
+                                                    </div>
+                                                @endif
+                                                @if($post->mencoes && count($post->mencoes) > 0)
+                                                    <div class="mb-2">
+                                                        <small class="text-muted font-weight-bold mr-2">
+                                                            <i class="fa fa-at"></i> Menções:
+                                                        </small>
+                                                        @foreach($post->mencoes as $mencao)
+                                                            @php
+                                                                $username = trim($mencao, '@');
+                                                                $socialUrl = '';
+                                                                switch($post->tipo_midia) {
+                                                                    case 'twitter':
+                                                                        $socialUrl = 'https://twitter.com/' . $username;
+                                                                        break;
+                                                                    case 'instagram':
+                                                                        $socialUrl = 'https://instagram.com/' . $username;
+                                                                        break;
+                                                                    case 'facebook':
+                                                                        $socialUrl = 'https://facebook.com/' . $username;
+                                                                        break;
+                                                                    case 'linkedin':
+                                                                        $socialUrl = 'https://linkedin.com/in/' . $username;
+                                                                        break;
+                                                                }
+                                                            @endphp
+                                                            @if($socialUrl)
+                                                                <a href="{{ $socialUrl }}" target="_blank" 
+                                                                   class="badge badge-pill badge-secondary mr-1 text-decoration-none" 
+                                                                   style="cursor: pointer;"
+                                                                   title="Ver perfil de {{ $mencao }}">
+                                                                    <i class="fa fa-external-link-square fa-xs"></i> {{ $mencao }}
+                                                                </a>
+                                                            @else
+                                                                <span class="badge badge-pill badge-secondary mr-1">{{ $mencao }}</span>
+                                                            @endif
+                                                        @endforeach
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        @endif
+                                        
+                                        <!-- Métricas do Post -->
+                                        <div class="post-metrics">
+                                            <div class="row">
+                                                <div class="col-md-8">
+                                                    <small class="text-muted mr-3">
+                                                        <i class="fa fa-heart text-danger"></i> {{ number_format($post->likes ?? 0) }} curtidas
+                                                    </small>
+                                                    <small class="text-muted mr-3">
+                                                        <i class="fa fa-share text-success"></i> {{ number_format($post->shares ?? 0) }} compartilhamentos
+                                                    </small>
+                                                    <small class="text-muted mr-3">
+                                                        <i class="fa fa-comment text-primary"></i> {{ number_format($post->comentarios ?? 0) }} comentários
+                                                    </small>
+                                                    @if($post->views)
+                                                        <small class="text-muted mr-3">
+                                                            <i class="fa fa-eye text-info"></i> {{ number_format($post->views) }} visualizações
+                                                        </small>
+                                                    @endif
+                                                </div>
+                                                <div class="col-md-4 text-right">
+                                                    @if($post->url_post)
+                                                        <a href="{{ $post->url_post }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                            <i class="fa fa-external-link"></i> Ver Original
+                                                        </a>
+                                                    @endif
+                                                    <button class="btn btn-sm btn-outline-info" onclick="verDetalhes({{ $post->id }})">
+                                                        <i class="fa fa-info-circle"></i> Detalhes
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        
+                                        <!-- Mídia do Post -->
+                                        @if($post->urls_midia && count($post->urls_midia) > 0)
+                                            <div class="post-media mt-3 p-3 bg-light rounded">
+                                                <div class="d-flex align-items-center mb-3">
+                                                    <h6 class="mb-0 mr-3">
+                                                        <i class="fa fa-paperclip text-primary"></i> Mídia Anexa
+                                                    </h6>
+                                                    <div>
+                                                        @if($post->tem_imagem)
+                                                            <span class="badge badge-success mr-1">
+                                                                <i class="fa fa-image"></i> Imagens
+                                                            </span>
+                                                        @endif
+                                                        @if($post->tem_video)
+                                                            <span class="badge badge-danger mr-1">
+                                                                <i class="fa fa-video-camera"></i> Vídeos
+                                                            </span>
+                                                        @endif
+                                                        @php
+                                                            // Processar mídia de forma inteligente primeiro para poder contar
+                                                            $imagens = [];
+                                                            $videosAgrupados = [];
+                                                            $outros = [];
+                                                            
+                                                            // Primeiro, identificar e agrupar thumbnails com vídeos
+                                                            $thumbnails = [];
+                                                            $videosRaw = [];
+                                                            $imagensIndependentes = [];
+                                                    
+                                                    foreach($post->urls_midia as $url) {
+                                                        if(Str::contains(strtolower($url), ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
+                                                            // Verificar se é thumbnail de vídeo (padrão Twitter/LinkedIn)
+                                                            if(Str::contains($url, ['amplify_video_thumb', 'video_thumb', 'thumbnail'])) {
+                                                                $thumbnails[] = $url;
+                                                            } else {
+                                                                $imagensIndependentes[] = $url;
+                                                            }
+                                                        } elseif(Str::contains(strtolower($url), ['mp4', 'webm', 'm3u8'])) {
+                                                            $videosRaw[] = $url;
+                                                        } elseif(Str::contains(strtolower($url), ['avi', 'mov', 'wmv', 'flv'])) {
+                                                            $outros[] = $url;
+                                                        }
+                                                    }
+                                                    
+                                                    // Agrupar vídeos por ID (extrair ID comum dos URLs)
+                                                    $gruposVideos = [];
+                                                    foreach($videosRaw as $videoUrl) {
+                                                        // Extrair ID do vídeo (padrão Twitter: amplify_video/ID/)
+                                                        if(preg_match('/amplify_video\/(\d+)\//', $videoUrl, $matches)) {
+                                                            $videoId = $matches[1];
+                                                        } elseif(preg_match('/video\/(\d+)\//', $videoUrl, $matches)) {
+                                                            $videoId = $matches[1];
+                                                        } else {
+                                                            // Se não conseguir extrair ID, usar hash do URL
+                                                            $videoId = md5($videoUrl);
+                                                        }
+                                                        
+                                                        if(!isset($gruposVideos[$videoId])) {
+                                                            $gruposVideos[$videoId] = [];
+                                                        }
+                                                        $gruposVideos[$videoId][] = $videoUrl;
+                                                    }
+                                                    
+                                                    // Para cada grupo de vídeos, escolher a melhor qualidade
+                                                    foreach($gruposVideos as $videoId => $urlsDoVideo) {
+                                                        $melhorVideo = null;
+                                                        $melhorQualidade = 0;
+                                                        
+                                                        foreach($urlsDoVideo as $videoUrl) {
+                                                            // Priorizar MP4 sobre M3U8
+                                                            if(Str::contains($videoUrl, '.mp4')) {
+                                                                // Extrair resolução do URL (ex: 720x1280)
+                                                                if(preg_match('/(\d+)x(\d+)/', $videoUrl, $matches)) {
+                                                                    $qualidade = intval($matches[2]); // Usar altura como referência
+                                                                    if($qualidade > $melhorQualidade) {
+                                                                        $melhorQualidade = $qualidade;
+                                                                        $melhorVideo = $videoUrl;
+                                                                    }
+                                                                } elseif(!$melhorVideo) {
+                                                                    $melhorVideo = $videoUrl;
+                                                                }
+                                                            } elseif(!$melhorVideo && Str::contains($videoUrl, 'm3u8')) {
+                                                                $melhorVideo = $videoUrl; // M3U8 como fallback
+                                                            }
+                                                        }
+                                                        
+                                                        if($melhorVideo) {
+                                                            // Procurar thumbnail correspondente
+                                                            $thumbnailCorrespondente = null;
+                                                            foreach($thumbnails as $thumb) {
+                                                                if(Str::contains($thumb, $videoId)) {
+                                                                    $thumbnailCorrespondente = $thumb;
+                                                                    break;
+                                                                }
+                                                            }
+                                                            
+                                                            $videosAgrupados[] = [
+                                                                'video' => $melhorVideo,
+                                                                'thumbnail' => $thumbnailCorrespondente,
+                                                                'qualidade' => $melhorQualidade ?: 'desconhecida'
+                                                            ];
+                                                        }
+                                                    }
+                                                    
+                                                    // Imagens finais são as independentes
+                                                    $imagens = $imagensIndependentes;
+                                                @endphp
+                                                        <span class="badge badge-info">
+                                                            {{ count($imagens) + count($videosAgrupados) + count($outros) }} mídia{{ count($imagens) + count($videosAgrupados) + count($outros) > 1 ? 's' : '' }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Imagens -->
+                                                @if(count($imagens) > 0)
+                                                    <div class="media-section mb-4">
+                                                        <div class="d-flex align-items-center mb-3">
+                                                            <i class="fa fa-image text-success fa-lg mr-2"></i>
+                                                            <span class="font-weight-bold text-dark">
+                                                                Imagens ({{ count($imagens) }})
+                                                            </span>
+                                                            <span class="badge badge-success ml-2">Fotos</span>
+                                                        </div>
+                                                        <div class="row">
+                                                            @foreach(array_slice($imagens, 0, 8) as $index => $imagem)
+                                                                <div class="col-lg-3 col-md-4 col-6 mb-3">
+                                                                    <div class="image-container-modern position-relative">
+                                                                        <img src="{{ $imagem }}" 
+                                                                             class="image-modern img-fluid" 
+                                                                             alt="Imagem {{ $index + 1 }} do post" 
+                                                                             onclick="abrirImagem('{{ $imagem }}')"
+                                                                             loading="lazy">
+                                                                        
+                                                                        <!-- Overlay hover -->
+                                                                        <div class="image-overlay-modern">
+                                                                            <div class="image-overlay-content">
+                                                                                <i class="fa fa-search-plus fa-2x text-white"></i>
+                                                                                <small class="d-block text-white mt-2">Ampliar</small>
+                                                                            </div>
+                                                                        </div>
+                                                                        
+                                                                        <!-- Número da imagem -->
+                                                                        <div class="image-number">
+                                                                            <span class="badge badge-dark">{{ $index + 1 }}</span>
+                                                                        </div>
+                                                                        
+                                                                        <!-- Efeito shimmer -->
+                                                                        <div class="image-shimmer-effect"></div>
+                                                                    </div>
+                                                                </div>
+                                                            @endforeach
+                                                            @if(count($imagens) > 8)
+                                                                <div class="col-lg-3 col-md-4 col-6 mb-3">
+                                                                    <div class="more-images-container position-relative" 
+                                                                         onclick="verTodasImagens({{ $post->id }})">
+                                                                        <div class="more-images-content">
+                                                                            <i class="fa fa-images fa-3x text-white mb-2"></i>
+                                                                            <div class="text-white text-center">
+                                                                                <strong>+{{ count($imagens) - 8 }}</strong>
+                                                                                <small class="d-block">mais imagens</small>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                                
+                                                <!-- Vídeos com Thumbnail -->
+                                                @if(count($videosAgrupados) > 0)
+                                                    <div class="media-section mb-4">
+                                                        <div class="d-flex align-items-center mb-3">
+                                                            <i class="fa fa-play-circle text-danger fa-lg mr-2"></i>
+                                                            <span class="font-weight-bold text-dark">
+                                                                Vídeos ({{ count($videosAgrupados) }})
+                                                            </span>
+                                                            <span class="badge badge-danger ml-2">HD</span>
+                                                        </div>
+                                                        <div class="row">
+                                                            @foreach(array_slice($videosAgrupados, 0, 4) as $index => $videoData)
+                                                                @php
+                                                                    $isStreamingVideo = Str::contains($videoData['video'], 'm3u8');
+                                                                    $extensao = pathinfo(parse_url($videoData['video'], PHP_URL_PATH), PATHINFO_EXTENSION);
+                                                                    $isPlayableVideo = in_array(strtolower($extensao), ['mp4', 'webm']);
+                                                                    $qualidadeTexto = is_numeric($videoData['qualidade']) ? $videoData['qualidade'].'p' : 'HD';
+                                                                @endphp
+                                                                
+                                                                <div class="col-lg-3 col-md-4 col-6 mb-3">
+                                                                    <div class="video-thumbnail-container position-relative" 
+                                                                         id="video-container-{{ $post->id }}-{{ $index }}"
+                                                                         onclick="playVideoInline('{{ $videoData['video'] }}', '{{ $videoData['thumbnail'] }}', '{{ $post->id }}-{{ $index }}', {{ $isPlayableVideo ? 'true' : 'false' }})">
+                                                                        
+                                                                        <!-- Thumbnail ou placeholder -->
+                                                                        @if($videoData['thumbnail'])
+                                                                            <img src="{{ $videoData['thumbnail'] }}" 
+                                                                                 class="video-thumbnail img-fluid" 
+                                                                                 alt="Preview do vídeo {{ $index + 1 }}" 
+                                                                                 loading="lazy">
+                                                                        @else
+                                                                            <div class="video-placeholder d-flex align-items-center justify-content-center">
+                                                                                <i class="fa fa-video-camera fa-2x text-white"></i>
+                                                                            </div>
+                                                                        @endif
+                                                                        
+                                                                        <!-- Overlay de play -->
+                                                                        <div class="video-play-overlay">
+                                                                            <div class="play-button">
+                                                                                @if($isPlayableVideo)
+                                                                                    <i class="fa fa-play-circle fa-3x text-white"></i>
+                                                                                @elseif($isStreamingVideo)
+                                                                                    <i class="fa fa-external-link-square fa-3x text-white"></i>
+                                                                                @else
+                                                                                    <i class="fa fa-download fa-2x text-white"></i>
+                                                                                @endif
+                                                                            </div>
+                                                                        </div>
+                                                                        
+                                                                        <!-- Badges informativos -->
+                                                                        <div class="video-info-badges">
+                                                                            <span class="badge badge-dark badge-quality">{{ $qualidadeTexto }}</span>
+                                                                            @if($isStreamingVideo)
+                                                                                <span class="badge badge-warning badge-type">Stream</span>
+                                                                            @elseif($isPlayableVideo)
+                                                                                <span class="badge badge-success badge-type">Play</span>
+                                                                            @else
+                                                                                <span class="badge badge-info badge-type">Download</span>
+                                                                            @endif
+                                                                        </div>
+                                                                        
+                                                                        <!-- Duração (simulada) -->
+                                                                        <div class="video-duration">
+                                                                            <span class="badge badge-dark">{{ rand(15, 180) }}s</span>
+                                                                        </div>
+                                                                        
+                                                                        <!-- Indicador de hover -->
+                                                                        <div class="video-hover-effect"></div>
+                                                                    </div>
+                                                                </div>
+                                                            @endforeach
+                                                            @if(count($videosAgrupados) > 4)
+                                                                <div class="col-12">
+                                                                    <div class="text-center p-3 bg-light rounded">
+                                                                        <small class="text-muted">
+                                                                            <i class="fa fa-plus-circle mr-1"></i>
+                                                                            <strong>{{ count($videosAgrupados) - 4 }}</strong> vídeo(s) adicional(is)
+                                                                        </small>
+                                                                    </div>
+                                                                </div>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                                
+                                                <!-- Outros arquivos -->
+                                                @if(count($outros) > 0)
+                                                    <div class="media-section">
+                                                        <small class="text-muted font-weight-bold d-block mb-2">
+                                                            <i class="fa fa-file text-info"></i> Outros arquivos ({{ count($outros) }})
+                                                        </small>
+                                                        <div class="d-flex flex-wrap">
+                                                            @foreach($outros as $arquivo)
+                                                                <a href="{{ $arquivo }}" target="_blank" 
+                                                                   class="btn btn-sm btn-outline-info mr-2 mb-2">
+                                                                    <i class="fa fa-download"></i> Arquivo
+                                                                </a>
+                                                            @endforeach
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="alert alert-info text-center">
+                            <i class="fa fa-info-circle fa-2x mb-2"></i><br>
+                            <strong>Nenhum post encontrado</strong><br>
+                            Não há posts coletados para os filtros selecionados.
+                        </div>
+                    @endforelse
+                </div>
+            </div>
+            
+            <!-- Paginação -->
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    {{ $posts->onEachSide(1)->appends(request()->query())->links('vendor.pagination.bootstrap-4') }}
+                    <nav aria-label="Paginação">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item disabled"><span class="page-link">« Anterior</span></li>
+                            <li class="page-item active"><span class="page-link">1</span></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item"><a class="page-link" href="#">Próximo »</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Detalhes do Post -->
+<div class="modal fade" id="modalDetalhesPost" tabindex="-1" role="dialog" aria-labelledby="modalDetalhesPostLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalDetalhesPostLabel">
+                    <i class="fa fa-info-circle"></i> Detalhes do Post
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="conteudoDetalhesPost">
+                <div class="text-center">
+                    <i class="fa fa-spinner fa-spin fa-2x"></i>
+                    <p>Carregando detalhes...</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+
+@section('script')
+<script>
+    $(document).ready(function() {
+        // Select2 para campos de seleção
+        $('.select2').select2({
+            placeholder: 'Selecione...',
+            allowClear: true
+        });
+        
+        // Auto-submit do formulário quando filtros mudam
+        $('#per_page, #ordenar').on('change', function() {
+            $('#frm_filtro_posts').submit();
+        });
+        
+        // Preset de datas
+        $('#presetsData button').on('click', function() {
+            let preset = $(this).data('preset');
+            let hoje = moment();
+            let dt_inicial = '';
+            let dt_final = '';
+
+            switch(preset) {
+                case 'hoje':
+                    dt_inicial = hoje.format('YYYY-MM-DD');
+                    dt_final = hoje.format('YYYY-MM-DD');
+                    break;
+                case 'ontem':
+                    dt_inicial = hoje.clone().subtract(1, 'days').format('YYYY-MM-DD');
+                    dt_final = hoje.clone().subtract(1, 'days').format('YYYY-MM-DD');
+                    break;
+                case '7dias':
+                    dt_inicial = hoje.clone().subtract(6, 'days').format('YYYY-MM-DD');
+                    dt_final = hoje.format('YYYY-MM-DD');
+                    break;
+                case '30dias':
+                    dt_inicial = hoje.clone().subtract(29, 'days').format('YYYY-MM-DD');
+                    dt_final = hoje.format('YYYY-MM-DD');
+                    break;
+                case 'mes':
+                    dt_inicial = hoje.clone().startOf('month').format('YYYY-MM-DD');
+                    dt_final = hoje.format('YYYY-MM-DD');
+                    break;
+                case 'mesanterior':
+                    dt_inicial = hoje.clone().subtract(1, 'months').startOf('month').format('YYYY-MM-DD');
+                    dt_final = hoje.clone().subtract(1, 'months').endOf('month').format('YYYY-MM-DD');
+                    break;
+            }
+
+            $('#data_inicial').val(dt_inicial);
+            $('#data_final').val(dt_final);
+        });
+    });
+    
+    function verDetalhes(postId) {
+        var host = $('meta[name="base-url"]').attr('content');
+        
+        $('#modalDetalhesPost').modal('show');
+        $('#conteudoDetalhesPost').html(`
+            <div class="text-center p-4">
+                <i class="fa fa-spinner fa-spin fa-2x text-primary"></i>
+                <p class="mt-2">Carregando detalhes do post...</p>
+            </div>
+        `);
+        
+        $.ajax({
+            url: host + '/midias-sociais/posts/' + postId + '/detalhes',
+            type: 'GET',
+            dataType: 'html',
+            success: function(response) {
+                $('#conteudoDetalhesPost').html(response);
+            },
+            error: function(xhr, status, error) {
+                console.error('Erro ao carregar detalhes:', error);
+                $('#conteudoDetalhesPost').html(`
+                    <div class="alert alert-danger text-center">
+                        <i class="fa fa-exclamation-triangle"></i>
+                        <strong>Erro ao carregar detalhes</strong><br>
+                        <small>Verifique sua conexão e tente novamente.</small>
+                    </div>
+                `);
+            }
+        });
+    }
+    
+    function exportarPosts() {
+        var host = $('meta[name="base-url"]').attr('content');
+        var filtros = $('#frm_filtro_posts').serialize();
+        
+        Swal.fire({
+            title: 'Exportar Posts',
+            text: 'Escolha o formato para exportação:',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: '<i class="fa fa-file-excel-o"></i> Excel',
+            cancelButtonText: '<i class="fa fa-file-text-o"></i> CSV',
+            showDenyButton: true,
+            denyButtonText: '<i class="fa fa-file-pdf-o"></i> PDF'
+        }).then((result) => {
+            var formato = '';
+            if (result.isConfirmed) {
+                formato = 'excel';
+            } else if (result.isDenied) {
+                formato = 'pdf';
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                formato = 'csv';
+            }
+            
+            if (formato) {
+                window.open(host + '/midias-sociais/posts/exportar?formato=' + formato + '&' + filtros, '_blank');
+            }
+        });
+    }
+    
+    function abrirImagem(url) {
+        // Verificar se SweetAlert está disponível
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                imageUrl: url,
+                imageAlt: 'Imagem do post',
+                showConfirmButton: false,
+                showCloseButton: true,
+                width: 'auto',
+                imageWidth: '90%',
+                imageHeight: 'auto',
+                backdrop: `
+                    rgba(0,0,0,0.8)
+                    center
+                    no-repeat
+                `,
+                customClass: {
+                    image: 'rounded shadow'
+                }
+            });
+        } else {
+            // Fallback: Criar modal simples se SweetAlert não estiver disponível
+            createImageModal(url);
+        }
+    }
+    
+    function createImageModal(url) {
+        // Criar modal customizado para imagens
+        const modal = document.createElement('div');
+        modal.className = 'custom-image-modal';
+        modal.innerHTML = `
+            <div class="custom-modal-backdrop" onclick="closeImageModal()">
+                <div class="custom-modal-content" onclick="event.stopPropagation()">
+                    <div class="custom-modal-header">
+                        <button class="custom-close-btn" onclick="closeImageModal()">&times;</button>
+                    </div>
+                    <img src="${url}" alt="Imagem ampliada" class="custom-modal-image">
+                    <div class="custom-modal-footer">
+                        <a href="${url}" target="_blank" class="btn btn-sm btn-primary">
+                            <i class="fa fa-external-link"></i> Abrir em Nova Aba
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        modal.style.display = 'flex';
+        
+        // Adicionar listener para ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeImageModal();
+            }
+        });
+    }
+    
+    function closeImageModal() {
+        const modal = document.querySelector('.custom-image-modal');
+        if (modal) {
+            modal.remove();
+        }
+    }
+    
+    function playVideoInline(videoUrl, thumbnailUrl, containerId, isPlayableVideo) {
+        const container = document.getElementById('video-container-' + containerId);
+        
+        if (!container) {
+            console.error('Container não encontrado:', containerId);
+            return;
+        }
+        
+        if (!isPlayableVideo) {
+            // Para vídeos não reproduzíveis, abrir em nova aba
+            window.open(videoUrl, '_blank');
+            return;
+        }
+        
+        // Verificar se já está reproduzindo
+        const existingVideo = container.querySelector('video');
+        if (existingVideo) {
+            // Se já tem vídeo, pausar/reproduzir
+            if (existingVideo.paused) {
+                existingVideo.play();
+            } else {
+                existingVideo.pause();
+            }
+            return;
+        }
+        
+        // Criar o elemento de vídeo
+        const videoElement = document.createElement('video');
+        videoElement.src = videoUrl;
+        videoElement.controls = true;
+        videoElement.autoplay = true;
+        videoElement.className = 'inline-video-player';
+        videoElement.style.cssText = `
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 12px;
+            background: #000;
+        `;
+        
+        // Adicionar poster se disponível
+        if (thumbnailUrl) {
+            videoElement.poster = thumbnailUrl;
+        }
+        
+        // Adicionar botão de fechar
+        const closeButton = document.createElement('button');
+        closeButton.innerHTML = '&times;';
+        closeButton.className = 'inline-video-close';
+        closeButton.style.cssText = `
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            font-size: 18px;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s ease;
+        `;
+        
+        closeButton.onmouseover = function() {
+            this.style.background = 'rgba(255,0,0,0.7)';
+        };
+        
+        closeButton.onmouseout = function() {
+            this.style.background = 'rgba(0,0,0,0.7)';
+        };
+        
+        closeButton.onclick = function(e) {
+            e.stopPropagation();
+            restoreVideoThumbnail(container, thumbnailUrl);
+        };
+        
+        // Adicionar controles de qualidade se possível
+        const qualityBadge = document.createElement('div');
+        qualityBadge.className = 'inline-video-quality';
+        qualityBadge.innerHTML = '<span class="badge badge-success">▶ Reproduzindo</span>';
+        qualityBadge.style.cssText = `
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            z-index: 10;
+        `;
+        
+        // Limpar conteúdo atual e adicionar vídeo
+        container.innerHTML = '';
+        container.appendChild(videoElement);
+        container.appendChild(closeButton);
+        container.appendChild(qualityBadge);
+        
+        // Adicionar classe para indicar que está reproduzindo
+        container.classList.add('playing-video');
+        
+        // Event listeners do vídeo
+        videoElement.addEventListener('loadstart', function() {
+            console.log('Iniciando carregamento do vídeo...');
+            qualityBadge.innerHTML = '<span class="badge badge-warning">⏳ Carregando...</span>';
+        });
+        
+        videoElement.addEventListener('canplay', function() {
+            qualityBadge.innerHTML = '<span class="badge badge-success">▶ Pronto</span>';
+            setTimeout(() => {
+                qualityBadge.style.opacity = '0';
+            }, 2000);
+        });
+        
+        videoElement.addEventListener('error', function(e) {
+            console.error('Erro ao carregar vídeo:', e);
+            qualityBadge.innerHTML = '<span class="badge badge-danger">❌ Erro</span>';
+            
+            // Fallback: tentar abrir em nova aba
+            setTimeout(() => {
+                if (confirm('Erro ao reproduzir o vídeo. Deseja abrir em nova aba?')) {
+                    window.open(videoUrl, '_blank');
+                }
+                restoreVideoThumbnail(container, thumbnailUrl);
+            }, 3000);
+        });
+        
+        videoElement.addEventListener('ended', function() {
+            qualityBadge.innerHTML = '<span class="badge badge-info">🔄 Finalizado - Clique para repetir</span>';
+            qualityBadge.style.opacity = '1';
+            
+            // Opção para repetir
+            setTimeout(() => {
+                container.onclick = function() {
+                    videoElement.currentTime = 0;
+                    videoElement.play();
+                    qualityBadge.style.opacity = '0';
+                };
+            }, 1000);
+        });
+    }
+    
+    function restoreVideoThumbnail(container, thumbnailUrl) {
+        // Restaurar o thumbnail original
+        const originalOnclick = container.getAttribute('onclick');
+        
+        container.innerHTML = `
+            ${thumbnailUrl ? `<img src="${thumbnailUrl}" class="video-thumbnail img-fluid" alt="Preview do vídeo" loading="lazy">` : '<div class="video-placeholder d-flex align-items-center justify-content-center"><i class="fa fa-video-camera fa-2x text-white"></i></div>'}
+            <div class="video-play-overlay">
+                <div class="play-button">
+                    <i class="fa fa-play-circle fa-3x text-white"></i>
+                </div>
+            </div>
+            <div class="video-info-badges">
+                <span class="badge badge-dark badge-quality">HD</span>
+                <span class="badge badge-success badge-type">Play</span>
+            </div>
+            <div class="video-duration">
+                <span class="badge badge-dark">▶ Clique para reproduzir</span>
+            </div>
+            <div class="video-hover-effect"></div>
+        `;
+        
+        container.classList.remove('playing-video');
+        
+        // Restaurar funcionalidade original
+        container.setAttribute('onclick', originalOnclick);
+    }
+    
+    function abrirVideo(url, thumbnail = null) {
+        // Verificar tipo de vídeo e abrir adequadamente
+        const extensao = url.split('.').pop().toLowerCase().split('?')[0]; // Remove parâmetros da URL
+        const isStreamingVideo = url.includes('m3u8') || extensao === 'm3u8';
+        const isPlayableVideo = ['mp4', 'webm', 'ogg'].includes(extensao);
+        const isOtherVideo = ['avi', 'mov', 'wmv', 'flv', 'mkv'].includes(extensao);
+        
+        if (isStreamingVideo) {
+            // Para vídeos streaming (m3u8), abrir em nova aba
+            Swal.fire({
+                title: 'Vídeo de Streaming',
+                text: 'Este vídeo será aberto em uma nova aba para reprodução.',
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonText: 'Abrir Vídeo',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.open(url, '_blank');
+                }
+            });
+        } else if (isPlayableVideo) {
+            // Para vídeos reproduzíveis, criar player modal
+            let videoHtml = `
+                <div class="video-player-container">
+                    <video controls autoplay style="width: 100%; max-width: 800px; height: auto; border-radius: 8px;"`;
+            
+            // Se tem thumbnail, usar como poster
+            if (thumbnail) {
+                videoHtml += ` poster="${thumbnail}"`;
+            }
+            
+            videoHtml += `>
+                        <source src="${url}" type="video/${extensao}">
+                        <p>Seu navegador não suporta reprodução de vídeo HTML5.</p>
+                        <a href="${url}" target="_blank" class="btn btn-primary">
+                            <i class="fa fa-external-link"></i> Abrir em Nova Aba
+                        </a>
+                    </video>
+                    <div class="mt-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                <i class="fa fa-info-circle"></i> Use os controles para navegar pelo vídeo
+                            </small>
+                            <div class="video-actions">
+                                <button class="btn btn-sm btn-outline-primary" onclick="toggleFullscreen()">
+                                    <i class="fa fa-expand"></i> Tela Cheia
+                                </button>
+                                <a href="${url}" download class="btn btn-sm btn-outline-success ml-2">
+                                    <i class="fa fa-download"></i> Download
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            Swal.fire({
+                title: `<i class="fa fa-play-circle text-success"></i> Reproduzindo Vídeo HD`,
+                html: videoHtml,
+                showConfirmButton: true,
+                showCancelButton: true,
+                confirmButtonText: '<i class="fa fa-external-link"></i> Abrir em Nova Aba',
+                cancelButtonText: '<i class="fa fa-times"></i> Fechar',
+                width: '90%',
+                customClass: {
+                    popup: 'swal-video-player',
+                    confirmButton: 'btn-outline-primary',
+                    cancelButton: 'btn-secondary'
+                },
+                didOpen: () => {
+                    // Configurar eventos do vídeo
+                    const video = Swal.getPopup().querySelector('video');
+                    if (video) {
+                        video.addEventListener('error', function() {
+                            console.log('Erro ao carregar vídeo, tentando abrir em nova aba');
+                            window.open(url, '_blank');
+                        });
+                        
+                        video.addEventListener('loadstart', function() {
+                            console.log('Iniciando carregamento do vídeo...');
+                        });
+                    }
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.open(url, '_blank');
+                }
+            });
+        } else if (isOtherVideo) {
+            // Para outros formatos de vídeo, dar opções ao usuário
+            Swal.fire({
+                title: 'Formato de Vídeo',
+                html: `
+                    <div class="text-center">
+                        <i class="fa fa-file-video-o fa-3x text-warning mb-3"></i>
+                        <p>Este vídeo está em formato <strong>${extensao.toUpperCase()}</strong>.</p>
+                        <p class="text-muted">Escolha como deseja abrir:</p>
+                    </div>
+                `,
+                icon: 'question',
+                showCancelButton: true,
+                showDenyButton: true,
+                confirmButtonText: '<i class="fa fa-download"></i> Download',
+                denyButtonText: '<i class="fa fa-external-link"></i> Nova Aba',
+                cancelButtonText: '<i class="fa fa-times"></i> Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Forçar download
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `video.${extensao}`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                } else if (result.isDenied) {
+                    // Abrir em nova aba
+                    window.open(url, '_blank');
+                }
+            });
+        } else {
+            // Para tipos desconhecidos, tentar abrir em nova aba
+            window.open(url, '_blank');
+        }
+    }
+    
+    function filtrarHashtag(hashtag) {
+        // Adicionar hashtag ao campo de palavra-chave e submeter formulário
+        let palavraChaveAtual = $('#palavra_chave').val();
+        let novaHashtag = '#' + hashtag;
+        
+        // Se já não tiver a hashtag, adicionar
+        if (!palavraChaveAtual.includes(novaHashtag)) {
+            let novaPalavraChave = palavraChaveAtual ? palavraChaveAtual + ' ' + novaHashtag : novaHashtag;
+            $('#palavra_chave').val(novaPalavraChave);
+            $('#frm_filtro_posts').submit();
+        }
+    }
+    
+    function verTodasImagens(postId) {
+        var host = $('meta[name="base-url"]').attr('content');
+        
+        // Usar modal para mostrar todas as imagens
+        Swal.fire({
+            title: 'Carregando imagens...',
+            text: 'Por favor, aguarde',
+            icon: 'info',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            didOpen: () => {
+                Swal.showLoading();
+                
+                // Fazer requisição para buscar todas as imagens do post
+                $.ajax({
+                    url: host + '/midias-sociais/posts/' + postId + '/imagens',
+                    type: 'GET',
+                    success: function(response) {
+                        if (response.imagens && response.imagens.length > 0) {
+                            let imagensHtml = '<div class="row">';
+                            response.imagens.forEach((imagem, index) => {
+                                imagensHtml += `
+                                    <div class="col-md-4 mb-3">
+                                        <img src="${imagem}" 
+                                             class="img-fluid rounded shadow" 
+                                             alt="Imagem ${index + 1}"
+                                             style="cursor: pointer; width: 100%; height: 200px; object-fit: cover;"
+                                             onclick="abrirImagem('${imagem}')">
+                                    </div>
+                                `;
+                            });
+                            imagensHtml += '</div>';
+                            
+                            Swal.fire({
+                                title: `Todas as imagens (${response.imagens.length})`,
+                                html: imagensHtml,
+                                showConfirmButton: true,
+                                confirmButtonText: 'Fechar',
+                                width: '80%',
+                                customClass: {
+                                    popup: 'swal-wide'
+                                }
+                            });
+                        } else {
+                            Swal.fire('Aviso', 'Nenhuma imagem encontrada', 'info');
+                        }
+                    },
+                    error: function() {
+                        Swal.fire('Erro', 'Não foi possível carregar as imagens', 'error');
+                    }
+                });
+            }
+        });
+    }
+    
+    function toggleFullscreen() {
+        const video = document.querySelector('#swal2-content video');
+        if (video) {
+            if (video.requestFullscreen) {
+                video.requestFullscreen();
+            } else if (video.webkitRequestFullscreen) {
+                video.webkitRequestFullscreen();
+            } else if (video.mozRequestFullScreen) {
+                video.mozRequestFullScreen();
+            }
+        }
+    }
+</script>
+
+<style>
+    /* Estilos para melhorar a apresentação dos posts */
+    .post-media {
+        transition: all 0.3s ease;
+    }
+    
+    .image-container:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    
+    .video-container {
+        position: relative;
+        overflow: hidden;
+        border-radius: 10px !important;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    
+    .video-container:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    }
+    
+    .video-container .video-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.1);
+        transition: background 0.3s ease;
+        pointer-events: none;
+    }
+    
+    .video-container:hover .video-overlay {
+        background: rgba(0,0,0,0.2);
+    }
+    
+    .video-container i.fa {
+        transition: transform 0.3s ease;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+    
+    .video-container:hover i.fa {
+        transform: scale(1.1);
+    }
+    
+    .badge:hover {
+        transform: scale(1.05);
+        transition: transform 0.1s ease;
+    }
+    
+    .post-tags .badge {
+        font-size: 0.8rem;
+        margin-bottom: 4px;
+        transition: all 0.2s ease;
+    }
+    
+    .post-tags .badge:hover {
+        text-decoration: none;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .social-icon i {
+        transition: transform 0.2s ease;
+    }
+    
+    .social-icon:hover i {
+        transform: scale(1.1);
+    }
+    
+    .card {
+        transition: box-shadow 0.3s ease;
+        border: none;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .card:hover {
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    
+    .media-section {
+        border-left: 3px solid #007bff;
+        padding-left: 10px;
+        margin-bottom: 15px;
+    }
+    
+    .image-overlay {
+        background: linear-gradient(45deg, rgba(0,0,0,0.8), rgba(0,0,0,0.6)) !important;
+    }
+    
+    .relevancia-score .badge {
+        font-size: 0.75rem;
+        padding: 0.375rem 0.75rem;
+    }
+    
+    /* Responsividade para mobile */
+    @media (max-width: 768px) {
+        .post-media .col-4 {
+            padding-left: 2px;
+            padding-right: 2px;
+        }
+        
+        .post-media img {
+            height: 80px !important;
+        }
+        
+        .post-tags .badge {
+            font-size: 0.7rem;
+            margin-bottom: 2px;
+        }
+    }
+    
+    /* SweetAlert custom styles */
+    .swal-wide {
+        width: 90% !important;
+    }
+    
+    /* Player de vídeo no modal */
+    .swal-video-player {
+        border-radius: 15px !important;
+    }
+    
+    .swal-video-player video {
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        background: #000;
+    }
+    
+    .swal-video-player .swal2-html-container {
+        margin: 0 !important;
+        padding: 20px !important;
+    }
+    
+    .video-player-container {
+        text-align: center;
+    }
+    
+    .video-player-container video {
+        max-height: 500px;
+        width: 100%;
+        object-fit: contain;
+    }
+    
+    .swal-video-player .swal2-title {
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+    }
+    
+    .swal-video-player .swal2-actions {
+        justify-content: space-between;
+        gap: 10px;
+    }
+    
+    .swal-video-player .swal2-confirm, 
+    .swal-video-player .swal2-cancel,
+    .swal-video-player .swal2-deny {
+        font-size: 0.9rem;
+        padding: 8px 16px;
+        border-radius: 6px;
+    }
+    
+    /* === ESTILOS PARA VÍDEOS COM THUMBNAIL === */
+    
+    .video-thumbnail-container {
+        cursor: pointer;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #000;
+        aspect-ratio: 16/9;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .video-thumbnail-container:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 24px rgba(0,0,0,0.25);
+    }
+    
+    .video-thumbnail,
+    .video-placeholder {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+    
+    .video-placeholder {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 0;
+    }
+    
+    .video-thumbnail-container:hover .video-thumbnail {
+        transform: scale(1.05);
+    }
+    
+    .video-play-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        backdrop-filter: blur(2px);
+    }
+    
+    .video-thumbnail-container:hover .video-play-overlay {
+        opacity: 1;
+    }
+    
+    .play-button {
+        transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+    }
+    
+    .video-thumbnail-container:hover .play-button {
+        transform: scale(1.2);
+    }
+    
+    .video-info-badges {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        display: flex;
+        gap: 4px;
+        flex-wrap: wrap;
+    }
+    
+    .badge-quality {
+        font-size: 0.7rem;
+        padding: 2px 6px;
+        background: rgba(0,0,0,0.8) !important;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+    
+    .badge-type {
+        font-size: 0.6rem;
+        padding: 2px 5px;
+        font-weight: 600;
+    }
+    
+    .video-duration {
+        position: absolute;
+        bottom: 8px;
+        right: 8px;
+    }
+    
+    .video-duration .badge {
+        font-size: 0.7rem;
+        padding: 2px 6px;
+        background: rgba(0,0,0,0.8) !important;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+    
+    .video-hover-effect {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+        transform: translateX(-100%);
+        transition: transform 0.6s ease;
+    }
+    
+    .video-thumbnail-container:hover .video-hover-effect {
+        transform: translateX(100%);
+    }
+    
+    .video-actions .btn {
+        border-radius: 20px;
+        font-size: 0.8rem;
+        padding: 4px 12px;
+    }
+    
+    /* === RESPONSIVIDADE === */
+    @media (max-width: 768px) {
+        .video-thumbnail-container {
+            aspect-ratio: 1;
+        }
+        
+        .video-info-badges {
+            top: 4px;
+            left: 4px;
+        }
+        
+        .video-duration {
+            bottom: 4px;
+            right: 4px;
+        }
+        
+        .badge-quality,
+        .badge-type,
+        .video-duration .badge {
+            font-size: 0.6rem;
+            padding: 1px 4px;
+        }
+        
+        .play-button i {
+            font-size: 2rem !important;
+        }
+    }
+    
+    /* === ESTILOS PARA IMAGENS MODERNAS === */
+    
+    .image-container-modern {
+        cursor: pointer;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #f8f9fa;
+        aspect-ratio: 1;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .image-container-modern:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+    }
+    
+    .image-modern {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+        border-radius: 0;
+    }
+    
+    .image-container-modern:hover .image-modern {
+        transform: scale(1.1);
+    }
+    
+    .image-overlay-modern {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        backdrop-filter: blur(1px);
+    }
+    
+    .image-container-modern:hover .image-overlay-modern {
+        opacity: 1;
+    }
+    
+    .image-overlay-content {
+        text-align: center;
+        transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+    }
+    
+    .image-container-modern:hover .image-overlay-content {
+        transform: scale(1.1);
+    }
+    
+    .image-number {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        z-index: 2;
+    }
+    
+    .image-number .badge {
+        font-size: 0.7rem;
+        padding: 3px 7px;
+        background: rgba(0,0,0,0.8) !important;
+        border: 1px solid rgba(255,255,255,0.3);
+    }
+    
+    .image-shimmer-effect {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
+        transform: translateX(-100%);
+        transition: transform 0.6s ease;
+    }
+    
+    .image-container-modern:hover .image-shimmer-effect {
+        transform: translateX(100%);
+    }
+    
+    .more-images-container {
+        cursor: pointer;
+        border-radius: 12px;
+        aspect-ratio: 1;
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    }
+    
+    .more-images-container:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 24px rgba(40, 167, 69, 0.4);
+        background: linear-gradient(135deg, #218838 0%, #1e7e34 100%);
+    }
+    
+    .more-images-content {
+        text-align: center;
+        transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+    
+    .more-images-container:hover .more-images-content {
+        transform: scale(1.1);
+    }
+    
+    /* Media Section Headers */
+    .media-section {
+        border-left: 4px solid #007bff;
+        padding-left: 20px;
+        margin-bottom: 20px;
+        background: linear-gradient(90deg, rgba(0,123,255,0.05) 0%, transparent 100%);
+        border-radius: 0 8px 8px 0;
+        padding: 15px 0 15px 20px;
+    }
+    
+    .media-section:last-child {
+        border-left-color: #6c757d;
+        background: linear-gradient(90deg, rgba(108,117,125,0.05) 0%, transparent 100%);
+    }
+    
+    .media-section:nth-child(2) {
+        border-left-color: #28a745;
+        background: linear-gradient(90deg, rgba(40,167,69,0.05) 0%, transparent 100%);
+    }
+    
+    .media-section:nth-child(3) {
+        border-left-color: #dc3545;
+        background: linear-gradient(90deg, rgba(220,53,69,0.05) 0%, transparent 100%);
+    }
+    
+    /* === MODAL CUSTOMIZADO PARA IMAGENS === */
+    .custom-image-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 9999;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 0.3s ease;
+    }
+    
+    .custom-modal-backdrop {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+    
+    .custom-modal-content {
+        position: relative;
+        max-width: 90vw;
+        max-height: 90vh;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        cursor: default;
+        overflow: hidden;
+        animation: scaleIn 0.3s ease;
+    }
+    
+    .custom-modal-header {
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 10;
+        padding: 10px;
+    }
+    
+    .custom-close-btn {
+        background: rgba(0,0,0,0.7);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        font-size: 24px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+    
+    .custom-close-btn:hover {
+        background: rgba(255,0,0,0.7);
+        transform: scale(1.1);
+    }
+    
+    .custom-modal-image {
+        max-width: 100%;
+        max-height: 80vh;
+        object-fit: contain;
+        display: block;
+    }
+    
+    .custom-modal-footer {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0,0,0,0.8);
+        color: white;
+        padding: 15px;
+        text-align: center;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    @keyframes scaleIn {
+        from { transform: scale(0.8); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+    
+    /* === PLAYER INLINE DE VÍDEO === */
+    .playing-video {
+        background: #000 !important;
+    }
+    
+    .playing-video .video-thumbnail-container {
+        border: 2px solid #28a745;
+        box-shadow: 0 0 20px rgba(40, 167, 69, 0.4);
+    }
+    
+    .inline-video-player {
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    
+    .inline-video-close {
+        transition: all 0.3s ease !important;
+        backdrop-filter: blur(4px);
+    }
+    
+    .inline-video-close:hover {
+        transform: scale(1.2) rotate(90deg) !important;
+    }
+    
+    .inline-video-quality {
+        backdrop-filter: blur(4px);
+        transition: opacity 0.5s ease;
+    }
+    
+    .inline-video-quality .badge {
+        font-size: 0.7rem;
+        padding: 4px 8px;
+        border-radius: 12px;
+        backdrop-filter: blur(4px);
+    }
+    
+    /* Animação para quando o vídeo está carregando */
+    .inline-video-player:not([src]) {
+        background: linear-gradient(45deg, #000, #333, #000);
+        background-size: 400% 400%;
+        animation: gradientShift 2s ease infinite;
+    }
+    
+    @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    
+    /* Mobile adaptations */
+    @media (max-width: 768px) {
+        .custom-modal-content {
+            max-width: 95vw;
+            max-height: 95vh;
+            margin: 20px;
+        }
+        
+        .custom-close-btn {
+            width: 36px;
+            height: 36px;
+            font-size: 20px;
+        }
+        
+        .inline-video-close {
+            width: 28px !important;
+            height: 28px !important;
+            font-size: 16px !important;
+            top: 4px !important;
+            right: 4px !important;
+        }
+        
+        .inline-video-quality {
+            top: 4px !important;
+            left: 4px !important;
+        }
+        
+        .inline-video-quality .badge {
+            font-size: 0.6rem;
+            padding: 2px 6px;
+        }
+    }
+    
+    /* === ESTILOS PARA FOTO DE PERFIL === */
+    .profile-pic-container {
+        position: relative;
+        flex-shrink: 0;
+    }
+    
+    .profile-pic {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #fff;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+    }
+    
+    .profile-pic.profile-pic-clickable {
+        cursor: pointer;
+    }
+    
+    .profile-pic:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        border-color: #007bff;
+    }
+    
+    .profile-pic-clickable:hover::after {
+        content: '🔍';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0,0,0,0.8);
+        color: white;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        opacity: 0;
+        animation: fadeIn 0.3s ease forwards;
+    }
+    
+    @keyframes fadeIn {
+        to { opacity: 1; }
+    }
+    
+    .profile-pic-fallback {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        border: 2px solid #fff;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    @media (max-width: 768px) {
+        .profile-pic,
+        .profile-pic-fallback {
+            width: 40px;
+            height: 40px;
+        }
+        
+        .profile-pic-fallback i {
+            font-size: 16px;
+        }
+    }
+</style>
+@endsection

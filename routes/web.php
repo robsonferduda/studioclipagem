@@ -524,4 +524,22 @@ Route::middleware(['web'])->group(function () {
 	        return Response::download($path);
 	    }
 	});
+
+	// === ROTAS MÍDIAS SOCIAIS ===
+	
+	// Monitoramentos
+	Route::get('midias-sociais/monitoramentos', 'MidiasSociaisController@indexMonitoramentos')->name('midias-sociais.monitoramentos.index');
+	Route::get('midias-sociais/monitoramentos/novo', 'MidiasSociaisController@criarMonitoramento')->name('midias-sociais.monitoramentos.criar');
+	Route::post('midias-sociais/monitoramentos', 'MidiasSociaisController@salvarMonitoramento')->name('midias-sociais.monitoramentos.salvar');
+	Route::get('midias-sociais/monitoramentos/{id}/editar', 'MidiasSociaisController@editarMonitoramento')->name('midias-sociais.monitoramentos.editar');
+	Route::patch('midias-sociais/monitoramentos/{id}', 'MidiasSociaisController@atualizarMonitoramento')->name('midias-sociais.monitoramentos.atualizar');
+	Route::post('midias-sociais/monitoramentos/{id}/toggle-status', 'MidiasSociaisController@toggleStatus')->name('midias-sociais.monitoramentos.toggle-status');
+	Route::delete('midias-sociais/monitoramentos/{id}/excluir', 'MidiasSociaisController@excluirMonitoramento')->name('midias-sociais.monitoramentos.excluir');
+	Route::post('midias-sociais/monitoramentos/{id}/resetar', 'MidiasSociaisController@resetarColetas')->name('midias-sociais.monitoramentos.resetar');
+	
+	// Posts Coletados
+	Route::match(['GET', 'POST'], 'midias-sociais/posts', 'MidiasSociaisController@indexPosts')->name('midias-sociais.posts.index');
+	Route::get('midias-sociais/posts/{id}/detalhes', 'MidiasSociaisController@detalhesPost')->name('midias-sociais.posts.detalhes');
+	Route::get('midias-sociais/posts/exportar', 'MidiasSociaisController@exportarPosts')->name('midias-sociais.posts.exportar');
+
 });
