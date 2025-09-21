@@ -236,7 +236,7 @@
             @if($posts->count() > 0)
             <div class="border-bottom p-2 bg-light">
                 <div class="d-flex justify-content-between align-items-center">
-                    <div>
+                    <div class="form-check">
                         <label class="form-check-label mb-0">
                             <input type="checkbox" id="select-all" class="form-check-input">
                             <span class="form-check-sign"></span>
@@ -257,19 +257,19 @@
                     @forelse($posts as $post)
                         <div class="card mb-3 post-card" data-post-id="{{ $post->id }}">
                             <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-1 text-center position-relative">
-                                        <!-- Checkbox de seleção -->
-                                        <div class="post-selection-checkbox">
-                                            <label class="form-check-label">
-                                                <input type="checkbox" 
-                                                       class="form-check-input post-checkbox" 
-                                                       value="{{ $post->id }}" 
-                                                       data-processed="{{ $post->processado ? '1' : '0' }}">
-                                                <span class="form-check-sign"></span>
-                                            </label>
-                                        </div>
-                                        
+                                <div class="row position-relative">
+                                    <!-- Checkbox de seleção no canto superior esquerdo do card -->
+                                    <div class="form-check checkbox-post-card">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" 
+                                                   class="form-check-input post-checkbox" 
+                                                   value="{{ $post->id }}" 
+                                                   data-processed="{{ $post->processado ? '1' : '0' }}">
+                                            <span class="form-check-sign"></span>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="col-md-1 text-center">
                                         <!-- Ícone da rede social -->
                                         <div class="social-icon-container">
                                             <div class="social-icon">
@@ -1986,49 +1986,40 @@
     }
     
     /* === LAYOUT DO CHECKBOX E ÍCONE === */
-    .post-selection-checkbox {
+    .checkbox-post-card {
         position: absolute;
-        top: -5px;
-        right: -5px;
+        top: 15px;
+        left: 15px;
         z-index: 10;
-        background: white;
-        border-radius: 50%;
-        padding: 2px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        border: 2px solid #f8f9fa;
+        margin-bottom: 0 !important;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 6px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         transition: all 0.3s ease;
     }
     
-    .post-selection-checkbox:hover {
-        transform: scale(1.1);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        border-color: #28a745;
+    .checkbox-post-card:hover {
+        background: rgba(255, 255, 255, 1);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        transform: scale(1.05);
     }
     
-    .post-selection-checkbox .form-check-label {
-        margin: 0;
-        padding: 0;
+    .checkbox-post-card .form-check-label {
+        margin-bottom: 0 !important;
+        padding-left: 0 !important;
+        cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 20px;
-        height: 20px;
     }
     
-    .post-selection-checkbox .form-check-input {
-        position: relative;
-        margin: 0;
-        width: 16px;
-        height: 16px;
-    }
-    
-    .post-selection-checkbox .form-check-sign {
-        width: 16px;
-        height: 16px;
+    .checkbox-post-card .form-check-input {
+        margin: 0 !important;
     }
     
     .social-icon-container {
-        margin-top: 15px;
+        margin-top: 5px;
     }
     
     .processed-indicator {
@@ -2053,19 +2044,15 @@
     }
     
     /* Quando o post está selecionado, destacar o checkbox */
-    .selected-post .post-selection-checkbox {
-        background: #28a745;
-        border-color: #28a745;
+    .selected-post .checkbox-post-card {
+        background: rgba(40, 167, 69, 0.15);
+        border: 2px solid #28a745;
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.25);
     }
     
-    .selected-post .post-selection-checkbox .form-check-sign::before {
-        border-color: white !important;
-        background: white !important;
-    }
-    
-    .selected-post .post-selection-checkbox .form-check-input:checked + .form-check-sign::before {
-        background-color: white !important;
-        border-color: white !important;
+    .selected-post .checkbox-post-card .form-check-input:checked + .form-check-sign::before {
+        background-color: #28a745 !important;
+        border-color: #28a745 !important;
     }
     
     .btn-orange {
@@ -2226,31 +2213,20 @@
             margin-bottom: 2px;
         }
         
-        /* Checkboxes maiores para mobile */
-        .post-selection-checkbox {
-            top: 5px;
-            right: 5px;
+        /* Checkboxes para mobile */
+        .checkbox-post-card {
+            top: 10px;
+            left: 10px;
             padding: 4px;
-            transform: scale(1.2);
+            border-radius: 6px;
         }
         
-        .post-selection-checkbox .form-check-label {
-            width: 24px;
-            height: 24px;
-        }
-        
-        .post-selection-checkbox .form-check-input {
-            width: 20px;
-            height: 20px;
-        }
-        
-        .post-selection-checkbox .form-check-sign {
-            width: 20px;
-            height: 20px;
+        .checkbox-post-card:hover {
+            transform: scale(1.02);
         }
         
         .social-icon-container {
-            margin-top: 25px;
+            margin-top: 15px;
         }
         
         .social-icon-container .social-icon i {
