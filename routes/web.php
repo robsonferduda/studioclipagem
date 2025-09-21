@@ -541,5 +541,11 @@ Route::middleware(['web'])->group(function () {
 	Route::match(['GET', 'POST'], 'midias-sociais/posts', 'MidiasSociaisController@indexPosts')->name('midias-sociais.posts.index');
 	Route::get('midias-sociais/posts/{id}/detalhes', 'MidiasSociaisController@detalhesPost')->name('midias-sociais.posts.detalhes');
 	Route::get('midias-sociais/posts/exportar', 'MidiasSociaisController@exportarPosts')->name('midias-sociais.posts.exportar');
+	Route::post('midias-sociais/posts/criar-noticias', 'MidiasSociaisController@criarNoticias')->name('midias-sociais.posts.criar-noticias');
+	
+	// Notícias de Mídias Sociais
+	Route::match(['GET', 'POST'], 'midias-sociais/noticias', 'MidiasSociaisController@indexNoticias')->name('midias-sociais.noticias.index');
+	Route::get('midias-sociais/noticias/{id}/detalhes', 'MidiasSociaisController@detalhesNoticia')->name('midias-sociais.noticias.detalhes');
+	Route::delete('midias-sociais/noticias/{id}/remover', 'MidiasSociaisController@removerNoticia')->name('midias-sociais.noticias.remover');
 
 });

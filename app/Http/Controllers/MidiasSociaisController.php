@@ -9,6 +9,7 @@ use Laracasts\Flash\Flash;
 use App\Models\Cliente;
 use App\Models\MidiasSocialMonitoramento;
 use App\Models\MidiasSociaisColeta;
+use App\Models\NoticiaMidiaSocial;
 
 class MidiasSociaisController extends Controller
 {
@@ -576,6 +577,227 @@ class MidiasSociaisController extends Controller
             'total_likes' => MidiasSociaisColeta::where('monitoramento_id', $id)->sum('likes'),
             'total_shares' => MidiasSociaisColeta::where('monitoramento_id', $id)->sum('shares'),
             'total_comentarios' => MidiasSociaisColeta::where('monitoramento_id', $id)->sum('comentarios')
+        ];
+    }
+    
+    // === NOTÍCIAS ===
+    
+    /**
+     * Criar notícias a partir dos posts selecionados
+     */
+    public function criarNoticias(Request $request)
+    {
+        try {
+            $request->validate([
+                'posts_ids' => 'required|array|min:1',
+                'posts_ids.*' => 'integer|exists:midias_sociais_coletas,id'
+            ], [
+                'posts_ids.required' => 'Selecione pelo menos um post.',
+                'posts_ids.min' => 'Selecione pelo menos um post.',
+                'posts_ids.*.exists' => 'Um ou mais posts selecionados não existem.'
+            ]);
+            
+            $noticiasIds = NoticiaMidiaSocial::criarDoPosts($request->posts_ids);
+            
+            if (count($noticiasIds) > 0) {
+                $message = 'Criadas ' . count($noticiasIds) . ' notícias com sucesso!';
+                
+                // Retornar JSON para AJAX
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json([
+                        'success' => true,
+                        'message' => mb_convert_encoding($message, 'UTF-8', 'UTF-8'),
+                        'noticias_criadas' => count($noticiasIds),
+                        'redirect' => route('midias-sociais.noticias.index')
+                    ], 200, ['Content-Type' => 'application/json; charset=utf-8']);
+                }
+                
+                Flash::success($message);
+                
+                // Redirecionar para a listagem de notícias se houver mais de 1, 
+                // senão redirecionar para os detalhes da notícia criada
+                if (count($noticiasIds) > 1) {
+                    return redirect()->route('midias-sociais.noticias.index');
+                } else {
+                    return redirect()->route('midias-sociais.noticias.index')->with('highlight', $noticiasIds[0]);
+                }
+            } else {
+                $message = 'Nenhuma notícia foi criada. Os posts selecionados podem já ter sido convertidos em notícias.';
+                
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => mb_convert_encoding($message, 'UTF-8', 'UTF-8'),
+                        'noticias_criadas' => 0
+                    ], 422, ['Content-Type' => 'application/json; charset=utf-8']);
+                }
+                
+                Flash::warning($message);
+                return back();
+            }
+            
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $errorMessage = 'Erro de validação: ' . implode(', ', $e->errors()['posts_ids'] ?? []);
+            
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => mb_convert_encoding($errorMessage, 'UTF-8', 'UTF-8'),
+                    'errors' => $e->errors()
+                ], 422, ['Content-Type' => 'application/json; charset=utf-8']);
+            }
+            
+            Flash::error($errorMessage);
+            return back();
+        } catch (\Exception $e) {
+            $errorMessage = 'Erro ao criar notícias: ' . $e->getMessage();
+            
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => mb_convert_encoding($errorMessage, 'UTF-8', 'UTF-8'),
+                    'error_details' => mb_convert_encoding($e->getMessage(), 'UTF-8', 'UTF-8')
+                ], 500, ['Content-Type' => 'application/json; charset=utf-8']);
+            }
+            
+            Flash::error($errorMessage);
+            return back();
+        }
+    }
+    
+    /**
+     * Listagem de notícias de mídias sociais
+     */
+    public function indexNoticias(Request $request)
+    {
+        Session::put('sub-menu', 'midias-sociais-noticias');
+        
+        $query = NoticiaMidiaSocial::with(['postOriginal', 'postOriginal.monitoramento', 'postOriginal.cliente', 'clientes']);
+        
+        // Aplicar filtros
+        if ($request->filled('cliente_id')) {
+            $query->whereHas('clientes', function($q) use ($request) {
+                $q->where('cliente_id', $request->cliente_id);
+            });
+        }
+        
+        if ($request->filled('rede_social')) {
+            $query->where('rede_social', $request->rede_social);
+        }
+        
+        if ($request->filled('sentimento')) {
+            $query->where('sentimento_inicial', $request->sentimento);
+        }
+        
+        if ($request->filled('data_inicial')) {
+            $query->whereDate('data_publicacao', '>=', $request->data_inicial);
+        }
+        
+        if ($request->filled('data_final')) {
+            $query->whereDate('data_publicacao', '<=', $request->data_final);
+        }
+        
+        if ($request->filled('palavra_chave')) {
+            $palavraChave = $request->palavra_chave;
+            $query->where(function($q) use ($palavraChave) {
+                $q->where('titulo', 'like', "%{$palavraChave}%")
+                  ->orWhere('resumo', 'like', "%{$palavraChave}%")
+                  ->orWhere('autor_nome', 'like', "%{$palavraChave}%")
+                  ->orWhere('autor_username', 'like', "%{$palavraChave}%");
+            });
+        }
+        
+        // Ordenação
+        switch ($request->ordenar ?? 'data_desc') {
+            case 'data_asc':
+                $query->orderBy('data_publicacao', 'asc');
+                break;
+            case 'valor_desc':
+                $query->orderBy('valor_retorno', 'desc');
+                break;
+            case 'titulo_asc':
+                $query->orderBy('titulo', 'asc');
+                break;
+            default:
+                $query->orderBy('created_at', 'desc'); // Por ordem de criação da notícia
+        }
+        
+        $noticias = $query->paginate($request->per_page ?? 20);
+        $clientes = Cliente::where('fl_ativo', true)->orderBy('nome')->get();
+        $estatisticas = $this->getEstatisticasNoticias();
+        
+        return view('midias-sociais/noticias/index', compact('noticias', 'clientes', 'estatisticas'));
+    }
+    
+    /**
+     * Detalhes de uma notícia
+     */
+    public function detalhesNoticia($id)
+    {
+        try {
+            $noticia = NoticiaMidiaSocial::with([
+                'postOriginal', 
+                'postOriginal.monitoramento', 
+                'postOriginal.cliente', 
+                'clientes',
+                'usuario'
+            ])->findOrFail($id);
+            
+            return view('midias-sociais/noticias/detalhes', compact('noticia'));
+            
+        } catch (\Exception $e) {
+            Flash::error('Notícia não encontrada.');
+            return redirect()->route('midias-sociais.noticias.index');
+        }
+    }
+    
+    /**
+     * Remover uma notícia (soft delete)
+     */
+    public function removerNoticia($id)
+    {
+        try {
+            $noticia = NoticiaMidiaSocial::findOrFail($id);
+            
+            // Remover vinculação com clientes
+            \App\Models\NoticiaCliente::where('noticia_id', $id)->where('tipo_id', 5)->delete();
+            
+            // Marcar post original como não processado novamente
+            if ($noticia->postOriginal) {
+                $noticia->postOriginal->update(['processado' => false]);
+            }
+            
+            $noticia->delete();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Notícia removida com sucesso!'
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao remover notícia: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    
+    /**
+     * Estatísticas das notícias
+     */
+    private function getEstatisticasNoticias()
+    {
+        return [
+            'total_noticias' => NoticiaMidiaSocial::count(),
+            'noticias_hoje' => NoticiaMidiaSocial::whereDate('created_at', today())->count(),
+            'valor_total' => NoticiaMidiaSocial::sum('valor_retorno'),
+            'clientes_atingidos' => \App\Models\NoticiaCliente::where('tipo_id', 5)->distinct('cliente_id')->count(),
+            'por_rede' => [
+                'twitter' => NoticiaMidiaSocial::where('rede_social', 'twitter')->count(),
+                'linkedin' => NoticiaMidiaSocial::where('rede_social', 'linkedin')->count(),
+                'facebook' => NoticiaMidiaSocial::where('rede_social', 'facebook')->count(),
+                'instagram' => NoticiaMidiaSocial::where('rede_social', 'instagram')->count()
+            ]
         ];
     }
 }
