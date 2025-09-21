@@ -46,6 +46,7 @@ class VideosController extends Controller
         $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
         $fonte = ($request->fontes) ? $request->fontes : null;
         $expressao = ($request->expressao) ? $request->expressao : null;
+        $tipo_video = ($request->tipo_video) ? $request->tipo_video : null;
 
         if($request->fontes or Session::get('tv_arquivos_fonte')){
             if($request->fontes){
@@ -114,6 +115,9 @@ class VideosController extends Controller
                     ->when($fonte, function ($q) use ($fonte) {
                         return $q->whereIn('programa_emissora_web.id', $fonte);
                     })
+                    ->when($tipo_video, function ($q) use ($tipo_video) {
+                        return $q->where('programa_emissora_web.tipo_programa', $tipo_video);
+                    })
                     ->when($dt_inicial, function ($q) use ($dt_inicial, $dt_final, $tipo_data) {
                         // Determina qual campo de data usar baseado no tipo_data selecionado
                         if ($tipo_data == 'created_at') {
@@ -126,7 +130,7 @@ class VideosController extends Controller
                     ->orderBy(($tipo_data == 'created_at') ? 'videos_programa_emissora_web.created_at' : 'videos_programa_emissora_web.horario_start_gravacao','DESC')
                     ->paginate(10);
 
-        return view('videos/videos', compact('fontes','videos','tipo_data','dt_inicial','dt_final','fonte','expressao'));
+        return view('videos/videos', compact('fontes','videos','tipo_data','dt_inicial','dt_final','fonte','expressao','tipo_video'));
     }
 
     public function detalhes($id)

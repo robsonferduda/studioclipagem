@@ -45,6 +45,19 @@
                                         <input type="text" class="form-control datepicker" name="dt_final" required="true" value="{{ \Carbon\Carbon::parse($dt_final)->format('d/m/Y') }}" placeholder="__/__/____">
                                     </div>
                                 </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Tipo de Vídeo</label>
+                                        <select class="form-control select2" name="tipo_video" id="tipo_video">
+                                            <option value="">Todos os Tipos</option>
+                                            <option value="1" {{ ($tipo_video == "1") ? 'selected' : '' }}>Stream URL</option>
+                                            <option value="2" {{ ($tipo_video == "2") ? 'selected' : '' }}>Stream Globoplay</option>
+                                            <option value="3" {{ ($tipo_video == "3") ? 'selected' : '' }}>Video Globoplay</option>
+                                            <option value="4" {{ ($tipo_video == "4") ? 'selected' : '' }}>Stream YouTube</option>
+                                            <option value="5" {{ ($tipo_video == "5") ? 'selected' : '' }}>Video YouTube</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-12 col-sm-12">
@@ -78,7 +91,9 @@
 
                      {{ $videos->onEachSide(1)->appends(['dt_inicial' => \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y'), 
                                                         'dt_final' => \Carbon\Carbon::parse($dt_final)->format('d/m/Y'),
-                                                        'expressao' => $expressao])
+                                                        'expressao' => $expressao,
+                                                        'tipo_video' => $tipo_video,
+                                                        'tipo_data' => $tipo_data])
                                                         ->links('vendor.pagination.bootstrap-4') }}
                 @endif
 
@@ -95,26 +110,61 @@
                                         </video>
                                     </div>
                                     <div class="col-lg-8 col-sm-12">                                        
+                                        <div class="mb-2">
+                                            @php
+                                                $misc_data = json_decode($video->misc_data, true);
+                                                $tipo_badge = '';
+                                                $tipo_icon = '';
+                                                $tipo_color = '';
+                                                
+                                                switch($video->tipo_programa) {
+                                                    case 1:
+                                                        $tipo_badge = 'Stream URL';
+                                                        $tipo_icon = 'fa-satellite-dish';
+                                                        $tipo_color = 'primary';
+                                                        break;
+                                                    case 2:
+                                                        $tipo_badge = 'Stream Globoplay';
+                                                        $tipo_icon = 'fa-broadcast-tower';
+                                                        $tipo_color = 'success';
+                                                        break;
+                                                    case 3:
+                                                        $tipo_badge = 'Vídeo Globoplay';
+                                                        $tipo_icon = 'fa-play-circle';
+                                                        $tipo_color = 'success';
+                                                        break;
+                                                    case 4:
+                                                        $tipo_badge = 'Stream YouTube';
+                                                        $tipo_icon = 'fa-youtube';
+                                                        $tipo_color = 'danger';
+                                                        break;
+                                                    case 5:
+                                                        $tipo_badge = 'Vídeo YouTube';
+                                                        $tipo_icon = 'fa-youtube-play';
+                                                        $tipo_color = 'danger';
+                                                        break;
+                                                    default:
+                                                        $tipo_badge = 'Indefinido';
+                                                        $tipo_icon = 'fa-question-circle';
+                                                        $tipo_color = 'secondary';
+                                                }
+                                            @endphp
+                                            
+                                            <span class="badge badge-{{ $tipo_color }} mr-2">
+                                                <i class="fa {{ $tipo_icon }}"></i> {{ $tipo_badge }}
+                                            </span>
+                                        </div>
+                                        
                                         <p class="mb-1">
-                                            @if($video->tipo_programa and in_array($video->tipo_programa, [4,5]))
-                                                <i class="fa fa-youtube text-danger" aria-hidden="true" style="font-size: 30px;"></i>
-                                            @endif
                                             <strong>{{ ($video->nome_emissora) ? $video->nome_emissora : '' }}</strong> - 
                                             <strong>{{ ($video->nome_programa) ? $video->nome_programa : '' }}</strong>
                                         </p>
+                                        
                                         <p class="mb-1">
-                                            @if($video->tipo_programa and in_array($video->tipo_programa, [4,5]) and !$video->horario_start_gravacao)
-                                                @php 
-                                                    $partes = explode(',', explode(')',explode('(', $video->misc_data)[1])[0]);
-                                                    $data = str_pad($partes[2],2,"0",STR_PAD_LEFT).'/'.str_pad($partes[1],2,"0",STR_PAD_LEFT).'/'.$partes[0];                                                    
-                                                @endphp
-                                                {{ $data }}
-                                            @else
-                                            {{ date('d/m/Y', strtotime($video->horario_start_gravacao)) }}
+                                            @if($video->horario_start_gravacao)
+                                                {{ date('d/m/Y', strtotime($video->horario_start_gravacao)) }}
+                                                - Das {{ date('H:i:s', strtotime($video->horario_start_gravacao)) }} às {{ date('H:i:s', strtotime($video->horario_end_gravacao)) }}
                                             @endif
-                                             - Das 
-                                            {{ date('H:i:s', strtotime($video->horario_start_gravacao)) }} às 
-                                            {{ date('H:i:s', strtotime($video->horario_end_gravacao)) }}
                                         </p>
                                         <div class="panel panel-success">
                                             <div class="conteudo-noticia mb-1 transcricao">
@@ -135,7 +185,9 @@
 
                       {{ $videos->onEachSide(1)->appends(['dt_inicial' => \Carbon\Carbon::parse($dt_inicial)->format('d/m/Y'), 
                                                         'dt_final' => \Carbon\Carbon::parse($dt_final)->format('d/m/Y'),
-                                                        'expressao' => $expressao])
+                                                        'expressao' => $expressao,
+                                                        'tipo_video' => $tipo_video,
+                                                        'tipo_data' => $tipo_data])
                                                         ->links('vendor.pagination.bootstrap-4') }}
                 @endif
             </div>
