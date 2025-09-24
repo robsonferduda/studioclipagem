@@ -149,6 +149,36 @@
                </li>                  
               @endrole
 
+               @role('administradores')
+                <li class="{{ (Session::has('url') and Session::get('url') == 'midias-sociais') ? 'active' : '' }}">
+                  <a data-toggle="collapse" href="#submenu-midias-sociais" class="{{ (Session::has('url') and Session::get('url') == 'midias-sociais') ? '' : 'collapsed' }}" aria-expanded="{{ (Session::has('url') and Session::get('url') == 'midias-sociais') ? 'true' : 'false' }}">
+                      <i class="fa fa-hashtag"></i>
+                      <p>Mídias Sociais
+                        <b class="caret"></b>
+                      </p>
+                  </a>
+                  <div class="collapse {{ (Session::has('url') and Session::get('url') == 'midias-sociais') ? 'show' : '' }}" id="submenu-midias-sociais" aria-expanded="false">
+                     <ul class="nav ml-5">
+                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'midias-sociais-monitoramentos') ? 'active' : '' }}">
+                           <a href="{{ url('midias-sociais/monitoramentos') }}">
+                           <span class="sidebar-normal">Monitoramentos</span>
+                           </a>
+                        </li>
+                        <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'midias-sociais-posts') ? 'active' : '' }}">
+                          <a href="{{ url('midias-sociais/posts') }}">
+                          <span class="sidebar-normal">Posts Coletados</span>
+                          </a>
+                       </li>
+                       <li class="{{ (Session::has('sub-menu') and Session::get('sub-menu') == 'midias-sociais-noticias') ? 'active' : '' }}">
+                          <a href="{{ url('midias-sociais/noticias') }}">
+                          <span class="sidebar-normal">Notícias</span>
+                          </a>
+                       </li>
+                     </ul>
+                  </div>
+               </li>                  
+              @endrole
+
                 @permission('menu-impressos')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'impresso') ? 'active' : '' }}">
                       <a data-toggle="collapse" href="#submenu-impresso" class="{{ (Session::has('url') and Session::get('url') == 'impresso') ? '' : 'collapsed' }}" aria-expanded="{{ (Session::has('url') and Session::get('url') == 'impresso') ? 'true' : 'false' }}">
@@ -477,7 +507,7 @@
                   <li class="{{ (Session::has('url') and Session::get('url') == 'relatorios-unificado') ? 'active' : '' }}">
                     <a href="{{ url('relatorios/unificado') }}">
                     <i class="fa fa-files-o"></i>
-                    <p>Relatórios Unificados</p>
+                    <p>Relatórios</p>
                     </a>
                   </li>
                 @endrole
@@ -486,7 +516,7 @@
                   <li class="{{ (Session::has('url') and Session::get('url') == 'monitoramento-sistema') ? 'active' : '' }}">
                     <a href="{{ url('monitoramento/sistema') }}">
                     <i class="fa fa-desktop"></i>
-                    <p>Monitoramento do Sistema</p>
+                    <p>Sistema</p>
                     </a>
                   </li>
                 @endrole
