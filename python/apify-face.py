@@ -22,11 +22,11 @@ APIFY_MAX_POSTS = int(os.getenv("APIFY_MAX_POSTS", "200"))
 APIFY_RECENT = os.getenv("APIFY_RECENT", "true").lower() in ("1", "true", "yes")
 
 DB = {
-    'dbname': os.getenv('DB_DATABASE', 'postgres'),
-    'user': os.getenv('DB_USERNAME', 'postgres'),
-    'password': os.getenv('DB_PASSWORD', 'cipplp10'),
-    'host': os.getenv('DB_HOST', 'localhost'),
-    'port': int(os.getenv('DB_PORT', '5432')),
+    'dbname': os.getenv('DB_DATABASE'),
+    'user': os.getenv('DB_USERNAME'),
+    'password': os.getenv('DB_PASSWORD'),
+    'host': os.getenv('DB_HOST'),
+    'port': int(os.getenv('DB_PORT')),
 }
 
 PAGE_SIZE_INSERT = int(os.getenv("BATCH_SIZE", "500"))
