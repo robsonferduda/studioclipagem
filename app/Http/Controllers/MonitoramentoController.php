@@ -674,7 +674,7 @@ class MonitoramentoController extends Controller
                 $sql = "SELECT 
                             post.id
                         FROM 
-                            post_facebook post
+                            post_facebook_api post
                         WHERE
                             post.data_postagem BETWEEN '$dt_inicial' AND '$dt_final'
                         AND post.tsv_mensagem @@ to_tsquery('portuguese', '$monitoramento->expressao')

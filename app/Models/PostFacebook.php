@@ -10,7 +10,7 @@ class PostFacebook extends Model
     use SoftDeletes;
 
     protected $connection = 'pgsql';
-    protected $table = 'post_facebook';
+    protected $table = 'post_facebook_api';
 
     protected $fillable = [''];
 
