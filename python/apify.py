@@ -2,7 +2,7 @@ from apify_client import ApifyClient
 
 # Initialize the ApifyClient with your Apify API token
 # Replace '<YOUR_API_TOKEN>' with your token.
-client = ApifyClient("apify_api_bh83rZnziLgttFItvGlJmfDTPVHxmk2HmYNb")
+client = ApifyClient('')
 
 # Prepare the Actor input
 run_input = {
