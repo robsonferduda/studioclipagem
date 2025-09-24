@@ -82,6 +82,9 @@
                                         </div>
                                         <div>
                                             <span><strong>Navegador</strong>: {{ $log->user_agent }}</span>
+                                        </div>
+                                        <div>
+                                            <span><strong>Data/Hora</strong>: {{ \Carbon\Carbon::parse( $log->created_at)->format('d/m/Y H:i:s') }}</span>
                                             <span class="pull-right text-mutted">Atividade executada {{ $log->created_at->diffForHumans() }}</span>
                                         </div>
                                     </li>
