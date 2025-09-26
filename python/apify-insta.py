@@ -152,12 +152,6 @@ def extract_hashtags_from_caption(caption: Optional[str]) -> List[str]:
 # Mapping para post_instagram
 # =========================
 def map_item_to_row(item: Dict[str, Any], fallback_hashtag: Optional[str]) -> Optional[tuple]:
-    """
-    Mapeia o item do dataset do actor para as colunas da tabela public.post_instagram:
-      media_id, caption, timestamp, permalink, media_type, media_url,
-      username, comments_count, like_count, tsv_caption, hashtags, username_full
-    """
-    # media_id: tentar vários campos comuns
     media_id = item.get("id") or item.get("media_id") or item.get("post_id")
     if not media_id:
         return None
@@ -171,50 +165,36 @@ def map_item_to_row(item: Dict[str, Any], fallback_hashtag: Optional[str]) -> Op
     )
     dt_ts = parse_timestamp(ts)
 
+    # permalink continua usando url como fallback
     permalink = item.get("permalink") or item.get("url") or item.get("link")
 
     # media_type
     media_type = (
-        item.get("mediaType")
+        item.get("type")
+        or item.get("mediaType")
         or item.get("media_type")
-        or item.get("type")
     )
 
-    # media_url / imagem / vídeo
-    media_url = (
-        item.get("mediaUrl")
-        or item.get("media_url")
-        or item.get("display_url")
-        or item.get("imageHighResolutionUrl")
-        or (item.get("image", {}).get("url") if isinstance(item.get("image"), dict) else item.get("image"))
-        or item.get("video")  # às vezes vem um único url
-    )
+    # ✅ media_url deve ser o campo "url" do JSON que você enviou
+    media_url = item.get("displayUrl") or \
+                item.get("mediaUrl") or item.get("media_url") or \
+                item.get("display_url") or item.get("displayUrl") or \
+                item.get("imageHighResolutionUrl") or \
+                (item.get("image", {}).get("url") if isinstance(item.get("image"), dict) else item.get("image")) or \
+                item.get("video")
 
-    # username / nome completo
-    username = (
-        (item.get("owner") or {}).get("username")
-        if isinstance(item.get("owner"), dict) else item.get("username")
-    )
-    username_full = (
-        (item.get("owner") or {}).get("fullName")
-        if isinstance(item.get("owner"), dict) else item.get("username_full")
-    )
+    # ✅ username e username_full vindos de ownerUsername / ownerFullName
+    username = item.get("ownerUsername") or \
+               ((item.get("owner") or {}).get("username") if isinstance(item.get("owner"), dict) else item.get("username"))
 
-    # contagens
-    comments_count = (
-        item.get("commentsCount")
-        or item.get("comments_count")
-        or item.get("comment_count")
-    )
-    like_count = (
-        item.get("likesCount")
-        or item.get("like_count")
-        or item.get("reactions_count")
-    )
+    username_full = item.get("ownerFullName") or \
+                    ((item.get("owner") or {}).get("fullName") if isinstance(item.get("owner"), dict) else item.get("username_full"))
 
-    # hashtags: do payload (se houver) OU extraídas da caption
+    comments_count = item.get("commentsCount") or item.get("comments_count") or item.get("comment_count")
+    like_count = item.get("likesCount") or item.get("like_count") or item.get("reactions_count")
+
+    # hashtags do payload ou extraídas da caption; adiciona fallback do lote (se houver)
     tags_from_item = item.get("hashtags")
-    tags_list: List[str] = []
     if isinstance(tags_from_item, list):
         tags_list = [str(x).lstrip('#').lower() for x in tags_from_item if str(x).strip()]
     elif isinstance(tags_from_item, str):
@@ -229,20 +209,19 @@ def map_item_to_row(item: Dict[str, Any], fallback_hashtag: Optional[str]) -> Op
 
     hashtags_csv = ",".join(sorted(set(tags_list)))
 
-    # tsv_caption será construído no INSERT via to_tsvector
     return (
         media_id,               # media_id
         caption,                # caption
-        dt_ts,                  # timestamp (timestamptz)
+        dt_ts,                  # "timestamp" (timestamptz)
         permalink,              # permalink
         media_type,             # media_type
-        media_url,              # media_url
-        username,               # username
+        media_url,              # media_url (forçado para url)
+        username,               # username (ownerUsername)
         comments_count,         # comments_count
         like_count,             # like_count
-        caption,                # tsv_caption (texto base)
+        caption,                # tsv_caption (texto base p/ to_tsvector)
         hashtags_csv,           # hashtags
-        username_full,          # username_full
+        username_full,          # username_full (ownerFullName)
     )
 
 
