@@ -435,11 +435,7 @@
                     }
                 });
 
-        };
-
-       
-
-      
+        };   
 
         $(document).on('change', '#arquivo', function() {
             let filename = ''

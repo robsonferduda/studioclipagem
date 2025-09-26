@@ -47,14 +47,23 @@
                                         <input type="text" class="form-control datepicker" name="dt_final" required="true" value="{{ \Carbon\Carbon::parse($dt_final)->format('d/m/Y') }}" placeholder="__/__/____">
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-3">
                                     <div class="form-group">
-                                        <label>Fonte</label>
+                                        <label>Emissora</label>
                                         <select class="form-control select2" name="id_fonte" id="id_fonte">
-                                            <option value="">Selecione uma fonte</option>
+                                            <option value="">Selecione uma emissora</option>
                                             @foreach ($emissoras as $emissora)
                                                 <option value="{{ $emissora->id }}" {{ (old("id_fonte") or $emissora->id == $fonte_selecionada)  ? "selected" : "" }}>{{ $emissora->nome_emissora }}</option>
                                             @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Programa <span class="text-info" id="programa_valor_segundo"></span></label>
+                                        <input type="hidden" name="cd_programa" id="cd_programa" value="{{ ($programa_selecionado) ? $programa_selecionado : 0  }}">
+                                        <select class="form-control selector-select2" name="programa_id" id="programa" disabled>
+                                            <option value="">Selecione um programa</option>
                                         </select>
                                     </div>
                                 </div>
@@ -246,14 +255,22 @@
 <script src="{{ asset('js/campos-cliente.js') }}"></script>
 <script src="{{ asset('js/noticia_clientes.js') }}"></script>
     <script>
-        $(document).ready(function(){
 
-            var host =  $('meta[name="base-url"]').attr('content');
+        var host = $('meta[name="base-url"]').attr('content');
+        
+        $(document).ready(function(){
 
             var demo2 = $('.demo1').bootstrapDualListbox({
                 nonSelectedListLabel: 'Disponíveis',
                 selectedListLabel: 'Selecionadas',
                
+            });
+
+            $(document).on('change', '#id_fonte', function() {
+                
+                var emissora = $(this).val();
+                buscarProgramas(emissora);
+
             });
 
             $(".btn-visualizar-noticia").click(function(){
@@ -422,7 +439,49 @@
             });
         });
 
+        function buscarProgramas(emissora){
+
+            var cd_programa = $("#cd_programa").val();
+
+            $.ajax({
+                    url: host+'/api/programa/buscar-emissora/'+emissora,
+                    type: 'GET',
+                    beforeSend: function() {
+                        $('.content').loader('show');
+                        $('#programa').append('<option value="">Carregando...</option>').val('');
+                    },
+                    success: function(data) {
+
+                        $('#programa').find('option').remove();
+                        $('#programa').attr('disabled', false);
+
+                        if(data.length == 0) {                            
+                            $('#programa').append('<option value="">Emissora não possui programas cadastrados</option>').val('');
+                            return;
+                        }
+
+                        $('#programa').append('<option value="">Selecione um programa</option>').val('');
+
+                        data.forEach(element => {
+                            let option = new Option(element.text, element.id);
+                            $('#programa').append(option);
+                        });
+                        
+                    },
+                    complete: function(){
+                        if(cd_programa > 0)
+                            $('#programa').val(cd_programa);
+                        $('.content').loader('hide');
+                    }
+                });
+
+        };
+
         $(document).ready(function(){
+
+            var cd_emissora = $("#cd_emissora").val();
+        
+            buscarProgramas(cd_emissora);
             $('#cliente').trigger('change');
         });
     </script>
