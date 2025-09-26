@@ -168,6 +168,9 @@ def map_item_to_row(item: Dict[str, Any], fallback_hashtag: Optional[str]) -> Op
     # permalink continua usando url como fallback
     permalink = item.get("permalink") or item.get("url") or item.get("link")
 
+    location_id = item.get("locationId")
+    location_name = item.get("locationName")    
+
     # media_type
     media_type = (
         item.get("type")
@@ -222,6 +225,8 @@ def map_item_to_row(item: Dict[str, Any], fallback_hashtag: Optional[str]) -> Op
         caption,                # tsv_caption (texto base p/ to_tsvector)
         hashtags_csv,           # hashtags
         username_full,          # username_full (ownerFullName)
+        location_id,
+        location_name,
     )
 
 
@@ -235,13 +240,13 @@ def insert_batch(conn, rows: List[tuple]) -> int:
     sql = f"""
         INSERT INTO public.post_instagram (
             media_id, caption, "timestamp", permalink, media_type, media_url,
-            username, comments_count, like_count, tsv_caption, hashtags, username_full
+            username, comments_count, like_count, tsv_caption, hashtags, username_full, location_id, location_name
         ) VALUES %s
         ON CONFLICT (media_id) DO NOTHING
     """
     template = f"""
         (%s, %s, %s, %s, %s, %s,
-         %s, %s, %s, to_tsvector('{TS_CONFIG}', %s), %s, %s)
+         %s, %s, %s, to_tsvector('{TS_CONFIG}', %s), %s, %s, %s, %s)
     """
 
     with conn.cursor() as cur:
