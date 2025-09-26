@@ -79,8 +79,8 @@ class NoticiaRadioController extends Controller
         $dt_final = Session::get('radio_filtro_dt_final', $request->input('dt_final', date('d/m/Y')));
         $cliente_selecionado = Session::get('radio_filtro_cliente', $request->input('cliente'));
         $sentimento = Session::get('radio_filtro_sentimento', $request->input('sentimento'));
-        $fonte_selecionada = Session::get('radio_filtro_programa', $request->input('programa_id'));
-        $programa_selecionado = Session::get('radio_filtro_id_fonte', $request->input('id_fonte'));
+        $fonte_selecionada = Session::get('radio_filtro_id_fonte', $request->input('id_fonte'));
+        $programa_selecionado = Session::get('radio_filtro_programa', $request->input('programa_id'));
         $area_selecionada = Session::get('radio_filtro_cd_area', $request->input('cd_area'));
         $fonte = Session::get('radio_filtro_fontes', $request->input('fontes'));
         $termo = Session::get('radio_filtro_termo', $request->input('termo'));
