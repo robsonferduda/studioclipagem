@@ -43,7 +43,7 @@ class NoticiaRadioController extends Controller
     {
         Session::put('sub-menu','noticia-radio');
 
-        $emissora = Emissora::orderBy('nome_emissora')->get();
+        $emissoras = Emissora::orderBy('nome_emissora')->get();
         $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
         $usuarios = User::whereHas('role', function($q){
                             return $q->whereIn('role_id', ['6']);
@@ -57,6 +57,9 @@ class NoticiaRadioController extends Controller
             'dt_inicial',
             'dt_final',
             'cliente',
+            'sentimento',
+            'id_fonte',
+            'cd_area',
             'fontes',
             'termo',
             'usuario'
@@ -74,9 +77,12 @@ class NoticiaRadioController extends Controller
         $dt_inicial = Session::get('radio_filtro_dt_inicial', $request->input('dt_inicial', date('d/m/Y')));
         $dt_final = Session::get('radio_filtro_dt_final', $request->input('dt_final', date('d/m/Y')));
         $cliente_selecionado = Session::get('radio_filtro_cliente', $request->input('cliente'));
+        $sentimento = Session::get('radio_filtro_sentimento', $request->input('sentimento'));
+        $fonte_selecionada = Session::get('radio_filtro_id_fonte', $request->input('id_fonte'));
+        $area_selecionada = Session::get('radio_filtro_cd_area', $request->input('cd_area'));
         $fonte = Session::get('radio_filtro_fontes', $request->input('fontes'));
         $termo = Session::get('radio_filtro_termo', $request->input('termo'));
-        $usuario = Session::get('impresso_filtro_usuario', $request->input('usuario'));
+        $usuario = Session::get('radio_filtro_usuario', $request->input('usuario'));
 
         // Converta as datas para o formato do banco
         $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $dt_inicial)->format('Y-m-d');
@@ -85,8 +91,48 @@ class NoticiaRadioController extends Controller
         $dados = NoticiaRadio::with('emissora')
                     ->when($cliente_selecionado, function ($query) use ($cliente_selecionado) { 
                         return $query->whereHas('clientes', function($q) use ($cliente_selecionado) {
-                            $q->where('noticia_cliente.cliente_id', $cliente_selecionado)->where('noticia_cliente.tipo_id', 3);
+                            $q->where('noticia_cliente.cliente_id', $cliente_selecionado)
+                            ->where('noticia_cliente.tipo_id', 3)
+                            ->whereNull('noticia_cliente.deleted_at');
                         });
+                    })
+                    ->when($area_selecionada, function ($query) use ($area_selecionada) { 
+                        return $query->whereHas('clientes', function($q) use ($area_selecionada) {
+                            $q->where('noticia_cliente.area', $area_selecionada)
+                              ->where('noticia_cliente.tipo_id', 3)
+                              ->whereNull('noticia_cliente.deleted_at');
+                        });
+                    })
+                    ->when($sentimento, function ($query) use ($sentimento) { 
+                        return $query->whereHas('clientes', function($q) use ($sentimento) {
+
+                            $valor_sentimento = null;
+
+                            switch ($sentimento) {
+                                case 'negativo':
+                                    $valor_sentimento = '-1';
+                                    break;
+
+                                case 'neutro':
+                                    $valor_sentimento = '0';
+                                    break;
+
+                                case 'positivo':
+                                    $valor_sentimento = '1';
+                                    break;
+                                
+                                default:
+                                    $valor_sentimento = null;
+                                    break;
+                            }
+
+                            $q->where('noticia_cliente.sentimento', $valor_sentimento)
+                              ->where('noticia_cliente.tipo_id', 3)
+                              ->whereNull('noticia_cliente.deleted_at');
+                        });
+                    })
+                    ->when($fonte_selecionada, function ($q) use ($fonte_selecionada) {
+                        return $q->where('emissora_id', $fonte_selecionada);
                     })
                     ->when($termo, function ($q) use ($termo) {
                         return $q->where('sinopse', 'ILIKE', '%'.trim($termo).'%');
@@ -104,14 +150,24 @@ class NoticiaRadioController extends Controller
                     ->paginate(50);
 
         return view('noticia-radio/index', compact('dados',
-        'emissora','clientes','tipo_data','dt_inicial','dt_final','cliente_selecionado',
-        'fonte',
-        'termo','usuarios','usuario'));
+                                                    'emissoras',
+                                                    'clientes',
+                                                    'tipo_data',
+                                                    'dt_inicial',
+                                                    'dt_final',
+                                                    'cliente_selecionado',
+                                                    'area_selecionada',
+                                                    'fonte_selecionada',
+                                                    'sentimento',
+                                                    'fonte',
+                                                    'termo',
+                                                    'usuarios',
+                                                    'usuario'));
     }
 
     public function limparFiltrosRadio()
     {
-        foreach (['tipo_data','dt_inicial','dt_final','cliente','fontes','termo','usuario'] as $filtro) {
+        foreach (['tipo_data','dt_inicial','dt_final','cliente','fontes','termo','usuario','sentimento','id_fonte','cd_area'] as $filtro) {
             Session::forget('radio_filtro_' . $filtro);
         }
         return redirect('noticias/radio');

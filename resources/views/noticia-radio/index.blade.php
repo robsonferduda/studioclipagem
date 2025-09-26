@@ -49,12 +49,43 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
+                                        <label>Fonte</label>
+                                        <select class="form-control select2" name="id_fonte" id="id_fonte">
+                                            <option value="">Selecione uma fonte</option>
+                                            @foreach ($emissoras as $emissora)
+                                                <option value="{{ $emissora->id }}" {{ (old("id_fonte") or $emissora->id == $fonte_selecionada)  ? "selected" : "" }}>{{ $emissora->nome_emissora }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
                                         <label>Cliente</label>
-                                        <select class="form-control select2" name="cliente" id="cliente">
+                                        <select class="form-control cliente" name="cliente" id="cd_cliente">
                                             <option value="">Selecione um cliente</option>
                                             @foreach ($clientes as $cliente)
                                                 <option value="{{ $cliente->id }}" {{ ($cliente_selecionado == $cliente->id) ? 'selected' : '' }}>{{ $cliente->nome }}</option>
                                             @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Área do Cliente</label>
+                                        <input type="hidden" name="area_selecionada" id="area_selecionada" value="{{ ($area_selecionada) ? $area_selecionada : 0 }}">
+                                        <select class="form-control area" name="cd_area" id="cd_area" disabled>
+                                            <option value="0">Selecione uma área</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Sentimento</label>
+                                        <select class="form-control" name="sentimento" id="sentimento">
+                                            <option value="">Selecione um sentimento</option>
+                                            <option value="1" {{ ($sentimento == '1') ? 'selected' : '' }}>Positivo</option>
+                                            <option value="0" {{ ($sentimento == '0') ? 'selected' : '' }}>Neutro</option>
+                                            <option value="-1" {{ ($sentimento == '-1') ? 'selected' : '' }}>Negativo</option>
                                         </select>
                                     </div>
                                 </div>
@@ -212,6 +243,7 @@
 </div>
 @endsection
 @section('script')
+<script src="{{ asset('js/campos-cliente.js') }}"></script>
 <script src="{{ asset('js/noticia_clientes.js') }}"></script>
     <script>
         $(document).ready(function(){
