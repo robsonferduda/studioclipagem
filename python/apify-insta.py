@@ -18,7 +18,7 @@ load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '..', '.env'))
 
 APIFY_TOKEN = os.getenv("APIFY_TOKEN")
 APIFY_ACTOR = os.getenv("APIFY_ACTOR", "apify/instagram-hashtag-scraper")
-APIFY_RESULTS_LIMIT = int(os.getenv("APIFY_RESULTS_LIMIT", "100"))
+APIFY_RESULTS_LIMIT = int(os.getenv("APIFY_RESULTS_LIMIT", "10"))
 APIFY_RESULTS_TYPE = os.getenv("APIFY_RESULTS_TYPE", "posts")  # posts | reels (depende do actor)
 APIFY_SLEEP_BETWEEN_BATCHES = float(os.getenv("APIFY_SLEEP_BETWEEN_BATCHES", "1.0"))
 
