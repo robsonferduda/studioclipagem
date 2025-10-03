@@ -122,7 +122,7 @@
                                 <div class="col-md-8">
                                     <div class="form-group">
                                         <label>Cidade </label>
-                                        <input type="hidden" name="cd_cidade" id="cd_cidade" value="{{ (old('cd_cidade')) ? old('cd_cidade') : 0  }}">
+                                        <input type="hidden" name="cd_cidade" id="cd_cidade_selecionada" value="{{ (old('cd_cidade')) ? old('cd_cidade') : 0  }}">
                                         <select class="form-control select2" name="cidade" id="cidade" disabled="disabled">
                                             <option value="">Selecione uma cidade</option>
                                         </select>
@@ -305,6 +305,7 @@
     $( document ).ready(function() {
 
         var host = $('meta[name="base-url"]').attr('content');
+        var id_fonte = $('#id_fonte').val();
 
         $(".btn_enviar_copiar_fake").click(function() {
             $("#btn_enviar_e_salvar").trigger("click");
@@ -315,8 +316,32 @@
         });
 
         $("#id_fonte").change(function () {
+
+            var id = $("#id_fonte").val();
+
             $("#local_impressao").trigger('change');
-        })
+
+            $.ajax({
+                    url: host + '/fonte-impresso/' + id,
+                    type: 'GET',
+                    success: function(data) {
+                        
+                        if(data.cd_estado){
+                            $("#cd_estado").val(data.cd_estado);
+                        }else{
+                            $("#cd_estado").val('');
+                        }
+
+                        if(data.cd_cidade){                            
+                            $("#cd_cidade_selecionada").val(data.cd_cidade).change();
+                            $("#cd_estado").trigger('change'); 
+                        }else{
+                            $("#cd_cidade_selecionada").val('');
+                            $("#cd_estado").trigger('change'); 
+                        }                     
+                    }
+            });
+        });
 
         //Inicializar o Dropzone
         var myDropzone = new Dropzone("#dropzone", {

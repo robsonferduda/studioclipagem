@@ -87,6 +87,18 @@ class FonteImpressoController extends Controller
         return view('fonte-impresso/listar',compact('cidades','estados','fontes','cd_estado','cd_cidade','mapear','nome'));
     }
 
+    public function dadosFonte($id)
+    {
+        $emissora = \App\Models\FonteImpressa::find($id);
+
+        $dados = array(
+            'cd_estado' => $emissora ? $emissora->cd_estado : null,
+            'cd_cidade' => $emissora ? $emissora->cd_cidade : null
+        );
+
+        return response()->json($dados);
+    }
+
     public function limpar()
     {
         Session::forget('filtro_estado');

@@ -417,8 +417,7 @@
                 }
             });  
 
-
-             $.ajax({
+            $.ajax({
                     url: host + '/fonte-web/' + id,
                     type: 'GET',
                     success: function(data) {
@@ -437,9 +436,7 @@
                             $("#cd_estado").trigger('change'); 
                         }                     
                     }
-                });
-
-
+            });
         });
 
         function buscarFontes(pagina = 1) {

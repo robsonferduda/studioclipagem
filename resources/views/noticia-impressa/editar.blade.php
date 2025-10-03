@@ -123,7 +123,7 @@
                                 <div class="col-md-8">
                                     <div class="form-group">
                                         <label>Cidade </label>
-                                        <input type="hidden" name="cd_cidade" id="cd_cidade" value="{{ ($noticia->cd_cidade) ? $noticia->cd_cidade : 0  }}">
+                                        <input type="hidden" name="cd_cidade" id="cd_cidade_selecionada" value="{{ ($noticia->cd_cidade) ? $noticia->cd_cidade : 0  }}">
                                         <select class="form-control select2" name="cidade" id="cidade" disabled="disabled">
                                             <option value="">Selecione uma cidade</option>
                                         </select>
@@ -329,6 +329,34 @@
 
         $(".btn_enviar_fake").click(function() {
             $("#btn_enviar").trigger("click");
+        });
+
+        $("#id_fonte").change(function () {
+
+            var id = $("#id_fonte").val();
+
+            $("#local_impressao").trigger('change');
+
+            $.ajax({
+                    url: host + '/fonte-impresso/' + id,
+                    type: 'GET',
+                    success: function(data) {
+                        
+                        if(data.cd_estado){
+                            $("#cd_estado").val(data.cd_estado);
+                        }else{
+                            $("#cd_estado").val('');
+                        }
+
+                        if(data.cd_cidade){                            
+                            $("#cd_cidade_selecionada").val(data.cd_cidade).change();
+                            $("#cd_estado").trigger('change'); 
+                        }else{
+                            $("#cd_cidade_selecionada").val('');
+                            $("#cd_estado").trigger('change'); 
+                        }                     
+                    }
+            });
         });
 
         $('#valor_retorno').on('input', function() {
