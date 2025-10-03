@@ -83,11 +83,23 @@ class EmissoraController extends Controller
     }
 
     public function valorSegundo($id)
-{
+    {
         $emissora = \App\Models\Emissora::find($id);
         return response()->json([
             'valor_segundo' => $emissora ? $emissora->nu_valor : null
         ]);
+    }
+
+    public function dadosEmissora($id)
+    {
+        $emissora = \App\Models\Emissora::find($id);
+
+        $dados = array(
+            'cd_estado' => $emissora ? $emissora->cd_estado : null,
+            'cd_cidade' => $emissora ? $emissora->cd_cidade : null
+        );
+
+        return response()->json($dados);
     }
 
     public function coletas(Request $request)

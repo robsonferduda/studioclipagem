@@ -151,7 +151,7 @@
                                 <div class="col-md-8">
                                     <div class="form-group">
                                         <label>Cidade </label>
-                                        <input type="hidden" name="cd_cidade" id="cd_cidade" value="{{ ($noticia and $noticia->cd_cidade) ? $noticia->cd_cidade : 0  }}">
+                                        <input type="hidden" name="cd_cidade" id="cd_cidade_selecionada" value="{{ ($noticia and $noticia->cd_cidade) ? $noticia->cd_cidade : 0  }}">
                                         <select class="form-control select2" name="cd_cidade" id="cidade" disabled="disabled">
                                             <option value="">Selecione uma cidade</option>
                                         </select>
@@ -287,6 +287,24 @@
                             $('#valor_segundo').html('<span class="text-warning">Valor Pendente</span>');
                     }
                 });
+
+                $.ajax({
+                    url: host + '/emissora/radio/' + emissora,
+                    type: 'GET',
+                    success: function(data) {
+                        
+                        if(data.cd_estado){
+                            $("#cd_estado").val(data.cd_estado);
+                        }
+
+                        if(data.cd_cidade){                            
+                            $("#cd_cidade").val(data.cd_cidade).change();
+                            $("#cd_estado").trigger('change'); 
+                        }                     
+                    }
+                });
+
+
             } else {
                 $('#valor_segundo').text('');
             }

@@ -385,7 +385,8 @@ Route::middleware(['web'])->group(function () {
 	Route::get('noticia/radio/{monitoramento}/extrair/{id}','NoticiaRadioController@extrair');
 	Route::get('emissoras/{tipo}/novo','EmissoraController@novo');
 	Route::get('emissoras/radio/limpar','EmissoraController@limpar');
-	Route::get('emissora/radio/{id}/segundo', 'EmissoraController@valorSegundo');
+	Route::get('radio/emissora/{id}/horarios','EmissoraController@horarios');
+	Route::get('emissora/radio/{id}', 'EmissoraController@dadosEmissora');
 	Route::get('radio/emissora/{id}/horarios','EmissoraController@horarios');
 	Route::post('radio/emissora/horario/atualizar','EmissoraController@atualizarHorarios');
 	Route::post('radio/emissora/horario/adicionar','EmissoraController@adicionarHorarios');
