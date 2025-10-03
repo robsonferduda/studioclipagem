@@ -67,6 +67,15 @@
                                         <textarea class="form-control" name="expressao" id="expressao" rows="3">{{ $expressao }}</textarea>
                                     </div>
                                 </div>
+                                <div class="col-md-12">
+                                    <div class="form-check float-left mr-3">
+                                        <label class="form-check-label mt-2">
+                                            <input class="form-check-input" type="checkbox" {{ ($fl_audios) ? 'checked' : '' }} name="fl_audios" value="true">
+                                                MOSTRAR ÁUDIOS
+                                            <span class="form-check-sign"></span>
+                                        </label>
+                                    </div>
+                                </div>
                                 @if($erro)
                                     <div class="col-md-12 col-sm-12">
                                         <div class="alert alert-danger" role="alert">
@@ -93,19 +102,21 @@
                     @endif
 
                     @foreach ($dados as $key => $audio)
-                        <div class="card">
+                        <div class="card card-audio" id="card-audio-{{ $audio->id }}">
                             <div class="card-body">                    
                                 <div class="row">
-                                    <div class="col-lg-12 col-md-12 col-sm-12 mb-1">                                    
-                                        @if(Storage::disk('s3')->temporaryUrl($audio->path_s3, '+30 minutes'))
-                                            <audio width="100%" controls style="width: 100%;">
-                                                <source src="{{ Storage::disk('s3')->temporaryUrl($audio->path_s3, '+30 minutes') }}" type="audio/mpeg">
-                                                Seu navegador não suporta a execução de áudios, faça o download para poder ouvir.
-                                            </audio>
-                                        @else
-    
-                                        @endif
-                                    </div>
+                                    @if($fl_audios)
+                                        <div class="col-lg-12 col-md-12 col-sm-12 mb-1">                                    
+                                            @if(Storage::disk('s3')->temporaryUrl($audio->path_s3, '+30 minutes'))
+                                                <audio width="100%" controls style="width: 100%;">
+                                                    <source src="{{ Storage::disk('s3')->temporaryUrl($audio->path_s3, '+30 minutes') }}" type="audio/mpeg">
+                                                    Seu navegador não suporta a execução de áudios, faça o download para poder ouvir.
+                                                </audio>
+                                            @else
+        
+                                            @endif
+                                        </div>
+                                    @endif
                                     <div class="col-lg-12 col-sm-12 mb-1"> 
                                         <h6><a href="{{ url('emissora/'.$audio->id_fonte.'/edit') }}" target="_BLANK">{{ ($audio->nome_fonte) ? $audio->nome_fonte : '' }}</a></h6>  
                                         <h6 style="color: #FF5722;">{{ ($audio->nm_estado) ? $audio->nm_estado : '' }}{{ ($audio->nm_cidade) ? "/".$audio->nm_cidade : '' }}</h6>  
@@ -117,13 +128,21 @@
                                         <p class="mb-2"><strong>Retorno de Mídia</strong>: {!! ($audio->valor_retorno) ? "R$ ".$audio->valor_retorno : '<span class="text-danger">Não calculado</span>' !!}</p>
                                         <div class="panel panel-success">
                                             <div class="conteudo-noticia mb-1">
-                                                {!! ($audio->transcricao) ?  Str::limit($audio->transcricao, 1000, " ...")  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                                <span class="transcricao-limitada" id="transcricao-limitada-{{ $audio->id }}">
+                                                    {!! ($audio->transcricao) ? Str::limit($audio->transcricao, 1000, " ...") : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                                    @if($audio->transcricao && strlen($audio->transcricao) > 1000)
+                                                        <a href="javascript:void(0);" class="text-primary ver-mais" data-id="{{ $audio->id }}">[ver mais]</a>
+                                                    @endif
+                                                </span>
+                                                <span class="transcricao-completa d-none" id="transcricao-completa-{{ $audio->id }}">
+                                                    {!! $audio->transcricao !!}
+                                                    <a href="javascript:void(0);" class="text-primary ver-menos" data-id="{{ $audio->id }}">[ver menos]</a>
+                                                </span>
                                             </div>
                                             <div class="panel-body conteudo-{{ $audio->id }}">
                                                 {!! ($audio->transcricao) ?  $audio->transcricao  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
-                                            </div>
-                                            
-                                        </div>                
+                                            </div>                                            
+                                        </div>               
                                     </div>
                                 </div>     
 
@@ -208,10 +227,34 @@
             var host =  $('meta[name="base-url"]').attr('content');
             var token = $('meta[name="csrf-token"]').attr('content');
 
+            // Destacar card ao clicar
+            $('.card-audio').click(function(){
+                // Remove destaque de todos
+                $('.card-audio').removeClass('card-destaque');
+                // Adiciona destaque ao clicado
+                $(this).addClass('card-destaque');
+            });
+
             var demo2 = $('.demo1').bootstrapDualListbox({
                 nonSelectedListLabel: 'Disponíveis',
                 selectedListLabel: 'Selecionadas',               
             });
+
+            $('.ver-mais').click(function(){
+                var id = $(this).data('id');
+                $('#transcricao-limitada-' + id).addClass('d-none');
+                $('#transcricao-completa-' + id).removeClass('d-none');
+            });
+
+            $('.ver-menos').click(function(){
+                var id = $(this).data('id');
+                $('#transcricao-completa-' + id).addClass('d-none');
+                $('#transcricao-limitada-' + id).removeClass('d-none');
+                // Rolagem suave para o início do texto limitado
+                $('html, body').animate({
+                    scrollTop: $('#transcricao-limitada-' + id).offset().top - 100 // ajuste o -100 conforme seu layout
+                }, 400);
+            });   
 
             let emissoras = [];
             let selecionadas = [];

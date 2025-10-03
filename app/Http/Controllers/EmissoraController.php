@@ -98,6 +98,7 @@ class EmissoraController extends Controller
         $emissoras = Emissora::orderBy('nome_emissora')->get();
 
         $erro = null;
+        $fl_audios = $request->fl_audios == true ? true : false;
         $tipo_data = $request->tipo_data;
         $dt_inicial = ($request->dt_inicial) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_inicial)->format('Y-m-d') : date("Y-m-d");
         $dt_final = ($request->dt_final) ? $this->carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d') : date("Y-m-d");
@@ -138,7 +139,7 @@ class EmissoraController extends Controller
             $erro = "Erro ao buscar os dados. Verifique a expressão de busca.";
         }    
         
-        return view('emissora/arquivos', compact('emissoras','dados','tipo_data','dt_inicial','dt_final','emissora_search','programa_search','expressao','erro'));
+        return view('emissora/arquivos', compact('emissoras','dados','tipo_data','dt_inicial','dt_final','emissora_search','programa_search','expressao','erro','fl_audios'));
     }
 
     public function atualizarHorarios(Request $request)

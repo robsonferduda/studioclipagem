@@ -17,6 +17,12 @@
     background-color: #68B3C8 !important;
     border-color: #68B3C8 !important;
 }
+.card-destaque {
+    border: 2px solid #ffc979 !important;
+    box-shadow: 0 0 10px #ff98009c;
+    background: #ff980014;
+    transition: box-shadow 0.2s, border 0.2s;
+}
 .btn-dark .file-upload {
     width: 100%;
     padding: 10px 0px;
