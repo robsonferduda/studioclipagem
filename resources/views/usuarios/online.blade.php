@@ -42,7 +42,10 @@
                 </div>
 
                 <div class="row mt-1 mb-5">
-                    <div class="col-md-12 mb-2">
+                    <div class="col-md-12 mt-2 mb-0">
+                        <h6 class="card-title mb-0"><i class="fa fa-history text-info"></i> Atividades Recentes</h6>
+                    </div>
+                    <div class="col-md-12 mb-2 mt-0">
                         {!! Form::open(['id' => 'frm_fonte_impressa', 'class' => 'form-inline float-left', 'url' => ['online']]) !!}
                             <input type="date" id="dt_inicial" name="dt_inicial" class="form-control mr-2" value="{{ \Carbon\Carbon::parse($dt_inicial)->format('Y-m-d') }}">
                             <input type="date" id="dt_final" name="dt_final" class="form-control mr-2" value="{{ \Carbon\Carbon::parse($dt_final)->format('Y-m-d') }}">
@@ -52,11 +55,17 @@
                                     <option value="{{ $user->id }}" {{ ($usuario and $usuario == $user->id) ? 'selected' : '' }}>{{ $user->name }}</option>
                                 @endforeach
                             </select>
+                            <div class="form-check float-left mr-3">
+                                    <label class="form-check-label mt-2">
+                                        <input class="form-check-input" type="checkbox" name="baixar_excel" id="baixar_excel" value="true">
+                                            BAIXAR EXCEL
+                                        <span class="form-check-sign"></span>
+                                    </label>
+                                </div>
                             <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
                         {!! Form::close() !!} 
                     </div>
                     <div class="col-md-12">
-                        <h6 class="card-title"><i class="fa fa-history text-info"></i> Atividades Recentes</h6>
                         <ul class="list-group">
                             @if ($recentActivities->isEmpty())
                                 <li class="list-group-item" style="border: none; padding: 5px 5px; border-radius: 5px;">Nenhuma atividade registrada recentemente.</li>

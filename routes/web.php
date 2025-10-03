@@ -498,6 +498,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('usuario/historico/{id}','UserController@historico');
 	Route::get('usuarios/excluir/{id}','UserController@excluirUsuarioCliente');
 	Route::post('usuario/cliente/cadastrar','UserController@usuarioCliente');
+	Route::get('usuarios/online/excel', 'UserController@exportarOnlineExcel')->name('usuarios.online.excel');
 
 	Route::get('role/permissions/{role}','RoleController@permissions');
 	Route::post('role/permission/{role}','RoleController@addPermission');

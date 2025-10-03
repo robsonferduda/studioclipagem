@@ -94,6 +94,12 @@ class UserController extends Controller
             ->orderByDesc('created_at')
             ->get();
 
+        if ($request->has('baixar_excel')) {
+            
+            $nome_arquivo = date('Y-m-d_H-i-s').'_usuarios_online.xlsx';
+            return \Excel::download(new \App\Exports\OnlineExport($online, $recentActivities), $nome_arquivo);
+        }
+
         return view('usuarios/online', compact('dt_inicial','dt_final','usuarios','usuario','online','recentActivities'));
     }
 
