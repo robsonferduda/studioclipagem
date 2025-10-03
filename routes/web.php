@@ -159,6 +159,7 @@ Route::middleware(['web'])->group(function () {
 
 	Route::match(array('GET', 'POST'),'fonte-impresso/listar','FonteImpressoController@listar');
 
+	Route::get('fonte-impresso/{id}', 'FonteImpressoController@dadosFonte');
 	Route::get('fonte-impresso/cadastrar','FonteImpressoController@cadastrar');
 	Route::get('fonte-impresso/{id}/editar','FonteImpressoController@editar');
 	Route::get('fonte-impresso/{id}/excluir','FonteImpressoController@excluir');
@@ -192,6 +193,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('fonte-web/estatisticas/top/{top}','FonteWebController@getTopColetas');
 	Route::get('fonte-web/estatisticas/sem/{top}','FonteWebController@getSemColetas');
 	Route::get('fonte-web/estatisticas/coletas/{fonte}','FonteWebController@getColetasByFonte');
+	Route::get('fonte-web/{id}', 'FonteWebController@dadosFonte');
 	Route::post('fonte-web/secao','FonteWebController@secao');
 
 	Route::get('fonte-web/buscar/combo', 'FonteWebController@buscar');
@@ -415,6 +417,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('tv/emissoras/limpar','EmissoraTvController@limpar');
 	Route::get('tv/emissora/{id}/gravacao/atualiza','EmissoraTvController@atualizaGravacao');
 	Route::get('tv/emissora/{id}/horarios','EmissoraTvController@horarios');
+	Route::get('emissora/tv/{id}', 'EmissoraTvController@dadosEmissora');
 	Route::post('tv/emissoras/horario/adicionar','EmissoraTvController@adicionarHorarios');
 	Route::post('tv/emissoras/adicionar','EmissoraTvController@adicionar');
 	Route::post('tv/emissoras/atualizar','EmissoraTvController@atualizar');

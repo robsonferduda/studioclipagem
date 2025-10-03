@@ -144,7 +144,7 @@
                                 <div class="col-md-8">
                                     <div class="form-group">
                                         <label>Cidade </label>
-                                        <input type="hidden" name="cd_cidade" id="cd_cidade" value="{{ ($noticia and $noticia->cd_cidade) ? $noticia->cd_cidade : 0  }}">
+                                        <input type="hidden" name="cd_cidade" id="cd_cidade_selecionada" value="{{ ($noticia and $noticia->cd_cidade) ? $noticia->cd_cidade : 0  }}">
                                         <select class="form-control select2" name="cd_cidade" id="cidade" disabled="disabled">
                                             <option value="">Selecione uma cidade</option>
                                         </select>
@@ -364,6 +364,12 @@
             $("#btn_enviar").trigger("click");
         });
 
+        var id_fonte = $("#id_fonte").val();
+
+        if(id_fonte){
+            $("#id_fonte").trigger("change");
+        }
+
         //Inicializar o Dropzone
         var myDropzone = new Dropzone("#dropzone", {
             url: host + "/noticia-web/upload", // URL para onde os arquivos serão enviados
@@ -398,25 +404,43 @@
             var id = $("#id_fonte").val();
             
             $.ajax({
-                    url: host+'/fonte-web/'+id+'/valores/'+$(this).val(),
-                    type: 'GET',
-                    beforeSend: function() {
+                url: host+'/fonte-web/'+id+'/valores/'+$(this).val(),
+                type: 'GET',
+                beforeSend: function() {
                         
-                    },
-                    success: function(data) {
-                        $("#nu_valor").val(data);                                      
-                    },
-                    complete: function(){
+                },
+                success: function(data) {
+                    $("#nu_valor").val(data);                                      
+                },
+                complete: function(){
                                     
-                    }
+                }
             });  
+
+
+             $.ajax({
+                    url: host + '/fonte-web/' + id,
+                    type: 'GET',
+                    success: function(data) {
+                        
+                        if(data.cd_estado){
+                            $("#cd_estado").val(data.cd_estado);
+                        }else{
+                            $("#cd_estado").val('');
+                        }
+
+                        if(data.cd_cidade){                            
+                            $("#cd_cidade_selecionada").val(data.cd_cidade).change();
+                            $("#cd_estado").trigger('change'); 
+                        }else{
+                            $("#cd_cidade_selecionada").val('');
+                            $("#cd_estado").trigger('change'); 
+                        }                     
+                    }
+                });
+
+
         });
-
-        var id_fonte = $("#id_fonte").val();
-
-        if(id_fonte){
-            $("#id_fonte").trigger("change");
-        }
 
         function buscarFontes(pagina = 1) {
             var nome = $('#filtro_nome').val();

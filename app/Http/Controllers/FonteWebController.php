@@ -149,6 +149,18 @@ class FonteWebController extends Controller
         return view('fonte-web/listar',compact('cidades','estados','situacoes','fontes'));
     }
 
+    public function dadosFonte($id)
+    {
+        $emissora = \App\Models\FonteWeb::find($id);
+
+        $dados = array(
+            'cd_estado' => $emissora ? $emissora->cd_estado : null,
+            'cd_cidade' => $emissora ? $emissora->cd_cidade : null
+        );
+
+        return response()->json($dados);
+    }
+
     public function filtrarSituacao(Request $request)
     {
         if($request->situacao and $request->situacao >= 0){

@@ -295,12 +295,17 @@
                         
                         if(data.cd_estado){
                             $("#cd_estado").val(data.cd_estado);
+                        }else{
+                            $("#cd_estado").val('');
                         }
 
                         if(data.cd_cidade){                            
-                            $("#cd_cidade").val(data.cd_cidade).change();
+                            $("#cd_cidade_selecionada").val(data.cd_cidade).change();
                             $("#cd_estado").trigger('change'); 
-                        }                     
+                        }else{
+                            $("#cd_cidade_selecionada").val('');
+                            $("#cd_estado").trigger('change'); 
+                        }                       
                     }
                 });
 

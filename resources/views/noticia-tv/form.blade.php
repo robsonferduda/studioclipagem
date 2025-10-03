@@ -316,6 +316,27 @@
                 var emissora = $(this).val();
                 buscarProgramas(emissora);
 
+                $.ajax({
+                    url: host + '/emissora/tv/' + emissora,
+                    type: 'GET',
+                    success: function(data) {
+                        
+                        if(data.cd_estado){
+                            $("#cd_estado").val(data.cd_estado);
+                        }else{
+                            $("#cd_estado").val('');
+                        }
+
+                        if(data.cd_cidade){                            
+                            $("#cd_cidade_selecionada").val(data.cd_cidade).change();
+                            $("#cd_estado").trigger('change'); 
+                        }else{
+                            $("#cd_cidade_selecionada").val('');
+                            $("#cd_estado").trigger('change'); 
+                        }                     
+                    }
+                });
+
             });
 
             $(document).on("change", "#horario", function() {

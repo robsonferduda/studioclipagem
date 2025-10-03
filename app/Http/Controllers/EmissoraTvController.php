@@ -92,6 +92,18 @@ class EmissoraTvController extends Controller
         return redirect('tv/emissoras');
     }
 
+    public function dadosEmissora($id)
+    {
+        $emissora = \App\Models\EmissoraWeb::find($id);
+
+        $dados = array(
+            'cd_estado' => $emissora ? $emissora->cd_estado : null,
+            'cd_cidade' => $emissora ? $emissora->cd_cidade : null
+        );
+
+        return response()->json($dados);
+    }
+
     public function novo()
     {
         $estados = Estado::orderBy('nm_estado')->get();
