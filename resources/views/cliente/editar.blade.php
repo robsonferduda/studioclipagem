@@ -209,6 +209,14 @@
                                         <span class="form-check-sign"></span>
                                     </label>
                                 </div>
+
+                                <div class="form-check float-left mr-3">
+                                    <label class="form-check-label mt-2">
+                                        <input class="form-check-input" {{ ($cliente->fl_areas) ? 'checked' : '' }} type="checkbox" name="fl_areas" value="true">
+                                            ATIVAR VISÃO DE ÁREAS NO RELATÓRIO
+                                        <span class="form-check-sign"></span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
                         <div class="row">
