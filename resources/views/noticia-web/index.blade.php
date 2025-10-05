@@ -147,7 +147,7 @@
                 <div class="col-lg-12">
                     @if(count($dados) > 0)
                         @foreach ($dados as $key => $dado)
-                            <div class="card noticia-card" data-id="{{ $dado->id }}">
+                            <div class="card noticia-card card-audio" id="card-audio-{{ $audio->id }}" data-id="{{ $dado->id }}">
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-12 mb-2">
@@ -199,9 +199,23 @@
                                                 {!! ($dado->conteudo) ? Str::limit($dado->conteudo->conteudo, 700, " ...") : 'Notícia sem conteúdo' !!}
                                             </div>
                                             
-                                            <div>
-                                                <button class="btn btn-primary btn-visualizar-noticia" data-id="{{ $dado->id }}"><i class="fa fa-eye"></i> Visualizar</button>
-                                            </div>                                            
+                                            <div class="panel panel-success">
+                                                <div class="conteudo-noticia mb-1">
+                                                    <span class="transcricao-limitada" id="transcricao-limitada-{{ $dado->id }}">
+                                                        {!! ($dado->conteudo) ? Str::limit($dado->conteudo, 1000, " ...") : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                                        @if($dado->conteudo && strlen($dado->conteudo) > 1000)
+                                                            <a href="javascript:void(0);" class="text-primary ver-mais" data-id="{{ $dado->id }}">[ver mais]</a>
+                                                        @endif
+                                                    </span>
+                                                    <span class="transcricao-completa d-none" id="transcricao-completa-{{ $dado->id }}">
+                                                        {!! $dado->conteudo !!}
+                                                        <a href="javascript:void(0);" class="text-primary ver-menos" data-id="{{ $dado->id }}">[ver menos]</a>
+                                                    </span>
+                                                </div>
+                                                <div class="panel-body conteudo-{{ $dado->id }}">
+                                                    {!! ($dado->conteudo) ?  $dado->conteudo  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                                </div>                                            
+                                            </div>                                               
                                         </div>
                                     </div>
                                 </div>
@@ -330,6 +344,30 @@
 
             var host =  $('meta[name="base-url"]').attr('content');
             var token = $('meta[name="csrf-token"]').attr('content');
+
+            // Destacar card ao clicar
+            $('.card-audio').click(function(){
+                // Remove destaque de todos
+                $('.card-audio').removeClass('card-destaque');
+                // Adiciona destaque ao clicado
+                $(this).addClass('card-destaque');
+            });
+
+            $('.ver-mais').click(function(){
+                var id = $(this).data('id');
+                $('#transcricao-limitada-' + id).addClass('d-none');
+                $('#transcricao-completa-' + id).removeClass('d-none');
+            });
+
+            $('.ver-menos').click(function(){
+                var id = $(this).data('id');
+                $('#transcricao-completa-' + id).addClass('d-none');
+                $('#transcricao-limitada-' + id).removeClass('d-none');
+                // Rolagem suave para o início do texto limitado
+                $('html, body').animate({
+                    scrollTop: $('#transcricao-limitada-' + id).offset().top - 100 // ajuste o -100 conforme seu layout
+                }, 400);
+            });   
 
             // Função para atualizar contador de selecionadas
             function updateSelectedCount() {
