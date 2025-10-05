@@ -195,25 +195,22 @@
                                                     @endforelse
                                                 </div>
                                             </div>
-                                            <div class="sinopse-{{ $dado->id }}">
-                                                {!! ($dado->conteudo) ? Str::limit($dado->conteudo->conteudo, 700, " ...") : 'Notícia sem conteúdo' !!}
-                                            </div>
-                                            
+                                                                    
                                             <div class="panel panel-success">
                                                 <div class="conteudo-noticia mb-1">
                                                     <span class="transcricao-limitada" id="transcricao-limitada-{{ $dado->id }}">
-                                                        {!! ($dado->conteudo) ? Str::limit($dado->conteudo, 1000, " ...") : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
-                                                        @if($dado->conteudo && strlen($dado->conteudo) > 1000)
+                                                        {!! ($dado->conteudo) ? Str::limit($dado->conteudo->conteudo, 1000, " ...") : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                                        @if($dado->conteudo->conteudo && strlen($dado->conteudo->conteudo) > 1000)
                                                             <a href="javascript:void(0);" class="text-primary ver-mais" data-id="{{ $dado->id }}">[ver mais]</a>
                                                         @endif
                                                     </span>
                                                     <span class="transcricao-completa d-none" id="transcricao-completa-{{ $dado->id }}">
-                                                        {!! $dado->conteudo !!}
+                                                        {!! $dado->conteudo->conteudo !!}
                                                         <a href="javascript:void(0);" class="text-primary ver-menos" data-id="{{ $dado->id }}">[ver menos]</a>
                                                     </span>
                                                 </div>
                                                 <div class="panel-body conteudo-{{ $dado->id }}">
-                                                    {!! ($dado->conteudo) ?  $dado->conteudo  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                                    {!! ($dado->conteudo) ?  $dado->conteudo->conteudo  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
                                                 </div>                                            
                                             </div>                                               
                                         </div>
