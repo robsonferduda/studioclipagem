@@ -133,9 +133,7 @@
         $(document).ready(function(){
             
             $("#cd_estado").trigger("change");
-            $("#resetar_situacao").trigger("click");
-            $("#id_situacao").val(0).change();
-
+      
             $(document).on('click', '#resetar_situacao', function() {
 
                 var id_situacao_atual = $("#id_situacao_atual").val();
