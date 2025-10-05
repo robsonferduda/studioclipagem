@@ -193,7 +193,7 @@ Route::middleware(['web'])->group(function () {
 	Route::get('fonte-web/estatisticas/top/{top}','FonteWebController@getTopColetas');
 	Route::get('fonte-web/estatisticas/sem/{top}','FonteWebController@getSemColetas');
 	Route::get('fonte-web/estatisticas/coletas/{fonte}','FonteWebController@getColetasByFonte');
-	Route::get('fonte-web/{id}', 'FonteWebController@dadosFonte');
+	Route::get('fonte-web/detalhes/{id}', 'FonteWebController@dadosFonte');
 	Route::post('fonte-web/secao','FonteWebController@secao');
 
 	Route::get('fonte-web/buscar/combo', 'FonteWebController@buscar');

@@ -418,7 +418,7 @@
             });  
 
             $.ajax({
-                    url: host + '/fonte-web/' + id,
+                    url: host + '/fonte-web/detalhes/' + id,
                     type: 'GET',
                     success: function(data) {
                         
@@ -440,6 +440,7 @@
         });
 
         function buscarFontes(pagina = 1) {
+
             var nome = $('#filtro_nome').val();
             var estado = $('#filtro_estado').val();
             var cidade = $('#filtro_cidade').val();
