@@ -193,6 +193,7 @@ class ClienteController extends Controller
         $fl_relatorio_completo = $request->fl_relatorio_completo == true ? true : false;
         $fl_link_relatorio = $request->fl_link_relatorio == true ? true : false;
         $fl_area_restrita = $request->fl_area_restrita == true ? true : false;    
+        $fl_areas = $request->fl_areas == true ? true : false;    
         $fl_texto_logo = $request->fl_texto_logo == true ? true : false;    
         
         try {
@@ -212,6 +213,7 @@ class ClienteController extends Controller
             $request->merge(['fl_relatorio_completo' => $fl_relatorio_completo]);
             $request->merge(['fl_link_relatorio' => $fl_link_relatorio]);
             $request->merge(['fl_area_restrita' => $fl_area_restrita]);
+            $request->merge(['fl_areas' => $fl_areas]);
 
             $cliente = Cliente::create([
                 'fl_ativo' => $fl_ativo,
@@ -225,6 +227,7 @@ class ClienteController extends Controller
                 'fl_relatorio_completo' => $request->fl_relatorio_completo,
                 'fl_link_relatorio' => $request->fl_link_relatorio,
                 'fl_area_restrita' => $request->fl_area_restrita,
+                'fl_areas' => $request->fl_areas,
                 'fl_sentimento' => $fl_sentimento,
                 'nome' => $request->nome
             ]);
@@ -354,6 +357,7 @@ class ClienteController extends Controller
         $fl_relatorio_completo = $request->fl_relatorio_completo == true ? true : false;
         $fl_link_relatorio = $request->fl_link_relatorio == true ? true : false;
         $fl_area_restrita = $request->fl_area_restrita == true ? true : false;    
+        $fl_areas = $request->fl_areas == true ? true : false;    
         $fl_texto_logo = $request->fl_texto_logo == true ? true : false;   
         
         $cliente = Cliente::find($id);
@@ -375,6 +379,7 @@ class ClienteController extends Controller
             $request->merge(['fl_relatorio_completo' => $fl_relatorio_completo]);
             $request->merge(['fl_link_relatorio' => $fl_link_relatorio]);
             $request->merge(['fl_area_restrita' => $fl_area_restrita]);
+            $request->merge(['fl_areas' => $fl_areas]);
 
             $cliente->update($request->all());
 
