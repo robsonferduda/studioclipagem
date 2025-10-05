@@ -362,7 +362,7 @@
                 $('#transcricao-limitada-' + id).removeClass('d-none');
                 // Rolagem suave para o início do texto limitado
                 $('html, body').animate({
-                    scrollTop: $('#transcricao-limitada-' + id).offset().top - 100 // ajuste o -100 conforme seu layout
+                    scrollTop: $('#transcricao-limitada-' + id).offset().top - 200 // ajuste o -100 conforme seu layout
                 }, 400);
             });   
 
