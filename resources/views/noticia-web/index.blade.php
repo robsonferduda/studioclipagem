@@ -147,7 +147,7 @@
                 <div class="col-lg-12">
                     @if(count($dados) > 0)
                         @foreach ($dados as $key => $dado)
-                            <div class="card noticia-card card-audio" id="card-audio-{{ $audio->id }}" data-id="{{ $dado->id }}">
+                            <div class="card noticia-card card-audio" id="card-audio-{{ $dado->id }}" data-id="{{ $dado->id }}">
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-12 mb-2">
