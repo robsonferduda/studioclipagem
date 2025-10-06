@@ -547,8 +547,6 @@ class FonteWebController extends Controller
             $query->where('cd_cidade', $request->cidade);
         }
 
-        $query->whereIn('id_situacao',[1,2]);
-
         $perPage = 10;
 
         $fontes = $query->paginate($perPage);
