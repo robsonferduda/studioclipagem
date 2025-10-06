@@ -207,11 +207,14 @@
                                                             <a href="javascript:void(0);" class="text-primary ver-mais" data-id="{{ $dado->id }}">[ver mais]</a>
                                                         @endif
                                                     </span>
-                                                    <span class="transcricao-completa d-none" id="transcricao-completa-{{ $dado->id }}" conteudo-{{ $dado->id }} conteudo-{{ $dado->id }}-{{ $dado->monitoramento->id }}>
+                                                    <span class="transcricao-completa d-none" id="transcricao-completa-{{ $dado->id }}" >
+                                                        {!! $dado->conteudo->conteudo !!}
                                                         <a href="javascript:void(0);" class="text-primary ver-menos" data-id="{{ $dado->id }}">[ver menos]</a>
                                                     </span>
                                                 </div>
-                                                                                       
+                                                <div class="panel-body conteudo-{{ $dado->id }} conteudo-{{ $dado->id }}-{{ $dado->monitoramento->id }}">
+                                                    {!! ($dado->conteudo) ?  $dado->conteudo->conteudo  : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
+                                                </div>                                            
                                             </div>                                               
                                         </div>
                                     </div>
