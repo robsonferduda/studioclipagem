@@ -187,9 +187,12 @@
                                                 <div class="clientes-noticia clientes-noticia-{{ $dado->id }}" data-id="{{ $dado->id }}" data-tipo="2">
                                                         
                                                 </div>
+                                                @if($dado->monitoramento)
+                                                    
                                                 <div style="margin-bottom: 5px;" class="tags destaque-{{ $dado->id }}-{{ $dado->monitoramento->id }}" data-monitoramento="{{ $dado->monitoramento->id }}" data-chave="{{ $dado->id }}-{{ $dado->monitoramento->id }}" data-noticia="{{ $dado->id }}">
                                                 
                                                 </div>
+                                                @endif
                                                 <div>
                                                     @forelse($dado->tags as $tag)
                                                         <span>#{{ $tag->nome }}</span>
