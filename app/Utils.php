@@ -4,6 +4,17 @@ namespace App;
 
 class Utils
 {
+    public static function getValorReal($valor)
+    {
+        // Trata o valor_retorno para salvar corretamente
+        if (!empty($valor)) {
+            // Remove pontos de milhar e troca vírgula por ponto
+            $valor = str_replace('.', '', $valor);
+            $valor = str_replace(',', '.', $valor);
+            
+            return (float) $valor;
+        }
+    }
 
     public static function getSinopse($string, $tamanho = 255) {
         $string = strip_tags($string);

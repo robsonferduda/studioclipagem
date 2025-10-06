@@ -409,6 +409,8 @@ class NoticiaWebController extends Controller
                 $request->merge(['sinopse' => Utils::getSinopse($request->conteudo,300)]);
             }
 
+            $request->merge(['nu_valor' => Utils::getValorReal($request->nu_valor)]);
+
             $noticia = NoticiaWeb::create($request->all());
 
             $localFile = public_path('img/noticia-web/' . $noticia->ds_caminho_img);
@@ -527,6 +529,8 @@ class NoticiaWebController extends Controller
         $request->merge(['ds_caminho_img' => $ds_caminho_img]);
 
         $request->merge(['cd_usuario' => Auth::user()->id]);
+
+        $request->merge(['nu_valor' => Utils::getValorReal($request->nu_valor)]);
 
         try {
 
