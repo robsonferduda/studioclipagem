@@ -187,6 +187,7 @@
                                                 <div class="clientes-noticia clientes-noticia-{{ $dado->id }}" data-id="{{ $dado->id }}" data-tipo="2">
                                                         
                                                 </div>
+                                                {{ dd($dado->monitoramento) }}
                                                 <div>
                                                     @forelse($dado->tags as $tag)
                                                         <span>#{{ $tag->nome }}</span>

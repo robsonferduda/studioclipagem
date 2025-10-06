@@ -51,6 +51,18 @@ class NoticiaWeb extends Model
         return $this->hasMany(LogAcesso::class, 'id_noticia', 'id')->where('tipo','web');
     }
 
+    public function monitoramento()
+    {
+        return $this->hasOneThrough(
+            Monitoramento::class,
+            NoticiaCliente::class,
+            'noticia_id', // Foreign key on noticia_cliente table
+            'id', // Foreign key on monitoramento table
+            'id', // Local key on noticias_web table
+            'monitoramento_id' // Local key on noticia_cliente table
+        )->where('noticia_cliente.tipo_id', 2);
+    }
+
     public function clientes()
     {
         return $this->belongsToMany(Cliente::class,'noticia_cliente','noticia_id','cliente_id')->withPivot('id','tipo_id','sentimento','area','fl_enviada')->where('tipo_id', 2)->withTimestamps();
