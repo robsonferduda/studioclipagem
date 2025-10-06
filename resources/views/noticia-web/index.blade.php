@@ -345,6 +345,48 @@
             var host =  $('meta[name="base-url"]').attr('content');
             var token = $('meta[name="csrf-token"]').attr('content');
 
+            $(".tags").each(function() {
+               
+                var monitoramento = $(this).data("monitoramento");
+                var noticia = $(this).data("noticia");
+                var chave = ".destaque-"+$(this).data("chave");
+                var chave_conteudo = ".conteudo-"+$(this).data("chave");
+
+                $.ajax({
+                    url: host+'/web/conteudo/'+noticia+'/monitoramento/'+monitoramento,
+                    type: 'GET',
+                    beforeSend: function() {
+                            
+                    },
+                    success: function(data) {
+                        
+                        $(chave_conteudo).html(data.texto);
+
+                        var marks = [];                 
+                        
+                        const divContent = document.querySelector(chave_conteudo);
+
+                        if (divContent) {
+            
+                            const childElements = divContent.querySelectorAll('mark');
+                            const output = document.querySelector(chave);
+
+                            childElements.forEach(element => {
+
+                                if(!marks.includes(element.innerHTML.trim())){
+                                    marks.push(element.innerHTML.trim());
+
+                                    $(chave).append('<span class="destaque-busca">'+element.innerHTML.trim()+'</span>');
+                                }
+                            });
+                        } 
+                    },
+                    complete: function(){
+                            
+                    }
+                });
+            });
+
             // Destacar card ao clicar
             $('.card-audio').click(function(){
                 // Remove destaque de todos
