@@ -77,6 +77,7 @@ class NoticiaWebController extends Controller
         $area_selecionada = Session::get('web_filtro_cd_area', $request->input('cd_area'));
         $termo = Session::get('web_filtro_termo', $request->input('termo'));
         $usuario = Session::get('web_filtro_usuario', $request->input('usuario'));
+        $fl_retorno = $request->fl_retorno == true ? true : false;
 
         // Converta as datas para o formato do banco
         $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $dt_inicial)->format('Y-m-d');
@@ -140,6 +141,9 @@ class NoticiaWebController extends Controller
                     ->when($fonte_selecionada, function ($q) use ($fonte_selecionada) {
                         return $q->where('id_fonte', $fonte_selecionada);
                     })
+                    ->when($fl_retorno, function ($q) use ($fl_retorno) {
+                        return $q->whereNull('nu_valor')->orWhere('nu_valor','=','0');
+                    })
                     ->when($usuario, function ($q) use ($usuario) {
 
                         if($usuario == "S"){
@@ -153,7 +157,7 @@ class NoticiaWebController extends Controller
                     ->orderBy('created_at', 'DESC')
                     ->paginate(50);
 
-        return view('noticia-web/index', compact('dados','fonte_web','fontes','clientes','tipo_data','dt_inicial','dt_final','cliente_selecionado','sentimento','fonte_selecionada','termo','usuarios','usuario','estados','area_selecionada'));
+        return view('noticia-web/index', compact('dados','fl_retorno','fonte_web','fontes','clientes','tipo_data','dt_inicial','dt_final','cliente_selecionado','sentimento','fonte_selecionada','termo','usuarios','usuario','estados','area_selecionada'));
     }
 
     public function limparFiltrosWeb()

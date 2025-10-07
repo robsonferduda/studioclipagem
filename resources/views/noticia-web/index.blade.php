@@ -110,6 +110,15 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="col-md-12">
+                                    <div class="form-check float-left mr-3">
+                                        <label class="form-check-label mt-2">
+                                            <input class="form-check-input" type="checkbox" {{ ($fl_retorno) ? 'checked' : '' }} name="fl_retorno" value="true">
+                                                SEM RETORNO
+                                            <span class="form-check-sign"></span>
+                                        </label>
+                                    </div>
+                                </div>
                                 <div class="col-md-12 checkbox-radios mb-0">
                                     <a href="{{ url('noticia/web/limpar-filtros') }}" class="btn btn-warning btn-limpar mb-3"><i class="fa fa-refresh"></i> Limpar</a>
                                     <button type="submit" id="btn-find" class="btn btn-primary mb-3"><i class="fa fa-search"></i> Buscar</button>
@@ -140,6 +149,7 @@
                                                             'dt_final' => \Carbon\Carbon::parse($dt_final)->format('d/m/Y'),
                                                             'cliente' => $cliente_selecionado,
                                                             'tipo_data' =>$tipo_data,
+                                                            'fl_retorno' =>$fl_retorno,
                                                             'termo' => $termo])
                                                             ->links('vendor.pagination.bootstrap-4') }}
                     @endif
@@ -250,6 +260,7 @@
                                                         'dt_final' => \Carbon\Carbon::parse($dt_final)->format('d/m/Y'),
                                                         'cliente' => $cliente_selecionado,
                                                         'tipo_data' =>$tipo_data,
+                                                        'fl_retorno' =>$fl_retorno,
                                                         'termo' => $termo])
                                                         ->links('vendor.pagination.bootstrap-4') }}
                     @endif
