@@ -149,7 +149,7 @@ class NoticiaWebController extends Controller
                         return  $q->whereHas('clientes', function($q) {
                                  $q->where('noticia_cliente.tipo_id', 2)
                                     ->whereNull('noticia_cliente.deleted_at')
-                                    ->whereNull('nu_valor')->whereIn('nu_valor',[0]);
+                                    ->where('nu_valor','<=',0);
                                 });
                     })
                     ->when($usuario, function ($q) use ($usuario) {
