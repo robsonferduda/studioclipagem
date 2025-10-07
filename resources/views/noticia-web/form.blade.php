@@ -538,5 +538,15 @@
         });
 
     });
+
+    $(document).ready(function(){
+
+        var id_fonte = $("#id_fonte").val();
+
+        if(id_fonte){
+            $("#id_fonte").trigger("change");
+        }
+           
+    });
 </script>
 @endsection
