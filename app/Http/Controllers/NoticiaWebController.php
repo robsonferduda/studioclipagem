@@ -146,8 +146,12 @@ class NoticiaWebController extends Controller
                         return $q->where('id_fonte', $fonte_selecionada);
                     })
                     ->when($fl_retorno, function ($q) use ($fl_retorno) {
-                        return $q->whereNull('nu_valor')
-                                 ->orWhere('nu_valor','<=',0);
+                        return  $q->whereHas('clientes', function($q) {
+                                 $q->where('noticia_cliente.tipo_id', 2)
+                                    ->whereNull('noticia_cliente.deleted_at')
+                                    ->whereNull('nu_valor')
+                                    ->orWhere('nu_valor','<=',0);
+                                });
                     })
                     ->when($usuario, function ($q) use ($usuario) {
 
