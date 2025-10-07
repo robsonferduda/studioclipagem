@@ -144,14 +144,20 @@
             });
 
             function atualizaValores(){
-                
+
+                var total_pendentes = $(".total-pendentes").text();
+
                 $.ajax({
                     url: host + '/noticia/web/atualiza-retorno',
                     type: 'GET',
                     beforeSend: function() {
-                                
+                        $(".total-atualizadas").html('<i class="fa fa-cog fa-spin fa-3x fa-fw"></i>');
                     },
                     success: function(response) {
+
+                        var total_atualizadas = response;
+                        $(".total-pendentes").html(total_pendentes - total_atualizadas);
+                        $(".total-atualizadas").html(total_atualizadas);
                                 
                     },
                     error: function(xhr) {
