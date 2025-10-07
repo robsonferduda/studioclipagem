@@ -90,6 +90,10 @@ class NoticiaWebController extends Controller
         }
 
         $dados = NoticiaWeb::with('fonte')
+                    ->whereHas('clientes', function($q) {
+                            $q->where('noticia_cliente.tipo_id', 2)
+                              ->whereNull('noticia_cliente.deleted_at');
+                    })
                     ->when($cliente_selecionado, function ($query) use ($cliente_selecionado) { 
                         return $query->whereHas('clientes', function($q) use ($cliente_selecionado) {
                             $q->where('noticia_cliente.cliente_id', $cliente_selecionado)
