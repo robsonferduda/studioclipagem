@@ -151,7 +151,7 @@
                     url: host + '/noticia/web/atualiza-retorno',
                     type: 'GET',
                     beforeSend: function() {
-                        $(".total-atualizadas").html('<i class="fa fa-cog fa-spin fa-3x fa-fw"></i>');
+                        $(".total-atualizadas").html('<i class="fa fa-cog fa-spin fa-1x fa-fw"></i>');
                     },
                     success: function(response) {
 
