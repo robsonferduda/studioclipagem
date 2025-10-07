@@ -1031,7 +1031,7 @@ class NoticiaWebController extends Controller
                 }
             
 
-        return redirect('noticia/web/retorno')->withInput();
+        return json($totalAtualizadas);
     }
 
     public function getPrint($id)
