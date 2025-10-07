@@ -216,12 +216,12 @@
                                                 <div class="conteudo-noticia mb-1">
                                                     <span class="transcricao-limitada" id="transcricao-limitada-{{ $dado->id }}">
                                                         {!! ($dado->conteudo) ? Str::limit($dado->conteudo->conteudo, 1000, " ...") : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
-                                                        @if($dado->conteudo->conteudo && strlen($dado->conteudo->conteudo) > 1000)
+                                                        @if($dado->conteudo && $dado->conteudo->conteudo && strlen($dado->conteudo->conteudo) > 1000)
                                                             <a href="javascript:void(0);" class="text-primary ver-mais" data-id="{{ $dado->id }}">[ver mais]</a>
                                                         @endif
                                                     </span>
                                                     <span class="transcricao-completa d-none" id="transcricao-completa-{{ $dado->id }}" >
-                                                        {!! $dado->conteudo->conteudo !!}
+                                                        {!! ($dado->conteudo) ? $dado->conteudo->conteudo : '' !!}
                                                         <a href="javascript:void(0);" class="text-primary ver-menos" data-id="{{ $dado->id }}">[ver menos]</a>
                                                     </span>
                                                 </div>
