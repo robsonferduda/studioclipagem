@@ -142,7 +142,7 @@ class NoticiaWebController extends Controller
                         return $q->where('id_fonte', $fonte_selecionada);
                     })
                     ->when($fl_retorno, function ($q) use ($fl_retorno) {
-                        return $q->whereNull('nu_valor')->orWhere('nu_valor','=','0');
+                        return $q->whereNull('nu_valor');
                     })
                     ->when($usuario, function ($q) use ($usuario) {
 
