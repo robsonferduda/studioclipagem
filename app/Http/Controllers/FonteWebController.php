@@ -760,6 +760,12 @@ class FonteWebController extends Controller
         if($request->resetar_situacao){
             $request->merge(['id_situacao' => 0]);
         }
+
+        if($fonte->nu_valor == null and $request->nu_valor > 0){
+
+            dd("Atualizar notícias");
+
+        }
     
         try{
                         
