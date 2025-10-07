@@ -1030,8 +1030,7 @@ class NoticiaWebController extends Controller
                     $totalAtualizadas++;
                 }
             
-
-        return json($totalAtualizadas);
+        return response()->json($totalAtualizadas);
     }
 
     public function getPrint($id)
