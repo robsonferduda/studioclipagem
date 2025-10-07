@@ -1019,16 +1019,17 @@ class NoticiaWebController extends Controller
 
         $noticias = DB::select($sql);
 
-            
-                foreach ($noticias as $noticia) {
+        foreach ($noticias as $noticia) {
 
-                    $noticia = NoticiaWeb::find($noticia->id);
-                    $fonte = FonteWeb::find($noticia->id_fonte);
+            $noticia = NoticiaWeb::find($noticia->id);
+            $fonte = FonteWeb::find($noticia->id_fonte);
 
-                    $noticia->nu_valor = $fonte->nu_valor;
-                    $noticia->save();
-                    $totalAtualizadas++;
-                }
+            if($fonte->nu_valor){
+                $noticia->nu_valor = $fonte->nu_valor;
+                $noticia->save();
+                $totalAtualizadas++;
+            }
+        }
             
         return response()->json($totalAtualizadas);
     }
