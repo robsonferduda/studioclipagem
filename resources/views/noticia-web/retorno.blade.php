@@ -247,6 +247,7 @@
                         html += `</div>`;
                     }
 
+                    $('#tabela-fontes').removeClass("box-loading");
                     $('#lista-noticias').html(html);
                     $(".total-pendentes").html(data.total);
                 });
