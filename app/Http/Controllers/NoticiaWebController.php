@@ -1039,6 +1039,7 @@ class NoticiaWebController extends Controller
                             $q->whereNull('noticias_web.nu_valor')
                             ->orWhere('noticias_web.nu_valor', 0);
                         })
+                        ->where('fonte_web.id', '!=', 1) //Excluir fonte SEM FONTE
                         ->whereNull('noticias_web.deleted_at')
                         ->groupBy('fonte_web.id', 'fonte_web.nome', 'fonte_web.nu_valor')
                         ->selectRaw('count(*) as total')
@@ -1071,6 +1072,7 @@ class NoticiaWebController extends Controller
                             $q->whereNull('t1.nu_valor')
                             ->orWhere('t1.nu_valor', 0);
                         })
+                        ->where('t1.id_fonte', '!=', 1) //Excluir fonte SEM FONTE
                         ->whereNull('t1.deleted_at')
                         ->orderBy('t1.id_fonte')
                         ->distinct()
@@ -1088,6 +1090,7 @@ class NoticiaWebController extends Controller
                 JOIN fonte_web t2 ON t2.id = t1.id_fonte 
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 2 AND t3.deleted_at IS NULL
                 WHERE (t1.nu_valor IS NULL OR t1.nu_valor = 0)
+                AND t1.id_fonte != 1 --Excluir fonte SEM FONTE
                 AND t1.deleted_at IS NULL
                 ORDER BY id_fonte";
 
