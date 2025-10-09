@@ -749,6 +749,9 @@ class ClienteController extends Controller
             $dados['top_areas'] = $this->obterTopAreas($clienteId, $dataInicio, $dataFim, $cliente);
         }
         
+        // Nuvem de palavras-chave das notícias
+        $dados['palavras_chave'] = $this->obterPalavrasChave($clienteId, $dataInicio, $dataFim, $cliente);
+        
         return $dados;
     }
     
@@ -1485,6 +1488,162 @@ class ClienteController extends Controller
         }
         
         return $rankingVeiculos;
+    }
+
+    /**
+     * Obtém palavras-chave das notícias do período analisando títulos e conteúdo
+     */
+    private function obterPalavrasChave($clienteId, $dataInicio, $dataFim, $cliente)
+    {
+        $palavrasChave = [];
+        
+        try {
+            // Stopwords em português para filtrar
+            $stopwords = [
+                'a', 'ao', 'aos', 'aquela', 'aquelas', 'aquele', 'aqueles', 'aquilo', 'as', 'até', 'com', 'como', 'da', 'das', 'de', 'dela', 'delas', 'dele', 'deles', 'depois', 'do', 'dos', 'e', 'ela', 'elas', 'ele', 'eles', 'em', 'entre', 'era', 'eram', 'essa', 'essas', 'esse', 'esses', 'esta', 'está', 'estamos', 'estão', 'estar', 'estas', 'estava', 'estavam', 'este', 'esteja', 'estejam', 'estejamos', 'estes', 'esteve', 'estive', 'estivemos', 'estiver', 'estivera', 'estiveram', 'estiverem', 'estivermos', 'estivesse', 'estivessem', 'estivéramos', 'estivéssemos', 'estou', 'eu', 'foi', 'fomos', 'for', 'fora', 'foram', 'forem', 'formos', 'fosse', 'fossem', 'fui', 'fôramos', 'fôssemos', 'haja', 'hajam', 'hajamos', 'havemos', 'havia', 'hei', 'houve', 'houvemos', 'houver', 'houvera', 'houveram', 'houverei', 'houverem', 'houveremos', 'houveria', 'houveriam', 'houveríamos', 'houverá', 'houverão', 'houveríeis', 'houvesse', 'houvessem', 'houvéramos', 'houvéssemos', 'há', 'hão', 'isso', 'isto', 'já', 'lhe', 'lhes', 'mais', 'mas', 'me', 'mesmo', 'meu', 'meus', 'minha', 'minhas', 'muito', 'na', 'nas', 'nem', 'no', 'nos', 'nossa', 'nossas', 'nosso', 'nossos', 'num', 'numa', 'não', 'nós', 'o', 'os', 'ou', 'para', 'pela', 'pelas', 'pelo', 'pelos', 'por', 'qual', 'quando', 'que', 'quem', 'são', 'se', 'seja', 'sejam', 'sejamos', 'sem', 'ser', 'seu', 'seus', 'só', 'sua', 'suas', 'sou', 'também', 'te', 'tem', 'temos', 'tenha', 'tenham', 'tenhamos', 'tenho', 'ter', 'teu', 'teus', 'teve', 'tinha', 'tinham', 'tive', 'tivemos', 'tiver', 'tivera', 'tiveram', 'tiverem', 'tivermos', 'tivesse', 'tivessem', 'tivéramos', 'tivéssemos', 'tu', 'tua', 'tuas', 'tém', 'têm', 'tínhamos', 'um', 'uma', 'você', 'vocês', 'vos', 'à', 'às', 'éramos', 'és',
+                // Stopwords específicas de notícias
+                'disse', 'diz', 'segundo', 'ainda', 'pode', 'deve', 'vai', 'dia', 'ano', 'anos', 'dias', 'vez', 'vezes', 'sobre', 'após', 'durante', 'ontem', 'hoje', 'amanhã', 'agora', 'então', 'assim', 'onde', 'porque', 'então', 'cerca', 'alguns', 'todas', 'todos', 'toda', 'todo', 'outras', 'outros', 'outra', 'outro', 'apenas', 'desde', 'contra', 'através', 'durante', 'antes', 'depois', 'sempre', 'nunca', 'cada', 'qualquer', 'primeiro', 'primeira', 'último', 'última', 'próximo', 'próxima', 'anterior', 'seguinte', 'dois', 'duas', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove', 'dez', 'ser', 'ter', 'estar', 'fazer', 'dar', 'ir', 'ver', 'saber', 'poder', 'querer', 'dizer', 'vir', 'ficar', 'passar', 'chegar', 'levar', 'trazer', 'colocar', 'tirar', 'pôr', 'deixar', 'pegar', 'tomar', 'voltar', 'partir', 'abrir', 'fechar', 'começar', 'terminar', 'continuar', 'parar'
+            ];
+            
+            // Coleta todos os textos das notícias do período
+            $allTexts = [];
+            
+            // Web (tipo_id = 2) - busca em titulo_noticia, sinopse e conteudo
+            if ($cliente->fl_web) {
+                $noticiasWeb = DB::table('noticia_cliente as nc')
+                    ->join('noticias_web as nw', 'nc.noticia_id', '=', 'nw.id')
+                    ->leftJoin('conteudo_noticia_web as cnw', 'nw.id', '=', 'cnw.id_noticia_web')
+                    ->where('nc.cliente_id', $clienteId)
+                    ->where('nc.tipo_id', 2)
+                    ->whereBetween('nw.data_noticia', [$dataInicio, $dataFim])
+                    ->whereNull('nc.deleted_at')
+                    ->whereNull('nw.deleted_at')
+                    ->select('nw.titulo_noticia', 'nw.sinopse', 'cnw.conteudo')
+                    ->get();
+                    
+                foreach ($noticiasWeb as $noticia) {
+                    $texto = ($noticia->titulo_noticia ?? '') . ' ' . 
+                             ($noticia->sinopse ?? '') . ' ' . 
+                             ($noticia->conteudo ?? '');
+                    if (!empty(trim($texto))) {
+                        $allTexts[] = $texto;
+                    }
+                }
+            }
+            
+            // TV (tipo_id = 3) - busca apenas em sinopse
+            if ($cliente->fl_tv) {
+                $noticiasTV = DB::table('noticia_cliente as nc')
+                    ->join('noticia_tv as ntv', 'nc.noticia_id', '=', 'ntv.id')
+                    ->where('nc.cliente_id', $clienteId)
+                    ->where('nc.tipo_id', 3)
+                    ->whereBetween('ntv.created_at', [$dataInicio, $dataFim])
+                    ->whereNull('nc.deleted_at')
+                    ->whereNull('ntv.deleted_at')
+                    ->select('ntv.sinopse')
+                    ->get();
+                    
+                foreach ($noticiasTV as $noticia) {
+                    $texto = $noticia->sinopse ?? '';
+                    if (!empty(trim($texto))) {
+                        $allTexts[] = $texto;
+                    }
+                }
+            }
+            
+            // Rádio (tipo_id = 4) - busca em titulo e sinopse
+            if ($cliente->fl_radio) {
+                $noticiasRadio = DB::table('noticia_cliente as nc')
+                    ->join('noticia_radio as nr', 'nc.noticia_id', '=', 'nr.id')
+                    ->where('nc.cliente_id', $clienteId)
+                    ->where('nc.tipo_id', 4)
+                    ->whereBetween('nr.created_at', [$dataInicio, $dataFim])
+                    ->whereNull('nc.deleted_at')
+                    ->whereNull('nr.deleted_at')
+                    ->select('nr.titulo', 'nr.sinopse')
+                    ->get();
+                    
+                foreach ($noticiasRadio as $noticia) {
+                    $texto = ($noticia->titulo ?? '') . ' ' . ($noticia->sinopse ?? '');
+                    if (!empty(trim($texto))) {
+                        $allTexts[] = $texto;
+                    }
+                }
+            }
+            
+            // Impresso (tipo_id = 1) - busca em titulo, sinopse e texto
+            if ($cliente->fl_impresso) {
+                $noticiasImpresso = DB::table('noticia_cliente as nc')
+                    ->join('noticia_impresso as ni', 'nc.noticia_id', '=', 'ni.id')
+                    ->where('nc.cliente_id', $clienteId)
+                    ->where('nc.tipo_id', 1)
+                    ->whereBetween('ni.created_at', [$dataInicio, $dataFim])
+                    ->whereNull('nc.deleted_at')
+                    ->whereNull('ni.deleted_at')
+                    ->select('ni.titulo', 'ni.sinopse', 'ni.texto')
+                    ->get();
+                    
+                foreach ($noticiasImpresso as $noticia) {
+                    $texto = ($noticia->titulo ?? '') . ' ' . 
+                             ($noticia->sinopse ?? '') . ' ' . 
+                             ($noticia->texto ?? '');
+                    if (!empty(trim($texto))) {
+                        $allTexts[] = $texto;
+                    }
+                }
+            }
+            
+            // Processa todos os textos para extrair palavras
+            $wordCount = [];
+            
+            foreach ($allTexts as $text) {
+                // Remove pontuação e caracteres especiais, mantém apenas letras, números e espaços
+                $cleanText = preg_replace('/[^\p{L}\p{N}\s]/u', ' ', $text);
+                $cleanText = preg_replace('/\s+/', ' ', $cleanText); // Remove espaços extras
+                $cleanText = mb_strtolower(trim($cleanText), 'UTF-8');
+                
+                // Divide em palavras
+                $words = explode(' ', $cleanText);
+                
+                foreach ($words as $word) {
+                    $word = trim($word);
+                    
+                    // Filtros para palavras válidas
+                    if (strlen($word) >= 3 && // Mínimo 3 caracteres
+                        !in_array($word, $stopwords) && // Não é stopword
+                        !is_numeric($word) && // Não é apenas número
+                        preg_match('/^[\p{L}]+$/u', $word)) { // Apenas letras (remove números misturados)
+                        
+                        if (!isset($wordCount[$word])) {
+                            $wordCount[$word] = 0;
+                        }
+                        $wordCount[$word]++;
+                    }
+                }
+            }
+            
+            // Remove palavras com frequência muito baixa (aparecem apenas 1 vez)
+            $wordCount = array_filter($wordCount, function($count) {
+                return $count > 1;
+            });
+            
+            // Ordena por frequência (maior para menor)
+            arsort($wordCount);
+            
+            // Converte para formato esperado pelo frontend
+            foreach ($wordCount as $palavra => $frequencia) {
+                $palavrasChave[] = [
+                    'text' => $palavra,
+                    'size' => $frequencia,
+                    'weight' => $frequencia
+                ];
+            }
+            
+        } catch (\Exception $e) {
+            Log::warning('Erro ao buscar palavras-chave: ' . $e->getMessage());
+        }
+        
+        return array_slice($palavrasChave, 0, 100); // Top 100 palavras mais frequentes
     }
 
     public function dadosImpresso($dt_inicial, $dt_final,$cliente_selecionado, $termo)

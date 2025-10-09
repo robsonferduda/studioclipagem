@@ -228,6 +228,34 @@
             </div>
             @endif
 
+            <!-- Seção condicional para Nuvem de Palavras-Chave -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="card-title mb-0">
+                                <i class="fa fa-cloud text-info"></i> Nuvem de Palavras Mais Frequentes
+                            </h6>
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Exportar elemento">
+                                <button type="button" class="btn btn-outline-primary btn-export" 
+                                        onclick="exportarElemento('wordcloud-container', 'palavras-chave', 'png')" title="Exportar como imagem PNG">
+                                    <i class="fa fa-image mr-1"></i>PNG
+                                </button>
+                                <button type="button" class="btn btn-outline-success btn-export" 
+                                        onclick="exportarElemento('wordcloud-container', 'palavras-chave', 'csv')" title="Exportar dados como CSV">
+                                    <i class="fa fa-table mr-1"></i>CSV
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="wordcloud-container" style="height: 400px; width: 100%;">
+                                <!-- Nuvem de palavras será inserida via JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Seção condicional para Retorno de Mídia -->
             @if($fl_retorno_midia)
             <div class="row mb-4">
@@ -516,6 +544,8 @@
 <script src="https://cdn.jsdelivr.net/npm/canvg@4.0.1/dist/umd.js"></script>
 <!-- Biblioteca para geração de PDF -->
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<!-- Biblioteca para nuvem de palavras - versão mais estável -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.1.0/wordcloud2.min.js"></script>
 
 <script>
 // ==================== VARIÁVEIS GLOBAIS ====================
@@ -1073,6 +1103,15 @@ function exportarTopAreasCSV() {
     return csv;
 }
 
+function exportarPalavrasChaveCSV() {
+    const palavrasChave = dadosGlobais.palavras_chave || [];
+    let csv = 'Posição,Palavra-Chave,Frequência\n';
+    palavrasChave.forEach((palavra, index) => {
+        csv += `${index + 1},"${palavra.text}",${palavra.size}\n`;
+    });
+    return csv;
+}
+
 // ==================== FUNÇÕES UTILITÁRIAS ====================
 
 /**
@@ -1221,6 +1260,7 @@ $(document).ready(function() {
                     renderizarGraficoMidia();
                     renderizarTopFontes();
                     renderizarTopTags();
+                    renderizarNuvemPalavrasChave();
                     
                     if (flSentimento) {
                         renderizarGraficosEntimento();
@@ -1915,6 +1955,149 @@ $(document).ready(function() {
         $('#areas-container').html(html);
     }
     
+    function renderizarNuvemPalavrasChave() {
+        const palavrasChave = dadosGlobais.palavras_chave || [];
+        const container = document.getElementById('wordcloud-container');
+        
+        console.log('Palavras-chave recebidas:', palavrasChave);
+        
+        if (palavrasChave.length === 0) {
+            container.innerHTML = '<div class="text-center text-muted py-5"><i class="fa fa-info-circle fa-2x mb-3"></i><br>Nenhuma palavra frequente encontrada para o período selecionado.<br><small>Tente um período maior ou verifique se há notícias no período.</small></div>';
+            return;
+        }
+        
+        // Limpar container
+        container.innerHTML = '';
+        
+        // Verificar se WordCloud está disponível
+        if (typeof WordCloud === 'undefined') {
+            console.warn('WordCloud2.js não carregado, usando fallback HTML');
+            renderizarNuvemSimples(palavrasChave, container);
+            return;
+        }
+        
+        // Criar canvas para a nuvem de palavras
+        const canvas = document.createElement('canvas');
+        canvas.width = container.offsetWidth || 800;
+        canvas.height = 400;
+        canvas.style.width = '100%';
+        canvas.style.height = '400px';
+        container.appendChild(canvas);
+        
+        // Preparar dados para WordCloud2 no formato correto: [[text, weight], ...]
+        const wordList = palavrasChave.map(item => [item.text, parseInt(item.size)]);
+        
+        console.log('Lista de palavras formatada:', wordList);
+        
+        // Aguardar um momento para o canvas ser renderizado
+        setTimeout(() => {
+            try {
+                WordCloud(canvas, {
+                    list: wordList,
+                    gridSize: 8,
+                    weightFactor: function (size) {
+                        // Normaliza o tamanho das palavras de forma mais segura
+                        const maxSize = Math.max(...palavrasChave.map(p => parseInt(p.size)));
+                        const minSize = Math.min(...palavrasChave.map(p => parseInt(p.size)));
+                        
+                        if (maxSize === minSize || maxSize === 0) {
+                            return 20; // Tamanho padrão se todos têm o mesmo valor
+                        }
+                        
+                        const normalizedSize = (size - minSize) / (maxSize - minSize);
+                        return Math.max(12, normalizedSize * 48 + 12); // Entre 12 e 60px
+                    },
+                    fontFamily: 'Arial, sans-serif',
+                    color: function (word, weight, fontSize, distance, theta) {
+                        // Cores fixas baseadas no índice da palavra
+                        const colors = [
+                            '#007bff', '#28a745', '#dc3545', '#ffc107', 
+                            '#17a2b8', '#6f42c1', '#fd7e14', '#20c997',
+                            '#e83e8c', '#6c757d'
+                        ];
+                        const index = wordList.findIndex(item => item[0] === word);
+                        return colors[index % colors.length];
+                    },
+                    rotateRatio: 0.1, // Menos rotação para melhor legibilidade
+                    backgroundColor: 'transparent',
+                    minFontSize: 12,
+                    drawOutOfBound: false,
+                    shrinkToFit: true,
+                    hover: function(item, dimension, event) {
+                        if (item) {
+                            canvas.style.cursor = 'pointer';
+                            canvas.title = `"${item[0]}" aparece ${item[1]} vez(es)`;
+                        } else {
+                            canvas.style.cursor = 'default';
+                            canvas.title = '';
+                        }
+                    },
+                    click: function(item) {
+                        if (item) {
+                            console.log('Palavra clicada:', item[0], 'Frequência:', item[1]);
+                        }
+                    }
+                });
+                
+                console.log(`✅ Nuvem de palavras renderizada com ${palavrasChave.length} palavras`);
+                
+            } catch (error) {
+                console.error('Erro ao renderizar nuvem de palavras:', error);
+                console.warn('Usando fallback HTML devido ao erro');
+                container.innerHTML = '';
+                renderizarNuvemSimples(palavrasChave, container);
+            }
+        }, 100);
+    }
+    
+    /**
+     * Renderiza nuvem de palavras simples usando HTML/CSS como fallback
+     */
+    function renderizarNuvemSimples(palavrasChave, container) {
+        const maxSize = Math.max(...palavrasChave.map(p => parseInt(p.size)));
+        const minSize = Math.min(...palavrasChave.map(p => parseInt(p.size)));
+        
+        let html = '<div class="wordcloud-simple" style="text-align: center; line-height: 2.5; padding: 20px;">';
+        
+        const colors = [
+            '#007bff', '#28a745', '#dc3545', '#ffc107', 
+            '#17a2b8', '#6f42c1', '#fd7e14', '#20c997',
+            '#e83e8c', '#6c757d'
+        ];
+        
+        palavrasChave.forEach((palavra, index) => {
+            const size = parseInt(palavra.size);
+            let fontSize = 16;
+            
+            if (maxSize !== minSize) {
+                const normalizedSize = (size - minSize) / (maxSize - minSize);
+                fontSize = Math.max(12, normalizedSize * 32 + 12); // Entre 12 e 44px
+            }
+            
+            const color = colors[index % colors.length];
+            
+            html += `
+                <span class="wordcloud-word" 
+                      style="display: inline-block; margin: 8px; padding: 6px 12px; 
+                             font-size: ${fontSize}px; font-weight: bold; color: ${color};
+                             background: ${color}15; border-radius: 20px; cursor: pointer;
+                             transition: transform 0.2s ease, box-shadow 0.2s ease;"
+                      title="${palavra.text}: ${size} ocorrências"
+                      onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.2)';"
+                      onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+                    ${palavra.text}
+                    <small style="opacity: 0.7; font-size: 0.8em;"> (${size})</small>
+                </span>
+            `;
+        });
+        
+        html += '</div>';
+        html += '<p class="text-center text-muted mt-3"><small><i class="fa fa-info-circle"></i> Nuvem de palavras em modo compatibilidade</small></p>';
+        
+        container.innerHTML = html;
+        console.log(`✅ Nuvem de palavras simples renderizada com ${palavrasChave.length} palavras`);
+    }
+    
     function mostrarErro(mensagem) {
         $('#loading-dashboard').hide();
         $('#cards-totais').html(`
@@ -2126,6 +2309,9 @@ $(document).ready(function() {
                     break;
                 case 'top-areas':
                     csvContent = exportarTopAreasCSV();
+                    break;
+                case 'palavras-chave':
+                    csvContent = exportarPalavrasChaveCSV();
                     break;
                 default:
                     alert('Exportação CSV não implementada para este elemento.');

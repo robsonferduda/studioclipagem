@@ -35,7 +35,12 @@ class Cliente extends Model
                         'hashtags',
                         'fl_instagram',
                         'fl_facebook',
-                        'fl_retorno_midia'];
+                        'fl_retorno_midia',
+                        'list_keywords'];
+
+    protected $casts = [
+        'list_keywords' => 'array'
+    ];
 
     public function area()
     {
