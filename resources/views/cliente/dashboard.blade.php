@@ -12,19 +12,32 @@
                     </h4>
                 </div>
                 <div class="col-md-4">
-                    <div class="btn-group pull-right" style="margin-right: 12px;">
-                        <button type="button" class="btn btn-sm btn-primary active" id="periodo-7" data-periodo="7">
-                            7 dias
-                        </button>
-                        <button type="button" class="btn btn-sm btn-outline-primary" id="periodo-14" data-periodo="14">
-                            14 dias
-                        </button>
-                        <button type="button" class="btn btn-sm btn-outline-primary" id="periodo-30" data-periodo="30">
-                            30 dias
-                        </button>
-                        <button type="button" class="btn btn-sm btn-outline-primary" id="periodo-mes" data-periodo="mes_anterior">
-                            Mês anterior
-                        </button>
+                    <div class="d-flex justify-content-end align-items-center" style="margin-right: 12px; gap: 10px;">
+                        <!-- Botão de exportação completa -->
+                        <div class="btn-group" role="group" aria-label="Exportar dashboard completo">
+                            <button type="button" class="btn btn-sm btn-success" onclick="exportarDashboardCompleto('png')" title="Exportar dashboard completo como PNG">
+                                <i class="fa fa-download mr-1"></i>PNG
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-success" onclick="exportarDashboardCompleto('pdf')" title="Exportar dashboard completo como PDF">
+                                <i class="fa fa-file-pdf-o mr-1"></i>PDF
+                            </button>
+                        </div>
+                        
+                        <!-- Filtros de período -->
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-sm btn-primary active" id="periodo-7" data-periodo="7">
+                                7 dias
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-primary" id="periodo-14" data-periodo="14">
+                                14 dias
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-primary" id="periodo-30" data-periodo="30">
+                                30 dias
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-primary" id="periodo-mes" data-periodo="mes_anterior">
+                                Mês anterior
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -501,6 +514,8 @@
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <!-- Biblioteca para manipulação de SVG -->
 <script src="https://cdn.jsdelivr.net/npm/canvg@4.0.1/dist/umd.js"></script>
+<!-- Biblioteca para geração de PDF -->
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 
 <script>
 // ==================== VARIÁVEIS GLOBAIS ====================
@@ -601,6 +616,48 @@ function exportarElemento(elementId, nomeElemento, formato) {
 }
 
 /**
+ * Função para exportar o dashboard completo
+ */
+function exportarDashboardCompleto(formato) {
+    console.log('Iniciando exportação do dashboard completo em formato:', formato);
+    
+    // Verificar se os dados estão carregados
+    if (!dadosGlobais || Object.keys(dadosGlobais).length === 0) {
+        alert('⚠️ Aguarde o carregamento completo do dashboard antes de exportar.');
+        return;
+    }
+    
+    // Elementos do dashboard para capturar
+    const dashboardContainer = document.querySelector('.card-body');
+    if (!dashboardContainer) {
+        alert('Erro: Container do dashboard não encontrado.');
+        return;
+    }
+    
+    const nomeArquivo = `dashboard-completo-${new Date().toISOString().split('T')[0]}`;
+    
+    // Mostrar feedback visual
+    mostrarFeedbackExportacao(true);
+    
+    try {
+        switch(formato) {
+            case 'png':
+                exportarDashboardPNG(dashboardContainer, nomeArquivo);
+                break;
+            case 'pdf':
+                exportarDashboardPDF(dashboardContainer, nomeArquivo);
+                break;
+            default:
+                throw new Error('Formato não suportado: ' + formato);
+        }
+    } catch (error) {
+        console.error('Erro durante exportação do dashboard:', error);
+        mostrarFeedbackExportacao(false);
+        alert('Erro ao exportar dashboard: ' + error.message);
+    }
+}
+
+/**
  * Função para testar se as exportações estão funcionando
  */
 function testarExportacao() {
@@ -693,6 +750,145 @@ function exportarElementoPNG(elemento, nomeArquivo) {
     }).catch(error => {
         console.error('Erro ao exportar elemento como PNG:', error);
         throw new Error('Erro ao exportar elemento como PNG');
+    });
+}
+
+/**
+ * Exporta dashboard completo como PNG
+ */
+function exportarDashboardPNG(elemento, nomeArquivo) {
+    // Esconder temporariamente o loading se estiver visível
+    const loadingElement = document.getElementById('loading-dashboard');
+    const wasLoadingVisible = loadingElement && loadingElement.style.display !== 'none';
+    if (wasLoadingVisible) {
+        loadingElement.style.display = 'none';
+    }
+    
+    html2canvas(elemento, {
+        backgroundColor: '#ffffff',
+        scale: 1.5, // Qualidade alta mas não tanto para não travar
+        logging: false,
+        allowTaint: true,
+        useCORS: true,
+        width: elemento.scrollWidth,
+        height: elemento.scrollHeight,
+        scrollX: 0,
+        scrollY: 0
+    }).then(canvas => {
+        // Restaurar loading se estava visível
+        if (wasLoadingVisible && loadingElement) {
+            loadingElement.style.display = 'block';
+        }
+        
+        const url = canvas.toDataURL('image/png');
+        downloadFile(url, `${nomeArquivo}.png`);
+        
+        // Feedback de sucesso
+        setTimeout(() => {
+            mostrarFeedbackExportacao(false);
+            mostrarMensagemSucesso('PNG do dashboard exportado com sucesso!');
+        }, 500);
+    }).catch(error => {
+        // Restaurar loading se estava visível
+        if (wasLoadingVisible && loadingElement) {
+            loadingElement.style.display = 'block';
+        }
+        
+        console.error('Erro ao exportar dashboard como PNG:', error);
+        mostrarFeedbackExportacao(false);
+        throw new Error('Erro ao exportar dashboard como PNG');
+    });
+}
+
+/**
+ * Exporta dashboard completo como PDF (usando mesma captura do PNG)
+ */
+function exportarDashboardPDF(elemento, nomeArquivo) {
+    // Esconder temporariamente o loading se estiver visível
+    const loadingElement = document.getElementById('loading-dashboard');
+    const wasLoadingVisible = loadingElement && loadingElement.style.display !== 'none';
+    if (wasLoadingVisible) {
+        loadingElement.style.display = 'none';
+    }
+    
+    // Usar EXATAMENTE as mesmas configurações do PNG para garantir resultado idêntico
+    html2canvas(elemento, {
+        backgroundColor: '#ffffff',
+        scale: 1.5, // Mesma escala do PNG para qualidade idêntica
+        logging: false,
+        allowTaint: true,
+        useCORS: true,
+        width: elemento.scrollWidth,
+        height: elemento.scrollHeight,
+        scrollX: 0,
+        scrollY: 0
+    }).then(canvas => {
+        // Restaurar loading se estava visível
+        if (wasLoadingVisible && loadingElement) {
+            loadingElement.style.display = 'block';
+        }
+        
+        // Usar mesma qualidade de imagem do PNG
+        const imgData = canvas.toDataURL('image/png');
+        
+        // Criar PDF
+        const { jsPDF } = window.jspdf;
+        
+        // Determinar orientação baseada no aspect ratio
+        const canvasAspectRatio = canvas.height / canvas.width;
+        const isLandscape = canvasAspectRatio < 0.75; // Se muito mais largo que alto, usar paisagem
+        
+        const pdf = new jsPDF(isLandscape ? 'l' : 'p', 'mm', 'a4');
+        
+        // Dimensões da página
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        
+        // Calcular dimensões para preencher melhor a página mantendo proporção
+        let imgWidth, imgHeight;
+        
+        if (canvasAspectRatio > (pdfHeight - 30) / (pdfWidth - 20)) {
+            // Imagem muito alta - limitar pela altura
+            imgHeight = pdfHeight - 30; // margem de 15mm em cima e embaixo
+            imgWidth = imgHeight / canvasAspectRatio;
+        } else {
+            // Imagem cabe na altura - limitar pela largura
+            imgWidth = pdfWidth - 20; // margem de 10mm de cada lado
+            imgHeight = imgWidth * canvasAspectRatio;
+        }
+        
+        // Centralizar na página
+        const x = (pdfWidth - imgWidth) / 2;
+        const y = (pdfHeight - imgHeight) / 2;
+        
+        // Adicionar a imagem (sem título para deixar mais limpo como o PNG)
+        pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
+        
+        // Adicionar apenas a data no canto discretamente
+        pdf.setFontSize(7);
+        pdf.setFont(undefined, 'normal');
+        pdf.setTextColor(150, 150, 150);
+        const dataAtual = new Date().toLocaleDateString('pt-BR');
+        pdf.text(`Gerado em: ${dataAtual}`, 10, pdfHeight - 3);
+        
+        // Download do PDF
+        pdf.save(`${nomeArquivo}.pdf`);
+        
+        // Feedback de sucesso
+        setTimeout(() => {
+            mostrarFeedbackExportacao(false);
+            mostrarMensagemSucesso('PDF do dashboard exportado com sucesso!');
+        }, 500);
+        
+    }).catch(error => {
+        // Restaurar loading se estava visível
+        if (wasLoadingVisible && loadingElement) {
+            loadingElement.style.display = 'block';
+        }
+        
+        console.error('Erro ao exportar dashboard como PDF:', error);
+        mostrarFeedbackExportacao(false);
+        throw new Error('Erro ao exportar dashboard como PDF');
     });
 }
 
@@ -2428,6 +2624,58 @@ $(document).ready(function() {
         margin-top: 8px;
         justify-content: center;
     }
+    
+    /* Responsividade para header do dashboard */
+    .d-flex.justify-content-end {
+        flex-direction: column;
+        gap: 10px !important;
+        align-items: stretch !important;
+    }
+    
+    .btn-group .btn {
+        font-size: 11px;
+        padding: 5px 8px;
+    }
+}
+
+/* Estilos específicos para os botões de exportação completa */
+.btn-success.btn-sm {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.btn-success.btn-sm:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(40, 167, 69, 0.3);
+}
+
+.btn-outline-success.btn-sm {
+    border-color: #28a745;
+    color: #28a745;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.btn-outline-success.btn-sm:hover {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(40, 167, 69, 0.3);
+}
+
+/* Separação visual entre os grupos de botões */
+.d-flex.justify-content-end > .btn-group:first-child {
+    border-right: 2px solid #dee2e6;
+    padding-right: 10px;
+    margin-right: 10px;
 }
 
 /* Animação de loading para exportação */
