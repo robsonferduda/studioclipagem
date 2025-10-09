@@ -285,6 +285,8 @@ Route::middleware(['web'])->group(function () {
 	Route::post('noticia-radio/upload','NoticiaRadioController@upload');
 
 	//Route::match(array('GET', 'POST'),'buscar-web','JornalWebController@index');
+	Route::get('noticia/web/fontes-pendentes', 'NoticiaWebController@fontesPendentesAjax');
+	Route::get('noticia/web/noticias-pendentes', 'NoticiaWebController@noticiasPendentesAjax');
 	Route::get('noticia/web/importar-imagens','NoticiaWebController@copiaImagens');
 	Route::get('noticia/web/importar-imagem/{id}','NoticiaWebController@copiaImagemIndividual');
 	Route::get('noticia/web/valores','NoticiaWebController@valores');

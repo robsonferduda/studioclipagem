@@ -958,44 +958,7 @@ class NoticiaWebController extends Controller
     {
         Session::put('sub-menu','web-retorno');
 
-        $total_nulos = NoticiaWeb::whereNull('nu_valor')
-                        ->whereHas('clientes', function($q){
-                            $q->where('noticia_cliente.tipo_id', 2);
-                        })
-                        ->whereHas('fonte', function($q){
-                            $q->whereNotNull('fonte_web.deleted_at');
-                        })
-                        ->where('data_noticia', '>', '2025-05-01')
-                        ->count();
-
-        $sql = "SELECT t2.id, t2.nome, t2.nu_valor, count(*) as total 
-                FROM noticias_web t1
-                LEFT JOIN fonte_web t2 ON t2.id = t1.id_fonte 
-                JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 2 AND t3.deleted_at IS NULL
-                WHERE t1.nu_valor IS NULL
-                AND data_noticia > '2025-05-01'
-                AND t1.deleted_at IS NULL
-                AND t2.deleted_at IS NULL
-                AND t3.deleted_at IS NULL
-                GROUP BY t2.id, t2.nome
-                ORDER BY nome";
-
-        $inconsistencias = DB::select($sql);
-
-        $sql = "SELECT DISTINCT t1.id, t2.nome, t1.id_fonte, t2.nu_valor, t1.nu_valor AS valor_retorno, sinopse, data_noticia, titulo_noticia 
-                FROM noticias_web t1
-                LEFT JOIN fonte_web t2 ON t2.id = t1.id_fonte 
-                JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 2 AND t3.deleted_at IS NULL
-                WHERE t1.nu_valor IS NULL
-                AND data_noticia > '2025-05-01'
-                AND t1.deleted_at IS NULL
-                AND t2.deleted_at IS NULL
-                AND t3.deleted_at IS NULL
-                ORDER BY id_fonte";
-
-        $noticias = DB::select($sql);
-
-        return view('noticia-web/retorno', compact('total_nulos','inconsistencias','noticias'));
+        return view('noticia-web/retorno');
     }
 
     public function calcularValorRetornoWeb()
@@ -1085,5 +1048,42 @@ class NoticiaWebController extends Controller
         //$secoes = FonteImpressa::find($id_fonte)->secoes()->orderBy('ds_sessao')->get();
         
         return response()->json($secoes);
+    }
+
+    public function fontesPendentesAjax()
+    {
+        $sql = "SELECT t2.id, t2.nome, t2.nu_valor, count(*) as total 
+                FROM noticias_web t1
+                LEFT JOIN fonte_web t2 ON t2.id = t1.id_fonte 
+                JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 2 AND t3.deleted_at IS NULL
+                WHERE t1.nu_valor IS NULL
+                AND data_noticia > '2025-05-01'
+                AND t1.deleted_at IS NULL
+                AND t2.deleted_at IS NULL
+                AND t3.deleted_at IS NULL
+                GROUP BY t2.id, t2.nome
+                ORDER BY nome";
+
+        $inconsistencias = DB::select($sql);
+
+        return response()->json($inconsistencias);
+    }
+
+    public function noticiasPendentesAjax()
+    {
+        $sql = "SELECT DISTINCT t1.id, t2.nome, t1.id_fonte, t2.nu_valor, t1.nu_valor AS valor_retorno, sinopse, data_noticia, titulo_noticia 
+                FROM noticias_web t1
+                LEFT JOIN fonte_web t2 ON t2.id = t1.id_fonte 
+                JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 2 AND t3.deleted_at IS NULL
+                WHERE t1.nu_valor IS NULL
+                AND data_noticia > '2025-05-01'
+                AND t1.deleted_at IS NULL
+                AND t2.deleted_at IS NULL
+                AND t3.deleted_at IS NULL
+                ORDER BY id_fonte";
+
+        $noticias = DB::select($sql);
+
+        return response()->json($noticias);
     }
 }
