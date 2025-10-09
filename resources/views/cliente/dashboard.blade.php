@@ -519,11 +519,6 @@
                                 <a href="{{ url('cliente/relatorios') }}" class="btn btn-success">
                                     <i class="fa fa-file-pdf-o"></i> Meus Relatórios
                                 </a>
-                                @if($cliente->fl_area_restrita)
-                                <a href="{{ url('configuracoes') }}" class="btn btn-warning">
-                                    <i class="fa fa-cogs"></i> Configurações
-                                </a>
-                                @endif
                             </div>
                         </div>
                     </div>
