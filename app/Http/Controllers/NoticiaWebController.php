@@ -1042,6 +1042,7 @@ class NoticiaWebController extends Controller
                         ->where('fonte_web.id', '!=', 1) //Excluir fonte SEM FONTE
                         ->where('noticias_web.data_noticia', '>', '2025-01-01')
                         ->whereNull('noticias_web.deleted_at')
+                        ->whereNotIn('noticia_cliente.cliente_id', [438,442])
                         ->groupBy('fonte_web.id', 'fonte_web.nome', 'fonte_web.nu_valor')
                         ->selectRaw('count(*) as total')
                         ->orderBy('total', 'desc')
@@ -1076,6 +1077,7 @@ class NoticiaWebController extends Controller
                         ->where('t1.id_fonte', '!=', 1) //Excluir fonte SEM FONTE
                         ->where('t1.data_noticia', '>', '2025-01-01')
                         ->whereNull('t1.deleted_at')
+                        ->whereNotIn('t3.cliente_id', [438,442])
                         ->orderBy('t1.id_fonte')
                         ->distinct()
                         ->paginate(10);
@@ -1095,6 +1097,7 @@ class NoticiaWebController extends Controller
                 AND data_noticia > '2025-01-01'
                 AND t1.id_fonte != 1 --Excluir fonte SEM FONTE
                 AND t1.deleted_at IS NULL
+                AND t3.cliente_id NOT IN (438,442)
                 ORDER BY id_fonte";
 
         $noticias = DB::select($sql);
