@@ -50,10 +50,24 @@
                 <!-- Gráfico de evolução temporal -->
                 <div class="col-md-8">
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header d-flex justify-content-between align-items-center">
                             <h6 class="card-title mb-0">
                                 <i class="fa fa-line-chart text-primary"></i> Evolução das Notícias
                             </h6>
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Exportar gráfico">
+                                <button type="button" class="btn btn-outline-primary btn-export" 
+                                        onclick="exportarGrafico('evolucao', 'png')" title="Exportar como imagem PNG">
+                                    <i class="fa fa-image mr-1"></i>PNG
+                                </button>
+                                <button type="button" class="btn btn-outline-success btn-export" 
+                                        onclick="exportarGrafico('evolucao', 'csv')" title="Exportar dados como CSV">
+                                    <i class="fa fa-table mr-1"></i>CSV
+                                </button>
+                                <button type="button" class="btn btn-outline-info btn-export" 
+                                        onclick="exportarGrafico('evolucao', 'svg')" title="Exportar como SVG vetorial">
+                                    <i class="fa fa-code mr-1"></i>SVG
+                                </button>
+                            </div>
                         </div>
                         <div class="card-body">
                             <canvas id="grafico-evolucao" width="400" height="200"></canvas>
@@ -64,10 +78,24 @@
                 <!-- Gráfico de distribuição por mídia -->
                 <div class="col-md-4">
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header d-flex justify-content-between align-items-center">
                             <h6 class="card-title mb-0">
                                 <i class="fa fa-pie-chart text-success"></i> Distribuição por Mídia
                             </h6>
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Exportar gráfico">
+                                <button type="button" class="btn btn-outline-primary btn-export" 
+                                        onclick="exportarGrafico('midia', 'png')" title="Exportar como imagem PNG">
+                                    <i class="fa fa-image mr-1"></i>PNG
+                                </button>
+                                <button type="button" class="btn btn-outline-success btn-export" 
+                                        onclick="exportarGrafico('midia', 'csv')" title="Exportar dados como CSV">
+                                    <i class="fa fa-table mr-1"></i>CSV
+                                </button>
+                                <button type="button" class="btn btn-outline-info btn-export" 
+                                        onclick="exportarGrafico('midia', 'svg')" title="Exportar como SVG vetorial">
+                                    <i class="fa fa-code mr-1"></i>SVG
+                                </button>
+                            </div>
                         </div>
                         <div class="card-body">
                             <canvas id="grafico-midia" width="400" height="200"></canvas>
@@ -81,10 +109,24 @@
             <div class="row mb-4">
                 <div class="col-md-6">
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header d-flex justify-content-between align-items-center">
                             <h6 class="card-title mb-0">
                                 <i class="fa fa-smile-o text-warning"></i> Sentimento Geral das Notícias
                             </h6>
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Exportar gráfico">
+                                <button type="button" class="btn btn-outline-primary btn-export" 
+                                        onclick="exportarGrafico('sentimento-geral', 'png')" title="Exportar como imagem PNG">
+                                    <i class="fa fa-image mr-1"></i>PNG
+                                </button>
+                                <button type="button" class="btn btn-outline-success btn-export" 
+                                        onclick="exportarGrafico('sentimento-geral', 'csv')" title="Exportar dados como CSV">
+                                    <i class="fa fa-table mr-1"></i>CSV
+                                </button>
+                                <button type="button" class="btn btn-outline-info btn-export" 
+                                        onclick="exportarGrafico('sentimento-geral', 'svg')" title="Exportar como SVG vetorial">
+                                    <i class="fa fa-code mr-1"></i>SVG
+                                </button>
+                            </div>
                         </div>
                         <div class="card-body">
                             <canvas id="grafico-sentimento-geral" width="400" height="200"></canvas>
@@ -93,10 +135,20 @@
                 </div>
                 <div class="col-md-6">
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header d-flex justify-content-between align-items-center">
                             <h6 class="card-title mb-0">
                                 <i class="fa fa-pie-chart text-info"></i> Sentimento por Tipo de Mídia
                             </h6>
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Exportar elemento">
+                                <button type="button" class="btn btn-outline-primary btn-export" 
+                                        onclick="exportarElemento('graficos-sentimento-midia', 'sentimento-midia', 'png')" title="Exportar como imagem PNG">
+                                    <i class="fa fa-image mr-1"></i>PNG
+                                </button>
+                                <button type="button" class="btn btn-outline-success btn-export" 
+                                        onclick="exportarElemento('graficos-sentimento-midia', 'sentimento-midia', 'csv')" title="Exportar dados como CSV">
+                                    <i class="fa fa-table mr-1"></i>CSV
+                                </button>
+                            </div>
                         </div>
                         <div class="card-body">
                             <div id="graficos-sentimento-midia">
@@ -111,10 +163,20 @@
             <div class="row mb-4">
                 <div class="col-md-12">
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header d-flex justify-content-between align-items-center">
                             <h6 class="card-title mb-0">
                                 <i class="fa fa-tags text-info"></i> Tags Mais Utilizadas
                             </h6>
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Exportar elemento">
+                                <button type="button" class="btn btn-outline-primary btn-export" 
+                                        onclick="exportarElemento('tags-container', 'tags', 'png')" title="Exportar como imagem PNG">
+                                    <i class="fa fa-image mr-1"></i>PNG
+                                </button>
+                                <button type="button" class="btn btn-outline-success btn-export" 
+                                        onclick="exportarElemento('tags-container', 'tags', 'csv')" title="Exportar dados como CSV">
+                                    <i class="fa fa-table mr-1"></i>CSV
+                                </button>
+                            </div>
                         </div>
                         <div class="card-body">
                             <div id="tags-container">
@@ -128,10 +190,20 @@
             <div class="row mb-4">
                 <div class="col-md-12">
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header d-flex justify-content-between align-items-center">
                             <h6 class="card-title mb-0">
                                 <i class="fa fa-tags text-info"></i> Tags Mais Utilizadas
                             </h6>
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Exportar elemento">
+                                <button type="button" class="btn btn-outline-primary btn-export" 
+                                        onclick="exportarElemento('tags-container', 'tags', 'png')" title="Exportar como imagem PNG">
+                                    <i class="fa fa-image mr-1"></i>PNG
+                                </button>
+                                <button type="button" class="btn btn-outline-success btn-export" 
+                                        onclick="exportarElemento('tags-container', 'tags', 'csv')" title="Exportar dados como CSV">
+                                    <i class="fa fa-table mr-1"></i>CSV
+                                </button>
+                            </div>
                         </div>
                         <div class="card-body">
                             <div id="tags-container">
@@ -149,10 +221,20 @@
                 <!-- Card de Resumo de Retorno -->
                 <div class="col-md-4">
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header d-flex justify-content-between align-items-center">
                             <h6 class="card-title mb-0">
                                 <i class="fa fa-money text-success"></i> Resumo Retorno de Mídia
                             </h6>
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Exportar elemento">
+                                <button type="button" class="btn btn-outline-primary btn-export" 
+                                        onclick="exportarElemento('resumo-retorno-container', 'resumo-retorno', 'png')" title="Exportar como imagem PNG">
+                                    <i class="fa fa-image mr-1"></i>PNG
+                                </button>
+                                <button type="button" class="btn btn-outline-success btn-export" 
+                                        onclick="exportarElemento('resumo-retorno-container', 'resumo-retorno', 'csv')" title="Exportar dados como CSV">
+                                    <i class="fa fa-table mr-1"></i>CSV
+                                </button>
+                            </div>
                         </div>
                         <div class="card-body">
                             <div id="resumo-retorno-container">
@@ -165,10 +247,24 @@
                 <!-- Gráfico de Retorno por Tipo -->
                 <div class="col-md-8">
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header d-flex justify-content-between align-items-center">
                             <h6 class="card-title mb-0">
                                 <i class="fa fa-bar-chart text-success"></i> Retorno de Mídia por Tipo
                             </h6>
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Exportar gráfico">
+                                <button type="button" class="btn btn-outline-primary btn-export" 
+                                        onclick="exportarGrafico('retorno', 'png')" title="Exportar como imagem PNG">
+                                    <i class="fa fa-image mr-1"></i>PNG
+                                </button>
+                                <button type="button" class="btn btn-outline-success btn-export" 
+                                        onclick="exportarGrafico('retorno', 'csv')" title="Exportar dados como CSV">
+                                    <i class="fa fa-table mr-1"></i>CSV
+                                </button>
+                                <button type="button" class="btn btn-outline-info btn-export" 
+                                        onclick="exportarGrafico('retorno', 'svg')" title="Exportar como SVG vetorial">
+                                    <i class="fa fa-code mr-1"></i>SVG
+                                </button>
+                            </div>
                         </div>
                         <div class="card-body">
                             <canvas id="grafico-retorno" width="400" height="200"></canvas>
@@ -181,10 +277,20 @@
             <div class="row mb-4">
                 <div class="col-md-12">
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header d-flex justify-content-between align-items-center">
                             <h6 class="card-title mb-0">
                                 <i class="fa fa-trophy text-warning"></i> Top 10 Veículos por Retorno de Mídia
                             </h6>
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Exportar elemento">
+                                <button type="button" class="btn btn-outline-primary btn-export" 
+                                        onclick="exportarElemento('ranking-retorno-tab-content', 'ranking-veiculos-retorno', 'png')" title="Exportar como imagem PNG">
+                                    <i class="fa fa-image mr-1"></i>PNG
+                                </button>
+                                <button type="button" class="btn btn-outline-success btn-export" 
+                                        onclick="exportarElemento('ranking-retorno-tab-content', 'ranking-veiculos-retorno', 'csv')" title="Exportar dados como CSV">
+                                    <i class="fa fa-table mr-1"></i>CSV
+                                </button>
+                            </div>
                         </div>
                         <div class="card-body">
                             <!-- Abas para tipos de mídia -->
@@ -252,10 +358,20 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header d-flex justify-content-between align-items-center">
                             <h6 class="card-title mb-0">
                                 <i class="fa fa-newspaper-o text-primary"></i> Top 10 Fontes por Mídia
                             </h6>
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Exportar elemento">
+                                <button type="button" class="btn btn-outline-primary btn-export" 
+                                        onclick="exportarElemento('fontes-tab-content', 'top-fontes', 'png')" title="Exportar como imagem PNG">
+                                    <i class="fa fa-image mr-1"></i>PNG
+                                </button>
+                                <button type="button" class="btn btn-outline-success btn-export" 
+                                        onclick="exportarElemento('fontes-tab-content', 'top-fontes', 'csv')" title="Exportar dados como CSV">
+                                    <i class="fa fa-table mr-1"></i>CSV
+                                </button>
+                            </div>
                         </div>
                         <div class="card-body">
                             <!-- Abas para tipos de mídia -->
@@ -320,10 +436,20 @@
                 @if($fl_areas)
                 <div class="col-md-6">
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header d-flex justify-content-between align-items-center">
                             <h6 class="card-title mb-0">
                                 <i class="fa fa-sitemap text-warning"></i> Top 10 Áreas
                             </h6>
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Exportar elemento">
+                                <button type="button" class="btn btn-outline-primary btn-export" 
+                                        onclick="exportarElemento('areas-container', 'top-areas', 'png')" title="Exportar como imagem PNG">
+                                    <i class="fa fa-image mr-1"></i>PNG
+                                </button>
+                                <button type="button" class="btn btn-outline-success btn-export" 
+                                        onclick="exportarElemento('areas-container', 'top-areas', 'csv')" title="Exportar dados como CSV">
+                                    <i class="fa fa-table mr-1"></i>CSV
+                                </button>
+                            </div>
                         </div>
                         <div class="card-body">
                             <div id="areas-container">
@@ -371,12 +497,492 @@
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+<!-- Biblioteca para captura de tela de elementos HTML -->
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<!-- Biblioteca para manipulação de SVG -->
+<script src="https://cdn.jsdelivr.net/npm/canvg@4.0.1/dist/umd.js"></script>
 
 <script>
+// ==================== VARIÁVEIS GLOBAIS ====================
+let dadosGlobais = {};
+let graficos = {};
+
+// ==================== FUNÇÕES DE EXPORTAÇÃO (ESCOPO GLOBAL) ====================
+
+/**
+ * Função principal para exportar gráficos Chart.js
+ */
+function exportarGrafico(nomeGrafico, formato) {
+    console.log('Tentando exportar gráfico:', nomeGrafico, 'formato:', formato);
+    
+    const grafico = graficos[nomeGrafico];
+    if (!grafico) {
+        console.error('Gráfico não encontrado:', nomeGrafico, 'Gráficos disponíveis:', Object.keys(graficos));
+        alert('Gráfico não encontrado ou ainda não foi carregado: ' + nomeGrafico);
+        return;
+    }
+    
+    console.log('Gráfico encontrado:', grafico);
+    const nomeArquivo = `grafico-${nomeGrafico}-${new Date().toISOString().split('T')[0]}`;
+    
+    // Mostrar feedback visual
+    mostrarFeedbackExportacao(true);
+    
+    try {
+        switch(formato) {
+            case 'png':
+                exportarGraficoPNG(grafico, nomeArquivo);
+                break;
+            case 'csv':
+                exportarGraficoCSV(grafico, nomeGrafico, nomeArquivo);
+                break;
+            case 'svg':
+                exportarGraficoSVG(grafico, nomeArquivo);
+                break;
+            default:
+                throw new Error('Formato não suportado: ' + formato);
+        }
+        
+        // Feedback de sucesso
+        setTimeout(() => {
+            mostrarFeedbackExportacao(false);
+            mostrarMensagemSucesso(`${formato.toUpperCase()} exportado com sucesso!`);
+        }, 500);
+        
+    } catch (error) {
+        console.error('Erro durante exportação:', error);
+        mostrarFeedbackExportacao(false);
+        alert('Erro ao exportar: ' + error.message);
+    }
+}
+
+/**
+ * Função para exportar elementos HTML (não Chart.js)
+ */
+function exportarElemento(elementId, nomeElemento, formato) {
+    console.log('Tentando exportar elemento:', elementId, 'nome:', nomeElemento, 'formato:', formato);
+    
+    const elemento = document.getElementById(elementId);
+    if (!elemento) {
+        console.error('Elemento não encontrado:', elementId);
+        alert('Elemento não encontrado: ' + elementId);
+        return;
+    }
+    
+    console.log('Elemento encontrado:', elemento);
+    const nomeArquivo = `${nomeElemento}-${new Date().toISOString().split('T')[0]}`;
+    
+    // Mostrar feedback visual
+    mostrarFeedbackExportacao(true);
+    
+    try {
+        switch(formato) {
+            case 'png':
+                exportarElementoPNG(elemento, nomeArquivo);
+                break;
+            case 'csv':
+                exportarElementoCSV(elementId, nomeElemento, nomeArquivo);
+                break;
+            default:
+                throw new Error('Formato não suportado para este elemento: ' + formato);
+        }
+        
+        // Feedback de sucesso
+        setTimeout(() => {
+            mostrarFeedbackExportacao(false);
+            mostrarMensagemSucesso(`${formato.toUpperCase()} exportado com sucesso!`);
+        }, 500);
+        
+    } catch (error) {
+        console.error('Erro durante exportação:', error);
+        mostrarFeedbackExportacao(false);
+        alert('Erro ao exportar: ' + error.message);
+    }
+}
+
+/**
+ * Função para testar se as exportações estão funcionando
+ */
+function testarExportacao() {
+    console.log('=== INICIANDO TESTE DE EXPORTAÇÃO ===');
+    console.log('Dados globais disponíveis:', dadosGlobais);
+    console.log('Gráficos disponíveis:', Object.keys(graficos));
+    
+    // Testar se dadosGlobais está carregado
+    if (!dadosGlobais || Object.keys(dadosGlobais).length === 0) {
+        alert('⚠️ Dados não carregados ainda. Aguarde o carregamento da dashboard.');
+        return;
+    }
+    
+    // Testar se os gráficos estão disponíveis
+    if (!graficos || Object.keys(graficos).length === 0) {
+        alert('⚠️ Gráficos não carregados ainda. Aguarde o carregamento da dashboard.');
+        return;
+    }
+    
+    // Testar exportação CSV simples
+    try {
+        const tags = dadosGlobais.top_tags || [];
+        if (tags.length > 0) {
+            let csvContent = 'Tag,Quantidade\n';
+            tags.slice(0, 3).forEach(tag => {
+                csvContent += `"${tag.tag}",${tag.total}\n`;
+            });
+            
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            downloadFile(url, 'teste-tags.csv');
+            URL.revokeObjectURL(url);
+            
+            mostrarMensagemSucesso('✅ Teste de CSV bem-sucedido!');
+            console.log('✅ Teste CSV: OK');
+        }
+    } catch (error) {
+        console.error('❌ Erro no teste CSV:', error);
+        alert('❌ Erro no teste CSV: ' + error.message);
+    }
+    
+    // Testar exportação PNG de gráfico
+    try {
+        const primeiroGrafico = Object.keys(graficos)[0];
+        if (primeiroGrafico && graficos[primeiroGrafico]) {
+            const canvas = graficos[primeiroGrafico].canvas;
+            const url = canvas.toDataURL('image/png');
+            downloadFile(url, 'teste-grafico.png');
+            
+            mostrarMensagemSucesso('✅ Teste de PNG bem-sucedido!');
+            console.log('✅ Teste PNG: OK');
+        }
+    } catch (error) {
+        console.error('❌ Erro no teste PNG:', error);
+        alert('❌ Erro no teste PNG: ' + error.message);
+    }
+    
+    console.log('=== TESTE DE EXPORTAÇÃO CONCLUÍDO ===');
+}
+
+// ==================== FUNÇÕES AUXILIARES ====================
+
+/**
+ * Exporta gráfico Chart.js como PNG
+ */
+function exportarGraficoPNG(grafico, nomeArquivo) {
+    try {
+        const canvas = grafico.canvas;
+        const url = canvas.toDataURL('image/png');
+        downloadFile(url, `${nomeArquivo}.png`);
+    } catch (error) {
+        console.error('Erro ao exportar PNG:', error);
+        throw new Error('Erro ao exportar gráfico como PNG');
+    }
+}
+
+/**
+ * Exporta elemento HTML como PNG usando html2canvas
+ */
+function exportarElementoPNG(elemento, nomeArquivo) {
+    html2canvas(elemento, {
+        backgroundColor: '#ffffff',
+        scale: 2,
+        logging: false,
+        allowTaint: true,
+        useCORS: true
+    }).then(canvas => {
+        const url = canvas.toDataURL('image/png');
+        downloadFile(url, `${nomeArquivo}.png`);
+    }).catch(error => {
+        console.error('Erro ao exportar elemento como PNG:', error);
+        throw new Error('Erro ao exportar elemento como PNG');
+    });
+}
+
+/**
+ * Exporta dados do gráfico Chart.js como CSV
+ */
+function exportarGraficoCSV(grafico, nomeGrafico, nomeArquivo) {
+    try {
+        let csvContent = '';
+        const data = grafico.data;
+        
+        // Headers específicos por tipo de gráfico
+        switch(nomeGrafico) {
+            case 'evolucao':
+                csvContent = 'Data,Total de Notícias\n';
+                data.labels.forEach((label, index) => {
+                    csvContent += `${label},${data.datasets[0].data[index]}\n`;
+                });
+                break;
+                
+            case 'midia':
+            case 'sentimento-geral':
+                csvContent = 'Categoria,Valor\n';
+                data.labels.forEach((label, index) => {
+                    csvContent += `${label},${data.datasets[0].data[index]}\n`;
+                });
+                break;
+                
+            case 'retorno':
+                csvContent = 'Tipo de Mídia,Valor (R$)\n';
+                data.labels.forEach((label, index) => {
+                    csvContent += `${label},"R$ ${parseFloat(data.datasets[0].data[index]).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}"\n`;
+                });
+                break;
+                
+            default:
+                csvContent = 'Label,Valor\n';
+                data.labels.forEach((label, index) => {
+                    csvContent += `${label},${data.datasets[0].data[index]}\n`;
+                });
+        }
+        
+        downloadCSV(csvContent, `${nomeArquivo}.csv`);
+    } catch (error) {
+        console.error('Erro ao exportar CSV:', error);
+        throw new Error('Erro ao exportar dados como CSV');
+    }
+}
+
+/**
+ * Exporta dados de elementos HTML como CSV
+ */
+function exportarElementoCSV(elementId, nomeElemento, nomeArquivo) {
+    let csvContent = '';
+    
+    try {
+        switch(nomeElemento) {
+            case 'tags':
+                csvContent = exportarTagsCSV();
+                break;
+            case 'sentimento-midia':
+                csvContent = exportarSentimentoMidiaCSV();
+                break;
+            case 'resumo-retorno':
+                csvContent = exportarResumoRetornoCSV();
+                break;
+            case 'ranking-veiculos-retorno':
+                csvContent = exportarRankingVeiculosRetornoCSV();
+                break;
+            case 'top-fontes':
+                csvContent = exportarTopFontesCSV();
+                break;
+            case 'top-areas':
+                csvContent = exportarTopAreasCSV();
+                break;
+            default:
+                throw new Error('Exportação CSV não implementada para este elemento');
+        }
+        
+        if (csvContent) {
+            downloadCSV(csvContent, `${nomeArquivo}.csv`);
+        }
+    } catch (error) {
+        console.error('Erro ao exportar elemento como CSV:', error);
+        throw error;
+    }
+}
+
+/**
+ * Exporta gráfico Chart.js como SVG
+ */
+function exportarGraficoSVG(grafico, nomeArquivo) {
+    try {
+        // Para SVG, vamos usar uma abordagem simplificada convertendo o canvas para SVG
+        const canvas = grafico.canvas;
+        
+        // Criar SVG básico com a imagem (sem declaração XML para evitar problemas de parsing)
+        const svgContent = '<svg width="' + canvas.width + '" height="' + canvas.height + '" xmlns="http://www.w3.org/2000/svg">' +
+            '<image href="' + canvas.toDataURL() + '" width="' + canvas.width + '" height="' + canvas.height + '"/>' +
+            '</svg>';
+        
+        downloadFile('data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgContent), nomeArquivo + '.svg');
+    } catch (error) {
+        console.error('Erro ao exportar SVG:', error);
+        throw new Error('Erro ao exportar gráfico como SVG');
+    }
+}
+
+// ==================== FUNÇÕES AUXILIARES DE CSV ====================
+
+function exportarTagsCSV() {
+    const tags = dadosGlobais.top_tags || [];
+    let csv = 'Tag,Quantidade\n';
+    tags.forEach(tag => {
+        csv += `"${tag.tag}",${tag.total}\n`;
+    });
+    return csv;
+}
+
+function exportarSentimentoMidiaCSV() {
+    const sentimentos = dadosGlobais.sentimentos_por_midia || {};
+    let csv = 'Tipo de Mídia,Positivo,Neutro,Negativo,Total\n';
+    
+    Object.keys(sentimentos).forEach(tipo => {
+        const dados = sentimentos[tipo];
+        const total = dados.positivo + dados.neutro + dados.negativo;
+        csv += `${tipo.charAt(0).toUpperCase() + tipo.slice(1)},${dados.positivo},${dados.neutro},${dados.negativo},${total}\n`;
+    });
+    
+    return csv;
+}
+
+function exportarResumoRetornoCSV() {
+    const retorno = dadosGlobais.retorno_midia || {};
+    let csv = 'Tipo de Mídia,Valor (R$)\n';
+    
+    ['web', 'tv', 'radio', 'impresso'].forEach(tipo => {
+        if (retorno[tipo] > 0) {
+            csv += `${tipo.charAt(0).toUpperCase() + tipo.slice(1)},"R$ ${parseFloat(retorno[tipo]).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}"\n`;
+        }
+    });
+    
+    csv += `\nTotal,"R$ ${parseFloat(retorno.total || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}"\n`;
+    
+    return csv;
+}
+
+function exportarRankingVeiculosRetornoCSV() {
+    const ranking = dadosGlobais.ranking_veiculos_retorno || {};
+    let csv = 'Posição,Veículo,Tipo de Mídia,Valor (R$),Total de Notícias\n';
+    
+    ['web', 'tv', 'radio', 'impresso'].forEach(tipo => {
+        const veiculos = ranking[tipo] || [];
+        veiculos.forEach((veiculo, index) => {
+            csv += `${index + 1},"${veiculo.veiculo}",${tipo.charAt(0).toUpperCase() + tipo.slice(1)},"R$ ${parseFloat(veiculo.valor_total).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}",${veiculo.total_noticias}\n`;
+        });
+    });
+    
+    return csv;
+}
+
+function exportarTopFontesCSV() {
+    const fontes = dadosGlobais.top_fontes || {};
+    let csv = 'Posição,Fonte,Tipo de Mídia,Total de Notícias\n';
+    
+    ['web', 'tv', 'radio', 'impresso'].forEach(tipo => {
+        const fontesDoTipo = fontes[tipo] || [];
+        fontesDoTipo.forEach((fonte, index) => {
+            csv += `${index + 1},"${fonte.fonte}",${tipo.charAt(0).toUpperCase() + tipo.slice(1)},${fonte.total}\n`;
+        });
+    });
+    
+    return csv;
+}
+
+function exportarTopAreasCSV() {
+    const areas = dadosGlobais.top_areas || [];
+    let csv = 'Posição,Área,Total de Notícias\n';
+    areas.forEach((area, index) => {
+        csv += `${index + 1},"${area.area}",${area.total}\n`;
+    });
+    return csv;
+}
+
+// ==================== FUNÇÕES UTILITÁRIAS ====================
+
+/**
+ * Faz download de um arquivo
+ */
+function downloadFile(url, filename) {
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+/**
+ * Faz download de arquivo CSV
+ */
+function downloadCSV(csvContent, filename) {
+    const BOM = '\uFEFF'; // BOM para UTF-8
+    const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    downloadFile(url, filename);
+    URL.revokeObjectURL(url);
+}
+
+// ==================== FUNÇÕES DE FEEDBACK ====================
+
+/**
+ * Mostra/esconde feedback visual durante exportação
+ */
+function mostrarFeedbackExportacao(mostrar) {
+    if (mostrar) {
+        // Criar elemento de loading se não existir
+        let loadingElement = document.getElementById('export-loading-overlay');
+        if (!loadingElement) {
+            loadingElement = document.createElement('div');
+            loadingElement.id = 'export-loading-overlay';
+            loadingElement.innerHTML = `
+                <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                            background: rgba(0,0,0,0.5); z-index: 9999; display: flex; 
+                            align-items: center; justify-content: center;">
+                    <div style="background: white; padding: 20px; border-radius: 8px; text-align: center;">
+                        <i class="fa fa-spinner fa-spin fa-2x text-primary mb-2"></i>
+                        <p class="mb-0">Preparando exportação...</p>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(loadingElement);
+        }
+        loadingElement.style.display = 'block';
+    } else {
+        const loadingElement = document.getElementById('export-loading-overlay');
+        if (loadingElement) {
+            loadingElement.style.display = 'none';
+        }
+    }
+}
+
+/**
+ * Mostra mensagem de sucesso
+ */
+function mostrarMensagemSucesso(mensagem) {
+    // Criar toast de sucesso
+    const toast = document.createElement('div');
+    toast.className = 'alert alert-success';
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 10000;
+        min-width: 300px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        border: none;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    `;
+    toast.innerHTML = `
+        <i class="fa fa-check-circle mr-2"></i>
+        ${mensagem}
+        <button type="button" class="close" onclick="this.parentElement.remove()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    `;
+    
+    document.body.appendChild(toast);
+    
+    // Animar entrada
+    setTimeout(() => {
+        toast.style.opacity = '1';
+    }, 100);
+    
+    // Remover automaticamente após 3 segundos
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => {
+            if (toast.parentElement) {
+                toast.parentElement.removeChild(toast);
+            }
+        }, 300);
+    }, 3000);
+}
+
+// ==================== INICIALIZAÇÃO DA DASHBOARD ====================
+
 $(document).ready(function() {
     const host = $('meta[name="base-url"]').attr('content');
-    let dadosGlobais = {};
-    let graficos = {};
     
     // Flags de permissões
     const flSentimento = {{ $fl_sentimento ? 'true' : 'false' }};
@@ -1129,6 +1735,482 @@ $(document).ready(function() {
 <style>
 .dashboard-card {
     transition: transform 0.2s ease;
+        console.log('Tentando exportar gráfico:', nomeGrafico, 'formato:', formato);
+        
+        const grafico = graficos[nomeGrafico];
+        if (!grafico) {
+            console.error('Gráfico não encontrado:', nomeGrafico, 'Gráficos disponíveis:', Object.keys(graficos));
+            alert('Gráfico não encontrado ou ainda não foi carregado: ' + nomeGrafico);
+            return;
+        }
+        
+        console.log('Gráfico encontrado:', grafico);
+        const nomeArquivo = `grafico-${nomeGrafico}-${new Date().toISOString().split('T')[0]}`;
+        
+        // Mostrar feedback visual
+        mostrarFeedbackExportacao(true);
+        
+        try {
+            switch(formato) {
+                case 'png':
+                    exportarGraficoPNG(grafico, nomeArquivo);
+                    break;
+                case 'csv':
+                    exportarGraficoCSV(grafico, nomeGrafico, nomeArquivo);
+                    break;
+                case 'svg':
+                    exportarGraficoSVG(grafico, nomeArquivo);
+                    break;
+                default:
+                    throw new Error('Formato não suportado: ' + formato);
+            }
+            
+            // Feedback de sucesso
+            setTimeout(() => {
+                mostrarFeedbackExportacao(false);
+                mostrarMensagemSucesso(`${formato.toUpperCase()} exportado com sucesso!`);
+            }, 500);
+            
+        } catch (error) {
+            console.error('Erro durante exportação:', error);
+            mostrarFeedbackExportacao(false);
+            alert('Erro ao exportar: ' + error.message);
+        }
+    }
+    
+    /**
+     * Função para exportar elementos HTML (não Chart.js)
+     */
+    function exportarElemento(elementId, nomeElemento, formato) {
+        console.log('Tentando exportar elemento:', elementId, 'nome:', nomeElemento, 'formato:', formato);
+        
+        const elemento = document.getElementById(elementId);
+        if (!elemento) {
+            console.error('Elemento não encontrado:', elementId);
+            alert('Elemento não encontrado: ' + elementId);
+            return;
+        }
+        
+        console.log('Elemento encontrado:', elemento);
+        const nomeArquivo = `${nomeElemento}-${new Date().toISOString().split('T')[0]}`;
+        
+        // Mostrar feedback visual
+        mostrarFeedbackExportacao(true);
+        
+        try {
+            switch(formato) {
+                case 'png':
+                    exportarElementoPNG(elemento, nomeArquivo);
+                    break;
+                case 'csv':
+                    exportarElementoCSV(elementId, nomeElemento, nomeArquivo);
+                    break;
+                default:
+                    throw new Error('Formato não suportado para este elemento: ' + formato);
+            }
+            
+            // Feedback de sucesso
+            setTimeout(() => {
+                mostrarFeedbackExportacao(false);
+                mostrarMensagemSucesso(`${formato.toUpperCase()} exportado com sucesso!`);
+            }, 500);
+            
+        } catch (error) {
+            console.error('Erro durante exportação:', error);
+            mostrarFeedbackExportacao(false);
+            alert('Erro ao exportar: ' + error.message);
+        }
+    }
+    
+    /**
+     * Exporta gráfico Chart.js como PNG
+     */
+    function exportarGraficoPNG(grafico, nomeArquivo) {
+        try {
+            const canvas = grafico.canvas;
+            const url = canvas.toDataURL('image/png');
+            downloadFile(url, `${nomeArquivo}.png`);
+        } catch (error) {
+            console.error('Erro ao exportar PNG:', error);
+            alert('Erro ao exportar gráfico como PNG.');
+        }
+    }
+    
+    /**
+     * Exporta elemento HTML como PNG usando html2canvas
+     */
+    function exportarElementoPNG(elemento, nomeArquivo) {
+        // Mostra loading
+        const loadingHtml = '<div class="text-center"><i class="fa fa-spinner fa-spin"></i> Preparando exportação...</div>';
+        const originalHtml = elemento.innerHTML;
+        
+        html2canvas(elemento, {
+            backgroundColor: '#ffffff',
+            scale: 2,
+            logging: false,
+            allowTaint: true,
+            useCORS: true
+        }).then(canvas => {
+            const url = canvas.toDataURL('image/png');
+            downloadFile(url, `${nomeArquivo}.png`);
+        }).catch(error => {
+            console.error('Erro ao exportar elemento como PNG:', error);
+            alert('Erro ao exportar elemento como PNG.');
+        });
+    }
+    
+    /**
+     * Exporta dados do gráfico Chart.js como CSV
+     */
+    function exportarGraficoCSV(grafico, nomeGrafico, nomeArquivo) {
+        try {
+            let csvContent = '';
+            const data = grafico.data;
+            
+            // Headers específicos por tipo de gráfico
+            switch(nomeGrafico) {
+                case 'evolucao':
+                    csvContent = 'Data,Total de Notícias\n';
+                    data.labels.forEach((label, index) => {
+                        csvContent += `${label},${data.datasets[0].data[index]}\n`;
+                    });
+                    break;
+                    
+                case 'midia':
+                case 'sentimento-geral':
+                    csvContent = 'Categoria,Valor\n';
+                    data.labels.forEach((label, index) => {
+                        csvContent += `${label},${data.datasets[0].data[index]}\n`;
+                    });
+                    break;
+                    
+                case 'retorno':
+                    csvContent = 'Tipo de Mídia,Valor (R$)\n';
+                    data.labels.forEach((label, index) => {
+                        csvContent += `${label},"R$ ${parseFloat(data.datasets[0].data[index]).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}"\n`;
+                    });
+                    break;
+                    
+                default:
+                    csvContent = 'Label,Valor\n';
+                    data.labels.forEach((label, index) => {
+                        csvContent += `${label},${data.datasets[0].data[index]}\n`;
+                    });
+            }
+            
+            downloadCSV(csvContent, `${nomeArquivo}.csv`);
+        } catch (error) {
+            console.error('Erro ao exportar CSV:', error);
+            alert('Erro ao exportar dados como CSV.');
+        }
+    }
+    
+    /**
+     * Exporta dados de elementos HTML como CSV
+     */
+    function exportarElementoCSV(elementId, nomeElemento, nomeArquivo) {
+        let csvContent = '';
+        
+        try {
+            switch(nomeElemento) {
+                case 'tags':
+                    csvContent = exportarTagsCSV();
+                    break;
+                case 'sentimento-midia':
+                    csvContent = exportarSentimentoMidiaCSV();
+                    break;
+                case 'resumo-retorno':
+                    csvContent = exportarResumoRetornoCSV();
+                    break;
+                case 'ranking-veiculos-retorno':
+                    csvContent = exportarRankingVeiculosRetornoCSV();
+                    break;
+                case 'top-fontes':
+                    csvContent = exportarTopFontesCSV();
+                    break;
+                case 'top-areas':
+                    csvContent = exportarTopAreasCSV();
+                    break;
+                default:
+                    alert('Exportação CSV não implementada para este elemento.');
+                    return;
+            }
+            
+            if (csvContent) {
+                downloadCSV(csvContent, `${nomeArquivo}.csv`);
+            }
+        } catch (error) {
+            console.error('Erro ao exportar elemento como CSV:', error);
+            alert('Erro ao exportar dados como CSV.');
+        }
+    }
+    
+    /**
+     * Exporta gráfico Chart.js como SVG
+     */
+    function exportarGraficoSVG(grafico, nomeArquivo) {
+        try {
+            // Para SVG, vamos usar uma abordagem simplificada convertendo o canvas para SVG
+            const canvas = grafico.canvas;
+            
+            // Criar SVG básico com a imagem (sem declaração XML para evitar problemas de parsing)
+            const svgContent = '<svg width="' + canvas.width + '" height="' + canvas.height + '" xmlns="http://www.w3.org/2000/svg">' +
+                '<image href="' + canvas.toDataURL() + '" width="' + canvas.width + '" height="' + canvas.height + '"/>' +
+                '</svg>';
+            
+            downloadFile('data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgContent), nomeArquivo + '.svg');
+        } catch (error) {
+            console.error('Erro ao exportar SVG:', error);
+            alert('Erro ao exportar gráfico como SVG.');
+        }
+    }
+    
+    // ==================== FUNÇÕES AUXILIARES DE CSV ====================
+    
+    function exportarTagsCSV() {
+        const tags = dadosGlobais.top_tags || [];
+        let csv = 'Tag,Quantidade\n';
+        tags.forEach(tag => {
+            csv += `"${tag.tag}",${tag.total}\n`;
+        });
+        return csv;
+    }
+    
+    function exportarSentimentoMidiaCSV() {
+        const sentimentos = dadosGlobais.sentimentos_por_midia || {};
+        let csv = 'Tipo de Mídia,Positivo,Neutro,Negativo,Total\n';
+        
+        Object.keys(sentimentos).forEach(tipo => {
+            const dados = sentimentos[tipo];
+            const total = dados.positivo + dados.neutro + dados.negativo;
+            csv += `${tipo.charAt(0).toUpperCase() + tipo.slice(1)},${dados.positivo},${dados.neutro},${dados.negativo},${total}\n`;
+        });
+        
+        return csv;
+    }
+    
+    function exportarResumoRetornoCSV() {
+        const retorno = dadosGlobais.retorno_midia || {};
+        let csv = 'Tipo de Mídia,Valor (R$)\n';
+        
+        ['web', 'tv', 'radio', 'impresso'].forEach(tipo => {
+            if (retorno[tipo] > 0) {
+                csv += `${tipo.charAt(0).toUpperCase() + tipo.slice(1)},"R$ ${parseFloat(retorno[tipo]).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}"\n`;
+            }
+        });
+        
+        csv += `\nTotal,"R$ ${parseFloat(retorno.total || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}"\n`;
+        
+        return csv;
+    }
+    
+    function exportarRankingVeiculosRetornoCSV() {
+        const ranking = dadosGlobais.ranking_veiculos_retorno || {};
+        let csv = 'Posição,Veículo,Tipo de Mídia,Valor (R$),Total de Notícias\n';
+        
+        ['web', 'tv', 'radio', 'impresso'].forEach(tipo => {
+            const veiculos = ranking[tipo] || [];
+            veiculos.forEach((veiculo, index) => {
+                csv += `${index + 1},"${veiculo.veiculo}",${tipo.charAt(0).toUpperCase() + tipo.slice(1)},"R$ ${parseFloat(veiculo.valor_total).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}",${veiculo.total_noticias}\n`;
+            });
+        });
+        
+        return csv;
+    }
+    
+    function exportarTopFontesCSV() {
+        const fontes = dadosGlobais.top_fontes || {};
+        let csv = 'Posição,Fonte,Tipo de Mídia,Total de Notícias\n';
+        
+        ['web', 'tv', 'radio', 'impresso'].forEach(tipo => {
+            const fontesDoTipo = fontes[tipo] || [];
+            fontesDoTipo.forEach((fonte, index) => {
+                csv += `${index + 1},"${fonte.fonte}",${tipo.charAt(0).toUpperCase() + tipo.slice(1)},${fonte.total}\n`;
+            });
+        });
+        
+        return csv;
+    }
+    
+    function exportarTopAreasCSV() {
+        const areas = dadosGlobais.top_areas || [];
+        let csv = 'Posição,Área,Total de Notícias\n';
+        areas.forEach((area, index) => {
+            csv += `${index + 1},"${area.area}",${area.total}\n`;
+        });
+        return csv;
+    }
+    
+    // ==================== FUNÇÕES UTILITÁRIAS ====================
+    
+    /**
+     * Faz download de um arquivo
+     */
+    function downloadFile(url, filename) {
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+    
+    /**
+     * Faz download de arquivo CSV
+     */
+    function downloadCSV(csvContent, filename) {
+        const BOM = '\uFEFF'; // BOM para UTF-8
+        const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        downloadFile(url, filename);
+        URL.revokeObjectURL(url);
+    }
+    
+    // ==================== FUNÇÕES DE FEEDBACK ====================
+    
+    /**
+     * Mostra/esconde feedback visual durante exportação
+     */
+    function mostrarFeedbackExportacao(mostrar) {
+        if (mostrar) {
+            // Criar elemento de loading se não existir
+            let loadingElement = document.getElementById('export-loading-overlay');
+            if (!loadingElement) {
+                loadingElement = document.createElement('div');
+                loadingElement.id = 'export-loading-overlay';
+                loadingElement.innerHTML = `
+                    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                                background: rgba(0,0,0,0.5); z-index: 9999; display: flex; 
+                                align-items: center; justify-content: center;">
+                        <div style="background: white; padding: 20px; border-radius: 8px; text-align: center;">
+                            <i class="fa fa-spinner fa-spin fa-2x text-primary mb-2"></i>
+                            <p class="mb-0">Preparando exportação...</p>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(loadingElement);
+            }
+            loadingElement.style.display = 'block';
+        } else {
+            const loadingElement = document.getElementById('export-loading-overlay');
+            if (loadingElement) {
+                loadingElement.style.display = 'none';
+            }
+        }
+    }
+    
+    /**
+     * Mostra mensagem de sucesso
+     */
+    function mostrarMensagemSucesso(mensagem) {
+        // Criar toast de sucesso
+        const toast = document.createElement('div');
+        toast.className = 'alert alert-success';
+        toast.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            min-width: 300px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            border: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        `;
+        toast.innerHTML = `
+            <i class="fa fa-check-circle mr-2"></i>
+            ${mensagem}
+            <button type="button" class="close" onclick="this.parentElement.remove()">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        // Animar entrada
+        setTimeout(() => {
+            toast.style.opacity = '1';
+        }, 100);
+        
+        // Remover automaticamente após 3 segundos
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.parentElement.removeChild(toast);
+                }
+            }, 300);
+        }, 3000);
+    }
+    
+    // ==================== FUNÇÃO DE TESTE ====================
+    
+    /**
+     * Função para testar se as exportações estão funcionando
+     */
+    function testarExportacao() {
+        console.log('=== INICIANDO TESTE DE EXPORTAÇÃO ===');
+        console.log('Dados globais disponíveis:', dadosGlobais);
+        console.log('Gráficos disponíveis:', Object.keys(graficos));
+        
+        // Testar se dadosGlobais está carregado
+        if (!dadosGlobais || Object.keys(dadosGlobais).length === 0) {
+            alert('⚠️ Dados não carregados ainda. Aguarde o carregamento da dashboard.');
+            return;
+        }
+        
+        // Testar se os gráficos estão disponíveis
+        if (!graficos || Object.keys(graficos).length === 0) {
+            alert('⚠️ Gráficos não carregados ainda. Aguarde o carregamento da dashboard.');
+            return;
+        }
+        
+        // Testar exportação CSV simples
+        try {
+            const tags = dadosGlobais.top_tags || [];
+            if (tags.length > 0) {
+                let csvContent = 'Tag,Quantidade\n';
+                tags.slice(0, 3).forEach(tag => {
+                    csvContent += `"${tag.tag}",${tag.total}\n`;
+                });
+                
+                const blob = new Blob([csvContent], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                downloadFile(url, 'teste-tags.csv');
+                URL.revokeObjectURL(url);
+                
+                mostrarMensagemSucesso('✅ Teste de CSV bem-sucedido!');
+                console.log('✅ Teste CSV: OK');
+            }
+        } catch (error) {
+            console.error('❌ Erro no teste CSV:', error);
+            alert('❌ Erro no teste CSV: ' + error.message);
+        }
+        
+        // Testar exportação PNG de gráfico
+        try {
+            const primeiroGrafico = Object.keys(graficos)[0];
+            if (primeiroGrafico && graficos[primeiroGrafico]) {
+                const canvas = graficos[primeiroGrafico].canvas;
+                const url = canvas.toDataURL('image/png');
+                downloadFile(url, 'teste-grafico.png');
+                
+                mostrarMensagemSucesso('✅ Teste de PNG bem-sucedido!');
+                console.log('✅ Teste PNG: OK');
+            }
+        } catch (error) {
+            console.error('❌ Erro no teste PNG:', error);
+            alert('❌ Erro no teste PNG: ' + error.message);
+        }
+        
+        console.log('=== TESTE DE EXPORTAÇÃO CONCLUÍDO ===');
+    }
+});
+</script>
+
+<style>
+.dashboard-card {
+    transition: transform 0.2s ease;
     border: 1px solid #dee2e6;
 }
 
@@ -1276,6 +2358,108 @@ $(document).ready(function() {
 /* Tooltips para barras de progresso */
 .progress[title]:hover {
     cursor: help;
+}
+
+/* Estilos para botões de exportação */
+.btn-export {
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    min-width: 50px;
+    border-radius: 4px;
+    opacity: 0.8;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-export:hover {
+    opacity: 1;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-export i {
+    font-size: 10px;
+}
+
+.btn-export.btn-outline-primary:hover {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+}
+
+.btn-export.btn-outline-success:hover {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
+}
+
+.btn-export.btn-outline-info:hover {
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+    color: white;
+}
+
+/* Responsividade para botões de exportação */
+@media (max-width: 768px) {
+    .btn-export {
+        padding: 3px 8px;
+        font-size: 10px;
+        min-width: 45px;
+        margin-bottom: 2px;
+    }
+    
+    .btn-export i {
+        font-size: 9px;
+    }
+    
+    .card-header .btn-group {
+        flex-wrap: wrap;
+        gap: 3px;
+    }
+    
+    .card-header.d-flex {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .card-header .btn-group {
+        margin-top: 8px;
+        justify-content: center;
+    }
+}
+
+/* Animação de loading para exportação */
+.export-loading {
+    position: relative;
+}
+
+.export-loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255,255,255,0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.export-loading::before {
+    content: '\f110';
+    font-family: FontAwesome;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    color: #007bff;
+    animation: fa-spin 1s infinite linear;
+    z-index: 1001;
 }
 </style>
 @endsection
