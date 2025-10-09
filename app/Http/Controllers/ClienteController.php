@@ -593,12 +593,1057 @@ class ClienteController extends Controller
                 foreach($remover as $excluir) {
                     $excluir->delete();
                 }
-
-
             } catch(\Exception $e) {
                 throw new \RuntimeException($e);
             }
         }
+    }
+
+    /**
+     * Dashboard principal do cliente
+     */
+    public function dashboard(Request $request): View
+    {
+        try {
+            Session::put('url', 'cliente-dashboard');
+            Session::put('sub-menu', 'cliente-dashboard');
+            
+            // Obtém o cliente logado
+            if (Auth::user()->hasRole('cliente')) {
+                $clienteId = $this->client_id;
+            } else {
+                $clienteId = $request->cliente;
+            }
+            
+            if (!$clienteId) {
+                return redirect('cliente')->with('error', 'Cliente não identificado');
+            }
+            
+            $cliente = Cliente::find($clienteId);
+            if (!$cliente) {
+                return redirect('cliente')->with('error', 'Cliente não encontrado');
+            }
+            
+            // Flags de permissões
+            $fl_sentimento = $cliente->fl_sentimento ? true : false;
+            $fl_retorno_midia = $cliente->fl_retorno_midia ? true : false;
+            $fl_areas = $cliente->fl_areas ? true : false;
+            
+            return view('cliente/dashboard', compact('cliente', 'fl_sentimento', 'fl_retorno_midia', 'fl_areas'));
+            
+        } catch (\Exception $e) {
+            Log::error('Erro no dashboard do cliente: ' . $e->getMessage());
+            return redirect('cliente')->with('error', 'Erro ao carregar dashboard');
+        }
+    }
+
+    /**
+     * API para buscar dados do dashboard do cliente
+     */
+    public function dadosDashboard(Request $request): JsonResponse
+    {
+        try {
+            // Obtém o cliente logado
+            if (Auth::user()->hasRole('cliente')) {
+                $clienteId = $this->client_id;
+            } else {
+                $clienteId = $request->cliente;
+            }
+            
+            if (!$clienteId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cliente não identificado'
+                ], 400);
+            }
+            
+            $cliente = Cliente::find($clienteId);
+            if (!$cliente) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cliente não encontrado'
+                ], 404);
+            }
+            
+            // Período padrão: últimos 7 dias
+            $periodo = $request->get('periodo', '7');
+            $dataFim = Carbon::now();
+            
+            switch($periodo) {
+                case '7':
+                    $dataInicio = $dataFim->copy()->subDays(7);
+                    break;
+                case '14':
+                    $dataInicio = $dataFim->copy()->subDays(14);
+                    break;
+                case '30':
+                    $dataInicio = $dataFim->copy()->subDays(30);
+                    break;
+                case 'mes_anterior':
+                    $dataInicio = $dataFim->copy()->subMonth()->startOfMonth();
+                    break;
+                default:
+                    $dataInicio = $dataFim->copy()->subDays(30);
+                    break;
+            }
+            
+            if ($periodo === 'mes_anterior') {
+                $dataFim = $dataFim->copy()->subMonth()->endOfMonth();
+            }
+            
+            // Busca dados do dashboard
+            $dados = $this->buscarDadosDashboard($clienteId, $dataInicio, $dataFim, $cliente);
+            
+            return response()->json([
+                'success' => true, 
+                'dados' => $dados,
+                'periodo' => [
+                    'inicio' => $dataInicio->format('Y-m-d'),
+                    'fim' => $dataFim->format('Y-m-d'),
+                    'periodo_selecionado' => $periodo
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::error('Erro ao buscar dados do dashboard: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao buscar dados do dashboard: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    
+    /**
+     * Busca dados consolidados para o dashboard
+     */
+    private function buscarDadosDashboard($clienteId, $dataInicio, $dataFim, $cliente)
+    {
+        $dados = [];
+        
+        // Total de notícias por tipo de mídia
+        $dados['totais_midia'] = $this->obterTotaisPorMidia($clienteId, $dataInicio, $dataFim, $cliente);
+        
+        // Evolução temporal (últimos 7 dias)
+        $dados['evolucao_temporal'] = $this->obterEvolucaoTemporal($clienteId, $dataInicio, $dataFim, $cliente);
+        
+        // Top fontes/veículos
+        $dados['top_fontes'] = $this->obterTopFontes($clienteId, $dataInicio, $dataFim, $cliente);
+        
+        // Tags mais utilizadas
+        $dados['top_tags'] = $this->obterTopTags($clienteId, $dataInicio, $dataFim, $cliente);
+        
+        // Distribuição por sentimento (se habilitado)
+        if ($cliente->fl_sentimento) {
+            $dados['sentimentos'] = $this->obterDistribuicaoSentimento($clienteId, $dataInicio, $dataFim, $cliente);
+            $dados['sentimentos_por_midia'] = $this->obterSentimentoPorMidia($clienteId, $dataInicio, $dataFim, $cliente);
+        }
+        
+        // Retorno de mídia (se habilitado)
+        if ($cliente->fl_retorno_midia) {
+            $dados['retorno_midia'] = $this->obterRetornoMidia($clienteId, $dataInicio, $dataFim, $cliente);
+            $dados['ranking_veiculos_retorno'] = $this->obterRankingVeiculosRetorno($clienteId, $dataInicio, $dataFim, $cliente);
+        }
+        
+        // Top áreas (se habilitado)
+        if ($cliente->fl_areas) {
+            $dados['top_areas'] = $this->obterTopAreas($clienteId, $dataInicio, $dataFim, $cliente);
+        }
+        
+        // Nuvem de palavras-chave das notícias
+        $dados['palavras_chave'] = $this->obterPalavrasChave($clienteId, $dataInicio, $dataFim, $cliente);
+        
+        return $dados;
+    }
+    
+    /**
+     * Obtém totais de notícias por tipo de mídia
+     */
+    private function obterTotaisPorMidia($clienteId, $dataInicio, $dataFim, $cliente)
+    {
+        $totais = [
+            'web' => 0,
+            'tv' => 0,
+            'radio' => 0,
+            'impresso' => 0,
+            'total' => 0
+        ];
+        
+        // Web (tipo_id = 2) - usar data_noticia
+        if ($cliente->fl_web) {
+            $totais['web'] = DB::table('noticia_cliente as nc')
+                ->join('noticias_web as nw', 'nc.noticia_id', '=', 'nw.id')
+                ->where('nc.cliente_id', $clienteId)
+                ->where('nc.tipo_id', 2)
+                ->whereBetween('nw.data_noticia', [$dataInicio, $dataFim])
+                ->whereNull('nc.deleted_at')
+                ->whereNull('nw.deleted_at')
+                ->count();
+        }
+        
+        // TV (tipo_id = 4)
+        if ($cliente->fl_tv) {
+            $totais['tv'] = DB::table('noticia_cliente as nc')
+                ->join('noticia_tv as nt', 'nc.noticia_id', '=', 'nt.id')
+                ->where('nc.cliente_id', $clienteId)
+                ->where('nc.tipo_id', 4)
+                ->whereBetween('nt.created_at', [$dataInicio, $dataFim])
+                ->whereNull('nc.deleted_at')
+                ->whereNull('nt.deleted_at')
+                ->count();
+        }
+        
+        // Rádio (tipo_id = 3)
+        if ($cliente->fl_radio) {
+            $totais['radio'] = DB::table('noticia_cliente as nc')
+                ->join('noticia_radio as nr', 'nc.noticia_id', '=', 'nr.id')
+                ->where('nc.cliente_id', $clienteId)
+                ->where('nc.tipo_id', 3)
+                ->whereBetween('nr.created_at', [$dataInicio, $dataFim])
+                ->whereNull('nc.deleted_at')
+                ->whereNull('nr.deleted_at')
+                ->count();
+        }
+        
+        // Impresso (tipo_id = 1)
+        if ($cliente->fl_impresso) {
+            $totais['impresso'] = DB::table('noticia_cliente as nc')
+                ->join('noticia_impresso as ni', 'nc.noticia_id', '=', 'ni.id')
+                ->where('nc.cliente_id', $clienteId)
+                ->where('nc.tipo_id', 1)
+                ->whereBetween('ni.created_at', [$dataInicio, $dataFim])
+                ->whereNull('nc.deleted_at')
+                ->whereNull('ni.deleted_at')
+                ->count();
+        }
+        
+        $totais['total'] = array_sum([$totais['web'], $totais['tv'], $totais['radio'], $totais['impresso']]);
+        
+        return $totais;
+    }
+    
+    /**
+     * Obtém evolução temporal das notícias (últimos 7 dias)
+     */
+    private function obterEvolucaoTemporal($clienteId, $dataInicio, $dataFim, $cliente)
+    {
+        $evolucao = [];
+        $dataAtual = $dataInicio->copy();
+        
+        while ($dataAtual <= $dataFim) {
+            $dataStr = $dataAtual->format('Y-m-d');
+            $dataProxima = $dataAtual->copy()->addDay();
+            
+            $total = 0;
+            
+            // Web (tipo_id = 2) - usar data_noticia
+            if ($cliente->fl_web) {
+                $total += DB::table('noticia_cliente as nc')
+                    ->join('noticias_web as nw', 'nc.noticia_id', '=', 'nw.id')
+                    ->where('nc.cliente_id', $clienteId)
+                    ->where('nc.tipo_id', 2)
+                    ->whereBetween('nw.data_noticia', [$dataAtual, $dataProxima])
+                    ->whereNull('nc.deleted_at')
+                    ->whereNull('nw.deleted_at')
+                    ->count();
+            }
+            
+            // TV (tipo_id = 4)
+            if ($cliente->fl_tv) {
+                $total += DB::table('noticia_cliente as nc')
+                    ->join('noticia_tv as nt', 'nc.noticia_id', '=', 'nt.id')
+                    ->where('nc.cliente_id', $clienteId)
+                    ->where('nc.tipo_id', 4)
+                    ->whereBetween('nt.created_at', [$dataAtual, $dataProxima])
+                    ->whereNull('nc.deleted_at')
+                    ->whereNull('nt.deleted_at')
+                    ->count();
+            }
+            
+            // Rádio (tipo_id = 3)
+            if ($cliente->fl_radio) {
+                $total += DB::table('noticia_cliente as nc')
+                    ->join('noticia_radio as nr', 'nc.noticia_id', '=', 'nr.id')
+                    ->where('nc.cliente_id', $clienteId)
+                    ->where('nc.tipo_id', 3)
+                    ->whereBetween('nr.created_at', [$dataAtual, $dataProxima])
+                    ->whereNull('nc.deleted_at')
+                    ->whereNull('nr.deleted_at')
+                    ->count();
+            }
+            
+            // Impresso (tipo_id = 1)
+            if ($cliente->fl_impresso) {
+                $total += DB::table('noticia_cliente as nc')
+                    ->join('noticia_impresso as ni', 'nc.noticia_id', '=', 'ni.id')
+                    ->where('nc.cliente_id', $clienteId)
+                    ->where('nc.tipo_id', 1)
+                    ->whereBetween('ni.created_at', [$dataAtual, $dataProxima])
+                    ->whereNull('nc.deleted_at')
+                    ->whereNull('ni.deleted_at')
+                    ->count();
+            }
+            
+            $evolucao[] = [
+                'data' => $dataStr,
+                'total' => $total
+            ];
+            
+            $dataAtual->addDay();
+        }
+        
+        return $evolucao;
+    }
+    
+    /**
+     * Obtém top fontes/veículos separados por tipo de mídia
+     */
+    private function obterTopFontes($clienteId, $dataInicio, $dataFim, $cliente)
+    {
+        $resultado = [
+            'web' => [],
+            'impresso' => [],
+            'radio' => [],
+            'tv' => []
+        ];
+        
+        try {
+            // Web - usando fonte_web
+            if ($cliente->fl_web) {
+                $fontesWeb = DB::table('noticia_cliente as nc')
+                    ->join('noticias_web as nw', 'nc.noticia_id', '=', 'nw.id')
+                    ->leftJoin('fonte_web as fw', 'nw.id_fonte', '=', 'fw.id')
+                    ->where('nc.cliente_id', $clienteId)
+                    ->where('nc.tipo_id', 2)
+                    ->whereBetween('nw.created_at', [$dataInicio, $dataFim])
+                    ->whereNull('nc.deleted_at')
+                    ->whereNull('nw.deleted_at')
+                    ->select(DB::raw('COALESCE(fw.nome, \'Fonte não identificada\') as fonte'), DB::raw('COUNT(*) as total'))
+                    ->groupBy('fw.nome')
+                    ->orderBy('total', 'desc')
+                    ->limit(10)
+                    ->get();
+                
+                $resultado['web'] = $fontesWeb->toArray();
+            }
+            
+            // Impresso - usando jornal_online
+            if ($cliente->fl_impresso) {
+                $fontesImpresso = DB::table('noticia_cliente as nc')
+                    ->join('noticia_impresso as ni', 'nc.noticia_id', '=', 'ni.id')
+                    ->leftJoin('jornal_online as fi', 'ni.id_fonte', '=', 'fi.id')
+                    ->where('nc.cliente_id', $clienteId)
+                    ->where('nc.tipo_id', 1)
+                    ->whereBetween('ni.created_at', [$dataInicio, $dataFim])
+                    ->whereNull('nc.deleted_at')
+                    ->whereNull('ni.deleted_at')
+                    ->select(DB::raw('COALESCE(fi.nome, \'Fonte não identificada\') as fonte'), DB::raw('COUNT(*) as total'))
+                    ->groupBy('fi.nome')
+                    ->orderBy('total', 'desc')
+                    ->limit(10)
+                    ->get();
+                
+                $resultado['impresso'] = $fontesImpresso->toArray();
+            }
+            
+            // Rádio - usando emissora_radio
+            if ($cliente->fl_radio) {
+                $fontesRadio = DB::table('noticia_cliente as nc')
+                    ->join('noticia_radio as nr', 'nc.noticia_id', '=', 'nr.id')
+                    ->leftJoin('emissora_radio as er', 'nr.emissora_id', '=', 'er.id')
+                    ->where('nc.cliente_id', $clienteId)
+                    ->where('nc.tipo_id', 3)
+                    ->whereBetween('nr.created_at', [$dataInicio, $dataFim])
+                    ->whereNull('nc.deleted_at')
+                    ->whereNull('nr.deleted_at')
+                    ->select(DB::raw('COALESCE(er.nome_emissora, \'Fonte não identificada\') as fonte'), DB::raw('COUNT(*) as total'))
+                    ->groupBy('er.nome_emissora')
+                    ->orderBy('total', 'desc')
+                    ->limit(10)
+                    ->get();
+                
+                $resultado['radio'] = $fontesRadio->toArray();
+            }
+            
+            // TV - usando emissora_web
+            if ($cliente->fl_tv) {
+                $fontesTv = DB::table('noticia_cliente as nc')
+                    ->join('noticia_tv as nt', 'nc.noticia_id', '=', 'nt.id')
+                    ->leftJoin('emissora_web as ew', 'nt.emissora_id', '=', 'ew.id')
+                    ->where('nc.cliente_id', $clienteId)
+                    ->where('nc.tipo_id', 4)
+                    ->whereBetween('nt.created_at', [$dataInicio, $dataFim])
+                    ->whereNull('nc.deleted_at')
+                    ->whereNull('nt.deleted_at')
+                    ->select(DB::raw('COALESCE(ew.nome_emissora, \'Fonte não identificada\') as fonte'), DB::raw('COUNT(*) as total'))
+                    ->groupBy('ew.nome_emissora')
+                    ->orderBy('total', 'desc')
+                    ->limit(10)
+                    ->get();
+                
+                $resultado['tv'] = $fontesTv->toArray();
+            }
+            
+        } catch (\Exception $e) {
+            Log::warning('Erro ao buscar fontes: ' . $e->getMessage());
+        }
+        
+        return $resultado;
+    }
+    
+    /**
+     * Obtém tags mais utilizadas
+     */
+    private function obterTopTags($clienteId, $dataInicio, $dataFim, $cliente)
+    {
+        $tags = [];
+        
+        try {
+            // Busca tags através da tabela noticia_cliente -> misc_data
+            $noticiasTags = DB::table('noticia_cliente as nc')
+                ->where('nc.cliente_id', $clienteId)
+                ->whereNotNull('nc.misc_data')
+                ->whereNull('nc.deleted_at')
+                ->pluck('nc.misc_data');
+                
+            foreach ($noticiasTags as $miscData) {
+                try {
+                    $data = json_decode($miscData, true);
+                    if (isset($data['tags_noticia']) && is_array($data['tags_noticia'])) {
+                        foreach ($data['tags_noticia'] as $tag) {
+                            if (!empty(trim($tag))) {
+                                $tags[] = trim($tag);
+                            }
+                        }
+                    }
+                } catch (\Exception $e) {
+                    // Ignora erros de parsing
+                    continue;
+                }
+            }
+        } catch (\Exception $e) {
+            Log::warning('Erro ao buscar tags: ' . $e->getMessage());
+        }
+        
+        // Conta frequência das tags
+        $tagCount = array_count_values($tags);
+        arsort($tagCount);
+        
+        // Converte para array de objetos
+        $result = [];
+        foreach ($tagCount as $tag => $count) {
+            $result[] = [
+                'tag' => $tag,
+                'total' => $count
+            ];
+        }
+        
+        return array_slice($result, 0, 10); // Top 10
+    }
+    
+    /**
+     * Obtém distribuição por sentimento
+     */
+    private function obterDistribuicaoSentimento($clienteId, $dataInicio, $dataFim, $cliente)
+    {
+        $sentimentos = [
+            'positivo' => 0,
+            'neutro' => 0,
+            'negativo' => 0
+        ];
+        
+        try {
+            // Coletar sentimentos de todas as mídias habilitadas
+            $allSentiments = collect();
+            
+            // Web - usar data_noticia
+            if ($cliente->fl_web) {
+                $webSenti = DB::table('noticia_cliente as nc')
+                    ->join('noticias_web as nw', 'nc.noticia_id', '=', 'nw.id')
+                    ->where('nc.cliente_id', $clienteId)
+                    ->where('nc.tipo_id', 2)
+                    ->whereBetween('nw.data_noticia', [$dataInicio, $dataFim])
+                    ->whereNull('nc.deleted_at')
+                    ->whereNull('nw.deleted_at')
+                    ->select('nc.sentimento')
+                    ->get();
+                $allSentiments = $allSentiments->merge($webSenti);
+            }
+            
+            // TV
+            if ($cliente->fl_tv) {
+                $tvSenti = DB::table('noticia_cliente as nc')
+                    ->join('noticia_tv as nt', 'nc.noticia_id', '=', 'nt.id')
+                    ->where('nc.cliente_id', $clienteId)
+                    ->where('nc.tipo_id', 4)
+                    ->whereBetween('nt.created_at', [$dataInicio, $dataFim])
+                    ->whereNull('nc.deleted_at')
+                    ->whereNull('nt.deleted_at')
+                    ->select('nc.sentimento')
+                    ->get();
+                $allSentiments = $allSentiments->merge($tvSenti);
+            }
+            
+            // Rádio
+            if ($cliente->fl_radio) {
+                $radioSenti = DB::table('noticia_cliente as nc')
+                    ->join('noticia_radio as nr', 'nc.noticia_id', '=', 'nr.id')
+                    ->where('nc.cliente_id', $clienteId)
+                    ->where('nc.tipo_id', 3)
+                    ->whereBetween('nr.created_at', [$dataInicio, $dataFim])
+                    ->whereNull('nc.deleted_at')
+                    ->whereNull('nr.deleted_at')
+                    ->select('nc.sentimento')
+                    ->get();
+                $allSentiments = $allSentiments->merge($radioSenti);
+            }
+            
+            // Impresso
+            if ($cliente->fl_impresso) {
+                $impressoSenti = DB::table('noticia_cliente as nc')
+                    ->join('noticia_impresso as ni', 'nc.noticia_id', '=', 'ni.id')
+                    ->where('nc.cliente_id', $clienteId)
+                    ->where('nc.tipo_id', 1)
+                    ->whereBetween('ni.created_at', [$dataInicio, $dataFim])
+                    ->whereNull('nc.deleted_at')
+                    ->whereNull('ni.deleted_at')
+                    ->select('nc.sentimento')
+                    ->get();
+                $allSentiments = $allSentiments->merge($impressoSenti);
+            }
+            
+            // Contar sentimentos (null = positivo conforme regra do usuário)
+            foreach ($allSentiments as $item) {
+                if ($item->sentimento == 1 || $item->sentimento === null) {
+                    $sentimentos['positivo']++;
+                } elseif ($item->sentimento == -1) {
+                    $sentimentos['negativo']++;
+                } else {
+                    $sentimentos['neutro']++;
+                }
+            }
+            
+        } catch (\Exception $e) {
+            Log::warning('Erro ao buscar sentimentos: ' . $e->getMessage());
+        }
+        
+        return $sentimentos;
+    }
+    
+    /**
+     * Obtém distribuição por sentimento separado por mídia
+     */
+    private function obterSentimentoPorMidia($clienteId, $dataInicio, $dataFim, $cliente)
+    {
+        $resultado = [
+            'web' => ['positivo' => 0, 'neutro' => 0, 'negativo' => 0],
+            'tv' => ['positivo' => 0, 'neutro' => 0, 'negativo' => 0],
+            'radio' => ['positivo' => 0, 'neutro' => 0, 'negativo' => 0],
+            'impresso' => ['positivo' => 0, 'neutro' => 0, 'negativo' => 0]
+        ];
+        
+        try {
+            // Web - usar data_noticia
+            if ($cliente->fl_web) {
+                $webSenti = DB::table('noticia_cliente as nc')
+                    ->join('noticias_web as nw', 'nc.noticia_id', '=', 'nw.id')
+                    ->where('nc.cliente_id', $clienteId)
+                    ->where('nc.tipo_id', 2)
+                    ->whereBetween('nw.data_noticia', [$dataInicio, $dataFim])
+                    ->whereNull('nc.deleted_at')
+                    ->whereNull('nw.deleted_at')
+                    ->select('nc.sentimento')
+                    ->get();
+                
+                foreach ($webSenti as $item) {
+                    if ($item->sentimento == 1 || $item->sentimento === null) {
+                        $resultado['web']['positivo']++;
+                    } elseif ($item->sentimento == -1) {
+                        $resultado['web']['negativo']++;
+                    } else {
+                        $resultado['web']['neutro']++;
+                    }
+                }
+            }
+            
+            // TV
+            if ($cliente->fl_tv) {
+                $tvSenti = DB::table('noticia_cliente as nc')
+                    ->join('noticia_tv as nt', 'nc.noticia_id', '=', 'nt.id')
+                    ->where('nc.cliente_id', $clienteId)
+                    ->where('nc.tipo_id', 4)
+                    ->whereBetween('nt.created_at', [$dataInicio, $dataFim])
+                    ->whereNull('nc.deleted_at')
+                    ->whereNull('nt.deleted_at')
+                    ->select('nc.sentimento')
+                    ->get();
+                
+                foreach ($tvSenti as $item) {
+                    if ($item->sentimento == 1 || $item->sentimento === null) {
+                        $resultado['tv']['positivo']++;
+                    } elseif ($item->sentimento == -1) {
+                        $resultado['tv']['negativo']++;
+                    } else {
+                        $resultado['tv']['neutro']++;
+                    }
+                }
+            }
+            
+            // Rádio
+            if ($cliente->fl_radio) {
+                $radioSenti = DB::table('noticia_cliente as nc')
+                    ->join('noticia_radio as nr', 'nc.noticia_id', '=', 'nr.id')
+                    ->where('nc.cliente_id', $clienteId)
+                    ->where('nc.tipo_id', 3)
+                    ->whereBetween('nr.created_at', [$dataInicio, $dataFim])
+                    ->whereNull('nc.deleted_at')
+                    ->whereNull('nr.deleted_at')
+                    ->select('nc.sentimento')
+                    ->get();
+                
+                foreach ($radioSenti as $item) {
+                    if ($item->sentimento == 1 || $item->sentimento === null) {
+                        $resultado['radio']['positivo']++;
+                    } elseif ($item->sentimento == -1) {
+                        $resultado['radio']['negativo']++;
+                    } else {
+                        $resultado['radio']['neutro']++;
+                    }
+                }
+            }
+            
+            // Impresso
+            if ($cliente->fl_impresso) {
+                $impressoSenti = DB::table('noticia_cliente as nc')
+                    ->join('noticia_impresso as ni', 'nc.noticia_id', '=', 'ni.id')
+                    ->where('nc.cliente_id', $clienteId)
+                    ->where('nc.tipo_id', 1)
+                    ->whereBetween('ni.created_at', [$dataInicio, $dataFim])
+                    ->whereNull('nc.deleted_at')
+                    ->whereNull('ni.deleted_at')
+                    ->select('nc.sentimento')
+                    ->get();
+                
+                foreach ($impressoSenti as $item) {
+                    if ($item->sentimento == 1 || $item->sentimento === null) {
+                        $resultado['impresso']['positivo']++;
+                    } elseif ($item->sentimento == -1) {
+                        $resultado['impresso']['negativo']++;
+                    } else {
+                        $resultado['impresso']['neutro']++;
+                    }
+                }
+            }
+            
+        } catch (\Exception $e) {
+            Log::warning('Erro ao buscar sentimentos por mídia: ' . $e->getMessage());
+        }
+        
+        return $resultado;
+    }
+    
+    /**
+     * Obtém dados de retorno de mídia
+     */
+    private function obterRetornoMidia($clienteId, $dataInicio, $dataFim, $cliente)
+    {
+        $retorno = [
+            'web' => 0,
+            'tv' => 0,
+            'radio' => 0,
+            'impresso' => 0,
+            'total' => 0
+        ];
+        
+        try {
+            // Web
+            if ($cliente->fl_web) {
+                $retorno['web'] = DB::table('noticia_cliente as nc')
+                    ->join('noticias_web as nw', 'nc.noticia_id', '=', 'nw.id')
+                    ->where('nc.cliente_id', $clienteId)
+                    ->where('nc.tipo_id', 2)
+                    ->whereBetween('nw.created_at', [$dataInicio, $dataFim])
+                    ->whereNull('nc.deleted_at')
+                    ->whereNull('nw.deleted_at')
+                    ->sum('nw.nu_valor') ?? 0;
+            }
+            
+            // TV
+            if ($cliente->fl_tv) {
+                $retorno['tv'] = DB::table('noticia_cliente as nc')
+                    ->join('noticia_tv as nt', 'nc.noticia_id', '=', 'nt.id')
+                    ->where('nc.cliente_id', $clienteId)
+                    ->where('nc.tipo_id', 4)
+                    ->whereBetween('nt.created_at', [$dataInicio, $dataFim])
+                    ->whereNull('nc.deleted_at')
+                    ->whereNull('nt.deleted_at')
+                    ->sum('nt.valor_retorno') ?? 0;
+            }
+            
+            // Rádio
+            if ($cliente->fl_radio) {
+                $retorno['radio'] = DB::table('noticia_cliente as nc')
+                    ->join('noticia_radio as nr', 'nc.noticia_id', '=', 'nr.id')
+                    ->where('nc.cliente_id', $clienteId)
+                    ->where('nc.tipo_id', 3)
+                    ->whereBetween('nr.created_at', [$dataInicio, $dataFim])
+                    ->whereNull('nc.deleted_at')
+                    ->whereNull('nr.deleted_at')
+                    ->sum('nr.valor_retorno') ?? 0;
+            }
+            
+            // Impresso
+            if ($cliente->fl_impresso) {
+                $retorno['impresso'] = DB::table('noticia_cliente as nc')
+                    ->join('noticia_impresso as ni', 'nc.noticia_id', '=', 'ni.id')
+                    ->where('nc.cliente_id', $clienteId)
+                    ->where('nc.tipo_id', 1)
+                    ->whereBetween('ni.created_at', [$dataInicio, $dataFim])
+                    ->whereNull('nc.deleted_at')
+                    ->whereNull('ni.deleted_at')
+                    ->sum('ni.valor_retorno') ?? 0;
+            }
+        } catch (\Exception $e) {
+            Log::warning('Erro ao buscar retorno de mídia: ' . $e->getMessage());
+        }
+        
+        $retorno['total'] = array_sum([$retorno['web'], $retorno['tv'], $retorno['radio'], $retorno['impresso']]);
+        
+        return $retorno;
+    }
+    
+    /**
+     * Obtém top áreas
+     */
+    private function obterTopAreas($clienteId, $dataInicio, $dataFim, $cliente)
+    {
+        $areas = [];
+        
+        try {
+            $areasData = DB::table('noticia_cliente as nc')
+                ->join('areas as a', 'nc.area', '=', 'a.id')
+                ->where('nc.cliente_id', $clienteId)
+                ->whereNull('nc.deleted_at')
+                ->whereNull('a.deleted_at')
+                ->select('a.descricao as area', DB::raw('COUNT(*) as total'))
+                ->groupBy('a.descricao')
+                ->get();
+            
+            foreach ($areasData as $area) {
+                $areas[] = [
+                    'area' => $area->area,
+                    'total' => $area->total
+                ];
+            }
+            
+            // Ordena por total
+            usort($areas, function($a, $b) {
+                return $b['total'] - $a['total'];
+            });
+        } catch (\Exception $e) {
+            Log::warning('Erro ao buscar áreas: ' . $e->getMessage());
+        }
+        
+        return array_slice($areas, 0, 10); // Top 10 
+    }
+    
+    /**
+     * Obtém ranking de veículos por retorno de mídia
+     */
+    private function obterRankingVeiculosRetorno($clienteId, $dataInicio, $dataFim, $cliente)
+    {
+        $rankingVeiculos = [
+            'web' => [],
+            'tv' => [],
+            'radio' => [],
+            'impresso' => []
+        ];
+        
+        try {
+            // Web - Ranking por fonte
+            if ($cliente->fl_web) {
+                $webVeiculos = DB::table('noticia_cliente as nc')
+                    ->join('noticias_web as nw', 'nc.noticia_id', '=', 'nw.id')
+                    ->join('fonte_web as fw', 'nw.id_fonte', '=', 'fw.id')
+                    ->where('nc.cliente_id', $clienteId)
+                    ->where('nc.tipo_id', 2)
+                    ->whereBetween('nw.created_at', [$dataInicio, $dataFim])
+                    ->whereNull('nc.deleted_at')
+                    ->whereNull('nw.deleted_at')
+                    ->whereNotNull('nw.nu_valor')
+                    ->where('nw.nu_valor', '>', 0)
+                    ->select(
+                        'fw.nome as veiculo',
+                        DB::raw('SUM(nw.nu_valor) as valor_total'),
+                        DB::raw('COUNT(*) as total_noticias')
+                    )
+                    ->groupBy('fw.nome')
+                    ->orderBy('valor_total', 'desc')
+                    ->limit(10)
+                    ->get();
+                    
+                foreach ($webVeiculos as $veiculo) {
+                    $rankingVeiculos['web'][] = [
+                        'veiculo' => $veiculo->veiculo,
+                        'valor_total' => (float) $veiculo->valor_total,
+                        'total_noticias' => (int) $veiculo->total_noticias
+                    ];
+                }
+            }
+            
+            // TV - Ranking por emissora
+            if ($cliente->fl_tv) {
+                $tvVeiculos = DB::table('noticia_cliente as nc')
+                    ->join('noticia_tv as nt', 'nc.noticia_id', '=', 'nt.id')
+                    ->join('emissora_web as ew', 'nt.emissora_id', '=', 'ew.id')
+                    ->where('nc.cliente_id', $clienteId)
+                    ->where('nc.tipo_id', 4)
+                    ->whereBetween('nt.created_at', [$dataInicio, $dataFim])
+                    ->whereNull('nc.deleted_at')
+                    ->whereNull('nt.deleted_at')
+                    ->whereNotNull('nt.valor_retorno')
+                    ->where('nt.valor_retorno', '>', 0)
+                    ->select(
+                        'ew.nome_emissora as veiculo',
+                        DB::raw('SUM(nt.valor_retorno) as valor_total'),
+                        DB::raw('COUNT(*) as total_noticias')
+                    )
+                    ->groupBy('ew.nome_emissora')
+                    ->orderBy('valor_total', 'desc')
+                    ->limit(10)
+                    ->get();
+                    
+                foreach ($tvVeiculos as $veiculo) {
+                    $rankingVeiculos['tv'][] = [
+                        'veiculo' => $veiculo->veiculo,
+                        'valor_total' => (float) $veiculo->valor_total,
+                        'total_noticias' => (int) $veiculo->total_noticias
+                    ];
+                }
+            }
+            
+            // Rádio - Ranking por emissora
+            if ($cliente->fl_radio) {
+                $radioVeiculos = DB::table('noticia_cliente as nc')
+                    ->join('noticia_radio as nr', 'nc.noticia_id', '=', 'nr.id')
+                    ->join('emissora_radio as er', 'nr.emissora_id', '=', 'er.id')
+                    ->where('nc.cliente_id', $clienteId)
+                    ->where('nc.tipo_id', 3)
+                    ->whereBetween('nr.created_at', [$dataInicio, $dataFim])
+                    ->whereNull('nc.deleted_at')
+                    ->whereNull('nr.deleted_at')
+                    ->whereNotNull('nr.valor_retorno')
+                    ->where('nr.valor_retorno', '>', 0)
+                    ->select(
+                        'er.nome_emissora as veiculo',
+                        DB::raw('SUM(nr.valor_retorno) as valor_total'),
+                        DB::raw('COUNT(*) as total_noticias')
+                    )
+                    ->groupBy('er.nome_emissora')
+                    ->orderBy('valor_total', 'desc')
+                    ->limit(10)
+                    ->get();
+                    
+                foreach ($radioVeiculos as $veiculo) {
+                    $rankingVeiculos['radio'][] = [
+                        'veiculo' => $veiculo->veiculo,
+                        'valor_total' => (float) $veiculo->valor_total,
+                        'total_noticias' => (int) $veiculo->total_noticias
+                    ];
+                }
+            }
+            
+            // Impresso - Ranking por fonte  
+            if ($cliente->fl_impresso) {
+                $impressoVeiculos = DB::table('noticia_cliente as nc')
+                    ->join('noticia_impresso as ni', 'nc.noticia_id', '=', 'ni.id')
+                    ->join('fonte_web as fw', 'ni.id_fonte', '=', 'fw.id')
+                    ->where('nc.cliente_id', $clienteId)
+                    ->where('nc.tipo_id', 1)
+                    ->whereBetween('ni.created_at', [$dataInicio, $dataFim])
+                    ->whereNull('nc.deleted_at')
+                    ->whereNull('ni.deleted_at')
+                    ->whereNotNull('ni.valor_retorno')
+                    ->where('ni.valor_retorno', '>', 0)
+                    ->select(
+                        'fw.nome as veiculo',
+                        DB::raw('SUM(ni.valor_retorno) as valor_total'),
+                        DB::raw('COUNT(*) as total_noticias')
+                    )
+                    ->groupBy('fw.nome')
+                    ->orderBy('valor_total', 'desc')
+                    ->limit(10)
+                    ->get();
+                    
+                foreach ($impressoVeiculos as $veiculo) {
+                    $rankingVeiculos['impresso'][] = [
+                        'veiculo' => $veiculo->veiculo,
+                        'valor_total' => (float) $veiculo->valor_total,
+                        'total_noticias' => (int) $veiculo->total_noticias
+                    ];
+                }
+            }
+            
+        } catch (\Exception $e) {
+            Log::warning('Erro ao buscar ranking de veículos por retorno: ' . $e->getMessage());
+        }
+        
+        return $rankingVeiculos;
+    }
+
+    /**
+     * Obtém palavras-chave das notícias do período analisando títulos e conteúdo
+     */
+    private function obterPalavrasChave($clienteId, $dataInicio, $dataFim, $cliente)
+    {
+        $palavrasChave = [];
+        
+        try {
+            // Stopwords em português para filtrar
+            $stopwords = [
+                'a', 'ao', 'aos', 'aquela', 'aquelas', 'aquele', 'aqueles', 'aquilo', 'as', 'até', 'com', 'como', 'da', 'das', 'de', 'dela', 'delas', 'dele', 'deles', 'depois', 'do', 'dos', 'e', 'ela', 'elas', 'ele', 'eles', 'em', 'entre', 'era', 'eram', 'essa', 'essas', 'esse', 'esses', 'esta', 'está', 'estamos', 'estão', 'estar', 'estas', 'estava', 'estavam', 'este', 'esteja', 'estejam', 'estejamos', 'estes', 'esteve', 'estive', 'estivemos', 'estiver', 'estivera', 'estiveram', 'estiverem', 'estivermos', 'estivesse', 'estivessem', 'estivéramos', 'estivéssemos', 'estou', 'eu', 'foi', 'fomos', 'for', 'fora', 'foram', 'forem', 'formos', 'fosse', 'fossem', 'fui', 'fôramos', 'fôssemos', 'haja', 'hajam', 'hajamos', 'havemos', 'havia', 'hei', 'houve', 'houvemos', 'houver', 'houvera', 'houveram', 'houverei', 'houverem', 'houveremos', 'houveria', 'houveriam', 'houveríamos', 'houverá', 'houverão', 'houveríeis', 'houvesse', 'houvessem', 'houvéramos', 'houvéssemos', 'há', 'hão', 'isso', 'isto', 'já', 'lhe', 'lhes', 'mais', 'mas', 'me', 'mesmo', 'meu', 'meus', 'minha', 'minhas', 'muito', 'na', 'nas', 'nem', 'no', 'nos', 'nossa', 'nossas', 'nosso', 'nossos', 'num', 'numa', 'não', 'nós', 'o', 'os', 'ou', 'para', 'pela', 'pelas', 'pelo', 'pelos', 'por', 'qual', 'quando', 'que', 'quem', 'são', 'se', 'seja', 'sejam', 'sejamos', 'sem', 'ser', 'seu', 'seus', 'só', 'sua', 'suas', 'sou', 'também', 'te', 'tem', 'temos', 'tenha', 'tenham', 'tenhamos', 'tenho', 'ter', 'teu', 'teus', 'teve', 'tinha', 'tinham', 'tive', 'tivemos', 'tiver', 'tivera', 'tiveram', 'tiverem', 'tivermos', 'tivesse', 'tivessem', 'tivéramos', 'tivéssemos', 'tu', 'tua', 'tuas', 'tém', 'têm', 'tínhamos', 'um', 'uma', 'você', 'vocês', 'vos', 'à', 'às', 'éramos', 'és',
+                // Stopwords específicas de notícias
+                'disse', 'diz', 'segundo', 'ainda', 'pode', 'deve', 'vai', 'dia', 'ano', 'anos', 'dias', 'vez', 'vezes', 'sobre', 'após', 'durante', 'ontem', 'hoje', 'amanhã', 'agora', 'então', 'assim', 'onde', 'porque', 'então', 'cerca', 'alguns', 'todas', 'todos', 'toda', 'todo', 'outras', 'outros', 'outra', 'outro', 'apenas', 'desde', 'contra', 'através', 'durante', 'antes', 'depois', 'sempre', 'nunca', 'cada', 'qualquer', 'primeiro', 'primeira', 'último', 'última', 'próximo', 'próxima', 'anterior', 'seguinte', 'dois', 'duas', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove', 'dez', 'ser', 'ter', 'estar', 'fazer', 'dar', 'ir', 'ver', 'saber', 'poder', 'querer', 'dizer', 'vir', 'ficar', 'passar', 'chegar', 'levar', 'trazer', 'colocar', 'tirar', 'pôr', 'deixar', 'pegar', 'tomar', 'voltar', 'partir', 'abrir', 'fechar', 'começar', 'terminar', 'continuar', 'parar'
+            ];
+            
+            // Coleta todos os textos das notícias do período
+            $allTexts = [];
+            
+            // Web (tipo_id = 2) - busca em titulo_noticia, sinopse e conteudo
+            if ($cliente->fl_web) {
+                $noticiasWeb = DB::table('noticia_cliente as nc')
+                    ->join('noticias_web as nw', 'nc.noticia_id', '=', 'nw.id')
+                    ->leftJoin('conteudo_noticia_web as cnw', 'nw.id', '=', 'cnw.id_noticia_web')
+                    ->where('nc.cliente_id', $clienteId)
+                    ->where('nc.tipo_id', 2)
+                    ->whereBetween('nw.data_noticia', [$dataInicio, $dataFim])
+                    ->whereNull('nc.deleted_at')
+                    ->whereNull('nw.deleted_at')
+                    ->select('nw.titulo_noticia', 'nw.sinopse', 'cnw.conteudo')
+                    ->get();
+                    
+                foreach ($noticiasWeb as $noticia) {
+                    $texto = ($noticia->titulo_noticia ?? '') . ' ' . 
+                             ($noticia->sinopse ?? '') . ' ' . 
+                             ($noticia->conteudo ?? '');
+                    if (!empty(trim($texto))) {
+                        $allTexts[] = $texto;
+                    }
+                }
+            }
+            
+            // TV (tipo_id = 3) - busca apenas em sinopse
+            if ($cliente->fl_tv) {
+                $noticiasTV = DB::table('noticia_cliente as nc')
+                    ->join('noticia_tv as ntv', 'nc.noticia_id', '=', 'ntv.id')
+                    ->where('nc.cliente_id', $clienteId)
+                    ->where('nc.tipo_id', 3)
+                    ->whereBetween('ntv.created_at', [$dataInicio, $dataFim])
+                    ->whereNull('nc.deleted_at')
+                    ->whereNull('ntv.deleted_at')
+                    ->select('ntv.sinopse')
+                    ->get();
+                    
+                foreach ($noticiasTV as $noticia) {
+                    $texto = $noticia->sinopse ?? '';
+                    if (!empty(trim($texto))) {
+                        $allTexts[] = $texto;
+                    }
+                }
+            }
+            
+            // Rádio (tipo_id = 4) - busca em titulo e sinopse
+            if ($cliente->fl_radio) {
+                $noticiasRadio = DB::table('noticia_cliente as nc')
+                    ->join('noticia_radio as nr', 'nc.noticia_id', '=', 'nr.id')
+                    ->where('nc.cliente_id', $clienteId)
+                    ->where('nc.tipo_id', 4)
+                    ->whereBetween('nr.created_at', [$dataInicio, $dataFim])
+                    ->whereNull('nc.deleted_at')
+                    ->whereNull('nr.deleted_at')
+                    ->select('nr.titulo', 'nr.sinopse')
+                    ->get();
+                    
+                foreach ($noticiasRadio as $noticia) {
+                    $texto = ($noticia->titulo ?? '') . ' ' . ($noticia->sinopse ?? '');
+                    if (!empty(trim($texto))) {
+                        $allTexts[] = $texto;
+                    }
+                }
+            }
+            
+            // Impresso (tipo_id = 1) - busca em titulo, sinopse e texto
+            if ($cliente->fl_impresso) {
+                $noticiasImpresso = DB::table('noticia_cliente as nc')
+                    ->join('noticia_impresso as ni', 'nc.noticia_id', '=', 'ni.id')
+                    ->where('nc.cliente_id', $clienteId)
+                    ->where('nc.tipo_id', 1)
+                    ->whereBetween('ni.created_at', [$dataInicio, $dataFim])
+                    ->whereNull('nc.deleted_at')
+                    ->whereNull('ni.deleted_at')
+                    ->select('ni.titulo', 'ni.sinopse', 'ni.texto')
+                    ->get();
+                    
+                foreach ($noticiasImpresso as $noticia) {
+                    $texto = ($noticia->titulo ?? '') . ' ' . 
+                             ($noticia->sinopse ?? '') . ' ' . 
+                             ($noticia->texto ?? '');
+                    if (!empty(trim($texto))) {
+                        $allTexts[] = $texto;
+                    }
+                }
+            }
+            
+            // Processa todos os textos para extrair palavras
+            $wordCount = [];
+            
+            foreach ($allTexts as $text) {
+                // Remove pontuação e caracteres especiais, mantém apenas letras, números e espaços
+                $cleanText = preg_replace('/[^\p{L}\p{N}\s]/u', ' ', $text);
+                $cleanText = preg_replace('/\s+/', ' ', $cleanText); // Remove espaços extras
+                $cleanText = mb_strtolower(trim($cleanText), 'UTF-8');
+                
+                // Divide em palavras
+                $words = explode(' ', $cleanText);
+                
+                foreach ($words as $word) {
+                    $word = trim($word);
+                    
+                    // Filtros para palavras válidas
+                    if (strlen($word) >= 3 && // Mínimo 3 caracteres
+                        !in_array($word, $stopwords) && // Não é stopword
+                        !is_numeric($word) && // Não é apenas número
+                        preg_match('/^[\p{L}]+$/u', $word)) { // Apenas letras (remove números misturados)
+                        
+                        if (!isset($wordCount[$word])) {
+                            $wordCount[$word] = 0;
+                        }
+                        $wordCount[$word]++;
+                    }
+                }
+            }
+            
+            // Remove palavras com frequência muito baixa (aparecem apenas 1 vez)
+            $wordCount = array_filter($wordCount, function($count) {
+                return $count > 1;
+            });
+            
+            // Ordena por frequência (maior para menor)
+            arsort($wordCount);
+            
+            // Converte para formato esperado pelo frontend
+            foreach ($wordCount as $palavra => $frequencia) {
+                $palavrasChave[] = [
+                    'text' => $palavra,
+                    'size' => $frequencia,
+                    'weight' => $frequencia
+                ];
+            }
+            
+        } catch (\Exception $e) {
+            Log::warning('Erro ao buscar palavras-chave: ' . $e->getMessage());
+        }
+        
+        return array_slice($palavrasChave, 0, 100); // Top 100 palavras mais frequentes
     }
 
     public function dadosImpresso($dt_inicial, $dt_final,$cliente_selecionado, $termo)

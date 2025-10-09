@@ -35,6 +35,18 @@ class LoginController extends Controller
     protected $redirectTo = RouteServiceProvider::HOME;
 
     /**
+     * Get the redirect path based on user role
+     */
+    protected function redirectTo()
+    {
+        if (Auth::user()->hasRole('cliente')) {
+            return '/cliente/dashboard';
+        }
+        
+        return RouteServiceProvider::HOME;
+    }
+
+    /**
      * Create a new controller instance.
      *
      * @return void
@@ -56,10 +68,15 @@ class LoginController extends Controller
 
             if(Auth::user()->hasRole('cliente')){
                 Session::put('cliente', Cliente::where('id', Auth::user()->client_id)->first());
+                Session::put('data_atual', date('Y-m-d'));
+                
+                // Redireciona cliente diretamente para o dashboard
+                return redirect('cliente/dashboard');
             }
 
             Session::put('data_atual', date('Y-m-d'));
         
+            // Para outros tipos de usuário, mantém o redirecionamento padrão
             return redirect()->intended('home');
         }
   
