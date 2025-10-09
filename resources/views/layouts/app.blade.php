@@ -46,12 +46,21 @@
             </div>
             <div class="sidebar-wrapper">
                 <ul class="nav">
+                @role('cliente')
+                <li class="{{ (Session::has('url') and Session::get('url') == 'cliente-dashboard') ? 'active' : '' }}">
+                    <a href="{{ url('/cliente/dashboard') }}">
+                    <i class="nc-icon nc-chart-pie-36"></i>
+                    <p>Dashboard</p>
+                    </a>
+                </li>
+                @else
                 <li class="{{ (Session::has('url') and Session::get('url') == 'home') ? 'active' : '' }}">
                     <a href="{{ url('/home') }}">
                     <i class="nc-icon nc-chart-pie-36"></i>
                     <p>Dashboard</p>
                     </a>
                 </li>
+                @endrole
                 @role('cliente')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'cliente-noticias') ? 'active' : '' }}">
                     <a href="{{ url('cliente/noticias') }}">
