@@ -71,6 +71,8 @@ Route::middleware(['web'])->group(function () {
 
 	// Rotas específicas do cliente (devem vir ANTES do resource)
 	Route::match(array('GET', 'POST'),'clientes','ClienteController@index');
+	Route::get('cliente/dashboard','ClienteController@dashboard');
+	Route::get('cliente/dashboard/dados','ClienteController@dadosDashboard');
 	Route::match(array('GET', 'POST'),'cliente/noticias','ClienteController@gerarRelatorios');
 	Route::get('cliente/relatorios','ClienteController@relatoriosSalvos');
 	Route::get('cliente/relatorios/api','ClienteController@listarRelatorios');

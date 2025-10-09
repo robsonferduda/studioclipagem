@@ -110,6 +110,15 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="col-md-12">
+                                    <div class="form-check float-left mr-3">
+                                        <label class="form-check-label mt-2">
+                                            <input class="form-check-input" type="checkbox" {{ ($fl_retorno) ? 'checked' : '' }} name="fl_retorno" value="true">
+                                                SEM RETORNO
+                                            <span class="form-check-sign"></span>
+                                        </label>
+                                    </div>
+                                </div>
                                 <div class="col-md-12 checkbox-radios mb-0">
                                     <a href="{{ url('noticia/web/limpar-filtros') }}" class="btn btn-warning btn-limpar mb-3"><i class="fa fa-refresh"></i> Limpar</a>
                                     <button type="submit" id="btn-find" class="btn btn-primary mb-3"><i class="fa fa-search"></i> Buscar</button>
@@ -140,6 +149,7 @@
                                                             'dt_final' => \Carbon\Carbon::parse($dt_final)->format('d/m/Y'),
                                                             'cliente' => $cliente_selecionado,
                                                             'tipo_data' =>$tipo_data,
+                                                            'fl_retorno' =>$fl_retorno,
                                                             'termo' => $termo])
                                                             ->links('vendor.pagination.bootstrap-4') }}
                     @endif
@@ -206,12 +216,12 @@
                                                 <div class="conteudo-noticia mb-1">
                                                     <span class="transcricao-limitada" id="transcricao-limitada-{{ $dado->id }}">
                                                         {!! ($dado->conteudo) ? Str::limit($dado->conteudo->conteudo, 1000, " ...") : '<span class="text-danger">Nenhum conteúdo coletado</span>' !!}
-                                                        @if($dado->conteudo->conteudo && strlen($dado->conteudo->conteudo) > 1000)
+                                                        @if($dado->conteudo && $dado->conteudo->conteudo && strlen($dado->conteudo->conteudo) > 1000)
                                                             <a href="javascript:void(0);" class="text-primary ver-mais" data-id="{{ $dado->id }}">[ver mais]</a>
                                                         @endif
                                                     </span>
                                                     <span class="transcricao-completa d-none" id="transcricao-completa-{{ $dado->id }}" >
-                                                        {!! $dado->conteudo->conteudo !!}
+                                                        {!! ($dado->conteudo) ? $dado->conteudo->conteudo : '' !!}
                                                         <a href="javascript:void(0);" class="text-primary ver-menos" data-id="{{ $dado->id }}">[ver menos]</a>
                                                     </span>
                                                 </div>
@@ -250,6 +260,7 @@
                                                         'dt_final' => \Carbon\Carbon::parse($dt_final)->format('d/m/Y'),
                                                         'cliente' => $cliente_selecionado,
                                                         'tipo_data' =>$tipo_data,
+                                                        'fl_retorno' =>$fl_retorno,
                                                         'termo' => $termo])
                                                         ->links('vendor.pagination.bootstrap-4') }}
                     @endif

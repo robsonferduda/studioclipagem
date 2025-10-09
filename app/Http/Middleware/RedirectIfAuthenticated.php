@@ -19,6 +19,12 @@ class RedirectIfAuthenticated
     public function handle($request, Closure $next, $guard = null)
     {
         if (Auth::guard($guard)->check()) {
+            // Se o usuário é cliente, redireciona para dashboard
+            if (Auth::user()->hasRole('cliente')) {
+                return redirect('/cliente/dashboard');
+            }
+            
+            // Para outros usuários, usa o redirecionamento padrão
             return redirect(RouteServiceProvider::HOME);
         }
 

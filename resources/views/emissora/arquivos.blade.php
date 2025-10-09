@@ -97,6 +97,7 @@
                                                             'dt_final' => \Carbon\Carbon::parse($dt_final)->format('d/m/Y'),
                                                             'emissora' => $emissora_search,
                                                             'programa' => $programa_search,
+                                                            'fl_audios' => $fl_audios,
                                                             'expressao' => $expressao])
                                                             ->links('vendor.pagination.bootstrap-4') }}
                     @endif
@@ -154,6 +155,7 @@
                                                                 'dt_final' => \Carbon\Carbon::parse($dt_final)->format('d/m/Y'),
                                                                 'emissora' => $emissora_search,
                                                                 'programa' => $programa_search,
+                                                                'fl_audios' => $fl_audios,
                                                                 'expressao' => $expressao])
                                                                 ->links('vendor.pagination.bootstrap-4') }}
                     @endif

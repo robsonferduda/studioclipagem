@@ -11,7 +11,14 @@
                     </h4>
                 </div>
                 <div class="col-md-4">
-                    <a href="{{ route('cliente.create') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-plus"></i> Novo</a>
+                    <div class="btn-group pull-right" style="margin-right: 12px;">
+                        <a href="{{ url('cliente/dashboard') }}" class="btn btn-success">
+                            <i class="fa fa-dashboard"></i> Dashboard
+                        </a>
+                        <a href="{{ route('cliente.create') }}" class="btn btn-primary">
+                            <i class="fa fa-plus"></i> Novo
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

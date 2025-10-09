@@ -12,7 +12,7 @@
                 </div>
                 <div class="col-md-4">
                     <a href="{{ url('noticia/web') }}" class="btn btn-info pull-right mr-3"><i class="fa fa-table"></i> Notícias</a>
-                    <a href="{{ url('noticia/web/atualiza-retorno') }}" class="btn btn-primary pull-right" style="margin-right: 12px;"><i class="fa fa-dollar"></i> Atualizar Valores</a>
+                    <button class="btn btn-primary pull-right btn-atualiza-valores" style="margin-right: 12px;"><i class="fa fa-dollar"></i> Atualizar Valores</button>
                 </div>
             </div>
         </div>
@@ -47,6 +47,33 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="card card-stats">
+                            <div class="card-body ">
+                                <div class="row">
+                                    <div class="col-5 col-md-4">
+                                        <div class="icon-big text-center icon-warning">
+                                        <i class="fa fa-reload text-success"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-7 col-md-8">
+                                        <div class="numbers">
+                                        <p class="card-category">Atualização</p>
+                                        <p class="card-title total-atualizadas">--</p>
+                                        <p></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer ">
+                                <hr>
+                                <div class="stats">
+                                    <i class="fa fa-exclamation-circle"></i>
+                                    Atualizando notícias sem retorno
+                                </div>
+                            </div>
+                        </div>
+
                         <h6>Fontes</h6>
                         <div id="tabela-fontes">
                             <div class="text-center py-5" id="preload-fontes">
@@ -81,6 +108,37 @@
                     <br>Carregando fontes...
                 </div>
             `);
+            atualizaValores();
+
+            $(".btn-atualiza-valores").click(function(){
+                atualizaValores();
+            });
+
+            function atualizaValores(){
+
+                var total_pendentes = $(".total-pendentes").text();
+
+                $.ajax({
+                    url: host + '/noticia/web/atualiza-retorno',
+                    type: 'GET',
+                    beforeSend: function() {
+                        $(".total-atualizadas").html('<i class="fa fa-cog fa-spin fa-1x fa-fw"></i>');
+                    },
+                    success: function(response) {
+
+                        var total_atualizadas = response;
+                        $(".total-pendentes").html(total_pendentes - total_atualizadas);
+                        $(".total-atualizadas").html(total_atualizadas);
+                                
+                    },
+                    error: function(xhr) {
+                                
+                    },
+                    complete: function() {
+                        
+                    }
+                });
+            }
 
             // Preload Notícias
             $('#lista-noticias').html(`

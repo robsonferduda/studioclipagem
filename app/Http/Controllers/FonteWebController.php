@@ -760,6 +760,32 @@ class FonteWebController extends Controller
         if($request->resetar_situacao){
             $request->merge(['id_situacao' => 0]);
         }
+
+        if($fonte->nu_valor == null and $request->nu_valor > 0){
+
+            $sql = "SELECT DISTINCT t1.id, t2.nome, t1.id_fonte, t2.nu_valor, t1.nu_valor AS valor_retorno, sinopse, data_noticia, titulo_noticia 
+                FROM noticias_web t1
+                JOIN fonte_web t2 ON t2.id = t1.id_fonte 
+                JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 2 AND t3.deleted_at IS NULL
+                WHERE t1.nu_valor IS NULL
+                AND t1.id_fonte = $fonte->id
+                AND t1.deleted_at IS NULL
+                AND t2.deleted_at IS NULL
+                AND t3.deleted_at IS NULL
+                ORDER BY id_fonte";
+
+            $noticias = DB::select($sql);
+
+            
+            foreach ($noticias as $noticia) {
+
+                $noticia = NoticiaWeb::find($noticia->id);
+
+                $noticia->nu_valor = $fonte->nu_valor;
+                $noticia->save();
+            }
+
+        }
     
         try{
                         

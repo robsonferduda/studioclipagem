@@ -77,6 +77,7 @@ class NoticiaWebController extends Controller
         $area_selecionada = Session::get('web_filtro_cd_area', $request->input('cd_area'));
         $termo = Session::get('web_filtro_termo', $request->input('termo'));
         $usuario = Session::get('web_filtro_usuario', $request->input('usuario'));
+        $fl_retorno = $request->fl_retorno == true ? true : false;
 
         // Converta as datas para o formato do banco
         $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $dt_inicial)->format('Y-m-d');
@@ -89,6 +90,10 @@ class NoticiaWebController extends Controller
         }
 
         $dados = NoticiaWeb::with('fonte')
+                    ->whereHas('clientes', function($q) {
+                            $q->where('noticia_cliente.tipo_id', 2)
+                              ->whereNull('noticia_cliente.deleted_at');
+                    })
                     ->when($cliente_selecionado, function ($query) use ($cliente_selecionado) { 
                         return $query->whereHas('clientes', function($q) use ($cliente_selecionado) {
                             $q->where('noticia_cliente.cliente_id', $cliente_selecionado)
@@ -140,6 +145,9 @@ class NoticiaWebController extends Controller
                     ->when($fonte_selecionada, function ($q) use ($fonte_selecionada) {
                         return $q->where('id_fonte', $fonte_selecionada);
                     })
+                    ->when($fl_retorno, function ($q) use ($fl_retorno) {
+                        return  $q->where('nu_valor','<=',0);    
+                    })
                     ->when($usuario, function ($q) use ($usuario) {
 
                         if($usuario == "S"){
@@ -153,7 +161,7 @@ class NoticiaWebController extends Controller
                     ->orderBy('created_at', 'DESC')
                     ->paginate(50);
 
-        return view('noticia-web/index', compact('dados','fonte_web','fontes','clientes','tipo_data','dt_inicial','dt_final','cliente_selecionado','sentimento','fonte_selecionada','termo','usuarios','usuario','estados','area_selecionada'));
+        return view('noticia-web/index', compact('dados','fl_retorno','fonte_web','fontes','clientes','tipo_data','dt_inicial','dt_final','cliente_selecionado','sentimento','fonte_selecionada','termo','usuarios','usuario','estados','area_selecionada'));
     }
 
     public function limparFiltrosWeb()
@@ -969,8 +977,8 @@ class NoticiaWebController extends Controller
                 FROM noticias_web t1
                 LEFT JOIN fonte_web t2 ON t2.id = t1.id_fonte 
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 2 AND t3.deleted_at IS NULL
-                WHERE t1.nu_valor IS NULL
-                AND data_noticia > '2025-05-01'
+                WHERE (t1.nu_valor IS NULL OR t1.nu_valor = 0)
+                AND data_noticia > '2025-01-01'
                 AND t1.deleted_at IS NULL
                 AND t2.deleted_at IS NULL
                 AND t3.deleted_at IS NULL
@@ -978,19 +986,19 @@ class NoticiaWebController extends Controller
 
         $noticias = DB::select($sql);
 
+        foreach ($noticias as $noticia) {
+
+            $noticia = NoticiaWeb::find($noticia->id);
+            $fonte = FonteWeb::find($noticia->id_fonte);
+
+            if($fonte->nu_valor){
+                $noticia->nu_valor = $fonte->nu_valor;
+                $noticia->save();
+                $totalAtualizadas++;
+            }
+        }
             
-                foreach ($noticias as $noticia) {
-
-                    $noticia = NoticiaWeb::find($noticia->id);
-                    $fonte = FonteWeb::find($noticia->id_fonte);
-
-                    $noticia->nu_valor = $fonte->nu_valor;
-                    $noticia->save();
-                    $totalAtualizadas++;
-                }
-            
-
-        return redirect('noticia/web/retorno')->withInput();
+        return response()->json($totalAtualizadas);
     }
 
     public function getPrint($id)
