@@ -1040,6 +1040,7 @@ class NoticiaWebController extends Controller
                             ->orWhere('noticias_web.nu_valor', 0);
                         })
                         ->where('fonte_web.id', '!=', 1) //Excluir fonte SEM FONTE
+                        ->where('noticias_web.data_noticia', '>', '2025-01-01')
                         ->whereNull('noticias_web.deleted_at')
                         ->groupBy('fonte_web.id', 'fonte_web.nome', 'fonte_web.nu_valor')
                         ->selectRaw('count(*) as total')
@@ -1073,6 +1074,7 @@ class NoticiaWebController extends Controller
                             ->orWhere('t1.nu_valor', 0);
                         })
                         ->where('t1.id_fonte', '!=', 1) //Excluir fonte SEM FONTE
+                        ->where('t1.data_noticia', '>', '2025-01-01')
                         ->whereNull('t1.deleted_at')
                         ->orderBy('t1.id_fonte')
                         ->distinct()
@@ -1090,6 +1092,7 @@ class NoticiaWebController extends Controller
                 JOIN fonte_web t2 ON t2.id = t1.id_fonte 
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 2 AND t3.deleted_at IS NULL
                 WHERE (t1.nu_valor IS NULL OR t1.nu_valor = 0)
+                AND data_noticia > '2025-01-01'
                 AND t1.id_fonte != 1 --Excluir fonte SEM FONTE
                 AND t1.deleted_at IS NULL
                 ORDER BY id_fonte";
