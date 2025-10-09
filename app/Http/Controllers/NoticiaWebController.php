@@ -969,38 +969,6 @@ class NoticiaWebController extends Controller
         return view('noticia-web/retorno');
     }
 
-    public function calcularValorRetornoWeb()
-    {
-        $totalAtualizadas = 0;
-
-        $sql = "SELECT DISTINCT t1.id, t2.nome, t1.id_fonte, t2.nu_valor, t1.nu_valor AS valor_retorno, sinopse, data_noticia, titulo_noticia 
-                FROM noticias_web t1
-                LEFT JOIN fonte_web t2 ON t2.id = t1.id_fonte 
-                JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 2 AND t3.deleted_at IS NULL
-                WHERE (t1.nu_valor IS NULL OR t1.nu_valor = 0)
-                AND data_noticia > '2025-01-01'
-                AND t1.deleted_at IS NULL
-                AND t2.deleted_at IS NULL
-                AND t3.deleted_at IS NULL
-                ORDER BY id_fonte";
-
-        $noticias = DB::select($sql);
-
-        foreach ($noticias as $noticia) {
-
-            $noticia = NoticiaWeb::find($noticia->id);
-            $fonte = FonteWeb::find($noticia->id_fonte);
-
-            if($fonte->nu_valor){
-                $noticia->nu_valor = $fonte->nu_valor;
-                $noticia->save();
-                $totalAtualizadas++;
-            }
-        }
-            
-        return response()->json($totalAtualizadas);
-    }
-
     public function getPrint($id)
     {
         $noticia = NoticiaWeb::find($id);
@@ -1062,13 +1030,10 @@ class NoticiaWebController extends Controller
     {
         $sql = "SELECT t2.id, t2.nome, t2.nu_valor, count(*) as total 
                 FROM noticias_web t1
-                LEFT JOIN fonte_web t2 ON t2.id = t1.id_fonte 
+                JOIN fonte_web t2 ON t2.id = t1.id_fonte 
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 2 AND t3.deleted_at IS NULL
-                WHERE t1.nu_valor IS NULL
-                AND data_noticia > '2025-05-01'
+                WHERE (t1.nu_valor IS NULL OR t1.nu_valor = 0)
                 AND t1.deleted_at IS NULL
-                AND t2.deleted_at IS NULL
-                AND t3.deleted_at IS NULL
                 GROUP BY t2.id, t2.nome
                 ORDER BY nome";
 
@@ -1081,17 +1046,43 @@ class NoticiaWebController extends Controller
     {
         $sql = "SELECT DISTINCT t1.id, t2.nome, t1.id_fonte, t2.nu_valor, t1.nu_valor AS valor_retorno, sinopse, data_noticia, titulo_noticia 
                 FROM noticias_web t1
-                LEFT JOIN fonte_web t2 ON t2.id = t1.id_fonte 
+                JOIN fonte_web t2 ON t2.id = t1.id_fonte 
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 2 AND t3.deleted_at IS NULL
-                WHERE t1.nu_valor IS NULL
-                AND data_noticia > '2025-05-01'
+                WHERE (t1.nu_valor IS NULL OR t1.nu_valor = 0)
                 AND t1.deleted_at IS NULL
-                AND t2.deleted_at IS NULL
-                AND t3.deleted_at IS NULL
                 ORDER BY id_fonte";
 
         $noticias = DB::select($sql);
 
         return response()->json($noticias);
+    }
+
+    public function calcularValorRetornoWeb()
+    {
+        $totalAtualizadas = 0;
+
+        $sql = "SELECT DISTINCT t1.id, t2.nome, t1.id_fonte, t2.nu_valor, t1.nu_valor AS valor_retorno, sinopse, data_noticia, titulo_noticia 
+                FROM noticias_web t1
+                JOIN fonte_web t2 ON t2.id = t1.id_fonte 
+                JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 2 AND t3.deleted_at IS NULL
+                WHERE (t1.nu_valor IS NULL OR t1.nu_valor = 0)
+                AND t1.deleted_at IS NULL
+                ORDER BY id_fonte";
+
+        $noticias = DB::select($sql);
+
+        foreach ($noticias as $noticia) {
+
+            $noticia = NoticiaWeb::find($noticia->id);
+            $fonte = FonteWeb::find($noticia->id_fonte);
+
+            if($fonte->nu_valor){
+                $noticia->nu_valor = $fonte->nu_valor;
+                $noticia->save();
+                $totalAtualizadas++;
+            }
+        }
+            
+        return response()->json($totalAtualizadas);
     }
 }

@@ -33,7 +33,7 @@
                                     <div class="col-7 col-md-8">
                                         <div class="numbers">
                                         <p class="card-category">Pendentes</p>
-                                        <p class="card-title total_pendentes"></p>
+                                        <p class="card-title total-pendentes"></p>
                                         <p></p>
                                         </div>
                                     </div>
@@ -58,7 +58,7 @@
                                     </div>
                                     <div class="col-7 col-md-8">
                                         <div class="numbers">
-                                        <p class="card-category">Atualização</p>
+                                        <p class="card-category">Valores Atualizados</p>
                                         <p class="card-title total-atualizadas">--</p>
                                         <p></p>
                                         </div>
@@ -75,7 +75,7 @@
                         </div>
 
                         <h6>Fontes</h6>
-                        <div id="tabela-fontes">
+                        <div id="tabela-fontes" class="box-loading">
                             <div class="text-center py-5" id="preload-fontes">
                                 <img src="/img/loading.gif" alt="Carregando..." style="width:40px;">
                                 <br>Carregando fontes...
@@ -83,7 +83,7 @@
                         </div>
                 </div>
                 <div class="col-lg-8 col-md-8 col-sm-12">
-                    <div id="lista-noticias">
+                    <div id="lista-noticias" class="box-loading">
                         <div class="text-center py-5" id="preload-noticias">
                             <img src="/img/loading.gif" alt="Carregando..." style="width:40px;">
                             <br>Carregando notícias...
@@ -116,8 +116,6 @@
 
             function atualizaValores(){
 
-                var total_pendentes = $(".total-pendentes").text();
-
                 $.ajax({
                     url: host + '/noticia/web/atualiza-retorno',
                     type: 'GET',
@@ -126,7 +124,9 @@
                     },
                     success: function(response) {
 
+                        var total_pendentes = $(".total-pendentes").text();
                         var total_atualizadas = response;
+
                         $(".total-pendentes").html(total_pendentes - total_atualizadas);
                         $(".total-atualizadas").html(total_atualizadas);
                                 
@@ -154,22 +154,25 @@
                         <thead>
                             <tr>
                                 <th>Fonte</th>
-                                <th class="text-right">Valor</th>
+                                <th class="text-center">Valor</th>
                                 <th class="center">Total</th>
                             </tr>
                         </thead>
                         <tbody>
                 `;
                 data.forEach(function(fonte) {
+                    let valor = (fonte.nu_valor === null || fonte.nu_valor === undefined) ? '<p class="text-danger">Sem valor</p>' : fonte.nu_valor;
                     html += `
                         <tr>
                             <td><a title="Editar" href="${fonte.nome ? host + '/fonte-web/editar/' + fonte.id : ''}" target="BLANK" class="text-info">${fonte.nome}</a></td>
-                            <td class="text-right">${fonte.nu_valor}</td>
+                            <td class="text-center">${valor}</td>
                             <td class="center">${fonte.total}</td>
                         </tr>
                     `;
                 });
                 html += `</tbody></table>`;
+                
+                $('#tabela-fontes').removeClass("box-loading");
                 $('#tabela-fontes').html(html);
             });
 
@@ -209,6 +212,8 @@
                         `;
                     });
                 }
+
+                $(".total-pendentes").html( data.length );
                 $('#lista-noticias').html(html);
             });
         });
