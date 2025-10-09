@@ -33,7 +33,7 @@
                                     <div class="col-7 col-md-8">
                                         <div class="numbers">
                                         <p class="card-category">Pendentes</p>
-                                        <p class="card-title total-pendentes"></p>
+                                        <p class="card-title total-pendentes"><i class="fa fa-cog fa-spin fa-1x fa-fw"></i></p>
                                         <p></p>
                                         </div>
                                     </div>
@@ -166,7 +166,7 @@
                             <tbody>
                     `;
                     data.data.forEach(function(fonte) {
-                        let valor = (fonte.nu_valor === null || fonte.nu_valor === undefined) ? 'Sem valor' : fonte.nu_valor;
+                        let valor = (fonte.nu_valor === null || fonte.nu_valor === undefined) ? '<p class="text-danger text-center">Sem valor</p>' : fonte.nu_valor;
                         html += `
                             <tr>
                                 <td><a title="Editar" href="${fonte.nome ? host + '/fonte-web/editar/' + fonte.id : ''}" target="BLANK" class="text-info">${fonte.nome}</a></td>
