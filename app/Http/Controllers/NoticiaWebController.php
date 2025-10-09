@@ -1043,7 +1043,7 @@ class NoticiaWebController extends Controller
                         ->groupBy('fonte_web.id', 'fonte_web.nome', 'fonte_web.nu_valor')
                         ->selectRaw('count(*) as total')
                         ->orderBy('total', 'desc')
-                        ->paginate(50);
+                        ->paginate(10);
 
         return response()->json($fontes);
     }
@@ -1074,7 +1074,7 @@ class NoticiaWebController extends Controller
                         ->whereNull('t1.deleted_at')
                         ->orderBy('t1.id_fonte')
                         ->distinct()
-                        ->paginate(50);
+                        ->paginate(10);
 
         return response()->json($noticias);
     }
