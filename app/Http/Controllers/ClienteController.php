@@ -741,6 +741,7 @@ class ClienteController extends Controller
         // Retorno de mídia (se habilitado)
         if ($cliente->fl_retorno_midia) {
             $dados['retorno_midia'] = $this->obterRetornoMidia($clienteId, $dataInicio, $dataFim, $cliente);
+            $dados['ranking_veiculos_retorno'] = $this->obterRankingVeiculosRetorno($clienteId, $dataInicio, $dataFim, $cliente);
         }
         
         // Top áreas (se habilitado)
@@ -1340,6 +1341,150 @@ class ClienteController extends Controller
         }
         
         return array_slice($areas, 0, 10); // Top 10 
+    }
+    
+    /**
+     * Obtém ranking de veículos por retorno de mídia
+     */
+    private function obterRankingVeiculosRetorno($clienteId, $dataInicio, $dataFim, $cliente)
+    {
+        $rankingVeiculos = [
+            'web' => [],
+            'tv' => [],
+            'radio' => [],
+            'impresso' => []
+        ];
+        
+        try {
+            // Web - Ranking por fonte
+            if ($cliente->fl_web) {
+                $webVeiculos = DB::table('noticia_cliente as nc')
+                    ->join('noticias_web as nw', 'nc.noticia_id', '=', 'nw.id')
+                    ->join('fonte_web as fw', 'nw.id_fonte', '=', 'fw.id')
+                    ->where('nc.cliente_id', $clienteId)
+                    ->where('nc.tipo_id', 2)
+                    ->whereBetween('nw.created_at', [$dataInicio, $dataFim])
+                    ->whereNull('nc.deleted_at')
+                    ->whereNull('nw.deleted_at')
+                    ->whereNotNull('nw.nu_valor')
+                    ->where('nw.nu_valor', '>', 0)
+                    ->select(
+                        'fw.nome as veiculo',
+                        DB::raw('SUM(nw.nu_valor) as valor_total'),
+                        DB::raw('COUNT(*) as total_noticias')
+                    )
+                    ->groupBy('fw.nome')
+                    ->orderBy('valor_total', 'desc')
+                    ->limit(10)
+                    ->get();
+                    
+                foreach ($webVeiculos as $veiculo) {
+                    $rankingVeiculos['web'][] = [
+                        'veiculo' => $veiculo->veiculo,
+                        'valor_total' => (float) $veiculo->valor_total,
+                        'total_noticias' => (int) $veiculo->total_noticias
+                    ];
+                }
+            }
+            
+            // TV - Ranking por emissora
+            if ($cliente->fl_tv) {
+                $tvVeiculos = DB::table('noticia_cliente as nc')
+                    ->join('noticia_tv as nt', 'nc.noticia_id', '=', 'nt.id')
+                    ->join('emissora_web as ew', 'nt.emissora_id', '=', 'ew.id')
+                    ->where('nc.cliente_id', $clienteId)
+                    ->where('nc.tipo_id', 4)
+                    ->whereBetween('nt.created_at', [$dataInicio, $dataFim])
+                    ->whereNull('nc.deleted_at')
+                    ->whereNull('nt.deleted_at')
+                    ->whereNotNull('nt.valor_retorno')
+                    ->where('nt.valor_retorno', '>', 0)
+                    ->select(
+                        'ew.nome_emissora as veiculo',
+                        DB::raw('SUM(nt.valor_retorno) as valor_total'),
+                        DB::raw('COUNT(*) as total_noticias')
+                    )
+                    ->groupBy('ew.nome_emissora')
+                    ->orderBy('valor_total', 'desc')
+                    ->limit(10)
+                    ->get();
+                    
+                foreach ($tvVeiculos as $veiculo) {
+                    $rankingVeiculos['tv'][] = [
+                        'veiculo' => $veiculo->veiculo,
+                        'valor_total' => (float) $veiculo->valor_total,
+                        'total_noticias' => (int) $veiculo->total_noticias
+                    ];
+                }
+            }
+            
+            // Rádio - Ranking por emissora
+            if ($cliente->fl_radio) {
+                $radioVeiculos = DB::table('noticia_cliente as nc')
+                    ->join('noticia_radio as nr', 'nc.noticia_id', '=', 'nr.id')
+                    ->join('emissora_radio as er', 'nr.emissora_id', '=', 'er.id')
+                    ->where('nc.cliente_id', $clienteId)
+                    ->where('nc.tipo_id', 3)
+                    ->whereBetween('nr.created_at', [$dataInicio, $dataFim])
+                    ->whereNull('nc.deleted_at')
+                    ->whereNull('nr.deleted_at')
+                    ->whereNotNull('nr.valor_retorno')
+                    ->where('nr.valor_retorno', '>', 0)
+                    ->select(
+                        'er.nome_emissora as veiculo',
+                        DB::raw('SUM(nr.valor_retorno) as valor_total'),
+                        DB::raw('COUNT(*) as total_noticias')
+                    )
+                    ->groupBy('er.nome_emissora')
+                    ->orderBy('valor_total', 'desc')
+                    ->limit(10)
+                    ->get();
+                    
+                foreach ($radioVeiculos as $veiculo) {
+                    $rankingVeiculos['radio'][] = [
+                        'veiculo' => $veiculo->veiculo,
+                        'valor_total' => (float) $veiculo->valor_total,
+                        'total_noticias' => (int) $veiculo->total_noticias
+                    ];
+                }
+            }
+            
+            // Impresso - Ranking por fonte  
+            if ($cliente->fl_impresso) {
+                $impressoVeiculos = DB::table('noticia_cliente as nc')
+                    ->join('noticia_impresso as ni', 'nc.noticia_id', '=', 'ni.id')
+                    ->join('fonte_web as fw', 'ni.id_fonte', '=', 'fw.id')
+                    ->where('nc.cliente_id', $clienteId)
+                    ->where('nc.tipo_id', 1)
+                    ->whereBetween('ni.created_at', [$dataInicio, $dataFim])
+                    ->whereNull('nc.deleted_at')
+                    ->whereNull('ni.deleted_at')
+                    ->whereNotNull('ni.valor_retorno')
+                    ->where('ni.valor_retorno', '>', 0)
+                    ->select(
+                        'fw.nome as veiculo',
+                        DB::raw('SUM(ni.valor_retorno) as valor_total'),
+                        DB::raw('COUNT(*) as total_noticias')
+                    )
+                    ->groupBy('fw.nome')
+                    ->orderBy('valor_total', 'desc')
+                    ->limit(10)
+                    ->get();
+                    
+                foreach ($impressoVeiculos as $veiculo) {
+                    $rankingVeiculos['impresso'][] = [
+                        'veiculo' => $veiculo->veiculo,
+                        'valor_total' => (float) $veiculo->valor_total,
+                        'total_noticias' => (int) $veiculo->total_noticias
+                    ];
+                }
+            }
+            
+        } catch (\Exception $e) {
+            Log::warning('Erro ao buscar ranking de veículos por retorno: ' . $e->getMessage());
+        }
+        
+        return $rankingVeiculos;
     }
 
     public function dadosImpresso($dt_inicial, $dt_final,$cliente_selecionado, $termo)

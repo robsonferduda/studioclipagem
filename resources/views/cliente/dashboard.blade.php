@@ -146,15 +146,102 @@
             <!-- Seção condicional para Retorno de Mídia -->
             @if($fl_retorno_midia)
             <div class="row mb-4">
+                <!-- Card de Resumo de Retorno -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="card-title mb-0">
+                                <i class="fa fa-money text-success"></i> Resumo Retorno de Mídia
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div id="resumo-retorno-container">
+                                <!-- Resumo será inserido via JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Gráfico de Retorno por Tipo -->
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="card-title mb-0">
+                                <i class="fa fa-bar-chart text-success"></i> Retorno de Mídia por Tipo
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="grafico-retorno" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ranking de Veículos por Retorno -->
+            <div class="row mb-4">
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
                             <h6 class="card-title mb-0">
-                                <i class="fa fa-money text-success"></i> Retorno de Mídia por Tipo
+                                <i class="fa fa-trophy text-warning"></i> Top 10 Veículos por Retorno de Mídia
                             </h6>
                         </div>
                         <div class="card-body">
-                            <canvas id="grafico-retorno" width="400" height="100"></canvas>
+                            <!-- Abas para tipos de mídia -->
+                            <ul class="nav nav-tabs nav-tabs-sm mb-3" id="ranking-retorno-tabs" role="tablist">
+                                @if($cliente->fl_web)
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="ranking-web-tab" data-toggle="tab" href="#ranking-web-retorno" role="tab">Web</a>
+                                </li>
+                                @endif
+                                @if($cliente->fl_impresso)
+                                <li class="nav-item">
+                                    <a class="nav-link @if(!$cliente->fl_web) active @endif" id="ranking-impresso-tab" data-toggle="tab" href="#ranking-impresso-retorno" role="tab">Impresso</a>
+                                </li>
+                                @endif
+                                @if($cliente->fl_radio)
+                                <li class="nav-item">
+                                    <a class="nav-link @if(!$cliente->fl_web && !$cliente->fl_impresso) active @endif" id="ranking-radio-tab" data-toggle="tab" href="#ranking-radio-retorno" role="tab">Rádio</a>
+                                </li>
+                                @endif
+                                @if($cliente->fl_tv)
+                                <li class="nav-item">
+                                    <a class="nav-link @if(!$cliente->fl_web && !$cliente->fl_impresso && !$cliente->fl_radio) active @endif" id="ranking-tv-tab" data-toggle="tab" href="#ranking-tv-retorno" role="tab">TV</a>
+                                </li>
+                                @endif
+                            </ul>
+                            
+                            <!-- Conteúdo das abas -->
+                            <div class="tab-content" id="ranking-retorno-tab-content">
+                                @if($cliente->fl_web)
+                                <div class="tab-pane fade show active" id="ranking-web-retorno" role="tabpanel">
+                                    <div id="ranking-web-retorno-container">
+                                        <!-- Lista de ranking web será inserida via JavaScript -->
+                                    </div>
+                                </div>
+                                @endif
+                                @if($cliente->fl_impresso)
+                                <div class="tab-pane fade @if(!$cliente->fl_web) show active @endif" id="ranking-impresso-retorno" role="tabpanel">
+                                    <div id="ranking-impresso-retorno-container">
+                                        <!-- Lista de ranking impresso será inserida via JavaScript -->
+                                    </div>
+                                </div>
+                                @endif
+                                @if($cliente->fl_radio)
+                                <div class="tab-pane fade @if(!$cliente->fl_web && !$cliente->fl_impresso) show active @endif" id="ranking-radio-retorno" role="tabpanel">
+                                    <div id="ranking-radio-retorno-container">
+                                        <!-- Lista de ranking rádio será inserida via JavaScript -->
+                                    </div>
+                                </div>
+                                @endif
+                                @if($cliente->fl_tv)
+                                <div class="tab-pane fade @if(!$cliente->fl_web && !$cliente->fl_impresso && !$cliente->fl_radio) show active @endif" id="ranking-tv-retorno" role="tabpanel">
+                                    <div id="ranking-tv-retorno-container">
+                                        <!-- Lista de ranking TV será inserida via JavaScript -->
+                                    </div>
+                                </div>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -339,6 +426,8 @@ $(document).ready(function() {
                     
                     if (flRetornoMidia) {
                         renderizarGraficoRetorno();
+                        renderizarResumoRetorno();
+                        renderizarRankingVeiculosRetorno();
                     }
                     
                     if (flAreas) {
@@ -747,14 +836,45 @@ $(document).ready(function() {
             graficos.retorno.destroy();
         }
         
+        // Filtra apenas tipos com valores > 0
+        const dados = [];
+        const labels = [];
+        const cores = [];
+        
+        if (retorno.web > 0) {
+            dados.push(retorno.web);
+            labels.push('Web');
+            cores.push('#17a2b8');
+        }
+        if (retorno.tv > 0) {
+            dados.push(retorno.tv);
+            labels.push('TV');
+            cores.push('#dc3545');
+        }
+        if (retorno.radio > 0) {
+            dados.push(retorno.radio);
+            labels.push('Rádio');
+            cores.push('#28a745');
+        }
+        if (retorno.impresso > 0) {
+            dados.push(retorno.impresso);
+            labels.push('Impresso');
+            cores.push('#ffc107');
+        }
+        
+        if (dados.length === 0) {
+            $('#grafico-retorno').parent().html('<p class="text-center text-muted">Nenhum dado disponível</p>');
+            return;
+        }
+        
         graficos.retorno = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Web', 'TV', 'Rádio', 'Impresso'],
+                labels: labels,
                 datasets: [{
                     label: 'Valor (R$)',
-                    data: [retorno.web || 0, retorno.tv || 0, retorno.radio || 0, retorno.impresso || 0],
-                    backgroundColor: ['#17a2b8', '#dc3545', '#28a745', '#ffc107'],
+                    data: dados,
+                    backgroundColor: cores,
                     borderWidth: 1
                 }]
             },
@@ -766,7 +886,10 @@ $(document).ready(function() {
                         beginAtZero: true,
                         ticks: {
                             callback: function(value) {
-                                return 'R$ ' + value.toLocaleString('pt-BR');
+                                return 'R$ ' + value.toLocaleString('pt-BR', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                });
                             }
                         }
                     }
@@ -774,9 +897,134 @@ $(document).ready(function() {
                 plugins: {
                     legend: {
                         display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'R$ ' + context.parsed.y.toLocaleString('pt-BR', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                });
+                            }
+                        }
                     }
                 }
             }
+        });
+    }
+    
+    function renderizarResumoRetorno() {
+        const retorno = dadosGlobais.retorno_midia || {};
+        const total = retorno.total || 0;
+        
+        let html = '';
+        
+        if (total === 0) {
+            html = '<p class="text-center text-muted">Nenhum valor de retorno disponível</p>';
+        } else {
+            html = `
+                <div class="text-center mb-3">
+                    <h4 class="text-success font-weight-bold mb-1">
+                        R$ ${parseFloat(total).toLocaleString('pt-BR', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        })}
+                    </h4>
+                    <small class="text-muted">Total Geral</small>
+                </div>
+                <hr class="my-3">
+            `;
+            
+            // Lista detalhada por tipo
+            if (retorno.web > 0) {
+                html += `
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span><i class="fa fa-globe text-info mr-2"></i>Web</span>
+                        <strong class="text-success">R$ ${parseFloat(retorno.web).toLocaleString('pt-BR', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        })}</strong>
+                    </div>
+                `;
+            }
+            
+            if (retorno.tv > 0) {
+                html += `
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span><i class="fa fa-television text-danger mr-2"></i>TV</span>
+                        <strong class="text-success">R$ ${parseFloat(retorno.tv).toLocaleString('pt-BR', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        })}</strong>
+                    </div>
+                `;
+            }
+            
+            if (retorno.radio > 0) {
+                html += `
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span><i class="fa fa-volume-up text-success mr-2"></i>Rádio</span>
+                        <strong class="text-success">R$ ${parseFloat(retorno.radio).toLocaleString('pt-BR', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        })}</strong>
+                    </div>
+                `;
+            }
+            
+            if (retorno.impresso > 0) {
+                html += `
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span><i class="fa fa-newspaper-o text-warning mr-2"></i>Impresso</span>
+                        <strong class="text-success">R$ ${parseFloat(retorno.impresso).toLocaleString('pt-BR', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        })}</strong>
+                    </div>
+                `;
+            }
+        }
+        
+        $('#resumo-retorno-container').html(html);
+    }
+    
+    function renderizarRankingVeiculosRetorno() {
+        const rankingRetorno = dadosGlobais.ranking_veiculos_retorno || {};
+        
+        // Renderiza ranking para cada tipo de mídia
+        ['web', 'impresso', 'radio', 'tv'].forEach(function(tipo) {
+            const container = `#ranking-${tipo}-retorno-container`;
+            const veiculosDoTipo = rankingRetorno[tipo] || [];
+            let html = '';
+            
+            if (veiculosDoTipo.length === 0) {
+                html = '<p class="text-center text-muted">Nenhum dado disponível</p>';
+            } else {
+                html = '<div class="list-group list-group-flush">';
+                veiculosDoTipo.forEach(function(veiculo, index) {
+                    const posicao = index + 1;
+                    const badgeClass = 'badge-success'; // Todas as badges verdes
+                    
+                    const valorFormatado = parseFloat(veiculo.valor_total).toLocaleString('pt-BR', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+                    
+                    html += `
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="badge ${badgeClass} mr-2">${posicao}º</span>
+                                <strong>${veiculo.veiculo}</strong>
+                                <small class="text-muted ml-2">(${veiculo.total_noticias} notícias)</small>
+                            </div>
+                            <span class="badge badge-success font-weight-bold">R$ ${valorFormatado}</span>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            }
+            
+            $(container).html(html);
         });
     }
     
