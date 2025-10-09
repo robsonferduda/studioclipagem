@@ -1028,31 +1028,53 @@ class NoticiaWebController extends Controller
 
     public function fontesPendentesAjax()
     {
-        $sql = "SELECT t2.id, t2.nome, t2.nu_valor, count(*) as total 
-                FROM noticias_web t1
-                JOIN fonte_web t2 ON t2.id = t1.id_fonte 
-                JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 2 AND t3.deleted_at IS NULL
-                WHERE (t1.nu_valor IS NULL OR t1.nu_valor = 0)
-                AND t1.deleted_at IS NULL
-                GROUP BY t2.id, t2.nome
-                ORDER BY nome";
+        $fontes = FonteWeb::select('fonte_web.id', 'fonte_web.nome', 'fonte_web.nu_valor')
+                        ->join('noticias_web', 'noticias_web.id_fonte', '=', 'fonte_web.id')
+                        ->join('noticia_cliente', function($join){
+                            $join->on('noticia_cliente.noticia_id', '=', 'noticias_web.id')
+                                ->where('noticia_cliente.tipo_id', 2)
+                                ->whereNull('noticia_cliente.deleted_at');
+                        })
+                        ->where(function($q){
+                            $q->whereNull('noticias_web.nu_valor')
+                            ->orWhere('noticias_web.nu_valor', 0);
+                        })
+                        ->whereNull('noticias_web.deleted_at')
+                        ->groupBy('fonte_web.id', 'fonte_web.nome', 'fonte_web.nu_valor')
+                        ->selectRaw('count(*) as total')
+                        ->orderBy('total', 'desc')
+                        ->paginate(50);
 
-        $inconsistencias = DB::select($sql);
-
-        return response()->json($inconsistencias);
+        return response()->json($fontes);
     }
 
     public function noticiasPendentesAjax()
     {
-        $sql = "SELECT DISTINCT t1.id, t2.nome, t1.id_fonte, t2.nu_valor, t1.nu_valor AS valor_retorno, sinopse, data_noticia, titulo_noticia 
-                FROM noticias_web t1
-                JOIN fonte_web t2 ON t2.id = t1.id_fonte 
-                JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 2 AND t3.deleted_at IS NULL
-                WHERE (t1.nu_valor IS NULL OR t1.nu_valor = 0)
-                AND t1.deleted_at IS NULL
-                ORDER BY id_fonte";
-
-        $noticias = DB::select($sql);
+        $noticias = \DB::table('noticias_web as t1')
+                        ->select(
+                            't1.id',
+                            't2.nome',
+                            't1.id_fonte',
+                            't2.nu_valor',
+                            't1.nu_valor as valor_retorno',
+                            't1.sinopse',
+                            't1.data_noticia',
+                            't1.titulo_noticia'
+                        )
+                        ->join('fonte_web as t2', 't2.id', '=', 't1.id_fonte')
+                        ->join('noticia_cliente as t3', function($join){
+                            $join->on('t3.noticia_id', '=', 't1.id')
+                                ->where('t3.tipo_id', 2)
+                                ->whereNull('t3.deleted_at');
+                        })
+                        ->where(function($q){
+                            $q->whereNull('t1.nu_valor')
+                            ->orWhere('t1.nu_valor', 0);
+                        })
+                        ->whereNull('t1.deleted_at')
+                        ->orderBy('t1.id_fonte')
+                        ->distinct()
+                        ->paginate(50);
 
         return response()->json($noticias);
     }
