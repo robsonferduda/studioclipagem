@@ -1107,7 +1107,7 @@ class NoticiaWebController extends Controller
             $noticia = NoticiaWeb::find($noticia->id);
             $fonte = FonteWeb::find($noticia->id_fonte);
 
-            if($fonte->nu_valor){
+            if($fonte and $fonte->nu_valor){
                 $noticia->nu_valor = $fonte->nu_valor;
                 $noticia->save();
                 $totalAtualizadas++;
