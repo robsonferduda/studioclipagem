@@ -1295,7 +1295,7 @@ $(document).ready(function() {
         
         // Card Total Geral
         html += `
-            <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6">
                 <div class="card card-stats dashboard-card">
                     <div class="card-body">
                         <div class="row">
@@ -1319,7 +1319,7 @@ $(document).ready(function() {
         // Card Web (se habilitado)
         if (totais.web !== undefined) {
             html += `
-                <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6">
                     <div class="card card-stats dashboard-card">
                         <div class="card-body">
                             <div class="row">
@@ -1344,7 +1344,7 @@ $(document).ready(function() {
         // Card TV (se habilitado)
         if (totais.tv !== undefined) {
             html += `
-                <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6">
                     <div class="card card-stats dashboard-card">
                         <div class="card-body">
                             <div class="row">
@@ -1369,7 +1369,7 @@ $(document).ready(function() {
         // Card Rádio (se habilitado)
         if (totais.radio !== undefined) {
             html += `
-                <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6">
                     <div class="card card-stats dashboard-card">
                         <div class="card-body">
                             <div class="row">
@@ -1394,7 +1394,7 @@ $(document).ready(function() {
         // Card Impresso (se habilitado)
         if (totais.impresso !== undefined) {
             html += `
-                <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6">
                     <div class="card card-stats dashboard-card">
                         <div class="card-body">
                             <div class="row">
