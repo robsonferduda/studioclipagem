@@ -834,7 +834,7 @@
     border-color: #004085;
 }
 
-/* Melhorar os badges das tags na tabela */
+/* Estilos para badges das tags na tabela */
 .badge-tag {
     display: inline-block;
     padding: 4px 10px;
@@ -852,6 +852,49 @@
 .badge-tag:hover {
     transform: translateY(-1px);
     box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+/* Estilos para badges de palavras-chave */
+.badge-keyword {
+    display: inline-block;
+    padding: 4px 8px;
+    margin: 1px 2px 1px 0;
+    background: linear-gradient(135deg, #ff6b6b 0%, #ffa500 100%);
+    color: white;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+    transition: all 0.2s ease;
+    text-transform: lowercase;
+}
+
+.badge-keyword:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    background: linear-gradient(135deg, #ff5252 0%, #ff8f00 100%);
+}
+
+/* Destaque de palavras-chave no texto */
+.keyword-highlight {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ffa500 100%);
+    padding: 2px 6px;
+    border-radius: 6px;
+    font-weight: 600;
+    color: white;
+    border: none;
+    box-shadow: 0 1px 3px rgba(255, 107, 107, 0.4);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    transition: all 0.2s ease;
+    display: inline-block;
+    margin: 0 1px;
+}
+
+.keyword-highlight:hover {
+    background: linear-gradient(135deg, #ff5252 0%, #ff8f00 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(255, 107, 107, 0.5);
 }
 
 /* Variações de cores para as tags */
@@ -1558,6 +1601,7 @@
                 html += '<th>Valor</th>';
             }
                 html += '<th>Tags</th>';
+                html += '<th>Palavras-Chave</th>';
                 html += '<th width="30" class="text-center"><i class="fa fa-expand-alt" title="Clique na linha para expandir/recolher"></i></th>';
                 html += '</tr>';
                 html += '</thead>';
@@ -1606,6 +1650,17 @@
                             });
                         } else {
                             html += '<span class="text-muted" style="font-size: 11px;">sem tags</span>';
+                        }
+                        html += '</td>';
+                        
+                        // Coluna de palavras-chave encontradas
+                        html += '<td>';
+                        if (noticia.palavras_chave_encontradas && Array.isArray(noticia.palavras_chave_encontradas) && noticia.palavras_chave_encontradas.length > 0) {
+                            noticia.palavras_chave_encontradas.forEach(function(palavra) {
+                                html += '<span class="badge-keyword">' + palavra + '</span>';
+                            });
+                        } else {
+                            html += '<span class="text-muted" style="font-size: 11px;">nenhuma</span>';
                         }
                         html += '</td>';
                         
@@ -2059,7 +2114,8 @@
                     detalhesHtml += '<div class="col-md-12">';
                     
                     detalhesHtml += '<h6>Título:</h6>';
-                    detalhesHtml += '<p>' + (noticia.titulo || 'Sem título') + '</p>';
+                    var tituloExibir = noticia.titulo_destacado || noticia.titulo || 'Sem título';
+                    detalhesHtml += '<p>' + tituloExibir + '</p>';
                     
                     detalhesHtml += '<h6>Veículo:</h6>';
                     detalhesHtml += '<p>' + (noticia.veiculo || 'Sem veículo') + '</p>';
@@ -2075,6 +2131,16 @@
                     if (window.mostrarSentimento) {
                         detalhesHtml += '<h6>Sentimento:</h6>';
                         detalhesHtml += '<p>' + obterSentimentoHtml(noticia.sentimento) + '</p>';
+                    }
+                    
+                    // Palavras-chave encontradas
+                    if (noticia.palavras_chave_encontradas && noticia.palavras_chave_encontradas.length > 0) {
+                        detalhesHtml += '<h6>Palavras-chave encontradas:</h6>';
+                        detalhesHtml += '<p>';
+                        noticia.palavras_chave_encontradas.forEach(function(palavra) {
+                            detalhesHtml += '<span class="badge-keyword mr-1">' + palavra + '</span>';
+                        });
+                        detalhesHtml += '</p>';
                     }
                     
                     // Campos específicos por tipo
@@ -2176,7 +2242,8 @@
                     detalhesHtml += '<div class="col-md-6">';
                     detalhesHtml += '<h6>Conteúdo:</h6>';
                     detalhesHtml += '<div class="detalhes-texto">';
-                    detalhesHtml += (noticia.texto || 'Sem conteúdo').replace(/\n/g, '<br>');
+                    var textoExibir = noticia.texto_destacado || noticia.sinopse_destacado || noticia.texto || noticia.sinopse || 'Sem conteúdo';
+                    detalhesHtml += textoExibir.replace(/\n/g, '<br>');
                     detalhesHtml += '</div>';
                     detalhesHtml += '</div>';
                     detalhesHtml += '</div>';
