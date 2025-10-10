@@ -876,6 +876,51 @@
     background: linear-gradient(135deg, #ff5252 0%, #ff8f00 100%);
 }
 
+/* Estilos para badges de tema */
+.badge-tema {
+    display: inline-block;
+    padding: 4px 10px;
+    margin: 1px 3px 1px 0;
+    background: linear-gradient(135deg, #007bff 0%, #6610f2 100%);
+    color: white;
+    border-radius: 15px;
+    font-size: 10px;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+    transition: all 0.2s ease;
+    text-transform: capitalize;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 120px;
+}
+
+.badge-tema:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    background: linear-gradient(135deg, #0056b3 0%, #520dc2 100%);
+}
+
+/* Variações de cores para os temas */
+.badge-tema:nth-child(even) {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+}
+
+.badge-tema:nth-child(3n) {
+    background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+    color: #212529;
+    text-shadow: none;
+}
+
+.badge-tema:nth-child(4n) {
+    background: linear-gradient(135deg, #dc3545 0%, #e83e8c 100%);
+}
+
+.badge-tema:nth-child(5n) {
+    background: linear-gradient(135deg, #17a2b8 0%, #6f42c1 100%);
+}
+
 /* Destaque de palavras-chave no texto */
 .keyword-highlight {
     background: linear-gradient(135deg, #ff6b6b 0%, #ffa500 100%);
@@ -1044,6 +1089,9 @@
     
     // Flag para controlar visibilidade do retorno de mídia
     window.mostrarRetornoMidia = {{ $fl_retorno_midia ? 'true' : 'false' }};
+    
+    // Flag para controlar visibilidade dos temas das notícias
+    window.mostrarTemaNoticias = {{ $fl_tema_noticias ? 'true' : 'false' }};
     
     // Flag para controlar visibilidade dos botões de relatório com imagens
     @if(isset($fl_print))
@@ -1600,6 +1648,9 @@
             if (window.mostrarRetornoMidia) {
                 html += '<th>Valor</th>';
             }
+            if (window.mostrarTemaNoticias) {
+                html += '<th>Tema</th>';
+            }
                 html += '<th>Tags</th>';
                 html += '<th>Palavras-Chave</th>';
                 html += '<th width="30" class="text-center"><i class="fa fa-expand-alt" title="Clique na linha para expandir/recolher"></i></th>';
@@ -1640,6 +1691,15 @@
                         }
                         if (window.mostrarRetornoMidia) {
                             html += '<td>' + (noticia.valor > 0 ? 'R$ ' + Number(noticia.valor).toLocaleString('pt-BR', {minimumFractionDigits: 2}) : 'N/A') + '</td>';
+                        }
+                        if (window.mostrarTemaNoticias) {
+                            html += '<td>';
+                            if (noticia.tema && noticia.tema.trim() !== '') {
+                                html += '<span class="badge-tema">' + noticia.tema + '</span>';
+                            } else {
+                                html += '<span class="text-muted" style="font-size: 11px;">sem tema</span>';
+                            }
+                            html += '</td>';
                         }
                         
                         // Coluna de tags
@@ -2131,6 +2191,11 @@
                     if (window.mostrarSentimento) {
                         detalhesHtml += '<h6>Sentimento:</h6>';
                         detalhesHtml += '<p>' + obterSentimentoHtml(noticia.sentimento) + '</p>';
+                    }
+                    
+                    if (window.mostrarTemaNoticias && noticia.tema) {
+                        detalhesHtml += '<h6>Tema:</h6>';
+                        detalhesHtml += '<p><span class="badge-tema">' + noticia.tema + '</span></p>';
                     }
                     
                     // Palavras-chave encontradas
