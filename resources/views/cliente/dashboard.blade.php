@@ -256,6 +256,123 @@
                 </div>
             </div>
 
+            <!-- Seção condicional para Análise de Temas -->
+            @if($fl_tema_noticias)
+            <div class="row mb-4">
+                <!-- Gráfico de Distribuição de Temas -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="card-title mb-0">
+                                <i class="fa fa-tags text-warning"></i> Distribuição por Temas
+                            </h6>
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Exportar gráfico">
+                                <button type="button" class="btn btn-outline-primary btn-export" 
+                                        onclick="exportarGrafico('temas-distribuicao', 'png')" title="Exportar como imagem PNG">
+                                    <i class="fa fa-image mr-1"></i>PNG
+                                </button>
+                                <button type="button" class="btn btn-outline-success btn-export" 
+                                        onclick="exportarGrafico('temas-distribuicao', 'csv')" title="Exportar dados como CSV">
+                                    <i class="fa fa-table mr-1"></i>CSV
+                                </button>
+                                <button type="button" class="btn btn-outline-info btn-export" 
+                                        onclick="exportarGrafico('temas-distribuicao', 'svg')" title="Exportar como SVG vetorial">
+                                    <i class="fa fa-code mr-1"></i>SVG
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="grafico-temas-distribuicao" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top 10 Temas -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="card-title mb-0">
+                                <i class="fa fa-trophy text-warning"></i> Top 10 Temas
+                            </h6>
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Exportar elemento">
+                                <button type="button" class="btn btn-outline-primary btn-export" 
+                                        onclick="exportarElemento('top-temas-container', 'top-temas', 'png')" title="Exportar como imagem PNG">
+                                    <i class="fa fa-image mr-1"></i>PNG
+                                </button>
+                                <button type="button" class="btn btn-outline-success btn-export" 
+                                        onclick="exportarElemento('top-temas-container', 'top-temas', 'csv')" title="Exportar dados como CSV">
+                                    <i class="fa fa-table mr-1"></i>CSV
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="top-temas-container">
+                                <!-- Top temas será inserido via JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Heatmap Tema x Tipo de Mídia -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="card-title mb-0">
+                                <i class="fa fa-th text-info"></i> Heatmap: Temas por Tipo de Mídia
+                            </h6>
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Exportar elemento">
+                                <button type="button" class="btn btn-outline-primary btn-export" 
+                                        onclick="exportarElemento('heatmap-temas-container', 'heatmap-temas', 'png')" title="Exportar como imagem PNG">
+                                    <i class="fa fa-image mr-1"></i>PNG
+                                </button>
+                                <button type="button" class="btn btn-outline-success btn-export" 
+                                        onclick="exportarElemento('heatmap-temas-container', 'heatmap-temas', 'csv')" title="Exportar dados como CSV">
+                                    <i class="fa fa-table mr-1"></i>CSV
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="heatmap-temas-container">
+                                <!-- Heatmap será inserido via JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Evolução Temporal de Temas -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="card-title mb-0">
+                                <i class="fa fa-line-chart text-success"></i> Evolução dos Principais Temas
+                            </h6>
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Exportar gráfico">
+                                <button type="button" class="btn btn-outline-primary btn-export" 
+                                        onclick="exportarGrafico('temas-evolucao', 'png')" title="Exportar como imagem PNG">
+                                    <i class="fa fa-image mr-1"></i>PNG
+                                </button>
+                                <button type="button" class="btn btn-outline-success btn-export" 
+                                        onclick="exportarGrafico('temas-evolucao', 'csv')" title="Exportar dados como CSV">
+                                    <i class="fa fa-table mr-1"></i>CSV
+                                </button>
+                                <button type="button" class="btn btn-outline-info btn-export" 
+                                        onclick="exportarGrafico('temas-evolucao', 'svg')" title="Exportar como SVG vetorial">
+                                    <i class="fa fa-code mr-1"></i>SVG
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="grafico-temas-evolucao" width="400" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endif
+
             <!-- Seção condicional para Retorno de Mídia -->
             @if($fl_retorno_midia)
             <div class="row mb-4">
@@ -1098,14 +1215,34 @@ function exportarTopAreasCSV() {
     return csv;
 }
 
-function exportarPalavrasChaveCSV() {
-    const palavrasChave = dadosGlobais.palavras_chave || [];
-    let csv = 'Posição,Palavra-Chave,Frequência\n';
-    palavrasChave.forEach((palavra, index) => {
-        csv += `${index + 1},"${palavra.text}",${palavra.size}\n`;
-    });
-    return csv;
-}
+    function exportarPalavrasChaveCSV() {
+        const palavrasChave = dadosGlobais.palavras_chave || [];
+        let csv = 'Posição,Palavra-Chave,Frequência\n';
+        palavrasChave.forEach((palavra, index) => {
+            csv += `${index + 1},"${palavra.text}",${palavra.size}\n`;
+        });
+        return csv;
+    }
+    
+    function exportarTopTemasCSV() {
+        const topTemas = dadosGlobais.top_temas || [];
+        let csv = 'Posição,Tema,Total de Notícias,Tipos de Mídia\n';
+        topTemas.forEach((tema, index) => {
+            csv += `${index + 1},"${tema.tema}",${tema.total},${tema.tipos_midia || 0}\n`;
+        });
+        return csv;
+    }
+    
+    function exportarHeatmapTemasCSV() {
+        const heatmapData = dadosGlobais.heatmap_temas || [];
+        let csv = 'Tema,Tipo de Mídia,Quantidade de Notícias\n';
+        
+        heatmapData.forEach(item => {
+            csv += `"${item.tema}","${item.tipo_midia}",${item.total}\n`;
+        });
+        
+        return csv;
+    }
 
 // ==================== FUNÇÕES UTILITÁRIAS ====================
 
@@ -1218,6 +1355,7 @@ $(document).ready(function() {
     const flSentimento = {{ $fl_sentimento ? 'true' : 'false' }};
     const flRetornoMidia = {{ $fl_retorno_midia ? 'true' : 'false' }};
     const flAreas = {{ $fl_areas ? 'true' : 'false' }};
+    const flTemaNoticias = {{ $fl_tema_noticias ? 'true' : 'false' }};
     
     // Carrega dados iniciais (7 dias)
     carregarDadosDashboard('7');
@@ -1259,6 +1397,10 @@ $(document).ready(function() {
                     
                     if (flSentimento) {
                         renderizarGraficosEntimento();
+                    }
+                    
+                    if (flTemaNoticias) {
+                        renderizarGraficosTemasNoticias();
                     }
                     
                     if (flRetornoMidia) {
@@ -2093,6 +2235,276 @@ $(document).ready(function() {
         console.log(`✅ Nuvem de palavras simples renderizada com ${palavrasChave.length} palavras`);
     }
     
+    // ==================== FUNÇÕES DE RENDERIZAÇÃO DE TEMAS ====================
+    
+    function renderizarGraficosTemasNoticias() {
+        renderizarGraficoTemasDistribuicao();
+        renderizarTopTemas();
+        renderizarHeatmapTemas();
+        renderizarGraficoTemasEvolucao();
+    }
+    
+    function renderizarGraficoTemasDistribuicao() {
+        const temasDistribuicao = dadosGlobais.temas_distribuicao || [];
+        
+        if (temasDistribuicao.length === 0) {
+            $('#grafico-temas-distribuicao').parent().html('<p class="text-center text-muted">Nenhum dado de temas disponível</p>');
+            return;
+        }
+        
+        const ctx = document.getElementById('grafico-temas-distribuicao').getContext('2d');
+        
+        // Destroi gráfico anterior se existir
+        if (graficos.temasDistribuicao) {
+            graficos.temasDistribuicao.destroy();
+        }
+        
+        // Pega os top 10 temas
+        const topTemas = temasDistribuicao.slice(0, 10);
+        
+        // Cores para os temas
+        const cores = [
+            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
+            '#FF9F40', '#FF6384', '#C9CBCF', '#4BC0C0', '#FF6384'
+        ];
+        
+        graficos.temasDistribuicao = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: topTemas.map(item => item.tema),
+                datasets: [{
+                    data: topTemas.map(item => item.total),
+                    backgroundColor: cores.slice(0, topTemas.length),
+                    borderWidth: 2,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            usePointStyle: true
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const value = context.parsed;
+                                const total = topTemas.reduce((sum, item) => sum + item.total, 0);
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return `${context.label}: ${value} notícias (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    function renderizarTopTemas() {
+        const topTemas = dadosGlobais.top_temas || [];
+        let html = '';
+        
+        if (topTemas.length === 0) {
+            html = '<p class="text-center text-muted">Nenhum tema encontrado</p>';
+        } else {
+            html = '<div class="list-group list-group-flush">';
+            topTemas.slice(0, 10).forEach(function(tema, index) {
+                const posicao = index + 1;
+                let badgeClass = 'badge-primary';
+                
+                // Cores diferentes para os primeiros colocados
+                if (posicao === 1) badgeClass = 'badge-warning';
+                else if (posicao === 2) badgeClass = 'badge-secondary';
+                else if (posicao === 3) badgeClass = 'badge-success';
+                
+                html += `
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="badge ${badgeClass} mr-2">${posicao}º</span>
+                            <strong>${tema.tema}</strong>
+                            <small class="text-muted ml-2">(${tema.tipos_midia} tipos de mídia)</small>
+                        </div>
+                        <span class="badge badge-light font-weight-bold">${tema.total} notícias</span>
+                    </div>
+                `;
+            });
+            html += '</div>';
+        }
+        
+        $('#top-temas-container').html(html);
+    }
+    
+    function renderizarHeatmapTemas() {
+        const heatmapData = dadosGlobais.heatmap_temas || [];
+        let html = '';
+        
+        if (heatmapData.length === 0) {
+            html = '<p class="text-center text-muted">Nenhum dado disponível para o heatmap</p>';
+        } else {
+            // Organizar dados para criar matriz
+            const temas = [...new Set(heatmapData.map(item => item.tema))].slice(0, 15); // Top 15 temas
+            const midias = ['Web', 'TV', 'Rádio', 'Impresso'];
+            
+            // Criar matriz de dados
+            const matriz = {};
+            heatmapData.forEach(item => {
+                if (!matriz[item.tema]) matriz[item.tema] = {};
+                matriz[item.tema][item.tipo_midia] = item.total;
+            });
+            
+            // Encontrar valores máximo e mínimo para normalização
+            const valores = heatmapData.map(item => item.total);
+            const maxValor = Math.max(...valores);
+            const minValor = Math.min(...valores);
+            
+            html = `
+                <div class="table-responsive">
+                    <table class="table table-sm heatmap-table">
+                        <thead>
+                            <tr>
+                                <th>Tema</th>
+                                ${midias.map(midia => `<th class="text-center">${midia}</th>`).join('')}
+                                <th class="text-center">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            temas.forEach(tema => {
+                let totalTema = 0;
+                let linhaMidias = '';
+                
+                midias.forEach(midia => {
+                    const valor = matriz[tema] && matriz[tema][midia] ? matriz[tema][midia] : 0;
+                    totalTema += valor;
+                    
+                    // Calcular intensidade da cor (0-1)
+                    const intensidade = maxValor > 0 ? (valor - minValor) / (maxValor - minValor) : 0;
+                    const alpha = Math.max(0.1, intensidade * 0.8);
+                    
+                    linhaMidias += `
+                        <td class="text-center heatmap-cell" 
+                            style="background-color: rgba(0, 123, 255, ${alpha}); color: ${alpha > 0.5 ? 'white' : 'black'};"
+                            title="${tema} - ${midia}: ${valor} notícias">
+                            ${valor}
+                        </td>
+                    `;
+                });
+                
+                html += `
+                    <tr>
+                        <td class="font-weight-bold" style="min-width: 200px;">${tema}</td>
+                        ${linhaMidias}
+                        <td class="text-center font-weight-bold">${totalTema}</td>
+                    </tr>
+                `;
+            });
+            
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-3">
+                    <small class="text-muted">
+                        <i class="fa fa-info-circle"></i> 
+                        Intensidade da cor representa o volume de notícias. Passe o mouse sobre as células para detalhes.
+                    </small>
+                </div>
+            `;
+        }
+        
+        $('#heatmap-temas-container').html(html);
+    }
+    
+    function renderizarGraficoTemasEvolucao() {
+        const evolucaoTemas = dadosGlobais.evolucao_temas || [];
+        
+        if (evolucaoTemas.length === 0) {
+            $('#grafico-temas-evolucao').parent().html('<p class="text-center text-muted">Nenhum dado de evolução disponível</p>');
+            return;
+        }
+        
+        const ctx = document.getElementById('grafico-temas-evolucao').getContext('2d');
+        
+        // Destroi gráfico anterior se existir
+        if (graficos.temasEvolucao) {
+            graficos.temasEvolucao.destroy();
+        }
+        
+        // Organizar dados por tema e data
+        const temasUnicos = [...new Set(evolucaoTemas.map(item => item.tema))].slice(0, 5); // Top 5 temas
+        const datasUnicas = [...new Set(evolucaoTemas.map(item => item.data))].sort();
+        
+        // Cores para os datasets
+        const cores = [
+            {bg: 'rgba(255, 99, 132, 0.2)', border: 'rgb(255, 99, 132)'},
+            {bg: 'rgba(54, 162, 235, 0.2)', border: 'rgb(54, 162, 235)'},
+            {bg: 'rgba(255, 205, 86, 0.2)', border: 'rgb(255, 205, 86)'},
+            {bg: 'rgba(75, 192, 192, 0.2)', border: 'rgb(75, 192, 192)'},
+            {bg: 'rgba(153, 102, 255, 0.2)', border: 'rgb(153, 102, 255)'}
+        ];
+        
+        const datasets = temasUnicos.map((tema, index) => {
+            const dadosDoTema = datasUnicas.map(data => {
+                const item = evolucaoTemas.find(e => e.tema === tema && e.data === data);
+                return item ? item.total : 0;
+            });
+            
+            return {
+                label: tema,
+                data: dadosDoTema,
+                borderColor: cores[index].border,
+                backgroundColor: cores[index].bg,
+                borderWidth: 2,
+                fill: false,
+                tension: 0.4
+            };
+        });
+        
+        graficos.temasEvolucao = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: datasUnicas.map(data => moment(data).format('DD/MM')),
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20
+                        }
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    }
+                },
+                interaction: {
+                    mode: 'nearest',
+                    axis: 'x',
+                    intersect: false
+                }
+            }
+        });
+    }
+    
     function mostrarErro(mensagem) {
         $('#loading-dashboard').hide();
         $('#cards-totais').html(`
@@ -2264,6 +2676,24 @@ $(document).ready(function() {
                         csvContent += `${label},"R$ ${parseFloat(data.datasets[0].data[index]).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}"\n`;
                     });
                     break;
+                
+                case 'temas-distribuicao':
+                    csvContent = 'Tema,Quantidade de Notícias\n';
+                    data.labels.forEach((label, index) => {
+                        csvContent += `"${label}",${data.datasets[0].data[index]}\n`;
+                    });
+                    break;
+                    
+                case 'temas-evolucao':
+                    csvContent = 'Data,' + data.datasets.map(dataset => dataset.label).join(',') + '\n';
+                    data.labels.forEach((label, index) => {
+                        const linha = [label];
+                        data.datasets.forEach(dataset => {
+                            linha.push(dataset.data[index]);
+                        });
+                        csvContent += linha.join(',') + '\n';
+                    });
+                    break;
                     
                 default:
                     csvContent = 'Label,Valor\n';
@@ -2307,6 +2737,12 @@ $(document).ready(function() {
                     break;
                 case 'palavras-chave':
                     csvContent = exportarPalavrasChaveCSV();
+                    break;
+                case 'top-temas':
+                    csvContent = exportarTopTemasCSV();
+                    break;
+                case 'heatmap-temas':
+                    csvContent = exportarHeatmapTemasCSV();
                     break;
                 default:
                     alert('Exportação CSV não implementada para este elemento.');
@@ -2889,6 +3325,149 @@ $(document).ready(function() {
     color: #007bff;
     animation: fa-spin 1s infinite linear;
     z-index: 1001;
+}
+
+/* ==================== ESTILOS PARA TEMAS ====================*/
+
+/* Heatmap de Temas */
+.heatmap-table {
+    font-size: 13px;
+}
+
+.heatmap-table th {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    font-weight: 600;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.heatmap-table td {
+    border: 1px solid #dee2e6;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.heatmap-cell:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    border-color: #007bff !important;
+    z-index: 10;
+    position: relative;
+}
+
+/* Top Temas - Badges coloridos */
+.badge-warning {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.badge-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+/* Responsividade para heatmap */
+@media (max-width: 768px) {
+    .heatmap-table {
+        font-size: 11px;
+    }
+    
+    .heatmap-table th,
+    .heatmap-table td {
+        padding: 6px 4px;
+    }
+    
+    .heatmap-table td:first-child {
+        min-width: 120px !important;
+        font-size: 10px;
+    }
+}
+
+/* Melhorias visuais para os cards de temas */
+.tema-card {
+    transition: all 0.3s ease;
+    border-left: 4px solid #007bff;
+}
+
+.tema-card:hover {
+    border-left-color: #0056b3;
+    box-shadow: 0 4px 12px rgba(0,123,255,0.15);
+}
+
+/* Animações para gráficos de temas */
+.tema-grafico-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.tema-grafico-container::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #007bff, #28a745, #ffc107, #dc3545);
+    border-radius: 8px;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.tema-grafico-container:hover::before {
+    opacity: 0.1;
+}
+
+/* Cores específicas para temas mais comuns */
+.tema-politica { border-left-color: #dc3545 !important; }
+.tema-saude { border-left-color: #28a745 !important; }
+.tema-meio-ambiente { border-left-color: #20c997 !important; }
+.tema-seguranca { border-left-color: #fd7e14 !important; }
+.tema-transito { border-left-color: #6f42c1 !important; }
+.tema-agronegocio { border-left-color: #e83e8c !important; }
+
+/* Loading específico para temas */
+.tema-loading {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6c757d;
+}
+
+.tema-loading i {
+    font-size: 2rem;
+    margin-bottom: 15px;
+    color: #007bff;
+}
+
+/* Tooltip para células do heatmap */
+.heatmap-cell[title] {
+    position: relative;
+}
+
+/* Estilos para o gráfico de evolução de temas */
+#grafico-temas-evolucao {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 8px;
+}
+
+/* Destaque para seção de temas */
+.secao-temas {
+    background: linear-gradient(135deg, rgba(0,123,255,0.02) 0%, rgba(40,167,69,0.02) 100%);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 25px;
+    border: 1px solid rgba(0,123,255,0.1);
+}
+
+.secao-temas .card {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border: none;
+}
+
+.secao-temas .card-header {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-bottom: 1px solid #e9ecef;
 }
 </style>
 @endsection
