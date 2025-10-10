@@ -159,6 +159,9 @@ class ClienteController extends Controller
         // Flag para controlar visibilidade dos botões de relatório com imagens (se true, MOSTRA botões)
         $fl_print = $cliente && $cliente->fl_print ? true : false;
         
+        // Flag para controlar visibilidade dos temas das notícias (se true, MOSTRA temas)
+        $fl_tema_noticias = $cliente && $cliente->fl_tema_noticias ? true : false;
+        
         // Debug simples
         if ($cliente) {
             Log::info('DEBUG FL_PRINT - Cliente: ' . $cliente->nome . ' (ID: ' . $cliente->id . ')');
@@ -168,7 +171,7 @@ class ClienteController extends Controller
 
         $relatorios = array();
 
-        return view('cliente/noticias', compact('relatorios','tipo_data','dt_inicial','dt_final','fl_web','fl_tv','fl_radio','fl_impresso','fl_areas','fl_sentimento','fl_retorno_midia','fl_print','cliente','clientes'));
+        return view('cliente/noticias', compact('relatorios','tipo_data','dt_inicial','dt_final','fl_web','fl_tv','fl_radio','fl_impresso','fl_areas','fl_sentimento','fl_retorno_midia','fl_print','fl_tema_noticias','cliente','clientes'));
     }
 
     public function create(): View

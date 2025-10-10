@@ -455,6 +455,7 @@ class RelatorioService
                         COALESCE(nc.sentimento, '0') as sentimento,
                         COALESCE(nc.area, 0) as area_id,
                         COALESCE(a.descricao, 'Sem área') as area_nome,
+                        COALESCE(w.tema, '') as tema,
                         nc.id as vinculo_id,
                         nc.misc_data
                     FROM noticias_web w
@@ -533,6 +534,7 @@ class RelatorioService
                         'valor' => (float)$noticia->valor,
                         'area' => $noticia->area_nome ?? 'Sem área',
                         'area_id' => $noticia->area_id,
+                        'tema' => $noticia->tema ?? '',
                         'tags' => $tags,
                         'tipo_midia' => 'web'
                     ];
@@ -576,6 +578,7 @@ class RelatorioService
                         COALESCE(nc.sentimento, '0') as sentimento,
                         COALESCE(nc.area, 0) as area_id,
                         COALESCE(a.descricao, 'Sem área') as area_nome,
+                        COALESCE(t.tema, '') as tema,
                         nc.id as vinculo_id,
                         nc.misc_data
                     FROM noticia_tv t
@@ -636,6 +639,7 @@ class RelatorioService
                         'valor' => (float)$noticia->valor,
                         'area' => $noticia->area_nome ?? 'Sem área',
                         'area_id' => $noticia->area_id,
+                        'tema' => $noticia->tema ?? '',
                         'tags' => $tags,
                         'tipo_midia' => 'tv'
                     ];
@@ -677,6 +681,7 @@ class RelatorioService
                         COALESCE(nc.sentimento, '0') as sentimento,
                         COALESCE(nc.area, 0) as area_id,
                         COALESCE(a.descricao, 'Sem área') as area_nome,
+                        COALESCE(r.tema, '') as tema,
                         nc.id as vinculo_id,
                         nc.misc_data
                     FROM noticia_radio r
@@ -738,6 +743,7 @@ class RelatorioService
                         'valor' => (float)$noticia->valor,
                         'area' => $noticia->area_nome ?? 'Sem área',
                         'area_id' => $noticia->area_id,
+                        'tema' => $noticia->tema ?? '',
                         'tags' => $tags,
                         'tipo_midia' => 'radio'
                     ];
@@ -772,6 +778,7 @@ class RelatorioService
                         COALESCE(nc.sentimento, '0') as sentimento,
                         COALESCE(nc.area, 0) as area_id,
                         COALESCE(a.descricao, 'Sem área') as area_nome,
+                        COALESCE(j.tema, '') as tema,
                         nc.id as vinculo_id,
                         nc.misc_data
                     FROM noticia_impresso j
@@ -830,6 +837,7 @@ class RelatorioService
                         'valor' => (float)$noticia->valor,
                         'area' => $noticia->area_nome ?? 'Sem área',
                         'area_id' => $noticia->area_id,
+                        'tema' => $noticia->tema ?? '',
                         'tags' => $tags,
                         'tipo_midia' => 'impresso'
                     ];
