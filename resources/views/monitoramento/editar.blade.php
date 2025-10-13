@@ -618,7 +618,7 @@
                         },
                         beforeSend: function() {
                             $('.load-busca').loader('show');
-                            $('.mensagem-busca-web').html('<div class="col-md-6"><span class="text-warning">Buscando dados...</span></div>');
+                            $(".mensagem-busca-web").html('<div class="col-md-6"><span class="text-warning">Buscando dados...</span></div>');
                         },
                         success: function(data) {
 
@@ -690,7 +690,7 @@
                                 "fontes": fontes
                         },
                         beforeSend: function() {
-                            
+                            $(".mensagem-busca-impresso").html('<div class="col-md-6"><span class="text-warning">Buscando dados...</span></div>');
                         },
                         success: function(data) {
 
@@ -757,7 +757,7 @@
                                 "fontes": fontes
                         },
                         beforeSend: function() {
-                        
+                            $(".mensagem-busca-radio").html('<div class="col-md-6"><span class="text-warning">Buscando dados...</span></div>');
                         },
                         success: function(data) {
 
@@ -823,7 +823,7 @@
                                 "fontes": fontes
                         },
                         beforeSend: function() {
-                        
+                            $(".mensagem-busca-tv").html('<div class="col-md-6"><span class="text-warning">Buscando dados...</span></div>');
                         },
                         success: function(data) {
 
