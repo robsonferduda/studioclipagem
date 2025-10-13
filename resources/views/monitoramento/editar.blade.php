@@ -662,6 +662,7 @@
                                     '</div>');
 
                                 });
+                                $('.mensagem-busca-web').html('');
                             }                            
                         },
                         error: function(xhr){
@@ -730,6 +731,7 @@
                                     '</div>');
 
                                 });
+                                $('.mensagem-busca-impresso').html('');
                             }                            
                         },
                         error: function(xhr){
@@ -797,7 +799,9 @@
                                     '</div>');
 
                                 });
-                            }                            
+
+                                $('.mensagem-busca-radio').html('');
+                            }
                         },
                         error: function(xhr){
                             $("#accordion_impresso .card").remove();
@@ -864,6 +868,8 @@
                                     '</div>');
 
                                 });
+
+                                $('.mensagem-busca-tv').html('');
                             }                            
                         },
                         error: function(xhr){
