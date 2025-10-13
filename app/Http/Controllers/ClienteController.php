@@ -4476,14 +4476,14 @@ print('SUCCESS' if success else 'ERROR')
                         CASE 
                             WHEN nc.tipo_id = 1 AND ni.tema IS NOT NULL THEN ni.tema
                             WHEN nc.tipo_id = 2 AND nw.tema IS NOT NULL THEN nw.tema  
-                            WHEN nc.tipo_id = 3 AND nt.tema IS NOT NULL THEN nt.tema
-                            WHEN nc.tipo_id = 4 AND nr.tema IS NOT NULL THEN nr.tema
+                            WHEN nc.tipo_id = 3 AND nr.tema IS NOT NULL THEN nr.tema
+                            WHEN nc.tipo_id = 4 AND nt.tema IS NOT NULL THEN nt.tema
                         END as tema
                     FROM noticia_cliente nc
                     LEFT JOIN noticia_impresso ni ON nc.tipo_id = 1 AND nc.noticia_id = ni.id
                     LEFT JOIN noticias_web nw ON nc.tipo_id = 2 AND nc.noticia_id = nw.id  
-                    LEFT JOIN noticia_tv nt ON nc.tipo_id = 3 AND nc.noticia_id = nt.id
-                    LEFT JOIN noticia_radio nr ON nc.tipo_id = 4 AND nc.noticia_id = nr.id
+                    LEFT JOIN noticia_radio nr ON nc.tipo_id = 3 AND nc.noticia_id = nr.id
+                    LEFT JOIN noticia_tv nt ON nc.tipo_id = 4 AND nc.noticia_id = nt.id
                     WHERE nc.cliente_id = ?
                       AND nc.tema_processed = TRUE
                       AND nc.deleted_at IS NULL
@@ -4529,14 +4529,14 @@ print('SUCCESS' if success else 'ERROR')
                         CASE 
                             WHEN nc.tipo_id = 1 AND ni.tema IS NOT NULL THEN ni.tema
                             WHEN nc.tipo_id = 2 AND nw.tema IS NOT NULL THEN nw.tema  
-                            WHEN nc.tipo_id = 3 AND nt.tema IS NOT NULL THEN nt.tema
-                            WHEN nc.tipo_id = 4 AND nr.tema IS NOT NULL THEN nr.tema
+                            WHEN nc.tipo_id = 3 AND nr.tema IS NOT NULL THEN nr.tema
+                            WHEN nc.tipo_id = 4 AND nt.tema IS NOT NULL THEN nt.tema
                         END as tema
                     FROM noticia_cliente nc
                     LEFT JOIN noticia_impresso ni ON nc.tipo_id = 1 AND nc.noticia_id = ni.id
                     LEFT JOIN noticias_web nw ON nc.tipo_id = 2 AND nc.noticia_id = nw.id  
-                    LEFT JOIN noticia_tv nt ON nc.tipo_id = 3 AND nc.noticia_id = nt.id
-                    LEFT JOIN noticia_radio nr ON nc.tipo_id = 4 AND nc.noticia_id = nr.id
+                    LEFT JOIN noticia_radio nr ON nc.tipo_id = 3 AND nc.noticia_id = nr.id
+                    LEFT JOIN noticia_tv nt ON nc.tipo_id = 4 AND nc.noticia_id = nt.id
                     WHERE nc.cliente_id = ?
                       AND nc.tema_processed = TRUE
                       AND nc.deleted_at IS NULL
@@ -4584,20 +4584,20 @@ print('SUCCESS' if success else 'ERROR')
                         CASE nc.tipo_id 
                             WHEN 1 THEN 'Impresso'
                             WHEN 2 THEN 'Web' 
-                            WHEN 3 THEN 'TV'
-                            WHEN 4 THEN 'Rádio'
+                            WHEN 3 THEN 'Rádio'
+                            WHEN 4 THEN 'TV'
                         END as tipo_midia,
                         CASE 
                             WHEN nc.tipo_id = 1 AND ni.tema IS NOT NULL THEN ni.tema
                             WHEN nc.tipo_id = 2 AND nw.tema IS NOT NULL THEN nw.tema  
-                            WHEN nc.tipo_id = 3 AND nt.tema IS NOT NULL THEN nt.tema
-                            WHEN nc.tipo_id = 4 AND nr.tema IS NOT NULL THEN nr.tema
+                            WHEN nc.tipo_id = 3 AND nr.tema IS NOT NULL THEN nr.tema
+                            WHEN nc.tipo_id = 4 AND nt.tema IS NOT NULL THEN nt.tema
                         END as tema
                     FROM noticia_cliente nc
                     LEFT JOIN noticia_impresso ni ON nc.tipo_id = 1 AND nc.noticia_id = ni.id
                     LEFT JOIN noticias_web nw ON nc.tipo_id = 2 AND nc.noticia_id = nw.id  
-                    LEFT JOIN noticia_tv nt ON nc.tipo_id = 3 AND nc.noticia_id = nt.id
-                    LEFT JOIN noticia_radio nr ON nc.tipo_id = 4 AND nc.noticia_id = nr.id
+                    LEFT JOIN noticia_radio nr ON nc.tipo_id = 3 AND nc.noticia_id = nr.id
+                    LEFT JOIN noticia_tv nt ON nc.tipo_id = 4 AND nc.noticia_id = nt.id
                     WHERE nc.cliente_id = ?
                       AND nc.tema_processed = TRUE
                       AND nc.deleted_at IS NULL
@@ -4644,14 +4644,14 @@ print('SUCCESS' if success else 'ERROR')
                         CASE 
                             WHEN nc.tipo_id = 1 AND ni.tema IS NOT NULL THEN ni.tema
                             WHEN nc.tipo_id = 2 AND nw.tema IS NOT NULL THEN nw.tema  
-                            WHEN nc.tipo_id = 3 AND nt.tema IS NOT NULL THEN nt.tema
-                            WHEN nc.tipo_id = 4 AND nr.tema IS NOT NULL THEN nr.tema
+                            WHEN nc.tipo_id = 3 AND nr.tema IS NOT NULL THEN nr.tema
+                            WHEN nc.tipo_id = 4 AND nt.tema IS NOT NULL THEN nt.tema
                         END as tema
                     FROM noticia_cliente nc
                     LEFT JOIN noticia_impresso ni ON nc.tipo_id = 1 AND nc.noticia_id = ni.id
                     LEFT JOIN noticias_web nw ON nc.tipo_id = 2 AND nc.noticia_id = nw.id  
-                    LEFT JOIN noticia_tv nt ON nc.tipo_id = 3 AND nc.noticia_id = nt.id
-                    LEFT JOIN noticia_radio nr ON nc.tipo_id = 4 AND nc.noticia_id = nr.id
+                    LEFT JOIN noticia_radio nr ON nc.tipo_id = 3 AND nc.noticia_id = nr.id
+                    LEFT JOIN noticia_tv nt ON nc.tipo_id = 4 AND nc.noticia_id = nt.id
                     WHERE nc.cliente_id = ?
                       AND nc.tema_processed = TRUE
                       AND nc.deleted_at IS NULL
@@ -4686,14 +4686,14 @@ print('SUCCESS' if success else 'ERROR')
                         CASE 
                             WHEN nc.tipo_id = 1 AND ni.tema IS NOT NULL THEN ni.tema
                             WHEN nc.tipo_id = 2 AND nw.tema IS NOT NULL THEN nw.tema  
-                            WHEN nc.tipo_id = 3 AND nt.tema IS NOT NULL THEN nt.tema
-                            WHEN nc.tipo_id = 4 AND nr.tema IS NOT NULL THEN nr.tema
+                            WHEN nc.tipo_id = 3 AND nr.tema IS NOT NULL THEN nr.tema
+                            WHEN nc.tipo_id = 4 AND nt.tema IS NOT NULL THEN nt.tema
                         END as tema
                     FROM noticia_cliente nc
                     LEFT JOIN noticia_impresso ni ON nc.tipo_id = 1 AND nc.noticia_id = ni.id
                     LEFT JOIN noticias_web nw ON nc.tipo_id = 2 AND nc.noticia_id = nw.id  
-                    LEFT JOIN noticia_tv nt ON nc.tipo_id = 3 AND nc.noticia_id = nt.id
-                    LEFT JOIN noticia_radio nr ON nc.tipo_id = 4 AND nc.noticia_id = nr.id
+                    LEFT JOIN noticia_radio nr ON nc.tipo_id = 3 AND nc.noticia_id = nr.id
+                    LEFT JOIN noticia_tv nt ON nc.tipo_id = 4 AND nc.noticia_id = nt.id
                     WHERE nc.cliente_id = ?
                       AND nc.tema_processed = TRUE
                       AND nc.deleted_at IS NULL

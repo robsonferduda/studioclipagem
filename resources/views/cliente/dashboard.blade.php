@@ -2409,12 +2409,6 @@ $(document).ready(function() {
                         </tbody>
                     </table>
                 </div>
-                <div class="mt-3">
-                    <small class="text-muted">
-                        <i class="fa fa-info-circle"></i> 
-                        Intensidade da cor representa o volume de notícias. Passe o mouse sobre as células para detalhes.
-                    </small>
-                </div>
             `;
         }
         
@@ -3332,6 +3326,8 @@ $(document).ready(function() {
 /* Heatmap de Temas */
 .heatmap-table {
     font-size: 13px;
+    table-layout: fixed;
+    width: 100%;
 }
 
 .heatmap-table th {
@@ -3342,10 +3338,34 @@ $(document).ready(function() {
     vertical-align: middle;
 }
 
+/* Larguras fixas para as colunas */
+.heatmap-table th:first-child {
+    width: 35%; /* Coluna do tema - mais larga */
+}
+
+.heatmap-table th:not(:first-child):not(:last-child) {
+    width: 13%; /* Colunas Web, TV, Rádio, Impresso - larguras iguais */
+}
+
+.heatmap-table th:last-child {
+    width: 13%; /* Coluna Total */
+}
+
 .heatmap-table td {
     border: 1px solid #dee2e6;
     transition: all 0.2s ease;
     cursor: pointer;
+    text-align: center;
+    vertical-align: middle;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.heatmap-table td:first-child {
+    text-align: left;
+    padding-left: 12px;
+    white-space: normal;
 }
 
 .heatmap-cell:hover {
@@ -3378,9 +3398,28 @@ $(document).ready(function() {
         padding: 6px 4px;
     }
     
+    .heatmap-table th:first-child {
+        width: 40% !important;
+    }
+    
+    .heatmap-table th:not(:first-child):not(:last-child) {
+        width: 12% !important;
+    }
+    
+    .heatmap-table th:last-child {
+        width: 12% !important;
+    }
+    
     .heatmap-table td:first-child {
-        min-width: 120px !important;
+        min-width: unset !important;
         font-size: 10px;
+        padding-left: 8px;
+    }
+    
+    /* Texto menor nas células em mobile */
+    .heatmap-table td {
+        font-size: 10px;
+        padding: 4px 2px;
     }
 }
 
