@@ -159,6 +159,9 @@ class ClienteController extends Controller
         // Flag para controlar visibilidade dos botões de relatório com imagens (se true, MOSTRA botões)
         $fl_print = $cliente && $cliente->fl_print ? true : false;
         
+        // Flag para controlar visibilidade dos temas das notícias (se true, MOSTRA temas)
+        $fl_tema_noticias = $cliente && $cliente->fl_tema_noticias ? true : false;
+        
         // Debug simples
         if ($cliente) {
             Log::info('DEBUG FL_PRINT - Cliente: ' . $cliente->nome . ' (ID: ' . $cliente->id . ')');
@@ -168,7 +171,7 @@ class ClienteController extends Controller
 
         $relatorios = array();
 
-        return view('cliente/noticias', compact('relatorios','tipo_data','dt_inicial','dt_final','fl_web','fl_tv','fl_radio','fl_impresso','fl_areas','fl_sentimento','fl_retorno_midia','fl_print','cliente','clientes'));
+        return view('cliente/noticias', compact('relatorios','tipo_data','dt_inicial','dt_final','fl_web','fl_tv','fl_radio','fl_impresso','fl_areas','fl_sentimento','fl_retorno_midia','fl_print','fl_tema_noticias','cliente','clientes'));
     }
 
     public function create(): View
@@ -628,8 +631,9 @@ class ClienteController extends Controller
             $fl_sentimento = $cliente->fl_sentimento ? true : false;
             $fl_retorno_midia = $cliente->fl_retorno_midia ? true : false;
             $fl_areas = $cliente->fl_areas ? true : false;
+            $fl_tema_noticias = $cliente->fl_tema_noticias ? true : false;
             
-            return view('cliente/dashboard', compact('cliente', 'fl_sentimento', 'fl_retorno_midia', 'fl_areas'));
+            return view('cliente/dashboard', compact('cliente', 'fl_sentimento', 'fl_retorno_midia', 'fl_areas', 'fl_tema_noticias'));
             
         } catch (\Exception $e) {
             Log::error('Erro no dashboard do cliente: ' . $e->getMessage());
@@ -667,28 +671,28 @@ class ClienteController extends Controller
             
             // Período padrão: últimos 7 dias
             $periodo = $request->get('periodo', '7');
-            $dataFim = Carbon::now();
             
             switch($periodo) {
                 case '7':
-                    $dataInicio = $dataFim->copy()->subDays(7);
+                    $dataInicio = Carbon::now()->subDays(6)->startOfDay(); // 6 dias atrás + hoje = 7 dias
+                    $dataFim = Carbon::now()->endOfDay();
                     break;
                 case '14':
-                    $dataInicio = $dataFim->copy()->subDays(14);
+                    $dataInicio = Carbon::now()->subDays(13)->startOfDay(); // 13 dias atrás + hoje = 14 dias
+                    $dataFim = Carbon::now()->endOfDay();
                     break;
                 case '30':
-                    $dataInicio = $dataFim->copy()->subDays(30);
+                    $dataInicio = Carbon::now()->subDays(29)->startOfDay(); // 29 dias atrás + hoje = 30 dias
+                    $dataFim = Carbon::now()->endOfDay();
                     break;
                 case 'mes_anterior':
-                    $dataInicio = $dataFim->copy()->subMonth()->startOfMonth();
+                    $dataInicio = Carbon::now()->subMonth()->startOfMonth()->startOfDay();
+                    $dataFim = Carbon::now()->subMonth()->endOfMonth()->endOfDay();
                     break;
                 default:
-                    $dataInicio = $dataFim->copy()->subDays(30);
+                    $dataInicio = Carbon::now()->subDays(29)->startOfDay(); // 29 dias atrás + hoje = 30 dias
+                    $dataFim = Carbon::now()->endOfDay();
                     break;
-            }
-            
-            if ($periodo === 'mes_anterior') {
-                $dataFim = $dataFim->copy()->subMonth()->endOfMonth();
             }
             
             // Busca dados do dashboard
@@ -747,6 +751,14 @@ class ClienteController extends Controller
         // Top áreas (se habilitado)
         if ($cliente->fl_areas) {
             $dados['top_areas'] = $this->obterTopAreas($clienteId, $dataInicio, $dataFim, $cliente);
+        }
+        
+        // Análise de temas das notícias (se habilitado)
+        if ($cliente->fl_tema_noticias) {
+            $dados['temas_distribuicao'] = $this->obterTemasDistribuicao($clienteId, $dataInicio, $dataFim, $cliente);
+            $dados['top_temas'] = $this->obterTopTemas($clienteId, $dataInicio, $dataFim, $cliente);
+            $dados['heatmap_temas'] = $this->obterHeatmapTemas($clienteId, $dataInicio, $dataFim, $cliente);
+            $dados['evolucao_temas'] = $this->obterEvolucaoTemas($clienteId, $dataInicio, $dataFim, $cliente);
         }
         
         // Nuvem de palavras-chave das notícias
@@ -1646,6 +1658,230 @@ class ClienteController extends Controller
         return array_slice($palavrasChave, 0, 100); // Top 100 palavras mais frequentes
     }
 
+    /**
+     * Aplica destaque de palavras-chave nas notícias
+     */
+    private function aplicarDestaquePalavrasChave($noticias, $clienteId)
+    {
+        try {
+            // Buscar palavras-chave do cliente
+            $cliente = Cliente::find($clienteId);
+            if (!$cliente || !$cliente->list_keywords) {
+                Log::debug('Cliente não possui palavras-chave configuradas', ['cliente_id' => $clienteId]);
+                return $noticias; // Retorna as notícias sem modificação se não há palavras-chave
+            }
+
+            $palavrasChaveCliente = $cliente->list_keywords;
+            if (!is_array($palavrasChaveCliente)) {
+                $palavrasChaveCliente = json_decode($palavrasChaveCliente, true) ?? [];
+            }
+
+            if (empty($palavrasChaveCliente)) {
+                Log::debug('Lista de palavras-chave está vazia', ['cliente_id' => $clienteId]);
+                return $noticias;
+            }
+
+            Log::debug('Aplicando destaque de palavras-chave', [
+                'cliente_id' => $clienteId,
+                'palavras_chave' => $palavrasChaveCliente,
+                'total_tipos_midia' => count($noticias)
+            ]);
+
+            // Processar cada tipo de mídia
+            foreach ($noticias as $tipo => &$noticiasArray) {
+                if (!is_array($noticiasArray)) continue;
+
+                Log::debug('Processando tipo de mídia: ' . $tipo, ['total_noticias' => count($noticiasArray)]);
+
+                foreach ($noticiasArray as $index => &$noticia) {
+                    $noticiasArray[$index] = $this->destacarPalavrasChaveNoticia($noticiasArray[$index], $palavrasChaveCliente);
+                }
+            }
+
+            return $noticias;
+
+        } catch (\Exception $e) {
+            Log::warning('Erro ao aplicar destaque de palavras-chave: ' . $e->getMessage(), [
+                'cliente_id' => $clienteId,
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+            return $noticias; // Retorna as notícias sem modificação em caso de erro
+        }
+    }
+
+    /**
+     * Destaca palavras-chave em uma notícia específica
+     */
+    private function destacarPalavrasChaveNoticia($noticia, $palavrasChaveCliente)
+    {
+        try {
+            // Converter objeto para array se necessário
+            if (is_object($noticia)) {
+                $noticia = (array) $noticia;
+            }
+
+            // Campos de texto a serem analisados dependendo do tipo
+            $camposTexto = [];
+            
+            // Titulo e texto sempre presentes
+            if (isset($noticia['titulo']) && !empty($noticia['titulo'])) {
+                $camposTexto['titulo'] = $noticia['titulo'];
+            }
+            if (isset($noticia['texto']) && !empty($noticia['texto'])) {
+                $camposTexto['texto'] = $noticia['texto'];
+            }
+            if (isset($noticia['sinopse']) && !empty($noticia['sinopse'])) {
+                $camposTexto['sinopse'] = $noticia['sinopse'];
+            }
+
+            Log::debug('Analisando notícia para palavras-chave:', [
+                'noticia_id' => $noticia['id'] ?? 'N/A',
+                'campos_disponiveis' => array_keys($camposTexto),
+                'palavras_chave_cliente' => $palavrasChaveCliente,
+                'titulo_preview' => isset($noticia['titulo']) ? substr($noticia['titulo'], 0, 100) : 'N/A',
+                'texto_preview' => isset($noticia['texto']) ? substr($noticia['texto'], 0, 200) : 'N/A'
+            ]);
+
+            $palavrasEncontradas = [];
+            $camposDestacados = [];
+
+            // Para cada campo de texto
+            foreach ($camposTexto as $campo => $conteudo) {
+                if (empty($conteudo)) continue;
+
+                $conteudoDestacado = $conteudo;
+                $palavrasEncontradasCampo = [];
+
+                // Para cada palavra-chave do cliente
+                foreach ($palavrasChaveCliente as $palavraChave) {
+                    if (empty($palavraChave)) continue;
+
+                    // Primeiro tenta encontrar a frase completa
+                    if (stripos($conteudo, $palavraChave) !== false) {
+                        $conteudoDestacado = $this->destacarTexto($conteudoDestacado, $palavraChave);
+                        $palavrasEncontradasCampo[] = $palavraChave;
+                        $palavrasEncontradas[] = $palavraChave;
+                        Log::debug('Encontrada frase completa: ' . $palavraChave . ' no campo: ' . $campo);
+                    } else {
+                        // Se não encontrou a frase completa, tenta palavras individuais
+                        $palavrasIndividuais = explode(' ', $palavraChave);
+                        foreach ($palavrasIndividuais as $palavra) {
+                            $palavra = trim($palavra);
+                            if (strlen($palavra) >= 3 && stripos($conteudo, $palavra) !== false) {
+                                $conteudoDestacado = $this->destacarTexto($conteudoDestacado, $palavra);
+                                if (!in_array($palavra, $palavrasEncontradasCampo)) {
+                                    $palavrasEncontradasCampo[] = $palavra;
+                                }
+                                if (!in_array($palavra, $palavrasEncontradas)) {
+                                    $palavrasEncontradas[] = $palavra;
+                                }
+                                Log::debug('Encontrada palavra individual: ' . $palavra . ' no campo: ' . $campo);
+                            }
+                        }
+                    }
+                }
+
+                $camposDestacados[$campo] = $conteudoDestacado;
+            }
+
+            // Converter de volta para array se era array originalmente
+            if (is_array($noticia)) {
+                $noticiaResultado = $noticia;
+                
+                // Adicionar campos destacados à notícia
+                foreach ($camposDestacados as $campo => $conteudoDestacado) {
+                    $noticiaResultado[$campo . '_destacado'] = $conteudoDestacado;
+                }
+
+                // Adicionar array das palavras-chave encontradas
+                $noticiaResultado['palavras_chave_encontradas'] = array_unique($palavrasEncontradas);
+                
+                Log::debug('Resultado da análise:', [
+                    'palavras_encontradas' => $noticiaResultado['palavras_chave_encontradas'],
+                    'total_palavras' => count($noticiaResultado['palavras_chave_encontradas']),
+                    'campos_destacados_criados' => array_keys($camposDestacados),
+                    'tem_titulo_destacado' => isset($noticiaResultado['titulo_destacado']),
+                    'tem_texto_destacado' => isset($noticiaResultado['texto_destacado'])
+                ]);
+
+                return $noticiaResultado; // Retorna como array, não como objeto
+            }
+
+            return $noticia;
+
+        } catch (\Exception $e) {
+            Log::warning('Erro ao destacar palavras-chave em notícia: ' . $e->getMessage(), [
+                'noticia_id' => $noticia['id'] ?? $noticia->id ?? 'N/A',
+                'error_line' => $e->getLine()
+            ]);
+            return $noticia;
+        }
+    }
+
+    /**
+     * Destaca uma palavra/frase específica no texto
+     */
+    private function destacarTexto($texto, $palavra)
+    {
+        // Escapar caracteres especiais para regex
+        $palavraEscapada = preg_quote($palavra, '/');
+        
+        // Destacar a palavra mantendo a capitalização original
+        $textoDestacado = preg_replace(
+            '/(' . $palavraEscapada . ')/ui',
+            '<mark class="keyword-highlight">$1</mark>',
+            $texto
+        );
+
+        return $textoDestacado;
+    }
+
+    /**
+     * Aplica destaque de palavras-chave numa notícia individual (vinda do RelatorioService)
+     */
+    private function aplicarDestaquePalavrasChaveNoticia($noticia, $clienteId)
+    {
+        try {
+            // Buscar palavras-chave do cliente
+            $cliente = Cliente::find($clienteId);
+            if (!$cliente || !$cliente->list_keywords) {
+                Log::debug('Cliente não possui palavras-chave configuradas', ['cliente_id' => $clienteId]);
+                return $noticia;
+            }
+
+            $palavrasChaveCliente = $cliente->list_keywords;
+            if (!is_array($palavrasChaveCliente)) {
+                $palavrasChaveCliente = json_decode($palavrasChaveCliente, true) ?? [];
+            }
+
+            if (empty($palavrasChaveCliente)) {
+                return $noticia;
+            }
+
+            // Converter array/objeto para array para consistência
+            $noticiaArray = is_object($noticia) ? (array) $noticia : $noticia;
+
+            Log::debug('Aplicando destaque na notícia individual:', [
+                'noticia_id' => $noticiaArray['id'] ?? 'N/A',
+                'palavras_chave_cliente' => $palavrasChaveCliente,
+                'campos_disponíveis' => array_keys($noticiaArray)
+            ]);
+
+            // Processar usando o método existente
+            $noticiaProcessada = $this->destacarPalavrasChaveNoticia($noticiaArray, $palavrasChaveCliente);
+
+            return is_object($noticia) ? (object) $noticiaProcessada : $noticiaProcessada;
+
+        } catch (\Exception $e) {
+            Log::warning('Erro ao aplicar destaque de palavras-chave em notícia individual: ' . $e->getMessage(), [
+                'cliente_id' => $clienteId,
+                'noticia_id' => is_array($noticia) ? ($noticia['id'] ?? 'N/A') : (is_object($noticia) ? ($noticia->id ?? 'N/A') : 'N/A')
+            ]);
+            return $noticia;
+        }
+    }
+
     public function dadosImpresso($dt_inicial, $dt_final,$cliente_selecionado, $termo)
     {
         $sql = "SELECT t1.id, 
@@ -1966,6 +2202,22 @@ class ClienteController extends Controller
             
             // Lista as notícias
             $noticias = $relatorioService->listarNoticiasPorPeriodoComFiltros($clienteId, $dataInicio, $dataFim, $filtros, $termo, $tipoFiltroData);
+            
+            // Aplicar destaque de palavras-chave nas notícias
+            $noticias = $this->aplicarDestaquePalavrasChave($noticias, $clienteId);
+            
+            // Debug: verificar uma notícia processada
+            if (!empty($noticias['web'])) {
+                $primeiraNoticia = $noticias['web'][0];
+                Log::debug('Notícia após processamento (antes do JSON):', [
+                    'id' => $primeiraNoticia['id'] ?? 'N/A',
+                    'titulo_original' => $primeiraNoticia['titulo'] ?? 'N/A',
+                    'tem_titulo_destacado' => isset($primeiraNoticia['titulo_destacado']),
+                    'tem_texto_destacado' => isset($primeiraNoticia['texto_destacado']),
+                    'palavras_chave_encontradas' => $primeiraNoticia['palavras_chave_encontradas'] ?? [],
+                    'titulo_destacado_preview' => isset($primeiraNoticia['titulo_destacado']) ? substr($primeiraNoticia['titulo_destacado'], 0, 100) : 'N/A'
+                ]);
+            }
             
             Log::info('Notícias encontradas:', [
                 'total_web' => count($noticias['web'] ?? []),
@@ -3869,6 +4121,9 @@ print('SUCCESS' if success else 'ERROR')
             $noticia = $relatorioService->buscarNoticia($id, $tipo, $clienteId);
             
             if ($noticia) {
+                // Aplicar destaque de palavras-chave na notícia individual
+                $noticia = $this->aplicarDestaquePalavrasChaveNoticia($noticia, $clienteId);
+                
                 return response()->json([
                     'success' => true,
                     'noticia' => $noticia
@@ -4202,6 +4457,275 @@ print('SUCCESS' if success else 'ERROR')
         }
     }
 
+    // ==================== MÉTODOS PARA ANÁLISE DE TEMAS ====================
+    
+    /**
+     * Obtém a distribuição de temas das notícias (para gráfico de pizza/donut)
+     */
+    private function obterTemasDistribuicao($clienteId, $dataInicio, $dataFim, $cliente)
+    {
+        try {
+            $query = "
+                WITH temas_unificados AS (
+                    SELECT 
+                        nc.id,
+                        nc.cliente_id,
+                        nc.created_at,
+                        nc.tema_processed,
+                        nc.deleted_at,
+                        CASE 
+                            WHEN nc.tipo_id = 1 AND ni.tema IS NOT NULL THEN ni.tema
+                            WHEN nc.tipo_id = 2 AND nw.tema IS NOT NULL THEN nw.tema  
+                            WHEN nc.tipo_id = 3 AND nt.tema IS NOT NULL THEN nt.tema
+                            WHEN nc.tipo_id = 4 AND nr.tema IS NOT NULL THEN nr.tema
+                        END as tema
+                    FROM noticia_cliente nc
+                    LEFT JOIN noticia_impresso ni ON nc.tipo_id = 1 AND nc.noticia_id = ni.id
+                    LEFT JOIN noticias_web nw ON nc.tipo_id = 2 AND nc.noticia_id = nw.id  
+                    LEFT JOIN noticia_tv nt ON nc.tipo_id = 3 AND nc.noticia_id = nt.id
+                    LEFT JOIN noticia_radio nr ON nc.tipo_id = 4 AND nc.noticia_id = nr.id
+                    WHERE nc.cliente_id = ?
+                      AND nc.tema_processed = TRUE
+                      AND nc.deleted_at IS NULL
+                      AND nc.created_at >= ?
+                      AND nc.created_at <= ?
+                )
+                SELECT 
+                    tema,
+                    COUNT(*) as total
+                FROM temas_unificados
+                WHERE tema IS NOT NULL
+                  AND TRIM(tema) != ''
+                GROUP BY tema
+                ORDER BY total DESC
+                LIMIT 10
+            ";
+
+            $resultados = DB::select($query, [$clienteId, $dataInicio, $dataFim]);
+
+            return collect($resultados)->map(function($item) {
+                return [
+                    'tema' => $item->tema,
+                    'total' => (int) $item->total
+                ];
+            })->toArray();
+
+        } catch (\Exception $e) {
+            Log::error('Erro ao obter distribuição de temas: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Obtém o ranking dos top temas com informações detalhadas
+     */
+    private function obterTopTemas($clienteId, $dataInicio, $dataFim, $cliente)
+    {
+        try {
+            $query = "
+                WITH temas_com_midia AS (
+                    SELECT 
+                        nc.tipo_id,
+                        CASE 
+                            WHEN nc.tipo_id = 1 AND ni.tema IS NOT NULL THEN ni.tema
+                            WHEN nc.tipo_id = 2 AND nw.tema IS NOT NULL THEN nw.tema  
+                            WHEN nc.tipo_id = 3 AND nt.tema IS NOT NULL THEN nt.tema
+                            WHEN nc.tipo_id = 4 AND nr.tema IS NOT NULL THEN nr.tema
+                        END as tema
+                    FROM noticia_cliente nc
+                    LEFT JOIN noticia_impresso ni ON nc.tipo_id = 1 AND nc.noticia_id = ni.id
+                    LEFT JOIN noticias_web nw ON nc.tipo_id = 2 AND nc.noticia_id = nw.id  
+                    LEFT JOIN noticia_tv nt ON nc.tipo_id = 3 AND nc.noticia_id = nt.id
+                    LEFT JOIN noticia_radio nr ON nc.tipo_id = 4 AND nc.noticia_id = nr.id
+                    WHERE nc.cliente_id = ?
+                      AND nc.tema_processed = TRUE
+                      AND nc.deleted_at IS NULL
+                      AND nc.created_at >= ?
+                      AND nc.created_at <= ?
+                )
+                SELECT 
+                    tema,
+                    COUNT(*) as total,
+                    COUNT(DISTINCT tipo_id) as tipos_midia
+                FROM temas_com_midia
+                WHERE tema IS NOT NULL
+                  AND TRIM(tema) != ''
+                GROUP BY tema
+                ORDER BY total DESC, tipos_midia DESC
+                LIMIT 10
+            ";
+
+            $resultados = DB::select($query, [$clienteId, $dataInicio, $dataFim]);
+
+            return collect($resultados)->map(function($item) {
+                return [
+                    'tema' => $item->tema,
+                    'total' => (int) $item->total,
+                    'tipos_midia' => (int) $item->tipos_midia
+                ];
+            })->toArray();
+
+        } catch (\Exception $e) {
+            Log::error('Erro ao obter top temas: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Obtém dados para o heatmap tema x tipo de mídia
+     */
+    private function obterHeatmapTemas($clienteId, $dataInicio, $dataFim, $cliente)
+    {
+        try {
+            $query = "
+                WITH temas_por_midia AS (
+                    SELECT 
+                        nc.tipo_id,
+                        CASE nc.tipo_id 
+                            WHEN 1 THEN 'Impresso'
+                            WHEN 2 THEN 'Web' 
+                            WHEN 3 THEN 'TV'
+                            WHEN 4 THEN 'Rádio'
+                        END as tipo_midia,
+                        CASE 
+                            WHEN nc.tipo_id = 1 AND ni.tema IS NOT NULL THEN ni.tema
+                            WHEN nc.tipo_id = 2 AND nw.tema IS NOT NULL THEN nw.tema  
+                            WHEN nc.tipo_id = 3 AND nt.tema IS NOT NULL THEN nt.tema
+                            WHEN nc.tipo_id = 4 AND nr.tema IS NOT NULL THEN nr.tema
+                        END as tema
+                    FROM noticia_cliente nc
+                    LEFT JOIN noticia_impresso ni ON nc.tipo_id = 1 AND nc.noticia_id = ni.id
+                    LEFT JOIN noticias_web nw ON nc.tipo_id = 2 AND nc.noticia_id = nw.id  
+                    LEFT JOIN noticia_tv nt ON nc.tipo_id = 3 AND nc.noticia_id = nt.id
+                    LEFT JOIN noticia_radio nr ON nc.tipo_id = 4 AND nc.noticia_id = nr.id
+                    WHERE nc.cliente_id = ?
+                      AND nc.tema_processed = TRUE
+                      AND nc.deleted_at IS NULL
+                      AND nc.created_at >= ?
+                      AND nc.created_at <= ?
+                )
+                SELECT 
+                    tipo_midia,
+                    tema,
+                    COUNT(*) as total
+                FROM temas_por_midia
+                WHERE tema IS NOT NULL
+                  AND TRIM(tema) != ''
+                GROUP BY tipo_midia, tema
+                ORDER BY total DESC
+            ";
+
+            $resultados = DB::select($query, [$clienteId, $dataInicio, $dataFim]);
+
+            return collect($resultados)->map(function($item) {
+                return [
+                    'tipo_midia' => $item->tipo_midia,
+                    'tema' => $item->tema,
+                    'total' => (int) $item->total
+                ];
+            })->toArray();
+
+        } catch (\Exception $e) {
+            Log::error('Erro ao obter heatmap de temas: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Obtém dados para evolução temporal dos temas
+     */
+    private function obterEvolucaoTemas($clienteId, $dataInicio, $dataFim, $cliente)
+    {
+        try {
+            // Primeiro, vamos buscar os top 5 temas do período
+            $topTemasQuery = "
+                WITH temas_unificados AS (
+                    SELECT 
+                        CASE 
+                            WHEN nc.tipo_id = 1 AND ni.tema IS NOT NULL THEN ni.tema
+                            WHEN nc.tipo_id = 2 AND nw.tema IS NOT NULL THEN nw.tema  
+                            WHEN nc.tipo_id = 3 AND nt.tema IS NOT NULL THEN nt.tema
+                            WHEN nc.tipo_id = 4 AND nr.tema IS NOT NULL THEN nr.tema
+                        END as tema
+                    FROM noticia_cliente nc
+                    LEFT JOIN noticia_impresso ni ON nc.tipo_id = 1 AND nc.noticia_id = ni.id
+                    LEFT JOIN noticias_web nw ON nc.tipo_id = 2 AND nc.noticia_id = nw.id  
+                    LEFT JOIN noticia_tv nt ON nc.tipo_id = 3 AND nc.noticia_id = nt.id
+                    LEFT JOIN noticia_radio nr ON nc.tipo_id = 4 AND nc.noticia_id = nr.id
+                    WHERE nc.cliente_id = ?
+                      AND nc.tema_processed = TRUE
+                      AND nc.deleted_at IS NULL
+                      AND nc.created_at >= ?
+                      AND nc.created_at <= ?
+                )
+                SELECT 
+                    tema,
+                    COUNT(*) as total
+                FROM temas_unificados
+                WHERE tema IS NOT NULL
+                  AND TRIM(tema) != ''
+                GROUP BY tema
+                ORDER BY total DESC
+                LIMIT 5
+            ";
+
+            $topTemas = DB::select($topTemasQuery, [$clienteId, $dataInicio, $dataFim]);
+            $temasList = collect($topTemas)->pluck('tema')->toArray();
+
+            if (empty($temasList)) {
+                return [];
+            }
+
+            // Agora buscamos a evolução temporal desses temas
+            $temasPlaceholders = str_repeat('?,', count($temasList) - 1) . '?';
+            
+            $evolucaoQuery = "
+                WITH evolucao_por_data AS (
+                    SELECT 
+                        DATE(nc.created_at) as data,
+                        CASE 
+                            WHEN nc.tipo_id = 1 AND ni.tema IS NOT NULL THEN ni.tema
+                            WHEN nc.tipo_id = 2 AND nw.tema IS NOT NULL THEN nw.tema  
+                            WHEN nc.tipo_id = 3 AND nt.tema IS NOT NULL THEN nt.tema
+                            WHEN nc.tipo_id = 4 AND nr.tema IS NOT NULL THEN nr.tema
+                        END as tema
+                    FROM noticia_cliente nc
+                    LEFT JOIN noticia_impresso ni ON nc.tipo_id = 1 AND nc.noticia_id = ni.id
+                    LEFT JOIN noticias_web nw ON nc.tipo_id = 2 AND nc.noticia_id = nw.id  
+                    LEFT JOIN noticia_tv nt ON nc.tipo_id = 3 AND nc.noticia_id = nt.id
+                    LEFT JOIN noticia_radio nr ON nc.tipo_id = 4 AND nc.noticia_id = nr.id
+                    WHERE nc.cliente_id = ?
+                      AND nc.tema_processed = TRUE
+                      AND nc.deleted_at IS NULL
+                      AND nc.created_at >= ?
+                      AND nc.created_at <= ?
+                )
+                SELECT 
+                    data,
+                    tema,
+                    COUNT(*) as total
+                FROM evolucao_por_data
+                WHERE tema IN ($temasPlaceholders)
+                GROUP BY data, tema
+                ORDER BY data DESC, total DESC
+            ";
+
+            $params = array_merge([$clienteId, $dataInicio, $dataFim], $temasList);
+            $resultados = DB::select($evolucaoQuery, $params);
+
+            return collect($resultados)->map(function($item) {
+                return [
+                    'data' => $item->data,
+                    'tema' => $item->tema,
+                    'total' => (int) $item->total
+                ];
+            })->toArray();
+
+        } catch (\Exception $e) {
+            Log::error('Erro ao obter evolução de temas: ' . $e->getMessage());
+            return [];
+        }
+    }
 
 
 }
