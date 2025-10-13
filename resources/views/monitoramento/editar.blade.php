@@ -700,6 +700,7 @@
 
                                 $(".cabecalho-busca-impresso").addClass("d-none");
                                 $(".monitoramento-total-impresso").html(0);
+                                $('.mensagem-busca-impresso').html('<div class="col-md-6"><span class="text-danger">Nenhum dado encontrado para a busca</span></div>');
 
                             }else{
 
@@ -767,6 +768,7 @@
 
                                 $(".cabecalho-busca-radio").addClass("d-none");
                                 $(".monitoramento-total-radio").html(0);
+                                $('.mensagem-busca-radio').html('<div class="col-md-6"><span class="text-danger">Nenhum dado encontrado para a busca</span></div>');
 
                             }else{
 
@@ -833,6 +835,7 @@
 
                                 $(".cabecalho-busca-tv").addClass("d-none");
                                 $(".monitoramento-total-tv").html(0);
+                                $('.mensagem-busca-tv').html('<div class="col-md-6"><span class="text-danger">Nenhum dado encontrado para a busca</span></div>');
 
                             }else{
 
