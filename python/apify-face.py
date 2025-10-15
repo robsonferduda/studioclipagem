@@ -18,7 +18,7 @@ load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '..', '.env'))
 TS_CONFIG = os.getenv("TS_CONFIG", "portuguese")  # 'portuguese' | 'simple'
 APIFY_TOKEN = os.getenv('APIFY_TOKEN')            # export APIFY_TOKEN="seu_token_apify"
 APIFY_ACTOR = os.getenv("APIFY_ACTOR", "danek/facebook-search-ppr")
-APIFY_MAX_POSTS = int(os.getenv("APIFY_MAX_POSTS", "30"))
+APIFY_MAX_POSTS = int(os.getenv("APIFY_MAX_POSTS", "15"))
 APIFY_RECENT = os.getenv("APIFY_RECENT", "true").lower() in ("1", "true", "yes")
 
 DB = {

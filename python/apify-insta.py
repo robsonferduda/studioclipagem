@@ -18,7 +18,7 @@ load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '..', '.env'))
 
 APIFY_TOKEN = os.getenv("APIFY_TOKEN")
 APIFY_ACTOR = os.getenv("APIFY_ACTOR", "apify/instagram-hashtag-scraper")
-APIFY_RESULTS_LIMIT = int(os.getenv("APIFY_RESULTS_LIMIT", "30"))
+APIFY_RESULTS_LIMIT = int(os.getenv("APIFY_RESULTS_LIMIT", "15"))
 APIFY_RESULTS_TYPE = os.getenv("APIFY_RESULTS_TYPE", "posts")  # posts | reels (depende do actor)
 APIFY_SLEEP_BETWEEN_BATCHES = float(os.getenv("APIFY_SLEEP_BETWEEN_BATCHES", "1.0"))
 
@@ -33,7 +33,7 @@ DB = {
 }
 
 BATCH_INSERT_SIZE = int(os.getenv("BATCH_INSERT_SIZE", "500"))
-HASHTAGS_PER_CALL = int(os.getenv("HASHTAGS_PER_CALL", "30"))  # quantas hashtags mandar por run do actor
+HASHTAGS_PER_CALL = int(os.getenv("HASHTAGS_PER_CALL", "15"))  # quantas hashtags mandar por run do actor
 
 
 # =========================
