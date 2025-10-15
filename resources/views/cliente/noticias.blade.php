@@ -2154,9 +2154,28 @@
         console.log('Carregando detalhes para:', {id: id, tipo: tipo, url: window.host + '/cliente/relatorios/noticia/' + id + '/' + tipo});
         
         // Carregar detalhes via AJAX
+        var requestData = {};
+        
+        // Para administradores, incluir o cliente selecionado
+        @role('administradores')
+            var cliente = $("#id_cliente").val();
+            console.log('🔍 DEBUG - Usuário é admin, cliente selecionado:', cliente);
+            if(cliente){
+                requestData.cliente_id = cliente;
+                console.log('✅ DEBUG - Adicionando cliente_id à requisição:', requestData.cliente_id);
+            } else {
+                console.log('❌ DEBUG - Nenhum cliente selecionado no dropdown');
+            }
+        @else
+            console.log('🔍 DEBUG - Usuário NÃO é admin, usando sessão do cliente logado');
+        @endrole
+        
+        console.log('🔍 DEBUG - requestData final:', requestData);
+        
         $.ajax({
             url: window.host + '/cliente/relatorios/noticia/' + id + '/' + tipo,
             type: 'GET',
+            data: requestData,
             dataType: 'json',
             timeout: 3600000, // 1 hora de timeout
             headers: {
