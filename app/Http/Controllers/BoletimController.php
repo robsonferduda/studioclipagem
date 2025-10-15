@@ -533,7 +533,9 @@ class BoletimController extends Controller
                     Area::where('id', NoticiaCliente::where('noticia_id', $noticia_web->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 2)->first()->area)->first()->descricao :
                     '';
 
-            $ordem = (NoticiaCliente::where('noticia_id', $noticia_web->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 2)->first() and NoticiaCliente::where('noticia_id', $noticia_web->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 2)->first()->area) ?
+            $ordem = (NoticiaCliente::where('noticia_id', $noticia_web->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 2)->first() 
+                 and NoticiaCliente::where('noticia_id', $noticia_web->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 2)->first()->area
+                 and AreaCliente::where('cliente_id',$boletim->id_cliente)->where('area_id', NoticiaCliente::where('noticia_id', $noticia_web->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 2)->first()->area)->first()) ?
                     AreaCliente::where('cliente_id',$boletim->id_cliente)->where('area_id', NoticiaCliente::where('noticia_id', $noticia_web->id)->where('cliente_id',$boletim->id_cliente)->where('tipo_id', 2)->first()->area)->first()->ordem :
                     '';
 

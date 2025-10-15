@@ -200,7 +200,7 @@
                                         </div>
                                     </div>
                                 </div>   
-                                <div class="row cabecalho-aguardando-busca-web">
+                                <div class="row mensagem-busca-web">
                                     <div class="col-md-6">
                                         <span class="text-info">Aguardando critérios de busca</span>
                                     </div>
@@ -220,7 +220,12 @@
                                             </span>
                                         </div>
                                     </div>
-                                </div>   
+                                </div>  
+                                <div class="row mensagem-busca-impresso">
+                                    <div class="col-md-6">
+                                        <span class="text-info">Aguardando critérios de busca</span>
+                                    </div>
+                                </div> 
                             </div>
                         </div>
                         <div class="tab-pane" id="panel_radio" role="tabpanel" aria-expanded="false">
@@ -236,7 +241,12 @@
                                             </span>
                                         </div>
                                     </div>
-                                </div>   
+                                </div>  
+                                <div class="row mensagem-busca-radio">
+                                    <div class="col-md-6">
+                                        <span class="text-info">Aguardando critérios de busca</span>
+                                    </div>
+                                </div> 
                             </div>
                         </div>
                         <div class="tab-pane" id="panel_tv" role="tabpanel" aria-expanded="false">
@@ -252,7 +262,12 @@
                                             </span>
                                         </div>
                                     </div>
-                                </div>   
+                                </div>  
+                                <div class="row mensagem-busca-tv">
+                                    <div class="col-md-6">
+                                        <span class="text-info">Aguardando critérios de busca</span>
+                                    </div>
+                                </div> 
                             </div>
                         </div>
                     </div>
@@ -506,6 +521,22 @@
         var host =  $('meta[name="base-url"]').attr('content');
         var token = $('meta[name="csrf-token"]').attr('content');
 
+        function mostrarErroBusca(xhr, selector = ".msg-alerta") {
+            let msg = 'Erro ao executar expressão de busca';
+
+            if (xhr && xhr.responseText && xhr.responseText.includes('syntax error in tsquery')) {
+                msg = '<div class="col-md-6"><span class="text-danger">Expressão de busca inválida. Verifique operadores ou termos.</span></div>';
+            } else if (xhr && (xhr.status === 504 || xhr.status === 408)) {
+                msg = '<div class="col-md-6"><span class="text-danger">Tempo de resposta excedido. Tente novamente ou refine sua busca.</span></div>';
+            } else if (xhr && xhr.status === 500) {
+                msg = '<div class="col-md-6"><span class="text-danger">Erro interno no servidor. Tente novamente mais tarde.</span>';
+            } else {
+                msg = '<div class="col-md-6"><span class="text-danger">Erro ao executar expressão de busca.</span></div>';
+            }
+
+            $(selector).html(msg);
+        }
+
         var demo2 = $('.demo1').bootstrapDualListbox({
             nonSelectedListLabel: 'Disponíveis',
             selectedListLabel: 'Selecionadas',
@@ -587,7 +618,7 @@
                         },
                         beforeSend: function() {
                             $('.load-busca').loader('show');
-                            $('.cabecalho-aguardando-busca-web').html('<div class="col-md-6"><span class="text-warning">Buscando dados...</span></div>');
+                            $(".mensagem-busca-web").html('<div class="col-md-6"><span class="text-warning">Buscando dados...</span></div>');
                         },
                         success: function(data) {
 
@@ -597,12 +628,12 @@
 
                                 $(".cabecalho-busca-web").addClass("d-none");
                                 $(".monitoramento-total-web").html(0);
-                                $('.cabecalho-aguardando-busca-web').html('<div class="col-md-6"><span class="text-danger">Nenhum dado encontrado para a busca</span></div>');
+                                $('.mensagem-busca-web').html('<div class="col-md-6"><span class="text-danger">Nenhum dado encontrado para a busca</span></div>');
 
                             }else{
 
                                 $(".cabecalho-busca-web").removeClass("d-none");
-                                $(".cabecalho-aguardando-busca-web").addClass("d-none");
+                                $(".mensagem-busca-web").addClass("d-none");
 
                                 $(".monitoramento-total-web").html(data.length);
                                 $.each(data, function(k, v) {
@@ -631,11 +662,12 @@
                                     '</div>');
 
                                 });
+                                $('.mensagem-busca-web').html('');
                             }                            
                         },
-                        error: function(){
+                        error: function(xhr){
                             $("#accordion_web .card").remove();
-                            $('.cabecalho-aguardando-busca-web').html('<div class="col-md-6"><span class="text-danger">Erro ao realizar busca</span></div>');
+                            mostrarErroBusca(xhr, ".mensagem-busca-web");
                         },
                         complete: function(){
                             $('.load-busca').loader('hide');
@@ -659,7 +691,7 @@
                                 "fontes": fontes
                         },
                         beforeSend: function() {
-                            
+                            $(".mensagem-busca-impresso").html('<div class="col-md-6"><span class="text-warning">Buscando dados...</span></div>');
                         },
                         success: function(data) {
 
@@ -669,6 +701,7 @@
 
                                 $(".cabecalho-busca-impresso").addClass("d-none");
                                 $(".monitoramento-total-impresso").html(0);
+                                $('.mensagem-busca-impresso').html('<div class="col-md-6"><span class="text-danger">Nenhum dado encontrado para a busca</span></div>');
 
                             }else{
 
@@ -698,11 +731,12 @@
                                     '</div>');
 
                                 });
+                                $('.mensagem-busca-impresso').html('');
                             }                            
                         },
-                        error: function(){
+                        error: function(xhr){
                             $("#accordion_impresso .card").remove();
-                            $(".msg-alerta").html('<span class="text-danger">Erro ao executar expressão de busca</span>');
+                            mostrarErroBusca(xhr, ".mensagem-busca-impresso");
                         },
                         complete: function(){
                             
@@ -726,7 +760,7 @@
                                 "fontes": fontes
                         },
                         beforeSend: function() {
-                        
+                            $(".mensagem-busca-radio").html('<div class="col-md-6"><span class="text-warning">Buscando dados...</span></div>');
                         },
                         success: function(data) {
 
@@ -736,6 +770,7 @@
 
                                 $(".cabecalho-busca-radio").addClass("d-none");
                                 $(".monitoramento-total-radio").html(0);
+                                $('.mensagem-busca-radio').html('<div class="col-md-6"><span class="text-danger">Nenhum dado encontrado para a busca</span></div>');
 
                             }else{
 
@@ -764,11 +799,13 @@
                                     '</div>');
 
                                 });
-                            }                            
+
+                                $('.mensagem-busca-radio').html('');
+                            }
                         },
-                        error: function(){
+                        error: function(xhr){
                             $("#accordion_impresso .card").remove();
-                            $(".msg-alerta").html('<span class="text-danger">Erro ao executar expressão de busca</span>');
+                            mostrarErroBusca(xhr, ".mensagem-busca-impresso");
                         },
                         complete: function(){
                         
@@ -792,7 +829,7 @@
                                 "fontes": fontes
                         },
                         beforeSend: function() {
-                        
+                            $(".mensagem-busca-tv").html('<div class="col-md-6"><span class="text-warning">Buscando dados...</span></div>');
                         },
                         success: function(data) {
 
@@ -802,6 +839,7 @@
 
                                 $(".cabecalho-busca-tv").addClass("d-none");
                                 $(".monitoramento-total-tv").html(0);
+                                $('.mensagem-busca-tv').html('<div class="col-md-6"><span class="text-danger">Nenhum dado encontrado para a busca</span></div>');
 
                             }else{
 
@@ -830,11 +868,13 @@
                                     '</div>');
 
                                 });
+
+                                $('.mensagem-busca-tv').html('');
                             }                            
                         },
-                        error: function(){
-                            $("#accordion_impresso .card").remove();
-                            $(".msg-alerta").html('<span class="text-danger">Erro ao executar expressão de busca</span>');
+                        error: function(xhr){
+                            $("#accordion_tv .card").remove();
+                            mostrarErroBusca(xhr, ".mensagem-busca-tv");
                         },
                         complete: function(){
                             
