@@ -1276,9 +1276,21 @@ class RelatorioService
     public function buscarNoticia($noticiaId, $tipo, $clienteId)
     {
         try {
+            Log::info('=== INICIANDO buscarNoticia RelatorioService ===', [
+                'noticiaId' => $noticiaId,
+                'tipo' => $tipo,
+                'clienteId' => $clienteId
+            ]);
+            
             $noticia = $this->getNoticiaById($noticiaId, $tipo);
             
+            Log::info('Notícia encontrada via Eloquent:', [
+                'noticia_encontrada' => !is_null($noticia),
+                'noticia_id' => $noticia ? $noticia->id : 'NULL'
+            ]);
+            
             if (!$noticia) {
+                Log::warning('Notícia não encontrada via Eloquent');
                 return null;
             }
 
@@ -1286,13 +1298,25 @@ class RelatorioService
             $tipoIdMap = ['web' => 2, 'impresso' => 1, 'tv' => 4, 'radio' => 3];
             $tipoId = $tipoIdMap[$tipo];
             
+            Log::info('Buscando vínculo noticia_cliente:', [
+                'noticia_id' => $noticiaId,
+                'tipo_id' => $tipoId,
+                'cliente_id' => $clienteId
+            ]);
+            
             $vinculo = DB::table('noticia_cliente')
                 ->where('noticia_id', $noticiaId)
                 ->where('tipo_id', $tipoId)
                 ->where('cliente_id', $clienteId)
                 ->first();
 
+            Log::info('Vínculo encontrado:', [
+                'vinculo_encontrado' => !is_null($vinculo),
+                'vinculo_id' => $vinculo ? $vinculo->id : 'NULL'
+            ]);
+
             if (!$vinculo) {
+                Log::warning('Vínculo não encontrado');
                 return null;
             }
 
@@ -1301,7 +1325,7 @@ class RelatorioService
             if ($vinculo->area) {
                 $area = DB::table('area')->where('id', $vinculo->area)->first();
                 if ($area) {
-                    $areaTexto = $area->nome;
+                    $areaTexto = $area->descricao; // Corrigido: usar 'descricao' em vez de 'nome'
                 }
             }
 

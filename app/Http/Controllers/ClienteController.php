@@ -4107,10 +4107,29 @@ print('SUCCESS' if success else 'ERROR')
     public function buscarNoticia(Request $request, $id, $tipo): JsonResponse
     {
         try {
+            // Log de debug
+            Log::info('=== INICIANDO buscarNoticia ===', [
+                'request_data' => $request->all(),
+                'noticia_id' => $id,
+                'tipo' => $tipo,
+                'client_id_controller' => $this->client_id,
+                'session_cliente' => session('cliente'),
+                'user_hasRole_cliente' => Auth::user()->hasRole('cliente'),
+                'request_cliente_id' => $request->get('cliente_id')
+            ]);
+            
             // Usa o cliente da request (para administradores) ou o cliente logado da sessão (para clientes)
             $clienteId = $request->get('cliente_id') ?: $this->client_id;
             
+            // Fallback adicional: se ainda não tiver cliente, tentar obter da sessão novamente
+            if (!$clienteId && session('cliente')) {
+                $clienteId = session('cliente')['id'] ?? null;
+            }
+            
+            Log::info('Cliente ID final obtido:', ['clienteId' => $clienteId]);
+            
             if (!$clienteId) {
+                Log::warning('Cliente não identificado na buscarNoticia');
                 return response()->json([
                     'success' => false,
                     'message' => 'Cliente não identificado'
