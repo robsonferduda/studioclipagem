@@ -9,7 +9,6 @@ from psycopg2.extras import RealDictCursor, execute_values
 from apify_client import ApifyClient
 from dotenv import load_dotenv
 
-
 # =========================
 # ENV / CONFIG
 # =========================
@@ -35,13 +34,46 @@ DB = {
 BATCH_INSERT_SIZE = int(os.getenv("BATCH_INSERT_SIZE", "500"))
 HASHTAGS_PER_CALL = int(os.getenv("HASHTAGS_PER_CALL", "15"))  # quantas hashtags mandar por run do actor
 
+# ======= Config de idioma =======
+ALLOW_LANGS = {x.strip() for x in (os.getenv("ALLOW_LANGS", "pt,pt-BR,pt_PT").split(","))}
+MIN_LANG_CHARS = int(os.getenv("MIN_LANG_CHARS", "20"))
+LANG_PROB_MIN = float(os.getenv("LANG_PROB_MIN", "0.70"))
+FASTTEXT_MODEL = os.getenv("FASTTEXT_MODEL")
+
+def _norm_lang_code(code: str) -> str:
+    return (code or "").split("-")[0].split("_")[0].lower()
+
+_ALLOWED_NORM = {_norm_lang_code(x) for x in ALLOW_LANGS}
+
+# tenta importar detectores
+_CLD3 = None
+_FT = None
+_LD = None
+try:
+    import pycld3  # pip install pycld3
+    _CLD3 = pycld3
+except Exception:
+    _CLD3 = None
+
+if FASTTEXT_MODEL:
+    try:
+        import fasttext  # pip install fasttext
+        _FT = fasttext.load_model(FASTTEXT_MODEL)
+    except Exception:
+        _FT = None
+
+try:
+    from langdetect import detect_langs, DetectorFactory  # pip install langdetect
+    DetectorFactory.seed = 0
+    _LD = True
+except Exception:
+    _LD = None
 
 # =========================
 # LOG
 # =========================
 def log(msg: str) -> None:
     print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {msg}")
-
 
 # =========================
 # DB helpers
@@ -65,7 +97,6 @@ def carregar_clientes(conn) -> List[Dict[str, Any]]:
         cur.execute(sql)
         return cur.fetchall()
 
-
 # =========================
 # Utils / parsing
 # =========================
@@ -88,7 +119,7 @@ def to_hashtag(term: str) -> Optional[str]:
     """
     Converte um termo livre em hashtag:
     - remove '#', espaços extras e símbolos nas pontas
-    - converte espaços internos em nada (ou sublinhado, se preferir)
+    - remove espaços internos
     - retorna em minúsculas
     """
     if not term:
@@ -97,9 +128,7 @@ def to_hashtag(term: str) -> Optional[str]:
     t = t.lstrip('#').strip()
     if not t:
         return None
-    # remove espaços -> junta (ex.: "Santa Catarina" => "SantaCatarina")
     t = re.sub(r"\s+", "", t)
-    # remove caracteres não alfanuméricos nas pontas
     t = re.sub(r"^[^0-9A-Za-z_]+|[^0-9A-Za-z_]+$", "", t)
     if not t:
         return None
@@ -118,13 +147,11 @@ def parse_timestamp(value) -> Optional[datetime]:
     if value is None:
         return None
     try:
-        # segundos (int-like)
         sec = int(value)
         return datetime.fromtimestamp(sec, tz=timezone.utc)
     except (ValueError, TypeError):
         pass
     try:
-        # ISO
         s = str(value).replace('Z', '+00:00')
         dt = datetime.fromisoformat(s)
         if dt.tzinfo is None:
@@ -137,7 +164,6 @@ def extract_hashtags_from_caption(caption: Optional[str]) -> List[str]:
     if not caption:
         return []
     tags = re.findall(r"#(\w+)", caption, flags=re.UNICODE)
-    # normaliza para minúsculas e dedup
     seen: Set[str] = set()
     out: List[str] = []
     for t in tags:
@@ -147,6 +173,62 @@ def extract_hashtags_from_caption(caption: Optional[str]) -> List[str]:
             out.append(key)
     return out
 
+# =========================
+# Detecção de idioma
+# =========================
+def _strip_hashtags_urls(text: str) -> str:
+    t = re.sub(r"#\w+", " ", text or "")
+    t = re.sub(r"https?://\S+|www\.\S+", " ", t)
+    return re.sub(r"\s+", " ", t).strip()
+
+def detect_lang(text: str) -> (Optional[str], float):
+    """
+    Retorna (lang, prob). lang em ISO curto (ex.: 'pt'). prob em [0,1] quando disponível.
+    """
+    if not text:
+        return None, 0.0
+    t = _strip_hashtags_urls(text)
+    if len(t) < MIN_LANG_CHARS:
+        return None, 0.0
+
+    # 1) pycld3
+    if _CLD3:
+        try:
+            r = _CLD3.get_language(t)
+            if r and r.is_reliable:
+                return _norm_lang_code(r.language), float(r.probability or 0.0)
+        except Exception:
+            pass
+
+    # 2) fastText
+    if _FT:
+        try:
+            labels, probs = _FT.predict(t.replace("\n", " "))
+            if labels and probs:
+                lang = labels[0].replace("__label__", "")
+                return _norm_lang_code(lang), float(probs[0])
+        except Exception:
+            pass
+
+    # 3) langdetect
+    if _LD:
+        try:
+            candidates = detect_langs(t)  # e.g. [en:0.57, pt:0.42]
+            if candidates:
+                best = max(candidates, key=lambda x: x.prob)
+                return _norm_lang_code(best.lang), float(best.prob or 0.0)
+        except Exception:
+            pass
+
+    return None, 0.0
+
+def is_lang_allowed(text: str) -> bool:
+    lang, prob = detect_lang(text)
+    if lang is None:
+        return False
+    if lang not in _ALLOWED_NORM:
+        return False
+    return prob >= LANG_PROB_MIN if prob > 0 else True
 
 # =========================
 # Mapping para post_instagram
@@ -169,16 +251,15 @@ def map_item_to_row(item: Dict[str, Any], fallback_hashtag: Optional[str]) -> Op
     permalink = item.get("permalink") or item.get("url") or item.get("link")
 
     location_id = item.get("locationId")
-    location_name = item.get("locationName")    
+    location_name = item.get("locationName")
 
-    # media_type
     media_type = (
         item.get("type")
         or item.get("mediaType")
         or item.get("media_type")
     )
 
-    # ✅ media_url deve ser o campo "url" do JSON que você enviou
+    # media_url
     media_url = item.get("displayUrl") or \
                 item.get("mediaUrl") or item.get("media_url") or \
                 item.get("display_url") or item.get("displayUrl") or \
@@ -186,7 +267,7 @@ def map_item_to_row(item: Dict[str, Any], fallback_hashtag: Optional[str]) -> Op
                 (item.get("image", {}).get("url") if isinstance(item.get("image"), dict) else item.get("image")) or \
                 item.get("video")
 
-    # ✅ username e username_full vindos de ownerUsername / ownerFullName
+    # username e username_full
     username = item.get("ownerUsername") or \
                ((item.get("owner") or {}).get("username") if isinstance(item.get("owner"), dict) else item.get("username"))
 
@@ -194,7 +275,16 @@ def map_item_to_row(item: Dict[str, Any], fallback_hashtag: Optional[str]) -> Op
                     ((item.get("owner") or {}).get("fullName") if isinstance(item.get("owner"), dict) else item.get("username_full"))
 
     comments_count = item.get("commentsCount") or item.get("comments_count") or item.get("comment_count")
+    try:
+        comments_count = int(comments_count) if comments_count is not None else None
+    except (TypeError, ValueError):
+        comments_count = None
+
     like_count = item.get("likesCount") or item.get("like_count") or item.get("reactions_count")
+    try:
+        like_count = int(like_count) if like_count is not None else None
+    except (TypeError, ValueError):
+        like_count = None
 
     # hashtags do payload ou extraídas da caption; adiciona fallback do lote (se houver)
     tags_from_item = item.get("hashtags")
@@ -212,23 +302,27 @@ def map_item_to_row(item: Dict[str, Any], fallback_hashtag: Optional[str]) -> Op
 
     hashtags_csv = ",".join(sorted(set(tags_list)))
 
+    # ===== Filtro de idioma: só aceita PT =====
+    text_for_lang = caption or ""
+    if not is_lang_allowed(text_for_lang):
+        return None
+
     return (
         media_id,               # media_id
         caption,                # caption
         dt_ts,                  # "timestamp" (timestamptz)
         permalink,              # permalink
         media_type,             # media_type
-        media_url,              # media_url (forçado para url)
-        username,               # username (ownerUsername)
+        media_url,              # media_url
+        username,               # username
         comments_count,         # comments_count
         like_count,             # like_count
         caption,                # tsv_caption (texto base p/ to_tsvector)
         hashtags_csv,           # hashtags
-        username_full,          # username_full (ownerFullName)
+        username_full,          # username_full
         location_id,
         location_name,
     )
-
 
 # =========================
 # Insert em lote
@@ -260,7 +354,6 @@ def insert_batch(conn, rows: List[tuple]) -> int:
     conn.commit()
     return max(0, after - before)
 
-
 # =========================
 # Apify
 # =========================
@@ -281,7 +374,6 @@ def run_hashtag_batch(client: ApifyClient, hashtags: List[str]) -> List[Dict[str
         items.append(it)
     return items
 
-
 # =========================
 # Runner
 # =========================
@@ -292,13 +384,16 @@ def main():
     conn = get_conn()
     client = ApifyClient(APIFY_TOKEN)
 
+    # contadores globais
+    total_inserted_global = 0
+    total_discarded_lang = 0
+
     try:
         clientes = carregar_clientes(conn)
         if not clientes:
             log("ℹ Nenhum cliente com busca_midias_sociais encontrado.")
             return
 
-        total_inserted_global = 0
         seen_media_ids: Set[str] = set()
 
         for c in clientes:
@@ -323,6 +418,8 @@ def main():
             log(f"➡ Cliente {cid} ({nome}): {len(hashtags)} hashtag(s) → {hashtags}")
 
             rows_to_insert: List[tuple] = []
+            discarded_lang_client = 0
+
             for batch in chunk_list(hashtags, HASHTAGS_PER_CALL):
                 try:
                     items = run_hashtag_batch(client, batch)
@@ -339,6 +436,9 @@ def main():
                         if row:
                             rows_to_insert.append(row)
                             seen_media_ids.add(media_id)
+                        else:
+                            # mapeamento devolveu None — muito provavelmente por idioma
+                            discarded_lang_client += 1
 
                     if APIFY_SLEEP_BETWEEN_BATCHES > 0:
                         time.sleep(APIFY_SLEEP_BETWEEN_BATCHES)
@@ -348,13 +448,14 @@ def main():
 
             inserted = insert_batch(conn, rows_to_insert)
             total_inserted_global += inserted
-            log(f"✔ Cliente {cid} ({nome}): {inserted} mídia(s) nova(s) inserida(s)")
+            total_discarded_lang += discarded_lang_client
 
-        log(f"🏁 Concluído. Total inserido na execução: {total_inserted_global}")
+            log(f"✔ Cliente {cid} ({nome}): {inserted} mídia(s) nova(s) inserida(s) | descartadas por idioma: {discarded_lang_client}")
+
+        log(f"🏁 Concluído. Total inserido: {total_inserted_global} | Descartadas por idioma: {total_discarded_lang}")
 
     finally:
         conn.close()
-
 
 if __name__ == "__main__":
     main()
