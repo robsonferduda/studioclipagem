@@ -256,7 +256,7 @@ def associar(conn, dados, tipo, monitoramento):
 def executar_web(grupo: int):
     """
     Executa monitoramentos web ativos do grupo informado:
-    - Busca notícias das últimas 24h
+    - Busca notícias das últimas 4h
     - Aplica expressão full-text
     - Filtra por fonte se houver filtro_web
     - Vincula e registra execução
@@ -285,27 +285,34 @@ def executar_web(grupo: int):
             dt_inicial = mon['dt_inicio'] or dt_inicial_padrao
             dt_final   = dt_final_padrao
 
-            # Base da consulta
+            # Base da consulta com CTEs para melhor performance
             sql = f"""
-                SELECT DISTINCT ON (n.titulo_noticia, n.url_noticia, n.id_fonte)
-                       n.id,
-                       n.id_fonte,
-                       n.url_noticia,
-                       n.data_insert,
-                       n.data_noticia,
-                       n.titulo_noticia,
+                WITH noticias_fts AS (
+                    -- Busca FTS primeiro (mais seletivo)
+                    SELECT DISTINCT id_noticia_web
+                    FROM conteudo_noticia_web
+                    WHERE conteudo_tsv @@ websearch_to_tsquery(%s, %s)
+                      AND created_at >= NOW() - INTERVAL '4 hours'
+                ),
+                noticias_filtradas AS (
+                    -- Aplica filtros de data na tabela principal
+                    SELECT n.id, n.id_fonte, n.url_noticia, 
+                           n.data_insert, n.data_noticia, n.titulo_noticia
+                    FROM noticias_web n
+                    INNER JOIN noticias_fts nf ON nf.id_noticia_web = n.id
+                    WHERE n.data_noticia BETWEEN %s AND %s
+                      AND n.created_at >= NOW() - INTERVAL '4 hours'
+                )
+                -- SELECT final com DISTINCT ON
+                SELECT DISTINCT ON (nf.titulo_noticia, nf.url_noticia, nf.id_fonte)
+                       nf.id, nf.id_fonte, nf.url_noticia,
+                       nf.data_insert, nf.data_noticia, nf.titulo_noticia,
                        fw.nome
-                  FROM noticias_web n
-            INNER JOIN conteudo_noticia_web cnw
-                    ON cnw.id_noticia_web = n.id
-            INNER JOIN fonte_web fw
-                    ON fw.id = n.id_fonte
-                 WHERE n.created_at >= NOW() - INTERVAL '24 hours'
-                   AND n.data_noticia BETWEEN %s AND %s
-                   AND cnw.conteudo_tsv @@ websearch_to_tsquery(%s, %s)
+                FROM noticias_filtradas nf
+                INNER JOIN fonte_web fw ON fw.id = nf.id_fonte
             """
 
-            params = [dt_inicial, dt_final, TS_CONFIG, mon['expressao']]
+            params = [TS_CONFIG, mon['expressao'], dt_inicial, dt_final]
 
             # Aplica filtro_web (lista de IDs) de forma segura
             ids = parse_lista_ids(mon.get('filtro_web'))
@@ -314,7 +321,7 @@ def executar_web(grupo: int):
                 params.append(ids)
 
             # Linha vencedora para o DISTINCT ON
-            sql += " ORDER BY n.titulo_noticia, n.url_noticia, n.id_fonte, n.data_noticia DESC"
+            sql += " ORDER BY nf.titulo_noticia, nf.url_noticia, nf.id_fonte, nf.data_noticia DESC"
 
             cur.execute(sql, params)
             dados = cur.fetchall()

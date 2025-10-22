@@ -417,23 +417,35 @@ class MonitoramentoController extends Controller
                     $dt_inicial = $monitoramento->dt_inicio;
                 }
 
-                $sql = "SELECT DISTINCT ON (n.titulo_noticia, n.url_noticia, n.id_fonte) 
-                            n.id, n.id_fonte, n.url_noticia, n.data_insert, n.data_noticia, n.titulo_noticia, fw.nome
-                        FROM 
-                            noticias_web n
-                        JOIN 
-                            conteudo_noticia_web cnw ON cnw.id_noticia_web = n.id
-                        JOIN 
-                            fonte_web fw ON fw.id = n.id_fonte 
-                        WHERE 1=1 
-                        AND n.created_at >= now() - interval '24 hours' ";
+                $sql = "WITH noticias_fts AS (
+                            -- Busca FTS primeiro (mais seletivo)
+                            SELECT DISTINCT id_noticia_web
+                            FROM conteudo_noticia_web
+                            WHERE conteudo_tsv @@ websearch_to_tsquery('simple', '$monitoramento->expressao')
+                              AND created_at >= now() - interval '4 hours'
+                        ),
+                        noticias_filtradas AS (
+                            -- Aplica filtros de data na tabela principal
+                            SELECT n.id, n.id_fonte, n.url_noticia, 
+                                   n.data_insert, n.data_noticia, n.titulo_noticia
+                            FROM noticias_web n
+                            INNER JOIN noticias_fts nf ON nf.id_noticia_web = n.id
+                            WHERE n.data_noticia BETWEEN '$dt_inicial' AND '$dt_final'
+                              AND n.created_at >= now() - interval '4 hours'
+                        )
+                        -- SELECT final com DISTINCT ON
+                        SELECT DISTINCT ON (nf.titulo_noticia, nf.url_noticia, nf.id_fonte)
+                               nf.id, nf.id_fonte, nf.url_noticia,
+                               nf.data_insert, nf.data_noticia, nf.titulo_noticia,
+                               fw.nome
+                        FROM noticias_filtradas nf
+                        INNER JOIN fonte_web fw ON fw.id = nf.id_fonte";
 
                 if($monitoramento->filtro_web){
-                    $sql .= "AND fw.id IN($monitoramento->filtro_web) ";
+                    $sql .= " WHERE fw.id IN($monitoramento->filtro_web)";
                 }
 
-                $sql .= "AND n.data_noticia BETWEEN '$dt_inicial' AND '$dt_final' 
-                         AND cnw.conteudo_tsv @@ to_tsquery('simple', '$monitoramento->expressao')";
+                $sql .= " ORDER BY nf.titulo_noticia, nf.url_noticia, nf.id_fonte, nf.data_noticia DESC";
 
                 $dados = DB::select($sql);
 
@@ -882,24 +894,36 @@ class MonitoramentoController extends Controller
 
                 $tipo_midia = 2; //Web
 
-                $sql = "SELECT DISTINCT ON (n.titulo_noticia, n.url_noticia, n.id_fonte) 
-                            n.id, n.id_fonte, n.url_noticia, n.data_insert, n.data_noticia, n.titulo_noticia, fw.nome
-                        FROM 
-                            noticias_web n
-                        JOIN 
-                            conteudo_noticia_web cnw ON cnw.id_noticia_web = n.id
-                        JOIN 
-                            fonte_web fw ON fw.id = n.id_fonte 
-                        WHERE 1=1 
-                        AND n.deleted_at IS NULL ";
-                        
+                $sql = "WITH noticias_fts AS (
+                            -- Busca FTS primeiro (mais seletivo)
+                            SELECT DISTINCT id_noticia_web
+                            FROM conteudo_noticia_web
+                            WHERE conteudo_tsv @@ websearch_to_tsquery('simple', '$monitoramento->expressao')
+                              AND created_at >= now() - interval '4 hours'
+                        ),
+                        noticias_filtradas AS (
+                            -- Aplica filtros de data na tabela principal
+                            SELECT n.id, n.id_fonte, n.url_noticia, 
+                                   n.data_insert, n.data_noticia, n.titulo_noticia
+                            FROM noticias_web n
+                            INNER JOIN noticias_fts nf ON nf.id_noticia_web = n.id
+                            WHERE n.data_noticia BETWEEN '$dt_inicial' AND '$dt_final'
+                              AND n.created_at >= now() - interval '4 hours'
+                              AND n.deleted_at IS NULL
+                        )
+                        -- SELECT final com DISTINCT ON
+                        SELECT DISTINCT ON (nf.titulo_noticia, nf.url_noticia, nf.id_fonte)
+                               nf.id, nf.id_fonte, nf.url_noticia,
+                               nf.data_insert, nf.data_noticia, nf.titulo_noticia,
+                               fw.nome
+                        FROM noticias_filtradas nf
+                        INNER JOIN fonte_web fw ON fw.id = nf.id_fonte";
 
                 if($monitoramento->filtro_web){
-                    $sql .= "AND fw.id IN($monitoramento->filtro_web)";
+                    $sql .= " WHERE fw.id IN($monitoramento->filtro_web)";
                 }
 
-                $sql .= " AND n.data_noticia BETWEEN '$dt_inicial' AND '$dt_final' 
-                        AND cnw.conteudo_tsv @@ to_tsquery('simple', '$monitoramento->expressao')";
+                $sql .= " ORDER BY nf.titulo_noticia, nf.url_noticia, nf.id_fonte, nf.data_noticia DESC";
 
                 $dados = DB::select($sql);
 
