@@ -826,7 +826,7 @@ class MonitoramentoController extends Controller
                         WHERE 1=1 ";
 
                 if($monitoramento->filtro_tv){
-                    $sql .= "AND n.id_programa_emissora_web IN($monitoramento->filtro_tv)";
+                    $sql .= "AND n.id_programa_emissora_web IN($monitoramento->filtro_tv) ";
                 }     
                         
                 $sql .= "AND n.horario_start_gravacao BETWEEN '$dt_inicial' AND '$dt_final'
@@ -1020,7 +1020,7 @@ class MonitoramentoController extends Controller
                         WHERE 1=1 "; 
 
                 if($monitoramento->filtro_tv){
-                    $sql .= "AND n.id_programa_emissora_web IN($monitoramento->filtro_tv)";
+                    $sql .= "AND n.id_programa_emissora_web IN($monitoramento->filtro_tv) ";
                 }
 
                 $sql .= "AND n.horario_start_gravacao BETWEEN '$dt_inicial' AND '$dt_final'
