@@ -1011,7 +1011,7 @@ class MonitoramentoController extends Controller
                 $tipo_midia = 4; //TV
 
                 $sql = "SELECT 
-                        n.id, id_programa_emissora_web, horario_start_gravacao, horario_end_gravacao, url_video, misc_data, transcricao, nome_programa
+                        n.id, id_programa_emissora_web, horario_start_gravacao, horario_end_gravacao, url_video, n.misc_data, transcricao, nome_programa
                         FROM 
                         videos_programa_emissora_web n
                         JOIN 
@@ -1026,9 +1026,7 @@ class MonitoramentoController extends Controller
                 $sql .= "AND n.horario_start_gravacao BETWEEN '$dt_inicial' AND '$dt_final'
                          AND n.transcricao_tsv @@ to_tsquery('simple', '$monitoramento->expressao')
                          ORDER BY n.horario_start_gravacao DESC";
-
-                         dd($sql);
-
+                         
                 $dados = DB::select($sql);
 
                 $total_encontrado += count($dados);
