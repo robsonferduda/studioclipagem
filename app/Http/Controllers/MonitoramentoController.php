@@ -1027,6 +1027,8 @@ class MonitoramentoController extends Controller
                          AND n.transcricao_tsv @@ to_tsquery('simple', '$monitoramento->expressao')
                          ORDER BY n.horario_start_gravacao DESC";
 
+                         dd($sql);
+
                 $dados = DB::select($sql);
 
                 $total_encontrado += count($dados);
