@@ -422,7 +422,7 @@ class MonitoramentoController extends Controller
                             SELECT DISTINCT id_noticia_web
                             FROM conteudo_noticia_web
                             WHERE conteudo_tsv @@ websearch_to_tsquery('simple', '$monitoramento->expressao')
-                              AND created_at >= now() - interval '4 hours'
+                              AND created_at >= now() - interval '2 hours'
                         ),
                         noticias_filtradas AS (
                             -- Aplica filtros de data na tabela principal
@@ -431,7 +431,7 @@ class MonitoramentoController extends Controller
                             FROM noticias_web n
                             INNER JOIN noticias_fts nf ON nf.id_noticia_web = n.id
                             WHERE n.data_noticia BETWEEN '$dt_inicial' AND '$dt_final'
-                              AND n.created_at >= now() - interval '4 hours'
+                              AND n.created_at >= now() - interval '2 hours'
                         )
                         -- SELECT final com DISTINCT ON
                         SELECT DISTINCT ON (nf.titulo_noticia, nf.url_noticia, nf.id_fonte)
@@ -899,7 +899,7 @@ class MonitoramentoController extends Controller
                             SELECT DISTINCT id_noticia_web
                             FROM conteudo_noticia_web
                             WHERE conteudo_tsv @@ websearch_to_tsquery('simple', '$monitoramento->expressao')
-                              AND created_at >= now() - interval '4 hours'
+                              AND created_at >= now() - interval '2 hours'
                         ),
                         noticias_filtradas AS (
                             -- Aplica filtros de data na tabela principal
@@ -908,7 +908,7 @@ class MonitoramentoController extends Controller
                             FROM noticias_web n
                             INNER JOIN noticias_fts nf ON nf.id_noticia_web = n.id
                             WHERE n.data_noticia BETWEEN '$dt_inicial' AND '$dt_final'
-                              AND n.created_at >= now() - interval '4 hours'
+                              AND n.created_at >= now() - interval '2 hours'
                               AND n.deleted_at IS NULL
                         )
                         -- SELECT final com DISTINCT ON

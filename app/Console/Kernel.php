@@ -29,15 +29,15 @@ class Kernel extends ConsoleKernel
 
         //$schedule->command('web:cron')->hourly(); //Executa a tarefa a cada 1 hora 
 
-        $schedule->command('web_1:cron')->everyTwoHours(); //Executa a tarefa a cada 2 hora 
-        $schedule->command('web_2:cron')->everyTwoHours(); //Executa a tarefa a cada 2 hora 
-        $schedule->command('web_3:cron')->everyTwoHours(); //Executa a tarefa a cada 2 hora 
-        $schedule->command('web_4:cron')->everyTwoHours(); //Executa a tarefa a cada 2 hora 
-        $schedule->command('web_5:cron')->everyTwoHours(); //Executa a tarefa a cada 2 hora 
+        $schedule->command('web_1:cron')->hourly(); //Executa a tarefa a cada 2 hora 
+        $schedule->command('web_2:cron')->hourly(); //Executa a tarefa a cada 2 hora 
+        $schedule->command('web_3:cron')->hourly(); //Executa a tarefa a cada 2 hora 
+        $schedule->command('web_4:cron')->hourly(); //Executa a tarefa a cada 2 hora 
+        $schedule->command('web_5:cron')->hourly(); //Executa a tarefa a cada 2 hora 
 
-        $schedule->command('impresso:cron')->everyTwoHours();
-        $schedule->command('radio:cron')->everyTwoHours();
-        $schedule->command('tv:cron')->everyTwoHours();
+        $schedule->command('impresso:cron')->hourly();
+        $schedule->command('radio:cron')->hourly();
+        $schedule->command('tv:cron')->hourly();
 
         $schedule->command('facebook:cron')->hourly();
         $schedule->command('instagram:cron')->hourly();
