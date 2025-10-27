@@ -324,7 +324,7 @@
                     </div>
                  </li>                  
                 @endpermission
-                @role('administradores')
+                @permission('menu-radio')
                 <li class="{{ (Session::has('url') and Session::get('url') == 'radio') ? 'active' : '' }}">
                   <a data-toggle="collapse" href="#submenu-radio" class="{{ (Session::has('url') and Session::get('url') == 'radio') ? '' : 'collapsed' }}" aria-expanded="{{ (Session::has('url') and Session::get('url') == 'radio') ? 'true' : 'false' }}">
                      <i class="fa fa-volume-up"></i>
@@ -380,7 +380,7 @@
                      </ul>
                   </div>
                </li>
-                @endrole
+                @endpermission
                 @permission('menu-televisao')
                   <li class="{{ (Session::has('url') and Session::get('url') == 'tv') ? 'active' : '' }}">
                       <a data-toggle="collapse" href="#submenu-tv" class="{{ (Session::has('url') and Session::get('url') == 'tv') ? '' : 'collapsed' }}" aria-expanded="{{ (Session::has('url') and Session::get('url') == 'tv') ? 'true' : 'false' }}">
