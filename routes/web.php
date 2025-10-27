@@ -161,7 +161,7 @@ Route::middleware(['web'])->group(function () {
 
 	Route::match(array('GET', 'POST'),'fonte-impresso/listar','FonteImpressoController@listar');
 
-	Route::get('fonte-impresso/{id}', 'FonteImpressoController@dadosFonte');
+	Route::get('fonte-impresso/dados/{id}', 'FonteImpressoController@dadosFonte');
 	Route::get('fonte-impresso/cadastrar','FonteImpressoController@cadastrar');
 	Route::get('fonte-impresso/{id}/editar','FonteImpressoController@editar');
 	Route::get('fonte-impresso/{id}/excluir','FonteImpressoController@excluir');
