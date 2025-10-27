@@ -322,7 +322,7 @@
             $("#local_impressao").trigger('change');
 
             $.ajax({
-                    url: host + '/fonte-impresso/' + id,
+                    url: host + '/fonte-impresso/dados/' + id,
                     type: 'GET',
                     success: function(data) {
                         
