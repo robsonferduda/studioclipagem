@@ -249,13 +249,13 @@
                                                             
                                                                 <h6 class="mb-0 font-weight-bold text-danger">
                                                                     {{ ($execucao->monitoramento and $execucao->monitoramento->cliente) ? $execucao->monitoramento->cliente->nome : 'Cliente não informado' }} - 
-                                                                    <span class="">{{ ($execucao->monitoramento->nome) ? $execucao->monitoramento->nome : 'Nome não informado' }} </span>
+                                                                    <span class="">{{ ($execucao->monitoramento and $execucao->monitoramento->nome) ? $execucao->monitoramento->nome : 'Nome não informado' }} </span>
                                                                     <span class="pull-right text-info">
                                                                        <a href="{{ url('monitoramento/'.$execucao->id.'/noticias') }}">{{ $execucao->total_vinculado }} Notícias</a>
                                                                     </span>
                                                                 </h6>
                                                             
-                                                            <p class="text-muted mb-1 mt-0">{{ $execucao->monitoramento->expressao }}</p>   
+                                                            <p class="text-muted mb-1 mt-0">{{ ($execucao->monitoramento) ? $execucao->monitoramento->expressao : '' }}</p>   
                                                             <p class="mb-2 text-tempo">
                                                                 Execução iniciada em <strong>{{ \Carbon\Carbon::parse($execucao->created_at)->format('d/m/Y H:i:s') }}</strong> com duração de <strong>
                                                                  @if(\Carbon\Carbon::create($execucao->updated_at)->diffInMinutes(\Carbon\Carbon::create($execucao->created_at)))
