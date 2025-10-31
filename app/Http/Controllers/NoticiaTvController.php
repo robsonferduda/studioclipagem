@@ -8,6 +8,7 @@ use File;
 use Storage;
 use FFMpeg;
 use App\Utils;
+use App\User;
 use Carbon\Carbon;
 use App\Models\Decupagem;
 use App\Models\Area;
@@ -44,14 +45,24 @@ class NoticiaTvController extends Controller
     {
         Session::put('sub-menu','noticias-tv');
 
+        $usuarios = User::whereHas('role', function($q){
+                            return $q->whereIn('role_id', ['6']);
+                        })
+                        ->orderBy('name')
+                        ->get();
+
         // Lista de campos de filtro que você deseja manter em sessão
         $filtros = [
             'tipo_data',
             'dt_inicial',
             'dt_final',
             'cliente',
-            'fontes',
-            'termo'
+            'cd_area',
+            'sentimento',
+            'id_fonte',
+            'programa_id',
+            'termo',
+            'usuario'
         ];
 
         // Salva cada filtro na sessão, se vier na requisição
@@ -61,7 +72,7 @@ class NoticiaTvController extends Controller
             }
         }
 
-        $emissora = EmissoraWeb::orderBy('nome_emissora')->get();
+        $emissoras = EmissoraWeb::orderBy('nome_emissora')->get();
         $clientes = Cliente::where('fl_ativo', true)->orderBy('fl_ativo')->orderBy('nome')->get();
 
         // Recupera os filtros da sessão (ou da request, se vier)
@@ -69,8 +80,13 @@ class NoticiaTvController extends Controller
         $dt_inicial = Session::get('tv_filtro_dt_inicial', $request->input('dt_inicial', date('d/m/Y')));
         $dt_final = Session::get('tv_filtro_dt_final', $request->input('dt_final', date('d/m/Y')));
         $cliente_selecionado = Session::get('tv_filtro_cliente', $request->input('cliente'));
+        $sentimento = Session::get('radio_filtro_sentimento', $request->input('sentimento'));
+        $fonte_selecionada = Session::get('tv_filtro_id_fonte', $request->input('id_fonte'));
+        $programa_selecionado = Session::get('tv_filtro_programa', $request->input('cd_programa'));
+        $area_selecionada = Session::get('radio_filtro_cd_area', $request->input('cd_area'));
         $fonte = Session::get('tv_filtro_fontes', $request->input('fontes'));
         $termo = Session::get('tv_filtro_termo', $request->input('termo'));
+        $usuario = Session::get('radio_filtro_usuario', $request->input('usuario'));
 
         $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $dt_inicial)->format('Y-m-d');
         $dt_final = $this->carbon->createFromFormat('d/m/Y', $dt_final)->format('Y-m-d');
@@ -88,7 +104,15 @@ class NoticiaTvController extends Controller
                     ->orderBy('created_at','DESC')                    
                     ->paginate(50);
 
-        return view('noticia-tv/index', compact('dados','emissora','clientes','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte','termo'));
+        return view('noticia-tv/index', compact('dados',
+                                                'fonte_selecionada',
+                                                'programa_selecionado',
+                                                'area_selecionada',
+                                                'sentimento',
+                                                'emissoras','clientes','tipo_data','dt_inicial','dt_final','cliente_selecionado','fonte',
+                                                'termo',
+                                                'usuarios',
+                                                'usuario'));
     }
 
     public function limparFiltrosTv()

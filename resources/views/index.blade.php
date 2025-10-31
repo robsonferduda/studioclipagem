@@ -248,7 +248,7 @@
                                                         <div class="col-12 col-md-12">                                           
                                                             
                                                                 <h6 class="mb-0 font-weight-bold text-danger">
-                                                                    {{ ($execucao->monitoramento->cliente) ? $execucao->monitoramento->cliente->nome : 'Cliente não informado' }} - 
+                                                                    {{ ($execucao->monitoramento and $execucao->monitoramento->cliente) ? $execucao->monitoramento->cliente->nome : 'Cliente não informado' }} - 
                                                                     <span class="">{{ ($execucao->monitoramento->nome) ? $execucao->monitoramento->nome : 'Nome não informado' }} </span>
                                                                     <span class="pull-right text-info">
                                                                        <a href="{{ url('monitoramento/'.$execucao->id.'/noticias') }}">{{ $execucao->total_vinculado }} Notícias</a>
