@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use DB;
+use Auth;
 use Hash;
 use Carbon\Carbon;
 use App\User;
@@ -158,7 +159,7 @@ class UserController extends Controller
             Flash::error("Acesso negado!");
             return redirect()->back();
         }
-        
+
         $clientes = Cliente::all();
 
         foreach ($clientes as $key => $cliente) {
