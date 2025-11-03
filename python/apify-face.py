@@ -37,6 +37,9 @@ ALLOW_LANGS = {x.strip() for x in (os.getenv("ALLOW_LANGS", "pt,pt-BR,pt_PT").sp
 MIN_LANG_CHARS = int(os.getenv("MIN_LANG_CHARS", "20"))
 LANG_PROB_MIN = float(os.getenv("LANG_PROB_MIN", "0.70"))
 FASTTEXT_MODEL = os.getenv("FASTTEXT_MODEL")  # caminho opcional para lid.176.ftz
+DEBUG_LANG = os.getenv("DEBUG_LANG", "false").lower() in ("1","true","yes","on")
+LANG_DEBUG_SAMPLES = int(os.getenv("LANG_DEBUG_SAMPLES", "5"))
+
 
 def _norm_lang_code(code: str) -> str:
     return (code or "").split("-")[0].split("_")[0].lower()
@@ -66,6 +69,17 @@ try:
     _LD = True
 except Exception:
     _LD = None
+
+def _detectors_status() -> str:
+    parts = []
+    parts.append(f"pycld3={'ON' if _CLD3 else 'OFF'}")
+    parts.append(f"fastText={'ON' if _FT else 'OFF'}")
+    parts.append(f"langdetect={'ON' if _LD else 'OFF'}")
+    return " | ".join(parts)
+
+log(f"[LANG] Detectores: {_detectors_status()}")
+log(f"[LANG] Allow: {ALLOW_LANGS} (normalizado: {_ALLOWED_NORM}) | MIN_LANG_CHARS={MIN_LANG_CHARS} | LANG_PROB_MIN={LANG_PROB_MIN} | DEBUG={DEBUG_LANG}")
+
 
 # =========================
 # LOG

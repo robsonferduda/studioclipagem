@@ -30,6 +30,11 @@ class UserController extends Controller
 
     public function index()
     {
+        if(!Auth::user()->hasRole('administradores')){
+            Flash::error("Acesso negado!");
+            return redirect()->back();
+        }
+
         $usuarios = User::orderBy("name")->get();
         $perfis = Role::orderBy("display_name")->get();
 
@@ -38,13 +43,22 @@ class UserController extends Controller
 
     public function show(User $user, $id)
     {
+        if(!Auth::user()->hasRole('administradores')){
+            Flash::error("Acesso negado!");
+            return redirect()->back();
+        }
+
         $user = User::find($id);
         return view('usuarios/perfil', compact('user'));
     }
 
-
     public function historico($id)
     {
+        if(!Auth::user()->hasRole('administradores')){
+            Flash::error("Acesso negado!");
+            return redirect()->back();
+        }
+
         $dt_inicial = date("Y-m-d")." 00:00:00";
         $dt_final = date("Y-m-d")." 23:59:59";
 
@@ -55,6 +69,11 @@ class UserController extends Controller
 
     public function online(Request $request)
     {
+        if(!Auth::user()->hasRole('administradores')){
+            Flash::error("Acesso negado!");
+            return redirect()->back();
+        }
+
         Session::put('url','online');
 
         $usuario = ($request->usuario) ? $request->usuario : null;
@@ -110,6 +129,11 @@ class UserController extends Controller
 
     public function create()
     {
+        if(!Auth::user()->hasRole('administradores')){
+            Flash::error("Acesso negado!");
+            return redirect()->back();
+        }
+
         $perfis = Role::orderBy("display_name")->get();
 
         return view('usuarios/novo',compact('perfis'));
@@ -117,6 +141,11 @@ class UserController extends Controller
 
     public function edit($id)
     {
+        if(!Auth::user()->hasRole('administradores')){
+            Flash::error("Acesso negado!");
+            return redirect()->back();
+        }
+
         $perfis = Role::orderBy("display_name")->get();
         $user = User::find($id);
 
@@ -125,6 +154,11 @@ class UserController extends Controller
 
     public function insereClientes()
     {
+        if(!Auth::user()->hasRole('administradores')){
+            Flash::error("Acesso negado!");
+            return redirect()->back();
+        }
+        
         $clientes = Cliente::all();
 
         foreach ($clientes as $key => $cliente) {
