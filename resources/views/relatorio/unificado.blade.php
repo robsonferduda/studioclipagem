@@ -2135,7 +2135,7 @@
                             html += '<td>' + (noticia.horario || 'N/A') + '</td>';
                             html += '<td>' + (noticia.duracao || 'N/A') + '</td>';
                         } else {
-                            html += '<td><strong>' + (noticia.titulo || 'Sem título') + '</strong></td>';
+                            html += '<td><strong>'+noticia.id+'</strong> - <strong>' + (noticia.titulo || 'Sem título') + '</strong></td>';
                             html += '<td>' + (noticia.veiculo || 'N/A') + '</td>';
                         }
                         
