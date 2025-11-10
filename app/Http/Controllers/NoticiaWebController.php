@@ -560,8 +560,15 @@ class NoticiaWebController extends Controller
             if($noticia){
 
                 $conteudo = ConteudoNoticiaWeb::where('id_noticia_web', $noticia->id)->first();
-                $conteudo->conteudo = $request->conteudo;
-                $conteudo->save();
+
+                if($conteudo == null){
+                    $conteudo = new ConteudoNoticiaWeb();
+                    $conteudo->id_noticia_web = $noticia->id;
+                    $conteudo->save();
+                }else{
+                    $conteudo->conteudo = $request->conteudo;
+                    $conteudo->save();
+                }                
 
                 $tags = collect($request->tags)->mapWithKeys(function($tag){
                     return [$tag => ['tipo_id' => 2]];
