@@ -49,7 +49,6 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Emissora</label>
-                                        <input type="hidden" name="cd_emissora" id="cd_emissora" value="{{ ($fonte_selecionada) ? $fonte_selecionada : 0 }}">
                                         <select class="form-control select2" name="id_fonte" id="id_fonte">
                                             <option value="">Selecione uma emissora</option>
                                             @foreach ($emissoras as $emissora)
@@ -60,9 +59,8 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <label>Programa <span class="text-info" id="programa_valor_segundo"></span></label>
-                                        <input type="hidden" name="cd_programa" id="cd_programa" value="{{ ($programa_selecionado) ? $programa_selecionado : 0  }}">
-                                        <select class="form-control selector-select2" name="programa_id" id="programa" disabled>
+                                        <label>Programa</label>
+                                        <select class="form-control select2" name="programa_id" id="programa_id">
                                             <option value="">Selecione um programa</option>
                                         </select>
                                     </div>
@@ -264,12 +262,8 @@
                
             });
 
-            $(document).on('change', '#id_fonte', function() {
-                
-                var emissora = $(this).val();
-                buscarProgramas(emissora);
-
-            });
+            // Carregar programas de TV independente da emissora
+            carregarProgramasTv();
 
             $(".btn-visualizar-noticia").click(function(){
 
@@ -437,52 +431,46 @@
             });
         });
 
-        function buscarProgramas(emissora){
+        function carregarProgramasTv(){
 
-            var cd_programa = $("#cd_programa").val();
+            var programa_selecionado = {{ $programa_selecionado ?? 0 }};
 
             $.ajax({
-                    url: host+'/api/programa/buscar-emissora/'+emissora,
-                    type: 'GET',
-                    beforeSend: function() {
-                        $('.content').loader('show');
-                        $('#programa').append('<option value="">Carregando...</option>').val('');
-                    },
-                    success: function(data) {
+                url: host+'/api/programa-tv/buscar',
+                type: 'GET',
+                beforeSend: function() {
+                    $('#programa_id').append('<option value="">Carregando...</option>').val('');
+                },
+                success: function(data) {
 
-                        $('#programa').find('option').remove();
-                        $('#programa').attr('disabled', false);
+                    $('#programa_id').find('option').remove();
 
-                        if(data.length == 0) {                            
-                            $('#programa').append('<option value="">Emissora não possui programas cadastrados</option>').val('');
-                            return;
-                        }
-
-                        $('#programa').append('<option value="">Selecione um programa</option>').val('');
-
-                        data.forEach(element => {
-                            let option = new Option(element.text, element.id);
-                            $('#programa').append(option);
-                        });
-                        
-                    },
-                    complete: function(){
-                        if(cd_programa > 0)
-                            $('#programa').val(cd_programa);
-                        $('.content').loader('hide');
+                    if(data.length == 0) {                            
+                        $('#programa_id').append('<option value="">Nenhum programa cadastrado</option>').val('');
+                        return;
                     }
-                });
+
+                    $('#programa_id').append('<option value="">Selecione um programa</option>').val('');
+
+                    data.forEach(element => {
+                        let option = new Option(element.text, element.id);
+                        $('#programa_id').append(option);
+                    });
+
+                    if(programa_selecionado > 0) {
+                        $('#programa_id').val(programa_selecionado);
+                    }
+                    
+                },
+                error: function(){
+                    $('#programa_id').find('option').remove();
+                    $('#programa_id').append('<option value="">Erro ao carregar programas</option>').val('');
+                }
+            });
 
         };
 
         $(document).ready(function(){
-
-            var cd_emissora = $("#id_fonte").val();
-        
-            if(cd_emissora){
-                buscarProgramas(cd_emissora);
-            }
-            
             $('#cd_cliente').trigger('change');
         });
     </script>

@@ -931,4 +931,18 @@ class NoticiaTvController extends Controller
 
         return response()->json($vinculos);
     }
+
+    public function buscarProgramasTv(Request $request)
+    {
+        $programas = ProgramaEmissoraWeb::select('id', 'nome_programa as text');
+        
+        if(!empty($request->query('q'))) {
+            $replace = preg_replace('!\s+!', ' ', $request->query('q'));
+            $busca = str_replace(' ', '%', $replace);
+            $programas->whereRaw('nome_programa ILIKE ?', ['%' . strtolower($busca) . '%']);
+        }
+
+        $result = $programas->orderBy('nome_programa', 'asc')->get();
+        return response()->json($result);
+    }
 }

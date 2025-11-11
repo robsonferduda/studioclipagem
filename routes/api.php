@@ -39,3 +39,4 @@ Route::get('web/fontes/buscar', 'FonteWebController@buscarFontes');
 Route::get('programa/buscarProgramas', 'ProgramaController@buscarProgramas');
 Route::get('programa/buscar-emissora/{emissora}', 'ProgramaController@buscarProgramasEmissora');
 Route::get('programa/buscar-horario/{horario}', 'ProgramaController@buscarProgramasHorario');
+Route::get('programa-tv/buscar', 'NoticiaTvController@buscarProgramasTv');
