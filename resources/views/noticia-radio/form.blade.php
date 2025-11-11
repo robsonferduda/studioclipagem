@@ -84,7 +84,7 @@
                                 <div class="col-md-2 col-sm-6">
                                     <div class="form-group">
                                         <label>Data de Cadastro</label>
-                                        <input type="text" class="form-control datepicker" name="dt_cadastro" readonly required="true" 
+                                        <input type="text" class="form-control datepicker" name="dt_cadastro" required="true" 
                                         value="{{ ($noticia and $noticia->dt_cadastro) ? \Carbon\Carbon::parse($noticia->dt_cadastro)->format('d/m/Y') : date("d/m/Y") }}" 
                                         placeholder="__/__/____">
                                     </div>

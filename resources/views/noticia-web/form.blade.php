@@ -79,7 +79,6 @@
                                         class="form-control datepicker" 
                                         name="data_insert" 
                                         required="true" 
-                                        readonly
                                         value="{{ ($noticia and $noticia->data_insert) ? \Carbon\Carbon::parse($noticia->data_insert)->format('d/m/Y') : date("d/m/Y") }}" 
                                         placeholder="__/__/____">
                                     </div>
