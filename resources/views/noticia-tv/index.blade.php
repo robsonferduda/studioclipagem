@@ -49,6 +49,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Emissora</label>
+                                        <input type="hidden" name="cd_emissora" id="cd_emissora" value="{{ ($fonte_selecionada) ? $fonte_selecionada : 0 }}">
                                         <select class="form-control select2" name="id_fonte" id="id_fonte">
                                             <option value="">Selecione uma emissora</option>
                                             @foreach ($emissoras as $emissora)
@@ -69,7 +70,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Cliente</label>
-                                        <select class="form-control select2" name="cliente" id="cliente">
+                                        <select class="form-control select2 cliente" name="cliente" id="cd_cliente">
                                             <option value="">Selecione um cliente</option>
                                             @foreach ($clientes as $cliente)
                                                 <option value="{{ $cliente->id }}" {{ ($cliente_selecionado == $cliente->id) ? 'selected' : '' }}>{{ $cliente->nome }}</option>
@@ -249,16 +250,25 @@
 </div>
 @endsection
 @section('script')
+<script src="{{ asset('js/campos-cliente.js') }}"></script>
 <script src="{{ asset('js/noticia_clientes.js') }}"></script>
     <script>
-        $(document).ready(function(){
 
-            var host =  $('meta[name="base-url"]').attr('content');
+        var host = $('meta[name="base-url"]').attr('content');
+        
+        $(document).ready(function(){
 
             var demo2 = $('.demo1').bootstrapDualListbox({
                 nonSelectedListLabel: 'Disponíveis',
                 selectedListLabel: 'Selecionadas',
                
+            });
+
+            $(document).on('change', '#id_fonte', function() {
+                
+                var emissora = $(this).val();
+                buscarProgramas(emissora);
+
             });
 
             $(".btn-visualizar-noticia").click(function(){
@@ -427,8 +437,53 @@
             });
         });
 
+        function buscarProgramas(emissora){
+
+            var cd_programa = $("#cd_programa").val();
+
+            $.ajax({
+                    url: host+'/api/programa/buscar-emissora/'+emissora,
+                    type: 'GET',
+                    beforeSend: function() {
+                        $('.content').loader('show');
+                        $('#programa').append('<option value="">Carregando...</option>').val('');
+                    },
+                    success: function(data) {
+
+                        $('#programa').find('option').remove();
+                        $('#programa').attr('disabled', false);
+
+                        if(data.length == 0) {                            
+                            $('#programa').append('<option value="">Emissora não possui programas cadastrados</option>').val('');
+                            return;
+                        }
+
+                        $('#programa').append('<option value="">Selecione um programa</option>').val('');
+
+                        data.forEach(element => {
+                            let option = new Option(element.text, element.id);
+                            $('#programa').append(option);
+                        });
+                        
+                    },
+                    complete: function(){
+                        if(cd_programa > 0)
+                            $('#programa').val(cd_programa);
+                        $('.content').loader('hide');
+                    }
+                });
+
+        };
+
         $(document).ready(function(){
-            $('#cliente').trigger('change');
+
+            var cd_emissora = $("#id_fonte").val();
+        
+            if(cd_emissora){
+                buscarProgramas(cd_emissora);
+            }
+            
+            $('#cd_cliente').trigger('change');
         });
     </script>
 @endsection
