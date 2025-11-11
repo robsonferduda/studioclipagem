@@ -116,6 +116,15 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="col-md-12">
+                                    <div class="form-check float-left mr-3">
+                                        <label class="form-check-label mt-2">
+                                            <input class="form-check-input" type="checkbox" id="exibir_videos" name="exibir_videos" value="true">
+                                                EXIBIR VÍDEOS
+                                            <span class="form-check-sign"></span>
+                                        </label>
+                                    </div>
+                                </div>
                                 <div class="col-md-12 center mb-0">
                                     <a href="{{ url('tv/noticias/limpar-filtros') }}" class="btn btn-warning btn-limpar mb-3"><i class="fa fa-refresh"></i> Limpar</a>
                                     <button type="submit" id="btn-find" class="btn btn-primary mb-3"><i class="fa fa-search"></i> Buscar</button>
@@ -139,10 +148,10 @@
                         <div class="card noticia-card card-audio" id="card-audio-{{ $noticia->id }}" data-id="{{ $noticia->id }}">
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-lg-4 col-md-4 col-sm-12 mb-1">                                   
+                                    <div class="col-lg-4 col-md-4 col-sm-12 mb-1 video-container" style="display: none;">                                   
                                         @if($noticia->ds_caminho_video)
-                                            <video width="100%" height="240" controls>
-                                                <source src="{{ asset('video/noticia-tv/'.$noticia->ds_caminho_video) }}" type="video/mp4">
+                                            <video width="100%" height="240" controls class="video-noticia" data-src="{{ asset('video/noticia-tv/'.$noticia->ds_caminho_video) }}">
+                                                <source type="video/mp4">
                                                 <source src="movie.ogg" type="video/ogg">
                                                 Seu navegador não suporta a exibição de vídeos.
                                             </video>
@@ -150,7 +159,7 @@
                                             <h6 class="mb-1 mt-1" style="color: #ef8157;">Notícia sem vídeo vinculado</h6>
                                         @endif
                                     </div>
-                                    <div class="col-lg-8 col-sm-8 mb-1"> 
+                                    <div class="col-lg-8 col-sm-8 mb-1 conteudo-col"> 
                                         <div class="row">
                                             <div class="col-lg-8 col-md-8 col-sm-12 mb-1"> 
                                                 <div class="conteudo-{{ $noticia->id }}">
@@ -274,6 +283,34 @@
                 $('.card-audio').removeClass('card-destaque');
                 // Adiciona destaque ao clicado
                 $(this).addClass('card-destaque');
+            });
+
+            // Controle de exibição de vídeos
+            $('#exibir_videos').change(function(){
+                if($(this).is(':checked')){
+                    // Exibir vídeos
+                    $('.video-container').show();
+                    $('.conteudo-col').removeClass('col-lg-8').addClass('col-lg-8');
+                    
+                    // Carregar os vídeos
+                    $('.video-noticia').each(function(){
+                        var src = $(this).data('src');
+                        if(src){
+                            $(this).find('source[type="video/mp4"]').attr('src', src);
+                            this.load();
+                        }
+                    });
+                } else {
+                    // Ocultar vídeos
+                    $('.video-container').hide();
+                    $('.conteudo-col').removeClass('col-lg-8').addClass('col-lg-12');
+                    
+                    // Pausar e limpar vídeos para economizar recursos
+                    $('.video-noticia').each(function(){
+                        this.pause();
+                        this.currentTime = 0;
+                    });
+                }
             });
 
             var demo2 = $('.demo1').bootstrapDualListbox({
