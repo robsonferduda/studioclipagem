@@ -80,13 +80,13 @@ class NoticiaTvController extends Controller
         $dt_inicial = Session::get('tv_filtro_dt_inicial', $request->input('dt_inicial', date('d/m/Y')));
         $dt_final = Session::get('tv_filtro_dt_final', $request->input('dt_final', date('d/m/Y')));
         $cliente_selecionado = Session::get('tv_filtro_cliente', $request->input('cliente'));
-        $sentimento = Session::get('radio_filtro_sentimento', $request->input('sentimento'));
+        $sentimento = Session::get('tv_filtro_sentimento', $request->input('sentimento'));
         $fonte_selecionada = Session::get('tv_filtro_id_fonte', $request->input('id_fonte'));
-        $programa_selecionado = Session::get('tv_filtro_programa', $request->input('cd_programa'));
-        $area_selecionada = Session::get('radio_filtro_cd_area', $request->input('cd_area'));
+        $programa_selecionado = Session::get('tv_filtro_programa_id', $request->input('programa_id'));
+        $area_selecionada = Session::get('tv_filtro_cd_area', $request->input('cd_area'));
         $fonte = Session::get('tv_filtro_fontes', $request->input('fontes'));
         $termo = Session::get('tv_filtro_termo', $request->input('termo'));
-        $usuario = Session::get('radio_filtro_usuario', $request->input('usuario'));
+        $usuario = Session::get('tv_filtro_usuario', $request->input('usuario'));
 
         $dt_inicial = $this->carbon->createFromFormat('d/m/Y', $dt_inicial)->format('Y-m-d');
         $dt_final = $this->carbon->createFromFormat('d/m/Y', $dt_final)->format('Y-m-d');
@@ -99,6 +99,28 @@ class NoticiaTvController extends Controller
                     })
                     ->when($termo, function ($q) use ($termo) {
                         return $q->where('sinopse', 'ILIKE', '%'.trim($termo).'%');
+                    })
+                    ->when($fonte_selecionada, function ($q) use ($fonte_selecionada) {
+                        return $q->where('emissora_id', $fonte_selecionada);
+                    })
+                    ->when($programa_selecionado, function ($q) use ($programa_selecionado) {
+                        return $q->where('programa_id', $programa_selecionado);
+                    })
+                    ->when($area_selecionada, function ($q) use ($area_selecionada) {
+                        return $q->whereHas('clientes', function($qq) use ($area_selecionada) {
+                            $qq->where('noticia_cliente.area', $area_selecionada)->where('noticia_cliente.tipo_id', 4);
+                        });
+                    })
+                    ->when($sentimento !== null && $sentimento !== '', function ($q) use ($sentimento) {
+                        return $q->whereHas('clientes', function($qq) use ($sentimento) {
+                            $qq->where('noticia_cliente.sentimento', $sentimento)->where('noticia_cliente.tipo_id', 4);
+                        });
+                    })
+                    ->when($usuario, function ($q) use ($usuario) {
+                        if ($usuario === 'S') {
+                            return $q->whereNull('cd_usuario');
+                        }
+                        return $q->where('cd_usuario', $usuario);
                     })
                     ->whereBetween($tipo_data, [$dt_inicial." 00:00:00", $dt_final." 23:59:59"])
                     ->orderBy('created_at','DESC')                    
@@ -117,7 +139,7 @@ class NoticiaTvController extends Controller
 
     public function limparFiltrosTv()
     {
-        foreach (['tipo_data','dt_inicial','dt_final','cliente','fontes','termo'] as $filtro) {
+        foreach (['tipo_data','dt_inicial','dt_final','cliente','id_fonte','programa_id','cd_area','sentimento','fontes','termo','usuario'] as $filtro) {
             Session::forget('tv_filtro_' . $filtro);
         }
         return redirect('noticias/tv');
