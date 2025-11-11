@@ -560,8 +560,15 @@ class NoticiaWebController extends Controller
             if($noticia){
 
                 $conteudo = ConteudoNoticiaWeb::where('id_noticia_web', $noticia->id)->first();
-                $conteudo->conteudo = $request->conteudo;
-                $conteudo->save();
+
+                if($conteudo == null){
+                    $conteudo = new ConteudoNoticiaWeb();
+                    $conteudo->id_noticia_web = $noticia->id;
+                    $conteudo->save();
+                }else{
+                    $conteudo->conteudo = $request->conteudo;
+                    $conteudo->save();
+                }                
 
                 $tags = collect($request->tags)->mapWithKeys(function($tag){
                     return [$tag => ['tipo_id' => 2]];
@@ -1094,7 +1101,7 @@ class NoticiaWebController extends Controller
                 JOIN fonte_web t2 ON t2.id = t1.id_fonte 
                 JOIN noticia_cliente t3 ON t3.noticia_id = t1.id AND tipo_id = 2 AND t3.deleted_at IS NULL
                 WHERE (t1.nu_valor IS NULL OR t1.nu_valor = 0)
-                AND data_noticia > '2025-08-01'
+                AND data_noticia > '2025-01-01'
                 AND t1.id_fonte != 1 --Excluir fonte SEM FONTE
                 AND t1.deleted_at IS NULL
                 AND t3.cliente_id NOT IN (438,442)

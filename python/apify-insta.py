@@ -35,6 +35,8 @@ BATCH_INSERT_SIZE = int(os.getenv("BATCH_INSERT_SIZE", "500"))
 HASHTAGS_PER_CALL = int(os.getenv("HASHTAGS_PER_CALL", "15"))  # quantas hashtags mandar por run do actor
 
 # ======= Config de idioma =======
+DEBUG_LANG = os.getenv("DEBUG_LANG", "false").lower() in ("1","true","yes","on")
+LANG_DEBUG_SAMPLES = int(os.getenv("LANG_DEBUG_SAMPLES", "5"))
 ALLOW_LANGS = {x.strip() for x in (os.getenv("ALLOW_LANGS", "pt,pt-BR,pt_PT").split(","))}
 MIN_LANG_CHARS = int(os.getenv("MIN_LANG_CHARS", "20"))
 LANG_PROB_MIN = float(os.getenv("LANG_PROB_MIN", "0.70"))
