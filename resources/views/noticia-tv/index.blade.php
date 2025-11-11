@@ -136,7 +136,7 @@
                                                         ->links('vendor.pagination.bootstrap-4') }}
 
                     @foreach ($dados as $key => $noticia)
-                        <div class="card">
+                        <div class="card noticia-card card-audio" id="card-audio-{{ $noticia->id }}" data-id="{{ $noticia->id }}">
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-lg-4 col-md-4 col-sm-12 mb-1">                                   
@@ -250,11 +250,25 @@
 @section('script')
 <script src="{{ asset('js/campos-cliente.js') }}"></script>
 <script src="{{ asset('js/noticia_clientes.js') }}"></script>
+<style>
+    .noticia-card.card-destaque {
+        border: 2px solid #007bff;
+        background-color: #f8f9ff;
+    }
+</style>
     <script>
 
         var host = $('meta[name="base-url"]').attr('content');
         
         $(document).ready(function(){
+
+            // Destacar card ao clicar
+            $('.card-audio').click(function(){
+                // Remove destaque de todos
+                $('.card-audio').removeClass('card-destaque');
+                // Adiciona destaque ao clicado
+                $(this).addClass('card-destaque');
+            });
 
             var demo2 = $('.demo1').bootstrapDualListbox({
                 nonSelectedListLabel: 'Disponíveis',
