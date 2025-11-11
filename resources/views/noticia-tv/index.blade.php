@@ -184,14 +184,20 @@
                                                         @endforelse
                                                     </div>
                                                 </div> 
-                                                <div class="sinopse-{{ $noticia->id }}">
-                                                    {!! ($noticia->sinopse) ? Str::limit($noticia->sinopse, 1000, " ...") : '<span class="text-danger center">Notícia não possui texto</span>' !!}
+                                                <div class="panel panel-success">
+                                                    <div class="conteudo-noticia mb-1">
+                                                        <span class="transcricao-limitada" id="transcricao-limitada-{{ $noticia->id }}">
+                                                            {!! ($noticia->sinopse) ? Str::limit($noticia->sinopse, 1000, " ...") : '<span class="text-danger">Nenhuma transcrição disponível</span>' !!}
+                                                            @if($noticia->sinopse && strlen($noticia->sinopse) > 1000)
+                                                                <a href="javascript:void(0);" class="text-primary ver-mais" data-id="{{ $noticia->id }}">[ver mais]</a>
+                                                            @endif
+                                                        </span>
+                                                        <span class="transcricao-completa d-none" id="transcricao-completa-{{ $noticia->id }}">
+                                                            {!! ($noticia->sinopse) ? $noticia->sinopse : '' !!}
+                                                            <a href="javascript:void(0);" class="text-primary ver-menos" data-id="{{ $noticia->id }}">[ver menos]</a>
+                                                        </span>
+                                                    </div>
                                                 </div>  
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-12 col-md-12 col-sm-12 mb-1"> 
-                                                <button class="btn btn-primary btn-visualizar-noticia" data-id="{{ $noticia->id }}"><i class="fa fa-eye"></i> Visualizar</button> 
                                             </div>
                                         </div>
                                     </div>
@@ -278,6 +284,22 @@
 
             // Carregar programas de TV independente da emissora
             carregarProgramasTv();
+
+            $('.ver-mais').click(function(){
+                var id = $(this).data('id');
+                $('#transcricao-limitada-' + id).addClass('d-none');
+                $('#transcricao-completa-' + id).removeClass('d-none');
+            });
+
+            $('.ver-menos').click(function(){
+                var id = $(this).data('id');
+                $('#transcricao-completa-' + id).addClass('d-none');
+                $('#transcricao-limitada-' + id).removeClass('d-none');
+                // Rolagem suave para o início do texto limitado
+                $('html, body').animate({
+                    scrollTop: $('#transcricao-limitada-' + id).offset().top - 450
+                }, 400);
+            });
 
             $(".btn-visualizar-noticia").click(function(){
 
