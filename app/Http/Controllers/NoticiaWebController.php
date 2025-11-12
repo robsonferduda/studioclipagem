@@ -519,6 +519,10 @@ class NoticiaWebController extends Controller
                 $request->merge(['id_noticia_web' => $nova_noticia->id]);
                 ConteudoNoticiaWeb::create($request->all());
 
+                $retorno = array('flag' => true,
+                             'msg' => "Notícia salva e copiada com sucesso. Você pode editar a nova notícia criada.");
+
+                Flash::success($retorno['msg']);
                 return redirect('noticia/web/'.$nova_noticia->id.'/editar');
 
             break;
