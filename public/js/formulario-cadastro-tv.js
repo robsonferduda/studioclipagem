@@ -28,6 +28,30 @@ $(document).ready(function() {
 
     });
 
+    $("#btn_enviar_e_salvar").click(function(){
+
+        if(!clientes.length){
+
+            Swal.fire({
+              title: "Notícia sem clientes",
+              text: "Você não vinculou nenhum cliente. Deseja continuar?",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonColor: "#3085d6",
+              cancelButtonColor: "#d33",
+              cancelButtonText: "Cancelar",
+              confirmButtonText: "Sim, salvar mesmo assim!"
+            }).then((result) => {
+              if (result.isConfirmed) {
+                $("#frm_tv").submit();
+              }
+            });
+
+            return false;
+        }
+
+    });
+
     $(document).on('keyup', '.monetario', function() {
                 
         var retorno = 0;
