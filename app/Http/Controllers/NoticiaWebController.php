@@ -494,6 +494,11 @@ class NoticiaWebController extends Controller
 
             case 'salvar_e_copiar':
 
+                if($noticia == null){
+        
+                    return redirect('noticia/web/novo')->withInput();
+                }
+
                 $nova_noticia = $noticia->replicate();
                 $nova_noticia->save();
 
