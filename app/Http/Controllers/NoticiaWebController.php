@@ -496,7 +496,7 @@ class NoticiaWebController extends Controller
             case 'salvar_e_copiar':
 
                 if($noticia == null){
-        
+                    Flash::error($retorno['msg']);
                     return redirect('noticia/web/novo')->withInput();
                 }
 
