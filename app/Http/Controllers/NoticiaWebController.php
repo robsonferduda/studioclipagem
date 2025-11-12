@@ -398,6 +398,7 @@ class NoticiaWebController extends Controller
     public function store(Request $request)
     {
         DB::beginTransaction();
+        $noticia = null;
 
         try {
 
