@@ -4,9 +4,10 @@ $(document).ready(function() {
     var clientes = [];
     var id_noticia = $("#id_noticia").val();
 
-    $("#btn_enviar").click(function(){
+    $("#btn_enviar").click(function(e){
 
         if(!clientes.length){
+            e.preventDefault();
 
             Swal.fire({
               title: "Notícia sem clientes",
@@ -19,18 +20,19 @@ $(document).ready(function() {
               confirmButtonText: "Sim, salvar mesmo assim!"
             }).then((result) => {
               if (result.isConfirmed) {
-                $("#frm_impresso").submit();
+                // Encontra o formulário correto (criar ou editar)
+                var form = $("#frm_noticia_radio_criar").length ? $("#frm_noticia_radio_criar") : $("#frm_noticia_radio_editar");
+                form.submit();
               }
             });
-
-            return false;
         }
 
     });
 
-    $("#btn_enviar_e_salvar").click(function(){
+    $("#btn_enviar_e_salvar").click(function(e){
 
         if(!clientes.length){
+            e.preventDefault();
 
             Swal.fire({
               title: "Notícia sem clientes",
@@ -43,11 +45,11 @@ $(document).ready(function() {
               confirmButtonText: "Sim, salvar mesmo assim!"
             }).then((result) => {
               if (result.isConfirmed) {
-                $("#frm_impresso").submit();
+                // Encontra o formulário correto (criar ou editar)
+                var form = $("#frm_noticia_radio_criar").length ? $("#frm_noticia_radio_criar") : $("#frm_noticia_radio_editar");
+                form.submit();
               }
             });
-
-            return false;
         }
 
     });

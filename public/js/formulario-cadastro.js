@@ -4,9 +4,10 @@ $(document).ready(function() {
     var clientes = [];
     var id_noticia = $("#id_noticia").val();
 
-    $("#btn_enviar").click(function(){
+    $("#btn_enviar").click(function(e){
 
         if(!clientes.length){
+            e.preventDefault();
 
             Swal.fire({
               title: "Notícia sem clientes",
@@ -22,15 +23,14 @@ $(document).ready(function() {
                 $("#frm_impresso").submit();
               }
             });
-
-            return false;
         }
 
     });
 
-    $("#btn_enviar_e_salvar").click(function(){
+    $("#btn_enviar_e_salvar").click(function(e){
 
         if(!clientes.length){
+            e.preventDefault();
 
             Swal.fire({
               title: "Notícia sem clientes",
@@ -46,8 +46,6 @@ $(document).ready(function() {
                 $("#frm_impresso").submit();
               }
             });
-
-            return false;
         }
 
     });
