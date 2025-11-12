@@ -212,8 +212,8 @@
                             </div>
                         </div>
                         <div class="text-center mb-2">
-                            <button type="submit" class="btn btn-success" name="btn_enviar" value="salvar"><i class="fa fa-save"></i> Salvar</button>
-                            <button type="submit" class="btn btn-warning" name="btn_enviar" value="salvar_e_copiar"><i class="fa fa-copy"></i> Salvar e Copiar</button>
+                            <button type="submit" class="btn btn-success" name="btn_enviar" id="btn_enviar" value="salvar"><i class="fa fa-save"></i> Salvar</button>
+                            <button type="submit" class="btn btn-warning" name="btn_enviar" id="btn_enviar_e_salvar" value="salvar_e_copiar"><i class="fa fa-copy"></i> Salvar e Copiar</button>
                             <a href="{{ url('noticias/tv') }}" class="btn btn-danger"><i class="fa fa-times"></i> Cancelar</a>
                         </div>
                     </div>
