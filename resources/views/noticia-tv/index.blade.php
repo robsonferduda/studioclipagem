@@ -217,6 +217,11 @@
                                 <div class="stats">
                                     <i class="fa fa-refresh"></i>Cadastrado por <strong>{{ ($noticia->usuario) ? $noticia->usuario->name : 'Sistema' }}</strong> em {{ \Carbon\Carbon::parse($noticia->created_at)->format('d/m/Y H:i:s') }}. Última atualização em {{ \Carbon\Carbon::parse($noticia->updated_at)->format('d/m/Y H:i:s') }}
                                     <div class="pull-right">
+                                        @if($noticia->ds_caminho_video)
+                                            <button class="btn btn-info btn-fill btn-icon btn-sm btn-toggle-video" data-id="{{ $noticia->id }}" title="Exibir/Ocultar Vídeo" style="border-radius: 30px;">
+                                                <i class="fa fa-video-camera fa-3x text-white"></i>
+                                            </button>
+                                        @endif
                                         <a title="Excluir" href="{{ url('noticia/tv/'.$noticia->id.'/excluir') }}" class="btn btn-danger btn-fill btn-icon btn-sm btn-excluir" style="border-radius: 30px;">
                                             <i class="fa fa-times fa-3x text-white"></i>
                                         </a>
@@ -310,6 +315,40 @@
                         this.pause();
                         this.currentTime = 0;
                     });
+                }
+            });
+
+            // Controle individual de vídeo por card
+            $('.btn-toggle-video').click(function(e){
+                e.stopPropagation(); // Evita propagar o click para o card
+                var id = $(this).data('id');
+                var videoContainer = $('#card-audio-' + id).find('.video-container');
+                var conteudoCol = $('#card-audio-' + id).find('.conteudo-col');
+                var video = $('#card-audio-' + id).find('.video-noticia')[0];
+                
+                if(videoContainer.is(':visible')){
+                    // Ocultar vídeo
+                    videoContainer.hide();
+                    conteudoCol.removeClass('col-lg-8').addClass('col-lg-12');
+                    if(video){
+                        video.pause();
+                        video.currentTime = 0;
+                    }
+                    $(this).removeClass('btn-success').addClass('btn-info');
+                } else {
+                    // Exibir vídeo
+                    videoContainer.show();
+                    conteudoCol.removeClass('col-lg-12').addClass('col-lg-8');
+                    
+                    // Carregar o vídeo se ainda não foi carregado
+                    if(video){
+                        var src = $(video).data('src');
+                        if(src && !$(video).find('source[type="video/mp4"]').attr('src')){
+                            $(video).find('source[type="video/mp4"]').attr('src', src);
+                            video.load();
+                        }
+                    }
+                    $(this).removeClass('btn-info').addClass('btn-success');
                 }
             });
 

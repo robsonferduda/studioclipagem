@@ -246,6 +246,11 @@
                                     <div class="stats">
                                         <i class="fa fa-refresh"></i>Cadastrado por <strong>{{ ($dado->usuario) ? $dado->usuario->name : 'Sistema' }}</strong> em {{ \Carbon\Carbon::parse($dado->created_at)->format('d/m/Y H:i:s') }}. Última atualização em {{ \Carbon\Carbon::parse($dado->updated_at)->format('d/m/Y H:i:s') }}
                                         <div class="pull-right">
+                                            @if($dado->path_screenshot)
+                                                <button class="btn btn-info btn-fill btn-icon btn-sm btn-toggle-imagem" data-id="{{ $dado->id }}" data-path="{{ $dado->path_screenshot }}" title="Exibir/Ocultar Imagem" style="border-radius: 30px;">
+                                                    <i class="fa fa-image fa-3x text-white"></i>
+                                                </button>
+                                            @endif
                                             <a title="Excluir" href="{{ url('noticia/web/'.$dado->id.'/excluir') }}" class="btn btn-danger btn-fill btn-icon btn-sm btn-excluir" style="border-radius: 30px;">
                                                 <i class="fa fa-times fa-3x text-white"></i>
                                             </a>
@@ -414,6 +419,58 @@
                     // Ocultar imagens
                     $('.img-container').hide();
                     $('.conteudo-col').removeClass('col-lg-10').addClass('col-lg-12');
+                }
+            });
+
+            // Controle individual de imagem por card
+            $('.btn-toggle-imagem').click(function(e){
+                e.stopPropagation(); // Evita propagar o click para o card
+                var id = $(this).data('id');
+                var path = $(this).data('path');
+                var imgContainer = $('#card-audio-' + id).find('.img-container');
+                var conteudoCol = $('#card-audio-' + id).find('.conteudo-col');
+                
+                if(imgContainer.is(':visible')){
+                    // Ocultar imagem
+                    imgContainer.hide();
+                    conteudoCol.removeClass('col-lg-10').addClass('col-lg-12');
+                    $(this).removeClass('btn-success').addClass('btn-info');
+                } else {
+                    // Exibir imagem
+                    imgContainer.show();
+                    conteudoCol.removeClass('col-lg-12').addClass('col-lg-10');
+                    
+                    var placeholder = imgContainer.find('.img-placeholder');
+                    
+                    // Carregar a imagem se ainda não foi carregada
+                    if(placeholder.length && path){
+                        placeholder.html('<p class="text-center"><i class="fa fa-spinner fa-spin"></i> Carregando...</p>');
+                        
+                        $.ajax({
+                            url: host + '/noticia-web/imagem-temporaria',
+                            type: 'POST',
+                            data: {
+                                _token: token,
+                                path: path
+                            },
+                            success: function(response){
+                                if(response.url){
+                                    placeholder.html(
+                                        '<img src="' + response.url + '" ' +
+                                        'alt="Print notícia" ' +
+                                        'class="img-fluid img-thumbnail" ' +
+                                        'style="width: 100%; height: auto; border: none;">'
+                                    );
+                                } else {
+                                    placeholder.html('<p class="text-danger">Erro ao carregar imagem</p>');
+                                }
+                            },
+                            error: function(){
+                                placeholder.html('<p class="text-danger">Erro ao carregar imagem</p>');
+                            }
+                        });
+                    }
+                    $(this).removeClass('btn-info').addClass('btn-success');
                 }
             });
 

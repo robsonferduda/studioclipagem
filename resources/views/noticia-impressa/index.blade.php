@@ -197,6 +197,9 @@
                                 <div class="stats">
                                     <i class="fa fa-refresh"></i>Cadastrado por <strong>{{ ($noticia->usuario) ? $noticia->usuario->name : 'Sistema' }}</strong> em {{ \Carbon\Carbon::parse($noticia->created_at)->format('d/m/Y H:i:s') }}. Última atualização em {{ \Carbon\Carbon::parse($noticia->updated_at)->format('d/m/Y H:i:s') }}
                                     <div class="pull-right">
+                                        <button class="btn btn-info btn-fill btn-icon btn-sm btn-toggle-imagem-impressa" data-id="{{ $noticia->id }}" title="Exibir/Ocultar Imagem" style="border-radius: 30px;">
+                                            <i class="fa fa-image fa-3x text-white"></i>
+                                        </button>
                                         <a title="Excluir" href="{{ url('noticia-impressa/'.$noticia->id.'/excluir') }}" class="btn btn-danger btn-fill btn-icon btn-sm btn-excluir" style="border-radius: 30px;">
                                             <i class="fa fa-times fa-3x text-white"></i>
                                         </a>
@@ -287,6 +290,48 @@
                     // Ocultar imagens
                     $('.img-container').hide();
                     $('.conteudo-col').removeClass('col-lg-10').addClass('col-lg-12');
+                }
+            });
+
+            // Controle individual de imagem por card
+            $('.btn-toggle-imagem-impressa').click(function(e){
+                e.stopPropagation(); // Evita propagar o click para o card
+                var id = $(this).data('id');
+                var imgContainer = $('#card-impressa-' + id).find('.img-container');
+                var conteudoCol = $('#card-impressa-' + id).find('.conteudo-col');
+                var imgElement = $('#card-impressa-' + id).find('.load-imagem');
+                
+                if(imgContainer.is(':visible')){
+                    // Ocultar imagem
+                    imgContainer.hide();
+                    conteudoCol.removeClass('col-lg-10').addClass('col-lg-12');
+                    $(this).removeClass('btn-success').addClass('btn-info');
+                } else {
+                    // Exibir imagem
+                    imgContainer.show();
+                    conteudoCol.removeClass('col-lg-12').addClass('col-lg-10');
+                    
+                    // Carregar a imagem se ainda não foi carregada
+                    if(!imgElement.attr('src') || imgElement.attr('src') === ''){
+                        $.ajax({
+                            url: host+'/noticia/impressa/imagem-path/' + id,
+                            type: 'GET',
+                            beforeSend: function(){
+                                $(".box-imagem-"+id).html('<p class="text-center"><i class="fa fa-spinner fa-spin"></i> Carregando...</p>');
+                            },
+                            success: function(response) {
+                                if (response.path) {
+                                    imgElement.attr('src', response.path);
+                                    $(".box-imagem-"+id).html('<a href="' + host + '/noticia-impressa/imagem/download/' + id + '" target="_BLANK"><img class="load-imagem img-noticia" src="' + response.path + '"></a>');
+                                }
+                            },
+                            error: function() {
+                                console.error('Erro ao carregar imagem da notícia ID ' + id);
+                                $(".box-imagem-"+id).html('<p class="text-danger">Erro ao carregar</p>');
+                            }
+                        });
+                    }
+                    $(this).removeClass('btn-info').addClass('btn-success');
                 }
             });
 

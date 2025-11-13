@@ -216,6 +216,11 @@
                                 <div class="stats">
                                     <i class="fa fa-refresh"></i>Cadastrado por <strong>{{ ($noticia->usuario) ? $noticia->usuario->name : 'Sistema' }}</strong> em {{ \Carbon\Carbon::parse($noticia->created_at)->format('d/m/Y H:i:s') }}. Última atualização em {{ \Carbon\Carbon::parse($noticia->updated_at)->format('d/m/Y H:i:s') }}
                                     <div class="pull-right">
+                                        @if($noticia->ds_caminho_audio)
+                                            <button class="btn btn-info btn-fill btn-icon btn-sm btn-toggle-audio" data-id="{{ $noticia->id }}" title="Exibir/Ocultar Áudio" style="border-radius: 30px;">
+                                                <i class="fa fa-volume-up fa-3x text-white"></i>
+                                            </button>
+                                        @endif
                                         <a title="Excluir" href="{{ url('noticia-radio/'.$noticia->id.'/excluir') }}" class="btn btn-danger btn-fill btn-icon btn-sm btn-excluir" style="border-radius: 30px;">
                                             <i class="fa fa-times fa-3x text-white"></i>
                                         </a>
@@ -294,6 +299,40 @@
                         this.pause();
                         this.currentTime = 0;
                     });
+                }
+            });
+
+            // Controle individual de áudio por card
+            $('.btn-toggle-audio').click(function(e){
+                e.stopPropagation(); // Evita propagar o click para o card
+                var id = $(this).data('id');
+                var audioContainer = $('#card-audio-' + id).find('.audio-container');
+                var conteudoCol = $('#card-audio-' + id).find('.conteudo-col');
+                var audio = $('#card-audio-' + id).find('.audio-noticia')[0];
+                
+                if(audioContainer.is(':visible')){
+                    // Ocultar áudio
+                    audioContainer.hide();
+                    conteudoCol.removeClass('col-lg-8').addClass('col-lg-12');
+                    if(audio){
+                        audio.pause();
+                        audio.currentTime = 0;
+                    }
+                    $(this).removeClass('btn-success').addClass('btn-info');
+                } else {
+                    // Exibir áudio
+                    audioContainer.show();
+                    conteudoCol.removeClass('col-lg-12').addClass('col-lg-8');
+                    
+                    // Carregar o áudio se ainda não foi carregado
+                    if(audio){
+                        var src = $(audio).data('src');
+                        if(src && !$(audio).find('source[type="audio/mpeg"]').attr('src')){
+                            $(audio).find('source[type="audio/mpeg"]').attr('src', src);
+                            audio.load();
+                        }
+                    }
+                    $(this).removeClass('btn-info').addClass('btn-success');
                 }
             });
 
