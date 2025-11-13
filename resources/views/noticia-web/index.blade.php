@@ -113,6 +113,13 @@
                                 <div class="col-md-12">
                                     <div class="form-check float-left mr-3">
                                         <label class="form-check-label mt-2">
+                                            <input class="form-check-input" type="checkbox" id="exibir_imagens" name="exibir_imagens" value="true">
+                                                EXIBIR IMAGENS
+                                            <span class="form-check-sign"></span>
+                                        </label>
+                                    </div>
+                                    <div class="form-check float-left mr-3">
+                                        <label class="form-check-label mt-2">
                                             <input class="form-check-input" type="checkbox" {{ ($fl_retorno) ? 'checked' : '' }} name="fl_retorno" value="true">
                                                 SEM RETORNO
                                             <span class="form-check-sign"></span>
@@ -170,12 +177,12 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-lg-2 col-sm-12 img-{{ $dado->id }}" style="max-height: 300px; overflow: hidden;">   
-                                            @if($dado->path_screenshot)                                         
-                                                <img src="{{ Storage::disk('s3')->temporaryUrl($dado->path_screenshot, '+30 minutes') }}" 
-                                                alt="Print notícia {{ $dado->noticia_id }}" 
-                                                class="img-fluid img-thumbnail" 
-                                                style="width: 100%; height: auto; border: none;">
+                                        <div class="col-lg-2 col-sm-12 img-container img-{{ $dado->id }}" style="max-height: 300px; overflow: hidden; display: none;">   
+                                            @if($dado->path_screenshot)
+                                                <!-- Imagem será carregada via JavaScript quando checkbox for marcado -->
+                                                <div class="img-placeholder" data-path="{{ $dado->path_screenshot }}" data-id="{{ $dado->id }}">
+                                                    <p class="text-center text-muted">Marque "Exibir Imagens" para carregar</p>
+                                                </div>
                                             @else
                                                 <img src="{{ asset('img/no-print.png') }}" 
                                                 alt="Sem Print" 
@@ -183,7 +190,7 @@
                                                 style="width: 100%; height: auto; border: none;">
                                             @endif
                                         </div>
-                                        <div class="col-lg-10 col-sm-12"> 
+                                        <div class="col-lg-10 col-sm-12 conteudo-col"> 
                                             <div class="conteudo-{{ $dado->id }}">
                                                 <p class="font-weight-bold mb-1">{{ $dado->titulo_noticia }}</p>
                                                 @if($dado->fonte)
@@ -360,6 +367,55 @@
 
             var host =  $('meta[name="base-url"]').attr('content');
             var token = $('meta[name="csrf-token"]').attr('content');
+
+            // Controle de exibição de imagens
+            $('#exibir_imagens').change(function(){
+                if($(this).is(':checked')){
+                    // Exibir containers de imagens
+                    $('.img-container').show();
+                    $('.conteudo-col').removeClass('col-lg-10').addClass('col-lg-10');
+                    
+                    // Carregar imagens do S3
+                    $('.img-placeholder').each(function(){
+                        var placeholder = $(this);
+                        var path = placeholder.data('path');
+                        var id = placeholder.data('id');
+                        
+                        if(path){
+                            placeholder.html('<p class="text-center"><i class="fa fa-spinner fa-spin"></i> Carregando...</p>');
+                            
+                            // Fazer requisição AJAX para obter URL temporária
+                            $.ajax({
+                                url: host + '/noticia-web/imagem-temporaria',
+                                type: 'POST',
+                                data: {
+                                    _token: token,
+                                    path: path
+                                },
+                                success: function(response){
+                                    if(response.url){
+                                        placeholder.html(
+                                            '<img src="' + response.url + '" ' +
+                                            'alt="Print notícia" ' +
+                                            'class="img-fluid img-thumbnail" ' +
+                                            'style="width: 100%; height: auto; border: none;">'
+                                        );
+                                    } else {
+                                        placeholder.html('<p class="text-danger">Erro ao carregar imagem</p>');
+                                    }
+                                },
+                                error: function(){
+                                    placeholder.html('<p class="text-danger">Erro ao carregar imagem</p>');
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    // Ocultar imagens
+                    $('.img-container').hide();
+                    $('.conteudo-col').removeClass('col-lg-10').addClass('col-lg-12');
+                }
+            });
 
             $(".tags").each(function() {
                

@@ -109,6 +109,15 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="col-md-12">
+                                    <div class="form-check float-left mr-3">
+                                        <label class="form-check-label mt-2">
+                                            <input class="form-check-input" type="checkbox" id="exibir_imagens" name="exibir_imagens" value="true">
+                                                EXIBIR IMAGENS
+                                            <span class="form-check-sign"></span>
+                                        </label>
+                                    </div>
+                                </div>
                                 <div class="col-md-12 checkbox-radios mb-0">
                                     <a href="{{ url('noticias/impresso/limpar') }}" class="btn btn-warning btn-limpar mb-3"><i class="fa fa-refresh"></i> Limpar</a>
                                     <button type="submit" id="btn-find" class="btn btn-primary mb-3"><i class="fa fa-search"></i> Buscar</button>
@@ -128,15 +137,15 @@
                                                         ->links('vendor.pagination.bootstrap-4') }}
 
                     @foreach ($dados as $key => $noticia)
-                        <div class="card">
+                        <div class="card noticia-card card-impressa" id="card-impressa-{{ $noticia->id }}" data-id="{{ $noticia->id }}">
                             <div class="card-body">
                                 <div class="row conteudo-total-{{ $noticia->id }}" data-id="{{ $noticia->id }}">
-                                    <div class="col-lg-2 col-md-2 col-sm-12 mb-1 box-imagem-{{ $noticia->id }}" style="min-height: 200px;">
+                                    <div class="col-lg-2 col-md-2 col-sm-12 mb-1 box-imagem-{{ $noticia->id }} img-container" style="min-height: 200px; display: none;">
                                         <a href="{{ url('noticia-impressa/imagem/download/'.$noticia->id) }}" target="_BLANK">
-                                            <img class="load-imagem" data-id="{{ $noticia->id }}" src="">
+                                            <img class="load-imagem img-noticia" data-id="{{ $noticia->id }}" src="">
                                         </a>
                                     </div>
-                                    <div class="col-lg-10 col-sm-10 mb-1"> 
+                                    <div class="col-lg-10 col-sm-10 mb-1 conteudo-col"> 
                                         <div class="row">
                                             <div class="col-lg-12 col-md-12 col-sm-12 mb-1"> 
                                                 <div class="conteudo-{{ $noticia->id }}">
@@ -241,29 +250,44 @@
 
             var host =  $('meta[name="base-url"]').attr('content');
 
-            $('.load-imagem').each(function() {
-
-                const imgElement = $(this);
-                const noticiaId = imgElement.data('id');
-
-                $.ajax({
-                    url: host+'/noticia/impressa/imagem-path/' + noticiaId, // ajuste se o endpoint for diferente
-                    type: 'GET',
-                    beforeSend: function(){
-                        $(".box-imagem-"+noticiaId).loader('show');
-                    },
-                    success: function(response) {
-                        if (response.path) {
-                            imgElement.attr('src', response.path);
+            // Controle de exibição de imagens
+            $('#exibir_imagens').change(function(){
+                if($(this).is(':checked')){
+                    // Exibir containers de imagens
+                    $('.img-container').show();
+                    $('.conteudo-col').removeClass('col-lg-10').addClass('col-lg-10');
+                    
+                    // Carregar as imagens
+                    $('.load-imagem').each(function() {
+                        const imgElement = $(this);
+                        const noticiaId = imgElement.data('id');
+                        
+                        // Só carregar se ainda não foi carregado
+                        if(!imgElement.attr('src') || imgElement.attr('src') === ''){
+                            $.ajax({
+                                url: host+'/noticia/impressa/imagem-path/' + noticiaId,
+                                type: 'GET',
+                                beforeSend: function(){
+                                    $(".box-imagem-"+noticiaId).html('<p class="text-center"><i class="fa fa-spinner fa-spin"></i> Carregando...</p>');
+                                },
+                                success: function(response) {
+                                    if (response.path) {
+                                        imgElement.attr('src', response.path);
+                                        $(".box-imagem-"+noticiaId).html('<a href="' + host + '/noticia-impressa/imagem/download/' + noticiaId + '" target="_BLANK"><img class="load-imagem img-noticia" src="' + response.path + '"></a>');
+                                    }
+                                },
+                                error: function() {
+                                    console.error('Erro ao carregar imagem da notícia ID ' + noticiaId);
+                                    $(".box-imagem-"+noticiaId).html('<p class="text-danger">Erro ao carregar</p>');
+                                }
+                            });
                         }
-                    },
-                    error: function() {
-                        console.error('Erro ao carregar imagem da notícia ID ' + noticiaId);
-                    },
-                    complete: function() {
-                        $(".box-imagem-"+noticiaId).loader('hide');
-                    }
-                });
+                    });
+                } else {
+                    // Ocultar imagens
+                    $('.img-container').hide();
+                    $('.conteudo-col').removeClass('col-lg-10').addClass('col-lg-12');
+                }
             });
 
             $(".btn-visualizar-noticia").click(function(){

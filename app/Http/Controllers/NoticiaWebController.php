@@ -1133,4 +1133,23 @@ class NoticiaWebController extends Controller
             
         return response()->json($totalAtualizadas);
     }
+
+    public function imagemTemporaria(Request $request)
+    {
+        try {
+            $path = $request->input("path");
+            
+            if(!$path){
+                return response()->json(["error" => "Path não informado"], 400);
+            }
+
+            // Gerar URL temporária do S3
+            $url = Storage::disk("s3")->temporaryUrl($path, "+30 minutes");
+            
+            return response()->json(["url" => $url]);
+            
+        } catch (\Exception $e) {
+            return response()->json(["error" => $e->getMessage()], 500);
+        }
+    }
 }

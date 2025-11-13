@@ -116,6 +116,15 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="col-md-12">
+                                    <div class="form-check float-left mr-3">
+                                        <label class="form-check-label mt-2">
+                                            <input class="form-check-input" type="checkbox" id="exibir_audios" name="exibir_audios" value="true">
+                                                EXIBIR ÁUDIOS
+                                            <span class="form-check-sign"></span>
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-12 checkbox-radios mb-0">
@@ -137,20 +146,20 @@
                                                         ->links('vendor.pagination.bootstrap-4') }}
 
                     @foreach ($dados as $key => $noticia)
-                        <div class="card">
+                        <div class="card noticia-card card-audio" id="card-audio-{{ $noticia->id }}" data-id="{{ $noticia->id }}">
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-lg-12 col-md-12 col-sm-12 mb-1">                                    
+                                    <div class="col-lg-4 col-md-4 col-sm-12 mb-1 audio-container" style="display: none;">                                    
                                         @if($noticia->ds_caminho_audio)
-                                            <audio width="100%" controls style="width: 100%;">
-                                                <source src="{{ asset('audio/noticia-radio/'.$noticia->ds_caminho_audio) }}" type="audio/mpeg">
+                                            <audio width="100%" controls style="width: 100%;" class="audio-noticia" data-src="{{ asset('audio/noticia-radio/'.$noticia->ds_caminho_audio) }}">
+                                                <source type="audio/mpeg">
                                                 Seu navegador não suporta a execução de áudios, faça o download para poder ouvir.
                                             </audio>
                                         @else
                                             <h6 class="mb-1 mt-1" style="color: #ef8157;">Notícia sem áudio vinculado</h6>
                                         @endif
                                     </div>
-                                    <div class="col-lg-10 col-sm-10 mb-1"> 
+                                    <div class="col-lg-8 col-sm-8 mb-1 conteudo-col"> 
                                         <div class="row">
                                             <div class="col-lg-12 col-md-12 col-sm-12 mb-1"> 
                                                 <div class="conteudo-{{ $noticia->id }}">
@@ -259,6 +268,34 @@
         var host = $('meta[name="base-url"]').attr('content');
         
         $(document).ready(function(){
+
+            // Controle de exibição de áudios
+            $('#exibir_audios').change(function(){
+                if($(this).is(':checked')){
+                    // Exibir áudios
+                    $('.audio-container').show();
+                    $('.conteudo-col').removeClass('col-lg-8').addClass('col-lg-8');
+                    
+                    // Carregar os áudios
+                    $('.audio-noticia').each(function(){
+                        var src = $(this).data('src');
+                        if(src){
+                            $(this).find('source[type="audio/mpeg"]').attr('src', src);
+                            this.load();
+                        }
+                    });
+                } else {
+                    // Ocultar áudios
+                    $('.audio-container').hide();
+                    $('.conteudo-col').removeClass('col-lg-8').addClass('col-lg-12');
+                    
+                    // Pausar e limpar áudios para economizar recursos
+                    $('.audio-noticia').each(function(){
+                        this.pause();
+                        this.currentTime = 0;
+                    });
+                }
+            });
 
             var demo2 = $('.demo1').bootstrapDualListbox({
                 nonSelectedListLabel: 'Disponíveis',
