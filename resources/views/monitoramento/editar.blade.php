@@ -194,6 +194,7 @@
                                     </button>
                                     <button type="button" id="btn-vincular-selecionadas" class="btn btn-success btn-sm" disabled>
                                         <i class="fa fa-link"></i> Vincular Notícias Selecionadas ao Cliente
+                                        <span id="contador-selecionadas" class="badge badge-light ml-1">0</span>
                                     </button>
                                 </div>
                             </div>
@@ -664,7 +665,7 @@
                                         : '<span class="badge badge-warning ml-2"><i class="fa fa-times"></i> Não Vinculado</span>';
                                     
                                     const checkboxVinculo = !v.vinculado_cliente && cliente_id
-                                        ? '<div class="form-check ml-2" style="display: inline-block;"><label class="form-check-label"><input type="checkbox" class="form-check-input checkbox-vincular" data-noticia-id="'+v.id+'" data-tipo="2"> Vincular ao Cliente<span class="form-check-sign"></span></label></div>'
+                                        ? '<div class="form-check ml-2" style="display: inline-block;"><label class="form-check-label"><input type="checkbox" class="form-check-input checkbox-vincular" data-noticia-id="'+v.id+'" data-tipo="2"> VINCULAR AO CLIENTE<span class="form-check-sign"></span></label></div>'
                                         : '';
 
                                     $("#accordion_web").append('<div class="card card-plain">'+
@@ -745,7 +746,7 @@
                                         : '<span class="badge badge-secondary ml-2"><i class="fa fa-times"></i> Não Vinculado</span>';
                                     
                                     const checkboxVinculo = !v.vinculado_cliente && cliente_id
-                                        ? '<div class="form-check ml-2" style="display: inline-block;"><label class="form-check-label"><input type="checkbox" class="form-check-input checkbox-vincular" data-noticia-id="'+v.id+'" data-tipo="1"> Vincular ao Cliente<span class="form-check-sign"></span></label></div>'
+                                        ? '<div class="form-check ml-2" style="display: inline-block;"><label class="form-check-label"><input type="checkbox" class="form-check-input checkbox-vincular" data-noticia-id="'+v.id+'" data-tipo="1"> VINCULAR AO CLIENTE<span class="form-check-sign"></span></label></div>'
                                         : '';
 
                                     $("#accordion_impresso").append('<div class="card card-plain">'+
@@ -823,7 +824,7 @@
                                         : '<span class="badge badge-secondary ml-2"><i class="fa fa-times"></i> Não Vinculado</span>';
                                     
                                     const checkboxVinculo = !v.vinculado_cliente && cliente_id
-                                        ? '<div class="form-check ml-2" style="display: inline-block;"><label class="form-check-label"><input type="checkbox" class="form-check-input checkbox-vincular" data-noticia-id="'+v.id+'" data-tipo="3"> Vincular ao Cliente<span class="form-check-sign"></span></label></div>'
+                                        ? '<div class="form-check ml-2" style="display: inline-block;"><label class="form-check-label"><input type="checkbox" class="form-check-input checkbox-vincular" data-noticia-id="'+v.id+'" data-tipo="3"> VINCULAR AO CLIENTE<span class="form-check-sign"></span></label></div>'
                                         : '';
 
                                     $("#accordion_radio").append('<div class="card card-plain">'+
@@ -902,7 +903,7 @@
                                         : '<span class="badge badge-secondary ml-2"><i class="fa fa-times"></i> Não Vinculado</span>';
                                     
                                     const checkboxVinculo = !v.vinculado_cliente && cliente_id
-                                        ? '<div class="form-check ml-2" style="display: inline-block;"><label class="form-check-label"><input type="checkbox" class="form-check-input checkbox-vincular" data-noticia-id="'+v.id+'" data-tipo="4"> Vincular ao Cliente<span class="form-check-sign"></span></label></div>'
+                                        ? '<div class="form-check ml-2" style="display: inline-block;"><label class="form-check-label"><input type="checkbox" class="form-check-input checkbox-vincular" data-noticia-id="'+v.id+'" data-tipo="4"> VINCULAR AO CLIENTE<span class="form-check-sign"></span></label></div>'
                                         : '';
 
                                     $("#accordion_tv").append('<div class="card card-plain">'+
@@ -1010,6 +1011,9 @@
         $('body').on('change', '.checkbox-vincular', function() {
             var checkedCount = $('.checkbox-vincular:checked').length;
             var totalCount = $('.checkbox-vincular').length;
+            
+            // Atualiza contador
+            $('#contador-selecionadas').text(checkedCount);
             
             if(checkedCount > 0) {
                 $('#btn-vincular-selecionadas').prop('disabled', false);
