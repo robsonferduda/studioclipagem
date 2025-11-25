@@ -4,6 +4,7 @@ $(document).ready(function() {
     var clientes = [];
     var id_noticia = $("#id_noticia").val();
 
+    /*
     $("#btn_enviar").click(function(e){
 
         if(!clientes.length){
@@ -52,7 +53,7 @@ $(document).ready(function() {
             });
         }
 
-    });
+    });*/
 
     $(document).on('keyup', '.monetario', function() {
                 

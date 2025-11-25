@@ -51,6 +51,7 @@
                                         <select class="form-control cliente" name="cd_cliente" id="cd_cliente">
                                             <option value="">Selecione um cliente</option>
                                         </select>
+                                        <input type="hidden" id="old_cd_cliente" value="{{ old('cd_cliente') }}">
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -59,6 +60,7 @@
                                         <select class="form-control area" name="cd_area" id="cd_area" disabled>
                                             <option value="">Selecione uma área</option>
                                         </select>
+                                        <input type="hidden" id="old_cd_area" value="{{ old('cd_area') }}">
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -66,9 +68,9 @@
                                         <label>Sentimento </label>
                                         <select class="form-control" name="cd_sentimento" id="cd_sentimento">
                                             <option value="">Selecione um sentimento</option>
-                                            <option value="1">Positivo</option>
-                                            <option value="0">Neutro</option>
-                                            <option value="-1">Negativo</option>
+                                            <option value="1" {{ old('cd_sentimento') == '1' ? 'selected' : '' }}>Positivo</option>
+                                            <option value="0" {{ old('cd_sentimento') == '0' ? 'selected' : '' }}>Neutro</option>
+                                            <option value="-1" {{ old('cd_sentimento') == '-1' ? 'selected' : '' }}>Negativo</option>
                                         </select>
                                     </div>                        
                                 </div>
@@ -85,7 +87,7 @@
                                     <div class="form-group">
                                         <label>Data de Cadastro</label>
                                         <input type="text" class="form-control datepicker" name="dt_cadastro" required="true" 
-                                        value="{{ ($noticia and $noticia->dt_cadastro) ? \Carbon\Carbon::parse($noticia->dt_cadastro)->format('d/m/Y') : date("d/m/Y") }}" 
+                                        value="{{ old('dt_cadastro', ($noticia and $noticia->dt_cadastro) ? \Carbon\Carbon::parse($noticia->dt_cadastro)->format('d/m/Y') : date('d/m/Y')) }}" 
                                         placeholder="__/__/____">
                                     </div>
                                 </div>
@@ -93,17 +95,17 @@
                                     <div class="form-group">
                                         <label>Data do Clipping</label>
                                         <input type="text" class="form-control datepicker" name="dt_clipagem" required="true" 
-                                        value="{{ ($noticia and $noticia->dt_clipagem) ? \Carbon\Carbon::parse($noticia->dt_clipagem)->format('d/m/Y') : date("d/m/Y") }}" placeholder="__/__/____">
+                                        value="{{ old('dt_clipagem', ($noticia and $noticia->dt_clipagem) ? \Carbon\Carbon::parse($noticia->dt_clipagem)->format('d/m/Y') : date('d/m/Y')) }}" placeholder="__/__/____">
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <input type="hidden" name="cd_emissora" id="cd_emissora" value="{{ ($noticia and $noticia->emissora_id) ? $noticia->emissora_id : 0  }}">
+                                        <input type="hidden" name="cd_emissora" id="cd_emissora" value="{{ old('emissora_id', ($noticia and $noticia->emissora_id) ? $noticia->emissora_id : 0) }}">
                                         <label>Emissora <span class="text-danger">Obrigatório </span><span class="text-info" id="valor_segundo" data-valor=""></span></label>
                                         <select class="form-control select2" name="emissora_id" id="emissora_id" required="true">
                                             <option value="">Selecione uma emissora</option>
                                             @foreach ($emissoras as $emissora)
-                                                <option value="{{ $emissora->id }}" {!! ($noticia and $noticia->emissora_id == $emissora->id) ? "selected" : '' !!}>
+                                                <option value="{{ $emissora->id }}" {{ old('emissora_id', ($noticia and $noticia->emissora_id)) == $emissora->id ? 'selected' : '' }}>
                                                     {{ $emissora->nome_emissora }}
                                                 </option>
                                             @endforeach
@@ -113,7 +115,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Programa <span class="text-info" id="programa_valor_segundo"></span></label>
-                                        <input type="hidden" name="cd_programa" id="cd_programa" value="{{ ($noticia and $noticia->programa_id) ? $noticia->programa_id : 0  }}">
+                                        <input type="hidden" name="cd_programa" id="cd_programa" value="{{ old('programa_id', ($noticia and $noticia->programa_id) ? $noticia->programa_id : 0) }}">
                                         <select class="form-control selector-select2" name="programa_id" id="programa" disabled>
                                             <option value="">Selecione um programa</option>
                                         </select>
@@ -122,7 +124,7 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Horário</label>
-                                        <input type="text" class="form-control horario" name="horario" id="horario" value="{{ ($noticia and $noticia->horario) ? $noticia->horario : ''  }}" placeholder="Horário">
+                                        <input type="text" class="form-control horario" name="horario" id="horario" value="{{ old('horario', ($noticia and $noticia->horario) ? $noticia->horario : '') }}" placeholder="Horário">
                                     </div>
                                 </div>
                             </div>
@@ -141,7 +143,7 @@
                                         <select class="form-control selector-select2" name="cd_estado" id="cd_estado">
                                             <option value="">Selecione um estado</option>
                                             @foreach ($estados as $estado)
-                                                <option value="{{ $estado->cd_estado }}" {!! ($noticia and $noticia->cd_estado == $estado->cd_estado) ? " selected" : '' !!}>
+                                                <option value="{{ $estado->cd_estado }}" {{ old('cd_estado', ($noticia and $noticia->cd_estado)) == $estado->cd_estado ? 'selected' : '' }}>
                                                     {{ $estado->nm_estado }}
                                                 </option>
                                             @endforeach
@@ -151,7 +153,7 @@
                                 <div class="col-md-8">
                                     <div class="form-group">
                                         <label>Cidade </label>
-                                        <input type="hidden" name="cd_cidade" id="cd_cidade_selecionada" value="{{ ($noticia and $noticia->cd_cidade) ? $noticia->cd_cidade : 0  }}">
+                                        <input type="hidden" name="cd_cidade" id="cd_cidade_selecionada" value="{{ old('cd_cidade', ($noticia and $noticia->cd_cidade) ? $noticia->cd_cidade : 0) }}">
                                         <select class="form-control select2" name="cd_cidade" id="cidade" disabled="disabled">
                                             <option value="">Selecione uma cidade</option>
                                         </select>
@@ -174,13 +176,13 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label>Link</label>
-                                        <input type="text" class="form-control" name="link" id="link" placeholder="Link" value="{{ ($noticia) ? $noticia->link : '' }}">
+                                        <input type="text" class="form-control" name="link" id="link" placeholder="Link" value="{{ old('link', ($noticia) ? $noticia->link : '') }}">
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <label for="sinopse">Sinopse</label>
                                     <div class="form-group">
-                                        <textarea class="form-control" name="sinopse" id="sinopse" rows="4">{!! ($noticia) ? nl2br($noticia->sinopse) : '' !!}</textarea>
+                                        <textarea class="form-control" name="sinopse" id="sinopse" rows="4">{{ old('sinopse', ($noticia) ? $noticia->sinopse : '') }}</textarea>
                                     </div>
                                 </div>
                                 @if($noticia and $noticia->ds_caminho_audio)    
@@ -208,7 +210,7 @@
                                 <div class="col-md-12 mt-2">
                                     <div class="form-group">
                                         <label>Duração <span class="text-danger">Será preenchida automaticamente ao fazer o upload. Caso falhe, insira manualmente.</span></label>
-                                        <input type="text" class="form-control duracao" name="duracao" id="duracao" placeholder="00:00:00" value="{{ ($noticia) ? $noticia->duracao : '' }}">
+                                        <input type="text" class="form-control duracao" name="duracao" id="duracao" placeholder="00:00:00" value="{{ old('duracao', ($noticia) ? $noticia->duracao : '') }}">
                                     </div>
                                 </div>                                    
                             </div>
