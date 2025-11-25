@@ -1030,9 +1030,10 @@
                 type: "info",
                 showCancelButton: true,
                 confirmButtonText: "Sim, vincular!",
-                cancelButtonText: "Cancelar"
-            }).then(function(result) {
-                if (result.value) {
+                cancelButtonText: "Cancelar",
+                closeOnConfirm: false
+            }, function(isConfirm) {
+                if (isConfirm) {
                     $.ajax({
                         url: host+'/monitoramento/vincular-noticias',
                         type: 'POST',
@@ -1041,23 +1042,12 @@
                             "cliente_id": cliente_id,
                             "noticias": noticias
                         },
-                        beforeSend: function() {
-                            swal({
-                                title: "Aguarde...",
-                                text: "Vinculando notícias ao cliente",
-                                allowOutsideClick: false,
-                                showConfirmButton: false,
-                                onOpen: function() {
-                                    swal.showLoading();
-                                }
-                            });
-                        },
                         success: function(response) {
                             swal({
                                 title: "Sucesso!",
                                 text: response.message || "Notícias vinculadas com sucesso!",
                                 type: "success"
-                            }).then(function() {
+                            }, function() {
                                 // Refaz a busca para atualizar os badges
                                 $("#btn-find").trigger("click");
                             });
