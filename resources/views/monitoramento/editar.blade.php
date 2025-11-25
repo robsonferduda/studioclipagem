@@ -30,7 +30,7 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label>Nome <span class="text-danger">Obrigatório</span></label>
-                                        <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome" value="{{ $monitoramento->nome }}">
+                                        <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome" value="{{ old('nome', $monitoramento->nome) }}">
                                     </div>
                                 </div>
                                 <div class="col-md-12">
@@ -39,7 +39,7 @@
                                         <select class="form-control select2" name="id_cliente" id="id_cliente">
                                             <option value="">Selecione um cliente</option>
                                             @foreach ($clientes as $cliente)
-                                                <option value="{{ $cliente->id }}" {{ ($monitoramento->id_cliente == $cliente->id) ? 'selected' : '' }}>{{ $cliente->nome }}</option>
+                                                <option value="{{ $cliente->id }}" {{ old('id_cliente', $monitoramento->id_cliente) == $cliente->id ? 'selected' : '' }}>{{ $cliente->nome }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -47,25 +47,25 @@
                                 <div class="col-lg-2 col-md-6 mb-2">
                                     <div class="form-group">
                                         <label>Data Inicial</label>
-                                        <input type="text" class="form-control datepicker dt_inicial_relatorio" name="dt_inicio" value="{{ ($monitoramento->dt_inicio) ? \Carbon\Carbon::parse($monitoramento->dt_inicio)->format('d/m/Y') : '' }}">
+                                        <input type="text" class="form-control datepicker dt_inicial_relatorio" name="dt_inicio" value="{{ old('dt_inicio', ($monitoramento->dt_inicio) ? \Carbon\Carbon::parse($monitoramento->dt_inicio)->format('d/m/Y') : '') }}">
                                     </div>
                                 </div>
                                 <div class="col-lg-2 col-md-6 mb-2">
                                     <div class="form-group">
-                                        <label>Data Final {{ $monitoramento->dt_fim }}</label>
-                                        <input type="text" class="form-control datepicker dt_final_relatorio" name="dt_fim" value="{{ ($monitoramento->dt_fim) ? \Carbon\Carbon::parse($monitoramento->dt_fim)->format('d/m/Y') : '' }}">
+                                        <label>Data Final</label>
+                                        <input type="text" class="form-control datepicker dt_final_relatorio" name="dt_fim" value="{{ old('dt_fim', ($monitoramento->dt_fim) ? \Carbon\Carbon::parse($monitoramento->dt_fim)->format('d/m/Y') : '') }}">
                                     </div>
                                 </div>
                                 <div class="col-lg-2 col-md-6 mb-2">
                                     <div class="form-group">
                                         <label>Hora Inicial</label>
-                                        <input type="text" class="form-control horario" name="hora_inicio" value="{{ ($monitoramento->hora_inicio) ? \Carbon\Carbon::parse($monitoramento->hora_inicio)->format('H:i') : '' }}">
+                                        <input type="text" class="form-control horario" name="hora_inicio" value="{{ old('hora_inicio', ($monitoramento->hora_inicio) ? \Carbon\Carbon::parse($monitoramento->hora_inicio)->format('H:i') : '') }}">
                                     </div>
                                 </div>
                                 <div class="col-lg-2 col-md-6 mb-2">
                                     <div class="form-group">
                                         <label>Hora Final</label>
-                                        <input type="text" class="form-control horario" name="hora_fim" value="{{ ($monitoramento->hora_fim) ? \Carbon\Carbon::parse($monitoramento->hora_fim)->format('H:i') : '' }}">
+                                        <input type="text" class="form-control horario" name="hora_fim" value="{{ old('hora_fim', ($monitoramento->hora_fim) ? \Carbon\Carbon::parse($monitoramento->hora_fim)->format('H:i') : '') }}">
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-md-6 mb-2">
@@ -73,9 +73,9 @@
                                         <label>Frequência de Coletas</label>
                                         <select class="form-control" name="frequencia" id="frequencia">
                                             <option value="">Selecione o valor em horas</option>
-                                            <option value="1" {{ ($monitoramento->frequencia == 1) ? 'selected' : '' }}>1 hora</option>
+                                            <option value="1" {{ old('frequencia', $monitoramento->frequencia) == 1 ? 'selected' : '' }}>1 hora</option>
                                             @for($i = 2; $i <= 24; $i++)
-                                                <option value="{{ $i }}" {{ ($monitoramento->frequencia == $i) ? 'selected' : '' }}>{{ $i }} horas</option>
+                                                <option value="{{ $i }}" {{ old('frequencia', $monitoramento->frequencia) == $i ? 'selected' : '' }}>{{ $i }} horas</option>
                                             @endfor
                                         </select>
                                     </div>
@@ -84,42 +84,42 @@
                                     <p class="mb-1">Selecione uma mídia</p>
                                     <div class="form-check float-left mr-3">
                                         <label class="form-check-label mt-2">
-                                            <input class="form-check-input" type="checkbox" {{ ($monitoramento->fl_impresso) ? 'checked' : '' }} name="fl_impresso" id="fl_impresso" value="true">
+                                            <input class="form-check-input" type="checkbox" {{ old('fl_impresso', $monitoramento->fl_impresso) ? 'checked' : '' }} name="fl_impresso" id="fl_impresso" value="true">
                                             IMPRESSO
                                             <span class="form-check-sign"></span>
                                         </label>
                                     </div>
                                     <div class="form-check float-left mr-3">
                                         <label class="form-check-label mt-2">
-                                            <input class="form-check-input" type="checkbox" {{ ($monitoramento->fl_web) ? 'checked' : '' }} name="fl_web" id="fl_web" value="true">
+                                            <input class="form-check-input" type="checkbox" {{ old('fl_web', $monitoramento->fl_web) ? 'checked' : '' }} name="fl_web" id="fl_web" value="true">
                                             WEB
                                             <span class="form-check-sign"></span>
                                         </label>
                                     </div>
                                     <div class="form-check float-left mr-3">
                                         <label class="form-check-label mt-2">
-                                            <input class="form-check-input" type="checkbox" {{ ($monitoramento->fl_radio) ? 'checked' : '' }} name="fl_radio" id="fl_radio" value="true">
+                                            <input class="form-check-input" type="checkbox" {{ old('fl_radio', $monitoramento->fl_radio) ? 'checked' : '' }} name="fl_radio" id="fl_radio" value="true">
                                             RÁDIO
                                             <span class="form-check-sign"></span>
                                         </label>
                                     </div>
                                     <div class="form-check float-left mr-3">
                                         <label class="form-check-label mt-2">
-                                            <input class="form-check-input" type="checkbox" {{ ($monitoramento->fl_tv) ? 'checked' : '' }} name="fl_tv" id="fl_tv" value="true">
+                                            <input class="form-check-input" type="checkbox" {{ old('fl_tv', $monitoramento->fl_tv) ? 'checked' : '' }} name="fl_tv" id="fl_tv" value="true">
                                             TV
                                             <span class="form-check-sign"></span>
                                         </label>                                        
                                     </div>     
                                     <div class="form-check float-left mr-3">
                                         <label class="form-check-label mt-2">
-                                            <input class="form-check-input" type="checkbox" {{ ($monitoramento->fl_instagram) ? 'checked' : '' }} name="fl_instagram" id="fl_instagram" value="true">
+                                            <input class="form-check-input" type="checkbox" {{ old('fl_instagram', $monitoramento->fl_instagram) ? 'checked' : '' }} name="fl_instagram" id="fl_instagram" value="true">
                                             INSTAGRAM
                                             <span class="form-check-sign"></span>
                                         </label>                                        
                                     </div>   
                                     <div class="form-check float-left mr-3">
                                         <label class="form-check-label mt-2">
-                                            <input class="form-check-input" type="checkbox" {{ ($monitoramento->fl_facebook) ? 'checked' : '' }} name="fl_facebook" id="fl_facebook" value="true">
+                                            <input class="form-check-input" type="checkbox" {{ old('fl_facebook', $monitoramento->fl_facebook) ? 'checked' : '' }} name="fl_facebook" id="fl_facebook" value="true">
                                             FACEBOOK
                                             <span class="form-check-sign"></span>
                                         </label>                                        
@@ -153,7 +153,7 @@
                                 <div class="col-md-12 col-sm-12 mt-0">
                                     <div class="form-group">
                                         <label for="expressao" class="form-label">Expressão de Busca <span class="text-danger">Campo obrigatório</span></label>
-                                        <textarea class="form-control" name="expressao" id="expressao" rows="3">{{ $monitoramento->expressao }}</textarea>
+                                        <textarea class="form-control" name="expressao" id="expressao" rows="3">{{ old('expressao', $monitoramento->expressao) }}</textarea>
                                     </div>
                                 </div>
                             </div>               
