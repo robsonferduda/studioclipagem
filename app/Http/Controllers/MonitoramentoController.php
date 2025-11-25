@@ -224,7 +224,7 @@ class MonitoramentoController extends Controller
                     noticia_cliente nc ON nc.noticia_id = n.id AND nc.tipo_id = 2";
         
         if($cliente_id){
-            $sql .= " AND nc.cliente_id = $cliente_id";
+            $sql .= " AND nc.cliente_id = ".(int)$cliente_id;
         }
         
         $sql .= " WHERE 1=1 ";
@@ -268,7 +268,7 @@ class MonitoramentoController extends Controller
                     noticia_cliente nc ON nc.noticia_id = pejo.id AND nc.tipo_id = 1";
         
         if($cliente_id){
-            $sql .= " AND nc.cliente_id = $cliente_id";
+            $sql .= " AND nc.cliente_id = ".(int)$cliente_id;
         }
         
         $sql .= " WHERE 1=1
@@ -312,7 +312,7 @@ class MonitoramentoController extends Controller
                     noticia_cliente nc ON nc.noticia_id = n.id AND nc.tipo_id = 3";
         
         if($cliente_id){
-            $sql .= " AND nc.cliente_id = $cliente_id";
+            $sql .= " AND nc.cliente_id = ".(int)$cliente_id;
         }
         
         $sql .= " WHERE 1=1
@@ -356,7 +356,7 @@ class MonitoramentoController extends Controller
                     noticia_cliente nc ON nc.noticia_id = n.id AND nc.tipo_id = 4";
         
         if($cliente_id){
-            $sql .= " AND nc.cliente_id = $cliente_id";
+            $sql .= " AND nc.cliente_id = ".(int)$cliente_id;
         }
         
         $sql .= " WHERE 1=1
