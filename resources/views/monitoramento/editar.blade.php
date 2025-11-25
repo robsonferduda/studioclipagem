@@ -592,6 +592,7 @@
             if(flag){
 
                 var fontes = $("#selecionadas").val();
+                var cliente_id = $("#id_cliente").val();
 
                 $('.tab-pane').each(function(i, obj) {
                     $(this).removeClass("active");
@@ -614,7 +615,8 @@
                                 "dt_inicial": dt_inicial,
                                 "dt_final": dt_final,
                                 "tipo_data": tipo_data,
-                                "fontes": fontes
+                                "fontes": fontes,
+                                "cliente_id": cliente_id
                         },
                         beforeSend: function() {
                             $('.load-busca').loader('show');
@@ -647,9 +649,13 @@
                                         year: "numeric"
                                     });
 
+                                    const badgeVinculo = v.vinculado_cliente 
+                                        ? '<span class="badge badge-success ml-2"><i class="fa fa-check"></i> Vinculado</span>' 
+                                        : '<span class="badge badge-secondary ml-2"><i class="fa fa-times"></i> Não Vinculado</span>';
+
                                     $("#accordion_web").append('<div class="card card-plain">'+
                                     '<div class="card-header card-header-custom" role="tab" id="heading1">'+
-                                        '<strong>'+v.nome+'</strong>'+
+                                        '<strong>'+v.nome+'</strong>'+badgeVinculo+
                                         '<a data-toggle="collapse" data-parent="#accordion_web" href="#collapse_'+v.id+'" data-tipo="web" data-chave="card-web-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.titulo_noticia+
                                         '<i class="nc-icon nc-minimal-down"></i>'+
                                         '</a>'+
@@ -688,7 +694,8 @@
                                 "dt_inicial": dt_inicial,
                                 "dt_final": dt_final,
                                 "tipo_data": tipo_data,
-                                "fontes": fontes
+                                "fontes": fontes,
+                                "cliente_id": cliente_id
                         },
                         beforeSend: function() {
                             $(".mensagem-busca-impresso").html('<div class="col-md-6"><span class="text-warning">Buscando dados...</span></div>');
@@ -718,8 +725,13 @@
                                         year: "numeric"
                                     });
 
+                                    const badgeVinculo = v.vinculado_cliente 
+                                        ? '<span class="badge badge-success ml-2"><i class="fa fa-check"></i> Vinculado</span>' 
+                                        : '<span class="badge badge-secondary ml-2"><i class="fa fa-times"></i> Não Vinculado</span>';
+
                                     $("#accordion_impresso").append('<div class="card card-plain">'+
                                     '<div class="card-header card-header-custom" role="tab" id="heading1">'+
+                                        badgeVinculo+
                                         '<a data-toggle="collapse" data-parent="#accordion_impresso" href="#collapse_'+v.id+'" data-tipo="impresso" data-chave="card-impresso-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.nome+' - Página '+v.n_pagina+
                                         '<i class="nc-icon nc-minimal-down"></i>'+
                                         '</a>'+
@@ -757,7 +769,8 @@
                                 "dt_inicial": dt_inicial,
                                 "dt_final": dt_final,
                                 "tipo_data": tipo_data,
-                                "fontes": fontes
+                                "fontes": fontes,
+                                "cliente_id": cliente_id
                         },
                         beforeSend: function() {
                             $(".mensagem-busca-radio").html('<div class="col-md-6"><span class="text-warning">Buscando dados...</span></div>');
@@ -786,8 +799,13 @@
                                         year: "numeric"
                                     });
 
+                                    const badgeVinculo = v.vinculado_cliente 
+                                        ? '<span class="badge badge-success ml-2"><i class="fa fa-check"></i> Vinculado</span>' 
+                                        : '<span class="badge badge-secondary ml-2"><i class="fa fa-times"></i> Não Vinculado</span>';
+
                                     $("#accordion_radio").append('<div class="card card-plain">'+
                                     '<div class="card-header card-header-custom" role="tab" id="heading1">'+
+                                        badgeVinculo+
                                         '<a data-toggle="collapse" data-parent="#accordion_radio" href="#collapse_'+v.id+'" data-tipo="radio" data-chave="card-radio-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.nome_emissora+
                                         '<i class="nc-icon nc-minimal-down"></i>'+
                                         '</a>'+
@@ -826,7 +844,8 @@
                                 "dt_inicial": dt_inicial,
                                 "dt_final": dt_final,
                                 "tipo_data": tipo_data,
-                                "fontes": fontes
+                                "fontes": fontes,
+                                "cliente_id": cliente_id
                         },
                         beforeSend: function() {
                             $(".mensagem-busca-tv").html('<div class="col-md-6"><span class="text-warning">Buscando dados...</span></div>');
@@ -855,8 +874,13 @@
                                         year: "numeric"
                                     });
 
+                                    const badgeVinculo = v.vinculado_cliente 
+                                        ? '<span class="badge badge-success ml-2"><i class="fa fa-check"></i> Vinculado</span>' 
+                                        : '<span class="badge badge-secondary ml-2"><i class="fa fa-times"></i> Não Vinculado</span>';
+
                                     $("#accordion_tv").append('<div class="card card-plain">'+
                                     '<div class="card-header card-header-custom" role="tab" id="heading1">'+
+                                        badgeVinculo+
                                         '<a data-toggle="collapse" data-parent="#accordion_tv" href="#collapse_'+v.id+'" data-tipo="tv" data-chave="card-tv-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.nome_programa+
                                         '<i class="nc-icon nc-minimal-down"></i>'+
                                         '</a>'+

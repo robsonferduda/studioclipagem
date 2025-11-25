@@ -207,18 +207,27 @@ class MonitoramentoController extends Controller
         $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d "."23:59:59");
 
         $tipo_data = $request->tipo_data;
+        $cliente_id = $request->cliente_id;
 
         $label_data = ($tipo_data == "dt_publicacao") ? 'data_noticia' : 'created_at' ;
 
         $sql = "SELECT DISTINCT ON (n.titulo_noticia) 
-                    n.id, n.id_fonte, n.url_noticia, n.data_insert, n.data_noticia, n.titulo_noticia, fw.nome
+                    n.id, n.id_fonte, n.url_noticia, n.data_insert, n.data_noticia, n.titulo_noticia, fw.nome,
+                    CASE WHEN nc.id IS NOT NULL THEN true ELSE false END as vinculado_cliente
                 FROM 
                     noticias_web n
                 JOIN 
                     conteudo_noticia_web cnw ON cnw.id_noticia_web = n.id
                 JOIN 
                     fonte_web fw ON fw.id = n.id_fonte 
-                WHERE 1=1 ";
+                LEFT JOIN
+                    noticia_cliente nc ON nc.noticia_id = n.id AND nc.tipo_id = 2";
+        
+        if($cliente_id){
+            $sql .= " AND nc.cliente_id = $cliente_id";
+        }
+        
+        $sql .= " WHERE 1=1 ";
 
         if($request->fontes){
 
@@ -243,17 +252,26 @@ class MonitoramentoController extends Controller
         $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d "."23:59:59");
 
         $tipo_data = $request->tipo_data;
+        $cliente_id = $request->cliente_id;
 
         $label_data = ($tipo_data == "dt_publicacao") ? 'dt_coleta' : 'dt_pub' ;
 
         $sql = "SELECT 
-                    pejo.id, id_jornal_online, link_pdf, dt_coleta, dt_pub, titulo, texto_extraido, jo.nome, pejo.n_pagina 
+                    pejo.id, id_jornal_online, link_pdf, dt_coleta, dt_pub, titulo, texto_extraido, jo.nome, pejo.n_pagina,
+                    CASE WHEN nc.id IS NOT NULL THEN true ELSE false END as vinculado_cliente
                 FROM 
                     edicao_jornal_online n
                 JOIN 
                     pagina_edicao_jornal_online pejo ON pejo.id_edicao_jornal_online = n.id
-                JOIN jornal_online jo ON jo.id = n.id_jornal_online 
-                WHERE 1=1
+                JOIN jornal_online jo ON jo.id = n.id_jornal_online
+                LEFT JOIN
+                    noticia_cliente nc ON nc.noticia_id = pejo.id AND nc.tipo_id = 1";
+        
+        if($cliente_id){
+            $sql .= " AND nc.cliente_id = $cliente_id";
+        }
+        
+        $sql .= " WHERE 1=1
                     AND n.$label_data BETWEEN '$dt_inicial' AND '$dt_final' ";
 
         $sql .= ($request->expressao) ? "AND pejo.texto_extraido_tsv @@ to_tsquery('simple', '$request->expressao') " : '';
@@ -278,17 +296,26 @@ class MonitoramentoController extends Controller
         $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d "."23:59:59");
 
         $tipo_data = $request->tipo_data;
+        $cliente_id = $request->cliente_id;
 
         $label_data = ($tipo_data == "dt_publicacao") ? 'data_hora_inicio' : 'created_at' ;
 
         $sql = "SELECT 
-                    n.id, id_emissora, data_hora_inicio, data_hora_fim, path_s3, nome_emissora
+                    n.id, id_emissora, data_hora_inicio, data_hora_fim, path_s3, nome_emissora,
+                    CASE WHEN nc.id IS NOT NULL THEN true ELSE false END as vinculado_cliente
                 FROM 
                     gravacao_emissora_radio n
                 JOIN 
                     emissora_radio er 
                     ON er.id = n.id_emissora
-                WHERE 1=1
+                LEFT JOIN
+                    noticia_cliente nc ON nc.noticia_id = n.id AND nc.tipo_id = 3";
+        
+        if($cliente_id){
+            $sql .= " AND nc.cliente_id = $cliente_id";
+        }
+        
+        $sql .= " WHERE 1=1
                     AND n.$label_data BETWEEN '$dt_inicial' AND '$dt_final' ";
 
         $sql .= ($request->expressao) ? "AND n.transcricao_tsv @@ to_tsquery('simple', '$request->expressao') " : '';
@@ -313,17 +340,26 @@ class MonitoramentoController extends Controller
         $dt_final = ($request->dt_final) ? $carbon->createFromFormat('d/m/Y', $request->dt_final)->format('Y-m-d')." 23:59:59" : date("Y-m-d "."23:59:59");
 
         $tipo_data = $request->tipo_data;
+        $cliente_id = $request->cliente_id;
 
         $label_data = ($tipo_data == "dt_publicacao") ? 'horario_start_gravacao' : 'created_at' ;
 
         $sql = "SELECT 
-                    n.id, id_programa_emissora_web, horario_start_gravacao, horario_end_gravacao, url_video, n.misc_data, transcricao, nome_programa
+                    n.id, id_programa_emissora_web, horario_start_gravacao, horario_end_gravacao, url_video, n.misc_data, transcricao, nome_programa,
+                    CASE WHEN nc.id IS NOT NULL THEN true ELSE false END as vinculado_cliente
                 FROM 
                     videos_programa_emissora_web n
                 JOIN 
                     programa_emissora_web pew 
                     ON pew.id = n.id_programa_emissora_web
-                WHERE 1=1
+                LEFT JOIN
+                    noticia_cliente nc ON nc.noticia_id = n.id AND nc.tipo_id = 4";
+        
+        if($cliente_id){
+            $sql .= " AND nc.cliente_id = $cliente_id";
+        }
+        
+        $sql .= " WHERE 1=1
                     AND n.$label_data BETWEEN '$dt_inicial' AND '$dt_final' ";
 
         $sql .= ($request->expressao) ? "AND  n.transcricao_tsv @@ to_tsquery('simple', '$request->expressao') " : '';
