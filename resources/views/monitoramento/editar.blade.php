@@ -1030,40 +1030,51 @@
                 type: "info",
                 showCancelButton: true,
                 confirmButtonText: "Sim, vincular!",
-                cancelButtonText: "Cancelar",
-                closeOnConfirm: false,
-                showLoaderOnConfirm: true
-            }, function() {
-                $.ajax({
-                    url: host+'/monitoramento/vincular-noticias',
-                    type: 'POST',
-                    data: {
-                        "_token": $('meta[name="csrf-token"]').attr('content'),
-                        "cliente_id": cliente_id,
-                        "noticias": noticias
-                    },
-                    success: function(response) {
-                        swal({
-                            title: "Sucesso!",
-                            text: response.message || "Notícias vinculadas com sucesso!",
-                            type: "success"
-                        }, function() {
-                            // Refaz a busca para atualizar os badges
-                            $("#form-busca").submit();
-                        });
-                    },
-                    error: function(xhr) {
-                        var errorMsg = "Erro ao vincular notícias.";
-                        if(xhr.responseJSON && xhr.responseJSON.message) {
-                            errorMsg = xhr.responseJSON.message;
+                cancelButtonText: "Cancelar"
+            }).then(function(result) {
+                if (result.value) {
+                    $.ajax({
+                        url: host+'/monitoramento/vincular-noticias',
+                        type: 'POST',
+                        data: {
+                            "_token": $('meta[name="csrf-token"]').attr('content'),
+                            "cliente_id": cliente_id,
+                            "noticias": noticias
+                        },
+                        beforeSend: function() {
+                            swal({
+                                title: "Aguarde...",
+                                text: "Vinculando notícias ao cliente",
+                                allowOutsideClick: false,
+                                showConfirmButton: false,
+                                onOpen: function() {
+                                    swal.showLoading();
+                                }
+                            });
+                        },
+                        success: function(response) {
+                            swal({
+                                title: "Sucesso!",
+                                text: response.message || "Notícias vinculadas com sucesso!",
+                                type: "success"
+                            }).then(function() {
+                                // Refaz a busca para atualizar os badges
+                                $("#btn-find").trigger("click");
+                            });
+                        },
+                        error: function(xhr) {
+                            var errorMsg = "Erro ao vincular notícias.";
+                            if(xhr.responseJSON && xhr.responseJSON.message) {
+                                errorMsg = xhr.responseJSON.message;
+                            }
+                            swal({
+                                title: "Erro!",
+                                text: errorMsg,
+                                type: "error"
+                            });
                         }
-                        swal({
-                            title: "Erro!",
-                            text: errorMsg,
-                            type: "error"
-                        });
-                    }
-                });
+                    });
+                }
             });
         });
 
