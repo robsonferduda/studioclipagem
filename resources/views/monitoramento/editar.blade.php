@@ -661,7 +661,7 @@
                                         : '<span class="badge badge-warning ml-2"><i class="fa fa-times"></i> Não Vinculado</span>';
                                     
                                     const checkboxVinculo = !v.vinculado_cliente && cliente_id
-                                        ? '<label class="checkbox-inline ml-2"><input type="checkbox" class="checkbox-vincular" data-noticia-id="'+v.id+'" data-tipo="2"> Vincular ao Cliente</label>'
+                                        ? '<div class="form-check ml-2" style="display: inline-block;"><label class="form-check-label"><input type="checkbox" class="form-check-input checkbox-vincular" data-noticia-id="'+v.id+'" data-tipo="2"> Vincular ao Cliente<span class="form-check-sign"></span></label></div>'
                                         : '';
 
                                     $("#accordion_web").append('<div class="card card-plain">'+
@@ -742,7 +742,7 @@
                                         : '<span class="badge badge-secondary ml-2"><i class="fa fa-times"></i> Não Vinculado</span>';
                                     
                                     const checkboxVinculo = !v.vinculado_cliente && cliente_id
-                                        ? '<label class="checkbox-inline ml-2"><input type="checkbox" class="checkbox-vincular" data-noticia-id="'+v.id+'" data-tipo="1"> Vincular ao Cliente</label>'
+                                        ? '<div class="form-check ml-2" style="display: inline-block;"><label class="form-check-label"><input type="checkbox" class="form-check-input checkbox-vincular" data-noticia-id="'+v.id+'" data-tipo="1"> Vincular ao Cliente<span class="form-check-sign"></span></label></div>'
                                         : '';
 
                                     $("#accordion_impresso").append('<div class="card card-plain">'+
@@ -820,7 +820,7 @@
                                         : '<span class="badge badge-secondary ml-2"><i class="fa fa-times"></i> Não Vinculado</span>';
                                     
                                     const checkboxVinculo = !v.vinculado_cliente && cliente_id
-                                        ? '<label class="checkbox-inline ml-2"><input type="checkbox" class="checkbox-vincular" data-noticia-id="'+v.id+'" data-tipo="3"> Vincular ao Cliente</label>'
+                                        ? '<div class="form-check ml-2" style="display: inline-block;"><label class="form-check-label"><input type="checkbox" class="form-check-input checkbox-vincular" data-noticia-id="'+v.id+'" data-tipo="3"> Vincular ao Cliente<span class="form-check-sign"></span></label></div>'
                                         : '';
 
                                     $("#accordion_radio").append('<div class="card card-plain">'+
@@ -899,7 +899,7 @@
                                         : '<span class="badge badge-secondary ml-2"><i class="fa fa-times"></i> Não Vinculado</span>';
                                     
                                     const checkboxVinculo = !v.vinculado_cliente && cliente_id
-                                        ? '<label class="checkbox-inline ml-2"><input type="checkbox" class="checkbox-vincular" data-noticia-id="'+v.id+'" data-tipo="4"> Vincular ao Cliente</label>'
+                                        ? '<div class="form-check ml-2" style="display: inline-block;"><label class="form-check-label"><input type="checkbox" class="form-check-input checkbox-vincular" data-noticia-id="'+v.id+'" data-tipo="4"> Vincular ao Cliente<span class="form-check-sign"></span></label></div>'
                                         : '';
 
                                     $("#accordion_tv").append('<div class="card card-plain">'+
