@@ -360,6 +360,7 @@ Route::middleware(['web'])->group(function () {
 	Route::post('monitoramento/filtrar/impresso','MonitoramentoController@filtrarImpresso');
 	Route::post('monitoramento/filtrar/radio','MonitoramentoController@filtrarRadio');
 	Route::post('monitoramento/filtrar/tv','MonitoramentoController@filtrarTv');
+	Route::post('monitoramento/vincular-noticias','MonitoramentoController@vincularNoticias');
 	Route::post('monitoramento/create','MonitoramentoController@create');
 
 	Route::get('monitoramento/executar/web/{grupo}','MonitoramentoController@executarWeb');

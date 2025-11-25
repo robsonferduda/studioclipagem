@@ -187,6 +187,13 @@
                     <div id="my-tab-content" class="tab-content">
                         
                         <div class="tab-pane active" id="panel_web" role="tabpanel" aria-expanded="true">
+                            <div class="row mb-3 mt-3 d-none" id="btn-vincular-container">
+                                <div class="col-md-12 text-center">
+                                    <button type="button" id="btn-vincular-selecionadas" class="btn btn-success btn-sm">
+                                        <i class="fa fa-link"></i> Vincular Notícias Selecionadas ao Cliente
+                                    </button>
+                                </div>
+                            </div>
                             <div id="accordion_web" role="tablist" aria-multiselectable="true" class="card-collapse">
                                 <div class="row cabecalho-busca cabecalho-busca-web d-none">
                                     <div class="col-md-6">
@@ -652,10 +659,14 @@
                                     const badgeVinculo = v.vinculado_cliente 
                                         ? '<span class="badge badge-success ml-2"><i class="fa fa-check"></i> Vinculado</span>' 
                                         : '<span class="badge badge-secondary ml-2"><i class="fa fa-times"></i> Não Vinculado</span>';
+                                    
+                                    const checkboxVinculo = !v.vinculado_cliente && cliente_id
+                                        ? '<label class="checkbox-inline ml-2"><input type="checkbox" class="checkbox-vincular" data-noticia-id="'+v.id+'" data-tipo="2"> Vincular ao Cliente</label>'
+                                        : '';
 
                                     $("#accordion_web").append('<div class="card card-plain">'+
                                     '<div class="card-header card-header-custom" role="tab" id="heading1">'+
-                                        '<strong>'+v.nome+'</strong>'+badgeVinculo+
+                                        '<strong>'+v.nome+'</strong>'+badgeVinculo+checkboxVinculo+
                                         '<a data-toggle="collapse" data-parent="#accordion_web" href="#collapse_'+v.id+'" data-tipo="web" data-chave="card-web-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.titulo_noticia+
                                         '<i class="nc-icon nc-minimal-down"></i>'+
                                         '</a>'+
@@ -728,10 +739,14 @@
                                     const badgeVinculo = v.vinculado_cliente 
                                         ? '<span class="badge badge-success ml-2"><i class="fa fa-check"></i> Vinculado</span>' 
                                         : '<span class="badge badge-secondary ml-2"><i class="fa fa-times"></i> Não Vinculado</span>';
+                                    
+                                    const checkboxVinculo = !v.vinculado_cliente && cliente_id
+                                        ? '<label class="checkbox-inline ml-2"><input type="checkbox" class="checkbox-vincular" data-noticia-id="'+v.id+'" data-tipo="1"> Vincular ao Cliente</label>'
+                                        : '';
 
                                     $("#accordion_impresso").append('<div class="card card-plain">'+
                                     '<div class="card-header card-header-custom" role="tab" id="heading1">'+
-                                        badgeVinculo+
+                                        badgeVinculo+checkboxVinculo+
                                         '<a data-toggle="collapse" data-parent="#accordion_impresso" href="#collapse_'+v.id+'" data-tipo="impresso" data-chave="card-impresso-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.nome+' - Página '+v.n_pagina+
                                         '<i class="nc-icon nc-minimal-down"></i>'+
                                         '</a>'+
@@ -802,10 +817,14 @@
                                     const badgeVinculo = v.vinculado_cliente 
                                         ? '<span class="badge badge-success ml-2"><i class="fa fa-check"></i> Vinculado</span>' 
                                         : '<span class="badge badge-secondary ml-2"><i class="fa fa-times"></i> Não Vinculado</span>';
+                                    
+                                    const checkboxVinculo = !v.vinculado_cliente && cliente_id
+                                        ? '<label class="checkbox-inline ml-2"><input type="checkbox" class="checkbox-vincular" data-noticia-id="'+v.id+'" data-tipo="3"> Vincular ao Cliente</label>'
+                                        : '';
 
                                     $("#accordion_radio").append('<div class="card card-plain">'+
                                     '<div class="card-header card-header-custom" role="tab" id="heading1">'+
-                                        badgeVinculo+
+                                        badgeVinculo+checkboxVinculo+
                                         '<a data-toggle="collapse" data-parent="#accordion_radio" href="#collapse_'+v.id+'" data-tipo="radio" data-chave="card-radio-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.nome_emissora+
                                         '<i class="nc-icon nc-minimal-down"></i>'+
                                         '</a>'+
@@ -877,10 +896,14 @@
                                     const badgeVinculo = v.vinculado_cliente 
                                         ? '<span class="badge badge-success ml-2"><i class="fa fa-check"></i> Vinculado</span>' 
                                         : '<span class="badge badge-secondary ml-2"><i class="fa fa-times"></i> Não Vinculado</span>';
+                                    
+                                    const checkboxVinculo = !v.vinculado_cliente && cliente_id
+                                        ? '<label class="checkbox-inline ml-2"><input type="checkbox" class="checkbox-vincular" data-noticia-id="'+v.id+'" data-tipo="4"> Vincular ao Cliente</label>'
+                                        : '';
 
                                     $("#accordion_tv").append('<div class="card card-plain">'+
                                     '<div class="card-header card-header-custom" role="tab" id="heading1">'+
-                                        badgeVinculo+
+                                        badgeVinculo+checkboxVinculo+
                                         '<a data-toggle="collapse" data-parent="#accordion_tv" href="#collapse_'+v.id+'" data-tipo="tv" data-chave="card-tv-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.nome_programa+
                                         '<i class="nc-icon nc-minimal-down"></i>'+
                                         '</a>'+
@@ -959,6 +982,89 @@
                     }
             });
 
+        });
+
+        // Mostrar/ocultar botão de vincular conforme seleção de checkboxes
+        $('body').on('change', '.checkbox-vincular', function() {
+            var checkedCount = $('.checkbox-vincular:checked').length;
+            if(checkedCount > 0) {
+                $('#btn-vincular-container').removeClass('d-none');
+            } else {
+                $('#btn-vincular-container').addClass('d-none');
+            }
+        });
+
+        // Manipulador de vinculação de notícias ao cliente
+        $('body').on('click', '#btn-vincular-selecionadas', function() {
+            var cliente_id = $("#id_cliente").val();
+            
+            if(!cliente_id) {
+                swal({
+                    title: "Atenção!",
+                    text: "Selecione um cliente primeiro.",
+                    type: "warning"
+                });
+                return;
+            }
+
+            var noticias = [];
+            $('.checkbox-vincular:checked').each(function() {
+                noticias.push({
+                    noticia_id: $(this).data('noticia-id'),
+                    tipo_id: $(this).data('tipo')
+                });
+            });
+
+            if(noticias.length === 0) {
+                swal({
+                    title: "Atenção!",
+                    text: "Selecione pelo menos uma notícia para vincular.",
+                    type: "warning"
+                });
+                return;
+            }
+
+            swal({
+                title: "Confirmar Vinculação",
+                text: "Deseja vincular " + noticias.length + " notícia(s) ao cliente selecionado?",
+                type: "info",
+                showCancelButton: true,
+                confirmButtonText: "Sim, vincular!",
+                cancelButtonText: "Cancelar",
+                closeOnConfirm: false,
+                showLoaderOnConfirm: true
+            }, function() {
+                $.ajax({
+                    url: host+'/monitoramento/vincular-noticias',
+                    type: 'POST',
+                    data: {
+                        "_token": $('meta[name="csrf-token"]').attr('content'),
+                        "cliente_id": cliente_id,
+                        "noticias": noticias
+                    },
+                    success: function(response) {
+                        swal({
+                            title: "Sucesso!",
+                            text: response.message || "Notícias vinculadas com sucesso!",
+                            type: "success"
+                        }, function() {
+                            // Refaz a busca para atualizar os badges
+                            $("#form-busca").submit();
+                        });
+                    },
+                    error: function(xhr) {
+                        var errorMsg = "Erro ao vincular notícias.";
+                        if(xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMsg = xhr.responseJSON.message;
+                        }
+                        swal({
+                            title: "Erro!",
+                            text: errorMsg,
+                            type: "error"
+                        });
+                    }
+                });
+            });
         });
 
     });

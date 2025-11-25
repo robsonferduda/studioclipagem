@@ -1537,4 +1537,62 @@ class MonitoramentoController extends Controller
 
         return response()->json($emissoras);
     }
+    public function vincularNoticias(Request $request)
+    {
+        try {
+            $request->validate([
+                'cliente_id' => 'required|integer',
+                'noticias' => 'required|array',
+                'noticias.*.noticia_id' => 'required|integer',
+                'noticias.*.tipo_id' => 'required|integer|in:1,2,3,4'
+            ]);
+
+            $cliente_id = $request->cliente_id;
+            $noticias = $request->noticias;
+            $vinculadas = 0;
+            $duplicadas = 0;
+
+            foreach ($noticias as $noticia) {
+                // Verifica se já existe vinculação
+                $existe = NoticiaCliente::where('cliente_id', $cliente_id)
+                    ->where('noticia_id', $noticia['noticia_id'])
+                    ->where('tipo_id', $noticia['tipo_id'])
+                    ->exists();
+
+                if (!$existe) {
+                    NoticiaCliente::create([
+                        'cliente_id' => $cliente_id,
+                        'noticia_id' => $noticia['noticia_id'],
+                        'tipo_id' => $noticia['tipo_id'],
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ]);
+                    $vinculadas++;
+                } else {
+                    $duplicadas++;
+                }
+            }
+
+            $mensagem = "Vinculação concluída!";
+            if ($vinculadas > 0) {
+                $mensagem .= " $vinculadas notícia(s) vinculada(s) com sucesso.";
+            }
+            if ($duplicadas > 0) {
+                $mensagem .= " $duplicadas já estava(m) vinculada(s).";
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => $mensagem,
+                'vinculadas' => $vinculadas,
+                'duplicadas' => $duplicadas
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao vincular notícias: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }
