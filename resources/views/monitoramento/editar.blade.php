@@ -187,12 +187,12 @@
                     <div id="my-tab-content" class="tab-content">
                         
                         <div class="tab-pane active" id="panel_web" role="tabpanel" aria-expanded="true">
-                            <div class="row mb-3 mt-3 d-none" id="btn-vincular-container">
+                            <div class="row mb-3 mt-3" id="btn-vincular-container">
                                 <div class="col-md-12 text-center">
                                     <button type="button" id="btn-selecionar-todas" class="btn btn-info btn-sm mr-2">
                                         <i class="fa fa-check-square"></i> Selecionar Todas
                                     </button>
-                                    <button type="button" id="btn-vincular-selecionadas" class="btn btn-success btn-sm">
+                                    <button type="button" id="btn-vincular-selecionadas" class="btn btn-success btn-sm" disabled>
                                         <i class="fa fa-link"></i> Vincular Notícias Selecionadas ao Cliente
                                     </button>
                                 </div>
@@ -1006,15 +1006,15 @@
             $('.checkbox-vincular').first().trigger('change');
         });
 
-        // Mostrar/ocultar botão de vincular conforme seleção de checkboxes
+        // Habilitar/desabilitar botão de vincular conforme seleção de checkboxes
         $('body').on('change', '.checkbox-vincular', function() {
             var checkedCount = $('.checkbox-vincular:checked').length;
             var totalCount = $('.checkbox-vincular').length;
             
             if(checkedCount > 0) {
-                $('#btn-vincular-container').removeClass('d-none');
+                $('#btn-vincular-selecionadas').prop('disabled', false);
             } else {
-                $('#btn-vincular-container').addClass('d-none');
+                $('#btn-vincular-selecionadas').prop('disabled', true);
             }
             
             // Atualiza texto do botão "Selecionar Todas"
