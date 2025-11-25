@@ -999,10 +999,10 @@
             var cliente_id = $("#id_cliente").val();
             
             if(!cliente_id) {
-                swal({
+                Swal.fire({
                     title: "Atenção!",
                     text: "Selecione um cliente primeiro.",
-                    type: "warning"
+                    icon: "warning"
                 });
                 return;
             }
@@ -1016,24 +1016,23 @@
             });
 
             if(noticias.length === 0) {
-                swal({
+                Swal.fire({
                     title: "Atenção!",
                     text: "Selecione pelo menos uma notícia para vincular.",
-                    type: "warning"
+                    icon: "warning"
                 });
                 return;
             }
 
-            swal({
+            Swal.fire({
                 title: "Confirmar Vinculação",
                 text: "Deseja vincular " + noticias.length + " notícia(s) ao cliente selecionado?",
-                type: "info",
+                icon: "question",
                 showCancelButton: true,
                 confirmButtonText: "Sim, vincular!",
-                cancelButtonText: "Cancelar",
-                closeOnConfirm: false
-            }, function(isConfirm) {
-                if (isConfirm) {
+                cancelButtonText: "Cancelar"
+            }).then(function(result) {
+                if (result.isConfirmed) {
                     $.ajax({
                         url: host+'/monitoramento/vincular-noticias',
                         type: 'POST',
@@ -1043,11 +1042,11 @@
                             "noticias": noticias
                         },
                         success: function(response) {
-                            swal({
+                            Swal.fire({
                                 title: "Sucesso!",
                                 text: response.message || "Notícias vinculadas com sucesso!",
-                                type: "success"
-                            }, function() {
+                                icon: "success"
+                            }).then(function() {
                                 // Refaz a busca para atualizar os badges
                                 $("#btn-find").trigger("click");
                             });
@@ -1057,10 +1056,10 @@
                             if(xhr.responseJSON && xhr.responseJSON.message) {
                                 errorMsg = xhr.responseJSON.message;
                             }
-                            swal({
+                            Swal.fire({
                                 title: "Erro!",
                                 text: errorMsg,
-                                type: "error"
+                                icon: "error"
                             });
                         }
                     });
