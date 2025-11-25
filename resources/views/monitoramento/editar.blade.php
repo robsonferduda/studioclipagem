@@ -658,7 +658,7 @@
 
                                     const badgeVinculo = v.vinculado_cliente 
                                         ? '<span class="badge badge-success ml-2"><i class="fa fa-check"></i> Vinculado</span>' 
-                                        : '<span class="badge badge-secondary ml-2"><i class="fa fa-times"></i> Não Vinculado</span>';
+                                        : '<span class="badge badge-warning ml-2"><i class="fa fa-times"></i> Não Vinculado</span>';
                                     
                                     const checkboxVinculo = !v.vinculado_cliente && cliente_id
                                         ? '<label class="checkbox-inline ml-2"><input type="checkbox" class="checkbox-vincular" data-noticia-id="'+v.id+'" data-tipo="2"> Vincular ao Cliente</label>'
@@ -666,11 +666,12 @@
 
                                     $("#accordion_web").append('<div class="card card-plain">'+
                                     '<div class="card-header card-header-custom" role="tab" id="heading1">'+
-                                        '<strong>'+v.nome+'</strong>'+badgeVinculo+checkboxVinculo+
+                                        '<strong>'+v.nome+'</strong>'+
                                         '<a data-toggle="collapse" data-parent="#accordion_web" href="#collapse_'+v.id+'" data-tipo="web" data-chave="card-web-txt-'+k+'" data-id="'+v.id+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed fts_detalhes"> '+data_formatada+' - '+v.titulo_noticia+
                                         '<i class="nc-icon nc-minimal-down"></i>'+
                                         '</a>'+
                                         '<a href="'+v.url_noticia+'" target="BLANK"><i class="fa fa-external-link" aria-hidden="true"></i></a>'+
+                                        badgeVinculo+checkboxVinculo+
                                     '</div>'+
                                     '<div id="collapse_'+v.id+'" class="collapse" role="tabpanel" aria-labelledby="heading1" style="">'+
                                         '<div class="box-destaque-busca destaque-card-web-txt-'+k+'"></div><div class="card-body card-busca card-web-txt-'+k+'">'+
