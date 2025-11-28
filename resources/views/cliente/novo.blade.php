@@ -186,6 +186,18 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12">
+                                <p class="mb-0 mt-3"><i class="fa fa-key"></i> Palavras-Chave</p>
+                                <p class="mb-0 mt-0"><i class="fa fa-key"></i> Informe as Palavras-Chave <span class="text-info">Informe as palavras-chave separadas por vírgula</span></p>
+                                <div class="form-group">
+                                    <textarea class="form-control" name="list_keywords" id="list_keywords" rows="3">{{ old('list_keywords') }}</textarea>
+                                </div>
+                            </div>
+                        </div>
                     </div>             
                  
                     <div class="col-md-12">

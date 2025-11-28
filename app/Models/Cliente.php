@@ -38,10 +38,6 @@ class Cliente extends Model
                         'fl_retorno_midia',
                         'list_keywords'];
 
-    protected $casts = [
-        'list_keywords' => 'array'
-    ];
-
     public function area()
     {
         return $this->belongsToMany(Area::class,'noticia_cliente','cliente_id','area')->where('tipo_id', 1);
