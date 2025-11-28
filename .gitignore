@@ -26,3 +26,4 @@ worker.log
 /public/img/clientes
 /public/img/impresso-img
 venv/
+.DS_Store
