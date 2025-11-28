@@ -191,6 +191,10 @@ class ClienteController extends Controller
         $fl_impresso = $request->fl_impresso == true ? true : false;
         $fl_web = $request->fl_web == true ? true : false;
         $fl_radio = $request->fl_radio == true ? true : false;
+        $fl_instagram = $request->fl_instagram == true ? true : false;
+        $fl_facebook = $request->fl_facebook == true ? true : false;
+        $fl_linkedin = $request->fl_linkedin == true ? true : false;
+        $fl_twitter = $request->fl_twitter == true ? true : false;
 
         $fl_relatorio_consolidado = $request->fl_relatorio_consolidado == true ? true : false;
         $fl_relatorio_completo = $request->fl_relatorio_completo == true ? true : false;
@@ -211,6 +215,10 @@ class ClienteController extends Controller
             $request->merge(['fl_impresso' => $fl_impresso]);
             $request->merge(['fl_web' => $fl_web]);
             $request->merge(['fl_radio' => $fl_radio]);
+            $request->merge(['fl_instagram' => $fl_instagram]);
+            $request->merge(['fl_facebook' => $fl_facebook]);
+            $request->merge(['fl_linkedin' => $fl_linkedin]);
+            $request->merge(['fl_twitter' => $fl_twitter]);
 
             $request->merge(['fl_relatorio_consolidado' => $fl_relatorio_consolidado]);
             $request->merge(['fl_relatorio_completo' => $fl_relatorio_completo]);
@@ -355,6 +363,10 @@ class ClienteController extends Controller
         $fl_impresso = $request->fl_impresso == true ? true : false;
         $fl_web = $request->fl_web == true ? true : false;
         $fl_radio = $request->fl_radio == true ? true : false;
+        $fl_instagram = $request->fl_instagram == true ? true : false;
+        $fl_facebook = $request->fl_facebook == true ? true : false;
+        $fl_linkedin = $request->fl_linkedin == true ? true : false;
+        $fl_twitter = $request->fl_twitter == true ? true : false;
 
         $fl_relatorio_consolidado = $request->fl_relatorio_consolidado == true ? true : false;
         $fl_relatorio_completo = $request->fl_relatorio_completo == true ? true : false;
@@ -377,6 +389,10 @@ class ClienteController extends Controller
             $request->merge(['fl_impresso' => $fl_impresso]);
             $request->merge(['fl_web' => $fl_web]);
             $request->merge(['fl_radio' => $fl_radio]);
+            $request->merge(['fl_instagram' => $fl_instagram]);
+            $request->merge(['fl_facebook' => $fl_facebook]);
+            $request->merge(['fl_linkedin' => $fl_linkedin]);
+            $request->merge(['fl_twitter' => $fl_twitter]);
 
             $request->merge(['fl_relatorio_consolidado' => $fl_relatorio_consolidado]);
             $request->merge(['fl_relatorio_completo' => $fl_relatorio_completo]);

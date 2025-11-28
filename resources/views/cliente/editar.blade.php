@@ -128,6 +128,20 @@
                                         <span class="form-check-sign"></span>
                                     </label>
                                 </div>
+                                <div class="form-check float-left mr-3">
+                                    <label class="form-check-label mt-2">
+                                        <input class="form-check-input" {{ ($cliente->fl_linkedin) ? 'checked' : '' }} type="checkbox" name="fl_linkedin" value="true">
+                                        LINKEDIN
+                                        <span class="form-check-sign"></span>
+                                    </label>
+                                </div>
+                                <div class="form-check float-left mr-3">
+                                    <label class="form-check-label mt-2">
+                                        <input class="form-check-input" {{ ($cliente->fl_twitter) ? 'checked' : '' }} type="checkbox" name="fl_twitter" value="true">
+                                        TWITTER
+                                        <span class="form-check-sign"></span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>

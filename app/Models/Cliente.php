@@ -35,6 +35,8 @@ class Cliente extends Model
                         'hashtags',
                         'fl_instagram',
                         'fl_facebook',
+                        'fl_linkedin',
+                        'fl_twitter',
                         'fl_retorno_midia',
                         'list_keywords'];
 
