@@ -330,13 +330,15 @@ class RelatorioService
                 'count_tags' => count($tagsFiltros)
             ]);
             
-            // Usando abordagem mais simples com LIKE em PostgreSQL
+            // Usando operador JSONB @> (contains) para comparação correta de caracteres Unicode
+            // Isso resolve o problema com tags que contêm caracteres especiais como "ç"
             $tagConditions = [];
             foreach ($tagsFiltros as $tag) {
-                // Escape caracteres especiais para LIKE
-                $tagEscaped = str_replace(['\\', '%', '_', '"'], ['\\\\', '\\%', '\\_', '\\"'], $tag);
-                // Verificar se a tag existe como string dentro do array JSON
-                $tagConditions[] = "nc.misc_data::text LIKE '%\"$tagEscaped\"%'";
+                // Escape aspas duplas e barras invertidas para JSON
+                $tagEscaped = str_replace(['\\', '"'], ['\\\\', '\\"'], $tag);
+                // Usar operador JSONB @> para verificar se o array contém a tag
+                // Formato: nc.misc_data::jsonb @> '{"tags_noticia":["tag"]}'
+                $tagConditions[] = "nc.misc_data::jsonb @> '{\"tags_noticia\":[\"$tagEscaped\"]}'";
             }
             
             if (!empty($tagConditions)) {
